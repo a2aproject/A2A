@@ -618,9 +618,9 @@ export interface ListTasksParams {
   /** Filter tasks by their current status state. */
   status?: TaskState;
   /** Maximum number of tasks to return. Defaults to 50 if not specified. */
-  limit?: number;
-  /** Number of tasks to skip for pagination. Defaults to 0 if not specified. */
-  offset?: number;
+  pageSize?: number;
+  /** Token for pagination. Use the nextPageToken from a previous ListTasksResult response. */
+  pageToken?: string;
   /** Number of recent messages to include in each task's history. */
   historyLength?: number;
   /** Request-specific metadata. */
@@ -636,11 +636,11 @@ export interface ListTasksResult {
   /** Array of tasks matching the specified criteria. */
   tasks: Task[];
   /** Total number of tasks available (before pagination). */
-  total: number;
+  totalSize: number;
   /** Maximum number of tasks returned in this response. */
-  limit: number;
-  /** Number of tasks skipped for pagination. */
-  offset: number;
+  pageSize: number;
+  /** Token for retrieving the next page. Empty if no more results. */
+  nextPageToken?: string;
 }
 // --8<-- [end:ListTasksResult]
 
