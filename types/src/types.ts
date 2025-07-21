@@ -93,18 +93,60 @@ export interface AgentSkill {
 }
 // --8<-- [end:AgentSkill]
 
+// --8<-- [start:TransportProtocol]
+/**
+ * Supported A2A transport protocols.
+ */
+export type TransportProtocol = 
+  | "JSONRPC"   // JSON-RPC 2.0 over HTTP (mandatory)
+  | "GRPC"      // gRPC over HTTP/2 (optional)
+  | "HTTP+JSON" // REST-style HTTP with JSON (optional)
+  | string;     // Allow future extensions
+
+/**
+ * Core A2A transport protocol constants.
+ */
+export const TRANSPORT_PROTOCOLS = {
+  /** JSON-RPC 2.0 over HTTP (mandatory for all A2A agents) */
+  JSONRPC: "JSONRPC" as const,
+  /** gRPC over HTTP/2 (optional) */
+  GRPC: "GRPC" as const,
+  /** REST-style HTTP with JSON (optional) */
+  HTTP_JSON: "HTTP+JSON" as const,
+} as const;
+
+/**
+ * Core transport protocol values that have defined specifications.
+ */
+export const CORE_TRANSPORTS = Object.values(TRANSPORT_PROTOCOLS);
+// --8<-- [end:TransportProtocol]
+
 // --8<-- [start:AgentInterface]
 /**
  * Declares a combination of a target URL and a transport protocol for interacting with the agent.
+ * This allows agents to expose the same functionality over multiple transport mechanisms.
  */
 export interface AgentInterface {
-  /** The URL where this interface is available. */
+  /** 
+   * The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
+   * @TJS-format uri
+   * @TJS-examples ["https://api.example.com/a2a/v1", "https://grpc.example.com/a2a", "https://rest.example.com/v1"]
+   */
   url: string;
   /**
-   * The transport protocol supported at this URL. This is a string to allow for future
-   * extension. Core supported transports include 'JSONRPC', 'GRPC', and 'HTTP+JSON'.
+   * The transport protocol supported at this URL. 
+   * 
+   * Core A2A transports:
+   * - 'JSONRPC': JSON-RPC 2.0 over HTTP (mandatory for compliance)
+   * - 'GRPC': gRPC over HTTP/2 (optional)
+   * - 'HTTP+JSON': REST-style HTTP with JSON (optional)
+   * 
+   * Additional transport protocols may be specified for future extensions,
+   * but must not conflict with core protocol functionality.
+   * 
+   * @TJS-examples ["JSONRPC", "GRPC", "HTTP+JSON"]
    */
-  transport: string;
+  transport: TransportProtocol;
 }
 // --8<-- [end:AgentInterface]
 
@@ -136,9 +178,16 @@ export interface AgentCard {
   /** The preferred endpoint URL for interacting with the agent. */
   url: string;
   /**
-   * The transport protocol for the preferred endpoint. Defaults to 'JSONRPC' if not specified.
+   * The transport protocol for the preferred endpoint (the main 'url' field).
+   * If not specified, defaults to 'JSONRPC' since all agents must support JSON-RPC transport.
+   * 
+   * This field helps clients choose the optimal transport when multiple are available.
+   * The specified transport must correspond to the protocol supported at the main 'url'.
+   * 
+   * @default "JSONRPC"
+   * @TJS-examples ["JSONRPC", "GRPC", "HTTP+JSON"]
    */
-  preferredTransport?: string;
+  preferredTransport?: TransportProtocol;
   /**
    * A list of additional supported interfaces (transport and URL combinations).
    * A client can use any of these to communicate with the agent.

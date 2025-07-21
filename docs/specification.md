@@ -273,11 +273,22 @@ Describes a specific capability, function, or area of expertise the agent can pe
 
 #### 5.5.5. `AgentInterface` Object
 
-Provides a declaration of a combination of the target url and the supported transport to interact with the agent.
+Provides a declaration of a combination of the target URL and the supported transport to interact with the agent. This enables agents to expose the same functionality through multiple transport protocols.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:TransportProtocol"
+```
 
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:AgentInterface"
 ```
+
+The `transport` field **MUST** use one of the core A2A transport protocol values:
+- `"JSONRPC"`: JSON-RPC 2.0 over HTTP (mandatory for all agents)
+- `"GRPC"`: gRPC over HTTP/2 (optional)  
+- `"HTTP+JSON"`: REST-style HTTP with JSON (optional)
+
+Additional transport values **MAY** be used for future extensions, but such extensions **MUST** not conflict with core A2A protocol functionality.
 
 ### 5.6. Sample Agent Card
 
