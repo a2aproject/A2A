@@ -133,7 +133,7 @@
             "description": "The AgentCard is a self-describing manifest for an agent. It provides essential\nmetadata including the agent's identity, capabilities, skills, supported\ncommunication methods, and security requirements.",
             "properties": {
                 "additionalInterfaces": {
-                    "description": "A list of additional supported interfaces (transport and URL combinations).\nA client can use any of these to communicate with the agent.",
+                    "description": "A list of additional supported interfaces (transport and URL combinations).\nThis allows agents to expose multiple transports, potentially at different URLs.\n\nBest practices:\n- SHOULD include all supported transports for completeness\n- SHOULD include an entry matching the main 'url' and 'preferredTransport'\n- MAY reuse URLs if multiple transports are available at the same endpoint\n- MUST accurately declare the transport available at each URL\n\nClients can select any interface from this list based on their transport capabilities\nand preferences. This enables transport negotiation and fallback scenarios.",
                     "items": {
                         "$ref": "#/definitions/AgentInterface"
                     },
@@ -180,7 +180,13 @@
                     "type": "string"
                 },
                 "preferredTransport": {
-                    "description": "The transport protocol for the preferred endpoint. Defaults to 'JSONRPC' if not specified.",
+                    "default": "JSONRPC",
+                    "description": "The transport protocol for the preferred endpoint (the main 'url' field).\nIf not specified, defaults to 'JSONRPC' since all agents must support JSON-RPC transport.\n\nIMPORTANT: The transport specified here MUST be available at the main 'url'.\nThis creates a binding between the main URL and its supported transport protocol.\nClients should prefer this transport and URL combination when both are supported.",
+                    "examples": [
+                        "JSONRPC",
+                        "GRPC",
+                        "HTTP+JSON"
+                    ],
                     "type": "string"
                 },
                 "protocolVersion": {
@@ -224,7 +230,11 @@
                     "type": "boolean"
                 },
                 "url": {
-                    "description": "The preferred endpoint URL for interacting with the agent.",
+                    "description": "The preferred endpoint URL for interacting with the agent.\nThis URL MUST support the transport specified by 'preferredTransport' (or JSON-RPC if preferredTransport is omitted).\nSince JSON-RPC is mandatory, this URL MUST support JSON-RPC either as the primary or one of multiple available transports.",
+                    "examples": [
+                        "https://api.example.com/a2a/v1"
+                    ],
+                    "format": "uri",
                     "type": "string"
                 },
                 "version": {
@@ -282,14 +292,25 @@
             "type": "object"
         },
         "AgentInterface": {
-            "description": "Declares a combination of a target URL and a transport protocol for interacting with the agent.",
+            "description": "Declares a combination of a target URL and a transport protocol for interacting with the agent.\nThis allows agents to expose the same functionality over multiple transport mechanisms.",
             "properties": {
                 "transport": {
-                    "description": "The transport protocol supported at this URL. This is a string to allow for future\nextension. Core supported transports include 'JSONRPC', 'GRPC', and 'HTTP+JSON'.",
+                    "description": "The transport protocol supported at this URL. \n\nCore A2A transports:\n- 'JSONRPC': JSON-RPC 2.0 over HTTP (mandatory for compliance)\n- 'GRPC': gRPC over HTTP/2 (optional)\n- 'HTTP+JSON': REST-style HTTP with JSON (optional)\n\nAdditional transport protocols may be specified for future extensions,\nbut must not conflict with core protocol functionality.",
+                    "examples": [
+                        "JSONRPC",
+                        "GRPC",
+                        "HTTP+JSON"
+                    ],
                     "type": "string"
                 },
                 "url": {
-                    "description": "The URL where this interface is available.",
+                    "description": "The URL where this interface is available. Must be a valid absolute HTTPS URL in production.",
+                    "examples": [
+                        "https://api.example.com/a2a/v1",
+                        "https://grpc.example.com/a2a",
+                        "https://rest.example.com/v1"
+                    ],
+                    "format": "uri",
                     "type": "string"
                 }
             },
@@ -2327,6 +2348,10 @@
                 "text"
             ],
             "type": "object"
+        },
+        "TransportProtocol": {
+            "description": "Supported A2A transport protocols.",
+            "type": "string"
         },
         "UnsupportedOperationError": {
             "description": "An A2A-specific error indicating that the requested operation is not supported by the agent.",
