@@ -57,25 +57,97 @@ A2A revolves around several key concepts. For detailed explanations, please refe
 
 ## 3. Transport and Format
 
-### 3.1. Transport Protocol
+### 3.1. Transport Layer Requirements
+
+A2A supports multiple transport protocols, all operating over **HTTP(S)**:
 
 - A2A communication **MUST** occur over **HTTP(S)**.
-- The A2A Server exposes its service at a URL defined in its `AgentCard`.
+- The A2A Server exposes its service at one or more URLs defined in its `AgentCard`.
 
-### 3.2. Data Format
+### 3.2. Supported Transport Protocols
 
-A2A uses **[JSON-RPC 2.0](https://www.jsonrpc.org/specification)** as the payload format for all requests and responses (excluding the SSE stream wrapper).
+A2A defines three transport protocols:
 
+#### 3.2.1. JSON-RPC 2.0 Transport (Mandatory)
+
+**All A2A-compliant agents MUST support JSON-RPC 2.0 transport.** This is the baseline transport for A2A interoperability.
+
+- The primary data format is **[JSON-RPC 2.0](https://www.jsonrpc.org/specification)** for all requests and responses (excluding SSE stream wrapper).
 - Client requests and server responses **MUST** adhere to the JSON-RPC 2.0 specification.
-- The `Content-Type` header for HTTP requests and responses containing JSON-RPC payloads **MUST** be `application/json`.
+- The `Content-Type` header for HTTP requests and responses **MUST** be `application/json`.
+- Method names follow the pattern `{category}/{action}` (e.g., `"message/send"`, `"tasks/get"`).
+
+#### 3.2.2. gRPC Transport (Optional)
+
+Agents **MAY** support gRPC transport. If implemented, it **MUST** conform to these requirements:
+
+- **Protocol Definition**: **MUST** use the normative Protocol Buffers definition in [`specification/grpc/a2a.proto`](specification/grpc/a2a.proto).
+- **Message Serialization**: **MUST** use Protocol Buffers version 3 for message serialization.
+- **Service Definition**: **MUST** implement the `A2AService` gRPC service as defined in the proto file.
+- **Method Coverage**: **MUST** provide all methods available in JSON-RPC transport with functionally equivalent behavior.
+- **Field Mapping**: **MUST** use the `json_name` annotations for HTTP/JSON transcoding compatibility.
+- **Error Handling**: **MUST** map A2A error codes to appropriate gRPC status codes as defined in the proto annotations.
+- **Transport Security**: **MUST** support TLS encryption (gRPC over HTTP/2 with TLS).
+
+#### 3.2.3. HTTP+JSON/REST Transport (Optional)
+
+Agents **MAY** support REST-style HTTP+JSON transport. If implemented, it **MUST** conform to these requirements:
+
+- **HTTP Methods**: **MUST** use appropriate HTTP verbs (GET for queries, POST for actions, PUT for updates, DELETE for removal).
+- **URL Patterns**: **MUST** follow the URL patterns documented in each method section (e.g., `/v1/message:send`, `/v1/tasks/{id}`).
+- **Content-Type**: **MUST** use `application/json` for request and response bodies.
+- **HTTP Status Codes**: **MUST** use appropriate HTTP status codes (200, 400, 401, 403, 404, 500, etc.) that correspond to A2A error types.
+- **Request/Response Format**: **MUST** use JSON objects that are structurally equivalent to the JSON-RPC `params` and `result` objects.
+- **Method Coverage**: **MUST** provide all methods available in JSON-RPC transport with functionally equivalent behavior.
+- **Error Format**: **MUST** return error responses in a consistent JSON format that maps to A2A error types.
 
 ### 3.3. Streaming Transport (Server-Sent Events)
+
+Streaming capabilities are **transport-specific**:
+
+#### 3.3.1. JSON-RPC 2.0 Streaming
 
 When streaming is used for methods like `message/stream` or `tasks/resubscribe`:
 
 - The server responds with an HTTP `200 OK` status and a `Content-Type` header of `text/event-stream`.
 - The body of this HTTP response contains a stream of **[Server-Sent Events (SSE)](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events)** as defined by the W3C.
 - Each SSE `data` field contains a complete JSON-RPC 2.0 Response object (specifically, a [`SendStreamingMessageResponse`](#721-sendstreamingmessageresponse-object)).
+
+#### 3.3.2. gRPC Streaming
+
+gRPC transport uses **server streaming RPCs** for streaming operations as defined in the Protocol Buffers specification.
+
+#### 3.3.3. HTTP+JSON/REST Streaming
+
+If REST transport is supported it **MUST** implement streaming using Server-Sent Events similar to JSON-RPC.
+
+### 3.4. Transport Compliance and Interoperability
+
+#### 3.4.1. Functional Equivalence Requirements
+
+When an agent supports multiple transports, all supported transports **MUST**:
+
+- **Identical Functionality**: Provide the same set of operations and capabilities.
+- **Consistent Behavior**: Return semantically equivalent results for the same requests.
+- **Same Error Handling**: Map errors consistently across transports using the error codes defined in [Section 8](#8-error-handling).
+- **Equivalent Authentication**: Support the same authentication schemes declared in the `AgentCard`.
+
+#### 3.4.2. Transport Selection and Negotiation
+
+- **Agent Declaration**: Agents **MUST** declare all supported transports in their `AgentCard` using the `preferredTransport` and `additionalInterfaces` fields.
+- **Client Choice**: Clients **MAY** choose any transport declared by the agent.
+- **No Transport Negotiation**: A2A does not define a dynamic transport negotiation protocol. Clients select a transport based on the static `AgentCard` information.
+- **Fallback Behavior**: Clients **SHOULD** implement fallback to JSON-RPC transport if their preferred transport fails.
+
+#### 3.4.3. Transport-Specific Extensions
+
+Transports **MAY** provide transport-specific optimizations or extensions that do not compromise functional equivalence:
+
+- **gRPC**: May leverage gRPC-specific features like bidirectional streaming, metadata, or custom status codes.
+- **REST**: May provide additional HTTP caching headers or support HTTP conditional requests.
+- **JSON-RPC**: May include additional fields in the JSON-RPC request/response objects that do not conflict with the core specification.
+
+Such extensions **MUST** be backward-compatible and **MUST NOT** break interoperability with clients that do not support the extensions.
 
 ## 4. Authentication and Authorization
 
