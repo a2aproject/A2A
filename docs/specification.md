@@ -290,7 +290,41 @@ The `transport` field **MUST** use one of the core A2A transport protocol values
 
 Additional transport values **MAY** be used for future extensions, but such extensions **MUST** not conflict with core A2A protocol functionality.
 
-### 5.6. Sample Agent Card
+### 5.6. Transport Declaration and URL Relationships
+
+The AgentCard **MUST** properly declare the relationship between URLs and transport protocols:
+
+#### 5.6.1. Main URL and Preferred Transport
+
+- **Main URL requirement**: The `url` field **MUST** specify the primary endpoint for the agent.
+- **Transport correspondence**: The transport protocol available at the main `url` **MUST** match the `preferredTransport` field (or default to "JSONRPC" if `preferredTransport` is omitted).
+- **JSON-RPC guarantee**: Since JSON-RPC is mandatory for all agents, the main `url` **MUST** support JSON-RPC transport, either as the primary protocol or as one of multiple protocols available at that endpoint.
+
+#### 5.6.2. Additional Interfaces
+
+- **URL uniqueness**: Each `AgentInterface` in `additionalInterfaces` **SHOULD** specify a distinct URL for clarity, but **MAY** reuse URLs if multiple transport protocols are available at the same endpoint.
+- **Transport declaration**: Each `AgentInterface` **MUST** accurately declare the transport protocol available at its specified URL.
+- **Completeness**: The `additionalInterfaces` array **SHOULD** include all supported transports, including the main URL's transport for completeness.
+
+#### 5.6.3. Client Transport Selection Rules
+
+Clients **MUST** follow these rules when selecting a transport:
+
+1. **Parse transport declarations**: Extract available transports from both the main `url`/`preferredTransport` combination and all `additionalInterfaces`.
+2. **Prefer declared preference**: If the client supports the `preferredTransport`, it **SHOULD** use the main `url`.
+3. **Fallback selection**: If the preferred transport is not supported by the client, it **MAY** select any supported transport from `additionalInterfaces`.
+4. **JSON-RPC fallback**: Clients **SHOULD** implement JSON-RPC as a fallback transport since it is mandatory for all agents.
+5. **URL-transport matching**: Clients **MUST** use the correct URL for the selected transport protocol as declared in the AgentCard.
+
+#### 5.6.4. Validation Requirements
+
+Agent Cards **MUST** satisfy these validation requirements:
+
+- **Transport consistency**: The `preferredTransport` value (or "JSONRPC" if omitted) **MUST** be available at the main `url`.
+- **Interface completeness**: If `additionalInterfaces` is provided, it **SHOULD** include an entry corresponding to the main `url` and `preferredTransport`.
+- **No conflicts**: The same URL **MUST NOT** declare conflicting transport protocols across different interface declarations.
+
+### 5.7. Sample Agent Card
 
 ```json
 {
@@ -1804,7 +1838,7 @@ For an agent to be considered **A2A-compliant**, it **MUST**:
 #### 11.1.1. Mandatory Transport Support
 - **Support JSON-RPC 2.0 transport**: All agents **MUST** implement JSON-RPC 2.0 over HTTP(S) as defined in [Section 3.2.1](#321-json-rpc-20-transport-mandatory).
 - **Expose Agent Card**: **MUST** provide a valid `AgentCard` document as defined in [Section 5](#5-agent-discovery-the-agent-card).
-- **Declare transport capabilities**: **MUST** accurately declare all supported transports in the `AgentCard` using `preferredTransport` and `additionalInterfaces` fields.
+- **Declare transport capabilities**: **MUST** accurately declare all supported transports in the `AgentCard` using `preferredTransport` and `additionalInterfaces` fields following the requirements in [Section 5.6](#56-transport-declaration-and-url-relationships).
 
 #### 11.1.2. Core Method Implementation
 **MUST** implement all of the following core methods via JSON-RPC 2.0 transport:
@@ -1840,7 +1874,7 @@ For a client to be considered **A2A-compliant**, it **MUST**:
 #### 11.2.1. Transport Support
 - **JSON-RPC client**: **MUST** be able to communicate with agents using JSON-RPC 2.0 over HTTP(S).
 - **Agent Card processing**: **MUST** be able to parse and interpret `AgentCard` documents.
-- **Transport selection**: **MUST** be able to select an appropriate transport from the agent's declared capabilities.
+- **Transport selection**: **MUST** be able to select an appropriate transport from the agent's declared capabilities following the rules defined in [Section 5.6.3](#563-client-transport-selection-rules).
 
 #### 11.2.2. Protocol Implementation
 - **Core method usage**: **MUST** properly construct requests for at least `message/send` and `tasks/get` methods.

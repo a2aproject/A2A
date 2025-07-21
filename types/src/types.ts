@@ -175,14 +175,22 @@ export interface AgentCard {
    * @TJS-examples ["Agent that helps users with recipes and cooking."]
    */
   description: string;
-  /** The preferred endpoint URL for interacting with the agent. */
+  /** 
+   * The preferred endpoint URL for interacting with the agent.
+   * This URL MUST support the transport specified by 'preferredTransport' (or JSON-RPC if preferredTransport is omitted).
+   * Since JSON-RPC is mandatory, this URL MUST support JSON-RPC either as the primary or one of multiple available transports.
+   * 
+   * @TJS-format uri
+   * @TJS-examples ["https://api.example.com/a2a/v1"]
+   */
   url: string;
   /**
    * The transport protocol for the preferred endpoint (the main 'url' field).
    * If not specified, defaults to 'JSONRPC' since all agents must support JSON-RPC transport.
    * 
-   * This field helps clients choose the optimal transport when multiple are available.
-   * The specified transport must correspond to the protocol supported at the main 'url'.
+   * IMPORTANT: The transport specified here MUST be available at the main 'url'.
+   * This creates a binding between the main URL and its supported transport protocol.
+   * Clients should prefer this transport and URL combination when both are supported.
    * 
    * @default "JSONRPC"
    * @TJS-examples ["JSONRPC", "GRPC", "HTTP+JSON"]
@@ -190,7 +198,16 @@ export interface AgentCard {
   preferredTransport?: TransportProtocol;
   /**
    * A list of additional supported interfaces (transport and URL combinations).
-   * A client can use any of these to communicate with the agent.
+   * This allows agents to expose multiple transports, potentially at different URLs.
+   * 
+   * Best practices:
+   * - SHOULD include all supported transports for completeness
+   * - SHOULD include an entry matching the main 'url' and 'preferredTransport'
+   * - MAY reuse URLs if multiple transports are available at the same endpoint
+   * - MUST accurately declare the transport available at each URL
+   * 
+   * Clients can select any interface from this list based on their transport capabilities
+   * and preferences. This enables transport negotiation and fallback scenarios.
    */
   additionalInterfaces?: AgentInterface[];
   /** An optional URL to an icon for the agent. */
