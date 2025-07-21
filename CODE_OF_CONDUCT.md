@@ -69,7 +69,7 @@ dispute. If you are unable to resolve the matter for any reason, or if the
 behavior is threatening or harassing, report it. We are dedicated to providing
 an environment where participants feel welcome and safe.
 
-Reports should be directed to a2a-coc@googlegroups.com, the
+Reports should be directed to [a2a-coc@googlegroups.com](mailto:a2a-coc@googlegroups.com), the
 Project Steward(s) for A2A. It is the Project Steward’s duty to
 receive and address reported violations of the code of conduct. They will then
 work with a committee consisting of representatives from the A2A project and leadership. 
