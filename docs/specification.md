@@ -149,6 +149,103 @@ Transports **MAY** provide transport-specific optimizations or extensions that d
 
 Such extensions **MUST** be backward-compatible and **MUST NOT** break interoperability with clients that do not support the extensions.
 
+### 3.5. Method Mapping and Naming Conventions
+
+To ensure consistency and predictability across different transports, A2A defines normative method mapping rules.
+
+#### 3.5.1. JSON-RPC Method Naming
+
+JSON-RPC methods **MUST** follow the pattern: `{category}/{action}` where:
+- `category` represents the resource type (e.g., "message", "tasks", "agent")
+- `action` represents the operation (e.g., "send", "get", "cancel")
+- Nested actions use forward slashes (e.g., "tasks/pushNotificationConfig/set")
+
+**Standard JSON-RPC methods:**
+- `message/send` - Send a message to initiate or continue a task
+- `message/stream` - Send a message with streaming response  
+- `tasks/get` - Retrieve task status and results
+- `tasks/cancel` - Cancel a task
+- `tasks/resubscribe` - Resume streaming for a task
+- `tasks/pushNotificationConfig/set` - Configure push notifications
+- `tasks/pushNotificationConfig/get` - Get push notification config
+- `tasks/pushNotificationConfig/list` - List push notification configs
+- `tasks/pushNotificationConfig/delete` - Delete push notification config
+- `agent/authenticatedExtendedCard` - Get authenticated agent card
+
+#### 3.5.2. gRPC Method Naming
+
+gRPC methods **MUST** follow Protocol Buffers service conventions using PascalCase:
+- Convert JSON-RPC category/action to PascalCase compound words
+- Use standard gRPC method prefixes (Get, Set, List, Create, Delete, Cancel)
+
+**Method mapping from JSON-RPC to gRPC:**
+- `message/send` → `SendMessage`
+- `message/stream` → `SendStreamingMessage`
+- `tasks/get` → `GetTask`
+- `tasks/list` → `ListTask` (gRPC-only method)
+- `tasks/cancel` → `CancelTask`
+- `tasks/resubscribe` → `TaskSubscription`
+- `tasks/pushNotificationConfig/set` → `CreateTaskPushNotification`
+- `tasks/pushNotificationConfig/get` → `GetTaskPushNotification`
+- `tasks/pushNotificationConfig/list` → `ListTaskPushNotification`
+- `tasks/pushNotificationConfig/delete` → `DeleteTaskPushNotification`
+- `agent/authenticatedExtendedCard` → `GetAgentCard`
+
+#### 3.5.3. HTTP+JSON/REST Method Naming
+
+REST endpoints **MUST** follow RESTful URL patterns with appropriate HTTP verbs:
+- Use resource-based URLs: `/v1/{resource}[/{id}][:{action}]`
+- Use standard HTTP methods aligned with REST semantics
+- Use colon notation for non-CRUD actions
+
+**Method mapping from JSON-RPC to REST:**
+- `message/send` → `POST /v1/message:send`
+- `message/stream` → `POST /v1/message:stream`
+- `tasks/get` → `GET /v1/tasks/{id}?historyLength={historyLength}`
+- `tasks/list` → `GET /v1/tasks`
+- `tasks/cancel` → `POST /v1/tasks/{id}:cancel`
+- `tasks/resubscribe` → `POST /v1/tasks/{id}:subscribe`
+- `tasks/pushNotificationConfig/set` → `POST /v1/tasks/{id}/pushNotificationConfigs`
+- `tasks/pushNotificationConfig/get` → `GET /v1/tasks/{taskId}/pushNotificationConfigs/{configId}`
+- `tasks/pushNotificationConfig/list` → `GET /v1/tasks/{id}/pushNotificationConfigs`
+- `tasks/pushNotificationConfig/delete` → `DELETE /v1/tasks/{taskId}/pushNotificationConfigs/{configId}`
+- `agent/authenticatedExtendedCard` → `GET /v1/card`
+
+#### 3.5.4. Method Mapping Compliance
+
+When implementing multiple transports, agents **MUST**:
+- **Use standard mappings**: Follow the method mappings defined in sections 3.5.2 and 3.5.3.
+- **Maintain functional equivalence**: Each transport-specific method **MUST** provide identical functionality to its JSON-RPC equivalent.
+- **Consistent parameters**: Use equivalent parameter structures across transports (accounting for transport-specific serialization differences).
+- **Equivalent responses**: Return semantically equivalent responses across all transports for the same operation.
+
+#### 3.5.5. Extension Method Naming
+
+For custom or extension methods not defined in the core A2A specification:
+- **JSON-RPC**: Follow the `{category}/{action}` pattern with a clear namespace (e.g., `myorg.extension/action`)
+- **gRPC**: Use appropriate service and method names following Protocol Buffers conventions
+- **REST**: Use clear resource-based URLs with appropriate HTTP methods
+
+Extension methods **MUST** be clearly documented and **MUST NOT** conflict with core A2A method names or semantics.
+
+#### 3.5.6. Method Mapping Reference Table
+
+For quick reference, the following table summarizes the method mappings across all transports:
+
+| JSON-RPC Method | gRPC Method | REST Endpoint | Description |
+|:----------------|:------------|:--------------|:------------|
+| `message/send` | `SendMessage` | `POST /v1/message:send` | Send message to agent |
+| `message/stream` | `SendStreamingMessage` | `POST /v1/message:stream` | Send message with streaming |
+| `tasks/get` | `GetTask` | `GET /v1/tasks/{id}` | Get task status |
+| `tasks/list` | `ListTask` | `GET /v1/tasks` | List tasks (gRPC/REST only) |
+| `tasks/cancel` | `CancelTask` | `POST /v1/tasks/{id}:cancel` | Cancel task |
+| `tasks/resubscribe` | `TaskSubscription` | `POST /v1/tasks/{id}:subscribe` | Resume task streaming |
+| `tasks/pushNotificationConfig/set` | `CreateTaskPushNotification` | `POST /v1/tasks/{id}/pushNotificationConfigs` | Set push notification config |
+| `tasks/pushNotificationConfig/get` | `GetTaskPushNotification` | `GET /v1/tasks/{taskId}/pushNotificationConfigs/{configId}` | Get push notification config |
+| `tasks/pushNotificationConfig/list` | `ListTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs` | List push notification configs |
+| `tasks/pushNotificationConfig/delete` | `DeleteTaskPushNotification` | `DELETE /v1/tasks/{taskId}/pushNotificationConfigs/{configId}` | Delete push notification config |
+| `agent/authenticatedExtendedCard` | `GetAgentCard` | `GET /v1/card` | Get authenticated agent card |
+
 ## 4. Authentication and Authorization
 
 A2A treats agents as standard enterprise applications, relying on established web security practices. Identity information is **not** transmitted within A2A JSON-RPC payloads; it is handled at the HTTP transport layer.
@@ -1861,6 +1958,7 @@ If an agent supports additional transports (gRPC, HTTP+JSON), it **MUST**:
 - **Functional equivalence**: Provide identical functionality across all supported transports.
 - **Consistent behavior**: Return semantically equivalent results for the same operations.
 - **Transport-specific requirements**: Conform to all requirements defined in [Section 3.2](#32-supported-transport-protocols) for each supported transport.
+- **Method mapping compliance**: Use the standard method mappings defined in [Section 3.5](#35-method-mapping-and-naming-conventions) for all supported transports.
 
 #### 11.1.5. Data Format Compliance
 - **JSON-RPC structure**: **MUST** use valid JSON-RPC 2.0 request/response objects as defined in [Section 6.11](#611-json-rpc-structures).
@@ -1892,6 +1990,7 @@ Clients **MAY** implement:
 
 Implementations **SHOULD** validate compliance through:
 - **Transport interoperability**: Test communication with agents using different transport implementations.
+- **Method mapping verification**: Verify that all supported transports use the correct method names and URL patterns as defined in [Section 3.5](#35-method-mapping-and-naming-conventions).
 - **Error handling**: Verify proper handling of all defined error conditions.
 - **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](types/src/types.ts).
 - **Multi-transport consistency**: For multi-transport agents, verify functional equivalence across all supported transports.
