@@ -161,39 +161,12 @@ JSON-RPC methods **MUST** follow the pattern: `{category}/{action}` where:
 - `action` represents the operation (e.g., "send", "get", "cancel")
 - Nested actions use forward slashes (e.g., "tasks/pushNotificationConfig/set")
 
-**Standard JSON-RPC methods:**
-
-- `message/send` - Send a message to initiate or continue a task
-- `message/stream` - Send a message with streaming response
-- `tasks/get` - Retrieve task status and results
-- `tasks/cancel` - Cancel a task
-- `tasks/resubscribe` - Resume streaming for a task
-- `tasks/pushNotificationConfig/set` - Configure push notifications
-- `tasks/pushNotificationConfig/get` - Get push notification config
-- `tasks/pushNotificationConfig/list` - List push notification configs
-- `tasks/pushNotificationConfig/delete` - Delete push notification config
-- `agent/authenticatedExtendedCard` - Get authenticated agent card
-
 #### 3.5.2. gRPC Method Naming
 
 gRPC methods **MUST** follow Protocol Buffers service conventions using PascalCase:
 
 - Convert JSON-RPC category/action to PascalCase compound words
 - Use standard gRPC method prefixes (Get, Set, List, Create, Delete, Cancel)
-
-**Method mapping from JSON-RPC to gRPC:**
-
-- `message/send` → `SendMessage`
-- `message/stream` → `SendStreamingMessage`
-- `tasks/get` → `GetTask`
-- `tasks/list` → `ListTask` (gRPC-only method)
-- `tasks/cancel` → `CancelTask`
-- `tasks/resubscribe` → `TaskSubscription`
-- `tasks/pushNotificationConfig/set` → `CreateTaskPushNotification`
-- `tasks/pushNotificationConfig/get` → `GetTaskPushNotification`
-- `tasks/pushNotificationConfig/list` → `ListTaskPushNotification`
-- `tasks/pushNotificationConfig/delete` → `DeleteTaskPushNotification`
-- `agent/authenticatedExtendedCard` → `GetAgentCard`
 
 #### 3.5.3. HTTP+JSON/REST Method Naming
 
@@ -202,20 +175,6 @@ REST endpoints **MUST** follow RESTful URL patterns with appropriate HTTP verbs:
 - Use resource-based URLs: `/v1/{resource}[/{id}][:{action}]`
 - Use standard HTTP methods aligned with REST semantics
 - Use colon notation for non-CRUD actions
-
-**Method mapping from JSON-RPC to REST:**
-
-- `message/send` → `POST /v1/message:send`
-- `message/stream` → `POST /v1/message:stream`
-- `tasks/get` → `GET /v1/tasks/{id}?historyLength={historyLength}`
-- `tasks/list` → `GET /v1/tasks`
-- `tasks/cancel` → `POST /v1/tasks/{id}:cancel`
-- `tasks/resubscribe` → `POST /v1/tasks/{id}:subscribe`
-- `tasks/pushNotificationConfig/set` → `POST /v1/tasks/{id}/pushNotificationConfigs`
-- `tasks/pushNotificationConfig/get` → `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}`
-- `tasks/pushNotificationConfig/list` → `GET /v1/tasks/{id}/pushNotificationConfigs`
-- `tasks/pushNotificationConfig/delete` → `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}`
-- `agent/authenticatedExtendedCard` → `GET /v1/card`
 
 #### 3.5.4. Method Mapping Compliance
 
