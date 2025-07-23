@@ -575,7 +575,10 @@ message PasswordOAuthFlow {
 
 ///////////// Request Messages ///////////
 message SendMessageRequest {
-  Message request = 1 [(google.api.field_behavior) = REQUIRED];
+  Message request = 1 [
+      (google.api.field_behavior) = REQUIRED,
+      json_name="message"
+  ];
   SendMessageConfiguration configuration = 2;
   google.protobuf.Struct metadata = 3;
 }
