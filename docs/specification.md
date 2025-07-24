@@ -74,7 +74,7 @@ A2A defines three transport protocols:
 
 - The primary data format is **[JSON-RPC 2.0](https://www.jsonrpc.org/specification)** for all requests and responses (excluding SSE stream wrapper).
 - Client requests and server responses **MUST** adhere to the JSON-RPC 2.0 specification.
-- The `Content-Type` header for HTTP requests and responses **MUST** be `application/json`.
+- The `Content-Type` header for HTTP requests and responses containing JSON-RPC payloads **MUST** be `application/json`.
 - Method names follow the pattern `{category}/{action}` (e.g., `"message/send"`, `"tasks/get"`).
 
 #### 3.2.2. gRPC Transport (Optional)
