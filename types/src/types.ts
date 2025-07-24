@@ -97,28 +97,11 @@ export interface AgentSkill {
 /**
  * Supported A2A transport protocols.
  */
-export type TransportProtocol =
-  | "JSONRPC" // JSON-RPC 2.0 over HTTP (mandatory)
-  | "GRPC" // gRPC over HTTP/2 (optional)
-  | "HTTP+JSON" // REST-style HTTP with JSON (optional)
-  | string; // Allow future extensions
-
-/**
- * Core A2A transport protocol constants.
- */
-export const TRANSPORT_PROTOCOLS = {
-  /** JSON-RPC 2.0 over HTTP (mandatory for all A2A agents) */
-  JSONRPC: "JSONRPC" as const,
-  /** gRPC over HTTP/2 (optional) */
-  GRPC: "GRPC" as const,
-  /** REST-style HTTP with JSON (optional) */
-  HTTP_JSON: "HTTP+JSON" as const,
-} as const;
-
-/**
- * Core transport protocol values that have defined specifications.
- */
-export const CORE_TRANSPORTS = Object.values(TRANSPORT_PROTOCOLS);
+export enum TransportProtocol {
+  JSONRPC = "JSONRPC",  // JSON-RPC 2.0 over HTTP (mandatory)
+  GRPC = "GRPC",  // gRPC over HTTP/2 (optional)
+  HTTP_JSON = "HTTP+JSON",  // REST-style HTTP with JSON (optional)
+}
 // --8<-- [end:TransportProtocol]
 
 // --8<-- [start:AgentInterface]
@@ -146,7 +129,7 @@ export interface AgentInterface {
    *
    * @TJS-examples ["JSONRPC", "GRPC", "HTTP+JSON"]
    */
-  transport: TransportProtocol;
+  transport: TransportProtocol | string;
 }
 // --8<-- [end:AgentInterface]
 
@@ -195,7 +178,7 @@ export interface AgentCard {
    * @default "JSONRPC"
    * @TJS-examples ["JSONRPC", "GRPC", "HTTP+JSON"]
    */
-  preferredTransport?: TransportProtocol;
+  preferredTransport?: TransportProtocol | string;
   /**
    * A list of additional supported interfaces (transport and URL combinations).
    * This allows agents to expose multiple transports, potentially at different URLs.
