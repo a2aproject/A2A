@@ -1003,7 +1003,7 @@ Retrieves the associated push notification configurations for a specified task. 
 A object for fetching the push notification configurations for a task.
 
 ```ts { .no-copy }
---8<-- "types/src/types.ts:ListTaskPushNotificationConfigRequest"
+--8<-- "types/src/types.ts:ListTaskPushNotificationConfigParams"
 ```
 
 ### 7.8. `tasks/pushNotificationConfig/delete`

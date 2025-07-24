@@ -119,14 +119,6 @@ export interface AgentInterface {
   /**
    * The transport protocol supported at this URL.
    *
-   * Core A2A transports:
-   * - 'JSONRPC': JSON-RPC 2.0 over HTTP (mandatory for compliance)
-   * - 'GRPC': gRPC over HTTP/2 (optional)
-   * - 'HTTP+JSON': REST-style HTTP with JSON (optional)
-   *
-   * Additional transport protocols may be specified for future extensions,
-   * but must not conflict with core protocol functionality.
-   *
    * @TJS-examples ["JSONRPC", "GRPC", "HTTP+JSON"]
    */
   transport: TransportProtocol | string;
@@ -160,8 +152,7 @@ export interface AgentCard {
   description: string;
   /**
    * The preferred endpoint URL for interacting with the agent.
-   * This URL MUST support the transport specified by 'preferredTransport' (or JSON-RPC if preferredTransport is omitted).
-   * Since JSON-RPC is mandatory, this URL MUST support JSON-RPC either as the primary or one of multiple available transports.
+   * This URL MUST support the transport specified by 'preferredTransport'.
    *
    * @TJS-format uri
    * @TJS-examples ["https://api.example.com/a2a/v1"]
@@ -169,7 +160,7 @@ export interface AgentCard {
   url: string;
   /**
    * The transport protocol for the preferred endpoint (the main 'url' field).
-   * If not specified, defaults to 'JSONRPC' since all agents must support JSON-RPC transport.
+   * If not specified, defaults to 'JSONRPC'.
    *
    * IMPORTANT: The transport specified here MUST be available at the main 'url'.
    * This creates a binding between the main URL and its supported transport protocol.

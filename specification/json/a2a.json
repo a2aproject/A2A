@@ -181,7 +181,7 @@
                 },
                 "preferredTransport": {
                     "default": "JSONRPC",
-                    "description": "The transport protocol for the preferred endpoint (the main 'url' field).\nIf not specified, defaults to 'JSONRPC' since all agents must support JSON-RPC transport.\n\nIMPORTANT: The transport specified here MUST be available at the main 'url'.\nThis creates a binding between the main URL and its supported transport protocol.\nClients should prefer this transport and URL combination when both are supported.",
+                    "description": "The transport protocol for the preferred endpoint (the main 'url' field).\nIf not specified, defaults to 'JSONRPC'.\n\nIMPORTANT: The transport specified here MUST be available at the main 'url'.\nThis creates a binding between the main URL and its supported transport protocol.\nClients should prefer this transport and URL combination when both are supported.",
                     "examples": [
                         "JSONRPC",
                         "GRPC",
@@ -230,7 +230,7 @@
                     "type": "boolean"
                 },
                 "url": {
-                    "description": "The preferred endpoint URL for interacting with the agent.\nThis URL MUST support the transport specified by 'preferredTransport' (or JSON-RPC if preferredTransport is omitted).\nSince JSON-RPC is mandatory, this URL MUST support JSON-RPC either as the primary or one of multiple available transports.",
+                    "description": "The preferred endpoint URL for interacting with the agent.\nThis URL MUST support the transport specified by 'preferredTransport'.",
                     "examples": [
                         "https://api.example.com/a2a/v1"
                     ],
@@ -295,7 +295,7 @@
             "description": "Declares a combination of a target URL and a transport protocol for interacting with the agent.\nThis allows agents to expose the same functionality over multiple transport mechanisms.",
             "properties": {
                 "transport": {
-                    "description": "The transport protocol supported at this URL.\n\nCore A2A transports:\n- 'JSONRPC': JSON-RPC 2.0 over HTTP (mandatory for compliance)\n- 'GRPC': gRPC over HTTP/2 (optional)\n- 'HTTP+JSON': REST-style HTTP with JSON (optional)\n\nAdditional transport protocols may be specified for future extensions,\nbut must not conflict with core protocol functionality.",
+                    "description": "The transport protocol supported at this URL.",
                     "examples": [
                         "JSONRPC",
                         "GRPC",
