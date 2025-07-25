@@ -55,6 +55,199 @@ export interface AgentExtension {
 }
 // --8<-- [end:AgentExtension]
 
+// --8<-- [start:SecurityScheme]
+/**
+ * Defines a security scheme that can be used to secure an agent's endpoints.
+ * This is a discriminated union type based on the OpenAPI 3.0 Security Scheme Object.
+ *
+ * @see {@link https://swagger.io/specification/#security-scheme-object}
+ */
+export type SecurityScheme =
+  | APIKeySecurityScheme
+  | HTTPAuthSecurityScheme
+  | OAuth2SecurityScheme
+  | OpenIdConnectSecurityScheme;
+// --8<-- [end:SecurityScheme]
+
+// --8<-- [start:SecuritySchemeBase]
+/**
+ * Defines base properties shared by all security scheme objects.
+ */
+export interface SecuritySchemeBase {
+  /** An optional description for the security scheme. */
+  description?: string;
+}
+// --8<-- [end:SecuritySchemeBase]
+
+// --8<-- [start:APIKeySecurityScheme]
+/**
+ * Defines a security scheme using an API key.
+ */
+export interface APIKeySecurityScheme extends SecuritySchemeBase {
+  /** The type of the security scheme. Must be 'apiKey'. */
+  readonly type: "apiKey";
+  /** The location of the API key. */
+  readonly in: "query" | "header" | "cookie";
+  /** The name of the header, query, or cookie parameter to be used. */
+  name: string;
+}
+// --8<-- [end:APIKeySecurityScheme]
+
+// --8<-- [start:HTTPAuthSecurityScheme]
+/**
+ * Defines a security scheme using HTTP authentication.
+ */
+export interface HTTPAuthSecurityScheme extends SecuritySchemeBase {
+  /** The type of the security scheme. Must be 'http'. */
+  readonly type: "http";
+  /**
+   * The name of the HTTP Authentication scheme to be used in the Authorization header,
+   * as defined in RFC7235 (e.g., "Bearer").
+   * This value should be registered in the IANA Authentication Scheme registry.
+   */
+  scheme: string;
+  /**
+   * A hint to the client to identify how the bearer token is formatted (e.g., "JWT").
+   * This is primarily for documentation purposes.
+   */
+  bearerFormat?: string;
+}
+// --8<-- [end:HTTPAuthSecurityScheme]
+
+// --8<-- [start:OAuth2SecurityScheme]
+/**
+ * Defines a security scheme using OAuth 2.0.
+ */
+export interface OAuth2SecurityScheme extends SecuritySchemeBase {
+  /** The type of the security scheme. Must be 'oauth2'. */
+  readonly type: "oauth2";
+  /** An object containing configuration information for the supported OAuth 2.0 flows. */
+  flows: OAuthFlows;
+}
+// --8<-- [end:OAuth2SecurityScheme]
+
+// --8<-- [start:OpenIdConnectSecurityScheme]
+/**
+ * Defines a security scheme using OpenID Connect.
+ */
+export interface OpenIdConnectSecurityScheme extends SecuritySchemeBase {
+  /** The type of the security scheme. Must be 'openIdConnect'. */
+  readonly type: "openIdConnect";
+  /**
+   * The OpenID Connect Discovery URL for the OIDC provider's metadata.
+   * @see {@link https://openid.net/specs/openid-connect-discovery-1_0.html}
+   */
+  openIdConnectUrl: string;
+}
+// --8<-- [end:OpenIdConnectSecurityScheme]
+
+// --8<-- [start:OAuthFlows]
+/**
+ * Defines the configuration for the supported OAuth 2.0 flows.
+ */
+export interface OAuthFlows {
+  /** Configuration for the OAuth Authorization Code flow. Previously called accessCode in OpenAPI 2.0. */
+  authorizationCode?: AuthorizationCodeOAuthFlow;
+  /** Configuration for the OAuth Client Credentials flow. Previously called application in OpenAPI 2.0. */
+  clientCredentials?: ClientCredentialsOAuthFlow;
+  /** Configuration for the OAuth Implicit flow. */
+  implicit?: ImplicitOAuthFlow;
+  /** Configuration for the OAuth Resource Owner Password flow. */
+  password?: PasswordOAuthFlow;
+}
+// --8<-- [end:OAuthFlows]
+
+// --8<-- [start:AuthorizationCodeOAuthFlow]
+/**
+ * Defines configuration details for the OAuth 2.0 Authorization Code flow.
+ */
+export interface AuthorizationCodeOAuthFlow {
+  /**
+   * The authorization URL to be used for this flow.
+   * This MUST be a URL and use TLS.
+   */
+  authorizationUrl: string;
+  /**
+   * The token URL to be used for this flow.
+   * This MUST be a URL and use TLS.
+   */
+  tokenUrl: string;
+  /**
+   * The URL to be used for obtaining refresh tokens.
+   * This MUST be a URL and use TLS.
+   */
+  refreshUrl?: string;
+  /**
+   * The available scopes for the OAuth2 security scheme. A map between the scope
+   * name and a short description for it.
+   */
+  scopes: { [name: string]: string };
+}
+// --8<-- [end:AuthorizationCodeOAuthFlow]
+
+// --8<-- [start:ClientCredentialsOAuthFlow]
+/**
+ * Defines configuration details for the OAuth 2.0 Client Credentials flow.
+ */
+export interface ClientCredentialsOAuthFlow {
+  /**
+   * The token URL to be used for this flow. This MUST be a URL.
+   */
+  tokenUrl: string;
+  /**
+   * The URL to be used for obtaining refresh tokens. This MUST be a URL.
+   */
+  refreshUrl?: string;
+  /**
+   * The available scopes for the OAuth2 security scheme. A map between the scope
+   * name and a short description for it.
+   */
+  scopes: { [name: string]: string };
+}
+// --8<-- [end:ClientCredentialsOAuthFlow]
+
+// --8<-- [start:ImplicitOAuthFlow]
+/**
+ * Defines configuration details for the OAuth 2.0 Implicit flow.
+ */
+export interface ImplicitOAuthFlow {
+  /**
+   * The authorization URL to be used for this flow. This MUST be a URL.
+   */
+  authorizationUrl: string;
+  /**
+   * The URL to be used for obtaining refresh tokens. This MUST be a URL.
+   */
+  refreshUrl?: string;
+  /**
+   * The available scopes for the OAuth2 security scheme. A map between the scope
+   * name and a short description for it.
+   */
+  scopes: { [name: string]: string };
+}
+// --8<-- [end:ImplicitOAuthFlow]
+
+// --8<-- [start:PasswordOAuthFlow]
+/**
+ * Defines configuration details for the OAuth 2.0 Resource Owner Password flow.
+ */
+export interface PasswordOAuthFlow {
+  /**
+   * The token URL to be used for this flow. This MUST be a URL.
+   */
+  tokenUrl: string;
+  /**
+   * The URL to be used for obtaining refresh tokens. This MUST be a URL.
+   */
+  refreshUrl?: string;
+  /**
+   * The available scopes for the OAuth2 security scheme. A map between the scope
+   * name and a short description for it.
+   */
+  scopes: { [name: string]: string };
+}
+// --8<-- [end:PasswordOAuthFlow]
+
 // --8<-- [start:AgentSkill]
 /**
  * Represents a distinct capability or function that an agent can perform.
@@ -123,6 +316,24 @@ export interface AgentInterface {
   transport: TransportProtocol | string;
 }
 // --8<-- [end:AgentInterface]
+
+// --8<-- [start:AgentCardSignature]
+/**
+ * AgentCardSignature represents a JWS signature of an AgentCard.
+ * This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
+ */
+export interface AgentCardSignature {
+  /**
+   * The protected JWS header for the signature. This is a Base64url-encoded
+   * JSON object, as per RFC 7515.
+   */
+  protected: string;
+  /** The computed signature, Base64url-encoded. */
+  signature: string;
+  /** The unprotected JWS header values. */
+  header?: { [key: string]: any };
+}
+// --8<-- [end:AgentCardSignature]
 
 // --8<-- [start:AgentCard]
 /**
@@ -223,6 +434,8 @@ export interface AgentCard {
    * to authenticated users. Defaults to false.
    */
   supportsAuthenticatedExtendedCard?: boolean;
+  /** JSON Web Signatures computed for this AgentCard. */
+  signatures?: AgentCardSignature[];
 }
 // --8<-- [end:AgentCard]
 
@@ -616,199 +829,6 @@ export interface TaskPushNotificationConfig {
   pushNotificationConfig: PushNotificationConfig;
 }
 // --8<-- [end:TaskPushNotificationConfig]
-
-// --8<-- [start:SecurityScheme]
-/**
- * Defines a security scheme that can be used to secure an agent's endpoints.
- * This is a discriminated union type based on the OpenAPI 3.0 Security Scheme Object.
- *
- * @see {@link https://swagger.io/specification/#security-scheme-object}
- */
-export type SecurityScheme =
-  | APIKeySecurityScheme
-  | HTTPAuthSecurityScheme
-  | OAuth2SecurityScheme
-  | OpenIdConnectSecurityScheme;
-// --8<-- [end:SecurityScheme]
-
-// --8<-- [start:SecuritySchemeBase]
-/**
- * Defines base properties shared by all security scheme objects.
- */
-export interface SecuritySchemeBase {
-  /** An optional description for the security scheme. */
-  description?: string;
-}
-// --8<-- [end:SecuritySchemeBase]
-
-// --8<-- [start:APIKeySecurityScheme]
-/**
- * Defines a security scheme using an API key.
- */
-export interface APIKeySecurityScheme extends SecuritySchemeBase {
-  /** The type of the security scheme. Must be 'apiKey'. */
-  readonly type: "apiKey";
-  /** The location of the API key. */
-  readonly in: "query" | "header" | "cookie";
-  /** The name of the header, query, or cookie parameter to be used. */
-  name: string;
-}
-// --8<-- [end:APIKeySecurityScheme]
-
-// --8<-- [start:HTTPAuthSecurityScheme]
-/**
- * Defines a security scheme using HTTP authentication.
- */
-export interface HTTPAuthSecurityScheme extends SecuritySchemeBase {
-  /** The type of the security scheme. Must be 'http'. */
-  readonly type: "http";
-  /**
-   * The name of the HTTP Authentication scheme to be used in the Authorization header,
-   * as defined in RFC7235 (e.g., "Bearer").
-   * This value should be registered in the IANA Authentication Scheme registry.
-   */
-  scheme: string;
-  /**
-   * A hint to the client to identify how the bearer token is formatted (e.g., "JWT").
-   * This is primarily for documentation purposes.
-   */
-  bearerFormat?: string;
-}
-// --8<-- [end:HTTPAuthSecurityScheme]
-
-// --8<-- [start:OAuth2SecurityScheme]
-/**
- * Defines a security scheme using OAuth 2.0.
- */
-export interface OAuth2SecurityScheme extends SecuritySchemeBase {
-  /** The type of the security scheme. Must be 'oauth2'. */
-  readonly type: "oauth2";
-  /** An object containing configuration information for the supported OAuth 2.0 flows. */
-  flows: OAuthFlows;
-}
-// --8<-- [end:OAuth2SecurityScheme]
-
-// --8<-- [start:OpenIdConnectSecurityScheme]
-/**
- * Defines a security scheme using OpenID Connect.
- */
-export interface OpenIdConnectSecurityScheme extends SecuritySchemeBase {
-  /** The type of the security scheme. Must be 'openIdConnect'. */
-  readonly type: "openIdConnect";
-  /**
-   * The OpenID Connect Discovery URL for the OIDC provider's metadata.
-   * @see {@link https://openid.net/specs/openid-connect-discovery-1_0.html}
-   */
-  openIdConnectUrl: string;
-}
-// --8<-- [end:OpenIdConnectSecurityScheme]
-
-// --8<-- [start:OAuthFlows]
-/**
- * Defines the configuration for the supported OAuth 2.0 flows.
- */
-export interface OAuthFlows {
-  /** Configuration for the OAuth Authorization Code flow. Previously called accessCode in OpenAPI 2.0. */
-  authorizationCode?: AuthorizationCodeOAuthFlow;
-  /** Configuration for the OAuth Client Credentials flow. Previously called application in OpenAPI 2.0. */
-  clientCredentials?: ClientCredentialsOAuthFlow;
-  /** Configuration for the OAuth Implicit flow. */
-  implicit?: ImplicitOAuthFlow;
-  /** Configuration for the OAuth Resource Owner Password flow. */
-  password?: PasswordOAuthFlow;
-}
-// --8<-- [end:OAuthFlows]
-
-// --8<-- [start:AuthorizationCodeOAuthFlow]
-/**
- * Defines configuration details for the OAuth 2.0 Authorization Code flow.
- */
-export interface AuthorizationCodeOAuthFlow {
-  /**
-   * The authorization URL to be used for this flow.
-   * This MUST be a URL and use TLS.
-   */
-  authorizationUrl: string;
-  /**
-   * The token URL to be used for this flow.
-   * This MUST be a URL and use TLS.
-   */
-  tokenUrl: string;
-  /**
-   * The URL to be used for obtaining refresh tokens.
-   * This MUST be a URL and use TLS.
-   */
-  refreshUrl?: string;
-  /**
-   * The available scopes for the OAuth2 security scheme. A map between the scope
-   * name and a short description for it.
-   */
-  scopes: { [name: string]: string };
-}
-// --8<-- [end:AuthorizationCodeOAuthFlow]
-
-// --8<-- [start:ClientCredentialsOAuthFlow]
-/**
- * Defines configuration details for the OAuth 2.0 Client Credentials flow.
- */
-export interface ClientCredentialsOAuthFlow {
-  /**
-   * The token URL to be used for this flow. This MUST be a URL.
-   */
-  tokenUrl: string;
-  /**
-   * The URL to be used for obtaining refresh tokens. This MUST be a URL.
-   */
-  refreshUrl?: string;
-  /**
-   * The available scopes for the OAuth2 security scheme. A map between the scope
-   * name and a short description for it.
-   */
-  scopes: { [name: string]: string };
-}
-// --8<-- [end:ClientCredentialsOAuthFlow]
-
-// --8<-- [start:ImplicitOAuthFlow]
-/**
- * Defines configuration details for the OAuth 2.0 Implicit flow.
- */
-export interface ImplicitOAuthFlow {
-  /**
-   * The authorization URL to be used for this flow. This MUST be a URL.
-   */
-  authorizationUrl: string;
-  /**
-   * The URL to be used for obtaining refresh tokens. This MUST be a URL.
-   */
-  refreshUrl?: string;
-  /**
-   * The available scopes for the OAuth2 security scheme. A map between the scope
-   * name and a short description for it.
-   */
-  scopes: { [name: string]: string };
-}
-// --8<-- [end:ImplicitOAuthFlow]
-
-// --8<-- [start:PasswordOAuthFlow]
-/**
- * Defines configuration details for the OAuth 2.0 Resource Owner Password flow.
- */
-export interface PasswordOAuthFlow {
-  /**
-   * The token URL to be used for this flow. This MUST be a URL.
-   */
-  tokenUrl: string;
-  /**
-   * The URL to be used for obtaining refresh tokens. This MUST be a URL.
-   */
-  refreshUrl?: string;
-  /**
-   * The available scopes for the OAuth2 security scheme. A map between the scope
-   * name and a short description for it.
-   */
-  scopes: { [name: string]: string };
-}
-// --8<-- [end:PasswordOAuthFlow]
 
 // --8<-- [start:JSONRPCMessage]
 /**

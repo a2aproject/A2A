@@ -207,6 +207,14 @@ Provides a declaration of a combination of the target url and the supported tran
 --8<-- "types/src/types.ts:AgentInterface"
 ```
 
+#### 5.5.6. `AgentCardSignature` Object
+
+Represents a JSON Web Signature (JWS) used to verify the integrity of the AgentCard.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:AgentCardSignature"
+```
+
 ### 5.6. Sample Agent Card
 
 ```json
@@ -277,7 +285,13 @@ Provides a declaration of a combination of the target url and the supported tran
       ]
     }
   ],
-  "supportsAuthenticatedExtendedCard": true
+  "supportsAuthenticatedExtendedCard": true,
+  "signatures": [
+    {
+      "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
+      "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
+    }
+  ]
 }
 ```
 

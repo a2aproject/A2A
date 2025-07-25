@@ -218,6 +218,13 @@
                     "description": "A declaration of the security schemes available to authorize requests. The key is the\nscheme name. Follows the OpenAPI 3.0 Security Scheme Object.",
                     "type": "object"
                 },
+                "signatures": {
+                    "description": "JSON Web Signatures computed for this AgentCard.",
+                    "items": {
+                        "$ref": "#/definitions/AgentCardSignature"
+                    },
+                    "type": "array"
+                },
                 "skills": {
                     "description": "The set of skills, or distinct capabilities, that the agent can perform.",
                     "items": {
@@ -254,6 +261,29 @@
                 "skills",
                 "url",
                 "version"
+            ],
+            "type": "object"
+        },
+        "AgentCardSignature": {
+            "description": "AgentCardSignature represents a JWS signature of an AgentCard.\nThis follows the JSON format of an RFC 7515 JSON Web Signature (JWS).",
+            "properties": {
+                "header": {
+                    "additionalProperties": {},
+                    "description": "The unprotected JWS header values.",
+                    "type": "object"
+                },
+                "protected": {
+                    "description": "The protected JWS header for the signature. This is a Base64url-encoded\nJSON object, as per RFC 7515.",
+                    "type": "string"
+                },
+                "signature": {
+                    "description": "The computed signature, Base64url-encoded.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "protected",
+                "signature"
             ],
             "type": "object"
         },
