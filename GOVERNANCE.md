@@ -1,12 +1,12 @@
 ## **The Agent to Agent project is governed by the Technical Steering Committee. The Committee has seven seats, each held by the following companies:**
 
-1. Google
-2. Microsoft
-3. Cisco
-4. Amazon Web Services
-5. Salesforce
-6. ServiceNow
-7. SAP
+1. Google - Todd Segal, Principal Engineer - [@ToddSegal](https://github.com/ToddSegal)
+2. Microsoft - Darrel Miller, Partner API Architect - [@darrelmiller](https://github.com/darrelmiller)
+3. Cisco - Luca Muscariello, Principal Engineer - [@muscariello](https://github.com/muscariello)
+4. Amazon Web Services - Nicholas Aldridge, Principal Engineer - [@]
+5. Salesforce - Sam Sharaf, Sr. Director Product Management - [@samuelsharaf](https://github.com/samuelsharaf)
+6. ServiceNow - Sean Hughes, AI Ecosystem Director - [@hughesthe1st](https://github.com/hughesthe1st)
+7. SAP - TBD
 ## **Mission and Scope of the Project**
 1. The mission of the Project is to help AI agents across different ecosystems communicate with each other.  The Project includes collaborative development of the following components:
     1. the Agent2Agent Protocol (the “Protocol”); 
@@ -42,3 +42,10 @@ The TSC may choose an alternative approach for determining the voting members of
 ## TSC Voting
 While the Project aims to operate as a consensus-based community, if any TSC decision requires a vote to move the Project forward, the voting members of the TSC will vote on a one vote per voting member basis.
 Quorum for TSC meetings requires at least fifty percent of all voting members of the TSC to be present. The TSC may continue to meet if quorum is not met but will be prevented from making any decisions at the meeting. Except as provided in Section 7.c. and 8.a, decisions by vote at a meeting require a majority vote of those in attendance, provided quorum is met. Decisions made by electronic vote without a meeting require a majority vote of all voting members of the TSC.
+
+## Project Communications
+The A2A project utilizes Discord for chat conversations about the project. All are welcome and encouraged to join the [A2A Discord](http://discord.gg/a2aprotocol). Discussion is encouraged however we do remind the community that chat is ephemeral, and not all members of the project are active in chat at the same time. Therefore, any discussions about feature proposals, significant changes to the project architecture or goverance, etc. should be held in Github with adequate notice and time for comment. Look for specifics on that timing coming soon as the TSC ramps up. Just keep in mind - our goal is that Github is the source of truth for significant project decisions.
+Additional communication avenues will likely be added - stay tuned. 
+
+## TSC Meetings
+Our hope is that the first TSC meeting will be held in August 2025. Once the TSC representatives are finalized, scheduling will begin. In the interim we have drafted a [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/edit?usp=sharing). 
