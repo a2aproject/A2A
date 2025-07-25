@@ -7,7 +7,9 @@
 5. Salesforce - Sam Sharaf, Sr. Director Product Management - [@samuelsharaf](https://github.com/samuelsharaf)
 6. ServiceNow - Sean Hughes, AI Ecosystem Director - [@hughesthe1st](https://github.com/hughesthe1st)
 7. SAP - TBD
-## **Mission and Scope of the Project**
+
+## Mission and Scope of the Project
+
 1. The mission of the Project is to help AI agents across different ecosystems communicate with each other.  The Project includes collaborative development of the following components:
     1. the Agent2Agent Protocol (the “Protocol”); 
     2. a SDK for designing implementations of the Protocol and related software components; and
@@ -44,8 +46,10 @@ While the Project aims to operate as a consensus-based community, if any TSC dec
 Quorum for TSC meetings requires at least fifty percent of all voting members of the TSC to be present. The TSC may continue to meet if quorum is not met but will be prevented from making any decisions at the meeting. Except as provided in Section 7.c. and 8.a, decisions by vote at a meeting require a majority vote of those in attendance, provided quorum is met. Decisions made by electronic vote without a meeting require a majority vote of all voting members of the TSC.
 
 ## Project Communications
+
 The A2A project utilizes Discord for chat conversations about the project. All are welcome and encouraged to join the [A2A Discord](http://discord.gg/a2aprotocol). Discussion is encouraged however we do remind the community that chat is ephemeral, and not all members of the project are active in chat at the same time. Therefore, any discussions about feature proposals, significant changes to the project architecture or governance, etc. should be held in GitHub with adequate notice and time for comment. Look for specifics on that timing coming soon as the TSC ramps up. Just keep in mind - our goal is that GitHub is the source of truth for significant project decisions.
 Additional communication avenues will likely be added - stay tuned. 
 
 ## TSC Meetings
-Our hope is that the first TSC meeting will be held in August 2025. Once the TSC representatives are finalized, scheduling will begin. In the interim we have drafted a [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/edit?usp=sharing). 
+
+Our hope is that the first TSC meeting will be held in August 2025. Once the TSC representatives are finalized, scheduling will begin. In the interim we have drafted a [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view).
