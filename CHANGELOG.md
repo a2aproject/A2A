@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.7](https://github.com/a2aproject/A2A/compare/v0.2.6...v0.2.7) (2025-07-25)
+
+
+### Features
+
+* Add `signatures` to the `AgentCard` ([#917](https://github.com/a2aproject/A2A/issues/917)) ([ef4a305](https://github.com/a2aproject/A2A/commit/ef4a30505381e99b20103724cabef024389bacef))
+
+
+### Bug Fixes
+
+* **spec:** Add `SendMessageRequest.request` `json_name` mapping to `message` ([#904](https://github.com/a2aproject/A2A/issues/904)) ([2eef3f6](https://github.com/a2aproject/A2A/commit/2eef3f6113851e690cee70a1b1643e1ffd6d2a60))
+* **spec:** Add Transport enum to specification ([#909](https://github.com/a2aproject/A2A/issues/909)) ([e834347](https://github.com/a2aproject/A2A/commit/e834347c279186d9d7873b352298e8b19737dd5a))
+* **spec:** Remove `@TJS-format uri` due to breaking change in Python SDK ([#910](https://github.com/a2aproject/A2A/issues/910)) ([acc1612](https://github.com/a2aproject/A2A/commit/acc16128cee139da0c9a4032a0257e9996e2a5f7))
+
 ## [0.2.6](https://github.com/a2aproject/A2A/compare/v0.2.5...v0.2.6) (2025-07-17)
 
 
