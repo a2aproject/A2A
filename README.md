@@ -1,7 +1,6 @@
 # Agent2Agent (A2A) Protocol
 
-[![RepoMapr](https://img.shields.io/badge/RepoMapr-View_Interactive_Diagram-blue?style=flat&logo=github)](https://repomapr.com/a2aproject/A2A)
-
+[![RepoMapr](https://img.shields.io/badge/RepoMapr-View_Interactive_Diagram-blue)](https://repomapr.com/a2aproject/A2A)
 [![PyPI - Version](https://img.shields.io/pypi/v/a2a-sdk)](https://pypi.org/project/a2a-sdk)
 [![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
