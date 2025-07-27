@@ -1096,6 +1096,8 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
    }
    ```
 
+_If the task were longer-running, the server might initially respond with `status.state: "working"`. The client would then periodically call `tasks/get` with `params: {"id": "363422be-b0f9-4692-a24d-278670e7c7f1"}` until the task reaches a terminal state._
+
 **Scenario:** Client asks a simple question, and the agent responds quickly without a task
 
 1. **Client sends a message using `message/send`:**
@@ -1141,8 +1143,6 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
      }
    }
    ```
-
-_If the task were longer-running, the server might initially respond with `status.state: "working"`. The client would then periodically call `tasks/get` with `params: {"id": "363422be-b0f9-4692-a24d-278670e7c7f1"}` until the task reaches a terminal state._
 
 ### 9.3. Streaming Task Execution (SSE)
 
