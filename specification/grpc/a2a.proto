@@ -344,6 +344,7 @@ message AgentInterface {
 // - Skills; a set of actions/solutions the agent can perform
 // - Default modalities/content types supported by the agent.
 // - Authentication requirements
+// Next ID: 18
 message AgentCard {
   // The version of the A2A protocol this agent supports.
   string protocol_version = 16;
@@ -389,6 +390,8 @@ message AgentCard {
   // the user is authenticated, i.e. is the card from .well-known
   // different than the card from GetAgentCard.
   bool supports_authenticated_extended_card = 13;
+  // JSON Web Signatures computed for this AgentCard.
+  repeated AgentCardSignature signatures = 17;
 }
 
 // Represents information about the service provider of an agent.
@@ -451,6 +454,18 @@ message AgentSkill {
   repeated string input_modes = 6;
   // Possible output modalities produced
   repeated string output_modes = 7;
+}
+
+// AgentCardSignature represents a JWS signature of an AgentCard.
+// This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
+message AgentCardSignature {
+  // The protected JWS header for the signature. This is always a
+  // base64url-encoded JSON object. Required.
+  string protected = 1 [(google.api.field_behavior) = REQUIRED];
+  // The computed signature, base64url-encoded. Required.
+  string signature = 2 [(google.api.field_behavior) = REQUIRED];
+  // The unprotected JWS header values.
+  google.protobuf.Struct header = 3;
 }
 
 message TaskPushNotificationConfig {
@@ -578,7 +593,8 @@ message PasswordOAuthFlow {
 
 ///////////// Request Messages ///////////
 message SendMessageRequest {
-  Message request = 1 [(google.api.field_behavior) = REQUIRED];
+  Message request = 1
+      [(google.api.field_behavior) = REQUIRED, json_name = "message"];
   SendMessageConfiguration configuration = 2;
   google.protobuf.Struct metadata = 3;
 }

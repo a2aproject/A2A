@@ -1,53 +1,22 @@
-#################################
-#################################
-## Super Linter GitHub Actions ##
-#################################
-#################################
 name: Lint Code Base
 
-#
-# Documentation:
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
-#
-
-#############################
-# Start the job on all push #
-#############################
 on:
   pull_request:
     branches: [main]
 
-###############
-# Set the Job #
-###############
 jobs:
   build:
-    # Name the Job
     name: Lint Code Base
-    # Set the agent to run on
     runs-on: ubuntu-latest
-    # if on repo to avoid failing runs on forks
-    if: |
-      github.repository == 'a2aproject/A2A'
 
-    ##################
-    # Load all steps #
-    ##################
     steps:
-      ##########################
-      # Checkout the code base #
-      ##########################
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      ################################
-      # Run Linter against code base #
-      ################################
       - name: Lint Code Base
-        uses: super-linter/super-linter/slim@v7
+        uses: super-linter/super-linter/slim@v8
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -60,10 +29,7 @@ jobs:
           VALIDATE_PYTHON_ISORT: false
           VALIDATE_PYTHON_MYPY: false
           VALIDATE_PYTHON_PYLINT: false
-          VALIDATE_PYTHON_PYINK: false
           VALIDATE_CHECKOV: false
-          VALIDATE_JAVASCRIPT_STANDARD: false
-          VALIDATE_TYPESCRIPT_STANDARD: false
           VALIDATE_NATURAL_LANGUAGE: false
           MARKDOWN_CONFIG_FILE: ".markdownlint.json"
           VALIDATE_MARKDOWN_PRETTIER: false
