@@ -59,37 +59,39 @@ A2A revolves around several key concepts. For detailed explanations, please refe
 
 ### 3.1. Transport Layer Requirements
 
-A2A supports multiple transport protocols, all operating over **HTTP(S)**:
+A2A supports multiple transport protocols, all operating over **HTTP(S)**. Agents have flexibility in choosing which transport protocols to implement based on their specific requirements and use cases:
 
 - A2A communication **MUST** occur over **HTTP(S)**.
 - The A2A Server exposes its service at one or more URLs defined in its `AgentCard`.
+- Agents **MUST** implement at least one of the three core transport protocols defined in this specification.
+- All supported transport protocols are considered equal in status and capability.
 
 ### 3.2. Supported Transport Protocols
 
-A2A defines three transport protocols:
+A2A defines three core transport protocols. **A2A-compliant agents SHOULD implement at least one of these transport protocols. They MAY be compliant implementing a transport extension as defined in [3.2.4](#324-transport-extensions)** All three protocols are considered equal in status, and agents may choose to implement any combination of them based on their requirements.
 
-#### 3.2.1. JSON-RPC 2.0 Transport (Mandatory)
+#### 3.2.1. JSON-RPC 2.0 Transport
 
-**All A2A-compliant agents MUST support JSON-RPC 2.0 transport.** This is the baseline transport for A2A interoperability.
+Agents **MAY** support JSON-RPC 2.0 transport. If implemented, it **MUST** conform to these requirements:
 
 - The primary data format is **[JSON-RPC 2.0](https://www.jsonrpc.org/specification)** for all requests and responses (excluding SSE stream wrapper).
 - Client requests and server responses **MUST** adhere to the JSON-RPC 2.0 specification.
 - The `Content-Type` header for HTTP requests and responses containing JSON-RPC payloads **MUST** be `application/json`.
 - Method names follow the pattern `{category}/{action}` (e.g., `"message/send"`, `"tasks/get"`).
 
-#### 3.2.2. gRPC Transport (Optional)
+#### 3.2.2. gRPC Transport
 
 Agents **MAY** support gRPC transport. If implemented, it **MUST** conform to these requirements:
 
 - **Protocol Definition**: **MUST** use the normative Protocol Buffers definition in [`specification/grpc/a2a.proto`](specification/grpc/a2a.proto).
 - **Message Serialization**: **MUST** use Protocol Buffers version 3 for message serialization.
 - **Service Definition**: **MUST** implement the `A2AService` gRPC service as defined in the proto file.
-- **Method Coverage**: **MUST** provide all methods available in JSON-RPC transport with functionally equivalent behavior.
+- **Method Coverage**: **MUST** provide all methods with functionally equivalent behavior to other supported transports.
 - **Field Mapping**: **MUST** use the `json_name` annotations for HTTP/JSON transcoding compatibility.
 - **Error Handling**: **MUST** map A2A error codes to appropriate gRPC status codes as defined in the proto annotations.
 - **Transport Security**: **MUST** support TLS encryption (gRPC over HTTP/2 with TLS).
 
-#### 3.2.3. HTTP+JSON/REST Transport (Optional)
+#### 3.2.3. HTTP+JSON/REST Transport
 
 Agents **MAY** support REST-style HTTP+JSON transport. If implemented, it **MUST** conform to these requirements:
 
@@ -97,9 +99,18 @@ Agents **MAY** support REST-style HTTP+JSON transport. If implemented, it **MUST
 - **URL Patterns**: **MUST** follow the URL patterns documented in each method section (e.g., `/v1/message:send`, `/v1/tasks/{id}`).
 - **Content-Type**: **MUST** use `application/json` for request and response bodies.
 - **HTTP Status Codes**: **MUST** use appropriate HTTP status codes (200, 400, 401, 403, 404, 500, etc.) that correspond to A2A error types.
-- **Request/Response Format**: **MUST** use JSON objects that are structurally equivalent to the JSON-RPC `params` and `result` objects.
-- **Method Coverage**: **MUST** provide all methods available in JSON-RPC transport with functionally equivalent behavior.
+- **Request/Response Format**: **MUST** use JSON objects that are structurally equivalent to the core A2A data structures.
+- **Method Coverage**: **MUST** provide all methods with functionally equivalent behavior to other supported transports.
 - **Error Format**: **MUST** return error responses in a consistent JSON format that maps to A2A error types.
+
+#### 3.2.4. Transport Extensions
+
+Additional transport protocols **MAY** be defined as extensions to the core A2A specification. Such extensions:
+
+- **MUST** maintain functional equivalence with the core transports
+- **MUST** use clear namespace identifiers to avoid conflicts
+- **MUST** be clearly documented and specified
+- **SHOULD** provide migration paths from core transports
 
 ### 3.3. Streaming Transport (Server-Sent Events)
 
@@ -137,7 +148,7 @@ When an agent supports multiple transports, all supported transports **MUST**:
 - **Agent Declaration**: Agents **MUST** declare all supported transports in their `AgentCard` using the `preferredTransport` and `additionalInterfaces` fields.
 - **Client Choice**: Clients **MAY** choose any transport declared by the agent.
 - **No Transport Negotiation**: A2A does not define a dynamic transport negotiation protocol. Clients select a transport based on the static `AgentCard` information.
-- **Fallback Behavior**: Clients **SHOULD** implement fallback to JSON-RPC transport if their preferred transport fails.
+- **Fallback Behavior**: Clients **SHOULD** implement fallback logic to try alternative transports if their preferred transport fails. The specific fallback strategy is implementation-dependent.
 
 #### 3.4.3. Transport-Specific Extensions
 
@@ -181,7 +192,7 @@ REST endpoints **MUST** follow RESTful URL patterns with appropriate HTTP verbs:
 When implementing multiple transports, agents **MUST**:
 
 - **Use standard mappings**: Follow the method mappings defined in sections 3.5.2 and 3.5.3.
-- **Maintain functional equivalence**: Each transport-specific method **MUST** provide identical functionality to its JSON-RPC equivalent.
+- **Maintain functional equivalence**: Each transport-specific method **MUST** provide identical functionality across all supported transports.
 - **Consistent parameters**: Use equivalent parameter structures across transports (accounting for transport-specific serialization differences).
 - **Equivalent responses**: Return semantically equivalent responses across all transports for the same operation.
 
@@ -347,11 +358,11 @@ Provides a declaration of a combination of the target URL and the supported tran
 --8<-- "types/src/types.ts:AgentInterface"
 ```
 
-The `transport` field **MUST** use one of the core A2A transport protocol values:
+The `transport` field **SHOULD** use one of the core A2A transport protocol values:
 
-- `"JSONRPC"`: JSON-RPC 2.0 over HTTP (mandatory for all agents)
-- `"GRPC"`: gRPC over HTTP/2 (optional)
-- `"HTTP+JSON"`: REST-style HTTP with JSON (optional)
+- `"JSONRPC"`: JSON-RPC 2.0 over HTTP
+- `"GRPC"`: gRPC over HTTP/2
+- `"HTTP+JSON"`: REST-style HTTP with JSON
 
 Additional transport values **MAY** be used for future extensions, but such extensions **MUST** not conflict with core A2A protocol functionality.
 
@@ -370,8 +381,9 @@ The AgentCard **MUST** properly declare the relationship between URLs and transp
 #### 5.6.1. Main URL and Preferred Transport
 
 - **Main URL requirement**: The `url` field **MUST** specify the primary endpoint for the agent.
-- **Transport correspondence**: The transport protocol available at the main `url` **MUST** match the `preferredTransport` field (or default to "JSONRPC" if `preferredTransport` is omitted).
-- **JSON-RPC guarantee**: Since JSON-RPC is mandatory for all agents, the main `url` **MUST** support JSON-RPC transport, either as the primary protocol or as one of multiple protocols available at that endpoint.
+- **Transport correspondence**: The transport protocol available at the main `url` **MUST** match the `preferredTransport` field.
+- **Required declaration**: The `preferredTransport` field is **REQUIRED** and **MUST** be present in every `AgentCard`.
+- **Transport availability**: The main `url` **MUST** support the transport protocol declared in `preferredTransport`.
 
 #### 5.6.2. Additional Interfaces
 
@@ -386,16 +398,17 @@ Clients **MUST** follow these rules when selecting a transport:
 1. **Parse transport declarations**: Extract available transports from both the main `url`/`preferredTransport` combination and all `additionalInterfaces`.
 2. **Prefer declared preference**: If the client supports the `preferredTransport`, it **SHOULD** use the main `url`.
 3. **Fallback selection**: If the preferred transport is not supported by the client, it **MAY** select any supported transport from `additionalInterfaces`.
-4. **JSON-RPC fallback**: Clients **SHOULD** implement JSON-RPC as a fallback transport since it is mandatory for all agents.
+4. **Graceful degradation**: Clients **SHOULD** implement fallback logic to try alternative transports if their first choice fails.
 5. **URL-transport matching**: Clients **MUST** use the correct URL for the selected transport protocol as declared in the AgentCard.
 
 #### 5.6.4. Validation Requirements
 
 Agent Cards **MUST** satisfy these validation requirements:
 
-- **Transport consistency**: The `preferredTransport` value (or "JSONRPC" if omitted) **MUST** be available at the main `url`.
+- **Transport consistency**: The `preferredTransport` value **MUST** be present and **MUST** be available at the main `url`.
 - **Interface completeness**: If `additionalInterfaces` is provided, it **SHOULD** include an entry corresponding to the main `url` and `preferredTransport`.
 - **No conflicts**: The same URL **MUST NOT** declare conflicting transport protocols across different interface declarations.
+- **Minimum transport requirement**: The agent **MUST** declare at least one supported transport protocol through either the main `url`/`preferredTransport` combination or `additionalInterfaces`.
 
 ### 5.7. Sample Agent Card
 
@@ -1915,15 +1928,15 @@ This section defines the normative requirements for A2A-compliant implementation
 
 For an agent to be considered **A2A-compliant**, it **MUST**:
 
-#### 11.1.1. Mandatory Transport Support
+#### 11.1.1. Transport Support Requirements
 
-- **Support JSON-RPC 2.0 transport**: All agents **MUST** implement JSON-RPC 2.0 over HTTP(S) as defined in [Section 3.2.1](#321-json-rpc-20-transport-mandatory).
+- **Support at least one transport**: Agents **MUST** implement at least one transport protocols as defined in [Section 3.2](#32-supported-transport-protocols).
 - **Expose Agent Card**: **MUST** provide a valid `AgentCard` document as defined in [Section 5](#5-agent-discovery-the-agent-card).
 - **Declare transport capabilities**: **MUST** accurately declare all supported transports in the `AgentCard` using `preferredTransport` and `additionalInterfaces` fields following the requirements in [Section 5.6](#56-transport-declaration-and-url-relationships).
 
 #### 11.1.2. Core Method Implementation
 
-**MUST** implement all of the following core methods via JSON-RPC 2.0 transport:
+**MUST** implement all of the following core methods via at least one supported transport:
 
 - `message/send` - Send messages and initiate tasks
 - `tasks/get` - Retrieve task status and results
@@ -1962,7 +1975,7 @@ For a client to be considered **A2A-compliant**, it **MUST**:
 
 #### 11.2.1. Transport Support
 
-- **JSON-RPC client**: **MUST** be able to communicate with agents using JSON-RPC 2.0 over HTTP(S).
+- **Multi-transport capability**: **MUST** be able to communicate with agents using at least one transport protocols.
 - **Agent Card processing**: **MUST** be able to parse and interpret `AgentCard` documents.
 - **Transport selection**: **MUST** be able to select an appropriate transport from the agent's declared capabilities following the rules defined in [Section 5.6.3](#563-client-transport-selection-rules).
 
