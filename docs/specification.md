@@ -915,10 +915,7 @@ The purpose is to resume receiving _subsequent_ updates. The server's behavior r
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`.
 
-- **Endpoint URL**: `{AgentCard.url}/../agent/authenticatedExtendedCard` (relative to the base URL specified in the public Agent Card).
-- **HTTP Method**: `GET`
 - **Authentication**: The client **MUST** authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
-- **Request `params`**: None (HTTP GET request).
 - **Response `result` type (on success)**: `AgentCard` (A complete Agent Card object, which may contain additional details or skills not present in the public card).
 - **Response `error` type (on failure)**: Standard HTTP error codes.
     - `401 Unauthorized`: Authentication failed (missing or invalid credentials). The server **SHOULD** include a `WWW-Authenticate` header.
@@ -950,16 +947,8 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 Clients retrieving this authenticated card **SHOULD** replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
 
-#### 7.10.1. `AuthenticatedExtendedCardParams` Object
-
-This endpoint does not use JSON-RPC `params`. Any parameters would be included as HTTP query parameters if needed (though none are defined by the standard).
-
-#### 7.10.2. `AuthenticatedExtendedCardResponse` Object
-
-The successful response body is a JSON object conforming to the `AgentCard` interface.
-
 ```ts { .no-copy }
---8<-- "types/src/types.ts:AuthenticatedExtendedCardResponse"
+--8<-- "types/src/types.ts:GetAuthenticatedExtendedCardSuccessResponse"
 ```
 
 ## 8. Error Handling
@@ -1014,16 +1003,19 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
 
 3. **Client obtains necessary credentials out-of-band (e.g., performs OAuth 2.0 flow with Google, resulting in an access token).**
 
-4. **Client fetches the authenticated extended Agent Card:**
+4. **Client fetches the authenticated extended Agent Card using `agent/authenticatedExtendedCard` request:**
 
-   ```none
-   GET https://example.com/a2a/agent/authenticatedExtendedCard
-   Authorization: Bearer <obtained_access_token>
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": 1,
+     "method": "agent/authenticatedExtendedCard"
+   }
    ```
 
 5. **Server authenticates and authorizes the request.**
 
-6. **Server responds with the full Agent Card:**
+6. **Server responds with the full Agent Card as the JSON-RPC result:**
 
 ### 9.2. Basic Execution (Synchronous / Polling Style)
 
