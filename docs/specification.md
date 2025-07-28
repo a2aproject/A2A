@@ -355,6 +355,14 @@ The `transport` field **MUST** use one of the core A2A transport protocol values
 
 Additional transport values **MAY** be used for future extensions, but such extensions **MUST** not conflict with core A2A protocol functionality.
 
+#### 5.5.6. `AgentCardSignature` Object
+
+Represents a JSON Web Signature (JWS) used to verify the integrity of the AgentCard.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:AgentCardSignature"
+```
+
 ### 5.6. Transport Declaration and URL Relationships
 
 The AgentCard **MUST** properly declare the relationship between URLs and transport protocols:
@@ -459,7 +467,13 @@ Agent Cards **MUST** satisfy these validation requirements:
       ]
     }
   ],
-  "supportsAuthenticatedExtendedCard": true
+  "supportsAuthenticatedExtendedCard": true,
+  "signatures": [
+    {
+      "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
+      "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
+    }
+  ]
 }
 ```
 
@@ -1264,6 +1278,8 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
    }
    ```
 
+_If the task were longer-running, the server might initially respond with `status.state: "working"`. The client would then periodically call `tasks/get` with params: `{"id": "363422be-b0f9-4692-a24d-278670e7c7f1"}` until the task reaches a terminal state._
+
 **Scenario:** Client asks a simple question, and the agent responds quickly without a task
 
 1. **Client sends a message using `message/send`:**
@@ -1310,8 +1326,6 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
    }
    ```
 
-_If the task were longer-running, the server might initially respond with `status.state: "working"`. The client would then periodically call `tasks/get` with `params: {"id": "363422be-b0f9-4692-a24d-278670e7c7f1"}` until the task reaches a terminal state._
-
 ### 9.3. Streaming Task Execution (SSE)
 
 **Scenario:** Client asks the agent to write a long paper describing an attached picture.
@@ -1320,6 +1334,8 @@ _If the task were longer-running, the server might initially respond with `statu
 
    ```json
    {
+     "jsonrpc": "2.0",
+     "id": 1,
      "method": "message/stream",
      "params": {
        "message": {
