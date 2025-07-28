@@ -1152,6 +1152,8 @@ _If the task were longer-running, the server might initially respond with `statu
 
    ```json
    {
+     "jsonrpc": "2.0",
+     "id": 1,
      "method": "message/stream",
      "params": {
        "message": {
