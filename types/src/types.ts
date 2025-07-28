@@ -567,7 +567,7 @@ export interface GetTaskPushNotificationConfigParams extends TaskIdParams {
 /**
  * Defines parameters for listing all push notification configurations associated with a task.
  */
-export interface ListTaskPushNotificationConfigParams extends TaskIdParams {}
+export interface ListTaskPushNotificationConfigParams extends TaskIdParams { }
 // --8<-- [end:ListTaskPushNotificationConfigParams]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigParams]
@@ -941,7 +941,8 @@ export type JSONRPCResponse =
   | SetTaskPushNotificationConfigResponse
   | GetTaskPushNotificationConfigResponse
   | ListTaskPushNotificationConfigResponse
-  | DeleteTaskPushNotificationConfigResponse;
+  | DeleteTaskPushNotificationConfigResponse
+  | GetAuthenticatedExtendedCardResponse;
 // --8<-- [end:JSONRPCResponse]
 
 // --8<-- [start:SendMessageRequest]
@@ -1231,6 +1232,39 @@ export type DeleteTaskPushNotificationConfigResponse =
   | JSONRPCErrorResponse;
 // --8<-- [end:DeleteTaskPushNotificationConfigResponse]
 
+// --8<-- [start:GetAuthenticatedExtendedCardRequest]
+/**
+ * Represents a JSON-RPC request for the `agent/authenticatedExtendedCard` method.
+ */
+export interface GetAuthenticatedExtendedCardRequest
+  extends JSONRPCRequest {
+  /** The identifier for this request. */
+  id: number | string;
+  /** The method name. Must be 'agent/authenticatedExtendedCard'. */
+  readonly method: "agent/authenticatedExtendedCard";
+}
+// --8<-- [end:GetAuthenticatedExtendedCardRequest]
+
+// --8<-- [start:GetAuthenticatedExtendedCardSuccessResponse]
+/**
+ * Represents a successful JSON-RPC response for the `agent/authenticatedExtendedCard` method.
+ */
+export interface GetAuthenticatedExtendedCardSuccessResponse
+  extends JSONRPCSuccessResponse {
+  /** The result is an Agent Card object. */
+  result: AgentCard;
+}
+// --8<-- [end:GetAuthenticatedExtendedCardSuccessResponse]
+
+// --8<-- [start:GetAuthenticatedExtendedCardResponse]
+/**
+ * Represents a JSON-RPC response for the `agent/authenticatedExtendedCard` method.
+ */
+export type GetAuthenticatedExtendedCardResponse =
+  | GetAuthenticatedExtendedCardSuccessResponse
+  | JSONRPCErrorResponse;
+// --8<-- [end:GetAuthenticatedExtendedCardResponse]
+
 // --8<-- [start:A2ARequest]
 /**
  * A discriminated union representing all possible JSON-RPC 2.0 requests supported by the A2A specification.
@@ -1244,7 +1278,8 @@ export type A2ARequest =
   | GetTaskPushNotificationConfigRequest
   | TaskResubscriptionRequest
   | ListTaskPushNotificationConfigRequest
-  | DeleteTaskPushNotificationConfigRequest;
+  | DeleteTaskPushNotificationConfigRequest
+  | GetAuthenticatedExtendedCardRequest;
 // --8<-- [end:A2ARequest]
 
 // --8<-- [start:JSONParseError]
@@ -1414,6 +1449,22 @@ export interface InvalidAgentResponseError extends JSONRPCError {
 }
 // --8<-- [end:InvalidAgentResponseError]
 
+// --8<-- [start:AuthenticatedExtendedCardNotConfiguredError]
+/**
+ * An A2A-specific error indicating that the agent does not have an
+ * Authenticated Extended Card configured
+ */
+export interface AuthenticatedExtendedCardNotConfiguredError extends JSONRPCError {
+  /** The error code for an invalid agent response. */
+  readonly code: -32007;
+  /**
+   * The error message.
+   * @default "Authenticated Extended Card not configured"
+   */
+  message: string;
+}
+// --8<-- [end:AuthenticatedExtendedCardNotConfiguredError]
+
 // --8<-- [start:A2AError]
 /**
  * A discriminated union of all standard JSON-RPC and A2A-specific error types.
@@ -1429,5 +1480,6 @@ export type A2AError =
   | PushNotificationNotSupportedError
   | UnsupportedOperationError
   | ContentTypeNotSupportedError
-  | InvalidAgentResponseError;
+  | InvalidAgentResponseError
+  | AuthenticatedExtendedCardNotConfiguredError;
 // --8<-- [end:A2AError]
