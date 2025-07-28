@@ -1457,7 +1457,7 @@ export interface InvalidAgentResponseError extends JSONRPCError {
  * Authenticated Extended Card configured
  */
 export interface AuthenticatedExtendedCardNotConfiguredError extends JSONRPCError {
-  /** The error code for an invalid agent response. */
+  /** The error code for when an authenticated extended card is not configured. */
   readonly code: -32007;
   /**
    * The error message.
