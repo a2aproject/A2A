@@ -1242,6 +1242,8 @@ export interface GetAuthenticatedExtendedCardRequest
   id: number | string;
   /** The method name. Must be 'agent/authenticatedExtendedCard'. */
   readonly method: "agent/authenticatedExtendedCard";
+  /** This method does not accept parameters. */
+  params?: never;
 }
 // --8<-- [end:GetAuthenticatedExtendedCardRequest]
 
