@@ -1236,8 +1236,7 @@ export type DeleteTaskPushNotificationConfigResponse =
 /**
  * Represents a JSON-RPC request for the `agent/authenticatedExtendedCard` method.
  */
-export interface GetAuthenticatedExtendedCardRequest
-  extends JSONRPCRequest {
+export interface GetAuthenticatedExtendedCardRequest extends JSONRPCRequest {
   /** The identifier for this request. */
   id: number | string;
   /** The method name. Must be 'agent/authenticatedExtendedCard'. */
@@ -1456,7 +1455,8 @@ export interface InvalidAgentResponseError extends JSONRPCError {
  * An A2A-specific error indicating that the agent does not have an
  * Authenticated Extended Card configured
  */
-export interface AuthenticatedExtendedCardNotConfiguredError extends JSONRPCError {
+export interface AuthenticatedExtendedCardNotConfiguredError
+  extends JSONRPCError {
   /** The error code for when an authenticated extended card is not configured. */
   readonly code: -32007;
   /**
