@@ -344,7 +344,7 @@ export interface AgentCardSignature {
 export interface AgentCard {
   /**
    * The version of the A2A protocol this agent supports.
-   * @default "0.2.6"
+   * @default "0.3.0"
    */
   protocolVersion: string;
   /**
