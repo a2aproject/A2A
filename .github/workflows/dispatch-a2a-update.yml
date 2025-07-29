@@ -1,3 +1,4 @@
+# A2A repo: .github/workflows/dispatch-a2a-json-update.yml
 name: Dispatch A2A JSON Update
 
 on:
@@ -15,10 +16,10 @@ jobs:
         id: commit_message_escape
         run: |
           # Use jq to properly JSON-escape the multi-line commit message.
-          # -R: reads raw input string
-          # .: outputs it as a JSON string (handles newlines, quotes, etc.)
-          ESCAPED_MESSAGE=$(echo "${{ github.event.head_commit.message }}" | jq -R .)
+          ESCAPED_MESSAGE=$(echo "$COMMIT_MESSAGE" | jq -R .)
           echo "message=$ESCAPED_MESSAGE" >> "$GITHUB_OUTPUT"
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
       - name: Dispatch repository_dispatch to a2a-python
         uses: peter-evans/repository-dispatch@v3
