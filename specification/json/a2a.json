@@ -114,6 +114,10 @@
                     },
                     "type": "array"
                 },
+                "payment": {
+                    "$ref": "#/definitions/PaymentCapability",
+                    "description": "Configuration for making or delegating payments via supported rails."
+                },
                 "pushNotifications": {
                     "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
                     "type": "boolean"
@@ -504,6 +508,51 @@
                 "authorizationUrl",
                 "scopes",
                 "tokenUrl"
+            ],
+            "type": "object"
+        },
+        "BitcoinCapability": {
+            "description": "Parameters for Bitcoin payments or PSBT-based delegation.",
+            "properties": {
+                "delegation": {
+                    "description": "Optional PSBT delegation information.",
+                    "properties": {
+                        "expiry": {
+                            "description": "Expiration timestamp for the delegation, ISO 8601.",
+                            "type": "string"
+                        },
+                        "maxSatoshis": {
+                            "description": "Maximum amount authorized in satoshis.",
+                            "type": "integer"
+                        },
+                        "psbt": {
+                            "description": "Base64 encoded PSBT template to sign.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "expiry",
+                        "maxSatoshis",
+                        "psbt"
+                    ],
+                    "type": "object"
+                },
+                "network": {
+                    "description": "Network the address resides on. Defaults to mainnet.",
+                    "enum": [
+                        "mainnet",
+                        "signet",
+                        "testnet"
+                    ],
+                    "type": "string"
+                },
+                "payTo": {
+                    "description": "Receiving address for direct payments.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "payTo"
             ],
             "type": "object"
         },
@@ -1715,6 +1764,16 @@
                 "scopes",
                 "tokenUrl"
             ],
+            "type": "object"
+        },
+        "PaymentCapability": {
+            "description": "Configuration for payment handling supported by the agent.",
+            "properties": {
+                "bitcoin": {
+                    "$ref": "#/definitions/BitcoinCapability",
+                    "description": "Bitcoin-specific payment parameters."
+                }
+            },
             "type": "object"
         },
         "PushNotificationAuthenticationInfo": {
