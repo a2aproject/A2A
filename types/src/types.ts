@@ -1452,8 +1452,7 @@ export interface InvalidAgentResponseError extends JSONRPCError {
 
 // --8<-- [start:AuthenticatedExtendedCardNotConfiguredError]
 /**
- * An A2A-specific error indicating that the agent does not have an
- * Authenticated Extended Card configured
+ * An A2A-specific error indicating that the agent does not have an Authenticated Extended Card configured
  */
 export interface AuthenticatedExtendedCardNotConfiguredError
   extends JSONRPCError {
