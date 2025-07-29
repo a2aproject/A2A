@@ -71,14 +71,17 @@ export interface BitcoinCapability {
   /** Receiving address for direct payments. */
   payTo: string;
   /** Optional PSBT delegation information. */
-  delegation?: {
-    /** Maximum amount authorized in satoshis. */
-    maxSatoshis: number;
-    /** Expiration timestamp for the delegation, ISO 8601. */
-    expiry: string;
-    /** Base64 encoded PSBT template to sign. */
-    psbt: string;
-  };
+  delegation?: BitcoinDelegation;
+}
+
+/** Details for a PSBT-based delegation. */
+export interface BitcoinDelegation {
+  /** Maximum amount authorized in satoshis. */
+  maxSatoshis: number;
+  /** Expiration timestamp for the delegation, ISO 8601. */
+  expiry: string;
+  /** Base64 encoded PSBT template to sign. */
+  psbt: string;
 }
 // --8<-- [end:PaymentCapability]
 
