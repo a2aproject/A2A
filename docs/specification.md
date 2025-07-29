@@ -239,7 +239,13 @@ Represents a JSON Web Signature (JWS) used to verify the integrity of the AgentC
   "capabilities": {
     "streaming": true,
     "pushNotifications": true,
-    "stateTransitionHistory": false
+    "stateTransitionHistory": false,
+    "payment": {
+      "bitcoin": {
+        "payTo": "bc1qexampleaddress12345",
+        "network": "mainnet"
+      }
+    }
   },
   "securitySchemes": {
     "google": {
