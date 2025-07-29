@@ -85,6 +85,7 @@ export interface BitcoinCapability {
     /** Base64 encoded PSBT template to sign. */
     psbt: string;
   };
+
 }
 // --8<-- [end:PaymentCapability]
 
