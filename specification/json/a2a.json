@@ -538,7 +538,9 @@
                     "type": "object"
                 },
                 "network": {
-                    "description": "Network the address resides on. Defaults to mainnet.",
+                    "default": "mainnet",
+                    "description": "Network the address resides on.",
+
                     "enum": [
                         "mainnet",
                         "signet",
@@ -547,7 +549,7 @@
                     "type": "string"
                 },
                 "payTo": {
-                    "description": "Receiving address for direct payments.",
+                    "description": "Receiving address for direct payments. Must be a valid Bitcoin\naddress in bech32 or base58 format.",
                     "type": "string"
                 }
             },

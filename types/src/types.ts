@@ -66,22 +66,26 @@ export interface PaymentCapability {
 
 /** Parameters for Bitcoin payments or PSBT-based delegation. */
 export interface BitcoinCapability {
-  /** Network the address resides on. Defaults to mainnet. */
+  /**
+   * Network the address resides on.
+   * @default "mainnet"
+   */
   network?: "mainnet" | "testnet" | "signet";
-  /** Receiving address for direct payments. */
+  /**
+   * Receiving address for direct payments. Must be a valid Bitcoin
+   * address in bech32 or base58 format.
+   */
   payTo: string;
   /** Optional PSBT delegation information. */
-  delegation?: BitcoinDelegation;
-}
+  delegation?: {
+    /** Maximum amount authorized in satoshis. */
+    maxSatoshis: number;
+    /** Expiration timestamp for the delegation, ISO 8601. */
+    expiry: string;
+    /** Base64 encoded PSBT template to sign. */
+    psbt: string;
+  };
 
-/** Details for a PSBT-based delegation. */
-export interface BitcoinDelegation {
-  /** Maximum amount authorized in satoshis. */
-  maxSatoshis: number;
-  /** Expiration timestamp for the delegation, ISO 8601. */
-  expiry: string;
-  /** Base64 encoded PSBT template to sign. */
-  psbt: string;
 }
 // --8<-- [end:PaymentCapability]
 

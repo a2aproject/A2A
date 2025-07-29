@@ -183,6 +183,14 @@ Specifies an extension to the A2A protocol supported by the agent.
 --8<-- "types/src/types.ts:AgentExtension"
 ```
 
+#### 5.5.2.2. `PaymentCapability` Object
+
+Specifies supported payment methods and delegation parameters.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:PaymentCapability"
+```
+
 #### 5.5.3. `SecurityScheme` Object
 
 Describes the authentication requirements for accessing the agent's `url` endpoint. Refer [Sample Agent Card](#56-sample-agent-card) for an example.
