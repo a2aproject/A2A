@@ -1491,7 +1491,7 @@ export interface AuthenticatedExtendedCardNotConfiguredError
   readonly code: -32007;
   /**
    * The error message.
-   * @default "Authenticated Extended Card not configured"
+   * @default "Authenticated Extended Card is not configured"
    */
   message: string;
 }
