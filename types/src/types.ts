@@ -567,7 +567,7 @@ export interface GetTaskPushNotificationConfigParams extends TaskIdParams {
 /**
  * Defines parameters for listing all push notification configurations associated with a task.
  */
-export interface ListTaskPushNotificationConfigParams extends TaskIdParams {}
+export interface ListTaskPushNotificationConfigParams extends TaskIdParams { }
 // --8<-- [end:ListTaskPushNotificationConfigParams]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigParams]
@@ -1461,7 +1461,7 @@ export interface AuthenticatedExtendedCardNotConfiguredError
   readonly code: -32007;
   /**
    * The error message.
-   * @default "Authenticated Extended Card not configured"
+   * @default "Authenticated Extended Card is not configured"
    */
   message: string;
 }
