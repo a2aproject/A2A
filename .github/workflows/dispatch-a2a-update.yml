@@ -1,4 +1,3 @@
-# A2A repo: .github/workflows/dispatch-a2a-json-update.yml
 name: Dispatch A2A JSON Update
 
 on:
@@ -12,15 +11,6 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Get JSON-escaped commit message
-        id: commit_message_escape
-        run: |
-          # Use jq to properly JSON-escape the multi-line commit message.
-          ESCAPED_MESSAGE=$(echo "$COMMIT_MESSAGE" | jq -R .)
-          echo "message=$ESCAPED_MESSAGE" >> "$GITHUB_OUTPUT"
-        env:
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-
       - name: Dispatch repository_dispatch to a2a-python
         uses: peter-evans/repository-dispatch@v3
         with:
@@ -31,5 +21,5 @@ jobs:
             {
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}",
-              "message": ${{ steps.commit_message_escape.outputs.message }}
+              "message": "Update to specification from ${{ github.sha }}"
             }
