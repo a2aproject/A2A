@@ -11,6 +11,15 @@ jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
+      - name: Get JSON-escaped commit message
+        id: commit_message_escape
+        run: |
+          # Use jq to properly JSON-escape the multi-line commit message.
+          # -R: reads raw input string
+          # .: outputs it as a JSON string (handles newlines, quotes, etc.)
+          ESCAPED_MESSAGE=$(echo "${{ github.event.head_commit.message }}" | jq -R .)
+          echo "message=$ESCAPED_MESSAGE" >> "$GITHUB_OUTPUT"
+
       - name: Dispatch repository_dispatch to a2a-python
         uses: peter-evans/repository-dispatch@v3
         with:
@@ -21,5 +30,5 @@ jobs:
             {
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}",
-              "message": "${{ github.event.head_commit.message }}"
+              "message": ${{ steps.commit_message_escape.outputs.message }}
             }
