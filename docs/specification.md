@@ -911,7 +911,7 @@ The purpose is to resume receiving _subsequent_ updates. The server's behavior r
 
 </div>
 
-### 7.10. `agent/authenticatedExtendedCard`
+### 7.10. `agent/getAuthenticatedExtendedCard`
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`.
 
@@ -919,14 +919,11 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 - **Response `result` type (on success)**: `AgentCard` (A complete Agent Card object, which may contain additional details or skills not present in the public card).
 - **Response `error` type (on failure)**: Standard HTTP error codes.
     - `401 Unauthorized`: Authentication failed (missing or invalid credentials). The server **SHOULD** include a `WWW-Authenticate` header.
-    - `403 Forbidden`: Authentication succeeded, but the client/user is not authorized to access the extended card.
-    - `404 Not Found`: The `supportsAuthenticatedExtendedCard` capability is declared, but the server has not implemented this endpoint at the specified path.
-    - `5xx Server Error`: An internal server error occurred.
 
 <div class="grid cards" markdown>
 
 === "JSON-RPC"
-    -   **URL:** `agent/authenticatedExtendedCard`
+    -   **URL:** `agent/getAuthenticatedExtendedCard`
     -   **HTTP Method:** `POST`
     -   **Payload:** None
     -   **Response:** `AgentCard`
@@ -980,6 +977,7 @@ These are custom error codes defined within the JSON-RPC server error range (`-3
 | `-32004` | `UnsupportedOperationError`         | This operation is not supported    | The requested operation or a specific aspect of it (perhaps implied by parameters) is not supported by this server agent implementation. Broader than just method not found.                                                         |
 | `-32005` | `ContentTypeNotSupportedError`      | Incompatible content types         | A [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) provided in the request's `message.parts` (or implied for an artifact) is not supported by the agent or the specific skill being invoked. |
 | `-32006` | `InvalidAgentResponseError`         | Invalid agent response type        | Agent generated an invalid response for the requested method                                                                                                                                                                         |
+| `-32007` | `AuthenticatedExtendedCardNotConfiguredError`         | Authenticated Extended Card not configured        | The agent does not have an Authenticated Extended Card configured.|
 
 Servers MAY define additional error codes within the `-32000` to `-32099` range for more specific scenarios not covered above, but they **SHOULD** document these clearly. The `data` field of the `JSONRPCError` object can be used to provide more structured details for any error.
 
@@ -1003,13 +1001,13 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
 
 3. **Client obtains necessary credentials out-of-band (e.g., performs OAuth 2.0 flow with Google, resulting in an access token).**
 
-4. **Client fetches the authenticated extended Agent Card using `agent/authenticatedExtendedCard` request:**
+4. **Client fetches the authenticated extended Agent Card using `agent/getAuthenticatedExtendedCard` request:**
 
    ```json
    {
      "jsonrpc": "2.0",
      "id": 1,
-     "method": "agent/authenticatedExtendedCard"
+     "method": "agent/getAuthenticatedExtendedCard"
    }
    ```
 
