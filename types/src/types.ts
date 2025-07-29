@@ -29,6 +29,8 @@ export interface AgentCapabilities {
   pushNotifications?: boolean;
   /** Indicates if the agent provides a history of state transitions for a task. */
   stateTransitionHistory?: boolean;
+  /** Configuration for making or delegating payments via supported rails. */
+  payment?: PaymentCapability;
   /** A list of protocol extensions supported by the agent. */
   extensions?: AgentExtension[];
 }
@@ -54,6 +56,37 @@ export interface AgentExtension {
   params?: { [key: string]: any };
 }
 // --8<-- [end:AgentExtension]
+
+// --8<-- [start:PaymentCapability]
+/** Configuration for payment handling supported by the agent. */
+export interface PaymentCapability {
+  /** Bitcoin-specific payment parameters. */
+  bitcoin?: BitcoinCapability;
+}
+
+/** Parameters for Bitcoin payments or PSBT-based delegation. */
+export interface BitcoinCapability {
+  /**
+   * Network the address resides on.
+   * @default "mainnet"
+   */
+  network?: "mainnet" | "testnet" | "signet";
+  /**
+   * Receiving address for direct payments. Must be a valid Bitcoin
+   * address in bech32 or base58 format.
+   */
+  payTo: string;
+  /** Optional PSBT delegation information. */
+  delegation?: {
+    /** Maximum amount authorized in satoshis. */
+    maxSatoshis: number;
+    /** Expiration timestamp for the delegation, ISO 8601. */
+    expiry: string;
+    /** Base64 encoded PSBT template to sign. */
+    psbt: string;
+  };
+}
+// --8<-- [end:PaymentCapability]
 
 // --8<-- [start:SecurityScheme]
 /**
