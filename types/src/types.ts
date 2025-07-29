@@ -567,7 +567,7 @@ export interface GetTaskPushNotificationConfigParams extends TaskIdParams {
 /**
  * Defines parameters for listing all push notification configurations associated with a task.
  */
-export interface ListTaskPushNotificationConfigParams extends TaskIdParams {}
+export interface ListTaskPushNotificationConfigParams extends TaskIdParams { }
 // --8<-- [end:ListTaskPushNotificationConfigParams]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigParams]
@@ -1234,13 +1234,13 @@ export type DeleteTaskPushNotificationConfigResponse =
 
 // --8<-- [start:GetAuthenticatedExtendedCardRequest]
 /**
- * Represents a JSON-RPC request for the `agent/authenticatedExtendedCard` method.
+ * Represents a JSON-RPC request for the `agent/getAuthenticatedExtendedCard` method.
  */
 export interface GetAuthenticatedExtendedCardRequest extends JSONRPCRequest {
   /** The identifier for this request. */
   id: number | string;
-  /** The method name. Must be 'agent/authenticatedExtendedCard'. */
-  readonly method: "agent/authenticatedExtendedCard";
+  /** The method name. Must be 'agent/getAuthenticatedExtendedCard'. */
+  readonly method: "agent/getAuthenticatedExtendedCard";
   /** This method does not accept parameters. */
   params?: never;
 }
@@ -1248,7 +1248,7 @@ export interface GetAuthenticatedExtendedCardRequest extends JSONRPCRequest {
 
 // --8<-- [start:GetAuthenticatedExtendedCardSuccessResponse]
 /**
- * Represents a successful JSON-RPC response for the `agent/authenticatedExtendedCard` method.
+ * Represents a successful JSON-RPC response for the `agent/getAuthenticatedExtendedCard` method.
  */
 export interface GetAuthenticatedExtendedCardSuccessResponse
   extends JSONRPCSuccessResponse {
@@ -1259,7 +1259,7 @@ export interface GetAuthenticatedExtendedCardSuccessResponse
 
 // --8<-- [start:GetAuthenticatedExtendedCardResponse]
 /**
- * Represents a JSON-RPC response for the `agent/authenticatedExtendedCard` method.
+ * Represents a JSON-RPC response for the `agent/getAuthenticatedExtendedCard` method.
  */
 export type GetAuthenticatedExtendedCardResponse =
   | GetAuthenticatedExtendedCardSuccessResponse
