@@ -742,8 +742,8 @@ A2A supports optional correlation IDs to enable idempotent task creation, addres
 **Client Responsibilities:**
 - **Unique correlation IDs**: Clients **MUST** generate unique correlation IDs for each intended new task within their authenticated session.
 - **Error handling**: When receiving `CorrelationIdAlreadyExistsError`, clients **SHOULD**:
-  1. Use the `existingTaskId` from the error data (if provided) to call `tasks/get`
-  2. OR generate a new `correlationId` and retry the request
+  1. Use the `existingTaskId` from the error data (if provided) to call `tasks/get`. This is the correct action when retrying a request that may have already succeeded (e.g., after a network error).
+  2. Alternatively, if the `correlationId` was reused unintentionally and a new, distinct task is desired, generate a new `correlationId` and retry the request.
 - **Retry safety**: Clients can safely retry `message/send` requests with the same `correlationId` after network failures.
 
 ### 7.2. `message/stream`
