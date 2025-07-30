@@ -322,6 +322,8 @@ Specifies optional A2A protocol features supported by the agent.
 --8<-- "types/src/types.ts:AgentCapabilities"
 ```
 
+- **`correlationIdRequired`**: When set to `true`, indicates that the agent requires clients to provide a `correlationId` field in `MessageSendParams` for all new task creation requests. This enables idempotent task creation to handle network failures and prevent duplicate operations. See [Section 7.1.2](#712-correlation-ids-and-idempotency) for detailed behavior.
+
 #### 5.5.2.1. `AgentExtension` Object
 
 Specifies an extension to the A2A protocol supported by the agent.
@@ -697,6 +699,7 @@ Sends a message to an agent to initiate a new interaction or to continue an exis
         {
           message: Message,
           configuration?: MessageSendConfiguration,
+          correlationId?: string,
           metadata?: { [key: string]: any }
         }
         ```
@@ -720,6 +723,28 @@ The `error` response for all transports in case of failure is a [`JSONRPCError`]
 
 --8<-- "types/src/types.ts:MessageSendConfiguration"
 ```
+
+#### 7.1.2. Correlation IDs and Idempotency
+
+A2A supports optional correlation IDs to enable idempotent task creation, addressing scenarios where network failures or client crashes could result in duplicate tasks with unintended side effects.
+
+**Agent Requirements:**
+- Agents **MAY** support correlation IDs by declaring `correlationIdRequired: true` in their `AgentCapabilities`.
+- When `correlationIdRequired` is `true`, agents **MUST** require a `correlationId` field in `MessageSendParams` for all new task creation requests.
+- When `correlationIdRequired` is `false` or absent, agents **MAY** ignore provided `correlationId` values.
+
+**Server Behavior:**
+- **Correlation ID scope**: Correlation IDs are scoped to the authenticated user/session to prevent cross-user conflicts.
+- **Active task collision**: If a `correlationId` matches an existing task in a non-terminal state (`submitted`, `working`, `input-required`), the server **MUST** return a [`CorrelationIdAlreadyExistsError`](#82-a2a-specific-errors) (-32008).
+- **Terminal task reuse**: If a `correlationId` matches a task in a terminal state (`completed`, `failed`, `canceled`, `rejected`), the server **MAY** allow creating a new task with the same correlation ID.
+- **Time-based expiry**: Servers **MAY** implement time-based expiry for correlation IDs associated with terminal tasks.
+
+**Client Responsibilities:**
+- **Unique correlation IDs**: Clients **MUST** generate unique correlation IDs for each intended new task within their authenticated session.
+- **Error handling**: When receiving `CorrelationIdAlreadyExistsError`, clients **SHOULD**:
+  1. Use the `existingTaskId` from the error data (if provided) to call `tasks/get`
+  2. OR generate a new `correlationId` and retry the request
+- **Retry safety**: Clients can safely retry `message/send` requests with the same `correlationId` after network failures.
 
 ### 7.2. `message/stream`
 
@@ -763,6 +788,7 @@ Sends a message to an agent to initiate/continue a task AND subscribes the clien
         {
           message: Message,
           configuration?: MessageSendConfiguration,
+          correlationId?: string,
           metadata?: { [key: string]: any }
         }
         ```
@@ -1173,6 +1199,7 @@ These are custom error codes defined within the JSON-RPC server error range (`-3
 | `-32005` | `ContentTypeNotSupportedError`      | Incompatible content types         | A [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) provided in the request's `message.parts` (or implied for an artifact) is not supported by the agent or the specific skill being invoked. |
 | `-32006` | `InvalidAgentResponseError`         | Invalid agent response type        | Agent generated an invalid response for the requested method                                                                                                                                                                         |
 | `-32007` | `AuthenticatedExtendedCardNotConfiguredError`         | Authenticated Extended Card not configured        | The agent does not have an Authenticated Extended Card configured.|
+| `-32008` | `CorrelationIdAlreadyExistsError`   | Correlation ID already exists for active task | The provided `correlationId` is already associated with an active task in a non-terminal state. The client should either retrieve the existing task using the provided `existingTaskId` or generate a new correlation ID. |
 
 Servers MAY define additional error codes within the `-32000` to `-32099` range for more specific scenarios not covered above, but they **SHOULD** document these clearly. The `data` field of the `JSONRPCError` object can be used to provide more structured details for any error.
 
@@ -1868,6 +1895,112 @@ _If the task were longer-running, the server might initially respond with `statu
      }
    }
    ```
+
+### 9.8. Idempotent Task Creation with Correlation IDs
+
+**Scenario:** Client needs to ensure idempotent task creation to avoid duplicate operations in case of network failures.
+
+1. **Client discovers agent requires correlation IDs from Agent Card:**
+
+   ```json
+   {
+     "capabilities": {
+       "correlationIdRequired": true
+     }
+   }
+   ```
+
+2. **Client sends initial message with correlation ID:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-008",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "Process this critical financial transaction - charge card ending 1234 for $500"
+           }
+         ],
+         "messageId": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+       },
+       "correlationId": "client-txn-20240315-001"
+     }
+   }
+   ```
+
+3. **Server successfully creates task and responds:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-008",
+     "result": {
+       "id": "server-task-uuid-12345",
+       "contextId": "ctx-67890",
+       "status": { "state": "working" }
+     }
+   }
+   ```
+
+4. **Network failure occurs - client retries with same correlation ID:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-009",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "Process this critical financial transaction - charge card ending 1234 for $500"
+           }
+         ],
+         "messageId": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+       },
+       "correlationId": "client-txn-20240315-001"
+     }
+   }
+   ```
+
+5. **Server detects duplicate correlation ID and returns error:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-009",
+     "error": {
+       "code": -32008,
+       "message": "Correlation ID already exists for active task",
+       "data": {
+         "correlationId": "client-txn-20240315-001",
+         "existingTaskId": "server-task-uuid-12345"
+       }
+     }
+   }
+   ```
+
+6. **Client retrieves existing task using the provided task ID:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-010",
+     "method": "tasks/get",
+     "params": {
+       "id": "server-task-uuid-12345"
+     }
+   }
+   ```
+
+This pattern ensures that duplicate operations are prevented while allowing clients to safely recover from network failures.
 
 These examples illustrate the flexibility of A2A in handling various interaction patterns and data types. Implementers should refer to the detailed object definitions for all fields and constraints.
 

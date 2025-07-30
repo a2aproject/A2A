@@ -38,6 +38,9 @@
                 },
                 {
                     "$ref": "#/definitions/AuthenticatedExtendedCardNotConfiguredError"
+                },
+                {
+                    "$ref": "#/definitions/CorrelationIdAlreadyExistsError"
                 }
             ],
             "description": "A discriminated union of all standard JSON-RPC and A2A-specific error types."
@@ -113,6 +116,10 @@
         "AgentCapabilities": {
             "description": "Defines optional capabilities supported by an agent.",
             "properties": {
+                "correlationIdRequired": {
+                    "description": "Indicates if the agent requires correlation IDs for idempotent task creation.",
+                    "type": "boolean"
+                },
                 "extensions": {
                     "description": "A list of protocol extensions supported by the agent.",
                     "items": {
@@ -681,6 +688,43 @@
                 },
                 "message": {
                     "default": "Incompatible content types",
+                    "description": "The error message.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "message"
+            ],
+            "type": "object"
+        },
+        "CorrelationIdAlreadyExistsError": {
+            "description": "An A2A-specific error indicating that the provided correlation ID already exists for an active task.",
+            "properties": {
+                "code": {
+                    "const": -32008,
+                    "description": "The error code for when a correlation ID already exists for an active task.",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "Additional data that may include the existing task ID for client recovery.",
+                    "properties": {
+                        "correlationId": {
+                            "description": "The correlation ID that already exists.",
+                            "type": "string"
+                        },
+                        "existingTaskId": {
+                            "description": "The ID of the existing task associated with this correlation ID.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "correlationId"
+                    ],
+                    "type": "object"
+                },
+                "message": {
+                    "default": "Correlation ID already exists for active task",
                     "description": "The error message.",
                     "type": "string"
                 }
@@ -1369,6 +1413,9 @@
                         },
                         {
                             "$ref": "#/definitions/AuthenticatedExtendedCardNotConfiguredError"
+                        },
+                        {
+                            "$ref": "#/definitions/CorrelationIdAlreadyExistsError"
                         }
                     ],
                     "description": "An object describing the error that occurred."
@@ -1697,6 +1744,10 @@
                 "configuration": {
                     "$ref": "#/definitions/MessageSendConfiguration",
                     "description": "Optional configuration for the send request."
+                },
+                "correlationId": {
+                    "description": "Optional client-generated correlation ID for idempotent task creation.\nIf provided and the agent supports idempotency, this ID will be used to detect\nand handle duplicate requests within the authenticated session scope.",
+                    "type": "string"
                 },
                 "message": {
                     "$ref": "#/definitions/Message",

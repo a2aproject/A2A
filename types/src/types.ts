@@ -29,6 +29,8 @@ export interface AgentCapabilities {
   pushNotifications?: boolean;
   /** Indicates if the agent provides a history of state transitions for a task. */
   stateTransitionHistory?: boolean;
+  /** Indicates if the agent requires correlation IDs for idempotent task creation. */
+  correlationIdRequired?: boolean;
   /** A list of protocol extensions supported by the agent. */
   extensions?: AgentExtension[];
 }
@@ -636,6 +638,12 @@ export interface MessageSendParams {
   message: Message;
   /** Optional configuration for the send request. */
   configuration?: MessageSendConfiguration;
+  /** 
+   * Optional client-generated correlation ID for idempotent task creation.
+   * If provided and the agent supports idempotency, this ID will be used to detect
+   * and handle duplicate requests within the authenticated session scope.
+   */
+  correlationId?: string;
   /** Optional metadata for extensions. */
   metadata?: {
     [key: string]: any;
@@ -1496,6 +1504,30 @@ export interface AuthenticatedExtendedCardNotConfiguredError
 }
 // --8<-- [end:AuthenticatedExtendedCardNotConfiguredError]
 
+// --8<-- [start:CorrelationIdAlreadyExistsError]
+/**
+ * An A2A-specific error indicating that the provided correlation ID already exists for an active task.
+ */
+export interface CorrelationIdAlreadyExistsError extends JSONRPCError {
+  /** The error code for when a correlation ID already exists for an active task. */
+  readonly code: -32008;
+  /**
+   * The error message.
+   * @default "Correlation ID already exists for active task"
+   */
+  message: string;
+  /**
+   * Additional data that may include the existing task ID for client recovery.
+   */
+  data?: {
+    /** The correlation ID that already exists. */
+    correlationId: string;
+    /** The ID of the existing task associated with this correlation ID. */
+    existingTaskId?: string;
+  };
+}
+// --8<-- [end:CorrelationIdAlreadyExistsError]
+
 // --8<-- [start:A2AError]
 /**
  * A discriminated union of all standard JSON-RPC and A2A-specific error types.
@@ -1512,5 +1544,6 @@ export type A2AError =
   | UnsupportedOperationError
   | ContentTypeNotSupportedError
   | InvalidAgentResponseError
-  | AuthenticatedExtendedCardNotConfiguredError;
+  | AuthenticatedExtendedCardNotConfiguredError
+  | CorrelationIdAlreadyExistsError;
 // --8<-- [end:A2AError]

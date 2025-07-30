@@ -421,6 +421,8 @@ message AgentCapabilities {
   bool push_notifications = 2;
   // Extensions supported by this agent.
   repeated AgentExtension extensions = 3;
+  // If the agent requires correlation IDs for idempotent task creation
+  bool correlation_id_required = 4;
 }
 
 // A declaration of an extension supported by an Agent.
@@ -620,7 +622,9 @@ message SendMessageRequest {
   Message request = 1
       [(google.api.field_behavior) = REQUIRED, json_name = "message"];
   SendMessageConfiguration configuration = 2;
-  google.protobuf.Struct metadata = 3;
+  // Optional client-generated correlation ID for idempotent task creation
+  string correlation_id = 3;
+  google.protobuf.Struct metadata = 4;  
 }
 
 message GetTaskRequest {
