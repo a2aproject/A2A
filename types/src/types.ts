@@ -597,7 +597,7 @@ export interface GetTaskPushNotificationConfigParams extends TaskIdParams {
 /**
  * Defines parameters for listing all push notification configurations associated with a task.
  */
-export interface ListTaskPushNotificationConfigParams extends TaskIdParams {}
+export interface ListTaskPushNotificationConfigParams extends TaskIdParams { }
 // --8<-- [end:ListTaskPushNotificationConfigParams]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigParams]
@@ -835,7 +835,7 @@ export interface PushNotificationAuthenticationInfo {
  */
 export interface PushNotificationConfig {
   /**
-   * A unique ID for the push notification configuration, created by the server
+   * A unique ID for the push notification configuration, set by the client
    * to support multiple notification callbacks.
    */
   id?: string;
