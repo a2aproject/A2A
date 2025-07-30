@@ -66,7 +66,8 @@ export type SecurityScheme =
   | APIKeySecurityScheme
   | HTTPAuthSecurityScheme
   | OAuth2SecurityScheme
-  | OpenIdConnectSecurityScheme;
+  | OpenIdConnectSecurityScheme
+  | MutualTLSSecurityScheme;
 // --8<-- [end:SecurityScheme]
 
 // --8<-- [start:SecuritySchemeBase]
@@ -114,6 +115,16 @@ export interface HTTPAuthSecurityScheme extends SecuritySchemeBase {
 }
 // --8<-- [end:HTTPAuthSecurityScheme]
 
+// --8<-- [start:MutualTLSSecurityScheme]
+/**
+ * Defines a security scheme using mTLS authentication.
+ */
+export interface MutualTLSSecurityScheme extends SecuritySchemeBase {
+  /** The type of the security scheme. Must be 'mutualTLS'. */
+  readonly type: "mutualTLS";
+}
+// --8<-- [end:MutualTLSSecurityScheme]
+
 // --8<-- [start:OAuth2SecurityScheme]
 /**
  * Defines a security scheme using OAuth 2.0.
@@ -123,6 +134,11 @@ export interface OAuth2SecurityScheme extends SecuritySchemeBase {
   readonly type: "oauth2";
   /** An object containing configuration information for the supported OAuth 2.0 flows. */
   flows: OAuthFlows;
+  /**
+   * URL to the oauth2 authorization server metadata
+   * [RFC8414](https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.
+   */
+  oauth2MetadataUrl?: string;
 }
 // --8<-- [end:OAuth2SecurityScheme]
 
@@ -283,6 +299,15 @@ export interface AgentSkill {
    * The set of supported output MIME types for this skill, overriding the agent's defaults.
    */
   outputModes?: string[];
+  /**
+   * Security schemes necessary for the agent to leverage this skill.
+   * As in the overall AgentCard.security, this list represents a logical OR of security
+   * requirement objects. Each object is a set of security schemes that must be used together
+   * (a logical AND).
+   *
+   * @TJS-examples [[{"google": ["oidc"]}]]
+   */
+  security?: { [scheme: string]: string[] }[];
 }
 // --8<-- [end:AgentSkill]
 
@@ -415,6 +440,11 @@ export interface AgentCard {
   /**
    * A list of security requirement objects that apply to all agent interactions. Each object
    * lists security schemes that can be used. Follows the OpenAPI 3.0 Security Requirement Object.
+   * This list can be seen as an OR of ANDs. Each object in the list describes one possible
+   * set of security requirements that must be present on a request. This allows specifying,
+   * for example, "callers must either use OAuth OR an API Key AND mTLS."
+   *
+   * @TJS-examples [[{"oauth": ["read"]}, {"api-key": [], "mtls": []}]]
    */
   security?: { [scheme: string]: string[] }[];
   /**
@@ -1452,8 +1482,7 @@ export interface InvalidAgentResponseError extends JSONRPCError {
 
 // --8<-- [start:AuthenticatedExtendedCardNotConfiguredError]
 /**
- * An A2A-specific error indicating that the agent does not have an
- * Authenticated Extended Card configured
+ * An A2A-specific error indicating that the agent does not have an Authenticated Extended Card configured
  */
 export interface AuthenticatedExtendedCardNotConfiguredError
   extends JSONRPCError {
@@ -1461,7 +1490,7 @@ export interface AuthenticatedExtendedCardNotConfiguredError
   readonly code: -32007;
   /**
    * The error message.
-   * @default "Authenticated Extended Card not configured"
+   * @default "Authenticated Extended Card is not configured"
    */
   message: string;
 }

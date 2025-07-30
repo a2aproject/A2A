@@ -205,7 +205,20 @@
                     "description": "Information about the agent's service provider."
                 },
                 "security": {
-                    "description": "A list of security requirement objects that apply to all agent interactions. Each object\nlists security schemes that can be used. Follows the OpenAPI 3.0 Security Requirement Object.",
+                    "description": "A list of security requirement objects that apply to all agent interactions. Each object\nlists security schemes that can be used. Follows the OpenAPI 3.0 Security Requirement Object.\nThis list can be seen as an OR of ANDs. Each object in the list describes one possible\nset of security requirements that must be present on a request. This allows specifying,\nfor example, \"callers must either use OAuth OR an API Key AND mTLS.\"",
+                    "examples": [
+                        [
+                            {
+                                "oauth": [
+                                    "read"
+                                ]
+                            },
+                            {
+                                "api-key": [],
+                                "mtls": []
+                            }
+                        ]
+                    ],
                     "items": {
                         "additionalProperties": {
                             "items": {
@@ -419,6 +432,28 @@
                     },
                     "type": "array"
                 },
+                "security": {
+                    "description": "Security schemes necessary for the agent to leverage this skill.\nAs in the overall AgentCard.security, this list represents a logical OR of security\nrequirement objects. Each object is a set of security schemes that must be used together\n(a logical AND).",
+                    "examples": [
+                        [
+                            {
+                                "google": [
+                                    "oidc"
+                                ]
+                            }
+                        ]
+                    ],
+                    "items": {
+                        "additionalProperties": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
                 "tags": {
                     "description": "A set of keywords describing the skill's capabilities.",
                     "examples": [
@@ -484,7 +519,7 @@
             "type": "object"
         },
         "AuthenticatedExtendedCardNotConfiguredError": {
-            "description": "An A2A-specific error indicating that the agent does not have an\nAuthenticated Extended Card configured",
+            "description": "An A2A-specific error indicating that the agent does not have an Authenticated Extended Card configured",
             "properties": {
                 "code": {
                     "const": -32007,
@@ -495,7 +530,7 @@
                     "description": "A primitive or structured value containing additional information about the error.\nThis may be omitted."
                 },
                 "message": {
-                    "default": "Authenticated Extended Card not configured",
+                    "default": "Authenticated Extended Card is not configured",
                     "description": "The error message.",
                     "type": "string"
                 }
@@ -1701,6 +1736,24 @@
             ],
             "type": "object"
         },
+        "MutualTLSSecurityScheme": {
+            "description": "Defines a security scheme using mTLS authentication.",
+            "properties": {
+                "description": {
+                    "description": "An optional description for the security scheme.",
+                    "type": "string"
+                },
+                "type": {
+                    "const": "mutualTLS",
+                    "description": "The type of the security scheme. Must be 'mutualTLS'.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "type": "object"
+        },
         "OAuth2SecurityScheme": {
             "description": "Defines a security scheme using OAuth 2.0.",
             "properties": {
@@ -1711,6 +1764,10 @@
                 "flows": {
                     "$ref": "#/definitions/OAuthFlows",
                     "description": "An object containing configuration information for the supported OAuth 2.0 flows."
+                },
+                "oauth2MetadataUrl": {
+                    "description": "URL to the oauth2 authorization server metadata\n[RFC8414](https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.",
+                    "type": "string"
                 },
                 "type": {
                     "const": "oauth2",
@@ -1900,6 +1957,9 @@
                 },
                 {
                     "$ref": "#/definitions/OpenIdConnectSecurityScheme"
+                },
+                {
+                    "$ref": "#/definitions/MutualTLSSecurityScheme"
                 }
             ],
             "description": "Defines a security scheme that can be used to secure an agent's endpoints.\nThis is a discriminated union type based on the OpenAPI 3.0 Security Scheme Object."
