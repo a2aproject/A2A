@@ -29,8 +29,8 @@ export interface AgentCapabilities {
   pushNotifications?: boolean;
   /** Indicates if the agent provides a history of state transitions for a task. */
   stateTransitionHistory?: boolean;
-  /** Indicates if the agent requires correlation IDs for idempotent task creation. */
-  correlationIdRequired?: boolean;
+  /** Indicates if the agent supports messageId-based idempotency for task creation. */
+  idempotencySupported?: boolean;
   /** A list of protocol extensions supported by the agent. */
   extensions?: AgentExtension[];
 }
@@ -638,12 +638,6 @@ export interface MessageSendParams {
   message: Message;
   /** Optional configuration for the send request. */
   configuration?: MessageSendConfiguration;
-  /** 
-   * Optional client-generated correlation ID for idempotent task creation.
-   * If provided and the agent supports idempotency, this ID will be used to detect
-   * and handle duplicate requests within the authenticated session scope.
-   */
-  correlationId?: string;
   /** Optional metadata for extensions. */
   metadata?: {
     [key: string]: any;
@@ -1504,29 +1498,29 @@ export interface AuthenticatedExtendedCardNotConfiguredError
 }
 // --8<-- [end:AuthenticatedExtendedCardNotConfiguredError]
 
-// --8<-- [start:CorrelationIdAlreadyExistsError]
+// --8<-- [start:MessageIdAlreadyExistsError]
 /**
- * An A2A-specific error indicating that the provided correlation ID already exists for an active task.
+ * An A2A-specific error indicating that the provided message ID already exists for an active task.
  */
-export interface CorrelationIdAlreadyExistsError extends JSONRPCError {
-  /** The error code for when a correlation ID already exists for an active task. */
+export interface MessageIdAlreadyExistsError extends JSONRPCError {
+  /** The error code for when a message ID already exists for an active task. */
   readonly code: -32008;
   /**
    * The error message.
-   * @default "Correlation ID already exists for active task"
+   * @default "Message ID already exists for active task"
    */
   message: string;
   /**
-   * Additional data that may include the existing task ID for client recovery.
+   * Additional data that includes the duplicate message ID and existing task ID for client recovery.
    */
-  data?: {
-    /** The correlation ID that already exists. */
-    correlationId: string;
-    /** The ID of the existing task associated with this correlation ID. */
-    existingTaskId?: string;
+  data: {
+    /** The message ID that already exists. */
+    messageId: string;
+    /** The ID of the existing task associated with this message ID. */
+    existingTaskId: string;
   };
 }
-// --8<-- [end:CorrelationIdAlreadyExistsError]
+// --8<-- [end:MessageIdAlreadyExistsError]
 
 // --8<-- [start:A2AError]
 /**
@@ -1545,5 +1539,5 @@ export type A2AError =
   | ContentTypeNotSupportedError
   | InvalidAgentResponseError
   | AuthenticatedExtendedCardNotConfiguredError
-  | CorrelationIdAlreadyExistsError;
+  | MessageIdAlreadyExistsError;
 // --8<-- [end:A2AError]
