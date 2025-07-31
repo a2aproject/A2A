@@ -28,7 +28,7 @@ nav:
   - Community: community.md
   - Partners: partners.md
   - SDK Reference:
-    - Python: sdk/python/index.md
+    - Python: sdk/python-reference.md
   - Tutorial (Python):
     - Introduction: tutorials/python/1-introduction.md
     - Setup: tutorials/python/2-setup.md
@@ -144,6 +144,7 @@ plugins:
   - macros
   - redirects:
       redirect_maps:
+        "sdk/python-reference.md": "sdk/python/api/index.html"
         "spec-json.md": https://raw.githubusercontent.com/a2aproject/A2A/refs/heads/main/specification/json/a2a.json
         "specification/overview.md": "specification.md"
         "specification/agent-card.md": "specification.md#5-agent-discovery-the-agent-card"
@@ -172,28 +173,3 @@ plugins:
         "tutorials/python/8-agent-capabilities.md": "tutorials/python/7-streaming-and-multiturn.md"
         "tutorials/python/9-ollama-agent.md": "tutorials/python/7-streaming-and-multiturn.md"
         "tutorials/python/10-next-steps.md": "tutorials/python/8-next-steps.md"
-  - mkdocstrings:
-      handlers:
-        python:
-          options:
-            show_root_heading: false
-            show_object_full_path: false
-            show_if_no_docstring: true
-            filters: ["!^_"]
-            exclude:
-              - ".git"
-              - ".idea"
-              - ".vscode"
-              - ".nox"
-              - ".venv"
-              - ".tmp"
-              - ".gemini"
-              - ".scripts"
-              - "venv"
-              - ".ruff_cache"
-              - "node_modules"
-              - "__pycache__"
-              - ".DS_Store"
-            extra:
-              show_value: true
-              show_qualifiers: false

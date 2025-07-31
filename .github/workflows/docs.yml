@@ -64,6 +64,10 @@ jobs:
         if: github.event_name == 'pull_request'
         run: mkdocs build
 
+      - name: Build Sphinx Docs for Python SDK
+        run: |
+          sphinx-build -b html docs/sdk/python docs/sdk/python/api
+
       - name: Deploy development version from main branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
