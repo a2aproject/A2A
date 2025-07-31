@@ -222,7 +222,7 @@ For quick reference, the following table summarizes the method mappings across a
 | `tasks/pushNotificationConfig/get` | `GetTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` | Get push notification config |
 | `tasks/pushNotificationConfig/list` | `ListTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs` | List push notification configs |
 | `tasks/pushNotificationConfig/delete` | `DeleteTaskPushNotification` | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` | Delete push notification config |
-| `agent/authenticatedExtendedCard` | `GetAgentCard` | `GET /v1/card` | Get authenticated agent card |
+| `agent/getAuthenticatedExtendedCard` | `GetAgentCard` | `GET /v1/card` | Get authenticated agent card |
 
 ## 4. Authentication and Authorization
 
