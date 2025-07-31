@@ -2,7 +2,7 @@
 set -e # Exit immediately if a command exits with a non-zero status.
 
 # --- Configuration ---
-PACKAGE_NAME="a2a" # The name of the package to import
+PACKAGE_NAME="a2a"          # The name of the package to import
 PYPI_PACKAGE_NAME="a2a-sdk" # The name on PyPI
 DOCS_SOURCE_DIR="docs/sdk/python"
 DOCS_BUILD_DIR="${DOCS_SOURCE_DIR}/_build"
@@ -12,7 +12,7 @@ echo "--- Setting up documentation build environment ---"
 
 # Create a clean virtual environment
 if [ -d "$VENV_DIR" ]; then
-    rm -rf "$VENV_DIR"
+  rm -rf "$VENV_DIR"
 fi
 python3 -m venv "$VENV_DIR"
 source "$VENV_DIR/bin/activate"
