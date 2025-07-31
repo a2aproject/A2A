@@ -1,11 +1,3 @@
-import os
-import sys
-
-
-# Point to the project root so Sphinx can find the a2a package.
-# This assumes conf.py is in A2A-main/docs/sdk/python
-sys.path.insert(0, os.path.abspath('../../..'))
-
 # -- Project information -----------------------------------------------------
 
 project = 'a2a-sdk'
