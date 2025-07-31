@@ -123,7 +123,7 @@ A2A and the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) are
     [:octicons-arrow-right-24: A2A Python SDK](https://github.com/a2aproject/a2a-python)
     [:octicons-arrow-right-24: A2A JS SDK](https://github.com/a2aproject/a2a-js)
     [:octicons-arrow-right-24: A2A Java SDK](https://github.com/a2aproject/a2a-java)
-    [:octicons-arrow-right-24: A2A Net SDK](https://github.com/a2aproject/a2a-dotnet)
+    [:octicons-arrow-right-24: A2A .NET SDK](https://github.com/a2aproject/a2a-dotnet)
 
 
 </div>
