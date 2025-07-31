@@ -185,7 +185,7 @@ message TaskStatus {
   // The current state of this task
   TaskState state = 1;
   // A message associated with the status.
-  Message update = 2;
+  Message update = 2 [json_name = "message"];
   // Timestamp when the status was recorded.
   // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 3;
@@ -341,6 +341,7 @@ message AgentInterface {
 // - Skills; a set of actions/solutions the agent can perform
 // - Default modalities/content types supported by the agent.
 // - Authentication requirements
+// Next ID: 18
 message AgentCard {
   // The version of the A2A protocol this agent supports.
   string protocol_version = 16;
@@ -371,6 +372,18 @@ message AgentCard {
   map<string, SecurityScheme> security_schemes = 8;
   // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
   // Security requirements for contacting the agent.
+  // This list can be seen as an OR of ANDs. Each object in the list describes
+  // one possible set of security requirements that must be present on a
+  // request. This allows specifying, for example, "callers must either use
+  // OAuth OR an API Key AND mTLS."
+  // Example:
+  // security {
+  //   schemes { key: "oauth" value { list: ["read"] } }
+  // }
+  // security {
+  //   schemes { key: "api-key" }
+  //   schemes { key: "mtls" }
+  // }
   repeated Security security = 9;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // The set of interaction modes that the agent supports across all skills.
@@ -386,6 +399,8 @@ message AgentCard {
   // the user is authenticated, i.e. is the card from .well-known
   // different than the card from GetAgentCard.
   bool supports_authenticated_extended_card = 13;
+  // JSON Web Signatures computed for this AgentCard.
+  repeated AgentCardSignature signatures = 17;
 }
 
 // Represents information about the service provider of an agent.
@@ -448,6 +463,24 @@ message AgentSkill {
   repeated string input_modes = 6;
   // Possible output modalities produced
   repeated string output_modes = 7;
+  // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
+  // Security schemes necessary for the agent to leverage this skill.
+  // As in the overall AgentCard.security, this list represents a logical OR of
+  // security requirement objects. Each object is a set of security schemes
+  // that must be used together (a logical AND).
+  repeated Security security = 8;
+}
+
+// AgentCardSignature represents a JWS signature of an AgentCard.
+// This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
+message AgentCardSignature {
+  // The protected JWS header for the signature. This is always a
+  // base64url-encoded JSON object. Required.
+  string protected = 1 [(google.api.field_behavior) = REQUIRED];
+  // The computed signature, base64url-encoded. Required.
+  string signature = 2 [(google.api.field_behavior) = REQUIRED];
+  // The unprotected JWS header values.
+  google.protobuf.Struct header = 3;
 }
 
 message TaskPushNotificationConfig {
@@ -472,6 +505,7 @@ message SecurityScheme {
     HTTPAuthSecurityScheme http_auth_security_scheme = 2;
     OAuth2SecurityScheme oauth2_security_scheme = 3;
     OpenIdConnectSecurityScheme open_id_connect_security_scheme = 4;
+    MutualTlsSecurityScheme mtls_security_scheme = 5;
   }
 }
 
@@ -503,6 +537,9 @@ message OAuth2SecurityScheme {
   string description = 1;
   // An object containing configuration information for the flow types supported
   OAuthFlows flows = 2;
+  // URL to the oauth2 authorization server metadata
+  // [RFC8414](https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.
+  string oauth2_metadata_url = 3;
 }
 
 message OpenIdConnectSecurityScheme {
@@ -511,6 +548,11 @@ message OpenIdConnectSecurityScheme {
   // Well-known URL to discover the [[OpenID-Connect-Discovery]] provider
   // metadata.
   string open_id_connect_url = 2;
+}
+
+message MutualTlsSecurityScheme {
+  // Description of this security scheme.
+  string description = 1;
 }
 
 message OAuthFlows {
@@ -575,7 +617,8 @@ message PasswordOAuthFlow {
 
 ///////////// Request Messages ///////////
 message SendMessageRequest {
-  Message request = 1 [(google.api.field_behavior) = REQUIRED];
+  Message request = 1
+      [(google.api.field_behavior) = REQUIRED, json_name = "message"];
   SendMessageConfiguration configuration = 2;
   google.protobuf.Struct metadata = 3;
 }
@@ -640,7 +683,7 @@ message GetAgentCardRequest {
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
-    Message msg = 2;
+    Message msg = 2 [json_name = "message"];
   }
 }
 
@@ -656,7 +699,7 @@ message SendMessageResponse {
 message StreamResponse {
   oneof payload {
     Task task = 1;
-    Message msg = 2;
+    Message msg = 2 [json_name = "message"];
     TaskStatusUpdateEvent status_update = 3;
     TaskArtifactUpdateEvent artifact_update = 4;
   }

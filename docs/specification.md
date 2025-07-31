@@ -57,25 +57,172 @@ A2A revolves around several key concepts. For detailed explanations, please refe
 
 ## 3. Transport and Format
 
-### 3.1. Transport Protocol
+### 3.1. Transport Layer Requirements
+
+A2A supports multiple transport protocols, all operating over **HTTP(S)**. Agents have flexibility in choosing which transport protocols to implement based on their specific requirements and use cases:
 
 - A2A communication **MUST** occur over **HTTP(S)**.
-- The A2A Server exposes its service at a URL defined in its `AgentCard`.
+- The A2A Server exposes its service at one or more URLs defined in its `AgentCard`.
+- Agents **MUST** implement at least one of the three core transport protocols defined in this specification.
+- All supported transport protocols are considered equal in status and capability.
 
-### 3.2. Data Format
+### 3.2. Supported Transport Protocols
 
-A2A uses **[JSON-RPC 2.0](https://www.jsonrpc.org/specification)** as the payload format for all requests and responses (excluding the SSE stream wrapper).
+A2A defines three core transport protocols. **A2A-compliant agents SHOULD implement at least one of these transport protocols. They MAY be compliant implementing a transport extension as defined in [3.2.4](#324-transport-extensions)** All three protocols are considered equal in status, and agents may choose to implement any combination of them based on their requirements.
 
+#### 3.2.1. JSON-RPC 2.0 Transport
+
+Agents **MAY** support JSON-RPC 2.0 transport. If implemented, it **MUST** conform to these requirements:
+
+- The primary data format is **[JSON-RPC 2.0](https://www.jsonrpc.org/specification)** for all requests and responses (excluding SSE stream wrapper).
 - Client requests and server responses **MUST** adhere to the JSON-RPC 2.0 specification.
 - The `Content-Type` header for HTTP requests and responses containing JSON-RPC payloads **MUST** be `application/json`.
+- Method names follow the pattern `{category}/{action}` (e.g., `"message/send"`, `"tasks/get"`).
+
+#### 3.2.2. gRPC Transport
+
+Agents **MAY** support gRPC transport. If implemented, it **MUST** conform to these requirements:
+
+- **Protocol Definition**: **MUST** use the normative Protocol Buffers definition in [`specification/grpc/a2a.proto`](specification/grpc/a2a.proto).
+- **Message Serialization**: **MUST** use Protocol Buffers version 3 for message serialization.
+- **Service Definition**: **MUST** implement the `A2AService` gRPC service as defined in the proto file.
+- **Method Coverage**: **MUST** provide all methods with functionally equivalent behavior to other supported transports.
+- **Field Mapping**: **MUST** use the `json_name` annotations for HTTP/JSON transcoding compatibility.
+- **Error Handling**: **MUST** map A2A error codes to appropriate gRPC status codes as defined in the proto annotations.
+- **Transport Security**: **MUST** support TLS encryption (gRPC over HTTP/2 with TLS).
+
+#### 3.2.3. HTTP+JSON/REST Transport
+
+Agents **MAY** support REST-style HTTP+JSON transport. If implemented, it **MUST** conform to these requirements:
+
+- **HTTP Methods**: **MUST** use appropriate HTTP verbs (GET for queries, POST for actions, PUT for updates, DELETE for removal).
+- **URL Patterns**: **MUST** follow the URL patterns documented in each method section (e.g., `/v1/message:send`, `/v1/tasks/{id}`).
+- **Content-Type**: **MUST** use `application/json` for request and response bodies.
+- **HTTP Status Codes**: **MUST** use appropriate HTTP status codes (200, 400, 401, 403, 404, 500, etc.) that correspond to A2A error types.
+- **Request/Response Format**: **MUST** use JSON objects that are structurally equivalent to the core A2A data structures.
+- **Method Coverage**: **MUST** provide all methods with functionally equivalent behavior to other supported transports.
+- **Error Format**: **MUST** return error responses in a consistent JSON format that maps to A2A error types.
+
+#### 3.2.4. Transport Extensions
+
+Additional transport protocols **MAY** be defined as extensions to the core A2A specification. Such extensions:
+
+- **MUST** maintain functional equivalence with the core transports
+- **MUST** use clear namespace identifiers to avoid conflicts
+- **MUST** be clearly documented and specified
+- **SHOULD** provide migration paths from core transports
 
 ### 3.3. Streaming Transport (Server-Sent Events)
+
+Streaming capabilities are **transport-specific**:
+
+#### 3.3.1. JSON-RPC 2.0 Streaming
 
 When streaming is used for methods like `message/stream` or `tasks/resubscribe`:
 
 - The server responds with an HTTP `200 OK` status and a `Content-Type` header of `text/event-stream`.
 - The body of this HTTP response contains a stream of **[Server-Sent Events (SSE)](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events)** as defined by the W3C.
 - Each SSE `data` field contains a complete JSON-RPC 2.0 Response object (specifically, a [`SendStreamingMessageResponse`](#721-sendstreamingmessageresponse-object)).
+
+#### 3.3.2. gRPC Streaming
+
+gRPC transport uses **server streaming RPCs** for streaming operations as defined in the Protocol Buffers specification.
+
+#### 3.3.3. HTTP+JSON/REST Streaming
+
+If REST transport is supported it **MUST** implement streaming using Server-Sent Events similar to JSON-RPC.
+
+### 3.4. Transport Compliance and Interoperability
+
+#### 3.4.1. Functional Equivalence Requirements
+
+When an agent supports multiple transports, all supported transports **MUST**:
+
+- **Identical Functionality**: Provide the same set of operations and capabilities.
+- **Consistent Behavior**: Return semantically equivalent results for the same requests.
+- **Same Error Handling**: Map errors consistently across transports using the error codes defined in [Section 8](#8-error-handling).
+- **Equivalent Authentication**: Support the same authentication schemes declared in the `AgentCard`.
+
+#### 3.4.2. Transport Selection and Negotiation
+
+- **Agent Declaration**: Agents **MUST** declare all supported transports in their `AgentCard` using the `preferredTransport` and `additionalInterfaces` fields.
+- **Client Choice**: Clients **MAY** choose any transport declared by the agent.
+- **No Transport Negotiation**: A2A does not define a dynamic transport negotiation protocol. Clients select a transport based on the static `AgentCard` information.
+- **Fallback Behavior**: Clients **SHOULD** implement fallback logic to try alternative transports if their preferred transport fails. The specific fallback strategy is implementation-dependent.
+
+#### 3.4.3. Transport-Specific Extensions
+
+Transports **MAY** provide transport-specific optimizations or extensions that do not compromise functional equivalence:
+
+- **gRPC**: May leverage gRPC-specific features like bidirectional streaming, metadata, or custom status codes.
+- **REST**: May provide additional HTTP caching headers or support HTTP conditional requests.
+- **JSON-RPC**: May include additional fields in the JSON-RPC request/response objects that do not conflict with the core specification.
+
+Such extensions **MUST** be backward-compatible and **MUST NOT** break interoperability with clients that do not support the extensions.
+
+### 3.5. Method Mapping and Naming Conventions
+
+To ensure consistency and predictability across different transports, A2A defines normative method mapping rules.
+
+#### 3.5.1. JSON-RPC Method Naming
+
+JSON-RPC methods **MUST** follow the pattern: `{category}/{action}` where:
+
+- `category` represents the resource type (e.g., "message", "tasks", "agent")
+- `action` represents the operation (e.g., "send", "get", "cancel")
+- Nested actions use forward slashes (e.g., "tasks/pushNotificationConfig/set")
+
+#### 3.5.2. gRPC Method Naming
+
+gRPC methods **MUST** follow Protocol Buffers service conventions using PascalCase:
+
+- Convert JSON-RPC category/action to PascalCase compound words
+- Use standard gRPC method prefixes (Get, Set, List, Create, Delete, Cancel)
+
+#### 3.5.3. HTTP+JSON/REST Method Naming
+
+REST endpoints **MUST** follow RESTful URL patterns with appropriate HTTP verbs:
+
+- Use resource-based URLs: `/v1/{resource}[/{id}][:{action}]`
+- Use standard HTTP methods aligned with REST semantics
+- Use colon notation for non-CRUD actions
+
+#### 3.5.4. Method Mapping Compliance
+
+When implementing multiple transports, agents **MUST**:
+
+- **Use standard mappings**: Follow the method mappings defined in sections 3.5.2 and 3.5.3.
+- **Maintain functional equivalence**: Each transport-specific method **MUST** provide identical functionality across all supported transports.
+- **Consistent parameters**: Use equivalent parameter structures across transports (accounting for transport-specific serialization differences).
+- **Equivalent responses**: Return semantically equivalent responses across all transports for the same operation.
+
+#### 3.5.5. Extension Method Naming
+
+For custom or extension methods not defined in the core A2A specification:
+
+- **JSON-RPC**: Follow the `{category}/{action}` pattern with a clear namespace (e.g., `myorg.extension/action`)
+- **gRPC**: Use appropriate service and method names following Protocol Buffers conventions
+- **REST**: Use clear resource-based URLs with appropriate HTTP methods
+
+Extension methods **MUST** be clearly documented and **MUST NOT** conflict with core A2A method names or semantics.
+
+#### 3.5.6. Method Mapping Reference Table
+
+For quick reference, the following table summarizes the method mappings across all transports:
+
+| JSON-RPC Method | gRPC Method | REST Endpoint | Description |
+|:----------------|:------------|:--------------|:------------|
+| `message/send` | `SendMessage` | `POST /v1/message:send` | Send message to agent |
+| `message/stream` | `SendStreamingMessage` | `POST /v1/message:stream` | Send message with streaming |
+| `tasks/get` | `GetTask` | `GET /v1/tasks/{id}` | Get task status |
+| `tasks/list` | `ListTask` | `GET /v1/tasks` | List tasks (gRPC/REST only) |
+| `tasks/cancel` | `CancelTask` | `POST /v1/tasks/{id}:cancel` | Cancel task |
+| `tasks/resubscribe` | `TaskSubscription` | `POST /v1/tasks/{id}:subscribe` | Resume task streaming |
+| `tasks/pushNotificationConfig/set` | `CreateTaskPushNotification` | `POST /v1/tasks/{id}/pushNotificationConfigs` | Set push notification config |
+| `tasks/pushNotificationConfig/get` | `GetTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` | Get push notification config |
+| `tasks/pushNotificationConfig/list` | `ListTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs` | List push notification configs |
+| `tasks/pushNotificationConfig/delete` | `DeleteTaskPushNotification` | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` | Delete push notification config |
+| `agent/authenticatedExtendedCard` | `GetAgentCard` | `GET /v1/card` | Get authenticated agent card |
 
 ## 4. Authentication and Authorization
 
@@ -143,7 +290,7 @@ Clients can find Agent Cards through various methods, including but not limited 
 ### 5.3. Recommended Location
 
 If using the well-known URI strategy, the recommended location for an agent's Agent Card is:
-`https://{server_domain}/.well-known/agent.json`
+`https://{server_domain}/.well-known/agent-card.json`
 This follows the principles of [RFC 8615](https://datatracker.ietf.org/doc/html/rfc8615) for well-known URIs.
 
 ### 5.4. Security of Agent Cards
@@ -159,24 +306,6 @@ Agent Cards themselves might contain information that is considered sensitive.
 --8<-- "types/src/types.ts:AgentCard"
 ```
 
-| Field Name                          | Type                                                               | Required | Description                                                                                                                                 |
-| :---------------------------------- | :----------------------------------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------ |
-| `protocolVersion`                   | `string`                                                           | Yes      | The version of the A2A protocol this agent supports.                                                                                        |
-| `name`                              | `string`                                                           | Yes      | Human-readable name of the agent.                                                                                                           |
-| `description`                       | `string`                                                           | Yes      | Human-readable description. [CommonMark](https://commonmark.org/) MAY be used.                                                              |
-| `url`                               | `string`                                                           | Yes      | Base URL for the agent's A2A service. Must be absolute. HTTPS for production.                                                               |
-| `provider`                          | [`AgentProvider`](#551-agentprovider-object)                       | No       | Information about the agent's provider.                                                                                                     |
-| `iconUrl`                           | `string`                                                           | No       | A URL to an icon for the agent.                                                                                                             |
-| `version`                           | `string`                                                           | Yes      | Agent or A2A implementation version string.                                                                                                 |
-| `documentationUrl`                  | `string`                                                           | No       | URL to human-readable documentation for the agent.                                                                                          |
-| `capabilities`                      | [`AgentCapabilities`](#552-agentcapabilities-object)               | Yes      | Specifies optional A2A protocol features supported (e.g., streaming, push notifications).                                                   |
-| `securitySchemes`                   | { [scheme: string]: [SecurityScheme](#553-securityscheme-object) } | No       | Security scheme details used for authenticating with this agent. undefined implies no A2A-advertised auth (not recommended for production). |
-| `security`                          | `{ [scheme: string]: string[]; }[]`                                | No       | Security requirements for contacting the agent.                                                                                             |
-| `defaultInputModes`                 | `string[]`                                                         | Yes      | Input Media Types accepted by the agent.                                                                                                    |
-| `defaultOutputModes`                | `string[]`                                                         | Yes      | Output Media Types produced by the agent.                                                                                                   |
-| `skills`                            | [`AgentSkill[]`](#554-agentskill-object)                           | Yes      | Array of skills. Must have at least one if the agent performs actions.                                                                      |
-| `supportsAuthenticatedExtendedCard` | `boolean`                                                          | No       | Indicates support for retrieving a more detailed Agent Card via an authenticated endpoint.                                                  |
-
 #### 5.5.1. `AgentProvider` Object
 
 Information about the organization or entity providing the agent.
@@ -184,11 +313,6 @@ Information about the organization or entity providing the agent.
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:AgentProvider"
 ```
-
-| Field Name     | Type     | Required | Description                             |
-| :------------- | :------- | :------- | :-------------------------------------- |
-| `organization` | `string` | Yes      | Name of the organization/entity.        |
-| `url`          | `string` | Yes      | URL for the provider's website/contact. |
 
 #### 5.5.2. `AgentCapabilities` Object
 
@@ -198,13 +322,6 @@ Specifies optional A2A protocol features supported by the agent.
 --8<-- "types/src/types.ts:AgentCapabilities"
 ```
 
-| Field Name               | Type             | Required | Default | Description                                                                          |
-| :----------------------- | :--------------- | :------- | :------ | :----------------------------------------------------------------------------------- |
-| `streaming`              | `boolean`        | No       | `false` | Indicates support for SSE streaming methods (`message/stream`, `tasks/resubscribe`). |
-| `pushNotifications`      | `boolean`        | No       | `false` | Indicates support for push notification methods (`tasks/pushNotificationConfig/*`).  |
-| `stateTransitionHistory` | `boolean`        | No       | `false` | Placeholder for future feature: exposing detailed task status change history.        |
-| `extensions`             | [`AgentExtension`[]](#5521-agentextension-object) | No       | `[]`    | A list of extensions supported by this agent.                                        |
-
 #### 5.5.2.1. `AgentExtension` Object
 
 Specifies an extension to the A2A protocol supported by the agent.
@@ -213,16 +330,9 @@ Specifies an extension to the A2A protocol supported by the agent.
 --8<-- "types/src/types.ts:AgentExtension"
 ```
 
-| Field Name    | Type      | Required | Description                                                                                 |
-| :-------------| :-------- | :------- | :------------------------------------------------------------------------------------------ |
-| `uri`         | `string`  | Yes      | The URI for the supported extension.                                                        |
-| `required`    | `boolean` | No       | Whether the agent requires clients to follow some protocol logic specific to the extension. Clients should expect failures when attempting to interact with a server that requires an extension the client does not support. |
-| `description` | `string`  | No       | A description of how the extension is used by the agent.                                    |
-| `params`      | `object`  | No       | Configuration parameters specific to the extension                                          |
-
 #### 5.5.3. `SecurityScheme` Object
 
-Describes the authentication requirements for accessing the agent's `url` endpoint. Refer [Sample Agent Card](#56-sample-agent-card) for an example.
+Describes the authentication requirements for accessing the agent's `url` endpoint. Refer [Sample Agent Card](#57-sample-agent-card) for an example.
 
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:SecurityScheme"
@@ -236,17 +346,71 @@ Describes a specific capability, function, or area of expertise the agent can pe
 --8<-- "types/src/types.ts:AgentSkill"
 ```
 
-| Field Name    | Type       | Required | Description                                                                    |
-| :------------ | :--------- | :------- | :----------------------------------------------------------------------------- |
-| `id`          | `string`   | Yes      | Unique skill identifier within this agent.                                     |
-| `name`        | `string`   | Yes      | Human-readable skill name.                                                     |
-| `description` | `string`   | Yes      | Detailed skill description. [CommonMark](https://commonmark.org/) MAY be used. |
-| `tags`        | `string[]` | Yes      | Keywords/categories for discoverability.                                       |
-| `examples`    | `string[]` | No       | Example prompts or use cases demonstrating skill usage.                        |
-| `inputModes`  | `string[]` | No       | Overrides `defaultInputModes` for this specific skill. Accepted Media Types.    |
-| `outputModes` | `string[]` | No       | Overrides `defaultOutputModes` for this specific skill. Produced Media Types.   |
+#### 5.5.5. `AgentInterface` Object
 
-### 5.6. Sample Agent Card
+Provides a declaration of a combination of the target URL and the supported transport to interact with the agent. This enables agents to expose the same functionality through multiple transport protocols.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:TransportProtocol"
+```
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:AgentInterface"
+```
+
+The `transport` field **SHOULD** use one of the core A2A transport protocol values:
+
+- `"JSONRPC"`: JSON-RPC 2.0 over HTTP
+- `"GRPC"`: gRPC over HTTP/2
+- `"HTTP+JSON"`: REST-style HTTP with JSON
+
+Additional transport values **MAY** be used for future extensions, but such extensions **MUST** not conflict with core A2A protocol functionality.
+
+#### 5.5.6. `AgentCardSignature` Object
+
+Represents a JSON Web Signature (JWS) used to verify the integrity of the AgentCard.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:AgentCardSignature"
+```
+
+### 5.6. Transport Declaration and URL Relationships
+
+The AgentCard **MUST** properly declare the relationship between URLs and transport protocols:
+
+#### 5.6.1. Main URL and Preferred Transport
+
+- **Main URL requirement**: The `url` field **MUST** specify the primary endpoint for the agent.
+- **Transport correspondence**: The transport protocol available at the main `url` **MUST** match the `preferredTransport` field.
+- **Required declaration**: The `preferredTransport` field is **REQUIRED** and **MUST** be present in every `AgentCard`.
+- **Transport availability**: The main `url` **MUST** support the transport protocol declared in `preferredTransport`.
+
+#### 5.6.2. Additional Interfaces
+
+- **URL uniqueness**: Each `AgentInterface` in `additionalInterfaces` **SHOULD** specify a distinct URL for clarity, but **MAY** reuse URLs if multiple transport protocols are available at the same endpoint.
+- **Transport declaration**: Each `AgentInterface` **MUST** accurately declare the transport protocol available at its specified URL.
+- **Completeness**: The `additionalInterfaces` array **SHOULD** include all supported transports, including the main URL's transport for completeness.
+
+#### 5.6.3. Client Transport Selection Rules
+
+Clients **MUST** follow these rules when selecting a transport:
+
+1. **Parse transport declarations**: Extract available transports from both the main `url`/`preferredTransport` combination and all `additionalInterfaces`.
+2. **Prefer declared preference**: If the client supports the `preferredTransport`, it **SHOULD** use the main `url`.
+3. **Fallback selection**: If the preferred transport is not supported by the client, it **MAY** select any supported transport from `additionalInterfaces`.
+4. **Graceful degradation**: Clients **SHOULD** implement fallback logic to try alternative transports if their first choice fails.
+5. **URL-transport matching**: Clients **MUST** use the correct URL for the selected transport protocol as declared in the AgentCard.
+
+#### 5.6.4. Validation Requirements
+
+Agent Cards **MUST** satisfy these validation requirements:
+
+- **Transport consistency**: The `preferredTransport` value **MUST** be present and **MUST** be available at the main `url`.
+- **Interface completeness**: If `additionalInterfaces` is provided, it **SHOULD** include an entry corresponding to the main `url` and `preferredTransport`.
+- **No conflicts**: The same URL **MUST NOT** declare conflicting transport protocols across different interface declarations.
+- **Minimum transport requirement**: The agent **MUST** declare at least one supported transport protocol through either the main `url`/`preferredTransport` combination or `additionalInterfaces`.
+
+### 5.7. Sample Agent Card
 
 ```json
 {
@@ -254,6 +418,12 @@ Describes a specific capability, function, or area of expertise the agent can pe
   "name": "GeoSpatial Route Planner Agent",
   "description": "Provides advanced route planning, traffic analysis, and custom map generation services. This agent can calculate optimal routes, estimate travel times considering real-time traffic, and create personalized maps with points of interest.",
   "url": "https://georoute-agent.example.com/a2a/v1",
+  "preferredTransport": "JSONRPC",
+  "additionalInterfaces" : [
+    {"url": "https://georoute-agent.example.com/a2a/v1", "transport": "JSONRPC"},
+    {"url": "https://georoute-agent.example.com/a2a/grpc", "transport": "GRPC"},
+    {"url": "https://georoute-agent.example.com/a2a/json", "transport": "HTTP+JSON"}
+  ],
   "provider": {
     "organization": "Example Geo Services Inc.",
     "url": "https://www.examplegeoservices.com"
@@ -310,7 +480,13 @@ Describes a specific capability, function, or area of expertise the agent can pe
       ]
     }
   ],
-  "supportsAuthenticatedExtendedCard": true
+  "supportsAuthenticatedExtendedCard": true,
+  "signatures": [
+    {
+      "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
+      "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
+    }
+  ]
 }
 ```
 
@@ -320,21 +496,11 @@ These objects define the structure of data exchanged within the JSON-RPC methods
 
 ### 6.1. `Task` Object
 
-Represents the stateful unit of work being processed by the A2A Server for an A2A Client. A task encapsulates the entire interaction related to a specific goal or request. A task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
+Represents the stateful unit of work being processed by the A2A Server for an A2A Client. A task encapsulates the entire interaction related to a specific goal or request. A task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Tasks in completed state SHOULD use artifacts for returning the generated output to the clients. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
 
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:Task"
 ```
-
-| Field Name  | Type                                  | Required | Description                                                                   |
-|:------------|:--------------------------------------| :------- | :---------------------------------------------------------------------------- |
-| `id`        | `string`                              | Yes      | Server generated unique task identifier (e.g., UUID)                          |
-| `contextId` | `string`                              | Yes      | Server generated ID for contextual alignment across interactions              |
-| `status`    | [`TaskStatus`](#62-taskstatus-object) | Yes      | Current status of the task (state, message, timestamp).                       |
-| `artifacts` | [`Artifact[]`](#67-artifact-object)   | No       | Array of outputs generated by the agent for this task.                        |
-| `history`   | [`Message[]`](#64-message-object)     | No       | Optional array of recent messages exchanged, if requested by `historyLength`. |
-| `metadata`  | `Record<string, any>`                 | No       | Arbitrary key-value metadata associated with the task.                        |
-| `kind`      | `"task"`                              | Yes      | Type discriminator, literal value                                                |
 
 ### 6.2. `TaskStatus` Object
 
@@ -344,12 +510,6 @@ Represents the current state and associated context (e.g., a message from the ag
 --8<-- "types/src/types.ts:TaskStatus"
 ```
 
-| Field Name  | Type                              | Required | Description                                                |
-| :---------- | :-------------------------------- | :------- | :--------------------------------------------------------- |
-| `state`     | [`TaskState`](#63-taskstate-enum) | Yes      | Current lifecycle state of the task.                       |
-| `message`   | [`Message`](#64-message-object)   | No       | Optional message providing context for the current status. |
-| `timestamp` | `string` (ISO 8601)               | No       | Timestamp (UTC recommended) when this status was recorded. |
-
 ### 6.3. `TaskState` Enum
 
 Defines the possible lifecycle states of a `Task`.
@@ -357,18 +517,6 @@ Defines the possible lifecycle states of a `Task`.
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:TaskState"
 ```
-
-| Value            | Description                                                                                               | Terminal?  |
-| :--------------- | :-------------------------------------------------------------------------------------------------------- | :--------- |
-| `submitted`      | Task received by the server and acknowledged, but processing has not yet actively started.                | No         |
-| `working`        | Task is actively being processed by the agent. Client may expect further updates or a terminal state.     | No         |
-| `input-required` | Agent requires additional input from the client/user to proceed. The task is effectively paused.          | No (Pause) |
-| `completed`      | Task finished successfully. Results are typically available in `Task.artifacts` or `TaskStatus.message`.  | Yes        |
-| `canceled`       | Task was canceled (e.g., by a `tasks/cancel` request or server-side policy).                              | Yes        |
-| `failed`         | Task terminated due to an error during processing. `TaskStatus.message` may contain error details.        | Yes        |
-| `rejected`       | Task terminated due to rejection by remote agent. `TaskStatus.message` may contain error details.         | Yes        |
-| `auth-required`  | Agent requires additional authentication from the client/user to proceed. The task is effectively paused. | No (Pause) |
-| `unknown`        | The state of the task cannot be determined (e.g., task ID is invalid, unknown, or has expired).           | Yes        |
 
 ### 6.4. `Message` Object
 
@@ -378,24 +526,16 @@ Represents a single communication turn or a piece of contextual information betw
 --8<-- "types/src/types.ts:Message"
 ```
 
-| Field Name         | Type                            | Required | Description                                                                      |
-| :----------------- | :------------------------------ | :------- | :------------------------------------------------------------------------------- |
-| `role`             | `"user"` \| `"agent"`           | Yes      | Indicates the sender: `"user"` (from A2A Client) or `"agent"` (from A2A Server). |
-| `parts`            | [`Part[]`](#65-part-union-type) | Yes      | Array of content parts. Must contain at least one part.                          |
-| `metadata`         | `Record<string, any>`           | No       | Arbitrary key-value metadata associated with this message.                       |
-| `extensions`       | `string[]`                      | No       | A list of extension URIs that contributed to this message.                       |
-| `referenceTaskIds` | `string[]`                      | No       | List of tasks referenced as contextual hint by this message.                     |
-| `messageId`        | `string`                        | Yes      | Message identifier generated by the message sender                               |
-| `taskId`           | `string`                        | No       | Task identifier the current message is related to                                |
-| `contextId`        | `string`                        | No       | Context identifier the message is associated with                                |
-| `kind`             | `"message"`                     | Yes      | Type discriminator, literal value                                                |
-
 ### 6.5. `Part` Union Type
 
 Represents a distinct piece of content within a `Message` or `Artifact`. A `Part` is a union type representing exportable content as either `TextPart`, `FilePart`, or `DataPart`. All `Part` types also include an optional `metadata` field (`Record<string, any>`) for part-specific metadata.
 
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:Part"
+```
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:PartBase"
 ```
 
 It **MUST** be one of the following:
@@ -408,12 +548,6 @@ For conveying plain textual content.
 --8<-- "types/src/types.ts:TextPart"
 ```
 
-| Field Name | Type                  | Required | Description                                   |
-| :--------- | :-------------------- | :------- | :-------------------------------------------- |
-| `kind`     | `"text"` (literal)    | Yes      | Identifies this part as textual content.      |
-| `text`     | `string`              | Yes      | The textual content of the part.              |
-| `metadata` | `Record<string, any>` | No       | Optional metadata specific to this text part. |
-
 #### 6.5.2. `FilePart` Object
 
 For conveying file-based content.
@@ -421,12 +555,6 @@ For conveying file-based content.
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:FilePart"
 ```
-
-| Field Name | Type                  | Required    | Description                                   |
-| :--------- | :-------------------- | :---------- | :-------------------------------------------- |
-| `kind`     | `"file"` (literal)    | Yes         | Identifies this part as file content.         |
-| `file`     | `FileWithBytes` \| `FileWithUri` | Yes  | Contains the file details and data/reference. |
-| `metadata` | `Record<string, any>` | No          | Optional metadata specific to this file part. |
 
 #### 6.5.3. `DataPart` Object
 
@@ -436,13 +564,15 @@ For conveying structured JSON data. Useful for forms, parameters, or any machine
 --8<-- "types/src/types.ts:DataPart"
 ```
 
-| Field Name | Type                  | Required | Description                                                                 |
-| :--------- | :-------------------- | :------- | :-------------------------------------------------------------------------- |
-| `kind`     | `"data"` (literal)    | Yes      | Identifies this part as structured data.                                    |
-| `data`     | `Record<string, any>` | Yes      | The structured JSON data payload (an object or an array).                   |
-| `metadata` | `Record<string, any>` | No       | Optional metadata specific to this data part (e.g., reference to a schema). |
+### 6.6 `FileBase` Object
 
-### 6.6.1 `FileWithBytes` Object
+Base entity for File Contents.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:FileBase"
+```
+
+#### 6.6.1 `FileWithBytes` Object
 
 Represents the data for a file, used within a `FilePart`.
 
@@ -450,25 +580,13 @@ Represents the data for a file, used within a `FilePart`.
 --8<-- "types/src/types.ts:FileWithBytes"
 ```
 
-| Field Name | Type     | Required | Description                                                                                                                         |
-| :--------- | :------- | :------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| `name`     | `string` | No       | Original filename (e.g., "report.pdf").                                                                                             |
-| `mimeType` | `string` | No       | [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) (e.g., `image/png`). Strongly recommended. |
-| `bytes`    | `string` | Yes      | Base64 encoded file content.                                                                                                        |
-
-### 6.6.2 `FileWithUri` Object
+#### 6.6.2 `FileWithUri` Object
 
 Represents the URI for a file, used within a `FilePart`.
 
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:FileWithUri"
 ```
-
-| Field Name | Type     | Required | Description                                                                                                                         |
-| :--------- | :------- | :------- | :---------------------------------------------------------------------------------------------------------------------------------- |
-| `name`     | `string` | No       | Original filename (e.g., "report.pdf").                                                                                             |
-| `mimeType` | `string` | No       | [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) (e.g., `image/png`). Strongly recommended. |
-| `uri`      | `string` | Yes      | URI (absolute URL strongly recommended) to file content. Accessibility is context-dependent.                                        |
 
 ### 6.7. `Artifact` Object
 
@@ -478,15 +596,6 @@ Represents a tangible output generated by the agent during a task. Artifacts are
 --8<-- "types/src/types.ts:Artifact"
 ```
 
-| Field Name    | Type                            | Required | Description                                                                     |
-| :------------ | :------------------------------ | :------- | ------------------------------------------------------------------------------- |
-| `artifactId`  | `string`                        | Yes      | Identifier for the artifact generated by the agent.                             |
-| `name`        | `string`                        | No       | Descriptive name for the artifact.                                              |
-| `description` | `string`                        | No       | Human-readable description of the artifact.                                     |
-| `parts`       | [`Part[]`](#65-part-union-type) | Yes      | Content of the artifact, as one or more `Part` objects. Must have at least one. |
-| `metadata`    | `Record<string, any>`           | No       | Arbitrary key-value metadata associated with the artifact.                      |
-| `extensions`  | `string[]`                 | No       | A list of extension URIs that contributed to this artifact.                         |
-
 ### 6.8. `PushNotificationConfig` Object
 
 Configuration provided by the client to the server for sending asynchronous push notifications about task updates.
@@ -494,13 +603,6 @@ Configuration provided by the client to the server for sending asynchronous push
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:PushNotificationConfig"
 ```
-
-| Field Name       | Type                                                                  | Required | Description                                                                                                                                                               |
-| :--------------- | :-------------------------------------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `url`            | `string`                                                              | Yes      | Absolute HTTPS webhook URL for the A2A Server to POST task updates to.                                                                                                    |
-| `id`             | `string`                                                              | No       | Optional server-generated identifier for the push notification configuration to support multiple callbacks.                                                               |
-| `token`          | `string`                                                              | No       | Optional client-generated opaque token for the client's webhook receiver to validate the notification (e.g., server includes it in an `X-A2A-Notification-Token` header). |
-| `authentication` | [`PushNotificationAuthenticationInfo`](#69-pushnotificationauthenticationinfo-object) | No       | Authentication details the A2A Server must use when calling the `url`. The client's webhook (receiver) defines these requirements.                        |
 
 ### 6.9. `PushNotificationAuthenticationInfo` Object
 
@@ -510,11 +612,6 @@ A generic structure for specifying authentication requirements, typically used w
 --8<-- "types/src/types.ts:PushNotificationAuthenticationInfo"
 ```
 
-| Field Name    | Type       | Required | Description                                                                                                                                                                                |
-| :------------ | :--------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `schemes`     | `string[]` | Yes      | Array of auth scheme names the A2A Server must use when calling the client's webhook (e.g., "Bearer", "ApiKey").                                                                           |
-| `credentials` | `string`   | No       | Optional static credentials or scheme-specific configuration info. **Handle with EXTREME CAUTION if secrets are involved.** Prefer server-side dynamic credential fetching where possible. |
-
 ### 6.10. `TaskPushNotificationConfig` Object
 
 Used as the `params` object for the [`tasks/pushNotificationConfig/set`](#75-taskspushnotificationconfigset) method and as the `result` object for the [`tasks/pushNotificationConfig/get`](#76-taskspushnotificationconfigget) method.
@@ -522,11 +619,6 @@ Used as the `params` object for the [`tasks/pushNotificationConfig/set`](#75-tas
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:TaskPushNotificationConfig"
 ```
-
-| Field Name               | Type                                                          | Required | Description                                                                                                                           |
-| :----------------------- | :------------------------------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------ |
-| `taskId`                 | `string`                                                      | Yes      | The ID of the task to configure push notifications for, or retrieve configuration from.                                               |
-| `pushNotificationConfig` | [`PushNotificationConfig`](#68-pushnotificationconfig-object) | Yes      | The push notification configuration. For `set`, the desired config. For `get`, the current config (secrets MAY be omitted by server). |
 
 ### 6.11. JSON-RPC Structures
 
@@ -559,12 +651,6 @@ When a JSON-RPC call encounters an error, the Response Object will contain an `e
 --8<-- "types/src/types.ts:JSONRPCError"
 ```
 
-| Field Name | Type      | Required | Description                                                                                                  |
-| :--------- | :-------- | :------- | :----------------------------------------------------------------------------------------------------------- |
-| `code`     | `integer` | Yes      | Integer error code. See [Section 8 (Error Handling)](#8-error-handling) for standard and A2A-specific codes. |
-| `message`  | `string`  | Yes      | Short, human-readable summary of the error.                                                                  |
-| `data`     | `any`     | No       | Optional additional structured information about the error.                                                  |
-
 ## 7. Protocol RPC Methods
 
 All A2A RPC methods are invoked by the A2A Client by sending an HTTP POST request to the A2A Server's `url` (as specified in its `AgentCard`). The body of the HTTP POST request **MUST** be a `JSONRPCRequest` object, and the `Content-Type` header **MUST** be `application/json`.
@@ -575,9 +661,57 @@ The A2A Server's HTTP response body **MUST** be a `JSONRPCResponse` object (or, 
 
 Sends a message to an agent to initiate a new interaction or to continue an existing one. This method is suitable for synchronous request/response interactions or when client-side polling (using `tasks/get`) is acceptable for monitoring longer-running tasks. A task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Sending a message to such a task will result in an error. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
 
-- **Request `params` type**: [`MessageSendParams`](#711-messagesendparams-object)
-- **Response `result` type (on success)**: [`Task` | `Message`](#61-task-object) (A message object or the current or final state of the task after processing the message).
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object).
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `message/send`
+    -   **HTTP Method:** `POST`
+    -   **Payload**: [`MessageSendParams`](#711-messagesendparams-object)
+    -   **Response**: [`Task` | `Message`](#61-task-object) (A message object or the current or final state of the task after processing the message).
+
+=== "gRPC"
+    -   **URL:** `SendMessage`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message SendMessageRequest {
+          Message msg = 1;
+          SendMessageConfiguration configuration = 2;
+        }
+        ```
+    -   **Response:**
+        ```proto
+        message SendMessageResponse {
+          oneof payload {
+            Task task = 1;
+            Message msg = 2;
+          }
+        }
+        ```
+
+=== "REST"
+    -   **URL:** `/v1/message:send`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```typescript
+        {
+          message: Message,
+          configuration?: MessageSendConfiguration,
+          metadata?: { [key: string]: any }
+        }
+        ```
+    -   **Response:**
+        ```typescript
+        // Returns one of a message or a task
+        {
+          message?: Message,
+          task?: Task
+        }
+        ```
+
+</div>
+
+The `error` response for all transports in case of failure is a [`JSONRPCError`](#612-jsonrpcerror-object) or equivalent.
 
 #### 7.1.1. `MessageSendParams` Object
 
@@ -587,24 +721,62 @@ Sends a message to an agent to initiate a new interaction or to continue an exis
 --8<-- "types/src/types.ts:MessageSendConfiguration"
 ```
 
-| Field Name      | Type                                                            | Required | Description                                                        |
-| :-------------- | :-------------------------------------------------------------- | :------- | :----------------------------------------------------------------- |
-| `message`       | [`Message`](#64-message-object)                                 | Yes      | The message content to send. `Message.role` is typically `"user"`. |
-| `configuration` | [`MessageSendConfiguration`](#711-messagesendparams-object) | No       | Optional: additional message configuration                         |
-| `metadata`      | `Record<string, any>`                                           | No       | Request-specific metadata.                                         |
-
 ### 7.2. `message/stream`
 
 Sends a message to an agent to initiate/continue a task AND subscribes the client to real-time updates for that task via Server-Sent Events (SSE). This method requires the server to have `AgentCard.capabilities.streaming: true`. Just like `message/send`, a task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Sending a message to such a task will result in an error. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
 
-- **Request `params` type**: [`MessageSendParams`](#711-messagesendparams-object) (same as `message/send`).
-- **Response (on successful subscription)**:
-    - HTTP Status: `200 OK`.
-    - HTTP `Content-Type`: `text/event-stream`.
-    - HTTP Body: A stream of Server-Sent Events. Each SSE `data` field contains a [`SendStreamingMessageResponse`](#721-sendstreamingmessageresponse-object) JSON object.
-- **Response (on initial subscription failure)**:
-    - Standard HTTP error code (e.g., 4xx, 5xx).
-    - The HTTP body MAY contain a standard `JSONRPCResponse` with an `error` object detailing the failure.
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `message/stream`
+    -   **HTTP Method:** `POST`
+    -   **Payload**: [`MessageSendParams`](#711-messagesendparams-object) (same as `message/send`)
+    -   **Response**: A stream of Server-Sent Events. Each SSE `data` field contains a [`SendStreamingMessageResponse`](#721-sendstreamingmessageresponse-object)
+
+=== "gRPC"
+    -   **URL:** `SendStreamingMessage`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message SendMessageRequest {
+          Message msg = 1;
+          SendMessageConfiguration configuration = 2;
+        }
+        ```
+    -   **Response:**
+        ```proto
+        message StreamResponse {
+          oneof payload {
+            Task task;
+            Message msg;
+            TaskStatusUpdateEvent status_update;
+            TaskArtifactUpdateEvent artifact_update;
+          }
+        }
+        ```
+
+=== "REST"
+    -   **URL:** `/v1/message:stream`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```typescript
+        {
+          message: Message,
+          configuration?: MessageSendConfiguration,
+          metadata?: { [key: string]: any }
+        }
+        ```
+    -   **Response:**
+        ```typescript
+        {
+          message?: Message
+          task?: Task
+          statusUpdate?: TaskStatusUpdateEvent
+          artifactUpdate?: TaskArtifactUpdateEvent
+        }
+        ```
+
+</div>
 
 #### 7.2.1. `SendStreamingMessageResponse` Object
 
@@ -616,12 +788,6 @@ This is the structure of the JSON object found in the `data` field of each Serve
 --8<-- "types/src/types.ts:SendStreamingMessageSuccessResponse"
 ```
 
-| Field Name | Type                                                                                                                                                                                          | Required | Description                                                                            |
-| :--------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- | :------------------------------------------------------------------------------------- |
-| `jsonrpc`  | `"2.0"` (literal)                                                                                                                                                                             | Yes      | JSON-RPC version string.                                                               |
-| `id`       | `string` \| `number`                                                                                                                                                                          | Yes      | Matches the `id` from the originating `message/stream` or `tasks/resubscribe` request. |
-| `result`   | **Either** `Message` <br> **OR** `Task` <br> **OR** [`TaskStatusUpdateEvent`](#722-taskstatusupdateevent-object) <br> **OR** [`TaskArtifactUpdateEvent`](#723-taskartifactupdateevent-object) | Yes      | The event payload                                                                      |
-
 #### 7.2.2. `TaskStatusUpdateEvent` Object
 
 Carries information about a change in the task's status during streaming. This is one of the possible `result` types in a `SendStreamingMessageSuccessResponse`.
@@ -629,15 +795,6 @@ Carries information about a change in the task's status during streaming. This i
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:TaskStatusUpdateEvent"
 ```
-
-| Field Name  | Type                                  | Required | Default         | Description                                                                                                                                      |
-| :---------- | :------------------------------------ | :------- | :-------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `taskId`    | `string`                              | Yes      |                 | Task ID being updated                                                                                                                            |
-| `contextId` | `string`                              | Yes      |                 | Context ID the task is associated with                                                                                                           |
-| `kind`      | `string`, literal                     | Yes      | `status-update` | Type discriminator, literal value                                                                                                                |
-| `status`    | [`TaskStatus`](#62-taskstatus-object) | Yes      |                 | The new `TaskStatus` object.                                                                                                                     |
-| `final`     | `boolean`                             | No       | `false`         | If `true`, indicates this is the terminal status update for the current stream cycle. The server typically closes the SSE connection after this. |
-| `metadata`  | `Record<string, any>`                 | No       | `undefined`     | Event-specific metadata.                                                                                                                         |
 
 #### 7.2.3. `TaskArtifactUpdateEvent` Object
 
@@ -647,23 +804,38 @@ Carries a new or updated artifact (or a chunk of an artifact) generated by the t
 --8<-- "types/src/types.ts:TaskArtifactUpdateEvent"
 ```
 
-| Field Name  | Type                              | Required | Default           | Description                                                                |
-| :---------- | :-------------------------------- | :------- | :---------------- | :------------------------------------------------------------------------- |
-| `taskId`    | `string`                          | Yes      |                   | Task ID associated with the generated artifact part                        |
-| `contextId` | `string`                          | Yes      |                   | Context ID the task is associated with                                     |
-| `kind`      | `string`, literal                 | Yes      | `artifact-update` | Type discriminator, literal value                                          |
-| `artifact`  | [`Artifact`](#67-artifact-object) | Yes      |                   | The `Artifact` data. Could be a complete artifact or an incremental chunk. |
-| `append`    | `boolean`                         | No       | `false`           | `true` means append parts to artifact; `false` (default) means replace.    |
-| `lastChunk` | `boolean`                         | No       | `false`           | `true` indicates this is the final update for the artifact.                |
-| `metadata`  | `Record<string, any>`             | No       | `undefined`       | Event-specific metadata.                                                   |
-
 ### 7.3. `tasks/get`
 
 Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with `message/send`, or for fetching the final state of a task after being notified via a push notification or after an SSE stream has ended.
 
-- **Request `params` type**: [`TaskQueryParams`](#731-taskqueryparams-object)
-- **Response `result` type (on success)**: [`Task`](#61-task-object) (A snapshot of the task's current state).
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., if the task ID is not found, see [`TaskNotFoundError`](#82-a2a-specific-errors)).
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `tasks/get`
+    -   **HTTP Method:** `POST`
+    -   **Payload**: [`TaskQueryParams`](#731-taskqueryparams-object)
+    -   **Response**: `Task`
+
+=== "gRPC"
+    -   **URL:** `GetTask`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message GetTaskRequest {
+          // name=tasks/{id}
+          string name;
+          int32 history_length;
+        }
+        ```
+    -   **Response**: `Task`
+
+=== "REST"
+    -   **URL:** `v1/tasks/{id}?historyLength={historyLength}`
+    -   **HTTP Method:** `GET`
+    -   **Payload:** None
+    -   **Response**: `Task`
+
+</div>
 
 #### 7.3.1. `TaskQueryParams` Object
 
@@ -671,19 +843,69 @@ Retrieves the current state (including status, artifacts, and optionally history
 --8<-- "types/src/types.ts:TaskQueryParams"
 ```
 
-| Field Name      | Type                  | Required | Description                                                                              |
-| :-------------- | :-------------------- | :------- | :--------------------------------------------------------------------------------------- |
-| `id`            | `string`              | Yes      | The ID of the task whose current state is to be retrieved.                               |
-| `historyLength` | `integer`             | No       | If positive, requests the server to include up to `N` recent messages in `Task.history`. |
-| `metadata`      | `Record<string, any>` | No       | Request-specific metadata.                                                               |
+### `tasks/list`
+
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -  N/A
+
+=== "gRPC"
+    -   **URL:** `ListTask`
+    -   **HTTP Method:** `GET`
+    -   **Payload:**
+        ```proto
+        {}
+        ```
+    -   **Response**: `repeated Task`
+
+=== "REST"
+    -   **URL:** `/v1/tasks`
+    -   **HTTP Method:** `GET`
+    -   **Payload:**
+        ```typescript
+        {}
+        ```
+    -   **Response**: `[Task]`
+
+</div>
 
 ### 7.4. `tasks/cancel`
 
 Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).
 
-- **Request `params` type**: [`TaskIdParams`](#741-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget)
-- **Response `result` type (on success)**: [`Task`](#61-task-object) (The state of the task after the cancellation attempt. Ideally, `Task.status.state` will be `"canceled"` if successful).
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`TaskNotFoundError`](#82-a2a-specific-errors), [`TaskNotCancelableError`](#82-a2a-specific-errors)).
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `tasks/cancel`
+    -   **HTTP Method:** `POST`
+    -   **Payload**: [`TaskIdParams`](#741-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget)
+    -   **Response**: `Task`
+
+=== "gRPC"
+    -   **URL:** `CancelTask`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message CancelTaskRequest{
+          // name=tasks/{id}
+          string name;
+        }
+        ```
+    -   **Response**: `Task`
+
+=== "REST"
+    -   **URL:** `/v1/tasks/{id}:cancel`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```typescript
+        {
+          name: string
+        }
+        ```
+    -   **Response**: `Task`
+
+</div>
 
 #### 7.4.1. `TaskIdParams` Object (for `tasks/cancel` and `tasks/pushNotificationConfig/get`)
 
@@ -693,27 +915,75 @@ A simple object containing just the task ID and optional metadata.
 --8<-- "types/src/types.ts:TaskIdParams"
 ```
 
-| Field Name | Type                  | Required | Description                |
-| :--------- | :-------------------- | :------- | :------------------------- |
-| `id`       | `string`              | Yes      | The ID of the task.        |
-| `metadata` | `Record<string, any>` | No       | Request-specific metadata. |
-
 ### 7.5. `tasks/pushNotificationConfig/set`
 
 Sets or updates the push notification configuration for a specified task. This allows the client to tell the server where and how to send asynchronous updates for the task. Requires the server to have `AgentCard.capabilities.pushNotifications: true`.
 
-- **Request `params` type**: [`TaskPushNotificationConfig`](#610-taskpushnotificationconfig-object)
-- **Response `result` type (on success)**: [`TaskPushNotificationConfig`](#610-taskpushnotificationconfig-object) (Confirms the configuration that was set. The server MAY omit or mask any sensitive details like secrets from the `authentication.credentials` field in the response).
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors), errors related to invalid `PushNotificationConfig`).
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `tasks/pushNotificationConfig/set`
+    -   **HTTP Method:** `POST`
+    -   **Payload**: [`TaskPushNotificationConfig`](#610-taskpushnotificationconfig-object)
+    -   **Response**: [`TaskPushNotificationConfig`](#610-taskpushnotificationconfig-object)
+
+=== "gRPC"
+    -   **URL:** `CreateTaskPushNotification`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message SetTaskPushNotificationRequest {
+          TaskPushNotificationConfig config = 1;
+        }
+        ```
+    -   **Response**: `TaskPushNotificationConfig`
+
+=== "REST"
+    -   **URL:** `/v1/tasks/{id}/pushNotificationConfigs`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```typescript
+        {
+          config: TaskPushNotificationConfig
+        }
+        ```
+    -   **Response**: `TaskPushNotificationConfig`
+
+</div>
 
 ### 7.6. `tasks/pushNotificationConfig/get`
 
 Retrieves the current push notification configuration for a specified task. Requires the server to have `AgentCard.capabilities.pushNotifications: true`.
 
-- **Request `params` type**: [`GetTaskPushNotificationConfigParams`](#761-gettaskpushnotificationconfigparams-object-taskspushnotificationconfigget) | [`TaskIdParams`](#741-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget)
-_(Note: TaskIdParams type is deprecated for this method. Use GetTaskPushNotificationConfigParams instead.)_
-- **Response `result` type (on success)**: [`TaskPushNotificationConfig`](#610-taskpushnotificationconfig-object) (The current push notification configuration for the task. Server may return an error if no push notification configuration is associated with the task).
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors)).
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `tasks/pushNotificationConfig/get`
+    -   **HTTP Method:** `POST`
+    -   **Payload**: [`GetTaskPushNotificationConfigParams`](#761-gettaskpushnotificationconfigparams-object-taskspushnotificationconfigget)
+    -   **Response**: [`TaskPushNotificationConfig`](#610-taskpushnotificationconfig-object)
+
+=== "gRPC"
+    -   **URL:** `GetTaskPushNotification`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message TaskSubscriptionRequest {
+          // name=tasks/{id}/pushNotification/{id}
+          string name;
+        }
+        ```
+    -   **Response**: `TaskPushNotificationConfig`
+
+=== "REST"
+    -   **URL:** `/v1/tasks/{taskId}/pushNotificationConfigs/{configId}`
+    -   **HTTP Method:** `GET`
+    -   **Payload:** None
+    -   **Response**: `TaskPushNotificationConfig`
+
+</div>
+
+**Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors)).
 
 #### 7.6.1. `GetTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/get`)
 
@@ -723,32 +993,45 @@ A object for fetching the push notification configuration for a task.
 --8<-- "types/src/types.ts:GetTaskPushNotificationConfigParams"
 ```
 
-| Field Name | Type                  | Required | Description                |
-| :--------- | :-------------------- | :------- | :------------------------- |
-| `id`       | `string`              | Yes      | The ID of the task.        |
-| `pushNotificationConfigId`       | `string` | No      | Push notification configuration id. Server will return one of the associated configurations if config id is not specified |
-| `metadata` | `Record<string, any>` | No       | Request-specific metadata. |
-
 ### 7.7. `tasks/pushNotificationConfig/list`
 
 Retrieves the associated push notification configurations for a specified task. Requires the server to have `AgentCard.capabilities.pushNotifications: true`.
 
-- **Request `params` type**: [`ListTaskPushNotificationConfigParams`](#771-listtaskpushnotificationconfigparams-object-taskspushnotificationconfiglist)
-- **Response `result` type (on success)**: [`TaskPushNotificationConfig[]`](#610-taskpushnotificationconfig-object) (The push notification configurations associated with the task.).
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors)).
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `tasks/pushNotificationConfig/list`
+    -   **HTTP Method:** `POST`
+    -   **Payload:** [`ListTaskPushNotificationConfigParams`](#771-listtaskpushnotificationconfigparams-object-taskspushnotificationconfiglist)
+    -   **Response**: `TaskPushNotificationConfig[]`
+
+=== "gRPC"
+    -   **URL:** `ListTaskPushNotification`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message ListTaskPushNotificationRequest {
+          // parent=tasks/{id}
+          string parent = 1;
+        }
+        ```
+    -   **Response**: `repeated TaskPushNotificationConfig`
+
+=== "REST"
+    -   **URL:** `/v1/tasks/{id}/pushNotificationConfigs`
+    -   **HTTP Method:** `GET`
+    -   **Payload:**: None
+    -   **Response**: `[TaskPushNotificationConfig]`
+
+</div>
 
 #### 7.7.1. `ListTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/list`)
 
 A object for fetching the push notification configurations for a task.
 
 ```ts { .no-copy }
---8<-- "types/src/types.ts:ListTaskPushNotificationConfigRequest"
+--8<-- "types/src/types.ts:ListTaskPushNotificationConfigParams"
 ```
-
-| Field Name | Type                  | Required | Description                |
-| :--------- | :-------------------- | :------- | :------------------------- |
-| `id`       | `string`              | Yes      | The ID of the task.        |
-| `metadata` | `Record<string, any>` | No       | Request-specific metadata. |
 
 ### 7.8. `tasks/pushNotificationConfig/delete`
 
@@ -766,54 +1049,98 @@ A object for deleting an associated push notification configuration for a task.
 --8<-- "types/src/types.ts:DeleteTaskPushNotificationConfigParams"
 ```
 
-| Field Name | Type                  | Required | Description                |
-| :--------- | :-------------------- | :------- | :------------------------- |
-| `id`       | `string`              | Yes      | The ID of the task.        |
-| `pushNotificationConfigId` | `string`   | Yes | Push notification configuration id |
-| `metadata` | `Record<string, any>` | No       | Request-specific metadata. |
-
 ### 7.9. `tasks/resubscribe`
 
 Allows a client to reconnect to an SSE stream for an ongoing task after a previous connection (from `message/stream` or an earlier `tasks/resubscribe`) was interrupted. Requires the server to have `AgentCard.capabilities.streaming: true`.
 
 The purpose is to resume receiving _subsequent_ updates. The server's behavior regarding events missed during the disconnection period (e.g., whether it attempts to backfill some missed events or only sends new ones from the point of resubscription) is implementation-dependent and not strictly defined by this specification.
 
-- **Request `params` type**: [`TaskIdParams`](#731-taskqueryparams-object)
-- **Response (on successful resubscription)**:
-    - HTTP Status: `200 OK`.
-    - HTTP `Content-Type`: `text/event-stream`.
-    - HTTP Body: A stream of Server-Sent Events, identical in format to `message/stream`, carrying _subsequent_ [`SendStreamingMessageResponse`](#721-sendstreamingmessageresponse-object) events for the task.
-- **Response (on resubscription failure)**:
-    - Standard HTTP error code (e.g., 4xx, 5xx).
-    - The HTTP body MAY contain a standard `JSONRPCResponse` with an `error` object. Failures can occur if the task is no longer active, doesn't exist, or streaming is not supported/enabled for it.
+<div class="grid cards" markdown>
 
-### 7.10. `agent/authenticatedExtendedCard`
+=== "JSON-RPC"
+    -   **URL:** `tasks/resubscribe`
+    -   **HTTP Method:** `POST`
+    -   **Payload**: [`TaskIdParams`](#741-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget)
+    -   **Response**: A stream of Server-Sent Events. Each SSE `data` field contains a [`SendStreamingMessageResponse`](#721-sendstreamingmessageresponse-object)
 
-Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`. This is an HTTP GET endpoint, not a JSON-RPC method.
+=== "gRPC"
+    -   **URL:** `TaskSubscription`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```proto
+        message TaskSubscriptionRequest{
+          // name=tasks/{id}
+          string name;
+        }
+        ```
+    -   **Response:**
+        ```proto
+        message StreamResponse {
+          oneof payload {
+            Task task;
+            Message msg;
+            TaskStatusUpdateEvent status_update;
+            TaskArtifactUpdateEvent artifact_update;
+          }
+        }
+        ```
 
-- **Endpoint URL**: `{AgentCard.url}/../agent/authenticatedExtendedCard` (relative to the base URL specified in the public Agent Card).
-- **HTTP Method**: `GET`
+=== "REST"
+    -   **URL:** `/v1/tasks/{id}:subscribe`
+    -   **HTTP Method:** `POST`
+    -   **Payload:**
+        ```typescript
+        {
+          name: string
+        }
+        ```
+    -   **Response:**
+        ```typescript
+        {
+          message?: Message
+          task?: Task
+          statusUpdate?: TaskStatusUpdateEvent
+          artifactUpdate?: TaskArtifactUpdateEvent
+        }
+        ```
+
+</div>
+
+### 7.10. `agent/getAuthenticatedExtendedCard`
+
+Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`.
+
 - **Authentication**: The client **MUST** authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
-- **Request `params`**: None (HTTP GET request).
 - **Response `result` type (on success)**: `AgentCard` (A complete Agent Card object, which may contain additional details or skills not present in the public card).
 - **Response `error` type (on failure)**: Standard HTTP error codes.
     - `401 Unauthorized`: Authentication failed (missing or invalid credentials). The server **SHOULD** include a `WWW-Authenticate` header.
-    - `403 Forbidden`: Authentication succeeded, but the client/user is not authorized to access the extended card.
-    - `404 Not Found`: The `supportsAuthenticatedExtendedCard` capability is declared, but the server has not implemented this endpoint at the specified path.
-    - `5xx Server Error`: An internal server error occurred.
+
+<div class="grid cards" markdown>
+
+=== "JSON-RPC"
+    -   **URL:** `agent/getAuthenticatedExtendedCard`
+    -   **HTTP Method:** `POST`
+    -   **Payload:** None
+    -   **Response:** `AgentCard`
+
+=== "gRPC"
+    -   **URL:** `GetAgentCard`
+    -   **HTTP Method:** `POST`
+    -   **Payload:** None
+    -   **Response:** `AgentCard`
+
+=== "REST"
+    -   **URL:** `/v1/card`
+    -   **HTTP Method:** `GET`
+    -   **Payload:** None
+    -   **Response:** `AgentCard`
+
+</div>
 
 Clients retrieving this authenticated card **SHOULD** replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
 
-#### 7.10.1. `AuthenticatedExtendedCardParams` Object
-
-This endpoint does not use JSON-RPC `params`. Any parameters would be included as HTTP query parameters if needed (though none are defined by the standard).
-
-#### 7.10.2. `AuthenticatedExtendedCardResponse` Object
-
-The successful response body is a JSON object conforming to the `AgentCard` interface.
-
 ```ts { .no-copy }
---8<-- "types/src/types.ts:AuthenticatedExtendedCardResponse"
+--8<-- "types/src/types.ts:GetAuthenticatedExtendedCardSuccessResponse"
 ```
 
 ## 8. Error Handling
@@ -845,6 +1172,7 @@ These are custom error codes defined within the JSON-RPC server error range (`-3
 | `-32004` | `UnsupportedOperationError`         | This operation is not supported    | The requested operation or a specific aspect of it (perhaps implied by parameters) is not supported by this server agent implementation. Broader than just method not found.                                                         |
 | `-32005` | `ContentTypeNotSupportedError`      | Incompatible content types         | A [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) provided in the request's `message.parts` (or implied for an artifact) is not supported by the agent or the specific skill being invoked. |
 | `-32006` | `InvalidAgentResponseError`         | Invalid agent response type        | Agent generated an invalid response for the requested method                                                                                                                                                                         |
+| `-32007` | `AuthenticatedExtendedCardNotConfiguredError`         | Authenticated Extended Card not configured        | The agent does not have an Authenticated Extended Card configured.|
 
 Servers MAY define additional error codes within the `-32000` to `-32099` range for more specific scenarios not covered above, but they **SHOULD** document these clearly. The `data` field of the `JSONRPCError` object can be used to provide more structured details for any error.
 
@@ -859,7 +1187,7 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
 1. **Client fetches the public Agent Card:**
 
    ```none
-   GET https://example.com/.well-known/agent.json
+   GET https://example.com/.well-known/agent-card.json
    ```
 
    _Server responds with the public Agent Card (like the example in Section 5.6), including `supportsAuthenticatedExtendedCard: true` (at the root level) and `securitySchemes`._
@@ -868,16 +1196,19 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
 
 3. **Client obtains necessary credentials out-of-band (e.g., performs OAuth 2.0 flow with Google, resulting in an access token).**
 
-4. **Client fetches the authenticated extended Agent Card:**
+4. **Client fetches the authenticated extended Agent Card using `agent/getAuthenticatedExtendedCard` request:**
 
-   ```none
-   GET https://example.com/a2a/agent/authenticatedExtendedCard
-   Authorization: Bearer <obtained_access_token>
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": 1,
+     "method": "agent/getAuthenticatedExtendedCard"
+   }
    ```
 
 5. **Server authenticates and authorizes the request.**
 
-6. **Server responds with the full Agent Card:**
+6. **Server responds with the full Agent Card as the JSON-RPC result:**
 
 ### 9.2. Basic Execution (Synchronous / Polling Style)
 
@@ -950,6 +1281,8 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
    }
    ```
 
+_If the task were longer-running, the server might initially respond with `status.state: "working"`. The client would then periodically call `tasks/get` with params: `{"id": "363422be-b0f9-4692-a24d-278670e7c7f1"}` until the task reaches a terminal state._
+
 **Scenario:** Client asks a simple question, and the agent responds quickly without a task
 
 1. **Client sends a message using `message/send`:**
@@ -996,8 +1329,6 @@ This section provides illustrative JSON examples of common A2A interactions. Tim
    }
    ```
 
-_If the task were longer-running, the server might initially respond with `status.state: "working"`. The client would then periodically call `tasks/get` with `params: {"id": "363422be-b0f9-4692-a24d-278670e7c7f1"}` until the task reaches a terminal state._
-
 ### 9.3. Streaming Task Execution (SSE)
 
 **Scenario:** Client asks the agent to write a long paper describing an attached picture.
@@ -1006,6 +1337,8 @@ _If the task were longer-running, the server might initially respond with `statu
 
    ```json
    {
+     "jsonrpc": "2.0",
+     "id": 1,
      "method": "message/stream",
      "params": {
        "message": {
@@ -1576,3 +1909,87 @@ Security is a paramount concern in A2A. Key considerations include:
 - **Data Privacy:** Adhere to all applicable privacy regulations for data exchanged in `Message` and `Artifact` parts. Minimize sensitive data transfer.
 
 For a comprehensive discussion, refer to the [Enterprise-Ready Features guide](./topics/enterprise-ready.md).
+
+## 11. A2A Compliance Requirements
+
+This section defines the normative requirements for A2A-compliant implementations.
+
+### 11.1. Agent Compliance
+
+For an agent to be considered **A2A-compliant**, it **MUST**:
+
+#### 11.1.1. Transport Support Requirements
+
+- **Support at least one transport**: Agents **MUST** implement at least one transport protocols as defined in [Section 3.2](#32-supported-transport-protocols).
+- **Expose Agent Card**: **MUST** provide a valid `AgentCard` document as defined in [Section 5](#5-agent-discovery-the-agent-card).
+- **Declare transport capabilities**: **MUST** accurately declare all supported transports in the `AgentCard` using `preferredTransport` and `additionalInterfaces` fields following the requirements in [Section 5.6](#56-transport-declaration-and-url-relationships).
+
+#### 11.1.2. Core Method Implementation
+
+**MUST** implement all of the following core methods via at least one supported transport:
+
+- `message/send` - Send messages and initiate tasks
+- `tasks/get` - Retrieve task status and results
+- `tasks/cancel` - Request task cancellation
+
+#### 11.1.3. Optional Method Implementation
+
+**MAY** implement the following optional methods:
+
+- `message/stream` - Streaming message interaction (requires `capabilities.streaming: true`)
+- `tasks/resubscribe` - Resume streaming for existing tasks (requires `capabilities.streaming: true`)
+- `tasks/pushNotificationConfig/set` - Configure push notifications (requires `capabilities.pushNotifications: true`)
+- `tasks/pushNotificationConfig/get` - Retrieve push notification config (requires `capabilities.pushNotifications: true`)
+- `tasks/pushNotificationConfig/list` - List push notification configs (requires `capabilities.pushNotifications: true`)
+- `tasks/pushNotificationConfig/delete` - Delete push notification config (requires `capabilities.pushNotifications: true`)
+- `agent/authenticatedExtendedCard` - Retrieve authenticated agent card (requires `supportsAuthenticatedExtendedCard: true`)
+
+#### 11.1.4. Multi-Transport Compliance
+
+If an agent supports additional transports (gRPC, HTTP+JSON), it **MUST**:
+
+- **Functional equivalence**: Provide identical functionality across all supported transports.
+- **Consistent behavior**: Return semantically equivalent results for the same operations.
+- **Transport-specific requirements**: Conform to all requirements defined in [Section 3.2](#32-supported-transport-protocols) for each supported transport.
+- **Method mapping compliance**: Use the standard method mappings defined in [Section 3.5](#35-method-mapping-and-naming-conventions) for all supported transports.
+
+#### 11.1.5. Data Format Compliance
+
+- **JSON-RPC structure**: **MUST** use valid JSON-RPC 2.0 request/response objects as defined in [Section 6.11](#611-json-rpc-structures).
+- **A2A data objects**: **MUST** use the data structures defined in [Section 6](#6-protocol-data-objects) for all protocol entities.
+- **Error handling**: **MUST** use the error codes defined in [Section 8](#8-error-handling).
+
+### 11.2. Client Compliance
+
+For a client to be considered **A2A-compliant**, it **MUST**:
+
+#### 11.2.1. Transport Support
+
+- **Multi-transport capability**: **MUST** be able to communicate with agents using at least one transport protocols.
+- **Agent Card processing**: **MUST** be able to parse and interpret `AgentCard` documents.
+- **Transport selection**: **MUST** be able to select an appropriate transport from the agent's declared capabilities following the rules defined in [Section 5.6.3](#563-client-transport-selection-rules).
+
+#### 11.2.2. Protocol Implementation
+
+- **Core method usage**: **MUST** properly construct requests for at least `message/send` and `tasks/get` methods.
+- **Error handling**: **MUST** properly handle all A2A error codes defined in [Section 8.2](#82-a2a-specific-errors).
+- **Authentication**: **MUST** support at least one authentication method when interacting with agents that require authentication.
+
+#### 11.2.3. Optional Client Features
+
+Clients **MAY** implement:
+
+- **Multi-transport support**: Support for gRPC and/or HTTP+JSON transports.
+- **Streaming support**: Handle streaming methods and Server-Sent Events.
+- **Push notification handling**: Serve as webhook endpoints for push notifications.
+- **Extended Agent Cards**: Retrieve and use authenticated extended agent cards.
+
+### 11.3. Compliance Testing
+
+Implementations **SHOULD** validate compliance through:
+
+- **Transport interoperability**: Test communication with agents using different transport implementations.
+- **Method mapping verification**: Verify that all supported transports use the correct method names and URL patterns as defined in [Section 3.5](#35-method-mapping-and-naming-conventions).
+- **Error handling**: Verify proper handling of all defined error conditions.
+- **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](types/src/types.ts).
+- **Multi-transport consistency**: For multi-transport agents, verify functional equivalence across all supported transports.
