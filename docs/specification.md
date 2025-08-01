@@ -322,6 +322,8 @@ Specifies optional A2A protocol features supported by the agent.
 --8<-- "types/src/types.ts:AgentCapabilities"
 ```
 
+- **`idempotencySupported`**: When set to `true`, indicates that the agent supports messageId-based idempotency for new task creation. This enables the agent to detect and handle duplicate `messageId` values to prevent unintended duplicate task creation due to network failures or client retries. See [Section 7.1.2](#712-idempotency) for detailed behavior.
+
 #### 5.5.2.1. `AgentExtension` Object
 
 Specifies an extension to the A2A protocol supported by the agent.
@@ -720,6 +722,33 @@ The `error` response for all transports in case of failure is a [`JSONRPCError`]
 
 --8<-- "types/src/types.ts:MessageSendConfiguration"
 ```
+
+#### 7.1.2. Idempotency
+
+A2A supports optional messageId-based idempotency to enable idempotent task creation, addressing scenarios where network failures or client crashes could result in duplicate tasks with unintended side effects.
+
+**Scope**: Idempotency **ONLY** applies to new task creation (when `message.taskId` is not provided). Messages sent to continue existing tasks follow normal message uniqueness rules without task-level deduplication.
+
+**Agent Requirements:**
+
+- Agents **MAY** support idempotency by declaring `idempotencySupported: true` in their `AgentCapabilities`.
+- When `idempotencySupported` is `true`, agents **MUST** track `messageId` values for new task creation within the authenticated user/session scope.
+- When `idempotencySupported` is `false` or absent, agents **MAY** not support idempotency and do not track `messageId` values.
+
+**Server Behavior:**
+
+- **MessageId scope**: MessageId tracking is scoped to the authenticated user/session to prevent cross-user conflicts.
+- **Active task collision**: If a `messageId` (for new task creation) matches an existing task in a non-terminal state (`submitted`, `working`, `input-required`), the server **MUST** return a [`MessageIdAlreadyExistsError`](#82-a2a-specific-errors) (-32008).
+- **Terminal task reuse**: If a `messageId` matches a task in a terminal state (`completed`, `failed`, `canceled`, `rejected`), the server **MAY** allow creating a new task with the same messageId.
+- **Time-based expiry**: Servers **MAY** implement time-based expiry for messageId tracking associated with terminal tasks.
+
+**Client Responsibilities:**
+
+- **Unique messageIds**: Clients **MUST** generate unique `messageId` values for each intended new task within their authenticated session (this is already required by the base A2A specification).
+- **Error handling**: When receiving `MessageIdAlreadyExistsError`, clients **SHOULD**:
+  1. Use the `existingTaskId` from the error data to call `tasks/get` to retrieve the existing task. This is the correct action when retrying a request that may have already succeeded (e.g., after a network error).
+  2. Alternatively, if the `messageId` was reused unintentionally and a new, distinct task is desired, generate a new `messageId` and retry the request.
+- **Retry safety**: Clients can safely retry `message/send` requests with the same `messageId` after network failures when creating new tasks.
 
 ### 7.2. `message/stream`
 
@@ -1173,6 +1202,7 @@ These are custom error codes defined within the JSON-RPC server error range (`-3
 | `-32005` | `ContentTypeNotSupportedError`      | Incompatible content types         | A [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) provided in the request's `message.parts` (or implied for an artifact) is not supported by the agent or the specific skill being invoked. |
 | `-32006` | `InvalidAgentResponseError`         | Invalid agent response type        | Agent generated an invalid response for the requested method                                                                                                                                                                         |
 | `-32007` | `AuthenticatedExtendedCardNotConfiguredError`         | Authenticated Extended Card not configured        | The agent does not have an Authenticated Extended Card configured.|
+| `-32008` | `MessageIdAlreadyExistsError`       | Message ID already exists for active task | The provided `messageId` is already associated with an active task in a non-terminal state. The client should either retrieve the existing task using the provided `existingTaskId` or generate a new message ID. |
 
 Servers MAY define additional error codes within the `-32000` to `-32099` range for more specific scenarios not covered above, but they **SHOULD** document these clearly. The `data` field of the `JSONRPCError` object can be used to provide more structured details for any error.
 
@@ -1868,6 +1898,110 @@ _If the task were longer-running, the server might initially respond with `statu
      }
    }
    ```
+
+### 9.8. Idempotent Task Creation with MessageId
+
+**Scenario:** Client needs to ensure idempotent task creation to avoid duplicate operations in case of network failures.
+
+1. **Client discovers agent supports idempotency from Agent Card:**
+
+   ```json
+   {
+     "capabilities": {
+       "idempotencySupported": true
+     }
+   }
+   ```
+
+2. **Client sends initial message (new task creation):**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-008",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "Process this critical financial transaction - charge card ending 1234 for $500"
+           }
+         ],
+         "messageId": "client-20240315-001"
+       }
+     }
+   }
+   ```
+
+3. **Server successfully creates task and responds:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-008",
+     "result": {
+       "id": "server-task-uuid-12345",
+       "contextId": "ctx-67890",
+       "status": { "state": "working" }
+     }
+   }
+   ```
+
+4. **Network failure occurs - client retries with same messageId (new task creation):**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-009",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "Process this critical financial transaction - charge card ending 1234 for $500"
+           }
+         ],
+         "messageId": "client-20240315-001"
+       }
+     }
+   }
+   ```
+
+5. **Server detects duplicate messageId and returns error:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-009",
+     "error": {
+       "code": -32008,
+       "message": "Message ID already exists for active task",
+       "data": {
+         "messageId": "client-20240315-001",
+         "existingTaskId": "server-task-uuid-12345"
+       }
+     }
+   }
+   ```
+
+6. **Client retrieves existing task using the provided task ID:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-010",
+     "method": "tasks/get",
+     "params": {
+       "id": "server-task-uuid-12345"
+     }
+   }
+   ```
+
+This pattern ensures that duplicate operations are prevented while allowing clients to safely recover from network failures.
 
 These examples illustrate the flexibility of A2A in handling various interaction patterns and data types. Implementers should refer to the detailed object definitions for all fields and constraints.
 
