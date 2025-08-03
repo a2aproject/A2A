@@ -5,7 +5,7 @@
 1. Google - Todd Segal, Principal Engineer - [@ToddSegal](https://github.com/ToddSegal)
 2. Microsoft - Darrel Miller, Partner API Architect - [@darrelmiller](https://github.com/darrelmiller)
 3. Cisco - Luca Muscariello, Principal Engineer - [@muscariello](https://github.com/muscariello)
-4. Amazon Web Services - Nicholas Aldridge, Principal Engineer - [LinkedIn](https://www.linkedin.com/in/nicholas-aldridge-341162a4)
+4. Amazon Web Services - Nicholas Aldridge, Principal Engineer - [@000-000-000-000-000](https://github.com/000-000-000-000-000)
 5. Salesforce - Sam Sharaf, Sr. Director Product Management - [@samuelsharaf](https://github.com/samuelsharaf)
 6. ServiceNow - Sean Hughes, AI Ecosystem Director - [@hughesthe1st](https://github.com/hughesthe1st)
 7. SAP - TBD
