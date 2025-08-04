@@ -835,7 +835,7 @@ export interface PushNotificationAuthenticationInfo {
  */
 export interface PushNotificationConfig {
   /**
-   * A unique ID for the push notification configuration, created by the server
+   * A unique ID for the push notification configuration, set by the client
    * to support multiple notification callbacks.
    */
   id?: string;
