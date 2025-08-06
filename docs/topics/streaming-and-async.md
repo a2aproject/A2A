@@ -29,7 +29,7 @@ For tasks that produce incremental results (like generating a long document or s
 Refer to the Protocol Specification for detailed structures:
 
 - [`message/stream`](../specification.md#72-messagestream)
-- [`tasks/resubscribe`](../specification.md#77-tasksresubscribe)
+- [`tasks/resubscribe`](../specification.md#79-tasksresubscribe)
 
 ## 2. Push Notifications for Disconnected Scenarios
 
