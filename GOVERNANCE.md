@@ -8,7 +8,7 @@
 4. Amazon Web Services - Nicholas Aldridge, Principal Engineer - [@000-000-000-000-000](https://github.com/000-000-000-000-000)
 5. Salesforce - Sam Sharaf, Sr. Director Product Management - [@samuelsharaf](https://github.com/samuelsharaf)
 6. ServiceNow - Sean Hughes, AI Ecosystem Director - [@hughesthe1st](https://github.com/hughesthe1st)
-7. SAP - TBD
+7. SAP - Sivakumar N., Vice President - [LinkedIn](https://www.linkedin.com/in/siva-kumar-n/)
 
 ## Mission and Scope of the Project
 
