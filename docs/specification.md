@@ -83,7 +83,7 @@ Agents **MAY** support JSON-RPC 2.0 transport. If implemented, it **MUST** confo
 
 Agents **MAY** support gRPC transport. If implemented, it **MUST** conform to these requirements:
 
-- **Protocol Definition**: **MUST** use the normative Protocol Buffers definition in [`specification/grpc/a2a.proto`](specification/grpc/a2a.proto).
+- **Protocol Definition**: **MUST** use the normative Protocol Buffers definition in [`specification/grpc/a2a.proto`](https://github.com/a2aproject/A2A/blob/main/specification/grpc/a2a.proto).
 - **Message Serialization**: **MUST** use Protocol Buffers version 3 for message serialization.
 - **Service Definition**: **MUST** implement the `A2AService` gRPC service as defined in the proto file.
 - **Method Coverage**: **MUST** provide all methods with functionally equivalent behavior to other supported transports.
@@ -222,7 +222,7 @@ For quick reference, the following table summarizes the method mappings across a
 | `tasks/pushNotificationConfig/get` | `GetTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` | Get push notification config |
 | `tasks/pushNotificationConfig/list` | `ListTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs` | List push notification configs |
 | `tasks/pushNotificationConfig/delete` | `DeleteTaskPushNotification` | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` | Delete push notification config |
-| `agent/authenticatedExtendedCard` | `GetAgentCard` | `GET /v1/card` | Get authenticated agent card |
+| `agent/getAuthenticatedExtendedCard` | `GetAgentCard` | `GET /v1/card` | Get authenticated agent card |
 
 ## 4. Authentication and Authorization
 
@@ -2125,5 +2125,5 @@ Implementations **SHOULD** validate compliance through:
 - **Transport interoperability**: Test communication with agents using different transport implementations.
 - **Method mapping verification**: Verify that all supported transports use the correct method names and URL patterns as defined in [Section 3.5](#35-method-mapping-and-naming-conventions).
 - **Error handling**: Verify proper handling of all defined error conditions.
-- **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](types/src/types.ts).
+- **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](https://github.com/a2aproject/A2A/blob/main/types/src/types.ts).
 - **Multi-transport consistency**: For multi-transport agents, verify functional equivalence across all supported transports.

@@ -60,6 +60,18 @@ jobs:
       - name: Install documentation dependencies
         run: pip install -r requirements-docs.txt
 
+      - name: Generate and Build Python SDK Docs
+        run: |
+          # Find the path to the installed package
+          PACKAGE_PATH=$(python -c "import a2a, os; print(os.path.dirname(a2a.__file__))")
+          echo "Found 'a2a' package at: ${PACKAGE_PATH}"
+
+          # Generate RST source files from the installed package
+          sphinx-apidoc -f -o docs/sdk/python "${PACKAGE_PATH}"
+
+          # Build the HTML from the generated RST files
+          sphinx-build -b html docs/sdk/python docs/sdk/python/api
+
       - name: Build Documentation (PR Check)
         if: github.event_name == 'pull_request'
         run: mkdocs build

@@ -25,9 +25,6 @@ option java_package = "com.google.a2a.v1";
 // - TaskPushNotificationConfig are a resource whose parent is a task.
 //   They have get, list and create methods.
 // - AgentCard is a static resource with only a get method.
-// fields are not present as they don't comply with AIP rules, and the
-// optional history_length on the get task method is not present as it also
-// violates AIP-127 and AIP-131.
 service A2AService {
   // Send a message to the agent. This is a blocking call that will return the
   // task once it is completed, or a LRO if requested.

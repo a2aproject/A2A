@@ -371,7 +371,7 @@ export interface AgentCardSignature {
 export interface AgentCard {
   /**
    * The version of the A2A protocol this agent supports.
-   * @default "0.2.6"
+   * @default "0.3.0"
    */
   protocolVersion: string;
   /**
@@ -837,7 +837,7 @@ export interface PushNotificationAuthenticationInfo {
  */
 export interface PushNotificationConfig {
   /**
-   * A unique ID for the push notification configuration, created by the server
+   * A unique ID for the push notification configuration, set by the client
    * to support multiple notification callbacks.
    */
   id?: string;
