@@ -1,49 +1,174 @@
-# What is A2A?
+# A2A Protocol Overview
 
-The Agent2Agent (A2A) Protocol is an open standard designed to solve a fundamental challenge in the rapidly evolving landscape of artificial intelligence: **how do AI agents, built by different teams, using different technologies, and owned by different organizations, communicate and collaborate effectively?**
+The A2A protocol is an open standard that enables seamless communication and
+collaboration between AI agents. It provides a common language for agents built
+using diverse frameworks and by different vendors, fostering interoperability
+and breaking down silos. Agents are autonomous problem-solvers that act
+independently within their environment. A2A allows agents from different
+developers, built on different frameworks, and owned by different organizations
+to unite and work together.
 
-As AI agents become more specialized and capable, the need for them to work together on complex tasks increases. Imagine a user asking their primary AI assistant to plan an international trip. This single request might involve coordinating the capabilities of several specialized agents:
+## Why Use the A2A Protocol
 
-1. An agent for flight bookings.
-2. Another agent for hotel reservations.
-3. A third for local tour recommendations and bookings.
-4. A fourth to handle currency conversion and travel advisories.
+A2A addresses key challenges in AI agent collaboration. It provides
+a standardized approach for agents to interact. This section explains the
+problems A2A solves and the benefits it offers.
 
-Without a common communication protocol, integrating these diverse agents into a cohesive user experience is a significant engineering hurdle. Each integration would likely be a custom, point-to-point solution, making the system difficult to scale, maintain, and extend.
+### Problems that A2A Solves
 
-## The A2A Solution
+Consider a user request for an AI assistant to plan an international trip. This
+task involves orchestrating multiple specialized agents, such as:
 
-A2A provides a standardized way for these independent, often "opaque" (black-box) agentic systems to interact. It defines:
+-  A flight booking agent
+-  A hotel reservation agent
+-  An agent for local tour recommendations
+-  A currency conversion agent
 
-- **A common transport and format:** JSON-RPC 2.0 over HTTP(S) for how messages are structured and transmitted.
-- **Discovery mechanisms (Agent Cards):** How agents can advertise their capabilities and be found by other agents.
-- **Task management workflows:** How collaborative tasks are initiated, progressed, and completed. This includes support for tasks that may be long-running or require multiple turns of interaction.
-- **Support for various data modalities:** How agents exchange not just text, but also files, structured data (like forms), and potentially other rich media.
-- **Core principles for security and asynchronicity:** Guidelines for secure communication and handling tasks that might take significant time or involve human-in-the-loop processes.
+Without A2A, integrating these diverse agents presents several challenges:
 
-## Key Design Principles of A2A
+-  **Agent Exposure**: Developers often wrap agents as tools to expose them to
+    other agents, similar to how tools are exposed in a Multi-agent Control
+    Platform (Model Context Protocol). However, this approach is inefficient because agents are
+    designed to negotiate directly. Wrapping agents as tools limits their capabilities.
+    A2A allows agents to be exposed as they are, without requiring this wrapping.
+-  **Custom integrations**: Each interaction requires custom, point-to-point
+    solutions, creating significant engineering overhead.
+-  **Slow innovation**: Bespoke development for each new integration slows
+    innovation.
+-  **Scalability issues**: Systems become difficult to scale and maintain as
+    the number of agents and interactions grows.
+-  **Interoperability**: This approach limits interoperability,
+    preventing the organic formation of complex AI ecosystems.
+-  **Security gaps**: Ad hoc communication often lacks consistent security
+    measures.
 
-The development of A2A is guided by several core principles:
+The A2A protocol addresses these challenges by establishing interoperability for
+AI agents to interact reliably and securely.
 
-- **Simplicity:** Leverage existing, well-understood standards like HTTP, JSON-RPC, and Server-Sent Events (SSE) where possible, rather than reinventing the wheel.
-- **Enterprise Readiness:** Address critical enterprise needs such as authentication, authorization, security, privacy, tracing, and monitoring from the outset by aligning with standard web practices.
-- **Asynchronous First:** Natively support long-running tasks and scenarios where agents or users might not be continuously connected, through mechanisms like streaming and push notifications.
-- **Modality Agnostic:** Allow agents to communicate using a variety of content types, enabling rich and flexible interactions beyond plain text.
-- **Opaque Execution:** Enable collaboration without requiring agents to expose their internal logic, memory, or proprietary tools. Agents interact based on declared capabilities and exchanged context, preserving intellectual property and enhancing security.
+### A2A Example Scenario
+This section provides an example scenario to illustrate the benefits of using an A2A (Agent-to-Agent) protocol for complex interactions between AI agents.
 
-## Benefits of Using A2A
+#### Scene 1: A User's Complex Request
 
-Adopting A2A can lead to significant advantages:
+A user interacts with an AI assistant, giving it a complex prompt like "Plan an international trip."
 
-- **Increased Interoperability:** Break down silos between different AI agent ecosystems, allowing agents from various vendors and frameworks to work together.
-- **Enhanced Agent Capabilities:** Allow developers to create more sophisticated applications by composing the strengths of multiple specialized agents.
-- **Reduced Integration Complexity:** Standardize the "how" of agent communication, allowing teams to focus on the "what" – the value their agents provide.
-- **Fostering Innovation:** Encourage the development of a richer ecosystem of specialized agents that can readily plug into larger collaborative workflows.
-- **Future-Proofing:** Provide a flexible framework that can adapt as agent technologies continue to evolve.
+![A User's Complex Request](../assets/scene1.png){ width="70%" style="margin:20px auto;display:block;" }
 
-By establishing common ground for agent-to-agent communication, A2A aims to accelerate the adoption and utility of AI agents across diverse industries and applications, paving the way for more powerful and collaborative AI systems.
+#### Scene 2: The Need for Collaboration
 
-## A2A Request Lifecycle
+The AI assistant receives the prompt and realizes it needs to call upon multiple specialized agents to fulfill the request. These agents include a Flight Booking Agent, a Hotel Reservation Agent, a Currency Conversion Agent, and a Local Tours Agent.
+
+![The Need for Collaboration](../assets/scene2.png){ width="70%" style="margin:20px auto;display:block;" }
+
+#### Scene 3: The Interoperability Challenge
+
+The core problem: The agents are unable to work together because each has its own bespoke development and deployment.
+
+![The Interoperability Challenge](../assets/scene3.png){ width="70%" style="margin:20px auto;display:block;" }
+
+
+#### Scene 4: The "Without A2A" Problem
+
+The consequence of a lack of a standardized protocol is that these agents cannot collaborate with each other let alone discover what they can do. The individual agents (Flight, Hotel, Currency, and Tours) are isolated. Symbols like "X" indicate failed communication or incompatibility between them, representing the **significant engineering overhead** and **limited interoperability** of point-to-point solutions.
+
+![The Without A2A Problem](../assets/scene4.png){ width="70%" style="margin:20px auto;display:block;" }
+
+
+#### Scene 5: The "With A2A" Solution
+
+The same agents are now shown as an interconnected system, communicating seamlessly through the standardized protocol (A2A). This represents how the protocol addresses the challenges of scalability and security.
+
+![The with A2A solution](../assets/scene5.png){ width="70%" style="margin:20px auto;display:block;" }
+
+
+#### Scene 6: The Cohesive Result
+
+The AI assistant, now acting as an orchestrator, receives the cohesive information from all the A2A-enabled agents. It then presents a single, complete travel plan as a seamless response to the user's initial prompt.
+
+![Scene 5: The cohesive result](../assets/scene6.png){ width="70%" style="margin:20px auto;display:block;" }
+
+### Core Benefits of A2A
+
+Implementing the A2A protocol offers significant advantages across the AI ecosystem: 
+-  **Secure collaboration**: Without a standard, it's difficult to ensure
+    secure communication between agents. A2A uses HTTPS for secure communication
+    and maintains opaque operations, so agents can't see the inner workings of
+    other agents during collaboration.
+ - **Interoperability**: A2A breaks down silos between different AI
+    agent ecosystems, enabling agents from various vendors and frameworks to work
+    together seamlessly.
+ - **Agent autonomy**: A2A allows agents to retain their individual capabilities
+    and act as autonomous entities while collaborating with other agents.
+ - **Reduced integration complexity**: The protocol standardizes agent
+    communication, enabling teams to focus on the unique value their agents
+    provide.
+ - **Support for LRO**: The protocol supports long-running operations (LRO) and
+    streaming with Server-Sent Events (SSE) and asynchronous execution.
+
+### Key Design Principles of A2A
+
+A2A development follows principles that prioritize broad adoption,
+enterprise-grade capabilities, and future-proofing.
+
+ - **Simplicity**: A2A leverages existing standards like HTTP, JSON-RPC, and
+    Server-Sent Events (SSE). This avoids reinventing core technologies and
+    accelerates developer adoption.
+ - **Enterprise readiness**: A2A addresses critical enterprise needs. It aligns
+    with standard web practices for robust authentication, authorization,
+    security, privacy, tracing, and monitoring.
+ - **Asynchronous first**: A2A natively supports long-running tasks. It handles
+    scenarios where agents or users might not remain continuously connected. It
+    uses mechanisms like streaming and push notifications.
+ - **Modality independent**: The protocol allows agents to communicate using a
+    wide variety of content types. This enables rich and flexible interactions
+    beyond plain text.
+ - **Opaque execution**: Agents collaborate effectively without exposing their
+    internal logic, memory, or proprietary tools. Interactions rely on declared
+    capabilities and exchanged context. This preserves intellectual property and
+    enhances security.
+
+### Understanding the Agent Stack: A2A, MCP, Agent Frameworks and Models
+
+A2A fits into a larger agentic stack:
+
+-   **A2A:** Standardizes communication across agents deployed in different organizations built on different frameworks.
+-   **MCP:** Connects models to data and external resources.
+-   **Frameworks (like ADK):** Provide a toolkit to assemble your agent.
+-   **Models:** Fundamental to the agent's reasoning, these could be any LLM of choice.
+
+#### A2A and MCP 
+
+In the broader ecosystem of AI communication, you might be familiar with protocols designed for agents to interact with models and tools. Notably, the Model Context Protocol (MCP) is an emerging standard focused on connecting Large Language Models (LLMs) with data and external resources.
+
+The Agent2Agent (A2A) protocol is designed to standardize communication between AI agents themselves, particularly for those deployed in external systems. A2A is positioned to complement MCP, addressing a different, yet related, layer of the agent interaction problem.
+
+-   **MCP's Focus:** Lowering the complexity to connect agents with tools and data. Tools are typically stateless and perform specific, predefined functions (e.g., a calculator, a database query).
+-   **A2A's Focus:** Enabling agents to collaborate in their natural modalities, allowing them to communicate as agents (or as users) instead of as tools. This enables complex, multi-turn interactions where agents reason, plan, and delegate tasks to other agents. For example, back-and-forth communication when you want to order something, involving negotiation or clarification.
+
+![ADK versus MCP](../assets/mcp.png){ width="70%" style="margin:20px auto;display:block;" }
+
+ The practice of wrapping an agent as a simple tool is fundamentally limiting, as it fails to capture its true capabilities. This critical distinction is explored in the post, [Why Agents Are Not Tools](https://discuss.google.dev/t/agents-are-not-tools/192812).
+ 
+For a more in-depth comparison, refer to the [A2A and MCP Comparison](./topics/a2a-and-mcp.md) document.
+
+#### A2A and ADK 
+
+The [Agent Development Kit (ADK)](https://google.github.io/adk-docs)
+is an open source agent development toolkit developed by Google. A2A is a
+communication protocol for agents that helps agents communicate with each other,
+regardless of the framework used to build them (for example, ADK, LangGraph, or
+Crew AI). ADK is a flexible and modular framework for developing and deploying
+AI agents. While optimized for Gemini AI and the Google ecosystem, ADK is
+model-agnostic, deployment-agnostic, and built for compatibility with other
+frameworks.
+
+![ADK versus MCP](../assets/adk.gif){ width="70%" style="margin:20px auto;display:block;" }
+
+
+### A2A Request Lifecycle
+
+The A2A request lifecycle is a sequence that details the four main steps a request follows: agent discovery, authentication, `sendMessage` API, and `sendMessageStream` API. The following diagram provides a deeper look into the operational flow, illustrating the interactions between the client, A2A server, and auth server.
+
 
 ```mermaid
 sequenceDiagram
@@ -85,4 +210,6 @@ sequenceDiagram
     end
 ```
 
-Next, learn about the [Key Concepts](./key-concepts.md) that form the foundation of the A2A protocol.
+## What's Next
+
+Learn about the [Key Concepts](./key-concepts.md) that form the foundation of the A2A protocol.

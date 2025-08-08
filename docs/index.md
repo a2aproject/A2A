@@ -88,7 +88,7 @@ A2A and the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) are
 
 ---
 
-## Get Started with A2A
+## A2A Resources
 
 <div class="grid cards" markdown>
 
@@ -97,7 +97,9 @@ A2A and the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) are
     Understand the core ideas behind A2A.
 
     [:octicons-arrow-right-24: What is A2A?](./topics/what-is-a2a.md)
-
+  
+    [:octicons-arrow-right-24: Get Started with A2A](./topics/getting-started.md)
+  
     [:octicons-arrow-right-24: Key Concepts](./topics/key-concepts.md)
 
 - :material-file-document-outline:{ .lg .middle } **Dive into the Specification**
@@ -111,6 +113,10 @@ A2A and the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) are
     Build your first A2A-compliant agent with our step-by-step Python quickstart.
 
     [:octicons-arrow-right-24: Python Tutorial](./tutorials/python/1-introduction.md)
+
+    Build your expense reimbursement multi-agent using A2A.
+
+    [:octicons-arrow-right-24: Multi-agent Collaboration Using A2A Tutorial](./topics/tutorials.md)
 
 - :material-code-braces:{ .lg .middle } **Explore Code Samples**
 
