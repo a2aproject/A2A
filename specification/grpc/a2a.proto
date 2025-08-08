@@ -2,6 +2,7 @@
 syntax = "proto3";
 package a2a.v1;
 
+import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
@@ -73,7 +74,7 @@ service A2AService {
   rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest)
       returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      post: "/v1/{parent=task/*/pushNotificationConfigs}"
+      post: "/v1/{parent=tasks/*}/pushNotificationConfigs"
       body: "config"
     };
     option (google.api.method_signature) = "parent,config";
@@ -134,10 +135,10 @@ message SendMessageConfiguration {
 // history.
 message Task {
   // Unique identifier for a task, created by the A2A server.
-  string id = 1;
+  string id = 1 [(buf.validate.field).string.uuid = true];
   // Unique identifier for the contextual collection of interactions (tasks
   // and messages). Created by the A2A server.
-  string context_id = 2;
+  string context_id = 2 [(buf.validate.field).string.uuid = true];
   // The current status of a Task, including state and a message.
   TaskStatus status = 3;
   // A set of output artifacts for a Task.
@@ -234,13 +235,13 @@ enum Role {
 message Message {
   // The message id of the message. This is required and created by the
   // message creator.
-  string message_id = 1;
+  string message_id = 1 [(buf.validate.field).string.uuid = true];
   // The context id of the message. This is optional and if set, the message
   // will be associated with the given context.
-  string context_id = 2;
+  string context_id = 2 [(buf.validate.field).string.uuid = true];
   // The task id of the message. This is optional and if set, the message
   // will be associated with the given task.
-  string task_id = 3;
+  string task_id = 3 [(buf.validate.field).string.uuid = true];
   // A role for the message.
   Role role = 4;
   // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
@@ -258,7 +259,7 @@ message Message {
 // point-to-point communication.
 message Artifact {
   // Unique id for the artifact. It must be at least unique within a task.
-  string artifact_id = 1;
+  string artifact_id = 1 [(buf.validate.field).string.uuid = true];
   // A human readable name for the artifact.
   string name = 3;
   // A human readable description of the artifact, optional.
@@ -275,9 +276,9 @@ message Artifact {
 // has changed.
 message TaskStatusUpdateEvent {
   // The id of the task that is changed
-  string task_id = 1;
+  string task_id = 1 [(buf.validate.field).string.uuid = true];
   // The id of the context that the task belongs to
-  string context_id = 2;
+  string context_id = 2 [(buf.validate.field).string.uuid = true];
   // The new status of the task.
   TaskStatus status = 3;
   // Whether this is the last status update expected for this task.
@@ -290,9 +291,9 @@ message TaskStatusUpdateEvent {
 // been generated.
 message TaskArtifactUpdateEvent {
   // The id of the task for this artifact
-  string task_id = 1;
+  string task_id = 1 [(buf.validate.field).string.uuid = true];
   // The id of the context that this task belongs too
-  string context_id = 2;
+  string context_id = 2 [(buf.validate.field).string.uuid = true];
   // The artifact itself
   Artifact artifact = 3;
   //  Whether this should be appended to a prior one produced
@@ -306,7 +307,7 @@ message TaskArtifactUpdateEvent {
 // Configuration for setting up push notifications for task updates.
 message PushNotificationConfig {
   // A unique id for this push notification.
-  string id = 1;
+  string id = 1 [(buf.validate.field).string.uuid = true];
   // Url to send the notification too
   string url = 2;
   // Token unique for this task/session
@@ -466,6 +467,7 @@ message AgentSkill {
   // security requirement objects. Each object is a set of security schemes
   // that must be used together (a logical AND).
   repeated Security security = 8;
+  // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 }
 
 // AgentCardSignature represents a JWS signature of an AgentCard.
@@ -480,11 +482,15 @@ message AgentCardSignature {
   google.protobuf.Struct header = 3;
 }
 
+// protolint:disable MAX_LINE_LENGTH
 message TaskPushNotificationConfig {
-  // name=tasks/{id}/pushNotificationConfigs/{id}
-  string name = 1;
+  // The resource name of the config.
+  // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
+  string name = 1 [(buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/pushNotificationConfigs/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"];
+  // The push notification configuration details.
   PushNotificationConfig push_notification_config = 2;
 }
+// protolint:enable MAX_LINE_LENGTH
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
 message StringList {
@@ -614,50 +620,72 @@ message PasswordOAuthFlow {
 
 ///////////// Request Messages ///////////
 message SendMessageRequest {
+  // The message to send to the agent.
   Message request = 1
       [(google.api.field_behavior) = REQUIRED, json_name = "message"];
+  // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
+  // Optional metadata for the request.
   google.protobuf.Struct metadata = 3;
 }
 
+// protolint:disable MAX_LINE_LENGTH
 message GetTaskRequest {
-  // name=tasks/{id}
-  string name = 1 [(google.api.field_behavior) = REQUIRED];
+  // The resource name of the task.
+  // Format: tasks/{task_id}
+  string name = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+  ];
+  // The number of most recent messages from the task's history to retrieve.
   int32 history_length = 2;
 }
 
 message CancelTaskRequest {
-  // name=tasks/{id}
-  string name = 1;
+  // The resource name of the task to cancel.
+  // Format: tasks/{task_id}
+  string name = 1 [(buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"];
 }
 
 message GetTaskPushNotificationConfigRequest {
-  // name=tasks/{id}/pushNotificationConfigs/{push_id}
-  string name = 1;
+  // The resource name of the config to retrieve.
+  // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
+  string name = 1 [(buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/pushNotificationConfigs/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"];
 }
 
 message DeleteTaskPushNotificationConfigRequest {
-  // name=tasks/{id}/pushNotificationConfigs/{push_id}
-  string name = 1;
+  // The resource name of the config to delete.
+  // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
+  string name = 1 [(buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/pushNotificationConfigs/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"];
 }
 
 message CreateTaskPushNotificationConfigRequest {
-  // The task resource for this config.
-  // Format: tasks/{id}
-  string parent = 1 [(google.api.field_behavior) = REQUIRED];
-  string config_id = 2 [(google.api.field_behavior) = REQUIRED];
+  // The parent task resource for this config.
+  // Format: tasks/{task_id}
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+  ];
+  // The ID for the new config.
+  string config_id = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (buf.validate.field).string.uuid = true
+  ];
+  // The configuration to create.
   TaskPushNotificationConfig config = 3
       [(google.api.field_behavior) = REQUIRED];
 }
 
 message TaskSubscriptionRequest {
-  // name=tasks/{id}
-  string name = 1;
+  // The resource name of the task to subscribe to.
+  // Format: tasks/{task_id}
+  string name = 1 [(buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"];
 }
 
 message ListTaskPushNotificationConfigRequest {
-  // parent=tasks/{id}
-  string parent = 1;
+  // The parent task resource.
+  // Format: tasks/{task_id}
+  string parent = 1 [(buf.validate.field).string.pattern = "^tasks/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"];
   // For AIP-158 these fields are present. Usually not used/needed.
   // The maximum number of configurations to return.
   // If unspecified, all configs will be returned.
@@ -671,6 +699,7 @@ message ListTaskPushNotificationConfigRequest {
   // the page token.
   string page_token = 3;
 }
+// protolint:enable MAX_LINE_LENGTH
 
 message GetAgentCardRequest {
   // Empty. Added to fix linter violation.
@@ -703,6 +732,7 @@ message StreamResponse {
 }
 
 message ListTaskPushNotificationConfigResponse {
+  // The list of push notification configurations.
   repeated TaskPushNotificationConfig configs = 1;
   // A token, which can be sent as `page_token` to retrieve the next page.
   // If this field is omitted, there are no subsequent pages.
