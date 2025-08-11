@@ -322,7 +322,7 @@ Specifies optional A2A protocol features supported by the agent.
 --8<-- "types/src/types.ts:AgentCapabilities"
 ```
 
-- **`idempotencySupported`**: When set to `true`, indicates that the agent supports messageId-based idempotency for new task creation. This enables the agent to detect and handle duplicate `messageId` values to prevent unintended duplicate task creation due to network failures or client retries. See [Section 7.1.2](#712-idempotency) for detailed behavior.
+- **`idempotencyEnforced`**: When set to `true`, indicates that the agent enforces messageId-based idempotency for new task creation. This enables the agent to detect and handle duplicate `messageId` values to prevent unintended duplicate task creation due to network failures or client retries. See [Section 7.1.2](#712-idempotency) for detailed behavior.
 
 #### 5.5.2.1. `AgentExtension` Object
 
@@ -731,9 +731,9 @@ A2A supports optional messageId-based idempotency to enable idempotent task crea
 
 **Agent Requirements:**
 
-- Agents **MAY** support idempotency by declaring `idempotencySupported: true` in their `AgentCapabilities`.
-- When `idempotencySupported` is `true`, agents **MUST** track `messageId` values for new task creation within the authenticated user/session scope.
-- When `idempotencySupported` is `false` or absent, agents **MAY** not support idempotency and do not track `messageId` values.
+- Agents **MAY** enforce idempotency by declaring `idempotencyEnforced: true` in their `AgentCapabilities`.
+- When `idempotencyEnforced` is `true`, agents **MUST** track `messageId` values for new task creation within the authenticated user/session scope.
+- When `idempotencyEnforced` is `false` or absent, agents **MAY** not enforce idempotency and do not track `messageId` values.
 
 **Server Behavior:**
 
@@ -1908,7 +1908,7 @@ _If the task were longer-running, the server might initially respond with `statu
    ```json
    {
      "capabilities": {
-       "idempotencySupported": true
+       "idempotencyEnforced": true
      }
    }
    ```

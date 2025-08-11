@@ -29,8 +29,8 @@ export interface AgentCapabilities {
   pushNotifications?: boolean;
   /** Indicates if the agent provides a history of state transitions for a task. */
   stateTransitionHistory?: boolean;
-  /** Indicates if the agent supports messageId-based idempotency for task creation. */
-  idempotencySupported?: boolean;
+  /** Indicates if the agent enforces messageId-based idempotency for task creation. */
+  idempotencyEnforced?: boolean;
   /** A list of protocol extensions supported by the agent. */
   extensions?: AgentExtension[];
 }
