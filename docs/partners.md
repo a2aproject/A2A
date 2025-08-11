@@ -87,6 +87,7 @@ collaborate effectively with each other and with users.
 - [Iron Mountain](https://www.ironmountain.com/)
 - [JetBrains](https://www.jetbrains.com)
 - [JFrog](https://jfrog.com)
+- [Kakao](https://www.kakaocorp.com/)
 - [King's College London](https://www.kcl.ac.uk/informatics)
 - [KPMG](https://kpmg.com/us/en/media/news/kpmg-google-cloud-alliance-expansion-agentspace-adoption.html)
 - [Kyndryl](http://www.kyndryl.com)
