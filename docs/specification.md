@@ -983,7 +983,7 @@ Retrieves the current push notification configuration for a specified task. Requ
 
 </div>
 
-**Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors)).
+**Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#822-a2a-specific-json-rpc-errors), [`TaskNotFoundError`](#822-a2a-specific-json-rpc-errors)).
 
 #### 7.6.1. `GetTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/get`)
 
@@ -1039,7 +1039,7 @@ Deletes an associated push notification configuration for a task. Requires the s
 
 - **Request `params` type**: [`DeleteTaskPushNotificationConfigParams`](#781-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete)
 - **Response `result` type (on success)**: [`null`]
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors)).
+- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#822-a2a-specific-json-rpc-errors), [`TaskNotFoundError`](#822-a2a-specific-json-rpc-errors)).
 
 #### 7.8.1. `DeleteTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/delete`)
 
@@ -1235,6 +1235,7 @@ google.rpc.Status {
 ```
 
 Error details **SHOULD** include:
+
 - `google.rpc.ErrorInfo` with A2A-specific reason codes
 - `google.rpc.RequestInfo` with request identification
 - `google.rpc.ResourceInfo` for resource-related errors (e.g., task not found)
@@ -1284,27 +1285,33 @@ HTTP+JSON/REST implementations **MUST** return error responses with `Content-Typ
   "error": {
     "code": "A2A_ERROR_CODE",
     "message": "Human-readable error description",
-    "details": {
-      "type": "ERROR_TYPE",
-      "reason": "SPECIFIC_REASON_CODE",
-      "domain": "a2a.protocol",
-      "metadata": {
-        "key": "value"
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "SPECIFIC_REASON_CODE",
+        "domain": "a2a.protocol",
+        "metadata": {
+          "key": "value"
+        }
+      },
+      {
+        "@type": "type.googleapis.com/google.rpc.RequestInfo",
+        "requestId": "client-request-id"
       }
-    }
+    ]
   },
-  "request_id": "client-request-id",
   "timestamp": "2024-03-15T10:30:00Z"
 }
 ```
 
 **Required fields:**
+
 - `error.code`: A2A-specific error identifier (e.g., "TASK_NOT_FOUND")
 - `error.message`: Human-readable error description
 
 **Optional fields:**
-- `error.details`: Additional structured error information
-- `request_id`: Client-provided request identifier for tracing
+
+- `error.details`: An array of objects containing additional structured error information.
 - `timestamp`: ISO 8601 timestamp when the error occurred
 
 #### 8.4.4. HTTP Error Headers
@@ -1322,13 +1329,11 @@ To ensure functional equivalence across all supported transports as required by 
 
 | A2A Error Condition | JSON-RPC Code | JSON-RPC Message | gRPC Status | gRPC Reason | HTTP Status | HTTP Error Code |
 |:-------------------|:--------------|:-----------------|:------------|:------------|:------------|:----------------|
-| **Standard Protocol Errors** |
 | Parse/Format Error | `-32700` | Invalid JSON payload | `INVALID_ARGUMENT` | `PARSE_ERROR` | `400` | `PARSE_ERROR` |
 | Invalid Request | `-32600` | Invalid JSON-RPC Request | `INVALID_ARGUMENT` | `INVALID_REQUEST` | `400` | `INVALID_REQUEST` |
 | Method Not Found | `-32601` | Method not found | `UNIMPLEMENTED` | `METHOD_NOT_FOUND` | `501` | `METHOD_NOT_FOUND` |
 | Invalid Parameters | `-32602` | Invalid method parameters | `INVALID_ARGUMENT` | `INVALID_PARAMS` | `400` | `INVALID_PARAMS` |
 | Internal Error | `-32603` | Internal server error | `INTERNAL` | `INTERNAL_ERROR` | `500` | `INTERNAL_ERROR` |
-| **A2A-Specific Errors** |
 | Task Not Found | `-32001` | Task not found | `NOT_FOUND` | `TASK_NOT_FOUND` | `404` | `TASK_NOT_FOUND` |
 | Task Not Cancelable | `-32002` | Task cannot be canceled | `FAILED_PRECONDITION` | `TASK_NOT_CANCELABLE` | `409` | `TASK_NOT_CANCELABLE` |
 | Push Notifications Not Supported | `-32003` | Push Notification is not supported | `UNIMPLEMENTED` | `PUSH_NOTIFICATIONS_NOT_SUPPORTED` | `501` | `PUSH_NOTIFICATIONS_NOT_SUPPORTED` |
@@ -1336,10 +1341,8 @@ To ensure functional equivalence across all supported transports as required by 
 | Content Type Not Supported | `-32005` | Incompatible content types | `INVALID_ARGUMENT` | `CONTENT_TYPE_NOT_SUPPORTED` | `415` | `CONTENT_TYPE_NOT_SUPPORTED` |
 | Invalid Agent Response | `-32006` | Invalid agent response type | `INTERNAL` | `INVALID_AGENT_RESPONSE` | `500` | `INVALID_AGENT_RESPONSE` |
 | Authenticated Card Not Configured | `-32007` | Authenticated Extended Card not configured | `UNIMPLEMENTED` | `AUTHENTICATED_CARD_NOT_CONFIGURED` | `501` | `AUTHENTICATED_CARD_NOT_CONFIGURED` |
-| **Authentication/Authorization Errors** |
 | Authentication Required | N/A | Authentication required | `UNAUTHENTICATED` | `AUTH_REQUIRED` | `401` | `AUTH_REQUIRED` |
 | Authorization Failed | N/A | Permission denied | `PERMISSION_DENIED` | `AUTH_FAILED` | `403` | `AUTH_FAILED` |
-| **Service Availability Errors** |
 | Service Unavailable | N/A | Service temporarily unavailable | `UNAVAILABLE` | `SERVICE_UNAVAILABLE` | `503` | `SERVICE_UNAVAILABLE` |
 
 #### 8.5.1. Error Equivalence Requirements
@@ -2156,7 +2159,7 @@ For a client to be considered **A2A-compliant**, it **MUST**:
 #### 11.2.2. Protocol Implementation
 
 - **Core method usage**: **MUST** properly construct requests for at least `message/send` and `tasks/get` methods.
-- **Error handling**: **MUST** properly handle all A2A error codes defined in [Section 8.2](#82-a2a-specific-errors).
+- **Error handling**: **MUST** properly handle all A2A error codes defined in [Section 8.2](#822-a2a-specific-json-rpc-errors).
 - **Authentication**: **MUST** support at least one authentication method when interacting with agents that require authentication.
 
 #### 11.2.3. Optional Client Features
