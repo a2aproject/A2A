@@ -251,7 +251,7 @@ The A2A Server:
 - **MUST** authenticate every incoming request based on the provided HTTP credentials and its declared authentication requirements from its Agent Card.
 - **SHOULD** use standard HTTP status codes like [`401 Unauthorized`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401) or [`403 Forbidden`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403) for authentication challenges or rejections.
 - **SHOULD** include relevant HTTP headers (e.g., [`WWW-Authenticate`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate)) with `401 Unauthorized` responses to indicate the required authentication scheme(s), guiding the client.
-- **SHOULD** authenticate the Client's webhook server identity, if provided, by validating its TLS certificate against trusted certificate authorities (CAs) during the TLS handshake.
+- **SHOULD** verify the Client's webhook server identity by validating its TLS certificate against trusted certificate authorities (CAs) during the TLS handshake.
 
 ### 4.5. In-Task Authentication (Secondary Credentials)
 
