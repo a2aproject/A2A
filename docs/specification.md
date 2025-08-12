@@ -1203,7 +1203,7 @@ These standard gRPC status codes map to common A2A error conditions:
 | `INVALID_ARGUMENT` (3) | Invalid parameters | Equivalent to JSON-RPC `-32602` |
 | `UNAUTHENTICATED` (16) | Authentication required | Client credentials are missing or invalid |
 | `PERMISSION_DENIED` (7) | Authorization failed | Client does not have permission for the operation |
-| `NOT_FOUND` (5) | Resource not found | Equivalent to `TaskNotFoundError` (-32001) |
+| `NOT_FOUND` (5) | Resource not found | Equivalent to `TaskNotFoundError` `-32001` |
 | `UNIMPLEMENTED` (12) | Method not supported | Equivalent to JSON-RPC `-32601` |
 | `INTERNAL` (13) | Internal server error | Equivalent to JSON-RPC `-32603` |
 | `UNAVAILABLE` (14) | Service unavailable | Server is temporarily unavailable |
