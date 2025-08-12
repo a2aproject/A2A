@@ -10,7 +10,7 @@ The core A2A protocol is a solid basis for enabling communication between agents
 
 ### Scope of Extensions
 
-The exact set of possible ways to use extensions is intentionally not defined. This is to facilitate the ability to use extensions to expand A2A beyond currently known use cases. However, some use cases are clearly forseeable, such as:
+The exact set of possible ways to use extensions is intentionally not defined. This is to facilitate the ability to use extensions to expand A2A beyond currently known use cases. However, some use cases are clearly foreseeable, such as:
 
 - Exposing new information in the `AgentCard`. An extension may not impact the request/response flow at all -- it can be simply used as a way to convey additional structured information to clients via the `AgentCard`. We refer to these as *data-only extensions*. For example, an extension could add structured data about an agent's GDPR compliance to its `AgentCard`.
 
