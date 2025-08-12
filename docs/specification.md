@@ -1337,10 +1337,10 @@ To ensure functional equivalence across all supported transports as required by 
 | Invalid Agent Response | `-32006` | Invalid agent response type | `INTERNAL` | `INVALID_AGENT_RESPONSE` | `500` | `INVALID_AGENT_RESPONSE` |
 | Authenticated Card Not Configured | `-32007` | Authenticated Extended Card not configured | `UNIMPLEMENTED` | `AUTHENTICATED_CARD_NOT_CONFIGURED` | `501` | `AUTHENTICATED_CARD_NOT_CONFIGURED` |
 | **Authentication/Authorization Errors** |
-| Authentication Required | N/A (HTTP 401) | Authentication required | `UNAUTHENTICATED` | `AUTH_REQUIRED` | `401` | `AUTH_REQUIRED` |
-| Authorization Failed | N/A (HTTP 403) | Permission denied | `PERMISSION_DENIED` | `AUTH_FAILED` | `403` | `AUTH_FAILED` |
+| Authentication Required | N/A | Authentication required | `UNAUTHENTICATED` | `AUTH_REQUIRED` | `401` | `AUTH_REQUIRED` |
+| Authorization Failed | N/A | Permission denied | `PERMISSION_DENIED` | `AUTH_FAILED` | `403` | `AUTH_FAILED` |
 | **Service Availability Errors** |
-| Service Unavailable | N/A (HTTP 503) | Service temporarily unavailable | `UNAVAILABLE` | `SERVICE_UNAVAILABLE` | `503` | `SERVICE_UNAVAILABLE` |
+| Service Unavailable | N/A | Service temporarily unavailable | `UNAVAILABLE` | `SERVICE_UNAVAILABLE` | `503` | `SERVICE_UNAVAILABLE` |
 
 #### 8.5.1. Error Equivalence Requirements
 
