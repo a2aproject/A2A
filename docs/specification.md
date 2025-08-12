@@ -1278,41 +1278,31 @@ A2A-specific error conditions **MUST** be mapped to appropriate HTTP status code
 
 #### 8.4.3. HTTP Error Response Format
 
-HTTP+JSON/REST implementations **MUST** return error responses with `Content-Type: application/json` and a consistent JSON structure:
+HTTP+JSON/REST implementations **MUST** return Application specific error responses with `Content-Type: application/json` and a consistent JSON structure:
 
 ```json
 {
   "error": {
-    "code": "A2A_ERROR_CODE",
-    "message": "Human-readable error description",
-    "details": [
-      {
-        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
-        "reason": "SPECIFIC_REASON_CODE",
-        "domain": "a2a.protocol",
-        "metadata": {
-          "key": "value"
-        }
-      },
-      {
-        "@type": "type.googleapis.com/google.rpc.RequestInfo",
-        "requestId": "client-request-id"
-      }
-    ]
-  },
-  "timestamp": "2024-03-15T10:30:00Z"
+    "code": "TASK_NOT_FOUND",
+    "message": "Task not found",
+    "details": {
+      "taskId": "invalid-task-id",
+      "reason": "Task may have expired or been purged"
+    }
+  }
 }
 ```
 
+The error response **MUST** contain an `error` object with:
+
 **Required fields:**
 
-- `error.code`: A2A-specific error identifier (e.g., "TASK_NOT_FOUND")
-- `error.message`: Human-readable error description
+- `code`: A2A-specific error identifier (e.g., "TASK_NOT_FOUND", "OPERATION_NOT_SUPPORTED")
+- `message`: Human-readable error description
 
 **Optional fields:**
 
-- `error.details`: An array of objects containing additional structured error information.
-- `timestamp`: ISO 8601 timestamp when the error occurred
+- `details`: Additional structured error information (object with error-specific data)
 
 #### 8.4.4. HTTP Error Headers
 

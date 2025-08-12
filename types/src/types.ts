@@ -1514,3 +1514,17 @@ export type A2AError =
   | InvalidAgentResponseError
   | AuthenticatedExtendedCardNotConfiguredError;
 // --8<-- [end:A2AError]
+
+// --8<-- [start:JSONError]
+/**
+ * Represents the error format for HTTP+JSON/REST transport error responses.
+ */
+export interface JSONError {
+  /** A2A-specific error identifier (e.g., "TASK_NOT_FOUND"). */
+  code: string;
+  /** Human-readable error description. */
+  message: string;
+  /** Optional additional structured error information. */
+  details?: any;
+}
+// --8<-- [end:JSONError]

@@ -1282,6 +1282,27 @@
             ],
             "type": "object"
         },
+        "JSONError": {
+            "description": "Represents the error format for HTTP+JSON/REST transport error responses.",
+            "properties": {
+                "code": {
+                    "description": "A2A-specific error identifier (e.g., \"TASK_NOT_FOUND\").",
+                    "type": "string"
+                },
+                "details": {
+                    "description": "Optional additional structured error information."
+                },
+                "message": {
+                    "description": "Human-readable error description.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "message"
+            ],
+            "type": "object"
+        },
         "JSONParseError": {
             "description": "An error indicating that the server received invalid JSON.",
             "properties": {
