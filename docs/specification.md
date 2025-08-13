@@ -1311,7 +1311,6 @@ HTTP error responses **SHOULD** include appropriate headers:
 - `Content-Type: application/json` for all error responses
 - `WWW-Authenticate` header for `401 Unauthorized` responses
 - `Retry-After` header for `503 Service Unavailable` responses
-- Custom `X-A2A-Error-Code` header with the A2A error identifier
 
 ### 8.5. Cross-Transport Error Mapping
 
