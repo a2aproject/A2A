@@ -73,7 +73,7 @@ service A2AService {
   rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest)
       returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      post: "/v1/{parent=task/*/pushNotificationConfigs}"
+      post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
     };
     option (google.api.method_signature) = "parent,config";
