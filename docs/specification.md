@@ -1111,10 +1111,6 @@ The purpose is to resume receiving _subsequent_ updates. The server's behavior r
 
 </div>
 
-- **Response (on resubscription failure)**:
-    - Standard HTTP error code (e.g., 4xx, 5xx).
-    - The HTTP body MAY contain a standard `JSONRPCResponse` with an `error` object. Failures can occur if the task is no longer active, doesn't exist, or streaming is not supported/enabled for it.
-
 ### 7.10. `agent/getAuthenticatedExtendedCard`
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`.
