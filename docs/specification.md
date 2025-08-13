@@ -330,6 +330,14 @@ Specifies an extension to the A2A protocol supported by the agent.
 --8<-- "types/src/types.ts:AgentExtension"
 ```
 
+#### 5.5.2.2. `PaymentCapability` Object
+
+Specifies supported payment methods and delegation parameters.
+
+```ts { .no-copy }
+--8<-- "types/src/types.ts:PaymentCapability"
+```
+
 #### 5.5.3. `SecurityScheme` Object
 
 Describes the authentication requirements for accessing the agent's `url` endpoint. Refer [Sample Agent Card](#57-sample-agent-card) for an example.
@@ -434,7 +442,13 @@ Agent Cards **MUST** satisfy these validation requirements:
   "capabilities": {
     "streaming": true,
     "pushNotifications": true,
-    "stateTransitionHistory": false
+    "stateTransitionHistory": false,
+    "payment": {
+      "bitcoin": {
+        "payTo": "bc1qexampleaddress12345",
+        "network": "mainnet"
+      }
+    }
   },
   "securitySchemes": {
     "google": {
