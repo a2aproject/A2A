@@ -1148,14 +1148,6 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 Clients retrieving this authenticated card **SHOULD** replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
 
-#### 7.10.1. `AuthenticatedExtendedCardParams` Object
-
-This endpoint does not use JSON-RPC `params`. Any parameters would be included as HTTP query parameters if needed (though none are defined by the standard).
-
-#### 7.10.2. `AuthenticatedExtendedCardResponse` Object
-
-The successful response body is a JSON object conforming to the `AgentCard` interface.
-
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:GetAuthenticatedExtendedCardSuccessResponse"
 ```
