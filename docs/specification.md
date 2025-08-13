@@ -843,33 +843,6 @@ Retrieves the current state (including status, artifacts, and optionally history
 --8<-- "types/src/types.ts:TaskQueryParams"
 ```
 
-### `tasks/list`
-
-<div class="grid cards" markdown>
-
-=== "JSON-RPC"
-    -  N/A
-
-=== "gRPC"
-    -   **URL:** `ListTask`
-    -   **HTTP Method:** `GET`
-    -   **Payload:**
-        ```proto
-        {}
-        ```
-    -   **Response**: `repeated Task`
-
-=== "REST"
-    -   **URL:** `/v1/tasks`
-    -   **HTTP Method:** `GET`
-    -   **Payload:**
-        ```typescript
-        {}
-        ```
-    -   **Response**: `[Task]`
-
-</div>
-
 ### 7.4. `tasks/list`
 
 Retrieves a list of tasks with optional filtering and pagination capabilities. This method allows clients to discover and manage multiple tasks across different contexts or with specific status criteria.
