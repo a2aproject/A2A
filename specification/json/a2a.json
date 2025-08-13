@@ -1644,7 +1644,7 @@
             "description": "JSON-RPC request model for the 'tasks/list' method.",
             "properties": {
                 "id": {
-                    "description": "An identifier established by the Client that MUST contain a String, Number.\nNumbers SHOULD NOT contain fractional parts.",
+                    "description": "A unique identifier established by the client. It must be a String, a Number, or null.\nThe server must reply with the same value in the response. This property is omitted for notifications.",
                     "type": [
                         "string",
                         "integer"
@@ -1652,7 +1652,7 @@
                 },
                 "jsonrpc": {
                     "const": "2.0",
-                    "description": "Specifies the version of the JSON-RPC protocol. MUST be exactly \"2.0\".",
+                    "description": "The version of the JSON-RPC protocol. MUST be exactly \"2.0\".",
                     "type": "string"
                 },
                 "method": {
@@ -1717,7 +1717,7 @@
             "description": "JSON-RPC success response model for the 'tasks/list' method.",
             "properties": {
                 "id": {
-                    "description": "An identifier established by the Client that MUST contain a String, Number.\nNumbers SHOULD NOT contain fractional parts.",
+                    "description": "The identifier established by the client.",
                     "type": [
                         "string",
                         "integer",
@@ -1726,7 +1726,7 @@
                 },
                 "jsonrpc": {
                     "const": "2.0",
-                    "description": "Specifies the version of the JSON-RPC protocol. MUST be exactly \"2.0\".",
+                    "description": "The version of the JSON-RPC protocol. MUST be exactly \"2.0\".",
                     "type": "string"
                 },
                 "result": {
