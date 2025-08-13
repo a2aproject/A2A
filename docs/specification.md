@@ -1155,6 +1155,7 @@ This endpoint does not use JSON-RPC `params`. Any parameters would be included a
 #### 7.10.2. `AuthenticatedExtendedCardResponse` Object
 
 The successful response body is a JSON object conforming to the `AgentCard` interface.
+
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:GetAuthenticatedExtendedCardSuccessResponse"
 ```
