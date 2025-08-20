@@ -1,8 +1,6 @@
 # A2A Docs
 
-## Published A2A docs
-
-[`https://a2aproject.github.io/A2A`](https://a2aproject.github.io/A2A)
+<https://a2a-protocol.org>
 
 ## Developing A2A docs
 

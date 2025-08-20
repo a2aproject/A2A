@@ -73,7 +73,7 @@ service A2AService {
   rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest)
       returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      post: "/v1/{parent=task/*/pushNotificationConfigs}"
+      post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
     };
     option (google.api.method_signature) = "parent,config";
@@ -341,7 +341,7 @@ message AgentInterface {
 // - Skills; a set of actions/solutions the agent can perform
 // - Default modalities/content types supported by the agent.
 // - Authentication requirements
-// Next ID: 18
+// Next ID: 19
 message AgentCard {
   // The version of the A2A protocol this agent supports.
   string protocol_version = 16;
@@ -401,6 +401,8 @@ message AgentCard {
   bool supports_authenticated_extended_card = 13;
   // JSON Web Signatures computed for this AgentCard.
   repeated AgentCardSignature signatures = 17;
+  // An optional URL to an icon for the agent.
+  string icon_url = 18;
 }
 
 // Represents information about the service provider of an agent.
@@ -635,6 +637,8 @@ message GetTaskRequest {
   string name = 1 [(google.api.field_behavior) = REQUIRED];
   // The number of most recent messages from the task's history to retrieve.
   int32 history_length = 2;
+  // Optional metadata for the request.
+  google.protobuf.Struct metadata = 3;
 }
 
 message CancelTaskRequest {
