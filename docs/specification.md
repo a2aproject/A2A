@@ -843,33 +843,6 @@ Retrieves the current state (including status, artifacts, and optionally history
 --8<-- "types/src/types.ts:TaskQueryParams"
 ```
 
-### `tasks/list`
-
-<div class="grid cards" markdown>
-
-=== "JSON-RPC"
-    -  N/A
-
-=== "gRPC"
-    -   **URL:** `ListTask`
-    -   **HTTP Method:** `GET`
-    -   **Payload:**
-        ```proto
-        {}
-        ```
-    -   **Response**: `repeated Task`
-
-=== "REST"
-    -   **URL:** `/v1/tasks`
-    -   **HTTP Method:** `GET`
-    -   **Payload:**
-        ```typescript
-        {}
-        ```
-    -   **Response**: `[Task]`
-
-</div>
-
 ### 7.4. `tasks/cancel`
 
 Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).
