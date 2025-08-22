@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.1](https://github.com/a2aproject/A2A/compare/v0.3.0...v0.3.1) (2025-08-22)
+
+
+### Bug Fixes
+
+* Add name field to FilePart protobuf message ([#983](https://github.com/a2aproject/A2A/issues/983)) ([2b7cb6f](https://github.com/a2aproject/A2A/commit/2b7cb6f8408e6324c48fb82c71839c67a18f1fab)), closes [#984](https://github.com/a2aproject/A2A/issues/984)
+* **grpc:** Update `CreateTaskPushNotificationConfig` endpoint to `/v1/{parent=tasks/*/pushNotificationConfigs}` ([#979](https://github.com/a2aproject/A2A/issues/979)) ([911f9b0](https://github.com/a2aproject/A2A/commit/911f9b059c52dd65497b76ccf63d196ca84c7f0e))
+* **proto:** Add icon_url to a2a.proto ([#986](https://github.com/a2aproject/A2A/issues/986)) ([17e7f62](https://github.com/a2aproject/A2A/commit/17e7f62df9a3e4ca0768ab8d4f0bb7573b3d73e1))
+* Revert "chore(gRPC): Update a2a.proto to include metadata on GetTaskRequest" ([#1000](https://github.com/a2aproject/A2A/issues/1000)) ([e6b8c65](https://github.com/a2aproject/A2A/commit/e6b8c654a86a6ee461bb5c7be5d5b81004b80a92))
+* **spec:** Suggest Unique Identifier fields to be UUID ([#966](https://github.com/a2aproject/A2A/issues/966)) ([00cf76e](https://github.com/a2aproject/A2A/commit/00cf76e7bbc752842ef254f3d4136ed1b5751f6e))
+
 ## [0.3.0](https://github.com/a2aproject/A2A/compare/v0.2.6...v0.3.0) (2025-07-30)
 
 
