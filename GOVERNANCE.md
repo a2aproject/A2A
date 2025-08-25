@@ -1,6 +1,6 @@
 # Agent2Agent (A2A) Governance
 
-**The Agent to Agent project is governed by the Technical Steering Committee. The Committee has seven seats, each held by the following companies:**
+**The Agent to Agent project is governed by the Technical Steering Committee. The Committee has eight seats, each held by the following companies:**
 
 1. Google - Todd Segal, Principal Engineer - [@ToddSegal](https://github.com/ToddSegal)
 2. Microsoft - Darrel Miller, Partner API Architect - [@darrelmiller](https://github.com/darrelmiller)
@@ -9,6 +9,7 @@
 5. Salesforce - Sam Sharaf, Sr. Director Product Management - [@samuelsharaf](https://github.com/samuelsharaf)
 6. ServiceNow - Sean Hughes, AI Ecosystem Director - [@hughesthe1st](https://github.com/hughesthe1st)
 7. SAP - Sivakumar N., Vice President - [LinkedIn](https://www.linkedin.com/in/siva-kumar-n/)
+8. IBM Research - Kate Blair, Director of Incubation - [@geneknit](https://github.com/geneknit)
 
 ## Mission and Scope of the Project
 
