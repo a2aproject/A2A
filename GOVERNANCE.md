@@ -32,7 +32,7 @@
 
    b. "Steady State." The TSC will decide upon a "steady state" composition of the TSC (whether by election, sub-project technical leads, or other method as determined by the TSC) for composition of the TSC from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
 
-The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the GOVERNANCE file.  Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
+   The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the GOVERNANCE file.  Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
 
 3. TSC projects generally will involve Contributors and Maintainers. The TSC may adopt or modify roles so long as the roles are documented in the CONTRIBUTING file. Unless otherwise documented:
 
