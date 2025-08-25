@@ -9,7 +9,7 @@
 5. Salesforce - Sam Sharaf, Sr. Director Product Management - [@samuelsharaf](https://github.com/samuelsharaf)
 6. ServiceNow - Sean Hughes, AI Ecosystem Director - [@hughesthe1st](https://github.com/hughesthe1st)
 7. SAP - Sivakumar N., Vice President - [LinkedIn](https://www.linkedin.com/in/siva-kumar-n/)
-8. IBM Research - Kate Blair - [@geneknit](https://github.com/geneknit)
+8. IBM Research - Kate Blair, Director of Incubation - [@geneknit](https://github.com/geneknit)
 
 ## Mission and Scope of the Project
 
