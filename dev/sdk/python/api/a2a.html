@@ -623,6 +623,7 @@
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.html#module-a2a.utils.proto_utils">a2a.utils.proto_utils module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.FromProto"><code class="docutils literal notranslate"><span class="pre">FromProto</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.FromProto.agent_card"><code class="docutils literal notranslate"><span class="pre">FromProto.agent_card()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.FromProto.agent_extension"><code class="docutils literal notranslate"><span class="pre">FromProto.agent_extension()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.FromProto.agent_interface"><code class="docutils literal notranslate"><span class="pre">FromProto.agent_interface()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.FromProto.artifact"><code class="docutils literal notranslate"><span class="pre">FromProto.artifact()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.FromProto.authentication_info"><code class="docutils literal notranslate"><span class="pre">FromProto.authentication_info()</span></code></a></li>
@@ -662,6 +663,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.authentication_info"><code class="docutils literal notranslate"><span class="pre">ToProto.authentication_info()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.capabilities"><code class="docutils literal notranslate"><span class="pre">ToProto.capabilities()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.data"><code class="docutils literal notranslate"><span class="pre">ToProto.data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.extension"><code class="docutils literal notranslate"><span class="pre">ToProto.extension()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.file"><code class="docutils literal notranslate"><span class="pre">ToProto.file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.message"><code class="docutils literal notranslate"><span class="pre">ToProto.message()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.message_send_configuration"><code class="docutils literal notranslate"><span class="pre">ToProto.message_send_configuration()</span></code></a></li>
@@ -686,6 +688,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.ToProto.update_event"><code class="docutils literal notranslate"><span class="pre">ToProto.update_event()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.html#a2a.utils.proto_utils.dict_to_struct"><code class="docutils literal notranslate"><span class="pre">dict_to_struct()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.html#module-a2a.utils.task">a2a.utils.task module</a><ul>
@@ -1190,7 +1193,7 @@ requirement objects. Each object is a set of security schemes that must be used 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.Artifact.artifact_id">
 <span class="sig-name descname"><span class="pre">artifact_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.Artifact.artifact_id" title="Link to this definition">¶</a></dt>
-<dd><p>A unique identifier for the artifact within the scope of the task.</p>
+<dd><p>A unique identifier (e.g. UUID) for the artifact within the scope of the task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1494,7 +1497,7 @@ This may be omitted.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.DeleteTaskPushNotificationConfigParams.id">
 <span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.DeleteTaskPushNotificationConfigParams.id" title="Link to this definition">¶</a></dt>
-<dd><p>The unique identifier of the task.</p>
+<dd><p>The unique identifier (e.g. UUID) of the task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1810,7 +1813,7 @@ provided either directly as bytes or as a URI.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.GetTaskPushNotificationConfigParams.id">
 <span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.GetTaskPushNotificationConfigParams.id" title="Link to this definition">¶</a></dt>
-<dd><p>The unique identifier of the task.</p>
+<dd><p>The unique identifier (e.g. UUID) of the task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2445,7 +2448,7 @@ for the A2A specification methods.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.ListTaskPushNotificationConfigParams.id">
 <span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.ListTaskPushNotificationConfigParams.id" title="Link to this definition">¶</a></dt>
-<dd><p>The unique identifier of the task.</p>
+<dd><p>The unique identifier (e.g. UUID) of the task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2556,7 +2559,7 @@ for the A2A specification methods.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.Message.context_id">
 <span class="sig-name descname"><span class="pre">context_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#a2a.types.Message.context_id" title="Link to this definition">¶</a></dt>
-<dd><p>The context identifier for this message, used to group related interactions.</p>
+<dd><p>The context ID for this message, used to group related interactions.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2611,7 +2614,7 @@ composed of multiple parts of different types (e.g., text and files).</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.Message.task_id">
 <span class="sig-name descname"><span class="pre">task_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#a2a.types.Message.task_id" title="Link to this definition">¶</a></dt>
-<dd><p>The identifier of the task this message is part of. Can be omitted for the first message of a new task.</p>
+<dd><p>The ID of the task this message is part of. Can be omitted for the first message of a new task.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2957,7 +2960,7 @@ name and a short description for it.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.PushNotificationConfig.id">
 <span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#a2a.types.PushNotificationConfig.id" title="Link to this definition">¶</a></dt>
-<dd><p>A unique ID for the push notification configuration, set by the client
+<dd><p>A unique identifier (e.g. UUID) for the push notification configuration, set by the client
 to support multiple notification callbacks.</p>
 </dd></dl>
 
@@ -3341,7 +3344,7 @@ The server may send multiple response objects for a single request.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.Task.context_id">
 <span class="sig-name descname"><span class="pre">context_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.Task.context_id" title="Link to this definition">¶</a></dt>
-<dd><p>A server-generated identifier for maintaining context across multiple related tasks or interactions.</p>
+<dd><p>A server-generated unique identifier (e.g. UUID) for maintaining context across multiple related tasks or interactions.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -3353,7 +3356,7 @@ The server may send multiple response objects for a single request.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.Task.id">
 <span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.Task.id" title="Link to this definition">¶</a></dt>
-<dd><p>A unique identifier for the task, generated by the server for a new task.</p>
+<dd><p>A unique identifier (e.g. UUID) for the task, generated by the server for a new task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -3446,7 +3449,7 @@ generated or updated. This is typically used in streaming models.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.TaskIdParams.id">
 <span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.TaskIdParams.id" title="Link to this definition">¶</a></dt>
-<dd><p>The unique identifier of the task.</p>
+<dd><p>The unique identifier (e.g. UUID) of the task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -3547,7 +3550,7 @@ This may be omitted.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.TaskPushNotificationConfig.task_id">
 <span class="sig-name descname"><span class="pre">task_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.TaskPushNotificationConfig.task_id" title="Link to this definition">¶</a></dt>
-<dd><p>The ID of the task.</p>
+<dd><p>The unique identifier (e.g. UUID) of the task.</p>
 </dd></dl>
 
 </dd></dl>
@@ -3566,7 +3569,7 @@ This may be omitted.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.types.TaskQueryParams.id">
 <span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#a2a.types.TaskQueryParams.id" title="Link to this definition">¶</a></dt>
-<dd><p>The unique identifier of the task.</p>
+<dd><p>The unique identifier (e.g. UUID) of the task.</p>
 </dd></dl>
 
 <dl class="py attribute">

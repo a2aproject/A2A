@@ -339,11 +339,35 @@ monitors for exceptions set by the <cite>agent_task_callback</cite>.</p>
 server’s response handling (e.g., streaming via SSE). Supports tapping
 to create child queues that receive the same events.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.events.event_queue.EventQueue.clear_events">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clear_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clear_child_queues</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.event_queue.EventQueue.clear_events" title="Link to this definition">¶</a></dt>
+<dd><p>Clears all events from the current queue and optionally all child queues.</p>
+<p>This method removes all pending events from the queue without processing them.
+Child queues can be optionally cleared based on the clear_child_queues parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clear_child_queues</strong> – If True (default), clear all child queues as well.
+If False, only clear the current queue, leaving child queues untouched.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.event_queue.EventQueue.close">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.event_queue.EventQueue.close" title="Link to this definition">¶</a></dt>
-<dd><p>Closes the queue for future push events.</p>
-<p>Once closed, <cite>dequeue_event</cite> will eventually raise <cite>asyncio.QueueShutDown</cite>
-when the queue is empty. Also closes all child queues.</p>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">immediate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.event_queue.EventQueue.close" title="Link to this definition">¶</a></dt>
+<dd><p>Closes the queue for future push events and also closes all child queues.</p>
+<p>Once closed, no new events can be enqueued. For Python 3.13+, this will trigger
+<cite>asyncio.QueueShutDown</cite> when the queue is empty and a consumer tries to dequeue.
+For lower versions, the queue will be marked as closed and optionally cleared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>immediate</strong> (<em>bool</em>) – <ul class="simple">
+<li><p>True: Immediately closes the queue and clears all unprocessed events without waiting for them to be consumed. This is suitable for scenarios where you need to forcefully interrupt and quickly release resources.</p></li>
+<li><p>False (default): Gracefully closes the queue, waiting for all queued events to be processed (i.e., the queue is drained) before closing. This is suitable when you want to ensure all events are handled.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -607,11 +631,35 @@ monitors for exceptions set by the <cite>agent_task_callback</cite>.</p>
 server’s response handling (e.g., streaming via SSE). Supports tapping
 to create child queues that receive the same events.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.events.EventQueue.clear_events">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clear_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clear_child_queues</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.EventQueue.clear_events" title="Link to this definition">¶</a></dt>
+<dd><p>Clears all events from the current queue and optionally all child queues.</p>
+<p>This method removes all pending events from the queue without processing them.
+Child queues can be optionally cleared based on the clear_child_queues parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clear_child_queues</strong> – If True (default), clear all child queues as well.
+If False, only clear the current queue, leaving child queues untouched.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.EventQueue.close">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.EventQueue.close" title="Link to this definition">¶</a></dt>
-<dd><p>Closes the queue for future push events.</p>
-<p>Once closed, <cite>dequeue_event</cite> will eventually raise <cite>asyncio.QueueShutDown</cite>
-when the queue is empty. Also closes all child queues.</p>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">immediate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.EventQueue.close" title="Link to this definition">¶</a></dt>
+<dd><p>Closes the queue for future push events and also closes all child queues.</p>
+<p>Once closed, no new events can be enqueued. For Python 3.13+, this will trigger
+<cite>asyncio.QueueShutDown</cite> when the queue is empty and a consumer tries to dequeue.
+For lower versions, the queue will be marked as closed and optionally cleared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>immediate</strong> (<em>bool</em>) – <ul class="simple">
+<li><p>True: Immediately closes the queue and clears all unprocessed events without waiting for them to be consumed. This is suitable for scenarios where you need to forcefully interrupt and quickly release resources.</p></li>
+<li><p>False (default): Gracefully closes the queue, waiting for all queued events to be processed (i.e., the queue is drained) before closing. This is suitable when you want to ensure all events are handled.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -876,6 +924,7 @@ a distributed approach for scalable deployments.</p>
 <li><a class="reference internal" href="#module-a2a.server.events.event_queue">a2a.server.events.event_queue module</a><ul>
 <li><a class="reference internal" href="#a2a.server.events.event_queue.Event"><code class="docutils literal notranslate"><span class="pre">Event</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.events.event_queue.EventQueue"><code class="docutils literal notranslate"><span class="pre">EventQueue</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.events.event_queue.EventQueue.clear_events"><code class="docutils literal notranslate"><span class="pre">EventQueue.clear_events()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.events.event_queue.EventQueue.close"><code class="docutils literal notranslate"><span class="pre">EventQueue.close()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.events.event_queue.EventQueue.dequeue_event"><code class="docutils literal notranslate"><span class="pre">EventQueue.dequeue_event()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.events.event_queue.EventQueue.enqueue_event"><code class="docutils literal notranslate"><span class="pre">EventQueue.enqueue_event()</span></code></a></li>
@@ -918,6 +967,7 @@ a distributed approach for scalable deployments.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#a2a.server.events.EventQueue"><code class="docutils literal notranslate"><span class="pre">EventQueue</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.events.EventQueue.clear_events"><code class="docutils literal notranslate"><span class="pre">EventQueue.clear_events()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.events.EventQueue.close"><code class="docutils literal notranslate"><span class="pre">EventQueue.close()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.events.EventQueue.dequeue_event"><code class="docutils literal notranslate"><span class="pre">EventQueue.dequeue_event()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.events.EventQueue.enqueue_event"><code class="docutils literal notranslate"><span class="pre">EventQueue.enqueue_event()</span></code></a></li>
