@@ -29,13 +29,21 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
 1. The Technical Steering Committee (the "TSC") will be responsible for all technical oversight of the open source Project.
 2. **TSC Composition**
+
     a. **"Startup Phase."** At the inception of the Project, each organization listed in the [`GOVERNANCE`](GOVERNANCE.md) file in the governance repository of the Project will have the right to appoint (and remove and replace) one employee to serve as a voting member of the TSC.
+
     b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, sub-project technical leads, or other method as determined by the TSC) for composition of the TSC from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
+
     c. The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the GOVERNANCE file. Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
+
 3. TSC projects generally will involve Contributors and Maintainers. The TSC may adopt or modify roles so long as the roles are documented in the CONTRIBUTING file. Unless otherwise documented:
+
     a. **Contributors** include anyone in the technical community that contributes code, documentation, or other technical artifacts to the Project;
+
     b. **Maintainers** are Contributors who have earned the ability to modify ("commit") source code, documentation or other technical artifacts in a project's repository; and
+
     c. A Contributor may become a Maintainer by a vote of the TSC. A Maintainer may be removed by a vote of the TSC.
+
     d. Participation in the Project through becoming a Contributor and Maintainer is open to anyone so long as they abide by the terms of this Charter.
 4. The TSC may:
     1. establish work flow procedures for the submission, approval, and closure/archiving of projects,
