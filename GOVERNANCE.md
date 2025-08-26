@@ -54,7 +54,9 @@
    (3) amend, adjust, refine and/or eliminate the roles of Contributors, and Maintainer, and create new roles, and publicly document any TSC roles, as it sees fit.
 
 5. The TSC may elect a TSC Chair, who will preside over meetings of the TSC and will serve until their resignation or replacement by the TSC.
+
 6. Responsibilities: The TSC will be responsible for all aspects of oversight relating to the Project, which may include:
+
    1. coordinating the technical direction of the Project;
    2. approving project or system proposals (including, but not limited to, incubation, deprecation, and changes to a sub-project's scope);
    3. organizing sub-projects and removing sub-projects;
