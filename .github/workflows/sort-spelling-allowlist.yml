@@ -25,7 +25,7 @@ jobs:
 
       - name: Sort allow.txt
         run: |
-          bash scripts/format.sh
+          bash scripts/sort_spelling.sh
 
       - name: Configure Git
         run: |
@@ -49,5 +49,5 @@ jobs:
       - name: Fail on fork with changes
         if: steps.git_status.outputs.changes == 'true' && github.event.pull_request.head.repo.full_name != github.repository
         run: |
-          echo "::error::The 'allow.txt' file is not sorted correctly. Please run 'bash scripts/format.sh' and commit the changes."
+          echo "::error::The 'allow.txt' file is not sorted correctly. Please run 'bash scripts/sort_spelling.sh' and commit the changes."
           exit 1
