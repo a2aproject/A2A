@@ -1,13 +1,14 @@
 #!/bin/bash
 
-# Exit immediately if a command fails (-e) or if an undeclared variable is used (-u).
-set -eu
-
-bash scripts/sort_spelling.sh
+set -euo pipefail
+# Determine the repository root directory based on the script's location.
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." &>/dev/null && pwd)
+bash "${SCRIPT_DIR}/sort_spelling.sh"
 
 # Define file and directory paths.
-MARKDOWN_DIR="docs/"
-MARKDOWNLINT_CONFIG=".github/linters/.markdownlint.json"
+MARKDOWN_DIR="${REPO_ROOT}/docs/"
+MARKDOWNLINT_CONFIG="${REPO_ROOT}/.github/linters/.markdownlint.json"
 
 # Install markdownlint-cli if the command doesn't already exist.
 if ! command -v markdownlint &>/dev/null; then
