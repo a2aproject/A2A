@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
-      - ".github/scripts/deploy-404.sh"
+      - "scripts/deploy-404.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -15,7 +15,7 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
-      - ".github/scripts/deploy-404.sh"
+      - "scripts/deploy-404.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -85,7 +85,7 @@ jobs:
           mike set-default --push latest
 
           # Deploy 404 page
-          bash .github/scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          bash scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy new release version and set as latest
         if: github.event_name == 'release'
@@ -99,4 +99,4 @@ jobs:
           mike set-default --push latest
 
           # Call the reusable script to deploy the 404 page, passing the token
-          bash .github/scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          bash scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
