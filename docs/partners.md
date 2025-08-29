@@ -82,6 +82,7 @@ collaborate effectively with each other and with users.
 - [Hexaware](https://hexaware.com/)
 - [HUMAN](https://www.humansecurity.com/)
 - [Incorta](https://www.incorta.com)
+- [Infinitus](https://www.infinitus.ai/)
 - [InfoSys](https://www.infosys.com)
 - [Intuit](https://www.intuit.com)
 - [Iron Mountain](https://www.ironmountain.com/)
