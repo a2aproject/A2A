@@ -198,6 +198,7 @@ message Part {
     FilePart file = 2;
     DataPart data = 3;
   }
+  google.protobuf.Struct metadata = 4;
 }
 
 // FilePart represents the different ways files can be provided. If files are
@@ -216,7 +217,6 @@ message FilePart {
 // DataPart represents a structured blob. This is most commonly a JSON payload.
 message DataPart {
   google.protobuf.Struct data = 1;
-  google.protobuf.Struct metadata = 2;
 }
 
 enum Role {
