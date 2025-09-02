@@ -3,6 +3,7 @@ hide:
   - toc
 ---
 
+<!-- markdownlint-disable MD041 -->
 <div style="text-align: center;">
   <div class="centered-logo-text-group">
     <img src="assets/a2a-logo-black.svg" alt="Agent2Agent Protocol Logo" width="100">
