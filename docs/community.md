@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Welcome to the A2A Community
 
 The **Agent2Agent (A2A) protocol** is generating significant buzz across the

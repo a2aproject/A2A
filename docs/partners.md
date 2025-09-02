@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Partners
 
 Below is a list of partners (and a link to their A2A announcement or blog post,

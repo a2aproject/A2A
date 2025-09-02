@@ -1,9 +1,4 @@
----
-hide:
-  - navigation
----
-
-# Agent2Agent (A2A) Protocol Specification
+# Agent2Agent (A2A) Protocol Official Specification
 
 **Version:** `{{ a2a_version }}`
 
