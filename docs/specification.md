@@ -322,7 +322,7 @@ Specifies optional A2A protocol features supported by the agent.
 --8<-- "types/src/types.ts:AgentCapabilities"
 ```
 
-- **`idempotencyEnforced`**: When set to `true`, indicates that the agent enforces messageId-based idempotency for new task creation. This enables the agent to detect and handle duplicate `messageId` values to prevent unintended duplicate task creation due to network failures or client retries. See [Section 7.1.2](#712-idempotency) for detailed behavior.
+- **`idempotencyEnforced`**: When set to `true`, indicates that the agent enforces messageId-based idempotency for task creation and follow-up. This enables the agent to detect and handle duplicate `messageId` values to prevent unintended duplicate task creation or wrong behavior in multi turn messages due to network failures or client retries. See [Section 7.1.2](#712-idempotency) for detailed behavior.
 
 #### 5.5.2.1. `AgentExtension` Object
 
@@ -727,28 +727,33 @@ The `error` response for all transports in case of failure is a [`JSONRPCError`]
 
 A2A supports optional messageId-based idempotency to enable idempotent task creation, addressing scenarios where network failures or client crashes could result in duplicate tasks with unintended side effects.
 
-**Scope**: Idempotency **ONLY** applies to new task creation (when `message.taskId` is not provided). Messages sent to continue existing tasks follow normal message uniqueness rules without task-level deduplication.
+**Scope**: Idempotency applies to new task creation (when `message.taskId` is not provided) and on messages sent to continue existing tasks in a multi turn workflow.
 
 **Agent Requirements:**
 
 - Agents **MAY** enforce idempotency by declaring `idempotencyEnforced: true` in their `AgentCapabilities`.
-- When `idempotencyEnforced` is `true`, agents **MUST** track `messageId` values for new task creation within the authenticated user/session scope.
+- When `idempotencyEnforced` is `true`, agents **MUST** track `messageId` values for new task creation and multi-turn message continuation within the authenticated user/session scope.
 - When `idempotencyEnforced` is `false` or absent, agents **MAY** not enforce idempotency and do not track `messageId` values.
 
 **Server Behavior:**
 
 - **MessageId scope**: MessageId tracking is scoped to the authenticated user/session to prevent cross-user conflicts.
-- **Active task collision**: If a `messageId` (for new task creation) matches an existing task in a non-terminal state (`submitted`, `working`, `input-required`), the server **MUST** return a [`MessageIdAlreadyExistsError`](#82-a2a-specific-errors) (-32008).
+- **MessageId collision handling**: If a `messageId` matches a value previously seen, the server **MUST**:
+    - **Content hash verification**: If the SHA256 hash of the request message content matches the hash of the previous message AND the matched message is the most recent message for the Task/Message, then:
+        - If the request is non-blocking, OR the task is in a terminal state, OR the response was a Message: immediately return the current state of the Task/Message.
+        - If the request is blocking and the task is in a non-terminal state: block until the Task transitions to a terminal state, and return the Task.
+    - **Content mismatch**: Otherwise, return a [`MessageIdAlreadyExistsError`](#82-a2a-specific-errors) (-32008) indicating the `messageId` is already associated with different content.
 - **Terminal task reuse**: If a `messageId` matches a task in a terminal state (`completed`, `failed`, `canceled`, `rejected`), the server **MAY** allow creating a new task with the same messageId.
 - **Time-based expiry**: Servers **MAY** implement time-based expiry for messageId tracking associated with terminal tasks.
 
 **Client Responsibilities:**
 
 - **Unique messageIds**: Clients **MUST** generate unique `messageId` values for each intended new task within their authenticated session (this is already required by the base A2A specification).
+- **Simple retry loops**: Clients can implement simple retry loops that keep sending the same request until it succeeds, without worrying about handling collision errors for genuine retries.
 - **Error handling**: When receiving `MessageIdAlreadyExistsError`, clients **SHOULD**:
-  1. Use the `existingTaskId` from the error data to call `tasks/get` to retrieve the existing task. This is the correct action when retrying a request that may have already succeeded (e.g., after a network error).
-  2. Alternatively, if the `messageId` was reused unintentionally and a new, distinct task is desired, generate a new `messageId` and retry the request.
-- **Retry safety**: Clients can safely retry `message/send` requests with the same `messageId` after network failures when creating new tasks.
+  1. Use the `existingTaskId` from the error data to call `tasks/get` to retrieve the existing task. This indicates the client has sent a different message with the same `messageId`.
+  2. If a new, distinct task is desired, generate a new `messageId` and retry the request.
+- **Retry safety**: Clients can safely retry `message/send` requests with identical content and the same `messageId` after network failures, as the server will return the appropriate response without creating duplicate tasks.
 
 ### 7.2. `message/stream`
 
@@ -2002,6 +2007,266 @@ _If the task were longer-running, the server might initially respond with `statu
    ```
 
 This pattern ensures that duplicate operations are prevented while allowing clients to safely recover from network failures.
+
+### 9.9. Idempotent Multi-Turn Interaction
+
+**Scenario:** Client wants to shop for items, and network failures cause message retransmission during the multi-turn workflow. The agent enforces idempotency to prevent duplicate orders.
+
+1. **Client discovers agent supports idempotency from Agent Card:**
+
+   ```json
+   {
+     "capabilities": {
+       "idempotencyEnforced": true
+     }
+   }
+   ```
+
+2. **Client sends initial shopping request (new task creation):**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-001",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "I want to go shopping"
+           }
+         ],
+         "messageId": "msg1-shopping-start"
+       }
+     }
+   }
+   ```
+
+3. **Server creates task and requests input:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-001",
+     "result": {
+       "id": "task1-shopping-session",
+       "contextId": "ctx-shopping-001",
+       "status": {
+         "state": "input-required",
+         "message": {
+           "role": "agent",
+           "parts": [
+             {
+               "kind": "text",
+               "text": "Welcome to our store! What would you like to add to your cart?"
+             }
+           ],
+           "messageId": "agent-msg1",
+           "taskId": "task1-shopping-session",
+           "contextId": "ctx-shopping-001"
+         }
+       },
+       "history": [
+         {
+           "role": "user",
+           "parts": [{"kind": "text", "text": "I want to go shopping"}],
+           "messageId": "msg1-shopping-start",
+           "taskId": "task1-shopping-session",
+           "contextId": "ctx-shopping-001"
+         }
+       ],
+       "kind": "task"
+     }
+   }
+   ```
+
+4. **Client adds first item to cart:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-002",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "Add a SuperX4 Laptop to my cart"
+           }
+         ],
+         "taskId": "task1-shopping-session",
+         "contextId": "ctx-shopping-001",
+         "messageId": "msg2-add-laptop"
+       }
+     }
+   }
+   ```
+
+5. **Server processes request and responds:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-002",
+     "result": {
+       "id": "task1-shopping-session",
+       "contextId": "ctx-shopping-001",
+       "status": {
+         "state": "input-required",
+         "message": {
+           "role": "agent",
+           "parts": [
+             {
+               "kind": "text",
+               "text": "Added SuperX4 Laptop ($1,299) to your cart. Anything else?"
+             }
+           ]
+         }
+       },
+       "kind": "task"
+     }
+   }
+   ```
+
+6. **Network failure occurs - client retries the same laptop addition:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-003",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "Add a SuperX4 Laptop to my cart"
+           }
+         ],
+         "taskId": "task1-shopping-session",
+         "contextId": "ctx-shopping-001",
+         "messageId": "msg2-add-laptop"
+       }
+     }
+   }
+   ```
+
+7. **Server detects identical messageId and content hash, returns current state without duplicate action:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-003",
+     "result": {
+       "id": "task1-shopping-session",
+       "contextId": "ctx-shopping-001",
+       "status": {
+         "state": "input-required",
+         "message": {
+           "role": "agent",
+           "parts": [
+             {
+               "kind": "text",
+               "text": "Added SuperX4 Laptop ($1,299) to your cart. Anything else?"
+             }
+           ]
+         }
+       },
+       "kind": "task"
+     }
+   }
+   ```
+
+8. **Client adds second item (different messageId):**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-004",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "Add a XtraScreen to my cart"
+           }
+         ],
+         "taskId": "task1-shopping-session",
+         "contextId": "ctx-shopping-001",
+         "messageId": "msg3-add-screen"
+       }
+     }
+   }
+   ```
+
+9. **Client finalizes order:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "req-005",
+     "method": "message/send",
+     "params": {
+       "message": {
+         "role": "user",
+         "parts": [
+           {
+             "kind": "text",
+             "text": "I'm done let's pay"
+           }
+         ],
+         "taskId": "task1-shopping-session",
+         "contextId": "ctx-shopping-001",
+         "messageId": "msg4-checkout"
+       }
+     }
+   }
+   ```
+
+10. **Server completes transaction with correct single laptop:**
+
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": "req-005",
+      "result": {
+        "id": "task1-shopping-session",
+        "contextId": "ctx-shopping-001",
+        "status": {
+          "state": "completed"
+        },
+        "artifacts": [
+          {
+            "artifactId": "order-confirmation",
+            "name": "Order Receipt",
+            "parts": [
+              {
+                "kind": "data",
+                "data": {
+                  "orderId": "ORD-12345",
+                  "items": [
+                    {"name": "SuperX4 Laptop", "price": 1299, "quantity": 1},
+                    {"name": "XtraScreen", "price": 299, "quantity": 1}
+                  ],
+                  "total": 1598
+                }
+              }
+            ]
+          }
+        ],
+        "kind": "task"
+      }
+    }
+    ```
+
+This example demonstrates how idempotency in multi-turn workflows prevents duplicate operations (only one laptop was ordered despite the retry) while allowing the conversation to continue naturally.
 
 These examples illustrate the flexibility of A2A in handling various interaction patterns and data types. Implementers should refer to the detailed object definitions for all fields and constraints.
 
