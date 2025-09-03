@@ -661,7 +661,11 @@ The A2A Server's HTTP response body **MUST** be a `JSONRPCResponse` object (or, 
 
 ### 7.1. `message/send`
 
-Sends a message to an agent to initiate a new interaction or to continue an existing one. This method is suitable for synchronous request/response interactions or when client-side polling (using `tasks/get`) is acceptable for monitoring longer-running tasks. A task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Sending a message to such a task will result in an error. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
+Sends a message to an agent to initiate a new interaction or to continue an existing one. This method is suitable for synchronous request/response interactions or when client-side polling (using `tasks/get`) is acceptable for monitoring longer-running tasks. 
+
+**Multi-turn message acceptance**: When a message contains a `taskId` (follow-up message), the server **MUST** only accept the message if the referenced task is in the `input-required` state. Messages sent to tasks in other non-terminal states (`submitted`, `working`, `auth-required`) **MUST** result in an [`UnsupportedOperationError`](#82-a2a-specific-errors) (-32004) with message "Task not accepting input".
+
+A task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Sending a message to such a task will result in an error. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
 
 <div class="grid cards" markdown>
 
