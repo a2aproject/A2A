@@ -3660,6 +3660,7 @@
 <li><strong>MUST</strong> authenticate every incoming request based on the provided HTTP credentials and its declared authentication requirements from its Agent Card.</li>
 <li><strong>SHOULD</strong> use standard HTTP status codes like <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401"><code>401 Unauthorized</code></a> or <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"><code>403 Forbidden</code></a> for authentication challenges or rejections.</li>
 <li><strong>SHOULD</strong> include relevant HTTP headers (e.g., <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate"><code>WWW-Authenticate</code></a>) with <code>401 Unauthorized</code> responses to indicate the required authentication scheme(s), guiding the client.</li>
+<li><strong>SHOULD</strong> verify the Client's webhook server identity by validating its TLS certificate against trusted certificate authorities (CAs) during the TLS handshake.</li>
 </ul>
 <h3 id="45-in-task-authentication-secondary-credentials">4.5. In-Task Authentication (Secondary Credentials)<a class="headerlink" href="#45-in-task-authentication-secondary-credentials" title="Permanent link">&para;</a></h3>
 <p>If an agent, during the execution of a task, requires <em>additional</em> credentials for a <em>different</em> system or resource (e.g., to access a specific tool on behalf of the user that requires its own auth):</p>
