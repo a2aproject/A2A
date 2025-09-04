@@ -1,9 +1,4 @@
----
-hide:
-  - navigation
----
-
-# Agent2Agent (A2A) Protocol Specification
+# Agent2Agent (A2A) Protocol Official Specification
 
 **Version:** `{{ a2a_version }}`
 
@@ -843,33 +838,6 @@ Retrieves the current state (including status, artifacts, and optionally history
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:TaskQueryParams"
 ```
-
-### `tasks/list`
-
-<div class="grid cards" markdown>
-
-=== "JSON-RPC"
-    -  N/A
-
-=== "gRPC"
-    -   **URL:** `ListTask`
-    -   **HTTP Method:** `GET`
-    -   **Payload:**
-        ```proto
-        {}
-        ```
-    -   **Response**: `repeated Task`
-
-=== "REST"
-    -   **URL:** `/v1/tasks`
-    -   **HTTP Method:** `GET`
-    -   **Payload:**
-        ```typescript
-        {}
-        ```
-    -   **Response**: `[Task]`
-
-</div>
 
 ### 7.4. `tasks/cancel`
 

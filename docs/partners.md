@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Partners
 
 Below is a list of partners (and a link to their A2A announcement or blog post,
@@ -82,6 +77,7 @@ collaborate effectively with each other and with users.
 - [Hexaware](https://hexaware.com/)
 - [HUMAN](https://www.humansecurity.com/)
 - [Incorta](https://www.incorta.com)
+- [Infinitus](https://www.infinitus.ai/)
 - [InfoSys](https://www.infosys.com)
 - [Intuit](https://www.intuit.com)
 - [Iron Mountain](https://www.ironmountain.com/)
@@ -101,6 +97,7 @@ collaborate effectively with each other and with users.
 - [Lyzr.ai](https://lyzr.ai)
 - [Magyar Telekom](https://www.telekom.hu/)
 - [Microsoft](https://www.microsoft.com/en-us/microsoft-cloud/blog/2025/05/07/empowering-multi-agent-apps-with-the-open-agent2agent-a2a-protocol/)
+- [MindsDB](https://mindsdb.com/blog/mindsdb-now-supports-the-agent2agent-(a2a)-protocol)
 - [McKinsey](https://www.mckinsey.com)
 - [MongoDB](https://www.mongodb.com)
 - [Monite](https://monite.com/)
