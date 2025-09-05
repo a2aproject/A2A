@@ -18,16 +18,24 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v5
 
-      - name: Get changed files
+      - name: Get relevant changed files
         id: changed-files
         if: github.event_name == 'pull_request'
         uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.md
+            **/*.mdx
+            **/*.html
+            **/*.htm
+            **/*.rst
+            **/*.txt
 
       - name: Run Lychee on changed files (PR)
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.all_changed_files != ''
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --no-progress ${{ steps.changed-files.outputs.all_modified_files }}
+          args: --no-progress ${{ steps.changed-files.outputs.all_changed_files }}
 
       - name: Run Lychee on all files (Scheduled/Manual)
         if: github.event_name != 'pull_request'
