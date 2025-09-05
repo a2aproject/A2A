@@ -112,6 +112,7 @@ service A2AService {
 
 ///////// Data Model ////////////
 
+// --8<-- [start:MessageSendConfiguration]
 // Configuration of a send message request.
 message SendMessageConfiguration {
   // The output modes that the agent is expected to respond with.
@@ -127,7 +128,9 @@ message SendMessageConfiguration {
   // updates.
   bool blocking = 4;
 }
+// --8<-- [end:MessageSendConfiguration]
 
+// --8<-- [start:Task]
 // Task is the core unit of action for A2A. It has a current status
 // and when results are created for the task they are stored in the
 // artifact. If there are multiple turns for a task, these are stored in
@@ -150,7 +153,9 @@ message Task {
   // A key/value object to store custom metadata about a task.
   google.protobuf.Struct metadata = 6;
 }
+// --8<-- [end:Task]
 
+// --8<-- [start:TaskState]
 // The set of states a Task can be in.
 enum TaskState {
   TASK_STATE_UNSPECIFIED = 0;
@@ -177,7 +182,9 @@ enum TaskState {
   // an interrupted or terminal state.
   TASK_STATE_AUTH_REQUIRED = 8;
 }
+// --8<-- [end:TaskState]
 
+// --8<-- [start:TaskStatus]
 // A container for the status of a task
 message TaskStatus {
   // The current state of this task
@@ -188,7 +195,9 @@ message TaskStatus {
   // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 3;
 }
+// --8<-- [end:TaskStatus]
 
+// --8<-- [start:Part]
 // Part represents a container for a section of communication content.
 // Parts can be purely textual, some sort of file (image, video, etc) or
 // a structured data blob (i.e. JSON).
@@ -201,7 +210,9 @@ message Part {
   // Optional metadata associated with this part.
   google.protobuf.Struct metadata = 4;
 }
+// --8<-- [end:Part]
 
+// --8<-- [start:FilePart]
 // FilePart represents the different ways files can be provided. If files are
 // small, directly feeding the bytes is supported via file_with_bytes. If the
 // file is large, the agent should read the content as appropriate directly
@@ -214,11 +225,14 @@ message FilePart {
   string mime_type = 3;
   string name = 4;
 }
+// --8<-- [end:FilePart]
 
+// --8<-- [start:DataPart]
 // DataPart represents a structured blob. This is most commonly a JSON payload.
 message DataPart {
   google.protobuf.Struct data = 1;
 }
+// --8<-- [end:DataPart]
 
 enum Role {
   ROLE_UNSPECIFIED = 0;
@@ -228,6 +242,7 @@ enum Role {
   ROLE_AGENT = 2;
 }
 
+// --8<-- [start:Message]
 // Message is one unit of communication between client and server. It is
 // associated with a context and optionally a task. Since the server is
 // responsible for the context definition, it must always provide a context_id
@@ -256,7 +271,9 @@ message Message {
   // The URIs of extensions that are present or contributed to this Message.
   repeated string extensions = 7;
 }
+// --8<-- [end:Message]
 
+// --8<-- [start:Artifact]
 // Artifacts are the container for task completed results. These are similar
 // to Messages but are intended to be the product of a task, as opposed to
 // point-to-point communication.
@@ -275,7 +292,9 @@ message Artifact {
   // The URIs of extensions that are present or contributed to this Artifact.
   repeated string extensions = 7;
 }
+// --8<-- [end:Artifact]
 
+// --8<-- [start:TaskStatusUpdateEvent]
 // TaskStatusUpdateEvent is a delta even on a task indicating that a task
 // has changed.
 message TaskStatusUpdateEvent {
@@ -290,7 +309,9 @@ message TaskStatusUpdateEvent {
   // Optional metadata to associate with the task update.
   google.protobuf.Struct metadata = 5;
 }
+// --8<-- [end:TaskStatusUpdateEvent]
 
+// --8<-- [start:TaskArtifactUpdateEvent]
 // TaskArtifactUpdateEvent represents a task delta where an artifact has
 // been generated.
 message TaskArtifactUpdateEvent {
@@ -307,7 +328,9 @@ message TaskArtifactUpdateEvent {
   // Optional metadata associated with the artifact update.
   google.protobuf.Struct metadata = 6;
 }
+// --8<-- [end:TaskArtifactUpdateEvent]
 
+// --8<-- [start:PushNotificationConfig]
 // Configuration for setting up push notifications for task updates.
 message PushNotificationConfig {
   // A unique identifier (e.g. UUID) for this push notification.
@@ -319,7 +342,9 @@ message PushNotificationConfig {
   // Information about the authentication to sent with the notification
   AuthenticationInfo authentication = 4;
 }
+// --8<-- [end:PushNotificationConfig]
 
+// --8<-- [start:PushNotificationAuthenticationInfo]
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
   // Supported authentication schemes - e.g. Basic, Bearer, etc
@@ -327,7 +352,9 @@ message AuthenticationInfo {
   // Optional credentials
   string credentials = 2;
 }
+// --8<-- [end:PushNotificationAuthenticationInfo]
 
+// --8<-- [start:AgentInterface]
 // Defines additional transport information for the agent.
 message AgentInterface {
   // The url this interface is found at.
@@ -337,7 +364,9 @@ message AgentInterface {
   // supported are JSONRPC, GRPC and HTTP+JSON.
   string transport = 2;
 }
+// --8<-- [end:AgentInterface]
 
+// --8<-- [start:AgentCard]
 // AgentCard conveys key information:
 // - Overall details (version, name, description, uses)
 // - Skills; a set of actions/solutions the agent can perform
@@ -406,7 +435,9 @@ message AgentCard {
   // An optional URL to an icon for the agent.
   string icon_url = 18;
 }
+// --8<-- [end:AgentCard]
 
+// --8<-- [start:AgentProvider]
 // Represents information about the service provider of an agent.
 message AgentProvider {
   // The providers reference url
@@ -416,7 +447,9 @@ message AgentProvider {
   // Example: "Google"
   string organization = 2;
 }
+// --8<-- [end:AgentProvider]
 
+// --8<-- [start:AgentCapabilities]
 // Defines the A2A feature set supported by the agent
 message AgentCapabilities {
   // If the agent will support streaming responses
@@ -426,7 +459,9 @@ message AgentCapabilities {
   // Extensions supported by this agent.
   repeated AgentExtension extensions = 3;
 }
+// --8<-- [end:AgentCapabilities]
 
+// --8<-- [start:AgentExtension]
 // A declaration of an extension supported by an Agent.
 message AgentExtension {
   // The URI of the extension.
@@ -441,7 +476,9 @@ message AgentExtension {
   // Optional configuration for the extension.
   google.protobuf.Struct params = 4;
 }
+// --8<-- [end:AgentExtension]
 
+// --8<-- [start:AgentSkill]
 // AgentSkill represents a unit of action/solution that the agent can perform.
 // One can think of this as a type of highly reliable solution that an agent
 // can be tasked to provide. Agents have the autonomy to choose how and when
@@ -475,7 +512,9 @@ message AgentSkill {
   repeated Security security = 8;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 }
+// --8<-- [end:AgentSkill]
 
+// --8<-- [start:AgentCardSignature]
 // AgentCardSignature represents a JWS signature of an AgentCard.
 // This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
 message AgentCardSignature {
@@ -487,7 +526,9 @@ message AgentCardSignature {
   // The unprotected JWS header values.
   google.protobuf.Struct header = 3;
 }
+// --8<-- [end:AgentCardSignature]
 
+// --8<-- [start:TaskPushNotificationConfig]
 message TaskPushNotificationConfig {
   // The resource name of the config.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
@@ -495,6 +536,7 @@ message TaskPushNotificationConfig {
   // The push notification configuration details.
   PushNotificationConfig push_notification_config = 2;
 }
+// --8<-- [end:TaskPushNotificationConfig]
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
 message StringList {
@@ -506,6 +548,7 @@ message Security {
   map<string, StringList> schemes = 1;
 }
 
+// --8<-- [start:SecurityScheme]
 message SecurityScheme {
   oneof scheme {
     APIKeySecurityScheme api_key_security_scheme = 1;
@@ -515,7 +558,9 @@ message SecurityScheme {
     MutualTlsSecurityScheme mtls_security_scheme = 5;
   }
 }
+// --8<-- [end:SecurityScheme]
 
+// --8<-- [start:APIKeySecurityScheme]
 message APIKeySecurityScheme {
   // Description of this security scheme.
   string description = 1;
@@ -524,7 +569,9 @@ message APIKeySecurityScheme {
   // Name of the header, query or cookie parameter to be used.
   string name = 3;
 }
+// --8<-- [end:APIKeySecurityScheme]
 
+// --8<-- [start:HTTPAuthSecurityScheme]
 message HTTPAuthSecurityScheme {
   // Description of this security scheme.
   string description = 1;
@@ -538,7 +585,9 @@ message HTTPAuthSecurityScheme {
   // this information is primarily for documentation purposes.
   string bearer_format = 3;
 }
+// --8<-- [end:HTTPAuthSecurityScheme]
 
+// --8<-- [start:OAuth2SecurityScheme]
 message OAuth2SecurityScheme {
   // Description of this security scheme.
   string description = 1;
@@ -548,7 +597,9 @@ message OAuth2SecurityScheme {
   // [RFC8414](https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.
   string oauth2_metadata_url = 3;
 }
+// --8<-- [end:OAuth2SecurityScheme]
 
+// --8<-- [start:OpenIdConnectSecurityScheme]
 message OpenIdConnectSecurityScheme {
   // Description of this security scheme.
   string description = 1;
@@ -556,12 +607,16 @@ message OpenIdConnectSecurityScheme {
   // metadata.
   string open_id_connect_url = 2;
 }
+// --8<-- [end:OpenIdConnectSecurityScheme]
 
+// --8<-- [start:MutualTLSSecurityScheme]
 message MutualTlsSecurityScheme {
   // Description of this security scheme.
   string description = 1;
 }
+// --8<-- [end:MutualTLSSecurityScheme]
 
+// --8<-- [start:OAuthFlows]
 message OAuthFlows {
   oneof flow {
     AuthorizationCodeOAuthFlow authorization_code = 1;
@@ -570,7 +625,9 @@ message OAuthFlows {
     PasswordOAuthFlow password = 4;
   }
 }
+// --8<-- [end:OAuthFlows]
 
+// --8<-- [start:AuthorizationCodeOAuthFlow]
 message AuthorizationCodeOAuthFlow {
   // The authorization URL to be used for this flow. This MUST be in the
   // form of a URL. The OAuth2 standard requires the use of TLS
@@ -585,7 +642,9 @@ message AuthorizationCodeOAuthFlow {
   // scope name and a short description for it. The map MAY be empty.
   map<string, string> scopes = 4;
 }
+// --8<-- [end:AuthorizationCodeOAuthFlow]
 
+// --8<-- [start:ClientCredentialsOAuthFlow]
 message ClientCredentialsOAuthFlow {
   // The token URL to be used for this flow. This MUST be in the form of a URL.
   // The OAuth2 standard requires the use of TLS.
@@ -597,7 +656,9 @@ message ClientCredentialsOAuthFlow {
   // scope name and a short description for it. The map MAY be empty.
   map<string, string> scopes = 3;
 }
+// --8<-- [end:ClientCredentialsOAuthFlow]
 
+// --8<-- [start:ImplicitOAuthFlow]
 message ImplicitOAuthFlow {
   // The authorization URL to be used for this flow. This MUST be in the
   // form of a URL. The OAuth2 standard requires the use of TLS
@@ -609,7 +670,9 @@ message ImplicitOAuthFlow {
   // scope name and a short description for it. The map MAY be empty.
   map<string, string> scopes = 3;
 }
+// --8<-- [end:ImplicitOAuthFlow]
 
+// --8<-- [start:PasswordOAuthFlow]
 message PasswordOAuthFlow {
   // The token URL to be used for this flow. This MUST be in the form of a URL.
   // The OAuth2 standard requires the use of TLS.
@@ -621,8 +684,10 @@ message PasswordOAuthFlow {
   // scope name and a short description for it. The map MAY be empty.
   map<string, string> scopes = 3;
 }
+// --8<-- [end:PasswordOAuthFlow]
 
 ///////////// Request Messages ///////////
+// --8<-- [start:MessageSendParams]
 message SendMessageRequest {
   // The message to send to the agent.
   Message request = 1
@@ -632,7 +697,9 @@ message SendMessageRequest {
   // Optional metadata for the request.
   google.protobuf.Struct metadata = 3;
 }
+// --8<-- [end:MessageSendParams]
 
+// --8<-- [start:GetTaskRequest]
 message GetTaskRequest {
   // The resource name of the task.
   // Format: tasks/{task_id}
@@ -640,44 +707,54 @@ message GetTaskRequest {
   // The number of most recent messages from the task's history to retrieve.
   int32 history_length = 2;
 }
+// --8<-- [end:GetTaskRequest]
 
+// --8<-- [start:CancelTaskRequest]
 message CancelTaskRequest {
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
 }
+// --8<-- [end:CancelTaskRequest]
 
+// --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
 }
+// --8<-- [end:GetTaskPushNotificationConfigRequest]
 
+// --8<-- [start:DeleteTaskPushNotificationConfigRequest]
 message DeleteTaskPushNotificationConfigRequest {
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
 }
+// --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
+// --8<-- [start:SetTaskPushNotificationConfigRequest]
 message CreateTaskPushNotificationConfigRequest {
   // The parent task resource for this config.
   // Format: tasks/{task_id}
-  string parent = 1 [
-    (google.api.field_behavior) = REQUIRED
-  ];
+  string parent = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID for the new config.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
   TaskPushNotificationConfig config = 3
       [(google.api.field_behavior) = REQUIRED];
 }
+// --8<-- [end:SetTaskPushNotificationConfigRequest]
 
+// --8<-- [start:TaskResubscriptionRequest]
 message TaskSubscriptionRequest {
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
 }
+// --8<-- [end:TaskResubscriptionRequest]
 
+// --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
   // The parent task resource.
   // Format: tasks/{task_id}
@@ -695,19 +772,25 @@ message ListTaskPushNotificationConfigRequest {
   // the page token.
   string page_token = 3;
 }
+// --8<-- [end:ListTaskPushNotificationConfigRequest]
 
+// --8<-- [start:GetAuthenticatedExtendedCardRequest]
 message GetAgentCardRequest {
   // Empty. Added to fix linter violation.
 }
+// --8<-- [end:GetAuthenticatedExtendedCardRequest]
 
 //////// Response Messages ///////////
+// --8<-- [start:SendMessageSuccessResponse]
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
     Message msg = 2 [json_name = "message"];
   }
 }
+// --8<-- [end:SendMessageSuccessResponse]
 
+// --8<-- [start:SendStreamingMessageSuccessResponse]
 // The stream response for a message. The stream should be one of the following
 // sequences:
 // If the response is a message, the stream should contain one, and only one,
@@ -725,7 +808,9 @@ message StreamResponse {
     TaskArtifactUpdateEvent artifact_update = 4;
   }
 }
+// --8<-- [end:SendStreamingMessageSuccessResponse]
 
+// --8<-- [start:ListTaskPushNotificationConfigSuccessResponse]
 message ListTaskPushNotificationConfigResponse {
   // The list of push notification configurations.
   repeated TaskPushNotificationConfig configs = 1;
@@ -733,3 +818,4 @@ message ListTaskPushNotificationConfigResponse {
   // If this field is omitted, there are no subsequent pages.
   string next_page_token = 2;
 }
+// --8<-- [end:ListTaskPushNotificationConfigSuccessResponse]
