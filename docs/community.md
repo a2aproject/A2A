@@ -8,7 +8,6 @@ workflows, enhance productivity, and foster a new era of **"Agent
 Interoperability"**. Don't just take our word for it – see what the community is
 saying!
 
-
 ## The Word on the Street: Social Highlights
 
 The launch of A2A has sparked lively discussions and positive reactions on various social platforms. Here's a glimpse of the excitement:
