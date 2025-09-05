@@ -19,7 +19,7 @@ In a world where agents are built using diverse frameworks and by different vend
 
 !!! abstract ""
     Build with
-    **[![ADK Logo](./assets/adk.svg){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
+    **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
     equip with **MCP** _(or any tool)_,
     and communicate with
     **![A2A Logo](./assets/a2a-logo-black.svg){class="twemoji sm middle"} A2A**,
