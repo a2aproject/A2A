@@ -76,6 +76,7 @@ collaborate effectively with each other and with users.
 - [Hellotars](https://hellotars.com)
 - [Hexaware](https://hexaware.com/)
 - [HUMAN](https://www.humansecurity.com/)
+- [IBM Research](https://lfaidata.foundation/communityblog/2025/08/29/acp-joins-forces-with-a2a-under-the-linux-foundations-lf-ai-data/)
 - [Incorta](https://www.incorta.com)
 - [Infinitus](https://www.infinitus.ai/)
 - [InfoSys](https://www.infosys.com)
