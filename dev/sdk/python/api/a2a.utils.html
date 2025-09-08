@@ -462,12 +462,67 @@ If None, the string representation of the expression will be used.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Demonstrating with an async method:
+&gt;&gt;&gt; import asyncio
+&gt;&gt;&gt; from a2a.utils.errors import ServerError
+&gt;&gt;&gt;
+&gt;&gt;&gt; class MyAgent:
+…     def __init__(self, streaming_enabled: bool):
+…         self.streaming_enabled = streaming_enabled
+…
+…     &#64;validate(
+…         lambda self: self.streaming_enabled,
+…         ‘Streaming is not enabled for this agent’,
+…     )
+…     async def stream_response(self, message: str):
+…         return f’Streaming: {message}’
+&gt;&gt;&gt;
+&gt;&gt;&gt; async def run_async_test():
+…     # Successful call
+…     agent_ok = MyAgent(streaming_enabled=True)
+…     result = await agent_ok.stream_response(‘hello’)
+…     print(result)
+…
+…     # Call that fails validation
+…     agent_fail = MyAgent(streaming_enabled=False)
+…     try:
+…         await agent_fail.stream_response(‘world’)
+…     except ServerError as e:
+…         print(e.error.message)
+&gt;&gt;&gt;
+&gt;&gt;&gt; asyncio.run(run_async_test())
+Streaming: hello
+Streaming is not enabled for this agent</p>
+<p>Demonstrating with a sync method:
+&gt;&gt;&gt; class SecureAgent:
+…     def __init__(self):
+…         self.auth_enabled = False
+…
+…     &#64;validate(
+…         lambda self: self.auth_enabled,
+…         ‘Authentication must be enabled for this operation’,
+…     )
+…     def secure_operation(self, data: str):
+…         return f’Processing secure data: {data}’
+&gt;&gt;&gt;
+&gt;&gt;&gt; # Error case example
+&gt;&gt;&gt; agent = SecureAgent()
+&gt;&gt;&gt; try:
+…     agent.secure_operation(‘secret’)
+… except ServerError as e:
+…     print(e.error.message)
+Authentication must be enabled for this operation</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This decorator works with both sync and async methods automatically.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.helpers.validate_async_generator">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">validate_async_generator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.helpers.validate_async_generator" title="Link to this definition">¶</a></dt>
-<dd><p>Decorator that validates if a given expression evaluates to True.</p>
+<dd><p>Decorator that validates if a given expression evaluates to True for async generators.</p>
 <p>Typically used on class methods to check capabilities or configuration
 before executing the method’s logic. If the expression is False,
 a <cite>ServerError</cite> with an <cite>UnsupportedOperationError</cite> is raised.</p>
@@ -481,6 +536,59 @@ If None, the string representation of the expression will be used.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Streaming capability validation with success case:
+&gt;&gt;&gt; import asyncio
+&gt;&gt;&gt; from a2a.utils.errors import ServerError
+&gt;&gt;&gt;
+&gt;&gt;&gt; class StreamingAgent:
+…     def __init__(self, streaming_enabled: bool):
+…         self.streaming_enabled = streaming_enabled
+…
+…     &#64;validate_async_generator(
+…         lambda self: self.streaming_enabled,
+…         ‘Streaming is not supported by this agent’,
+…     )
+…     async def stream_messages(self, count: int):
+…         for i in range(count):
+…             yield f’Message {i}’
+&gt;&gt;&gt;
+&gt;&gt;&gt; async def run_streaming_test():
+…     # Successful streaming
+…     agent = StreamingAgent(streaming_enabled=True)
+…     async for msg in agent.stream_messages(2):
+…         print(msg)
+&gt;&gt;&gt;
+&gt;&gt;&gt; asyncio.run(run_streaming_test())
+Message 0
+Message 1</p>
+<p>Error case - validation fails:
+&gt;&gt;&gt; class FeatureAgent:
+…     def __init__(self):
+…         self.features = {‘real_time’: False}
+…
+…     &#64;validate_async_generator(
+…         lambda self: self.features.get(‘real_time’, False),
+…         ‘Real-time feature must be enabled to stream updates’,
+…     )
+…     async def real_time_updates(self):
+…         yield ‘This should not be yielded’
+&gt;&gt;&gt;
+&gt;&gt;&gt; async def run_error_test():
+…     agent = FeatureAgent()
+…     try:
+…         async for _ in agent.real_time_updates():
+…             pass
+…     except ServerError as e:
+…         print(e.error.message)
+&gt;&gt;&gt;
+&gt;&gt;&gt; asyncio.run(run_error_test())
+Real-time feature must be enabled to stream updates</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This decorator is specifically for async generator methods (async def with yield).
+The validation happens before the generator starts yielding values.</p>
+</div>
 </dd></dl>
 
 </section>
@@ -673,7 +781,7 @@ If None, the string representation of the expression will be used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.FromProto.role">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fd609b3f850&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.role" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f6b73d5b750&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.role" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -738,7 +846,7 @@ If None, the string representation of the expression will be used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.FromProto.task_state">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fd609b147c0&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.task_state" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f6b73efcf30&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.task_state" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -835,7 +943,7 @@ If None, the string representation of the expression will be used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.ToProto.role">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fd609b3f850&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.role" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f6b73d5b750&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.role" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -885,7 +993,7 @@ If None, the string representation of the expression will be used.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.ToProto.task_state">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fd609b147c0&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.task_state" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f6b73efcf30&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.task_state" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
