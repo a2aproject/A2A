@@ -13,9 +13,11 @@ Two TSC members will need to +1 this.
 Once accepted you'll be able to commit to this repo!
 
 ### GitHub user id
+
 - List your GitHub user id
 
 ### Company affiliation
+
 - List your company name, or indicate Individual if you're not affiliated with a company
 
 ### Requirements
