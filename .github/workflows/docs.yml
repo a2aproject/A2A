@@ -34,11 +34,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-          persist-credentials: false
 
       - name: Configure Git Credentials
         run: |
@@ -46,7 +45,7 @@ jobs:
           git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.13
 

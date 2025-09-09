@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 # Welcome to the A2A Community
 
 The **Agent2Agent (A2A) protocol** is generating significant buzz across the
@@ -12,6 +7,15 @@ and vendors**. By standardizing communication, A2A aims to unlock complex
 workflows, enhance productivity, and foster a new era of **"Agent
 Interoperability"**. Don't just take our word for it – see what the community is
 saying!
+
+## Integrations
+
+These agentic frameworks have built-in A2A integration:
+
+- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/a2a/)
+- [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
+- [LangGraph](https://docs.langchain.com/langgraph-platform/server-a2a)
+- [Pydantic AI](https://ai.pydantic.dev/a2a/)
 
 ## The Word on the Street: Social Highlights
 
