@@ -67,8 +67,6 @@ Push notifications are ideal for:
 
 Normative security requirements are centralized in [Spec §16 Push Notification Security](/specification/#16-push-notification-security-expanded). This section provides explanatory background.
 
-Security is paramount for push notifications due to their asynchronous and server-initiated outbound nature. Both the A2A Server (sending the notification) and the client's webhook receiver have responsibilities.
-
 ### Protocol Specification References
 
 Refer to the Protocol Specification for detailed structures:
