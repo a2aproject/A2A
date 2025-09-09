@@ -16,6 +16,8 @@ Client agents parse the Agent Card to determine if a remote agent is suitable fo
 
 ## Discovery Strategies
 
+Normative discovery elements (well-known location, Agent Card structure, conditional disclosure) are defined in [Spec §5](/specification/#5-agent-discovery-the-agent-card).
+
 Here are common strategies for how a client agent might discover the Agent Card of a remote agent:
 
 ### 1. Well-Known URI

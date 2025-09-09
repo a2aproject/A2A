@@ -5,7 +5,7 @@ When a message is sent to an agent, it can choose to reply with either:
 - A stateless `Message`.
 - A stateful `Task` followed by zero or more `TaskStatusUpdateEvent` or `TaskArtifactUpdateEvent`.
 
-If the response is a `Message`, the interaction is completed. On the other hand, if the response is a `Task`, then the task will be processed by the agent, until it is in a interrupted state (`input-required` or `auth-required`) or a terminal state (`completed`, `cancelled`, `rejected` or `failed`).
+If the response is a `Message`, the interaction is completed. On the other hand, if the response is a `Task`, then the task will be processed by the agent, until it is in a interrupted state (`input-required` or `auth-required`) or a terminal state (`completed`, `cancelled`, `rejected` or `failed`). Normative refinement rules are captured in [Spec §13 Task Refinement & Follow-Ups](/specification/#13-task-refinement--follow-ups).
 
 ## Context
 

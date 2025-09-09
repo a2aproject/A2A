@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Extensions are a means of extending the Agent2Agent (A2A) protocol with new data, requirements, methods, and state machines. Agents declare their support for extensions in their [`AgentCard`](/specification/#5-agent-discovery-the-agent-card), and clients can then opt-in to the behavior offered by the extension as part of requests they make to the agent. Extensions are identified by a URI and defined by their extension specification. Anyone is able to define, publish, and implement an extension.
+Extensions are a means of extending the Agent2Agent (A2A) protocol with new data, requirements, methods, and state machines. Agents declare their support for extensions in their [`AgentCard`](/specification/#5-agent-discovery-the-agent-card), and clients can then opt-in to the behavior offered by the extension as part of requests they make to the agent. Extensions are identified by a URI and defined by their extension specification. Anyone is able to define, publish, and implement an extension. Normative rules are defined in the specification (see [Spec §12 Extensions](/specification/#12-extensions-normative)).
 
 ## Introduction
 
@@ -18,7 +18,7 @@ The exact set of possible ways to use extensions is intentionally not defined. T
 
 - Adding new RPC methods entirely. Extensions may define that the agent implements more than the core set of protocol methods. We refer to these as *method extensions*. For example, a ['task-history' extension](https://github.com/a2aproject/A2A/issues/585#:~:text=Details%20with%20an%20example) might add a `tasks/search` RPC method to retrieve a list of previous tasks.
 
-There are some changes to the protocol that extensions *do not* allow. These are:
+There are some changes to the protocol that extensions *do not* allow (see [Spec §12.3](/specification/#123-prohibited-changes) for normative wording). These are:
 
 - Changing the definition of core data structures. Adding new fields or removing required fields to protocol-defined data structures is not supported. Extensions are expected to place custom attributes in the `metadata` map that is present on core data structures.
 - Adding new values to enum types. Instead, extensions should use existing enum values and annotate additional semantic meaning in the `metadata` field.

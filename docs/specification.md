@@ -300,6 +300,17 @@ Agent Cards themselves might contain information that is considered sensitive.
 - If an Agent Card contains sensitive information, the endpoint serving the card **MUST** be protected by appropriate access controls (e.g., mTLS, network restrictions, authentication required to fetch the card).
 - It is generally **NOT RECOMMENDED** to include plaintext secrets (like static API keys) directly in an Agent Card. Prefer authentication schemes where clients obtain dynamic credentials out-of-band.
 
+#### 5.4.1. Conditional Disclosure (Selective Cards)
+
+Agents **MAY** vary the content of the Agent Card based on the authenticated caller identity. When doing so:
+
+- Any reduced (public) view **MUST NOT** misrepresent supported authentication requirements or transports.
+- Omitted skills or extensions **MUST NOT** be implicitly required for successful invocation of the public interface.
+- Sensitive fields (e.g., internal-only skills, extension parameters) **MUST** only appear for authorized identities.
+- Clients **MUST NOT** assume that a minimal card implies absence of additional capabilities unless the card sets `supportsAuthenticatedExtendedCard: false`.
+
+If conditional disclosure is used, the agent **SHOULD** set `supportsAuthenticatedExtendedCard: true` to signal that an authenticated, extended version exists.
+
 ### 5.5. `AgentCard` Object Structure
 
 ```ts { .no-copy }
@@ -1966,3 +1977,133 @@ Implementations **SHOULD** validate compliance through:
 - **Error handling**: Verify proper handling of all defined error conditions.
 - **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](https://github.com/a2aproject/A2A/blob/main/types/src/types.ts).
 - **Multi-transport consistency**: For multi-transport agents, verify functional equivalence across all supported transports.
+
+## 12. Extensions (Normative)
+
+Normative rules for extensions. Background and examples: [Extensions topic](./topics/extensions.md).
+
+### 12.1. Extension Taxonomy (Informative)
+Categories (non-normative labels): data-only, profile, method.
+
+### 12.2. Declaration
+Agents **MUST** declare supported extensions in `AgentCapabilities.extensions` via `AgentExtension` objects. Each extension **MUST** have a globally unique URI.
+
+### 12.3. Prohibited Changes
+Extensions **MUST NOT** add/remove required fields, remove optional fields, add enum values, or redefine semantics of existing core fields. Custom attributes **MUST** go in `metadata` or `AgentExtension.params`.
+
+### 12.4. Required Extensions
+If `required == true`, the server **MUST** reject requests that do not activate the extension. Data-only extensions **SHOULD NOT** be required.
+
+### 12.5. Activation Handshake
+Clients request activation with header `X-A2A-Extensions: <uri>[, <uri>...]`.
+Rules:
+1. Unknown URIs **MUST** be ignored.
+2. Server **SHOULD** echo activated set in response header `X-A2A-Extensions`.
+3. Missing activation of a required extension **MUST** cause rejection.
+4. Activation is per-request unless an extension spec states otherwise.
+
+### 12.6. Dependencies
+Extensions **MAY** declare dependencies; clients **MUST** activate required dependencies or be rejected.
+
+### 12.7. Versioning
+Breaking changes **MUST** use a new URI; servers **MUST NOT** silently substitute versions.
+
+### 12.8. Security
+Extension methods/data **MUST** follow core authN/Z; inputs **MUST** be validated.
+
+### 12.9. Errors
+Extension validation failures **SHOULD** use standard error format with extension metadata in `error.data`.
+
+### 12.10. Publication
+Implementations **SHOULD** host specification at the extension URI (or permanent redirect) for discoverability.
+
+## 13. Task Refinement & Follow-Ups
+
+Normative rules; narrative examples: [Life of a Task](./topics/life-of-a-task.md).
+
+### 13.1. Immutable Tasks
+Terminal tasks **MUST NOT** be restarted. Refinements **MUST** create new tasks.
+
+### 13.2. Context Reuse
+Clients **SHOULD** reuse `contextId` for follow-ups to preserve context.
+
+### 13.3. Ambiguity Handling
+If prior artifact/task reference is ambiguous the server **SHOULD** return `TASK_STATE_INPUT_REQUIRED` requesting clarification.
+
+### 13.4. Artifact Lineage
+Refined artifacts **SHOULD** retain human-readable `name` while using a new immutable `artifactId`.
+
+### 13.5. Parallelism
+Multiple concurrent tasks under a single `contextId` are allowed; each task lifecycle is independent.
+
+## 14. Streaming Semantics & Reconnection
+
+Additional norms; background: [Streaming & Asynchronous Operations](./topics/streaming-and-async.md).
+
+### 14.1. Ordering
+Servers **MUST** emit: initial `Task` → zero/more updates → single `final` status update → close.
+
+### 14.2. Final Event
+`final == true` **MUST** appear exactly once per streaming phase and only when task is interrupted or terminal.
+
+### 14.3. Resubscribe
+On reconnection server **MAY** send current snapshot then only new deltas; clients **MUST** handle idempotent replays.
+
+### 14.4. Artifact Chunking
+Ordering of appended chunks **MUST** reflect assembly order; `last_chunk == true` signals completion of that artifact stream.
+
+### 14.5. Premature Close
+Clients **SHOULD** attempt resubscribe if stream ends without a `final` event.
+
+## 15. Observability & Operations
+
+Complementary guidance: [Enterprise-Ready Features](./topics/enterprise-ready.md).
+
+### 15.1. Tracing
+Agents & clients **SHOULD** propagate W3C Trace Context headers.
+
+### 15.2. Logging
+Servers **SHOULD** log identifiers (`taskId`, `contextId`, request ID) and errors; avoid logging sensitive content.
+
+### 15.3. Metrics
+Expose counts, latency, error rates, streaming connection metrics.
+
+### 15.4. Auditing
+Sensitive operations **MUST** be auditable with immutable identifiers and principal.
+
+### 15.5. Correlation IDs
+`X-Correlation-Id` (or similar) **MAY** be echoed.
+
+## 16. Push Notification Security (Expanded)
+
+Details beyond Section 10.2; background: [Streaming & Asynchronous Operations](./topics/streaming-and-async.md#security-considerations-for-push-notifications).
+
+### 16.1. URL Validation
+Servers **MUST** mitigate SSRF via allowlists, network checks, or challenge verification before first use.
+
+### 16.2. Challenge
+Unverified webhook URLs **MUST NOT** receive notifications.
+
+### 16.3. Authentication
+If `authentication.schemes` provided, server **MUST** apply one (Bearer/API Key/mTLS/HMAC) or reject config.
+
+### 16.4. Token Header
+If `token` provided server **SHOULD** echo in `X-A2A-Notification-Token`; receiver **MUST** validate.
+
+### 16.5. Replay Protection
+Signed timestamp + unique ID **SHOULD** be present; receivers **SHOULD** reject stale/duplicate.
+
+### 16.6. Key Rotation
+JWT/JWS public keys **SHOULD** be published via JWKS with overlap during rotation.
+
+### 16.7. Payload Size
+Minimal payload (taskId + state) **SHOULD** prompt client fetch for full Task if large artifacts expected.
+
+### 16.8. Retries
+Transient failures (5xx / network) **SHOULD** be retried with backoff; persistent 4xx (except 429) **SHOULD NOT**.
+
+### 16.9. Rate Limiting
+Per-destination limits **SHOULD** be enforced to prevent abuse/amplification.
+
+---
+Cross-reference quick map: Extensions (§12), Refinements (§13), Streaming specifics (§14), Observability (§15), Push notification security (§16).
