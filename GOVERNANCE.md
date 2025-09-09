@@ -10,7 +10,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | **Amazon Web Services** | Nicholas Aldridge | Principal Engineer | [@000-000-000-000-000](https://github.com/000-000-000-000-000) |
 | **Salesforce** | Sam Sharaf | Sr. Director Product Management | [@samuelsharaf](https://github.com/samuelsharaf) |
 | **ServiceNow** | Sean Hughes | AI Ecosystem Director | [@hughesthe1st](https://github.com/hughesthe1st) |
-| **SAP** | Sivakumar N. | Vice President | [LinkedIn](https://www.linkedin.com/in/siva-kumar-n/) |
+| **SAP** | Sivakumar N. | Vice President | [@SivaNSAP(https://github.com/SivaNSAP) |
 | **IBM Research** | Kate Blair | Director of Incubation | [@geneknit](https://github.com/geneknit) |
 
 ## Mission and Scope of the Project
