@@ -730,6 +730,9 @@ message ListTasksRequest {
   string page_token = 4;
   // Number of recent messages to include in each task's history.
   int32 history_length = 5;
+  // Filter tasks updated after this timestamp. Only tasks with a last
+  // updated time greater than or equal to this value will be returned.
+  google.protobuf.Timestamp last_updated_time = 6;
 }
 // --8<-- [end:ListTasksRequest]
 
