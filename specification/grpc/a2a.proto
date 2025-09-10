@@ -733,6 +733,9 @@ message ListTasksRequest {
   // Filter tasks updated after this timestamp. Only tasks with a last
   // updated time greater than or equal to this value will be returned.
   google.protobuf.Timestamp last_updated_time = 6;
+  // Whether to include artifacts in the returned tasks.
+  // Defaults to false to reduce payload size.
+  bool include_artifacts = 7;
 }
 // --8<-- [end:ListTasksRequest]
 
