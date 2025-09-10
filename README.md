@@ -4,7 +4,13 @@
 [![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![RepoMapr](https://img.shields.io/badge/RepoMapr-View_Interactive_Diagram-blue)](https://repomapr.com/a2aproject/A2A)
 
-![A2A Banner](docs/assets/a2a-banner.png)
+<!-- markdownlint-disable MD041 -->
+<div style="text-align: center;">
+  <div class="centered-logo-text-group">
+    <img src="docs/assets/a2a-logo-black.svg" alt="Agent2Agent Protocol Logo" width="100">
+    <h1>Agent2Agent (A2A) Protocol</h1>
+  </div>
+</div>
 
 **An open protocol enabling communication and interoperability between opaque agentic applications.**
 

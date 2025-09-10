@@ -38,11 +38,10 @@ pip install -r ../../requirements-docs.txt
 
 ### Building the Docs
 
-1. Navigate to the `docs/sdk/python` directory.
-2. Run the following command to build the HTML documentation:
+1. Run the following command to build the HTML documentation:
 
    ```bash
    sphinx-build -b html docs/sdk/python docs/sdk/python/api
    ```
 
-3. The generated HTML files will be in the `_build/html` directory. You can open `_build/html/index.html` in your browser to view the documentation.
+2. The generated HTML files will be in the `sdk/python/api` directory. You can open `sdk/python/api/index.html` in your browser to view the documentation.

@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
-      - ".github/scripts/deploy-404.sh"
+      - "scripts/deploy-404.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -15,7 +15,7 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
-      - ".github/scripts/deploy-404.sh"
+      - "scripts/deploy-404.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
@@ -45,7 +45,7 @@ jobs:
           git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.13
 
@@ -85,13 +85,13 @@ jobs:
           mike set-default --push latest
 
           # Deploy 404 page
-          bash .github/scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          bash scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy new release version and set as latest
         if: github.event_name == 'release'
         run: |
           # The release tag (e.g., v0.2.2) is used as the version number
-          export MIKE_VERSION=${{ github.event.release.tag_name }}
+          export MIKE_VERSION=${GITHUB_EVENT_RELEASE_TAG_NAME}
           echo "Deploying docs for version $MIKE_VERSION and setting it as 'latest'..."
           mike deploy --push --update-aliases $MIKE_VERSION latest
 
@@ -99,4 +99,6 @@ jobs:
           mike set-default --push latest
 
           # Call the reusable script to deploy the 404 page, passing the token
-          bash .github/scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          bash scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}

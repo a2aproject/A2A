@@ -18,6 +18,10 @@
                 return;
             }
 
+            if (path.endsWith('/sdk/python/')) {
+                window.location.replace('https://a2a-protocol.org/latest/sdk/python/api');
+            }
+
             // Check if the path is an asset or already a versioned path
             const isAsset = path.includes('/assets/') || path.includes('/stylesheets/');
             const isVersioned = new RegExp(`${basePath}(v?(\d+\.\d+(\.\d+)?)|${latestVersion})/`).test(path);

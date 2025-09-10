@@ -15,10 +15,9 @@ You now have a solid foundation for building and integrating your own A2A-compli
 Here are some ideas and resources to continue your A2A journey:
 
 - **Explore Other Examples:**
-    - Check out the other examples in the `a2a-samples/samples/` directory in the [A2A GitHub repository](https://github.com/a2aproject/a2a-samples/tree/main/samples) for more complex agent integrations and features.
-    - The main A2A repository also has [samples for other languages and frameworks](https://github.com/a2aproject/A2A/tree/main/samples).
+    - Check out the other examples in the [a2a-samples GitHub repository](https://github.com/a2aproject/a2a-samples/tree/main/samples) for more complex agent integrations and features.
 - **Deepen Your Protocol Understanding:**
-    - 📚 Read the complete [A2A Protocol Documentation site](https://google.github.io/A2A/) for a comprehensive overview.
+    - 📚 Read the complete [A2A Protocol Documentation site](https://a2a-protocol.org) for a comprehensive overview.
     - 📝 Review the detailed [A2A Protocol Specification](../../specification.md) to understand the nuances of all data structures and RPC methods.
 - **Review Key A2A Topics:**
     - [A2A and MCP](../../topics/a2a-and-mcp.md): Understand how A2A complements the Model Context Protocol for tool usage.
