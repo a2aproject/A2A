@@ -12,4 +12,4 @@ The following table lists the supported languages and their stability.
 | C#/.NET    | [Stable](https://github.com/a2aproject/a2a-dotnet) |
 | Go         | [In Progress](https://github.com/a2aproject/a2a-go)|
 
-The A2A project provides numerous samples across supported languages in the [a2a-samples repository](https://github.com/a2aproject/a2a-samples)
+The A2A project provides numerous samples across supported languages in the [a2a-samples repository](https://github.com/a2aproject/a2a-samples).
