@@ -611,7 +611,7 @@ export interface GetTaskPushNotificationConfigParams extends TaskIdParams {
 /**
  * Defines parameters for listing all push notification configurations associated with a task.
  */
-export interface ListTaskPushNotificationConfigParams extends TaskIdParams {}
+export interface ListTaskPushNotificationConfigParams extends TaskIdParams { }
 // --8<-- [end:ListTaskPushNotificationConfigParams]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigParams]
@@ -640,7 +640,7 @@ export interface ListTasksParams {
   /** Number of recent messages to include in each task's history. */
   historyLength?: number;
   /** Filter tasks updated after this timestamp. Only tasks with a last updated time greater than or equal to this value will be returned. */
-  lastUpdatedTime?: string;
+  lastUpdatedAfter?: number;
   /** Whether to include artifacts in the returned tasks. Defaults to false to reduce payload size. */
   includeArtifacts?: boolean;
   /** Request-specific metadata. */
