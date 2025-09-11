@@ -1648,34 +1648,6 @@ _If the task were longer-running, the server might initially respond with `statu
              "state": "completed",
              "timestamp": "2024-03-15T10:15:00Z"
            },
-           "artifacts": [
-             {
-               "artifactId": "flight-confirmation-456",
-               "name": "Flight Booking Confirmation",
-               "parts": [
-                 {
-                   "kind": "text",
-                   "text": "Flight booked: NYC to SF on March 20th"
-                 }
-               ]
-             }
-           ],
-           "history": [
-             {
-               "role": "user",
-               "parts": [
-                 {
-                   "kind": "text",
-                   "text": "I'd like to book a flight."
-                 }
-               ],
-               "messageId": "c53ba666-3f97-433c-a87b-6084276babe2",
-               "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4"
-             }
-           ],
-           "kind": "task"
-         }
-       ],
        "totalSize": 5,
        "pageSize": 10,
        "nextPageToken": ""
