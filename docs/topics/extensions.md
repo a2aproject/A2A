@@ -151,6 +151,8 @@ negotiation to determine which extensions are active for a specific request.
     response SHOULD include the `X-A2A-Extensions` header, listing all
     extensions that were successfully activated for that request.
 
+![A2A Extension Flow Diagram](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
+
 **Example request showing extension activation:**
 
 ```http
@@ -256,3 +258,5 @@ versioning, and distributing extension implementations.
         authentication and authorization checks as the core A2A methods. An
         extension MUST NOT provide a way to bypass the agent's primary security
         controls.
+
+For more information, see the [A2A Extensions: Empowering Custom Agent Functionality](https://developers.googleblog.com/en/a2a-extensions-empowering-custom-agent-functionality/) blog post.
