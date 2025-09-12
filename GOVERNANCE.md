@@ -8,7 +8,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | **Microsoft** | Darrel Miller | Partner API Architect | [@darrelmiller](https://github.com/darrelmiller) |
 | **Cisco** | Luca Muscariello | Principal Engineer | [@muscariello](https://github.com/muscariello) |
 | **Amazon Web Services** | Nicholas Aldridge | Principal Engineer | [@000-000-000-000-000](https://github.com/000-000-000-000-000) |
-| **Salesforce** | Sam Sharaf | Sr. Director Product Management | [@samuelsharaf](https://github.com/samuelsharaf) |
+| **Salesforce** | Gary Lerhaupt | VP, Product Architecture | [@lerhaupt](https://github.com/lerhaupt) |
 | **ServiceNow** | Sean Hughes | AI Ecosystem Director | [@hughesthe1st](https://github.com/hughesthe1st) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
 | **IBM Research** | Kate Blair | Director of Incubation | [@geneknit](https://github.com/geneknit) |
