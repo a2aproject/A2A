@@ -817,7 +817,27 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 - **Request `params` type**: [`ListTasksParams`](#741-listtasksparams-object) (Optional parameters for filtering and pagination)
 - **Response `result` type (on success)**: [`ListTasksResult`](#742-listtasksresult-object) (A paginated list of tasks matching the criteria)
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., validation errors for invalid parameters)
+- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (see specific error cases below)
+
+**Error Cases for `tasks/list`:**
+
+The following table details specific error conditions that should result in an `InvalidParamsError` (-32602) response:
+
+| Parameter | Invalid Condition | Error Details | Example |
+|-----------|------------------|---------------|---------|
+| `pageSize` | Value outside 1–100 range | Must be between 1 and 100 inclusive | `pageSize: 0` or `pageSize: 101` |
+| `pageToken` | Malformed token format | Token is not a valid base64-encoded cursor | `pageToken: "invalid!@#"` |
+| `pageToken` | Expired token | Token has exceeded its validity period | `pageToken: "<expired-token>"` |
+| `historyLength` | Negative value | Must be non-negative integer | `historyLength: -1` |
+| `status` | Invalid enum value | Must be one of: `pending`, `working`, `completed`, `failed`, `canceled` | `status: "running"` |
+| `lastUpdatedAfter` | Invalid timestamp format | Must be a valid Unix timestamp in milliseconds | `lastUpdatedAfter: "not-a-number"` |
+| `lastUpdatedAfter` | Future timestamp | Timestamp is in the future (optional validation) | `lastUpdatedAfter: 4102444800000` (year 2100) |
+
+**Additional Error Responses:**
+
+- **`-32001` (`TaskNotFoundError`)**: When `contextId` refers to a non-existent or inaccessible context
+- **`-32600` (`InvalidRequest`)**: When the request structure is malformed
+- **`-32603` (`InternalError`)**: When a server-side error occurs during task retrieval
 
 #### 7.4.1. `ListTasksParams` Object
 
@@ -1734,6 +1754,50 @@ _If the task were longer-running, the server might initially respond with `statu
        "totalSize": 15,
        "pageSize": 10,
        "nextPageToken": "<base64-encoded-cursor-token>"
+     }
+   }
+   ```
+
+7. **Error example - Client sends invalid parameters:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "list-error-001",
+     "method": "tasks/list",
+     "params": {
+       "pageSize": 150,
+       "historyLength": -5,
+       "status": "running"
+     }
+   }
+   ```
+
+8. **Server responds with validation error:**
+
+   ```json
+   {
+     "jsonrpc": "2.0",
+     "id": "list-error-001",
+     "error": {
+       "code": -32602,
+       "message": "Invalid params",
+       "data": {
+         "errors": [
+           {
+             "field": "pageSize",
+             "message": "Must be between 1 and 100 inclusive, got 150"
+           },
+           {
+             "field": "historyLength",
+             "message": "Must be non-negative integer, got -5"
+           },
+           {
+             "field": "status",
+             "message": "Invalid status value 'running'. Must be one of: pending, working, completed, failed, canceled"
+           }
+         ]
+       }
      }
    }
    ```
