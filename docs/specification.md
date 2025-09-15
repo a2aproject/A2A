@@ -815,7 +815,7 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 **Ordering:** Implementations **MUST** return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
 
-**Security Note:** Implementations **MUST** ensure appropriate scope limitation based on the authenticated user's permissions. Servers **SHOULD NOT** return tasks from other users or unauthorized contexts. The implementation **MAY** choose to limit results to tasks created by the current authenticated user, tasks within a default user context, or return an authorization error if the scope cannot be safely determined.
+**Security Note:** Implementations **MUST** ensure appropriate scope limitation based on the authenticated user's permissions. Servers **SHOULD NOT** return tasks from other users or unauthorized contexts. Even when `contextId` is not specified in the request, the implementation **MUST** still scope results to the caller's authorization and tenancy boundaries. The implementation **MAY** choose to limit results to tasks created by the current authenticated user, tasks within a default user context, or return an authorization error if the scope cannot be safely determined.
 
 - **Request `params` type**: [`ListTasksParams`](#741-listtasksparams-object) (Optional parameters for filtering and pagination)
 - **Response `result` type (on success)**: [`ListTasksResult`](#742-listtasksresult-object) (A paginated list of tasks matching the criteria)
