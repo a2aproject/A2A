@@ -827,6 +827,8 @@ Parameters for filtering and paginating task results.
 --8<-- "types/src/types.ts:ListTasksParams"
 ```
 
+**Note on `includeArtifacts` parameter:** When `includeArtifacts` is `false` (the default), the `artifacts` field **MUST** be omitted entirely from each `Task` object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is `true`, the `artifacts` field should be included with its actual content (which may be an empty array if the task has no artifacts).
+
 #### 7.4.2. `ListTasksResult` Object
 
 Result object containing the filtered tasks and pagination information.
