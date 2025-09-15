@@ -837,7 +837,7 @@ The following table details specific error conditions that should result in an `
 
 **Additional Error Responses:**
 
-- **`-32001` (`TaskNotFoundError`)**: When `contextId` refers to a non-existent or inaccessible context
+- **`-32001` (`TaskNotFoundError`)**: When `contextId` refers to a nonexistent or inaccessible context
 - **`-32600` (`InvalidRequest`)**: When the request structure is malformed
 - **`-32603` (`InternalError`)**: When a server-side error occurs during task retrieval
 
