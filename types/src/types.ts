@@ -633,11 +633,11 @@ export interface ListTasksParams {
   contextId?: string;
   /** Filter tasks by their current status state. */
   status?: TaskState;
-  /** Maximum number of tasks to return. Defaults to 50 if not specified. */
+  /** Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified. */
   pageSize?: number;
   /** Token for pagination. Use the nextPageToken from a previous ListTasksResult response. */
   pageToken?: string;
-  /** Number of recent messages to include in each task's history. */
+  /** Number of recent messages to include in each task's history. Must be non-negative. Defaults to 0 if not specified. */
   historyLength?: number;
   /** Filter tasks updated after this timestamp (milliseconds since epoch). Only tasks with a last updated time greater than or equal to this value will be returned. */
   lastUpdatedAfter?: number;

@@ -1617,7 +1617,7 @@
                     "type": "string"
                 },
                 "historyLength": {
-                    "description": "Number of recent messages to include in each task's history.",
+                    "description": "Number of recent messages to include in each task's history. Must be non-negative. Defaults to 0 if not specified.",
                     "type": "integer"
                 },
                 "includeArtifacts": {
@@ -1625,7 +1625,7 @@
                     "type": "boolean"
                 },
                 "lastUpdatedAfter": {
-                    "description": "Filter tasks updated after this timestamp. Only tasks with a last updated time greater than or equal to this value will be returned.",
+                    "description": "Filter tasks updated after this timestamp (milliseconds since epoch). Only tasks with a last updated time greater than or equal to this value will be returned.",
                     "type": "integer"
                 },
                 "metadata": {
@@ -1634,7 +1634,7 @@
                     "type": "object"
                 },
                 "pageSize": {
-                    "description": "Maximum number of tasks to return. Defaults to 50 if not specified.",
+                    "description": "Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified.",
                     "type": "integer"
                 },
                 "pageToken": {
