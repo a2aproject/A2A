@@ -639,7 +639,7 @@ export interface ListTasksParams {
   pageToken?: string;
   /** Number of recent messages to include in each task's history. */
   historyLength?: number;
-  /** Filter tasks updated after this timestamp. Only tasks with a last updated time greater than or equal to this value will be returned. */
+  /** Filter tasks updated after this timestamp (milliseconds since epoch). Only tasks with a last updated time greater than or equal to this value will be returned. */
   lastUpdatedAfter?: number;
   /** Whether to include artifacts in the returned tasks. Defaults to false to reduce payload size. */
   includeArtifacts?: boolean;
