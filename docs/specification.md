@@ -859,6 +859,8 @@ Result object containing the filtered tasks and pagination information.
 --8<-- "types/src/types.ts:ListTasksResult"
 ```
 
+**Note on `nextPageToken`:** The `nextPageToken` field **MUST** always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field **MUST** be set to an empty string (`""`). Clients should check for an empty string to determine if more pages are available.
+
 ### 7.5. `tasks/cancel`
 
 Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).

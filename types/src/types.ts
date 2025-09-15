@@ -659,8 +659,8 @@ export interface ListTasksResult {
   totalSize: number;
   /** Maximum number of tasks returned in this response. */
   pageSize: number;
-  /** Token for retrieving the next page. Empty if no more results. */
-  nextPageToken?: string;
+  /** Token for retrieving the next page. Empty string if no more results. */
+  nextPageToken: string;
 }
 // --8<-- [end:ListTasksResult]
 
