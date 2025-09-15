@@ -813,6 +813,8 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 **Pagination Strategy:** This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (`page_token`/`next_page_token`).
 
+**Ordering:** Implementations **MUST** return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
+
 **Security Note:** Implementations **MUST** ensure appropriate scope limitation based on the authenticated user's permissions. Servers **SHOULD NOT** return tasks from other users or unauthorized contexts. The implementation **MAY** choose to limit results to tasks created by the current authenticated user, tasks within a default user context, or return an authorization error if the scope cannot be safely determined.
 
 - **Request `params` type**: [`ListTasksParams`](#741-listtasksparams-object) (Optional parameters for filtering and pagination)
