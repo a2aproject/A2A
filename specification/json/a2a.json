@@ -1695,7 +1695,7 @@
             "description": "Result object for tasks/list method containing an array of tasks and pagination information.",
             "properties": {
                 "nextPageToken": {
-                    "description": "Token for retrieving the next page. Empty if no more results.",
+                    "description": "Token for retrieving the next page. Empty string if no more results.",
                     "type": "string"
                 },
                 "pageSize": {
@@ -1715,6 +1715,7 @@
                 }
             },
             "required": [
+                "nextPageToken",
                 "pageSize",
                 "tasks",
                 "totalSize"
