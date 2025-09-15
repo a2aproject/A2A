@@ -627,7 +627,7 @@ export interface DeleteTaskPushNotificationConfigParams extends TaskIdParams {
 // --8<-- [end:DeleteTaskPushNotificationConfigParams]
 
 // --8<-- [start:ListTasksParams]
-/** Parameters for listing tasks with optional filtering criteria. */
+/** Parameters for listing tasks with optional filtering criteria. @since 0.4.0 */
 export interface ListTasksParams {
   /** Filter tasks by context ID to get tasks from a specific conversation or session. */
   contextId?: string;
@@ -651,7 +651,7 @@ export interface ListTasksParams {
 // --8<-- [end:ListTasksParams]
 
 // --8<-- [start:ListTasksResult]
-/** Result object for tasks/list method containing an array of tasks and pagination information. */
+/** Result object for tasks/list method containing an array of tasks and pagination information. @since 0.4.0 */
 export interface ListTasksResult {
   /** Array of tasks matching the specified criteria. */
   tasks: Task[];
@@ -1144,6 +1144,7 @@ export type GetTaskResponse = GetTaskSuccessResponse | JSONRPCErrorResponse;
 // --8<-- [start:ListTasksRequest]
 /**
  * JSON-RPC request model for the 'tasks/list' method.
+ * @since 0.4.0
  */
 export interface ListTasksRequest extends JSONRPCRequest {
   id: number | string;
@@ -1157,6 +1158,7 @@ export interface ListTasksRequest extends JSONRPCRequest {
 // --8<-- [start:ListTasksSuccessResponse]
 /**
  * JSON-RPC success response model for the 'tasks/list' method.
+ * @since 0.4.0
  */
 export interface ListTasksSuccessResponse extends JSONRPCSuccessResponse {
   /** The result object on success. */
@@ -1167,6 +1169,7 @@ export interface ListTasksSuccessResponse extends JSONRPCSuccessResponse {
 // --8<-- [start:ListTasksResponse]
 /**
  * JSON-RPC response for the 'tasks/list' method.
+ * @since 0.4.0
  */
 export type ListTasksResponse = ListTasksSuccessResponse | JSONRPCErrorResponse;
 // --8<-- [end:ListTasksResponse]
