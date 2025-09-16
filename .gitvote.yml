@@ -1,0 +1,39 @@
+# GitVote configuration file
+#
+# GitVote will look for it in the following locations (in order of precedence):
+#
+#   - At the root of the repository where the vote was created
+#   - At the root of the .github repository, for organization wide configuration
+#
+
+# Automation (optional)
+#
+# Create votes automatically on PRs when any of the files affected by the PR
+# match any of the patterns provided. Patterns must follow the gitignore
+# format (https://git-scm.com/docs/gitignore#_pattern_format).
+#
+# Each automation rule must include a list of patterns and the profile to use
+# when creating the vote. This allows creating votes automatically using the
+# desired configuration based on the patterns matched. Rules are processed in
+# the order provided, and the first match wins.
+#
+# automation:
+#   enabled: true
+#   rules:
+#     - patterns:
+#         - "README.md"
+#         - "*.txt"
+#       profile: default
+profiles:
+  default:
+    duration: 1w
+    pass_threshold: 51
+    periodic_status_check: "1 day"
+    allowed_voters:
+      teams:
+        - a2a-tsc
+      exclude_team_maintainers: false
+    close_on_passing: true
+    announcements:
+      discussions:
+        category: announcements

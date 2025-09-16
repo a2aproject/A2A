@@ -1,211 +1,255 @@
 # Life of a Task
 
-When a message is sent to an agent, it can choose to reply with either:
+In the Agent2Agent (A2A) Protocol, interactions can range from simple, stateless
+exchanges to complex, long-running processes. When an agent receives a message
+from a client, it can respond in one of two fundamental ways:
 
-- A stateless `Message`.
-- A stateful `Task` followed by zero or more `TaskStatusUpdateEvent` or `TaskArtifactUpdateEvent`.
+- **Respond with a Stateless `Message`**: This type of response is
+    typically used for immediate, self-contained interactions that conclude
+    without requiring further state management.
+- **Initiate a Stateful `Task`**: If the response is a `Task`, the agent will
+    process it through a defined lifecycle, communicating progress and requiring
+    input as needed, until it reaches an interrupted state (e.g.,
+    `input-required`, `auth-required`) or a terminal state (e.g., `completed`,
+    `canceled`, `rejected`, `failed`).
 
-If the response is a `Message`, the interaction is completed. On the other hand, if the response is a `Task`, then the task will be processed by the agent, until it is in a interrupted state (`input-required` or `auth-required`) or a terminal state (`completed`, `cancelled`, `rejected` or `failed`).
+## Group Related Interactions
 
-## Context
+A `contextId` is a crucial identifier that logically groups multiple `Task`
+objects and independent `Message` objects, providing continuity across a series of
+interactions.
 
-A `contextId` logically composes many `Task` objects and independent `Message` objects. If the A2A agent uses an LLM internally, it can utilize the `contextId` to manage the LLM context.
+- When a client sends a message for the first time, the agent responds
+    with a new `contextId`. If a task is initiated, it will also have a `taskId`.
+- Clients can send subsequent messages and include the same `contextId` to
+    indicate that they are continuing their previous interaction within the same
+    context.
+- Clients optionally attach the `taskId` to a subsequent message to
+    indicate that it continues that specific task.
 
-For the first message, the agent responds with a server-generated `contextId`. If the agent creates a task, it will also include a server-generated `taskId`. Subsequent client messages can include the same `contextId` to continue the interaction, and optionally the `taskId` to continue a specific task.
+The `contextId` enables collaboration towards a common goal or a shared
+contextual session across multiple, potentially concurrent tasks. Internally, an
+A2A agent (especially one using an LLM) uses the `contextId` to manage its internal
+conversational state or its LLM context.
 
-`contextId` allows collaboration over a goal or share a single contextual session across multiple tasks.
+## Agent Response: Message or Task
 
-## Agent: Message or a Task
+The choice between responding with a `Message` or a `Task` depends on the
+nature of the interaction and the agent's capabilities:
 
-Messages can be used for trivial interactions which do not require long-running processing or collaboration. An agent can use messages to negotiate the acceptance of a task. Once an agent maps the intent of an incoming message to a supported capability, it can reply back with a `Task`.
+- **Messages for Trivial Interactions**: `Message` objects are suitable for
+    transactional interactions that don't require long-running
+    processing or complex state management. An agent might use messages to
+    negotiate the acceptance or scope of a task before committing to a `Task`
+    object.
+- **Tasks for Stateful Interactions**: Once an agent maps the intent of an
+    incoming message to a supported capability that requires substantial,
+    trackable work over an extended period, the agent responds with a `Task`
+    object.
 
-So conceptually there can be three levels of agents:
+Conceptually, agents operate at different levels of complexity:
 
-1. An agent which always responds with `Message` objects only. Doesn't do complex state management, no long running execution and uses contextID to tie messages together. Agent most probably directly wraps around an LLM invocation and simple tools.
-2. Generates a `Task`, does more substantial work that can be tracked and runs over extended life time.
-3. Generates both `Message` and `Task` objects. Uses messages to negotiate agent capability and scope of work for a task. Then sends `Task` object to track its execution and collaborate over task states like more input-needed, error handling, etc.
+- **Message-only Agents**: Always respond with `Message` objects. They
+    typically don't manage complex state or long-running executions, and use
+    `contextId` to tie messages together. These agents might directly wrap LLM
+    invocations and simple tools.
+- **Task-generating Agents**: Always respond with `Task` objects, even for
+    responses, which are then modeled as completed tasks. Once a task is
+    created, the agent will only return `Task` objects in response to messages
+    sent, and once a task is complete, no more messages can be sent. This
+    approach avoids deciding between `Task` versus `Message`, but creates completed task objects
+    for even simple interactions.
+- **Hybrid Agents**: Generate both `Message` and `Task` objects. These agents
+    use messages to negotiate agent capability and the scope of work for a task,
+    then send a `Task` object to track execution and manage states like
+    `input-required` or error handling. Once a task is created, the agent will
+    only return `Task` objects in response to messages sent, and once a task is
+    complete, no more messages can be sent. A hybrid agent uses messages to
+    negotiate the scope of a task, and then generate a task to track its
+    execution.
+    For more information about hybrid agents, see [A2A protocol: Demystifying Tasks vs Messages](https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879).
 
-An agent can choose to always reply back with `Task` objects and model simple responses as tasks in `completed` state.
+## Task Refinements
 
-## Task Refinements & Follow-ups
+Clients often need to send new requests based on task results or refine the
+outputs of previous tasks. This is modeled by starting another interaction using
+the same `contextId` as the original task. Clients further hint the agent by
+providing references to the original task using `referenceTaskIds` in the
+`Message` object. The agent then responds with either a new `Task` or a
+`Message`.
 
-Clients may want to follow up with new asks based on the results of a task, and/or refine upon the task results. This can be modeled by starting another interaction using the same `contextId` as the original task. Clients can further hint the agent by providing the reference to the original task using `referenceTaskIds` in `Message` object. Agent would then respond with either a new `Task` or a `Message`.
+## Task Immutability
 
-Once a task has reached a terminal state (`completed`, `cancelled`, `rejected` or `failed`), it can't be restarted. There are some benefits to this:
+Once a task reaches a terminal state (completed, canceled, rejected, or failed),
+it cannot restart. Any subsequent interaction related to that task, such as a
+refinement, must initiate a new task within the same `contextId`. This principle
+offers several benefits:
 
-- **Task Immutability**: Clients can reliably reference tasks and their associated state, artifacts, and messages.
-    - This provides a clean mapping of inputs to outputs.
-    - Useful for mapping client orchestrator to task execution.
-- **Clear Unit of Work**: Every new request, refinement, or a follow-up becomes a distinct task, simplifying bookkeeping and allowing for granular tracking of an agent's work.
-    - Each artifact can be traced to a unit task.
-    - This unit of work can be referenced much more granularly by parent agents or other systems like agent optimizers. In case of restartable tasks, all the subsequent refinements are combined, and any reference to an interaction would need to resort to some kind of message index range.
-- **Easier Implementation**: No ambiguity for agent developers, whether to create a new task or restart an existing task. Once a task is in terminal state, any related subsequent interaction would need to be within a new task.
+- **Task Immutability.** Clients reliably reference tasks and their
+    associated state, artifacts, and messages, providing a clean mapping of
+    inputs to outputs. This is valuable for orchestration and traceability.
+- **Clear Unit of Work.** Every new request, refinement, or follow-up becomes
+    a distinct task. This simplifies bookkeeping, allows for granular tracking
+    of an agent's work, and enables tracing each artifact to a specific unit of
+    work.
+- **Easier Implementation.** This removes ambiguity for agent developers
+    regarding whether to create a new task or restart an existing one.
 
-### Parallel Follow-ups
+## Parallel Follow-ups
 
-Parallel work is supported by having agents create distinct, parallel tasks for each follow-up message sent within the same contextId. This allows clients to track individual tasks and create new dependent tasks as soon as a prerequisite task is complete.
+A2A supports parallel work by enabling agents to create distinct, parallel
+tasks for each follow-up message sent within the same `contextId`. This allows
+clients to track individual tasks and create new dependent tasks as soon as a
+prerequisite task is complete.
 
 For example:
 
-```none
-Task 1: Book a flight to Helsinki.
-(After Task 1 finishes)
-Task 2: Based on Task 1, book a hotel.
-Task 3: Based on Task 1, book a snowmobile activity.
-(After Task 2 finishes, while Task 3 is still in progress)
-Task 4: Based on Task 2, add a spa reservation to the hotel booking.
-```
+- Task 1: Book a flight to Helsinki.
+- Task 2: Based on Task 1, book a hotel.
+- Task 3: Based on Task 1, book a snowmobile activity.
+- Task 4: Based on Task 2, add a spa reservation to the hotel booking.
 
-### Referencing Previous Artifacts
+## Referencing Previous Artifacts
 
-The serving agent is responsible for inferring the relevant artifact from the referenced task or from the `contextId`. The serving agent, as the domain expert, is best suited to resolve ambiguity or identify missing information because they are the ones who generated the artifacts.
+The serving agent infers the relevant artifact from a referenced task or from the
+`contextId`. As the domain expert, the serving agent is best suited to resolve
+ambiguity or identify missing information. If there is ambiguity, the agent asks
+the client for clarification by returning an `input-required` state. The client
+then specifies the artifact in its response, optionally populating artifact
+references (`artifactId`, `taskId`) in `Part` metadata.
 
-If there is ambiguity (e.g., multiple artifacts could fit the request), the agent will ask the client for clarification by returning an input-required state. The client can then specify the artifact in its response. Client can optionally populate artifact reference {artifactId, taskId} in part metadata. This allows for linkage between inputs for follow-up tasks and previously generated artifacts.
+## Tracking Artifact Mutation
 
-This approach allows for the client implementation to be simple.
+Follow-up or refinement tasks often lead to the creation of new artifacts based on older ones. Tracking these mutations is important to ensure that only the most recent version of an artifact is used in subsequent interactions. This could be conceptualized as a version history, where each new artifact is linked to its predecessor.
 
-### Tracking Artifact Mutation
+However, the client is in the best position to manage this artifact linkage. The client determines what constitutes an acceptable result and has the ability to accept or reject new versions. Therefore, the serving agent shouldn't be responsible for tracking artifact mutations, and this linkage is not part of the A2A protocol specification. Clients should maintain this version history on their end and present the latest acceptable version to the user.
 
-A follow up or refinement can result in an older artifact being modified and newer artifacts being generated. It would be good to know this linkage and maybe track all mutations of the artifact to make sure only the latest copy is used for future context. Something like a linked list, with the head as the latest version of the task result.
+To facilitate client-side tracking, serving agents should use a consistent `artifact-name` when generating a refined version of an existing artifact.
 
-But the client is best suited, as well as is the real judge of what it considers as an acceptable result. And in fact can reject the mutation as well. Hence, the serving agent should not own this linkage and hence this linkage does not need to be part of A2A protocol spec. Clients can maintain the linkage on their end and show the latest version to the user.
+When initiating follow-up or refinement tasks, the client should explicitly reference the specific artifact they intend to refine, ideally the "latest" version from their perspective. If the artifact reference is not provided, the serving agent can:
 
-To help with the tracking, the serving agent should maintain the same artifact-name when generating a refinement on the original artifact.
+- Attempt to infer the intended artifact based on the current `contextId`.
+- If there is ambiguity or insufficient context, the agent should respond with an `input-required` task state to request clarification from the client.
 
-For follow-up or refinement tasks, the client is best suited to refer to the "latest" or what it considers to be the intended artifact to be refined upon. If the artifact reference is not explicitly specified, the serving agent can:
+## Example Follow-up Scenario
 
-- Use context to figure out the latest artifact.
-- Or in case of ambiguity or context not supported, agent can use `input-required` task state.
+The following example illustrates a typical task flow with a follow-up:
 
-### Example Follow-up
+1. Client sends a message to the agent:
 
-#### Client sends message to agent
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "req-001",
-  "method": "message/send",
-  "params": {
-    "message": {
-      "role": "user",
-      "parts": [
-        {
-          "kind": "text",
-          "text": "Generate an image of a sailboat on the ocean."
-        }
-      ],
-      "messageId": "msg-user-001"
-    }
-  }
-}
-```
-
-#### Agent responds with boat image
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "req-001",
-  "result": {
-    "id": "task-boat-gen-123",
-    "contextId": "ctx-conversation-abc",
-    "status": {
-      "state": "completed",
-    },
-    "artifacts": [
-      {
-        "artifactId": "artifact-boat-v1-xyz",
-        "name": "sailboat_image.png",
-        "description": "A generated image of a sailboat on the ocean.",
-        "parts": [
-          {
-            "kind": "file",
-            "file": {
-              "name": "sailboat_image.png",
-              "mimeType": "image/png",
-              "bytes": "<base64_encoded_png_data_of_a_sailboat>"
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": "req-001",
+      "method": "message.send",
+      "params": {
+        "message": {
+          "role": "user",
+          "parts": [
+            {
+              "kind": "text",
+              "text": "Generate an image of a sailboat on the ocean."
             }
-          }
-        ]
-      }
-    ],
-    "kind": "task"
-  }
-}
-```
-
-#### Client asks for coloring the boat red
-
-Refers to previous taskID and uses same contextId.
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "req-002",
-  "method": "message/send",
-  "params": {
-    "message": {
-      "role": "user",
-      "messageId": "msg-user-002",
-      "contextId": "ctx-conversation-abc", // Same contextId
-      "referenceTaskIds": ["task-boat-gen-123"] // Optional: Referencing the previous task
-      "parts": [
-        {
-          "kind": "text",
-          "text": "That's great! Can you make the sailboat red?"
-          // Optional: In case the agent asked for actual relevant artifact.
-          // Client could provide the artifact data in parts.
-          // Also it could add metadata to the part to
-          // reference the specific artifact.
-          // "metadata": {
-          //   "referenceArtifacts: [
-          //      {
-          //        "artifactId": "artifact-boat-v1-xyz",
-          //        "taskId": "task-boat-gen-123"
-          //      }
-          //   ]
-          // }
+          ]
+          "messageId": "msg-user-001"
         }
-      ],
-    }
-  }
-}
-```
-
-#### Agent responds with new image artifact
-
-- Creates new task in same contextId.
-- Boat image artifact has same name. but a new artifactId.
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "req-002",
-  "result": {
-    "id": "task-boat-color-456", // New task ID
-    "contextId": "ctx-conversation-abc", // Same contextId
-    "status": {
-      "state": "completed",
-    },
-    "artifacts": [
-      {
-        "artifactId": "artifact-boat-v2-red-pqr", // New artifactId
-        "name": "sailboat_image.png", // Same name as the original artifact
-        "description": "A generated image of a red sailboat on the ocean.",
-        "parts": [
-          {
-            "kind": "file",
-            "file": {
-              "name": "sailboat_image.png",
-              "mimeType": "image/png",
-              "bytes": "<base64_encoded_png_data_of_a_RED_sailboat>"
-            }
-          }
-        ]
       }
-    ],
-    "kind": "task"
-  }
-}
-```
+    }
+    ```
+
+2. Agent responds with a boat image (completed task):
+
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": "req-001",
+      "result": {
+        "id": "task-boat-gen-123",
+        "contextId": "ctx-conversation-abc",
+        "status": {
+          "state": "completed"
+        },
+        "artifacts": [
+          {
+            "artifactId": "artifact-boat-v1-xyz",
+            "name": "sailboat_image.png",
+            "description": "A generated image of a sailboat on the ocean.",
+            "parts": [
+              {
+                "kind": "file",
+                "file": {
+                  "name": "sailboat_image.png",
+                  "mimeType": "image/png",
+                  "bytes": "base64_encoded_png_data_of_a_sailboat"
+                }
+              }
+            ]
+          }
+        ],
+        "kind": "task"
+      }
+    }
+    ```
+
+3. Client asks to color the boat red. This refinement request refers to the
+    previous `taskId` and uses the same `contextId`.
+
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": "req-002",
+      "method": "message.send",
+      "params": {
+        "message": {
+          "role": "user",
+          "messageId": "msg-user-002",
+          "contextId": "ctx-conversation-abc",
+          "referenceTaskIds": [
+            "task-boat-gen-123"
+          ],
+          "parts": [
+            {
+              "kind": "text",
+              "text": "Please modify the sailboat to be red."
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+4. Agent responds with a new image artifact (new task, same context, updated
+    artifact name): The agent creates a new task within the same `contextId`. The
+    new boat image artifact retains the same name but has a new `artifactId`.
+
+    ```json
+    {
+      "jsonrpc": "2.0",
+      "id": "req-002",
+      "result": {
+        "id": "task-boat-color-456",
+        "contextId": "ctx-conversation-abc",
+        "status": {
+          "state": "completed"
+        },
+        "artifacts": [
+          {
+            "artifactId": "artifact-boat-v2-red-pqr",
+            "name": "sailboat_image.png",
+            "description": "A generated image of a red sailboat on the ocean.",
+            "parts": [
+              {
+                "kind": "file",
+                "file": {
+                  "name": "sailboat_image.png",
+                  "mimeType": "image/png",
+                  "bytes": "base64_encoded_png_data_of_a_RED_sailboat"
+                }
+              }
+            ]
+          }
+        ],
+        "kind": "task"
+      }
+    }
+    ```

@@ -1,6 +1,20 @@
 # Agent2Agent (A2A) Protocol Official Specification
 
-**Version:** `{{ a2a_version }}`
+{% macro render_spec_tabs(region_tag) %}
+=== "JSON-RPC"
+
+    ```ts { .no-copy }
+    --8<-- "types/src/types.ts:{{ region_tag }}"
+    ```
+
+=== "gRPC"
+
+    ```proto { .no-copy }
+    --8<-- "specification/grpc/a2a.proto:{{ region_tag }}"
+    ```
+{% endmacro %}
+
+**Version:** [`0.3.0`](https://github.com/a2aproject/A2A/releases/tag/v0.3.0)
 
 See [Release Notes](https://github.com/a2aproject/A2A/releases) for changes made between versions.
 
@@ -298,49 +312,37 @@ Agent Cards themselves might contain information that is considered sensitive.
 
 ### 5.5. `AgentCard` Object Structure
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentCard"
-```
+{{ render_spec_tabs('AgentCard') }}
 
 #### 5.5.1. `AgentProvider` Object
 
 Information about the organization or entity providing the agent.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentProvider"
-```
+{{ render_spec_tabs('AgentProvider') }}
 
 #### 5.5.2. `AgentCapabilities` Object
 
 Specifies optional A2A protocol features supported by the agent.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentCapabilities"
-```
+{{ render_spec_tabs('AgentCapabilities') }}
 
 #### 5.5.2.1. `AgentExtension` Object
 
 Specifies an extension to the A2A protocol supported by the agent.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentExtension"
-```
+{{ render_spec_tabs('AgentExtension') }}
 
 #### 5.5.3. `SecurityScheme` Object
 
 Describes the authentication requirements for accessing the agent's `url` endpoint. Refer [Sample Agent Card](#57-sample-agent-card) for an example.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:SecurityScheme"
-```
+{{ render_spec_tabs('SecurityScheme') }}
 
 #### 5.5.4. `AgentSkill` Object
 
 Describes a specific capability, function, or area of expertise the agent can perform or address.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentSkill"
-```
+{{ render_spec_tabs('AgentSkill') }}
 
 #### 5.5.5. `AgentInterface` Object
 
@@ -350,9 +352,7 @@ Provides a declaration of a combination of the target URL and the supported tran
 --8<-- "types/src/types.ts:TransportProtocol"
 ```
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentInterface"
-```
+{{ render_spec_tabs('AgentInterface') }}
 
 The `transport` field **SHOULD** use one of the core A2A transport protocol values:
 
@@ -366,9 +366,7 @@ Additional transport values **MAY** be used for future extensions, but such exte
 
 Represents a JSON Web Signature (JWS) used to verify the integrity of the AgentCard.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentCardSignature"
-```
+{{ render_spec_tabs('AgentCardSignature') }}
 
 ### 5.6. Transport Declaration and URL Relationships
 
@@ -494,41 +492,31 @@ These objects define the structure of data exchanged within the JSON-RPC methods
 
 Represents the stateful unit of work being processed by the A2A Server for an A2A Client. A task encapsulates the entire interaction related to a specific goal or request. A task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Tasks in completed state SHOULD use artifacts for returning the generated output to the clients. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:Task"
-```
+{{ render_spec_tabs('Task') }}
 
 ### 6.2. `TaskStatus` Object
 
 Represents the current state and associated context (e.g., a message from the agent) of a `Task`.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:TaskStatus"
-```
+{{ render_spec_tabs('TaskStatus') }}
 
 ### 6.3. `TaskState` Enum
 
 Defines the possible lifecycle states of a `Task`.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:TaskState"
-```
+{{ render_spec_tabs('TaskState') }}
 
 ### 6.4. `Message` Object
 
 Represents a single communication turn or a piece of contextual information between a client and an agent. Messages are used for instructions, prompts, replies, and status updates.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:Message"
-```
+{{ render_spec_tabs('Message') }}
 
 ### 6.5. `Part` Union Type
 
 Represents a distinct piece of content within a `Message` or `Artifact`. A `Part` is a union type representing exportable content as either `TextPart`, `FilePart`, or `DataPart`. All `Part` types also include an optional `metadata` field (`Record<string, any>`) for part-specific metadata.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:Part"
-```
+{{ render_spec_tabs('Part') }}
 
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:PartBase"
@@ -548,17 +536,13 @@ For conveying plain textual content.
 
 For conveying file-based content.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:FilePart"
-```
+{{ render_spec_tabs('FilePart') }}
 
 #### 6.5.3. `DataPart` Object
 
 For conveying structured JSON data. Useful for forms, parameters, or any machine-readable information.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:DataPart"
-```
+{{ render_spec_tabs('DataPart') }}
 
 ### 6.6 `FileBase` Object
 
@@ -588,33 +572,25 @@ Represents the URI for a file, used within a `FilePart`.
 
 Represents a tangible output generated by the agent during a task. Artifacts are the results or products of the agent's work.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:Artifact"
-```
+{{ render_spec_tabs('Artifact') }}
 
 ### 6.8. `PushNotificationConfig` Object
 
 Configuration provided by the client to the server for sending asynchronous push notifications about task updates.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:PushNotificationConfig"
-```
+{{ render_spec_tabs('PushNotificationConfig') }}
 
 ### 6.9. `PushNotificationAuthenticationInfo` Object
 
 A generic structure for specifying authentication requirements, typically used within `PushNotificationConfig` to describe how the A2A Server should authenticate to the client's webhook.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:PushNotificationAuthenticationInfo"
-```
+{{ render_spec_tabs('PushNotificationAuthenticationInfo') }}
 
 ### 6.10. `TaskPushNotificationConfig` Object
 
 Used as the `params` object for the [`tasks/pushNotificationConfig/set`](#75-taskspushnotificationconfigset) method and as the `result` object for the [`tasks/pushNotificationConfig/get`](#76-taskspushnotificationconfigget) method.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:TaskPushNotificationConfig"
-```
+{{ render_spec_tabs('TaskPushNotificationConfig') }}
 
 ### 6.11. JSON-RPC Structures
 
@@ -711,11 +687,9 @@ The `error` response for all transports in case of failure is a [`JSONRPCError`]
 
 #### 7.1.1. `MessageSendParams` Object
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:MessageSendParams"
+{{ render_spec_tabs('MessageSendParams') }}
 
---8<-- "types/src/types.ts:MessageSendConfiguration"
-```
+{{ render_spec_tabs('MessageSendConfiguration') }}
 
 ### 7.2. `message/stream`
 
@@ -780,25 +754,21 @@ This is the structure of the JSON object found in the `data` field of each Serve
 
 ```ts { .no-copy }
 --8<-- "types/src/types.ts:SendStreamingMessageResponse"
-
---8<-- "types/src/types.ts:SendStreamingMessageSuccessResponse"
 ```
+
+{{ render_spec_tabs('SendStreamingMessageSuccessResponse') }}
 
 #### 7.2.2. `TaskStatusUpdateEvent` Object
 
 Carries information about a change in the task's status during streaming. This is one of the possible `result` types in a `SendStreamingMessageSuccessResponse`.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:TaskStatusUpdateEvent"
-```
+{{ render_spec_tabs('TaskStatusUpdateEvent') }}
 
 #### 7.2.3. `TaskArtifactUpdateEvent` Object
 
 Carries a new or updated artifact (or a chunk of an artifact) generated by the task during streaming. This is one of the possible `result` types in a `SendTaskStreamingResponse`.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:TaskArtifactUpdateEvent"
-```
+{{ render_spec_tabs('TaskArtifactUpdateEvent') }}
 
 ### 7.3. `tasks/get`
 
@@ -835,9 +805,7 @@ Retrieves the current state (including status, artifacts, and optionally history
 
 #### 7.3.1. `TaskQueryParams` Object
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:TaskQueryParams"
-```
+{{ render_spec_tabs('TaskQueryParams') }}
 
 ### 7.4. `tasks/cancel`
 
@@ -880,9 +848,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 A simple object containing just the task ID and optional metadata.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:TaskIdParams"
-```
+{{ render_spec_tabs('TaskIdParams') }}
 
 ### 7.5. `tasks/pushNotificationConfig/set`
 
@@ -958,9 +924,7 @@ Retrieves the current push notification configuration for a specified task. Requ
 
 A object for fetching the push notification configuration for a task.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:GetTaskPushNotificationConfigParams"
-```
+{{ render_spec_tabs('GetTaskPushNotificationConfigParams') }}
 
 ### 7.7. `tasks/pushNotificationConfig/list`
 
@@ -998,9 +962,7 @@ Retrieves the associated push notification configurations for a specified task. 
 
 A object for fetching the push notification configurations for a task.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:ListTaskPushNotificationConfigParams"
-```
+{{ render_spec_tabs('ListTaskPushNotificationConfigParams') }}
 
 ### 7.8. `tasks/pushNotificationConfig/delete`
 
@@ -1014,9 +976,7 @@ Deletes an associated push notification configuration for a task. Requires the s
 
 A object for deleting an associated push notification configuration for a task.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:DeleteTaskPushNotificationConfigParams"
-```
+{{ render_spec_tabs('DeleteTaskPushNotificationConfigParams') }}
 
 ### 7.9. `tasks/resubscribe`
 

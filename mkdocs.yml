@@ -1,8 +1,8 @@
 # Project information
-site_name: Agent2Agent (A2A) Protocol Documentation
+site_name: A2A Protocol Documentation
 site_url: https://a2a-protocol.org/
 site_description: >-
-  The A2A protocol is an open standard that allows different AI agents to securely communicate, collaborate, and solve complex problems together.
+  The Agent2Agent protocol is an open standard that allows different AI agents to securely communicate, collaborate, and solve complex problems together.
 site_author: The Linux Foundation
 site_dir: site
 
@@ -12,31 +12,35 @@ extra:
     provider: google
     property: G-RB39M83WHB
 
-
 # Navigation
 nav:
   - Home: index.md
-  - What is A2A?: topics/what-is-a2a.md
-  - Key Concepts: topics/key-concepts.md
-  - A2A and MCP: topics/a2a-and-mcp.md
-  - Agent Discovery: topics/agent-discovery.md
-  - Enterprise Features: topics/enterprise-ready.md
-  - Streaming & Asynchronous Operations: topics/streaming-and-async.md
-  - Extensions: topics/extensions.md
-  - Life of a Task: topics/life-of-a-task.md
+  - Topics:
+    - A2A Overview: topics/what-is-a2a.md
+    - Core Concepts: topics/key-concepts.md
+    - A2A and MCP: topics/a2a-and-mcp.md
+    - Agent Discovery: topics/agent-discovery.md
+    - Enterprise Features: topics/enterprise-ready.md
+    - Streaming & Asynchronous Operations: topics/streaming-and-async.md
+    - Extensions: topics/extensions.md
+    - Life of a Task: topics/life-of-a-task.md
   - Specification: specification.md
   - Community: community.md
   - Partners: partners.md
-  - Python SDK Reference: sdk/python/api/index.html
-  - Tutorial:
-    - Introduction: tutorials/python/1-introduction.md
-    - Setup: tutorials/python/2-setup.md
-    - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
-    - Agent Executor: tutorials/python/4-agent-executor.md
-    - Start Server: tutorials/python/5-start-server.md
-    - Interact with Server: tutorials/python/6-interact-with-server.md
-    - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
-    - Next Steps: tutorials/python/8-next-steps.md
+  - SDK Reference:
+    - sdk/index.md
+    - Python: sdk/python/api/index.html
+  - Tutorials:
+    - tutorials/index.md
+    - Quickstart (Python):
+      - Introduction: tutorials/python/1-introduction.md
+      - Setup: tutorials/python/2-setup.md
+      - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
+      - Agent Executor: tutorials/python/4-agent-executor.md
+      - Start Server: tutorials/python/5-start-server.md
+      - Interact with Server: tutorials/python/6-interact-with-server.md
+      - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
+      - Next Steps: tutorials/python/8-next-steps.md
   - Roadmap: roadmap.md
 
 # Repository
@@ -97,6 +101,7 @@ theme:
 
 # Extensions
 markdown_extensions:
+  - meta
   - footnotes
   - admonition
   - attr_list
@@ -149,7 +154,6 @@ plugins:
         "topics/index.md": "topics/what-is-a2a.md"
         "topics/roadmap.md": "roadmap.md"
         # Tutorial
-        "tutorials/index.md": "tutorials/python/1-introduction.md"
         "tutorials/python/index.md": "tutorials/python/1-introduction.md"
         "tutorials/python/1_introduction.md": "tutorials/python/1-introduction.md"
         "tutorials/python/3-create-project.md": "tutorials/python/2-setup.md"
