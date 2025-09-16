@@ -36,12 +36,14 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           args: --no-progress ${{ steps.changed-files.outputs.all_changed_files }}
+          failIfEmpty: false
 
       - name: Run Lychee on all files (Scheduled/Manual)
         if: github.event_name != 'pull_request'
         uses: lycheeverse/lychee-action@v2
         with:
           args: --no-progress .
+          failIfEmpty: false
 
       - name: Create Issue on Failure
         if: failure() && github.event_name != 'pull_request'

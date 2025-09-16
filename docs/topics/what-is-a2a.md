@@ -83,7 +83,7 @@ The core problem: The agents are unable to work together because each has its ow
 
 The consequence of a lack of a standardized protocol is that these agents cannot collaborate with each other let alone discover what they can do. The individual agents (Flight, Hotel, Currency, and Tours) are isolated.
 
-#### Scene 5: The "With A2A" Solution
+#### The "With A2A" Solution
 
 The A2A Protocol provides standard methods and data structures for agents to communicate with one another, regardless of their underlying implementation, so the same agents can be used as an interconnected system, communicating seamlessly through the standardized protocol.
 
