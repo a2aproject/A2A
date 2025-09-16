@@ -8,7 +8,7 @@ assignees: amye
 
 If you'd like to become a maintainer of the Agent2Agent repo on GitHub, please submit this template with your PR to add yourself to a maintainers group in [MAINTAINERS.md](../../MAINTAINERS.md).
 
-Two TSC members will need to +1 this.
+TSC voting majority will be required to approve maintainers.
 
 Once accepted you'll be able to commit to this repo!
 
