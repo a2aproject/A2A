@@ -1,6 +1,6 @@
 # A2A Community Hub
 
-Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2A is an open interoperability protocol enabling seamless collaboration between AI agents across diverse frameworks and vendors. By standardizing communication, A2A unlocks complex workflows, enhances productivity, and fosters a new era of "Agent Interoperability."
+Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2A is an open, standardized protocol that enables seamless interoperability and collaboration between AI agents across all frameworks and vendors.
 
 ---
 
