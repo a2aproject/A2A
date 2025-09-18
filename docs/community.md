@@ -81,7 +81,7 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [LangGraph](https://docs.langchain.com/langgraph-platform/server-a2a)
 - [Pydantic AI](https://ai.pydantic.dev/a2a/)
 
-### The Future is Interoperable
+## The Future is Interoperable
 
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
 
