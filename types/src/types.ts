@@ -626,6 +626,44 @@ export interface DeleteTaskPushNotificationConfigParams extends TaskIdParams {
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigParams]
 
+// --8<-- [start:ListTasksParams]
+/** Parameters for listing tasks with optional filtering criteria. @since 0.4.0 */
+export interface ListTasksParams {
+  /** Filter tasks by context ID to get tasks from a specific conversation or session. */
+  contextId?: string;
+  /** Filter tasks by their current status state. */
+  status?: TaskState;
+  /** Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified. */
+  pageSize?: number;
+  /** Token for pagination. Use the nextPageToken from a previous ListTasksResult response. */
+  pageToken?: string;
+  /** Number of recent messages to include in each task's history. Must be non-negative. Defaults to 0 if not specified. */
+  historyLength?: number;
+  /** Filter tasks updated after this timestamp (milliseconds since epoch). Only tasks with a last updated time greater than or equal to this value will be returned. */
+  lastUpdatedAfter?: number;
+  /** Whether to include artifacts in the returned tasks. Defaults to false to reduce payload size. */
+  includeArtifacts?: boolean;
+  /** Request-specific metadata. */
+  metadata?: {
+    [key: string]: any;
+  };
+}
+// --8<-- [end:ListTasksParams]
+
+// --8<-- [start:ListTasksResult]
+/** Result object for tasks/list method containing an array of tasks and pagination information. @since 0.4.0 */
+export interface ListTasksResult {
+  /** Array of tasks matching the specified criteria. */
+  tasks: Task[];
+  /** Total number of tasks available (before pagination). */
+  totalSize: number;
+  /** Maximum number of tasks returned in this response. */
+  pageSize: number;
+  /** Token for retrieving the next page. Empty string if no more results. */
+  nextPageToken: string;
+}
+// --8<-- [end:ListTasksResult]
+
 // --8<-- [start:MessageSendConfiguration]
 /**
  * Defines configuration options for a `message/send` or `message/stream` request.
@@ -996,6 +1034,7 @@ export type JSONRPCResponse =
   | SendStreamingMessageResponse
   | GetTaskResponse
   | CancelTaskResponse
+  | ListTasksResponse
   | SetTaskPushNotificationConfigResponse
   | GetTaskPushNotificationConfigResponse
   | ListTaskPushNotificationConfigResponse
@@ -1101,6 +1140,39 @@ export interface GetTaskSuccessResponse extends JSONRPCSuccessResponse {
  */
 export type GetTaskResponse = GetTaskSuccessResponse | JSONRPCErrorResponse;
 // --8<-- [end:GetTaskResponse]
+
+// --8<-- [start:ListTasksRequest]
+/**
+ * JSON-RPC request model for the 'tasks/list' method.
+ * @since 0.4.0
+ */
+export interface ListTasksRequest extends JSONRPCRequest {
+  id: number | string;
+  /** A String containing the name of the method to be invoked. */
+  method: "tasks/list";
+  /** A Structured value that holds the parameter values to be used during the invocation of the method. */
+  params?: ListTasksParams;
+}
+// --8<-- [end:ListTasksRequest]
+
+// --8<-- [start:ListTasksSuccessResponse]
+/**
+ * JSON-RPC success response model for the 'tasks/list' method.
+ * @since 0.4.0
+ */
+export interface ListTasksSuccessResponse extends JSONRPCSuccessResponse {
+  /** The result object on success. */
+  result: ListTasksResult;
+}
+// --8<-- [end:ListTasksSuccessResponse]
+
+// --8<-- [start:ListTasksResponse]
+/**
+ * JSON-RPC response for the 'tasks/list' method.
+ * @since 0.4.0
+ */
+export type ListTasksResponse = ListTasksSuccessResponse | JSONRPCErrorResponse;
+// --8<-- [end:ListTasksResponse]
 
 // --8<-- [start:CancelTaskRequest]
 /**
@@ -1333,6 +1405,7 @@ export type A2ARequest =
   | SendStreamingMessageRequest
   | GetTaskRequest
   | CancelTaskRequest
+  | ListTasksRequest
   | SetTaskPushNotificationConfigRequest
   | GetTaskPushNotificationConfigRequest
   | TaskResubscriptionRequest
