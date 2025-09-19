@@ -52,19 +52,19 @@ This document lists the maintainers of various repositories within the project.
 
 - role:maintain
   - @aneeshgarg
-  - @mindpower 
-  - @rajeshvelicheti
-  - @pwwpche
-  - @swapydapy
-  - @ToddSegal
+  - @chitra-venkatesh
   - @dmandar
   - @holtskinner
-  - @mvakoc
-  - @mikeas1
-  - @lkawka
-  - @chitra-venkatesh
   - @kthota-g
-  - @pstephengoogle 
+  - @lkawka
+  - @mikeas1
+  - @mindpower
+  - @mvakoc
+  - @pstephengoogle
+  - @pwwpche
+  - @rajeshvelicheti
+  - @swapydapy
+  - @ToddSegal
 
 - role:admin
   - @DJ-os
