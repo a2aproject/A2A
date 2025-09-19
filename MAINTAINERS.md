@@ -1,10 +1,77 @@
 # Maintainers
 
-This document lists the maintainers of this repository.
+This document lists the maintainers of various repositories within the project.
 
 ## Repository Maintainers
 
-<!--
-Please add yourself to this list in alphabetical order of GitHub handle.
-Format: * Full Name (@github-handle), Company
--->
+### a2a-dotnet
+
+- role:maintain
+  - @aalina23
+  - @adamsitnik
+  - @Blackhex
+  - @iremyux
+  - @karelz
+  - @rokonec
+
+- role:admin
+  - @brandonh-msft
+  - @darrelmiller
+  - @markwallace-microsoft
+  - @SergeyMenshykh
+  - @stephentoub
+
+### a2a-go
+
+- role:maintain
+  - @yarolegovich
+
+- role:admin
+  - @hyangah
+  - @mazas-google
+
+### a2a-java
+
+- role:maintain
+  - @Doris26
+  - @ehsavoie
+  - @kabir
+  - @maeste
+
+- role:admin
+  - @ddobrin
+  - @fjuma
+  - @holtskinner
+
+### a2a-js
+
+- role:admin
+  - @swapydapy
+
+### a2a-python
+
+- role:maintain
+  - @aneeshgarg
+  - @mindpower 
+  - @rajeshvelicheti
+  - @pwwpche
+  - @swapydapy
+  - @ToddSegal
+  - @dmandar
+  - @holtskinner
+  - @mvakoc
+  - @mikeas1
+  - @lkawka
+  - @chitra-venkatesh
+  - @kthota-g
+  - @pstephengoogle 
+
+- role:admin
+  - @DJ-os
+  - @holtskinner
+  - @koverholt
+  - @kthota-g
+  - @ToddSegal
+  - @zeroasterisk
+
+
