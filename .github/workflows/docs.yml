@@ -79,6 +79,17 @@ jobs:
       - name: Deploy development version from main branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
+          # Get the name of the most recent tag
+          LATEST_TAG=$(git describe --tags --abbrev=0)
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No tags found. Cannot pin specification.md. Exiting."
+            exit 1
+          fi
+
+          echo "Pinning specification.md to the latest release: $LATEST_TAG"
+          # Overwrite the specification.md from main with the one from the latest tag
+          git checkout $LATEST_TAG -- docs/specification.md
+
           mike deploy --push --update-aliases dev latest
 
           echo "Setting 'latest' as the default version for the site..."
