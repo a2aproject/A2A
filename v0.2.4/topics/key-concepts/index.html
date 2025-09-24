@@ -6,19 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The Agent2Agent protocol is an open standard that allows different AI agents to securely communicate, collaborate, and solve complex problems together.">
+        <meta name="description" content="An open protocol enabling communication and interoperability between opaque agentic applications.">
       
       
-        <meta name="author" content="The Linux Foundation">
       
-      
-        <link rel="canonical" href="https://a2a-protocol.org/v0.2.4/topics/key-concepts/">
+        <link rel="canonical" href="https://a2aproject.github.io/A2A/v0.2.4/topics/key-concepts/">
       
       
         <link rel="prev" href="../what-is-a2a/">
       
       
-        <link rel="next" href="../agent-discovery/">
+        <link rel="next" href="../a2a-and-mcp/">
       
       
       <link rel="icon" href="../../assets/a2a-logo-black.svg">
@@ -26,7 +24,7 @@
     
     
       
-        <title>Core Concepts - A2A Protocol</title>
+        <title>Key Concepts - Agent2Agent (A2A) Protocol</title>
       
     
     
@@ -93,21 +91,13 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
       <link rel="stylesheet" href="../../stylesheets/custom.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
-  
-
-
-  
-  
-
-<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-RB39M83WHB"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-RB39M83WHB",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-RB39M83WHB",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
-  
-    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
-  
 
     
     
@@ -131,23 +121,43 @@
     <div data-md-component="skip">
       
         
-        <a href="#core-concepts-and-components-in-a2a" class="md-skip">
+        <a href="#key-concepts-in-a2a" class="md-skip">
           Skip to content
         </a>
       
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+              <button class="md-banner__button md-icon" aria-label="Don't show this again">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+            
+            
+  <div class="announce">
+    <p>
+      Join us on July 12-13 at the Weights & Biases office in San Francisco for a
+      <a href="https://lu.ma/weavehacks" class="md-button md-button--primary">A2A/MCP Hackathon</a>
+    </p>
+  </div>
+
+          </div>
+          
+            <script>var el=document.querySelector("[data-md-component=announce]");if(el){var content=el.querySelector(".md-typeset");__md_hash(content.innerHTML)===__md_get("__announce")&&(el.hidden=!0)}</script>
+          
+        </aside>
+      
     </div>
     
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="A2A Protocol" class="md-header__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+    <a href="../.." title="Agent2Agent (A2A) Protocol" class="md-header__button md-logo" aria-label="Agent2Agent (A2A) Protocol" data-md-component="logo">
       
   <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
@@ -160,13 +170,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            A2A Protocol
+            Agent2Agent (A2A) Protocol
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Core Concepts
+              Key Concepts
             
           </span>
         </div>
@@ -179,7 +189,21 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="white"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
     
   
 </form>
@@ -252,6 +276,159 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../what-is-a2a/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Topics
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../specification/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Specification
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../community/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Community
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../partners/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Partners
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../sdk/python/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  SDK Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/python/1-introduction/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tutorial (Python)
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -265,15 +442,17 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="A2A Protocol" class="md-nav__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+    <a href="../.." title="Agent2Agent (A2A) Protocol" class="md-nav__button md-logo" aria-label="Agent2Agent (A2A) Protocol" data-md-component="logo">
       
   <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
     </a>
-    A2A Protocol
+    Agent2Agent (A2A) Protocol
   </label>
   
     <div class="md-nav__source">
@@ -342,20 +521,26 @@
     
     
     
+      
+        
+        
+      
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
-    Documentation
+    Topics
     
   </span>
   
@@ -366,7 +551,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
-            Documentation
+            Topics
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -414,7 +599,7 @@
   
   
   <span class="md-ellipsis">
-    Core Concepts
+    Key Concepts
     
   </span>
   
@@ -427,7 +612,7 @@
   
   
   <span class="md-ellipsis">
-    Core Concepts
+    Key Concepts
     
   </span>
   
@@ -450,9 +635,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#core-actors-in-a2a-interactions" class="md-nav__link">
+  <a href="#core-actors" class="md-nav__link">
     <span class="md-ellipsis">
-      Core Actors in A2A Interactions
+      Core Actors
     </span>
   </a>
   
@@ -471,33 +656,6 @@
   <a href="#interaction-mechanisms" class="md-nav__link">
     <span class="md-ellipsis">
       Interaction Mechanisms
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#agent-cards" class="md-nav__link">
-    <span class="md-ellipsis">
-      Agent Cards
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#messages-and-parts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Messages and Parts
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#artifacts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Artifacts
     </span>
   </a>
   
@@ -525,6 +683,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../a2a-and-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    A2A and MCP
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -565,53 +746,7 @@
   
   
   <span class="md-ellipsis">
-    Enterprise Features
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../life-of-a-task/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Life of a Task
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../extensions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Extensions
+    Enterprise-Ready Features
     
   </span>
   
@@ -652,12 +787,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../a2a-and-mcp/" class="md-nav__link">
+      <a href="../extensions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    A2A and MCP
+    Extensions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../life-of-a-task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Life of a Task
     
   </span>
   
@@ -681,6 +839,72 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../specification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Specification
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../community/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Community
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../partners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Partners
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
       
@@ -688,50 +912,55 @@
           
         
       
-        
+    
+    
+    
       
-    
-    
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../tutorials/" class="md-nav__link ">
+            <a href="../../sdk/python/" class="md-nav__link ">
               
   
   
   <span class="md-ellipsis">
-    Tutorials and Samples
+    SDK Reference
     
   </span>
   
 
             </a>
             
-              
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
-            Tutorials and Samples
+            SDK Reference
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
               
             
-              
-                
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
   
   
   
@@ -757,21 +986,26 @@
       
     
     
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Quickstart (Python)
+    Tutorial (Python)
     
   </span>
   
@@ -779,10 +1013,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
-            Quickstart (Python)
+            Tutorial (Python)
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -976,187 +1210,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../specification/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Specification
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../sdk/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    SDK Reference
-    
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
-            <span class="md-nav__icon md-icon"></span>
-            SDK Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../sdk/python/api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Python
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../community/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Community
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../partners/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Partners
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../roadmap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Roadmap
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
     
   </ul>
 </nav>
@@ -1185,9 +1238,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#core-actors-in-a2a-interactions" class="md-nav__link">
+  <a href="#core-actors" class="md-nav__link">
     <span class="md-ellipsis">
-      Core Actors in A2A Interactions
+      Core Actors
     </span>
   </a>
   
@@ -1206,33 +1259,6 @@
   <a href="#interaction-mechanisms" class="md-nav__link">
     <span class="md-ellipsis">
       Interaction Mechanisms
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#agent-cards" class="md-nav__link">
-    <span class="md-ellipsis">
-      Agent Cards
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#messages-and-parts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Messages and Parts
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#artifacts" class="md-nav__link">
-    <span class="md-ellipsis">
-      Artifacts
     </span>
   </a>
   
@@ -1275,118 +1301,118 @@
   
 
 
-<h1 id="core-concepts-and-components-in-a2a">Core Concepts and Components in A2A<a class="headerlink" href="#core-concepts-and-components-in-a2a" title="Permanent link">&para;</a></h1>
-<p>A2A uses a set of core concepts that define how agents interact.
-Understand these core building blocks to develop or integrate with A2A-compliant
-systems.</p>
+<h1 id="key-concepts-in-a2a">Key Concepts in A2A<a class="headerlink" href="#key-concepts-in-a2a" title="Permanent link">&para;</a></h1>
+<p>The Agent2Agent (A2A) protocol is built around a set of core concepts that define how agents interact. Understanding these concepts is crucial for developing or integrating with A2A-compliant systems.</p>
 <p><img alt="A2A Actors showing a User, A2A Client (Client Agent), and A2A Server (Remote Agent)" src="../../assets/a2a-actors.png" style="margin:20px auto;display:block;" width="70%" /></p>
-<h2 id="core-actors-in-a2a-interactions">Core Actors in A2A Interactions<a class="headerlink" href="#core-actors-in-a2a-interactions" title="Permanent link">&para;</a></h2>
+<h2 id="core-actors">Core Actors<a class="headerlink" href="#core-actors" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>User</strong>: The end user, which can be a human operator or an automated
-    service. The user initiates a request or defines a goal that requires
-    assistance from one or more AI agents.</li>
-<li><strong>A2A Client (Client Agent)</strong>: An application, service, or another AI agent
-    that acts on behalf of the user. The client initiates communication using the
-    A2A protocol.</li>
-<li><strong>A2A Server (Remote Agent)</strong>: An AI agent or an agentic system that exposes
-    an HTTP endpoint implementing the A2A protocol. It receives requests from
-    clients, processes tasks, and returns results or status updates. From the client's perspective,
-    the remote agent operates as an <em>opaque</em> (black-box) system, meaning its internal workings, memory, or tools are not exposed.</li>
+<li><strong>User:</strong> The end user (human or automated service) who initiates a request or goal that requires agent assistance.</li>
+<li><strong>A2A Client (Client Agent):</strong> An application, service, or another AI agent that acts on behalf of the user to request actions or information from a remote agent. The client initiates communication using the A2A protocol.</li>
+<li><strong>A2A Server (Remote Agent):</strong> An AI agent or agentic system that exposes an HTTP endpoint implementing the A2A protocol. It receives requests from clients, processes tasks, and returns results or status updates. The remote agent operates as an "opaque" system from the client's perspective, meaning the client doesn't need to know its internal workings, memory, or tools.</li>
 </ul>
 <h2 id="fundamental-communication-elements">Fundamental Communication Elements<a class="headerlink" href="#fundamental-communication-elements" title="Permanent link">&para;</a></h2>
-<p>The following table describes the fundamental communication elements in A2A:</p>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Element</th>
-<th style="text-align: left;">Description</th>
-<th style="text-align: left;">Key Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Agent Card</td>
-<td style="text-align: left;">A JSON metadata document describing an agent's identity, capabilities, endpoint, skills, and authentication requirements.</td>
-<td style="text-align: left;">Enables clients to discover agents and understand how to interact with them securely and effectively.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Task</td>
-<td style="text-align: left;">A stateful unit of work initiated by an agent, with a unique ID and defined lifecycle.</td>
-<td style="text-align: left;">Facilitates tracking of long-running operations and enables multi-turn interactions and collaboration.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Message</td>
-<td style="text-align: left;">A single turn of communication between a client and an agent, containing content and a role ("user" or "agent").</td>
-<td style="text-align: left;">Conveys instructions, context, questions, answers, or status updates that are not necessarily formal artifacts.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Part</td>
-<td style="text-align: left;">The fundamental content container (for example, TextPart, FilePart, DataPart) used within Messages and Artifacts.</td>
-<td style="text-align: left;">Provides flexibility for agents to exchange various content types within messages and artifacts.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Artifact</td>
-<td style="text-align: left;">A tangible output generated by an agent during a task (for example, a document, image, or structured data).</td>
-<td style="text-align: left;">Delivers the concrete results of an agent's work, ensuring structured and retrievable outputs.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="interaction-mechanisms">Interaction Mechanisms<a class="headerlink" href="#interaction-mechanisms" title="Permanent link">&para;</a></h2>
-<p>The A2A Protocol supports various interaction patterns to accommodate different
-needs for responsiveness and persistence. These mechanisms ensure that agents
-can exchange information efficiently and reliably, regardless of the task's
-complexity or duration:</p>
 <ul>
-<li><strong>Request/Response (Polling)</strong>: Clients send a request and the server
-    responds. For long-running tasks, the client periodically polls the server
-    for updates.</li>
-<li><strong>Streaming with Server-Sent Events (SSE)</strong>: Clients initiate a stream to
-    receive real-time, incremental results or status updates from the server
-    over an open HTTP connection.</li>
-<li><strong>Push Notifications</strong>: For very long-running tasks or disconnected
-    scenarios, the server can actively send asynchronous notifications to a
-    client-provided webhook when significant task updates occur.</li>
+<li>
+<p><strong>Agent Card:</strong></p>
+<ul>
+<li>A JSON metadata document, typically discoverable at a well-known URL (e.g., <code>/.well-known/agent.json</code>), that describes an A2A Server.</li>
+<li>It details the agent's identity (name, description), service endpoint URL, version, supported A2A capabilities (like streaming or push notifications), specific skills it offers, default input/output modalities, and authentication requirements.</li>
+<li>Clients use the Agent Card to discover agents and understand how to interact with them securely and effectively.</li>
+<li>See details in the <a href="../../specification/#5-agent-discovery-the-agent-card">Protocol Specification: Agent Card</a>.</li>
 </ul>
-<p>For a detailed exploration of streaming and push notifications, refer to the
-<a href="../streaming-and-async/">Streaming &amp; Asynchronous Operations</a> document.</p>
-<h2 id="agent-cards">Agent Cards<a class="headerlink" href="#agent-cards" title="Permanent link">&para;</a></h2>
-<p>The Agent Card is a JSON document that serves as a digital business card for
-initial discovery and interaction setup. It provides essential metadata about an
-agent. Clients parse this information to determine if an agent is suitable for a
-given task, how to structure requests, and how to communicate securely. Key
-information includes identity, service endpoint (URL), A2A capabilities,
-authentication requirements, and a list of skills.</p>
-<h2 id="messages-and-parts">Messages and Parts<a class="headerlink" href="#messages-and-parts" title="Permanent link">&para;</a></h2>
-<p>A message represents a single turn of communication between a client and an
-agent. It includes a role ("user" or "agent") and a unique <code>messageId</code>. It
-contains one or more Part objects, which are granular containers for the actual
-content. This design allows A2A to be modality independent.</p>
-<p>The primary part kinds are:</p>
+</li>
+<li>
+<p><strong>Task:</strong></p>
 <ul>
+<li>When a client sends a message to an agent, the agent might determine that fulfilling the request requires a stateful task to be completed (e.g., "generate a report," "book a flight," "answer a question").</li>
+<li>Each task has a unique ID defined by the agent and progresses through a defined lifecycle (e.g., <code>submitted</code>, <code>working</code>, <code>input-required</code>, <code>completed</code>, <code>failed</code>).</li>
+<li>Tasks are stateful and can involve multiple exchanges (messages) between the client and the server.</li>
+<li>See details in the <a href="../life-of-a-task/">Life of a Task</a>.</li>
+<li>Protocol specification: <a href="../../specification/#61-task-object">Task Object</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Message:</strong></p>
+<ul>
+<li>Represents a single turn or unit of communication between a client and an agent.</li>
+<li>Messages have a <code>role</code> (either <code>"user"</code> for client-sent messages or <code>"agent"</code> for server-sent messages) and contain one or more <code>Part</code> objects that carry the actual content. <code>messageId</code> part of the Message object is a unique identifier for each message set by the sender of the message.</li>
+<li>Used for conveying instructions, context, questions, answers, or status updates that are not necessarily formal <code>Artifacts</code>.</li>
+<li>See details in the <a href="../../specification/#64-message-object">Protocol Specification: Message Object</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Part:</strong></p>
+<ul>
+<li>The fundamental unit of content within a <code>Message</code> or an <code>Artifact</code>. Each part has a specific <code>type</code> and can carry different kinds of data:<ul>
 <li><code>TextPart</code>: Contains plain textual content.</li>
-<li><code>FilePart</code>: Represents a file. It can be transmitted either inline (Base64
-   encoded) or through a URI. It includes metadata like "filename" and "mimeType".</li>
-<li><code>DataPart</code>: Carries structured JSON data. This is useful for forms,
-   parameters, or any machine-readable information.</li>
+<li><code>FilePart</code>: Represents a file, which can be transmitted as inline base64-encoded bytes or referenced via a URI. Includes metadata like filename and Media Type.</li>
+<li><code>DataPart</code>: Carries structured JSON data, useful for forms, parameters, or any machine-readable information.</li>
 </ul>
-<h2 id="artifacts">Artifacts<a class="headerlink" href="#artifacts" title="Permanent link">&para;</a></h2>
-<p>An artifact represents a tangible output or a concrete result generated by a
-remote agent during task processing. Unlike general messages, artifacts are the
-actual deliverables. An artifact has a unique <code>artifactId</code>, a human-readable
-name, and consists of one or more part objects. Artifacts are closely tied to the
-task lifecycle and can be streamed incrementally to the client.</p>
+</li>
+<li>See details in the <a href="../../specification/#65-part-union-type">Protocol Specification: Part Union Type</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Artifact:</strong></p>
+<ul>
+<li>Represents a tangible output or result generated by the remote agent during the processing of a task.</li>
+<li>Examples include generated documents, images, spreadsheets, structured data results, or any other self-contained piece of information that is a direct result of the task.</li>
+<li>Artifacts are composed of one or more <code>Part</code> objects and can be streamed incrementally.</li>
+<li>See details in the <a href="../../specification/#67-artifact-object">Protocol Specification: Artifact Object</a>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="interaction-mechanisms">Interaction Mechanisms<a class="headerlink" href="#interaction-mechanisms" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Request/Response (Polling):</strong></p>
+<ul>
+<li>The client sends a request (e.g., using the <code>message/send</code> RPC method) and receives a response from the server.</li>
+<li>If the interaction requires a stateful long-running task, the server might initially respond with a <code>working</code> status. The client would then periodically call <code>tasks/get</code> to poll for updates until the task reaches a terminal state (e.g., <code>completed</code>, <code>failed</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Streaming (Server-Sent Events - SSE):</strong></p>
+<ul>
+<li>For tasks that produce results incrementally or provide real-time progress updates.</li>
+<li>The client initiates an interaction with the server using <code>message/stream</code>.</li>
+<li>The server responds with an HTTP connection that remains open, over which it sends a stream of Server-Sent Events (SSE).</li>
+<li>These events can be <code>Task</code>, <code>Message</code>, or <code>`TaskStatusUpdateEvent</code> (for status changes) or <code>TaskArtifactUpdateEvent</code> (for new or updated artifact chunks).</li>
+<li>This requires the server to advertise the <code>streaming</code> capability in its Agent Card.</li>
+<li>Learn more about <a href="../streaming-and-async/">Streaming &amp; Asynchronous Operations</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Push Notifications:</strong></p>
+<ul>
+<li>For very long-running tasks or scenarios where maintaining a persistent connection (like SSE) is impractical.</li>
+<li>The client can provide a webhook URL when initiating a task (or by calling <code>tasks/pushNotificationConfig/set</code>).</li>
+<li>When the task status changes significantly (e.g., completes, fails, or requires input), the server can send an asynchronous notification (an HTTP POST request) to this client-provided webhook.</li>
+<li>This requires the server to advertise the <code>pushNotifications</code> capability in its Agent Card.</li>
+<li>Learn more about <a href="../streaming-and-async/">Streaming &amp; Asynchronous Operations</a>.</li>
+</ul>
+</li>
+</ul>
 <h2 id="agent-response-task-or-message">Agent Response: Task or Message<a class="headerlink" href="#agent-response-task-or-message" title="Permanent link">&para;</a></h2>
-<p>The agent response can be a new <code>Task</code> (when the agent needs to perform a
-long-running operation) or a <code>Message</code> (when the agent can respond immediately).</p>
-<p>For more details, see <a href="../life-of-a-task/">Life of a Task</a>.</p>
+<p>See details in the <a href="../life-of-a-task/">Life of a Task</a>.</p>
 <h2 id="other-important-concepts">Other Important Concepts<a class="headerlink" href="#other-important-concepts" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Context (<code>contextId</code>):</strong> A server-generated identifier that can be used to logically group multiple related <code>Task</code> objects, providing context across a series of interactions.</li>
 <li><strong>Transport and Format:</strong> A2A communication occurs over HTTP(S). JSON-RPC 2.0 is used as the payload format for all requests and responses.</li>
-<li><strong>Authentication &amp; Authorization:</strong> A2A relies on standard web security practices. Authentication requirements are declared in the Agent Card, and credentials (e.g., OAuth tokens, API keys) are typically passed through HTTP headers, separate from the A2A protocol messages themselves. For more information, see <a href="../enterprise-ready/">Enterprise-Ready Features</a>.</li>
-<li><strong>Agent Discovery:</strong> The process by which clients find Agent Cards to learn about available A2A Servers and their capabilities. For more information, see <a href="../agent-discovery/">Agent Discovery</a>.</li>
-<li><strong>Extensions:</strong> A2A allows agents to declare custom protocol extensions as part of their AgentCard. For more information, see <a href="../extensions/">Extensions</a>.</li>
+<li><strong>Authentication &amp; Authorization:</strong> A2A relies on standard web security practices. Authentication requirements are declared in the Agent Card, and credentials (e.g., OAuth tokens, API keys) are typically passed via HTTP headers, separate from the A2A protocol messages themselves.<ul>
+<li>Learn more about <a href="../enterprise-ready/">Enterprise-Ready Features</a>.</li>
 </ul>
+</li>
+<li><strong>Agent Discovery:</strong> The process by which clients find Agent Cards to learn about available A2A Servers and their capabilities.<ul>
+<li>Learn more about <a href="../agent-discovery/">Agent Discovery</a>.</li>
+</ul>
+</li>
+<li><strong>Extensions:</strong> A2A allows agents to declare custom protocol extensions as part of their AgentCard.<ul>
+<li>More documentation coming soon.</li>
+</ul>
+</li>
+</ul>
+<p>By understanding these core components and mechanisms, developers can effectively design, implement, and utilize A2A for building interoperable and collaborative AI agent systems.</p>
 
 
 
@@ -1395,8 +1421,6 @@ long-running operation) or a <code>Message</code> (when the agent can respond im
 
 
 
-
-  
 
 
 
@@ -1443,13 +1467,13 @@ long-running operation) or a <code>Message</code> (when the agent can respond im
         
         
           
-          <a href="../agent-discovery/" class="md-footer__link md-footer__link--next" aria-label="Next: Agent Discovery">
+          <a href="../a2a-and-mcp/" class="md-footer__link md-footer__link--next" aria-label="Next: A2A and MCP">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Agent Discovery
+                A2A and MCP
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1466,7 +1490,7 @@ long-running operation) or a <code>Message</code> (when the agent can respond im
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright 2025 The Linux Foundation. Licensed under the Apache License, Version 2.0.
+      Copyright Google 2025
     </div>
   
   
@@ -1491,7 +1515,7 @@ long-running operation) or a <code>Message</code> (when the agent can respond im
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>

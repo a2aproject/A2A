@@ -6,19 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="The Agent2Agent protocol is an open standard that allows different AI agents to securely communicate, collaborate, and solve complex problems together.">
+        <meta name="description" content="An open protocol enabling communication and interoperability between opaque agentic applications.">
       
       
-        <meta name="author" content="The Linux Foundation">
+      
+        <link rel="canonical" href="https://a2aproject.github.io/A2A/v0.2.4/topics/streaming-and-async/">
       
       
-        <link rel="canonical" href="https://a2a-protocol.org/v0.2.4/topics/streaming-and-async/">
+        <link rel="prev" href="../enterprise-ready/">
       
       
-        <link rel="prev" href="../extensions/">
-      
-      
-        <link rel="next" href="../a2a-and-mcp/">
+        <link rel="next" href="../extensions/">
       
       
       <link rel="icon" href="../../assets/a2a-logo-black.svg">
@@ -26,7 +24,7 @@
     
     
       
-        <title>Streaming & Asynchronous Operations - A2A Protocol</title>
+        <title>Streaming & Asynchronous Operations - Agent2Agent (A2A) Protocol</title>
       
     
     
@@ -93,21 +91,13 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
       <link rel="stylesheet" href="../../stylesheets/custom.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
-  
-
-
-  
-  
-
-<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-RB39M83WHB"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-RB39M83WHB",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-RB39M83WHB",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
-  
-    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
-  
 
     
     
@@ -131,23 +121,43 @@
     <div data-md-component="skip">
       
         
-        <a href="#streaming-and-asynchronous-operations-for-long-running-tasks" class="md-skip">
+        <a href="#streaming-asynchronous-operations-in-a2a" class="md-skip">
           Skip to content
         </a>
       
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+              <button class="md-banner__button md-icon" aria-label="Don't show this again">
+                
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+              </button>
+            
+            
+  <div class="announce">
+    <p>
+      Join us on July 12-13 at the Weights & Biases office in San Francisco for a
+      <a href="https://lu.ma/weavehacks" class="md-button md-button--primary">A2A/MCP Hackathon</a>
+    </p>
+  </div>
+
+          </div>
+          
+            <script>var el=document.querySelector("[data-md-component=announce]");if(el){var content=el.querySelector(".md-typeset");__md_hash(content.innerHTML)===__md_get("__announce")&&(el.hidden=!0)}</script>
+          
+        </aside>
+      
     </div>
     
     
       
 
-  
-
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="A2A Protocol" class="md-header__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+    <a href="../.." title="Agent2Agent (A2A) Protocol" class="md-header__button md-logo" aria-label="Agent2Agent (A2A) Protocol" data-md-component="logo">
       
   <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
@@ -160,7 +170,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            A2A Protocol
+            Agent2Agent (A2A) Protocol
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -179,7 +189,21 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="white"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
     
   
 </form>
@@ -252,6 +276,159 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../what-is-a2a/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Topics
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../specification/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Specification
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../community/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Community
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../partners/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Partners
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../sdk/python/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  SDK Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/python/1-introduction/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tutorial (Python)
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -265,15 +442,17 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="A2A Protocol" class="md-nav__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+    <a href="../.." title="Agent2Agent (A2A) Protocol" class="md-nav__button md-logo" aria-label="Agent2Agent (A2A) Protocol" data-md-component="logo">
       
   <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
     </a>
-    A2A Protocol
+    Agent2Agent (A2A) Protocol
   </label>
   
     <div class="md-nav__source">
@@ -342,20 +521,26 @@
     
     
     
+      
+        
+        
+      
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
-    Documentation
+    Topics
     
   </span>
   
@@ -366,7 +551,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
-            Documentation
+            Topics
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -405,7 +590,30 @@
   
   
   <span class="md-ellipsis">
-    Core Concepts
+    Key Concepts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../a2a-and-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    A2A and MCP
     
   </span>
   
@@ -451,53 +659,7 @@
   
   
   <span class="md-ellipsis">
-    Enterprise Features
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../life-of-a-task/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Life of a Task
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../extensions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Extensions
+    Enterprise-Ready Features
     
   </span>
   
@@ -565,74 +727,23 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#streaming-with-server-sent-events-sse" class="md-nav__link">
+  <a href="#1-streaming-with-server-sent-events-sse" class="md-nav__link">
     <span class="md-ellipsis">
-      Streaming with Server-Sent Events (SSE)
+      1. Streaming with Server-Sent Events (SSE)
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Streaming with Server-Sent Events (SSE)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-to-use-streaming" class="md-nav__link">
-    <span class="md-ellipsis">
-      When to Use Streaming
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#protocol-specification-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      Protocol Specification References
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#push-notifications-for-disconnected-scenarios" class="md-nav__link">
+  <a href="#2-push-notifications-for-disconnected-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
-      Push Notifications for Disconnected Scenarios
+      2. Push Notifications for Disconnected Scenarios
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Push Notifications for Disconnected Scenarios">
+    <nav class="md-nav" aria-label="2. Push Notifications for Disconnected Scenarios">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-to-use-push-notifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      When to Use Push Notifications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#protocol-specification-references_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Protocol Specification References
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#client-side-push-notification-service" class="md-nav__link">
-    <span class="md-ellipsis">
-      Client-Side Push Notification Service
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#security-considerations-for-push-notifications" class="md-nav__link">
@@ -647,7 +758,7 @@
           <li class="md-nav__item">
   <a href="#a2a-server-security-when-sending-notifications-to-client-webhook" class="md-nav__link">
     <span class="md-ellipsis">
-      A2A Server Security (when sending notifications to client webhook)
+      A2A Server Security (When Sending Notifications to Client Webhook)
     </span>
   </a>
   
@@ -656,11 +767,12 @@
           <li class="md-nav__item">
   <a href="#client-webhook-receiver-security-when-receiving-notifications-from-a2a-server" class="md-nav__link">
     <span class="md-ellipsis">
-      Client Webhook Receiver Security (when receiving notifications from A2A server)
+      Client Webhook Receiver Security (When Receiving Notifications from A2A Server)
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Client Webhook Receiver Security (When Receiving Notifications from A2A Server)">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#example-asymmetric-key-flow-jwt-jwks" class="md-nav__link">
@@ -668,6 +780,11 @@
       Example Asymmetric Key Flow (JWT + JWKS)
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -697,12 +814,35 @@
   
   
     <li class="md-nav__item">
-      <a href="../a2a-and-mcp/" class="md-nav__link">
+      <a href="../extensions/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
-    A2A and MCP
+    Extensions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../life-of-a-task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Life of a Task
     
   </span>
   
@@ -726,6 +866,72 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../specification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Specification
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../community/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Community
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../partners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Partners
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
       
@@ -733,50 +939,55 @@
           
         
       
-        
+    
+    
+    
       
-    
-    
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../tutorials/" class="md-nav__link ">
+            <a href="../../sdk/python/" class="md-nav__link ">
               
   
   
   <span class="md-ellipsis">
-    Tutorials and Samples
+    SDK Reference
     
   </span>
   
 
             </a>
             
-              
-              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
-            Tutorials and Samples
+            SDK Reference
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
               
             
-              
-                
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
   
   
   
@@ -802,21 +1013,26 @@
       
     
     
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Quickstart (Python)
+    Tutorial (Python)
     
   </span>
   
@@ -824,10 +1040,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_2">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
-            Quickstart (Python)
+            Tutorial (Python)
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1021,187 +1237,6 @@
     </li>
   
 
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../specification/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Specification
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../sdk/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    SDK Reference
-    
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
-            <span class="md-nav__icon md-icon"></span>
-            SDK Reference
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../sdk/python/api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Python
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../community/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Community
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../partners/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Partners
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../roadmap/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Roadmap
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
     
   </ul>
 </nav>
@@ -1230,74 +1265,23 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#streaming-with-server-sent-events-sse" class="md-nav__link">
+  <a href="#1-streaming-with-server-sent-events-sse" class="md-nav__link">
     <span class="md-ellipsis">
-      Streaming with Server-Sent Events (SSE)
+      1. Streaming with Server-Sent Events (SSE)
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Streaming with Server-Sent Events (SSE)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-to-use-streaming" class="md-nav__link">
-    <span class="md-ellipsis">
-      When to Use Streaming
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#protocol-specification-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      Protocol Specification References
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#push-notifications-for-disconnected-scenarios" class="md-nav__link">
+  <a href="#2-push-notifications-for-disconnected-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
-      Push Notifications for Disconnected Scenarios
+      2. Push Notifications for Disconnected Scenarios
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Push Notifications for Disconnected Scenarios">
+    <nav class="md-nav" aria-label="2. Push Notifications for Disconnected Scenarios">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#when-to-use-push-notifications" class="md-nav__link">
-    <span class="md-ellipsis">
-      When to Use Push Notifications
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#protocol-specification-references_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Protocol Specification References
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#client-side-push-notification-service" class="md-nav__link">
-    <span class="md-ellipsis">
-      Client-Side Push Notification Service
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#security-considerations-for-push-notifications" class="md-nav__link">
@@ -1312,7 +1296,7 @@
           <li class="md-nav__item">
   <a href="#a2a-server-security-when-sending-notifications-to-client-webhook" class="md-nav__link">
     <span class="md-ellipsis">
-      A2A Server Security (when sending notifications to client webhook)
+      A2A Server Security (When Sending Notifications to Client Webhook)
     </span>
   </a>
   
@@ -1321,11 +1305,12 @@
           <li class="md-nav__item">
   <a href="#client-webhook-receiver-security-when-receiving-notifications-from-a2a-server" class="md-nav__link">
     <span class="md-ellipsis">
-      Client Webhook Receiver Security (when receiving notifications from A2A server)
+      Client Webhook Receiver Security (When Receiving Notifications from A2A Server)
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Client Webhook Receiver Security (When Receiving Notifications from A2A Server)">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#example-asymmetric-key-flow-jwt-jwks" class="md-nav__link">
@@ -1333,6 +1318,11 @@
       Example Asymmetric Key Flow (JWT + JWKS)
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -1365,115 +1355,152 @@
   
 
 
-<h1 id="streaming-and-asynchronous-operations-for-long-running-tasks">Streaming and Asynchronous Operations for Long-Running Tasks<a class="headerlink" href="#streaming-and-asynchronous-operations-for-long-running-tasks" title="Permanent link">&para;</a></h1>
-<p>The Agent2Agent (A2A) protocol is explicitly designed to handle tasks that might not complete immediately. Many AI-driven operations are often long-running, involve multiple steps, produce incremental results, or require human intervention. A2A provides mechanisms for managing such asynchronous interactions, ensuring that clients receive updates effectively, whether they remain continuously connected or operate in a more disconnected fashion.</p>
-<h2 id="streaming-with-server-sent-events-sse">Streaming with Server-Sent Events (SSE)<a class="headerlink" href="#streaming-with-server-sent-events-sse" title="Permanent link">&para;</a></h2>
-<p>For tasks that produce incremental results (like generating a long document or streaming media) or provide ongoing status updates, A2A supports real-time communication using Server-Sent Events (SSE). This approach is ideal when the client is able to maintain an active HTTP connection with the A2A Server.</p>
-<p>The following key features detail how SSE streaming is implemented and managed within the A2A protocol:</p>
+<h1 id="streaming-asynchronous-operations-in-a2a">Streaming &amp; Asynchronous Operations in A2A<a class="headerlink" href="#streaming-asynchronous-operations-in-a2a" title="Permanent link">&para;</a></h1>
+<p>The Agent2Agent (A2A) protocol is designed to handle tasks that may not complete immediately. Many AI-driven operations can be long-running, involve multiple steps, produce incremental results, or require human intervention. A2A provides robust mechanisms for managing such asynchronous interactions, ensuring that clients can receive updates effectively, whether they remain continuously connected or operate in a more disconnected fashion.</p>
+<h2 id="1-streaming-with-server-sent-events-sse">1. Streaming with Server-Sent Events (SSE)<a class="headerlink" href="#1-streaming-with-server-sent-events-sse" title="Permanent link">&para;</a></h2>
+<p>For tasks that produce incremental results (like generating a long document or streaming media) or provide ongoing status updates, A2A supports real-time communication using Server-Sent Events (SSE). This is ideal when the client can maintain an active HTTP connection with the A2A Server.</p>
+<p><strong>Key Characteristics:</strong></p>
 <ul>
-<li>
-<p><strong>Server Capability:</strong> The A2A Server must indicate its support for streaming by setting <code>capabilities.streaming: true</code> in its Agent Card.</p>
-</li>
-<li>
-<p><strong>Initiating a Stream:</strong> The client uses the <code>message/stream</code> RPC method to send an initial message (for example, a prompt or command) and simultaneously subscribe to updates for that task.</p>
-</li>
-<li>
-<p><strong>Server Response and Connection:</strong> If the subscription is successful, the server responds with an HTTP 200 OK status and a <code>Content-Type: text/event-stream</code>. This HTTP connection remains open for the server to push events to the client.</p>
-</li>
-<li>
-<p><strong>Event Structure and Types:</strong> The server sends events over this stream. Each event's <code>data</code> field contains a JSON-RPC 2.0 Response object, typically a <code>SendStreamingMessageResponse</code>. The <code>result</code> field of the <code>SendStreamingMessageResponse</code> contains:</p>
-<ul>
-<li><a href="../../specification/#61-task-object"><code>Task</code></a>: Represents the current state of the work.</li>
-<li><a href="../../specification/#722-taskstatusupdateevent-object"><code>TaskStatusUpdateEvent</code></a>: Communicates changes in the task's lifecycle state (for example, from <code>working</code> to <code>input-required</code> or <code>completed</code>). It also provides intermediate messages from the agent.</li>
-<li><a href="../../specification/#723-taskartifactupdateevent-object"><code>TaskArtifactUpdateEvent</code></a>: Delivers new or updated Artifacts generated by the task. This is used to stream large files or data structures in chunks, with fields like <code>append</code> and <code>lastChunk</code> to help reassemble.</li>
+<li><strong>Initiation:</strong> The client uses the <code>message/stream</code> RPC method to send an initial message (e.g., a prompt or command) and simultaneously subscribe to updates for that task.</li>
+<li><strong>Server Capability:</strong> The A2A Server must indicate its support for streaming by setting <code>capabilities.streaming: true</code> in its <a href="../../specification/#552-agentcapabilities-object">Agent Card</a>.</li>
+<li><strong>Server Response (Connection):</strong> If the subscription is successful, the server responds with an HTTP <code>200 OK</code> status and a <code>Content-Type: text/event-stream</code>. This HTTP connection remains open for the server to push events.</li>
+<li><strong>Event Structure:</strong> The server sends events over this stream. Each event's <code>data</code> field contains a JSON-RPC 2.0 Response object, specifically a <a href="../../specification/#721-sendstreamingmessageresponse-object"><code>SendStreamingMessageResponse</code></a>. The <code>id</code> in this JSON-RPC response matches the <code>id</code> from the client's original <code>message/stream</code> request.</li>
+<li><strong>Event Types (within <code>SendStreamingMessageResponse.result</code>):</strong><ul>
+<li><a href="../../specification/#61-task-object"><code>Task</code></a>: Represents the stateful unit of work being processed by the A2A Server for an A2A Client.</li>
+<li><a href="../../specification/#722-taskstatusupdateevent-object"><code>TaskStatusUpdateEvent</code></a>: Communicates changes in the task's lifecycle state (e.g., from <code>working</code> to <code>input-required</code> or <code>completed</code>). It can also provide intermediate messages from the agent (e.g., "I'm currently analyzing the data...").</li>
+<li><a href="../../specification/#723-taskartifactupdateevent-object"><code>TaskArtifactUpdateEvent</code></a>: Delivers new or updated <a href="../../specification/#67-artifact-object">Artifacts</a> generated by the task. This is used to stream large files or data structures in chunks. This object itself contains fields like <code>append</code>, and <code>lastChunk</code> to help the client reassemble the complete artifact.</li>
 </ul>
 </li>
-<li>
-<p><strong>Stream Termination:</strong> The server signals the end of updates for a cycle by setting <code>final: true</code> in a <code>TaskStatusUpdateEvent</code>. This typically occurs when the task reaches a terminal state. After this, the server usually closes the SSE connection.</p>
-</li>
-<li>
-<p><strong>Resubscription:</strong> If a client's SSE connection breaks prematurely while a task is still active, the client is able to attempt to reconnect to the stream using the <code>tasks/resubscribe</code> RPC method.</p>
-</li>
+<li><strong>Stream Termination:</strong> The server signals the end of updates for a particular interaction cycle (i.e., for the current <code>message/stream</code> request) by setting <code>final: true</code> in a <code>TaskStatusUpdateEvent</code>. This typically occurs when the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>) or an <code>input-required</code> state (where the server expects further input from the client). After sending a <code>final: true</code> event, the server usually closes the SSE connection for that specific request.</li>
+<li><strong>Resubscription:</strong> If a client's SSE connection breaks prematurely while a task is still active (and the server hasn't sent a <code>final: true</code> event for that phase), the client can attempt to reconnect to the stream using the <code>tasks/resubscribe</code> RPC method. The server's behavior regarding missed events during the disconnection period (e.g., whether it backfills or only sends new updates) is implementation-dependent.</li>
 </ul>
-<h3 id="when-to-use-streaming">When to Use Streaming<a class="headerlink" href="#when-to-use-streaming" title="Permanent link">&para;</a></h3>
-<p>Streaming with SSE is best suited for:</p>
+<p><strong>When to Use Streaming:</strong></p>
 <ul>
 <li>Real-time progress monitoring of long-running tasks.</li>
-<li>Receiving large results (artifacts) incrementally.</li>
+<li>Receiving large results (artifacts) incrementally, allowing processing to begin before the entire result is available.</li>
 <li>Interactive, conversational exchanges where immediate feedback or partial responses are beneficial.</li>
 <li>Applications requiring low-latency updates from the agent.</li>
 </ul>
-<h3 id="protocol-specification-references">Protocol Specification References<a class="headerlink" href="#protocol-specification-references" title="Permanent link">&para;</a></h3>
 <p>Refer to the Protocol Specification for detailed structures:</p>
 <ul>
 <li><a href="../../specification/#72-messagestream"><code>message/stream</code></a></li>
-<li><a href="../../specification/#79-tasksresubscribe"><code>tasks/resubscribe</code></a></li>
+<li><a href="../../specification/#77-tasksresubscribe"><code>tasks/resubscribe</code></a></li>
 </ul>
-<h2 id="push-notifications-for-disconnected-scenarios">Push Notifications for Disconnected Scenarios<a class="headerlink" href="#push-notifications-for-disconnected-scenarios" title="Permanent link">&para;</a></h2>
-<p>For very long-running tasks (for example, lasting minutes, hours, or even days) or when clients are unable to or prefer not to maintain persistent connections (like mobile clients or serverless functions), A2A supports asynchronous updates using push notifications. This allows the A2A Server to actively notify a client-provided webhook when a significant task update occurs.</p>
-<p>The following key features detail how push notifications are implemented and managed within the A2A protocol:</p>
+<h2 id="2-push-notifications-for-disconnected-scenarios">2. Push Notifications for Disconnected Scenarios<a class="headerlink" href="#2-push-notifications-for-disconnected-scenarios" title="Permanent link">&para;</a></h2>
+<p>For very long-running tasks (e.g., lasting minutes, hours, or even days) or when clients cannot or prefer not to maintain persistent connections (like mobile clients or serverless functions), A2A supports asynchronous updates via push notifications. This mechanism allows the A2A Server to actively notify a client-provided webhook when a significant task update occurs.</p>
+<p><strong>Key Characteristics:</strong></p>
 <ul>
-<li><strong>Server Capability:</strong> The A2A Server must indicate its support for this feature by setting <code>capabilities.pushNotifications: true</code> in its Agent Card.</li>
-<li><strong>Configuration:</strong> The client provides a <a href="../../specification/#68-pushnotificationconfig-object"><code>PushNotificationConfig</code></a> to the server. This configuration is supplied:<ul>
-<li>Within the initial <code>message/send</code> or <code>message/stream</code> request, or</li>
-<li>Separately, using the <code>tasks/pushNotificationConfig/set</code> RPC method for an existing task.
-The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS webhook URL), an optional <code>token</code> (for client-side validation), and optional <code>authentication</code> details (for the A2A Server to authenticate to the webhook).</li>
+<li><strong>Server Capability:</strong> The A2A Server must indicate its support for this feature by setting <code>capabilities.pushNotifications: true</code> in its <a href="../../specification/#552-agentcapabilities-object">Agent Card</a>.</li>
+<li>
+<p><strong>Configuration:</strong> The client provides a <a href="../../specification/#68-pushnotificationconfig-object"><code>PushNotificationConfig</code></a> to the server.</p>
+<ul>
+<li>
+<p>This configuration can be supplied:</p>
+<ul>
+<li>Within the initial <code>message/send</code> or <code>message/stream</code> request (via the optional <code>pushNotification</code> parameter in <code>TaskSendParams</code>).</li>
+<li>Separately, using the <code>tasks/pushNotificationConfig/set</code> RPC method for an existing task.</li>
 </ul>
 </li>
-<li><strong>Notification Trigger:</strong> The A2A Server decides when to send a push notification, typically when a task reaches a significant state change (for example, terminal state, <code>input-required</code>, or <code>auth-required</code>).</li>
-<li><strong>Notification Payload:</strong> The A2A protocol does not strictly define the HTTP body payload, but it SHOULD contain sufficient information for the client to identify the Task ID and understand the general nature of the update (for example, the new <code>TaskState</code>).</li>
-<li><strong>Client Action:</strong> Upon receiving a push notification (and successfully verifying its authenticity), the client typically uses the <code>tasks/get</code> RPC method with the <code>taskId</code> from the notification to retrieve the complete, updated <code>Task</code> object, including any new artifacts.</li>
-</ul>
-<h3 id="when-to-use-push-notifications">When to Use Push Notifications<a class="headerlink" href="#when-to-use-push-notifications" title="Permanent link">&para;</a></h3>
-<p>Push notifications are ideal for:</p>
+<li>
+<p>The <code>PushNotificationConfig</code> includes:</p>
 <ul>
-<li>Very long-running tasks that can take minutes, hours, or days to complete.</li>
-<li>Clients that cannot or prefer not to maintain persistent connections, such as mobile applications or serverless functions.</li>
-<li>Scenarios where clients only need to be notified of significant state changes rather than continuous updates.</li>
+<li><code>url</code>: The absolute HTTPS webhook URL where the A2A Server should send (POST) task update notifications.</li>
+<li><code>token</code> (optional): A client-generated opaque string (e.g., a secret or task-specific identifier). The server SHOULD include this token in the notification request (e.g., in a custom header like <code>X-A2A-Notification-Token</code>) for validation by the client's webhook receiver.</li>
+<li><code>authentication</code> (optional): An <a href="../../specification/#69-pushnotificationauthenticationinfo-object"><code>AuthenticationInfo</code></a> object specifying how the A2A Server should authenticate itself <em>to the client's webhook URL</em>. The client (receiver of the webhook) defines these authentication requirements.</li>
 </ul>
-<h3 id="protocol-specification-references_1">Protocol Specification References<a class="headerlink" href="#protocol-specification-references_1" title="Permanent link">&para;</a></h3>
-<p>Refer to the Protocol Specification for detailed structures:</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Notification Trigger:</strong> The A2A Server decides when to send a push notification. Typically, this happens when a task reaches a significant state change, such as transitioning to a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, <code>rejected</code>) or an <code>input-required</code> or <code>auth-required</code> state, particularly after its associated message and artifacts are fully generated and stable.</p>
+</li>
+<li><strong>Notification Payload:</strong> The A2A protocol itself does <strong>not</strong> strictly define the HTTP body payload of the push notification sent by the server to the client's webhook. However, the notification <strong>SHOULD</strong> contain sufficient information for the client to identify the <code>Task ID</code> and understand the general nature of the update (e.g., the new <code>TaskState</code>). Servers might send a minimal payload (just <code>Task ID</code> and new state) or a more comprehensive one (e.g., a summary or even the full <a href="../../specification/#61-task-object"><code>Task</code></a> object).</li>
+<li><strong>Client Action:</strong> Upon receiving a push notification (and successfully verifying its authenticity and relevance), the client typically uses the <code>tasks/get</code> RPC method with the <code>task ID</code> from the notification to retrieve the complete, updated <code>Task</code> object, including any new artifacts or detailed messages.</li>
+</ul>
+<p><strong>The Push Notification Service (Client-Side Webhook Infrastructure):</strong></p>
 <ul>
-<li><a href="../../specification/#75-taskspushnotificationconfigset"><code>tasks/pushNotificationConfig/set</code></a></li>
-<li><a href="../../specification/#76-taskspushnotificationconfigget"><code>tasks/get</code></a></li>
+<li>The target <code>url</code> specified in <code>PushNotificationConfig.url</code> points to a <strong>Push Notification Service</strong>. This service is a component on the client's side (or a service the client subscribes to) responsible for receiving the HTTP POST notification from the A2A Server.</li>
+<li>Its responsibilities include:<ul>
+<li>Authenticating the incoming notification (i.e., verifying it's from the legitimate A2A Server).</li>
+<li>Validating the notification's relevance (e.g., checking the <code>token</code>).</li>
+<li>Relaying the notification or its content to the appropriate client application logic or system.</li>
 </ul>
-<h3 id="client-side-push-notification-service">Client-Side Push Notification Service<a class="headerlink" href="#client-side-push-notification-service" title="Permanent link">&para;</a></h3>
-<p>The <code>url</code> specified in <code>PushNotificationConfig.url</code> points to a client-side Push Notification Service. This service is responsible for receiving the HTTP POST notification from the A2A Server. Its responsibilities include authenticating the incoming notification, validating its relevance, and relaying the notification or its content to the appropriate client application logic or system.</p>
+</li>
+<li>In simple scenarios (e.g., local development), the client application itself might directly expose the webhook endpoint.</li>
+<li>In enterprise or production settings, this is often a robust, secure service that handles incoming webhooks, authenticates callers, and routes messages (e.g., to a message queue, an internal API, a mobile push notification gateway, or another event-driven system).</li>
+</ul>
 <h3 id="security-considerations-for-push-notifications">Security Considerations for Push Notifications<a class="headerlink" href="#security-considerations-for-push-notifications" title="Permanent link">&para;</a></h3>
-<p>Security is paramount for push notifications due to their asynchronous and server-initiated outbound nature. Both the A2A Server (sending the notification) and the client's webhook receiver have critical responsibilities.</p>
-<h4 id="a2a-server-security-when-sending-notifications-to-client-webhook">A2A Server Security (when sending notifications to client webhook)<a class="headerlink" href="#a2a-server-security-when-sending-notifications-to-client-webhook" title="Permanent link">&para;</a></h4>
+<p>Security is paramount for push notifications due to their asynchronous and server-initiated outbound nature. Both the A2A Server (sending the notification) and the client's webhook receiver have responsibilities.</p>
+<h4 id="a2a-server-security-when-sending-notifications-to-client-webhook">A2A Server Security (When Sending Notifications to Client Webhook)<a class="headerlink" href="#a2a-server-security-when-sending-notifications-to-client-webhook" title="Permanent link">&para;</a></h4>
+<ol>
+<li>
+<p><strong>Webhook URL Validation:</strong></p>
 <ul>
-<li><strong>Webhook URL Validation:</strong> Servers SHOULD NOT blindly trust and send POST requests to any URL provided by a client. Malicious clients could provide URLs pointing to internal services or unrelated third-party systems, leading to Server-Side Request Forgery (SSRF) attacks or acting as Distributed Denial of Service (DDoS) amplifiers.<ul>
-<li><strong>Mitigation strategies:</strong> Allowlisting of trusted domains, ownership verification (for example, challenge-response mechanisms), and network controls (e.g., egress firewalls).</li>
+<li>Servers <strong>SHOULD NOT</strong> blindly trust and send POST requests to any <code>url</code> provided by a client in <code>PushNotificationConfig</code>. Malicious clients could provide URLs pointing to internal services or unrelated third-party systems to cause harm (Server-Side Request Forgery - SSRF attacks) or act as Distributed Denial of Service (DDoS) amplifiers.</li>
+<li><strong>Mitigation Strategies:</strong><ul>
+<li><strong>Allowlisting:</strong> Maintain an allowlist of trusted domains or IP ranges for webhook URLs, if feasible.</li>
+<li><strong>Ownership Verification / Challenge-Response:</strong> Before sending actual notifications, the server can (and SHOULD ideally) perform a verification step. For example, it could issue an HTTP <code>GET</code> or <code>OPTIONS</code> request to the proposed webhook URL with a unique <code>validationToken</code> (as a query parameter or header). The webhook service must respond appropriately (e.g., echo back the token or confirm readiness) to prove ownership and reachability. The <a href="https://github.com/a2aproject/a2a-samples">A2A Python samples</a> demonstrate a simple validation token check mechanism.</li>
+<li><strong>Network Controls:</strong> Use egress firewalls or network policies to restrict where the A2A Server can send outbound HTTP requests.</li>
 </ul>
 </li>
-<li><strong>Authenticating to the Client's Webhook:</strong> The A2A Server MUST authenticate itself to the client's webhook URL according to the scheme(s) specified in <code>PushNotificationConfig.authentication</code>. Common schemes include Bearer Tokens (OAuth 2.0), API keys, HMAC signatures, or mutual TLS (mTLS).</li>
 </ul>
-<h4 id="client-webhook-receiver-security-when-receiving-notifications-from-a2a-server">Client Webhook Receiver Security (when receiving notifications from A2A server)<a class="headerlink" href="#client-webhook-receiver-security-when-receiving-notifications-from-a2a-server" title="Permanent link">&para;</a></h4>
+</li>
+<li>
+<p><strong>Authenticating to the Client's Webhook:</strong></p>
 <ul>
-<li><strong>Authenticating the A2A Server:</strong> The webhook endpoint MUST rigorously verify the authenticity of incoming notification requests to ensure they originate from the legitimate A2A Server and not an imposter.<ul>
-<li><strong>Verification methods:</strong> Verify signatures/tokens (for example, JWT signatures against the A2A Server's trusted public keys, HMAC signatures, or API key validation). Also, validate the <code>PushNotificationConfig.token</code> if provided.</li>
+<li>The A2A Server <strong>MUST</strong> authenticate itself to the client's webhook URL according to the scheme(s) specified in <code>PushNotificationConfig.authentication</code>.</li>
+<li>Common authentication schemes for server-to-server webhooks include:<ul>
+<li><strong>Bearer Tokens (OAuth 2.0):</strong> The A2A Server obtains an access token (e.g., using the OAuth 2.0 client credentials grant flow if the webhook provider supports it) for an audience/scope representing the client's webhook, and includes it in the <code>Authorization: Bearer &lt;token&gt;</code> header of the notification POST request.</li>
+<li><strong>API Keys:</strong> A pre-shared API key that the A2A Server includes in a specific HTTP header (e.g., <code>X-Api-Key</code>).</li>
+<li><strong>HMAC Signatures:</strong> The A2A Server signs the request payload (or parts of the request) with a shared secret key using HMAC, and includes the signature in a header (e.g., <code>X-Hub-Signature</code>). The webhook receiver then verifies this signature.</li>
+<li><strong>Mutual TLS (mTLS):</strong> If supported by the client's webhook infrastructure, the A2A Server can present a client TLS certificate.</li>
 </ul>
 </li>
-<li><strong>Preventing Replay Attacks:</strong><ul>
-<li><strong>Timestamps:</strong> Notifications SHOULD include a timestamp. The webhook SHOULD reject notifications that are too old.</li>
-<li><strong>Nonces/unique IDs:</strong> For critical notifications, consider using unique, single-use identifiers (for example, JWT's <code>jti</code> claim or event IDs) to prevent processing duplicate notifications.</li>
 </ul>
 </li>
-<li><strong>Secure Key Management and Rotation:</strong> Implement secure key management practices, including regular key rotation, especially for cryptographic keys. Protocols like JWKS (JSON Web Key Set) facilitate key rotation for asymmetric keys.</li>
+</ol>
+<h4 id="client-webhook-receiver-security-when-receiving-notifications-from-a2a-server">Client Webhook Receiver Security (When Receiving Notifications from A2A Server)<a class="headerlink" href="#client-webhook-receiver-security-when-receiving-notifications-from-a2a-server" title="Permanent link">&para;</a></h4>
+<ol>
+<li>
+<p><strong>Authenticating the A2A Server:</strong></p>
+<ul>
+<li>The webhook endpoint <strong>MUST</strong> rigorously verify the authenticity of incoming notification requests to ensure they originate from the legitimate A2A Server and not an imposter.</li>
+<li><strong>Verify Signatures/Tokens:</strong><ul>
+<li>If using JWTs (e.g., as Bearer tokens), validate the JWT's signature against the A2A Server's trusted public keys (e.g., fetched from a JWKS endpoint provided by the A2A Server, if applicable). Also, validate claims like <code>iss</code> (issuer), <code>aud</code> (audience - should identify your webhook), <code>iat</code> (issued at), and <code>exp</code> (expiration time).</li>
+<li>If using HMAC signatures, recalculate the signature on the received payload using the shared secret and compare it to the signature in the request header.</li>
+<li>If using API keys, ensure the key is valid and known.</li>
 </ul>
-<h4 id="example-asymmetric-key-flow-jwt-jwks">Example Asymmetric Key Flow (JWT + JWKS)<a class="headerlink" href="#example-asymmetric-key-flow-jwt-jwks" title="Permanent link">&para;</a></h4>
+</li>
+<li><strong>Validate <code>PushNotificationConfig.token</code>:</strong> If the client provided an opaque <code>token</code> in its <code>PushNotificationConfig</code> when setting up notifications for the task, the webhook should check that the incoming notification includes this exact token (e.g., in a custom header like <code>X-A2A-Notification-Token</code>). This helps ensure the notification is intended for this specific client context and task, adding a layer of authorization.</li>
+</ul>
+</li>
+<li>
+<p><strong>Preventing Replay Attacks:</strong></p>
+<ul>
+<li><strong>Timestamps:</strong> Notifications should ideally include a timestamp (e.g., <code>iat</code> - issued at - claim in a JWT, or a custom timestamp header). The webhook should reject notifications that are too old (e.g., older than a few minutes) to prevent attackers from replaying old, captured notifications. The timestamp should be part of the signed payload (if using signatures) to ensure its integrity.</li>
+<li><strong>Nonces/Unique IDs:</strong> For critical notifications, consider using unique, single-use identifiers (nonces or event IDs) for each notification. The webhook should track received IDs (for a reasonable window) to prevent processing duplicate notifications. A JWT's <code>jti</code> (JWT ID) claim can serve this purpose.</li>
+</ul>
+</li>
+<li>
+<p><strong>Secure Key Management and Rotation:</strong></p>
+<ul>
+<li>If using cryptographic keys (symmetric secrets for HMAC, or asymmetric key pairs for JWT signing/mTLS), implement secure key management practices, including regular key rotation.</li>
+<li>For asymmetric keys where the A2A Server signs and the client webhook verifies, protocols like JWKS (JSON Web Key Set) allow the server to publish its public keys (including new ones during rotation) at a well-known endpoint. Client webhooks can then dynamically fetch the correct public key for signature verification, facilitating smoother key rotation.</li>
+</ul>
+</li>
+</ol>
+<h5 id="example-asymmetric-key-flow-jwt-jwks">Example Asymmetric Key Flow (JWT + JWKS)<a class="headerlink" href="#example-asymmetric-key-flow-jwt-jwks" title="Permanent link">&para;</a></h5>
 <ol>
 <li>Client sets <code>PushNotificationConfig</code> specifying <code>authentication.schemes: ["Bearer"]</code> and possibly an expected <code>issuer</code> or <code>audience</code> for the JWT.</li>
 <li>A2A Server, when sending a notification:<ul>
-<li>Generates a JWT, signing it with its private key. The JWT includes claims like <code>iss</code> (issuer), <code>aud</code> (audience), <code>iat</code> (issued at), <code>exp</code> (expires), <code>jti</code> (JWT ID), and <code>taskId</code>.</li>
-<li>The JWT header indicates the signing algorithm and key ID (<code>kid</code>).</li>
-<li>The A2A Server makes its public keys available through a JWKS endpoint.</li>
+<li>Generates a JWT, signing it with its private key. The JWT includes claims like <code>iss</code> (issuer), <code>aud</code> (audience - the webhook), <code>iat</code> (issued at), <code>exp</code> (expires), <code>jti</code> (JWT ID), and <code>taskId</code>.</li>
+<li>The JWT header (<code>alg</code> and <code>kid</code>) indicates the signing algorithm and key ID.</li>
+<li>The A2A Server makes its public keys available via a JWKS endpoint (URL for this endpoint might be known to the webhook provider or discovered).</li>
 </ul>
 </li>
 <li>Client Webhook, upon receiving the notification:<ul>
-<li>Extracts the JWT from the Authorization header.</li>
-<li>Inspects the <code>kid</code> (key ID) in the JWT header.</li>
+<li>Extracts the JWT from the <code>Authorization</code> header.</li>
+<li>Inspects the <code>kid</code> in the JWT header.</li>
 <li>Fetches the corresponding public key from the A2A Server's JWKS endpoint (caching keys is recommended).</li>
 <li>Verifies the JWT signature using the public key.</li>
 <li>Validates claims (<code>iss</code>, <code>aud</code>, <code>iat</code>, <code>exp</code>, <code>jti</code>).</li>
@@ -1481,7 +1508,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 </ul>
 </li>
 </ol>
-<p>This comprehensive, layered approach to security for push notifications helps ensure that messages are authentic, integral, and timely, protecting both the sending A2A Server and the receiving client webhook infrastructure.</p>
+<p>This comprehensive, layered approach to security for push notifications ensures that messages are authentic, integral, and timely, protecting both the sending A2A Server and the receiving client webhook infrastructure.</p>
 
 
 
@@ -1490,8 +1517,6 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 
 
 
-
-  
 
 
 
@@ -1521,7 +1546,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../extensions/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Extensions">
+          <a href="../enterprise-ready/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Enterprise-Ready Features">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1531,20 +1556,20 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
                 Previous
               </span>
               <div class="md-ellipsis">
-                Extensions
+                Enterprise-Ready Features
               </div>
             </div>
           </a>
         
         
           
-          <a href="../a2a-and-mcp/" class="md-footer__link md-footer__link--next" aria-label="Next: A2A and MCP">
+          <a href="../extensions/" class="md-footer__link md-footer__link--next" aria-label="Next: Extensions">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                A2A and MCP
+                Extensions
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1561,7 +1586,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright 2025 The Linux Foundation. Licensed under the Apache License, Version 2.0.
+      Copyright Google 2025
     </div>
   
   
@@ -1586,7 +1611,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
