@@ -6,17 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="An open protocol enabling communication and interoperability between opaque agentic applications.">
+        <meta name="description" content="The Agent2Agent protocol is an open standard that allows different AI agents to securely communicate, collaborate, and solve complex problems together.">
       
+      
+        <meta name="author" content="The Linux Foundation">
       
       
         <link rel="canonical" href="https://a2a-protocol.org/v0.3.0/topics/a2a-and-mcp/">
       
       
-        <link rel="prev" href="../key-concepts/">
+        <link rel="prev" href="../streaming-and-async/">
       
       
-        <link rel="next" href="../agent-discovery/">
+        <link rel="next" href="../../tutorials/">
       
       
       <link rel="icon" href="../../assets/a2a-logo-black.svg">
@@ -24,7 +26,7 @@
     
     
       
-        <title>A2A and MCP - Agent2Agent (A2A) Protocol</title>
+        <title>A2A and MCP - A2A Protocol</title>
       
     
     
@@ -91,8 +93,6 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
-    
       <link rel="stylesheet" href="../../stylesheets/custom.css">
     
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
@@ -131,7 +131,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#a2a-and-mcp-complementary-protocols-for-agentic-systems" class="md-skip">
+        <a href="#a2a-and-mcp-detailed-comparison" class="md-skip">
           Skip to content
         </a>
       
@@ -143,9 +143,11 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Agent2Agent (A2A) Protocol" class="md-header__button md-logo" aria-label="Agent2Agent (A2A) Protocol" data-md-component="logo">
+    <a href="../.." title="A2A Protocol" class="md-header__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
       
   <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
@@ -158,7 +160,7 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Agent2Agent (A2A) Protocol
+            A2A Protocol
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
@@ -177,21 +179,7 @@
     
     
     
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
-    
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="white"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
-      </label>
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
     
   
 </form>
@@ -264,178 +252,6 @@
       
         
           
-            
-<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-grid">
-    <ul class="md-tabs__list">
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
-        
-  
-  
-    
-  
-  Home
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-    
-  
-  
-    
-    
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../what-is-a2a/" class="md-tabs__link">
-          
-  
-  
-    
-  
-  Topics
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../specification/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Specification
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../community/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Community
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../partners/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Partners
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../sdk/python/" class="md-tabs__link">
-          
-  
-  
-    
-  
-  SDK Reference
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../tutorials/python/1-introduction/" class="md-tabs__link">
-          
-  
-  
-    
-  
-  Tutorial (Python)
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../roadmap/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Roadmap
-
-      </a>
-    </li>
-  
-
-      
-    </ul>
-  </div>
-</nav>
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -449,17 +265,15 @@
                     
 
 
-  
 
-
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Agent2Agent (A2A) Protocol" class="md-nav__button md-logo" aria-label="Agent2Agent (A2A) Protocol" data-md-component="logo">
+    <a href="../.." title="A2A Protocol" class="md-nav__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
       
   <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
     </a>
-    Agent2Agent (A2A) Protocol
+    A2A Protocol
   </label>
   
     <div class="md-nav__source">
@@ -528,26 +342,20 @@
     
     
     
-      
-        
-        
-      
-      
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Topics
+    Documentation
     
   </span>
   
@@ -558,7 +366,7 @@
         <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
-            Topics
+            Documentation
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -597,7 +405,122 @@
   
   
   <span class="md-ellipsis">
-    Key Concepts
+    Core Concepts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agent-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Agent Discovery
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../enterprise-ready/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enterprise Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../life-of-a-task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Life of a Task
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Extensions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../streaming-and-async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Streaming & Asynchronous Operations
     
   </span>
   
@@ -665,9 +588,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#a2a-mcp" class="md-nav__link">
+  <a href="#model-context-protocol" class="md-nav__link">
     <span class="md-ellipsis">
-      A2A ❤️ MCP
+      Model Context Protocol
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent2agent-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      Agent2Agent Protocol
     </span>
   </a>
   
@@ -683,31 +615,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#model-context-protocol-mcp" class="md-nav__link">
+  <a href="#a2a-mcp-complementary-protocols-for-agentic-systems" class="md-nav__link">
     <span class="md-ellipsis">
-      Model Context Protocol (MCP)
+      A2A ❤️ MCP: Complementary Protocols for Agentic Systems
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#agent2agent-protocol-a2a" class="md-nav__link">
-    <span class="md-ellipsis">
-      Agent2Agent Protocol (A2A)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-a2a-and-mcp-complement-each-other" class="md-nav__link">
-    <span class="md-ellipsis">
-      How A2A and MCP Complement Each Other
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How A2A and MCP Complement Each Other">
+    <nav class="md-nav" aria-label="A2A ❤️ MCP: Complementary Protocols for Agentic Systems">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -742,121 +656,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../agent-discovery/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Agent Discovery
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../enterprise-ready/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Enterprise-Ready Features
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../streaming-and-async/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Streaming & Asynchronous Operations
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../extensions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Extensions
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../life-of-a-task/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Life of a Task
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -870,72 +669,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../../specification/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Specification
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../community/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Community
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../partners/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Partners
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
     
     
       
@@ -943,55 +676,50 @@
           
         
       
-    
-    
-    
+        
       
-      
+    
+    
     
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../sdk/python/" class="md-nav__link ">
+            <a href="../../tutorials/" class="md-nav__link ">
               
   
   
   <span class="md-ellipsis">
-    SDK Reference
+    Tutorials and Samples
     
   </span>
   
 
             </a>
             
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
-            SDK Reference
+            Tutorials and Samples
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
+              
+                
   
   
   
@@ -1017,26 +745,21 @@
       
     
     
-    
-      
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
-    Tutorial (Python)
+    Quickstart (Python)
     
   </span>
   
@@ -1044,10 +767,10 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_7">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
             <span class="md-nav__icon md-icon"></span>
-            Tutorial (Python)
+            Quickstart (Python)
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
             
@@ -1241,6 +964,165 @@
     </li>
   
 
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../specification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Specification
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sdk/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    SDK Reference
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            SDK Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sdk/python/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../community/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Community
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../partners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Partners
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
     
       
       
@@ -1291,9 +1173,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#a2a-mcp" class="md-nav__link">
+  <a href="#model-context-protocol" class="md-nav__link">
     <span class="md-ellipsis">
-      A2A ❤️ MCP
+      Model Context Protocol
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent2agent-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      Agent2Agent Protocol
     </span>
   </a>
   
@@ -1309,31 +1200,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#model-context-protocol-mcp" class="md-nav__link">
+  <a href="#a2a-mcp-complementary-protocols-for-agentic-systems" class="md-nav__link">
     <span class="md-ellipsis">
-      Model Context Protocol (MCP)
+      A2A ❤️ MCP: Complementary Protocols for Agentic Systems
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#agent2agent-protocol-a2a" class="md-nav__link">
-    <span class="md-ellipsis">
-      Agent2Agent Protocol (A2A)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#how-a2a-and-mcp-complement-each-other" class="md-nav__link">
-    <span class="md-ellipsis">
-      How A2A and MCP Complement Each Other
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How A2A and MCP Complement Each Other">
+    <nav class="md-nav" aria-label="A2A ❤️ MCP: Complementary Protocols for Agentic Systems">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1378,105 +1251,126 @@
   
 
 
-<h1 id="a2a-and-mcp-complementary-protocols-for-agentic-systems">A2A and MCP: Complementary Protocols for Agentic Systems<a class="headerlink" href="#a2a-and-mcp-complementary-protocols-for-agentic-systems" title="Permanent link">&para;</a></h1>
-<h2 id="a2a-mcp">A2A ❤️ MCP<a class="headerlink" href="#a2a-mcp" title="Permanent link">&para;</a></h2>
-<p>In the landscape of AI agent development, two key types of protocols are emerging to facilitate interoperability: those for connecting agents to <strong>tools and resources</strong>, and those for enabling <strong>agent-to-agent collaboration</strong>. The Agent2Agent (A2A) Protocol and the <a href="https://modelcontextprotocol.io/">Model Context Protocol (MCP)</a> address these distinct but related needs.</p>
-<p><strong>TL;DR;</strong> Agentic applications need both A2A and MCP. We recommend MCP for tools and A2A for agents.</p>
+<h1 id="a2a-and-mcp-detailed-comparison">A2A and MCP: Detailed Comparison<a class="headerlink" href="#a2a-and-mcp-detailed-comparison" title="Permanent link">&para;</a></h1>
+<p>In AI agent development, two key protocol types emerge to facilitate
+interoperability. One connects agents to tools and resources. The other enables
+agent-to-agent collaboration. The Agent2Agent (A2A) Protocol and the
+<a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP) address these distinct but highly complementary needs.</p>
+<h2 id="model-context-protocol">Model Context Protocol<a class="headerlink" href="#model-context-protocol" title="Permanent link">&para;</a></h2>
+<p>The Model Context Protocol (MCP) defines how an AI agent interacts with and utilizes individual tools and resources, such as a database or an API.</p>
+<p>This protocol offers the following capabilities:</p>
+<ul>
+<li>Standardizes how AI models and agents connect to and interact with tools,
+  APIs, and other external resources.</li>
+<li>Defines a structured way to describe tool capabilities, similar to function
+  calling in Large Language Models.</li>
+<li>Passes inputs to tools and receives structured outputs.</li>
+<li>Supports common use cases, such as an LLM calling an external API, an agent
+  querying a database, or an agent connecting to predefined functions.</li>
+</ul>
+<h2 id="agent2agent-protocol">Agent2Agent Protocol<a class="headerlink" href="#agent2agent-protocol" title="Permanent link">&para;</a></h2>
+<p>The Agent2Agent Protocol focuses on enabling different agents to collaborate with one another to achieve a common goal.</p>
+<p>This protocol offers the following capabilities:</p>
+<ul>
+<li>Standardizes how independent, often opaque, AI agents communicate and
+  collaborate as peers.</li>
+<li>Provides an application-level protocol for agents to discover each other,
+  negotiate interactions, manage shared tasks, and exchange conversational
+  context and complex data.</li>
+<li>Supports typical use cases, including a customer service agent delegating an
+  inquiry to a billing agent, or a travel agent coordinating with flight,
+  hotel, and activity agents.</li>
+</ul>
 <h2 id="why-different-protocols">Why Different Protocols?<a class="headerlink" href="#why-different-protocols" title="Permanent link">&para;</a></h2>
-<p>The distinction arises from the nature of what an agent interacts with:</p>
+<p>Both the MCP and A2A protocols are essential for building complex AI systems, and they address distinct but highly complementary needs. The distinction between A2A and MCP depends on what an agent interacts with.</p>
 <ul>
-<li>
-<p><strong>Tools &amp; Resources:</strong></p>
-<ul>
-<li>These are typically primitives with well-defined, structured inputs and outputs. They perform specific, often stateless, functions (e.g., a calculator, a database query API, a weather lookup service).</li>
-<li>Their behavior is generally predictable and transactional.</li>
-<li>Interaction is often a single request-response cycle.</li>
+<li><strong>Tools and Resources (MCP Domain)</strong>:<ul>
+<li><strong>Characteristics:</strong> These are typically primitives with well-defined,
+    structured inputs and outputs. They perform specific, often stateless,
+    functions. Examples include a calculator, a database query API, or a
+    weather lookup service.</li>
+<li><strong>Purpose:</strong> Agents use tools to gather information and perform discrete
+    functions.</li>
 </ul>
 </li>
-<li>
-<p><strong>Agents:</strong></p>
-<ul>
-<li>These are more autonomous systems. They can reason, plan, use multiple tools, maintain state over longer interactions, and engage in complex, often multi-turn dialogues to achieve novel or evolving tasks.</li>
-<li>Their behavior can be emergent and less predictable than a simple tool.</li>
-<li>Interaction often involves ongoing tasks, context sharing, and negotiation.</li>
+<li><strong>Agents (A2A domain)</strong>:<ul>
+<li><strong>Characteristics:</strong> These are more autonomous systems. They reason,
+    plan, use multiple tools, maintain state over longer interactions, and
+    engage in complex, often multi-turn dialogues to achieve novel or
+    evolving tasks.</li>
+<li><strong>Purpose:</strong> Agents collaborate with other agents to tackle broader, more
+    complex goals.</li>
 </ul>
 </li>
 </ul>
-<p>Agentic applications need to leverage both: agents use tools to gather information and perform actions, and agents collaborate with other agents to tackle broader, more complex goals.</p>
-<h2 id="model-context-protocol-mcp">Model Context Protocol (MCP)<a class="headerlink" href="#model-context-protocol-mcp" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Focus:</strong> MCP standardizes how AI models and agents connect to and interact with <strong>tools, APIs, data sources, and other external resources.</strong></li>
-<li><strong>Mechanism:</strong> It defines a structured way to describe tool capabilities (akin to function calling in Large Language Models), pass inputs to them, and receive structured outputs.</li>
-<li><strong>Use Cases:</strong><ul>
-<li>Enabling an LLM to call an external API (e.g., fetch current stock prices).</li>
-<li>Allowing an agent to query a database with specific parameters.</li>
-<li>Connecting an agent to a set of predefined functions or services.</li>
-</ul>
-</li>
-<li><strong>Ecosystem:</strong> MCP aims to create an ecosystem where tool providers can easily expose their services to various AI models and agent frameworks, and agent developers can easily consume these tools in a standardized way.</li>
-</ul>
-<h2 id="agent2agent-protocol-a2a">Agent2Agent Protocol (A2A)<a class="headerlink" href="#agent2agent-protocol-a2a" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>Focus:</strong> A2A standardizes how independent, often opaque, <strong>AI agents communicate and collaborate with each other as peers.</strong></li>
-<li><strong>Mechanism:</strong> It provides an application-level protocol for agents to:<ul>
-<li>Discover each other's high-level skills and capabilities (via Agent Cards).</li>
-<li>Negotiate interaction modalities (text, files, structured data).</li>
-<li>Manage shared, stateful, and potentially long-running tasks.</li>
-<li>Exchange conversational context, instructions, and complex, multi-part results.</li>
-</ul>
-</li>
-<li><strong>Use Cases:</strong><ul>
-<li>A customer service agent delegating a complex billing inquiry to a specialized billing agent, maintaining context of the customer interaction.</li>
-<li>A travel planning agent coordinating with separate flight, hotel, and activity booking agents, managing a multi-stage booking process.</li>
-<li>Agents exchanging information and status updates for a collaborative project that evolves over time.</li>
-</ul>
-</li>
-<li><strong>Key Difference from Tool Interaction:</strong> A2A allows for more dynamic, stateful, and potentially multi-modal interactions than typically seen with simple tool calls. Agents using A2A communicate <em>as agents</em> (or on behalf of users) rather than just invoking a discrete function.</li>
-</ul>
-<h2 id="how-a2a-and-mcp-complement-each-other">How A2A and MCP Complement Each Other<a class="headerlink" href="#how-a2a-and-mcp-complement-each-other" title="Permanent link">&para;</a></h2>
-<p>A2A and MCP are not mutually exclusive; they are highly complementary and address different layers of an agentic system's interaction needs.</p>
+<h2 id="a2a-mcp-complementary-protocols-for-agentic-systems">A2A ❤️ MCP: Complementary Protocols for Agentic Systems<a class="headerlink" href="#a2a-mcp-complementary-protocols-for-agentic-systems" title="Permanent link">&para;</a></h2>
+<p>An agentic application might primarily use A2A to communicate with other agents.
+Each individual agent internally uses MCP to interact with its specific tools
+and resources.</p>
 <div style="text-align: center; margin: 20px;">
-<p><img alt="Diagram showing A2A and MCP working together. A User interacts with Agent A via A2A. Agent A interacts with Agent B via A2A. Agent B uses MCP to interact with Tool 1 and Tool 2." src="../../assets/a2a-mcp.png" width="80%" /></p>
+<p><img alt="Diagram showing A2A and MCP working together. A User interacts with Agent A using A2A. Agent A interacts with Agent B using A2A. Agent B uses MCP to interact with Tool 1 and Tool 2." src="../../assets/a2a-mcp.png" width="80%" /></p>
 <p><em>An agentic application might use A2A to communicate with other agents, while each agent internally uses MCP to interact with its specific tools and resources.</em></p>
 </div>
 <h3 id="example-scenario-the-auto-repair-shop">Example Scenario: The Auto Repair Shop<a class="headerlink" href="#example-scenario-the-auto-repair-shop" title="Permanent link">&para;</a></h3>
-<blockquote>
-<p>Consider an auto repair shop staffed by autonomous AI agent "mechanics" who use special-purpose tools (such as vehicle jacks, multimeters, and socket wrenches) to diagnose and repair problems. The workers often have to diagnose and repair problems they have not seen before. The repair process can involve extensive conversations with a customer, research, and working with part suppliers.</p>
-</blockquote>
-<ol>
-<li>
-<p><strong>Customer Interaction (User-to-Agent via A2A):</strong></p>
+<p>Consider an auto repair shop staffed by autonomous AI agent "mechanics".
+These mechanics use special-purpose tools, such as vehicle diagnostic scanners,
+repair manuals, and platform lifts, to diagnose and repair problems. The repair
+process can involve extensive conversations, research, and interaction with part
+suppliers.</p>
 <ul>
-<li>A customer (or their primary assistant agent) uses A2A to communicate with the "Shop Manager" agent: <em>"My car is making a rattling noise."</em></li>
-<li>The Shop Manager agent uses A2A for a multi-turn diagnostic conversation: <em>"Can you send a video of the noise?"</em>, <em>"I see some fluid leaking. How long has this been happening?"</em></li>
-</ul>
-</li>
 <li>
-<p><strong>Internal Tool Usage (Agent-to-Tool via MCP):</strong></p>
-<ul>
-<li>The Mechanic agent, assigned the task by the Shop Manager, needs to diagnose the issue. It uses MCP to interact with its specialized tools:<ul>
-<li>MCP call to a "Vehicle Diagnostic Scanner" tool: <code>scan_vehicle_for_error_codes(vehicle_id='XYZ123')</code>.</li>
-<li>MCP call to a "Repair Manual Database" tool: <code>get_repair_procedure(error_code='P0300', vehicle_make='Toyota', vehicle_model='Camry')</code>.</li>
-<li>MCP call to a "Platform Lift" tool: <code>raise_platform(height_meters=2)</code>.</li>
-</ul>
-</li>
-</ul>
+<p><strong>Customer Interaction (User-to-Agent using A2A)</strong>: A customer (or their
+    primary assistant agent) uses A2A to communicate with the "Shop Manager"
+    agent.</p>
+<p>For example, the customer might say, "My car is making a rattling noise".</p>
 </li>
 <li>
-<p><strong>Supplier Interaction (Agent-to-Agent via A2A):</strong></p>
+<p><strong>Multi-turn Diagnostic Conversation (Agent-to-Agent using A2A)</strong>: The Shop
+    Manager agent uses A2A for a multi-turn diagnostic conversation.</p>
+<p>For example, the Manager might ask, "Can you send a video of the noise?" or "I see some fluid leaking. How long has this been happening?".</p>
+</li>
+<li>
+<p><strong>Internal Tool Usage (Agent-to-Tool using MCP)</strong>: The Mechanic agent,
+    assigned the task by the Shop Manager, needs to diagnose the issue. The
+    Mechanic agent uses MCP to interact with its specialized tools.</p>
+<p>For example:</p>
 <ul>
-<li>The Mechanic agent determines a specific part is needed. It uses A2A to communicate with a "Parts Supplier" agent: <em>"Do you have part #12345 in stock for a Toyota Camry 2018?"</em></li>
-<li>The Parts Supplier agent, also an A2A-compliant system, responds, potentially leading to an order.</li>
+<li>MCP call to a "Vehicle Diagnostic Scanner" tool:
+    <code>scan_vehicle_for_error_codes(vehicle_id='XYZ123')</code></li>
+<li>MCP call to a "Repair Manual Database" tool:
+    <code>get_repair_procedure(error_code='P0300', vehicle_make='Toyota',
+    vehicle_model='Camry')</code></li>
+<li>MCP call to a "Platform Lift" tool: <code>raise_platform(height_meters=2)</code></li>
 </ul>
 </li>
-</ol>
+<li>
+<p><strong>Supplier Interaction (Agent-to-Agent using A2A)</strong>: The Mechanic agent
+    determines that a specific part is needed. The Mechanic agent uses A2A to
+    communicate with a "Parts Supplier" agent to order a part.
+    For example, the
+    Mechanic agent might ask, "Do you have part #12345 in stock for a Toyota Camry 2018?"</p>
+</li>
+<li>
+<p><strong>Order processing (Agent-to-Agent using A2A)</strong>: The Parts Supplier agent,
+    which is also an A2A-compliant system, responds, potentially leading to an
+    order.</p>
+</li>
+</ul>
 <p>In this example:</p>
 <ul>
-<li><strong>A2A</strong> facilitates the higher-level, conversational, and task-oriented interactions between the customer and the shop, and between the shop's agents and external supplier agents.</li>
-<li><strong>MCP</strong> enables the mechanic agent to use its specific, structured tools to perform its diagnostic and repair functions.</li>
+<li>A2A facilitates the higher-level, conversational, and task-oriented
+    interactions between the customer and the shop, and between the shop's
+    agents and external supplier agents.</li>
+<li>MCP enables the mechanic agent to use its specific, structured tools to
+    perform its diagnostic and repair functions.</li>
 </ul>
+<p>An A2A server could expose some of its skills as MCP-compatible resources.
+However, A2A's primary strength lies in its support for more flexible, stateful,
+and collaborative interactions. These interactions go beyond a typical tool
+invocation. A2A focuses on agents partnering on tasks, whereas MCP focuses on
+agents using capabilities.</p>
 <h2 id="representing-a2a-agents-as-mcp-resources">Representing A2A Agents as MCP Resources<a class="headerlink" href="#representing-a2a-agents-as-mcp-resources" title="Permanent link">&para;</a></h2>
-<p>It's conceivable that an A2A Server (a remote agent) could also expose some of its skills as MCP-compatible resources, especially if those skills are well-defined and can be invoked in a more tool-like, stateless manner. In such a case, another agent might "discover" this A2A agent's specific skill via an MCP-style tool description (perhaps derived from its Agent Card).</p>
+<p>An A2A Server (a remote agent) could expose some of its skills as MCP-compatible resources, especially if those skills are well-defined and can be invoked in a more tool-like, stateless manner. In such a case, another agent might "discover" this A2A agent's specific skill through an MCP-style tool description (perhaps derived from its Agent Card).</p>
 <p>However, the primary strength of A2A lies in its support for more flexible, stateful, and collaborative interactions that go beyond typical tool invocation. A2A is about agents <em>partnering</em> on tasks, while MCP is more about agents <em>using</em> capabilities.</p>
 <p>By leveraging both A2A for inter-agent collaboration and MCP for tool integration, developers can build more powerful, flexible, and interoperable AI systems.</p>
 
@@ -1518,7 +1412,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../key-concepts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Key Concepts">
+          <a href="../streaming-and-async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Streaming &amp; Asynchronous Operations">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1528,20 +1422,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Key Concepts
+                Streaming & Asynchronous Operations
               </div>
             </div>
           </a>
         
         
           
-          <a href="../agent-discovery/" class="md-footer__link md-footer__link--next" aria-label="Next: Agent Discovery">
+          <a href="../../tutorials/" class="md-footer__link md-footer__link--next" aria-label="Next: Tutorials">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Agent Discovery
+                Tutorials
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1558,7 +1452,7 @@
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright Google 2025
+      Copyright 2025 The Linux Foundation. Licensed under the Apache License, Version 2.0.
     </div>
   
   
@@ -1583,7 +1477,7 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.expand", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.tabs", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["announce.dismiss", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
