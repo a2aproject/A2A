@@ -14,17 +14,18 @@
     ```
 {% endmacro %}
 
-??? note "**Latest Version** [`0.3.0`](../0.3.0/specification.md)"
+??? note "**Latest Version** [`0.3.0`](https://a2a-protocol.org/v0.3.0/specification)"
 
     **Previous Versions**
 
-    - [`0.2.5`](../0.2.5/specification.md)
-    - [`0.2.4`](../0.2.4/specification.md)
-    - [`0.2.3`](../0.2.3/specification.md)
-    - [`0.2.2`](../0.2.2/specification.md)
-    - [`0.2.1`](../0.2.1/specification.md)
-    - [`0.2.0`](../0.2.0/specification.md)
-    - [`0.1.0`](../0.1.0/specification.md)
+    - [`0.2.6`](https://a2a-protocol.org/v0.2.6/specification)
+    - [`0.2.5`](https://a2a-protocol.org/v0.2.5/specification)
+    - [`0.2.4`](https://a2a-protocol.org/v0.2.4/specification)
+    - [`0.2.3`](https://a2a-protocol.org/v0.2.3/specification)
+    - [`0.2.2`](https://a2a-protocol.org/v0.2.2/specification)
+    - [`0.2.1`](https://a2a-protocol.org/v0.2.1/specification)
+    - [`0.2.0`](https://a2a-protocol.org/v0.2.0/specification)
+    - [`0.1.0`](https://a2a-protocol.org/v0.1.0/specification)
 
 See [Release Notes](https://github.com/a2aproject/A2A/releases) for changes made between versions.
 
