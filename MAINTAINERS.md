@@ -74,4 +74,11 @@ This document lists the maintainers of various repositories within the project.
   - @ToddSegal
   - @zeroasterisk
 
+### a2a-samples
+
+- role:admin
+  - @zeroasterisk
+  - @holtskinner
+  - @kthota-g
+
 
