@@ -356,9 +356,21 @@ If False, only clear the current queue, leaving child queues untouched.</p>
 <dt class="sig sig-object py" id="a2a.server.events.event_queue.EventQueue.close">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">immediate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.event_queue.EventQueue.close" title="Link to this definition">¶</a></dt>
 <dd><p>Closes the queue for future push events and also closes all child queues.</p>
-<p>Once closed, no new events can be enqueued. For Python 3.13+, this will trigger
-<cite>asyncio.QueueShutDown</cite> when the queue is empty and a consumer tries to dequeue.
-For lower versions, the queue will be marked as closed and optionally cleared.</p>
+<p>Once closed, no new events can be enqueued. Behavior is consistent across
+Python versions:
+- Python &gt;= 3.13: Uses <cite>asyncio.Queue.shutdown</cite> to stop the queue. With</p>
+<blockquote>
+<div><p><cite>immediate=True</cite> the queue is shut down and pending events are cleared; with
+<cite>immediate=False</cite> the queue is shut down and we wait for it to drain via
+<cite>queue.join()</cite>.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Python &lt; 3.13: Emulates the same semantics by clearing on <cite>immediate=True</cite>
+or awaiting <cite>queue.join()</cite> on <cite>immediate=False</cite>.</p></li>
+</ul>
+<p>Consumers attempting to dequeue after close on an empty queue will observe
+<cite>asyncio.QueueShutDown</cite> on Python &gt;= 3.13 and <cite>asyncio.QueueEmpty</cite> on
+Python &lt; 3.13.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>immediate</strong> (<em>bool</em>) – <ul class="simple">
@@ -648,9 +660,21 @@ If False, only clear the current queue, leaving child queues untouched.</p>
 <dt class="sig sig-object py" id="a2a.server.events.EventQueue.close">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">immediate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.EventQueue.close" title="Link to this definition">¶</a></dt>
 <dd><p>Closes the queue for future push events and also closes all child queues.</p>
-<p>Once closed, no new events can be enqueued. For Python 3.13+, this will trigger
-<cite>asyncio.QueueShutDown</cite> when the queue is empty and a consumer tries to dequeue.
-For lower versions, the queue will be marked as closed and optionally cleared.</p>
+<p>Once closed, no new events can be enqueued. Behavior is consistent across
+Python versions:
+- Python &gt;= 3.13: Uses <cite>asyncio.Queue.shutdown</cite> to stop the queue. With</p>
+<blockquote>
+<div><p><cite>immediate=True</cite> the queue is shut down and pending events are cleared; with
+<cite>immediate=False</cite> the queue is shut down and we wait for it to drain via
+<cite>queue.join()</cite>.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Python &lt; 3.13: Emulates the same semantics by clearing on <cite>immediate=True</cite>
+or awaiting <cite>queue.join()</cite> on <cite>immediate=False</cite>.</p></li>
+</ul>
+<p>Consumers attempting to dequeue after close on an empty queue will observe
+<cite>asyncio.QueueShutDown</cite> on Python &gt;= 3.13 and <cite>asyncio.QueueEmpty</cite> on
+Python &lt; 3.13.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>immediate</strong> (<em>bool</em>) – <ul class="simple">
