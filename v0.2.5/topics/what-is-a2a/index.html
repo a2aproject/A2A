@@ -638,15 +638,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#a2a-request-lifecycle" class="md-nav__link">
-    <span class="md-ellipsis">
-      A2A Request Lifecycle
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1255,15 +1246,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#a2a-request-lifecycle" class="md-nav__link">
-    <span class="md-ellipsis">
-      A2A Request Lifecycle
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1321,44 +1303,7 @@
 <li><strong>Future-Proofing:</strong> Provide a flexible framework that can adapt as agent technologies continue to evolve.</li>
 </ul>
 <p>By establishing common ground for agent-to-agent communication, A2A aims to accelerate the adoption and utility of AI agents across diverse industries and applications, paving the way for more powerful and collaborative AI systems.</p>
-<h2 id="a2a-request-lifecycle">A2A Request Lifecycle<a class="headerlink" href="#a2a-request-lifecycle" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>sequenceDiagram
-    participant Client
-    participant A2A Server
-    participant Auth Server
-
-    rect rgb(240, 240, 240)
-    Note over Client, A2A Server: 1. Agent Discovery
-    Client-&gt;&gt;A2A Server: GET agent card eg: (/.well-known/agent-card)
-    A2A Server--&gt;&gt;Client: Returns Agent Card
-    end
-
-    rect rgb(240, 240, 240)
-    Note over Client, Auth Server: 2. Authentication
-    Client-&gt;&gt;Client: Parse Agent Card for securitySchemes
-    alt securityScheme is openIdConnect
-        Client-&gt;&gt;Auth Server: Request token based on "authorizationUrl" and "tokenUrl"
-        Auth Server--&gt;&gt;Client: Returns JWT
-    end
-    end
-
-    rect rgb(240, 240, 240)
-    Note over Client, A2A Server: 3. sendMessage API
-    Client-&gt;&gt;Client: Parse Agent Card for "url" param to send API requests to.
-    Client-&gt;&gt;A2A Server: POST /sendMessage (with JWT)
-    A2A Server-&gt;&gt;A2A Server: Process message and create task
-    A2A Server--&gt;&gt;Client: Returns Task Response
-    end
-
-    rect rgb(240, 240, 240)
-    Note over Client, A2A Server: 4. sendMessageStream API
-    Client-&gt;&gt;A2A Server: POST /sendMessageStream (with JWT)
-    A2A Server--&gt;&gt;Client: Stream: Task (Submitted)
-    A2A Server--&gt;&gt;Client: Stream: TaskStatusUpdateEvent (Working)
-    A2A Server--&gt;&gt;Client: Stream: TaskArtifactUpdateEvent (artifact A)
-    A2A Server--&gt;&gt;Client: Stream: TaskArtifactUpdateEvent (artifact B)
-    A2A Server--&gt;&gt;Client: Stream: TaskStatusUpdateEvent (Completed)
-    end</code></pre>
+<p><a href="https://storage.googleapis.com/gweb-developer-goog-blog-assets/original_videos/A2A_demo_v4.mp4">Watch the A2A Demo Video</a></p>
 <p>Next, learn about the <a href="../key-concepts/">Key Concepts</a> that form the foundation of the A2A protocol.</p>
 
 
