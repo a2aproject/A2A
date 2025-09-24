@@ -14,17 +14,17 @@
     ```
 {% endmacro %}
 
-??? note "**Version** [`0.3.0`](https://github.com/a2aproject/A2A/releases/tag/v0.3.0)"
+??? note "**Latest Version** [`0.3.0`](../0.3.0/specification.md)"
 
-    Previous Versions
+    **Previous Versions**
 
-      - [`0.2.5`](https://github.com/a2aproject/A2A/releases/tag/v0.2.5)
-      - [`0.2.4`](https://github.com/a2aproject/A2A/releases/tag/v0.2.4)
-      - [`0.2.3`](https://github.com/a2aproject/A2A/releases/tag/v0.2.3)
-      - [`0.2.2`](https://github.com/a2aproject/A2A/releases/tag/v0.2.2)
-      - [`0.2.1`](https://github.com/a2aproject/A2A/releases/tag/v0.2.1)
-      - [`0.2.0`](https://github.com/a2aproject/A2A/releases/tag/v0.2.0)
-      - [`0.1.0`](https://github.com/a2aproject/A2A/releases/tag/v0.1.0)
+    - [`0.2.5`](../0.2.5/specification.md)
+    - [`0.2.4`](../0.2.4/specification.md)
+    - [`0.2.3`](../0.2.3/specification.md)
+    - [`0.2.2`](../0.2.2/specification.md)
+    - [`0.2.1`](../0.2.1/specification.md)
+    - [`0.2.0`](../0.2.0/specification.md)
+    - [`0.1.0`](../0.1.0/specification.md)
 
 See [Release Notes](https://github.com/a2aproject/A2A/releases) for changes made between versions.
 
