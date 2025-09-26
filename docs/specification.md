@@ -697,6 +697,8 @@ The `error` response for all transports in case of failure is a [`JSONRPCError`]
 
 {{ render_spec_tabs('MessageSendParams') }}
 
+#### 7.1.2 `MessageSendConfiguration` Object
+
 {{ render_spec_tabs('MessageSendConfiguration') }}
 
 ### 7.2. `message/stream`
