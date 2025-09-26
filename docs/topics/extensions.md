@@ -15,6 +15,8 @@ are identified by a URI and defined by their own specification. Anyone is able t
 The flexibility of extensions allows for customizing A2A without fragmenting
 the core standard, fostering innovation and domain-specific optimizations.
 
+Normative rules are defined in the specification (see [Spec §12 Extensions](/specification/#12-extensions-normative)).
+
 ## Scope of Extensions
 
 The exact set of possible ways to use extensions is intentionally broad,
