@@ -1686,6 +1686,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#712-messagesendconfiguration-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1.2 MessageSendConfiguration Object
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3096,6 +3105,15 @@
   <a href="#711-messagesendparams-object" class="md-nav__link">
     <span class="md-ellipsis">
       7.1.1. MessageSendParams Object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#712-messagesendconfiguration-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      7.1.2 MessageSendConfiguration Object
     </span>
   </a>
   
@@ -5155,7 +5173,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </div>
 <p>The <code>error</code> response for all transports in case of failure is a <a href="#612-jsonrpcerror-object"><code>JSONRPCError</code></a> or equivalent.</p>
 <h4 id="711-messagesendparams-object">7.1.1. <code>MessageSendParams</code> Object<a class="headerlink" href="#711-messagesendparams-object" title="Permanent link">&para;</a></h4>
-<div class="tabbed-set tabbed-alternate" data-tabs="21:4"><input checked="checked" id="json-rpc_20" name="__tabbed_21" type="radio" /><input id="grpc_20" name="__tabbed_21" type="radio" /><input id="json-rpc_21" name="__tabbed_21" type="radio" /><input id="grpc_21" name="__tabbed_21" type="radio" /><div class="tabbed-labels"><label for="json-rpc_20">JSON-RPC</label><label for="grpc_20">gRPC</label><label for="json-rpc_21">JSON-RPC</label><label for="grpc_21">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="21:2"><input checked="checked" id="json-rpc_20" name="__tabbed_21" type="radio" /><input id="grpc_20" name="__tabbed_21" type="radio" /><div class="tabbed-labels"><label for="json-rpc_20">JSON-RPC</label><label for="grpc_20">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="cm">/**</span>
@@ -5186,6 +5204,11 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </span><span id="__span-51-9"><a id="__codelineno-51-9" name="__codelineno-51-9" href="#__codelineno-51-9"></a><span class="p">}</span>
 </span></code></pre></div>
 </div>
+</div>
+</div>
+<h4 id="712-messagesendconfiguration-object">7.1.2 <code>MessageSendConfiguration</code> Object<a class="headerlink" href="#712-messagesendconfiguration-object" title="Permanent link">&para;</a></h4>
+<div class="tabbed-set tabbed-alternate" data-tabs="22:2"><input checked="checked" id="json-rpc_21" name="__tabbed_22" type="radio" /><input id="grpc_21" name="__tabbed_22" type="radio" /><div class="tabbed-labels"><label for="json-rpc_21">JSON-RPC</label><label for="grpc_21">gRPC</label></div>
+<div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="cm">/**</span>
 </span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a><span class="cm"> * Defines configuration options for a `message/send` or `message/stream` request.</span>
@@ -5225,7 +5248,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <h3 id="72-messagestream">7.2. <code>message/stream</code><a class="headerlink" href="#72-messagestream" title="Permanent link">&para;</a></h3>
 <p>Sends a message to an agent to initiate/continue a task AND subscribes the client to real-time updates for that task via Server-Sent Events (SSE). This method requires the server to have <code>AgentCard.capabilities.streaming: true</code>. Just like <code>message/send</code>, a task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Sending a message to such a task will result in an error. For more information, refer to the <a href="../topics/life-of-a-task/">Life of a Task guide</a>.</p>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="22:3"><input checked="checked" id="json-rpc_22" name="__tabbed_22" type="radio" /><input id="grpc_22" name="__tabbed_22" type="radio" /><input id="rest_1" name="__tabbed_22" type="radio" /><div class="tabbed-labels"><label for="json-rpc_22">JSON-RPC</label><label for="grpc_22">gRPC</label><label for="rest_1">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="23:3"><input checked="checked" id="json-rpc_22" name="__tabbed_23" type="radio" /><input id="grpc_22" name="__tabbed_23" type="radio" /><input id="rest_1" name="__tabbed_23" type="radio" /><div class="tabbed-labels"><label for="json-rpc_22">JSON-RPC</label><label for="grpc_22">gRPC</label><label for="rest_1">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5290,7 +5313,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="nx">SendStreamingMessageSuccessResponse</span>
 </span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="w">  </span><span class="o">|</span><span class="w"> </span><span class="nx">JSONRPCErrorResponse</span><span class="p">;</span>
 </span></code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="23:2"><input checked="checked" id="json-rpc_23" name="__tabbed_23" type="radio" /><input id="grpc_23" name="__tabbed_23" type="radio" /><div class="tabbed-labels"><label for="json-rpc_23">JSON-RPC</label><label for="grpc_23">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="24:2"><input checked="checked" id="json-rpc_23" name="__tabbed_24" type="radio" /><input id="grpc_23" name="__tabbed_24" type="radio" /><div class="tabbed-labels"><label for="json-rpc_23">JSON-RPC</label><label for="grpc_23">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="cm">/**</span>
@@ -5328,7 +5351,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </div>
 <h4 id="722-taskstatusupdateevent-object">7.2.2. <code>TaskStatusUpdateEvent</code> Object<a class="headerlink" href="#722-taskstatusupdateevent-object" title="Permanent link">&para;</a></h4>
 <p>Carries information about a change in the task's status during streaming. This is one of the possible <code>result</code> types in a <code>SendStreamingMessageSuccessResponse</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="24:2"><input checked="checked" id="json-rpc_24" name="__tabbed_24" type="radio" /><input id="grpc_24" name="__tabbed_24" type="radio" /><div class="tabbed-labels"><label for="json-rpc_24">JSON-RPC</label><label for="grpc_24">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="25:2"><input checked="checked" id="json-rpc_24" name="__tabbed_25" type="radio" /><input id="grpc_24" name="__tabbed_25" type="radio" /><div class="tabbed-labels"><label for="json-rpc_24">JSON-RPC</label><label for="grpc_24">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="cm">/**</span>
@@ -5378,7 +5401,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </div>
 <h4 id="723-taskartifactupdateevent-object">7.2.3. <code>TaskArtifactUpdateEvent</code> Object<a class="headerlink" href="#723-taskartifactupdateevent-object" title="Permanent link">&para;</a></h4>
 <p>Carries a new or updated artifact (or a chunk of an artifact) generated by the task during streaming. This is one of the possible <code>result</code> types in a <code>SendTaskStreamingResponse</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="25:2"><input checked="checked" id="json-rpc_25" name="__tabbed_25" type="radio" /><input id="grpc_25" name="__tabbed_25" type="radio" /><div class="tabbed-labels"><label for="json-rpc_25">JSON-RPC</label><label for="grpc_25">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="26:2"><input checked="checked" id="json-rpc_25" name="__tabbed_26" type="radio" /><input id="grpc_25" name="__tabbed_26" type="radio" /><div class="tabbed-labels"><label for="json-rpc_25">JSON-RPC</label><label for="grpc_25">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="cm">/**</span>
@@ -5433,7 +5456,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <h3 id="73-tasksget">7.3. <code>tasks/get</code><a class="headerlink" href="#73-tasksget" title="Permanent link">&para;</a></h3>
 <p>Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with <code>message/send</code>, or for fetching the final state of a task after being notified via a push notification or after an SSE stream has ended.</p>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="26:3"><input checked="checked" id="json-rpc_26" name="__tabbed_26" type="radio" /><input id="grpc_26" name="__tabbed_26" type="radio" /><input id="rest_2" name="__tabbed_26" type="radio" /><div class="tabbed-labels"><label for="json-rpc_26">JSON-RPC</label><label for="grpc_26">gRPC</label><label for="rest_2">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="27:3"><input checked="checked" id="json-rpc_26" name="__tabbed_27" type="radio" /><input id="grpc_26" name="__tabbed_27" type="radio" /><input id="rest_2" name="__tabbed_27" type="radio" /><div class="tabbed-labels"><label for="json-rpc_26">JSON-RPC</label><label for="grpc_26">gRPC</label><label for="rest_2">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5469,7 +5492,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </div>
 </div>
 <h4 id="731-taskqueryparams-object">7.3.1. <code>TaskQueryParams</code> Object<a class="headerlink" href="#731-taskqueryparams-object" title="Permanent link">&para;</a></h4>
-<div class="tabbed-set tabbed-alternate" data-tabs="27:2"><input checked="checked" id="json-rpc_27" name="__tabbed_27" type="radio" /><input id="grpc_27" name="__tabbed_27" type="radio" /><div class="tabbed-labels"><label for="json-rpc_27">JSON-RPC</label><label for="grpc_27">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="28:2"><input checked="checked" id="json-rpc_27" name="__tabbed_28" type="radio" /><input id="grpc_27" name="__tabbed_28" type="radio" /><div class="tabbed-labels"><label for="json-rpc_27">JSON-RPC</label><label for="grpc_27">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-66-1"><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a><span class="cm">/**</span>
@@ -5490,7 +5513,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <h3 id="74-taskscancel">7.4. <code>tasks/cancel</code><a class="headerlink" href="#74-taskscancel" title="Permanent link">&para;</a></h3>
 <p>Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).</p>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="28:3"><input checked="checked" id="json-rpc_28" name="__tabbed_28" type="radio" /><input id="grpc_28" name="__tabbed_28" type="radio" /><input id="rest_3" name="__tabbed_28" type="radio" /><div class="tabbed-labels"><label for="json-rpc_28">JSON-RPC</label><label for="grpc_28">gRPC</label><label for="rest_3">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="29:3"><input checked="checked" id="json-rpc_28" name="__tabbed_29" type="radio" /><input id="grpc_28" name="__tabbed_29" type="radio" /><input id="rest_3" name="__tabbed_29" type="radio" /><div class="tabbed-labels"><label for="json-rpc_28">JSON-RPC</label><label for="grpc_28">gRPC</label><label for="rest_3">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5530,7 +5553,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </div>
 <h4 id="741-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget">7.4.1. <code>TaskIdParams</code> Object (for <code>tasks/cancel</code> and <code>tasks/pushNotificationConfig/get</code>)<a class="headerlink" href="#741-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget" title="Permanent link">&para;</a></h4>
 <p>A simple object containing just the task ID and optional metadata.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="29:2"><input checked="checked" id="json-rpc_29" name="__tabbed_29" type="radio" /><input id="grpc_29" name="__tabbed_29" type="radio" /><div class="tabbed-labels"><label for="json-rpc_29">JSON-RPC</label><label for="grpc_29">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="30:2"><input checked="checked" id="json-rpc_29" name="__tabbed_30" type="radio" /><input id="grpc_29" name="__tabbed_30" type="radio" /><div class="tabbed-labels"><label for="json-rpc_29">JSON-RPC</label><label for="grpc_29">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-70-1"><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a><span class="cm">/**</span>
@@ -5557,7 +5580,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <h3 id="75-taskspushnotificationconfigset">7.5. <code>tasks/pushNotificationConfig/set</code><a class="headerlink" href="#75-taskspushnotificationconfigset" title="Permanent link">&para;</a></h3>
 <p>Sets or updates the push notification configuration for a specified task. This allows the client to tell the server where and how to send asynchronous updates for the task. Requires the server to have <code>AgentCard.capabilities.pushNotifications: true</code>.</p>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="30:3"><input checked="checked" id="json-rpc_30" name="__tabbed_30" type="radio" /><input id="grpc_30" name="__tabbed_30" type="radio" /><input id="rest_4" name="__tabbed_30" type="radio" /><div class="tabbed-labels"><label for="json-rpc_30">JSON-RPC</label><label for="grpc_30">gRPC</label><label for="rest_4">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="31:3"><input checked="checked" id="json-rpc_30" name="__tabbed_31" type="radio" /><input id="grpc_30" name="__tabbed_31" type="radio" /><input id="rest_4" name="__tabbed_31" type="radio" /><div class="tabbed-labels"><label for="json-rpc_30">JSON-RPC</label><label for="grpc_30">gRPC</label><label for="rest_4">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5597,7 +5620,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <h3 id="76-taskspushnotificationconfigget">7.6. <code>tasks/pushNotificationConfig/get</code><a class="headerlink" href="#76-taskspushnotificationconfigget" title="Permanent link">&para;</a></h3>
 <p>Retrieves the current push notification configuration for a specified task. Requires the server to have <code>AgentCard.capabilities.pushNotifications: true</code>.</p>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="31:3"><input checked="checked" id="json-rpc_31" name="__tabbed_31" type="radio" /><input id="grpc_31" name="__tabbed_31" type="radio" /><input id="rest_5" name="__tabbed_31" type="radio" /><div class="tabbed-labels"><label for="json-rpc_31">JSON-RPC</label><label for="grpc_31">gRPC</label><label for="rest_5">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="32:3"><input checked="checked" id="json-rpc_31" name="__tabbed_32" type="radio" /><input id="grpc_31" name="__tabbed_32" type="radio" /><input id="rest_5" name="__tabbed_32" type="radio" /><div class="tabbed-labels"><label for="json-rpc_31">JSON-RPC</label><label for="grpc_31">gRPC</label><label for="rest_5">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5634,7 +5657,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <p><strong>Response <code>error</code> type (on failure)</strong>: <a href="#612-jsonrpcerror-object"><code>JSONRPCError</code></a> (e.g., <a href="#82-a2a-specific-errors"><code>PushNotificationNotSupportedError</code></a>, <a href="#82-a2a-specific-errors"><code>TaskNotFoundError</code></a>).</p>
 <h4 id="761-gettaskpushnotificationconfigparams-object-taskspushnotificationconfigget">7.6.1. <code>GetTaskPushNotificationConfigParams</code> Object (<code>tasks/pushNotificationConfig/get</code>)<a class="headerlink" href="#761-gettaskpushnotificationconfigparams-object-taskspushnotificationconfigget" title="Permanent link">&para;</a></h4>
 <p>A object for fetching the push notification configuration for a task.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="32:2"><input checked="checked" id="json-rpc_32" name="__tabbed_32" type="radio" /><input id="grpc_32" name="__tabbed_32" type="radio" /><div class="tabbed-labels"><label for="json-rpc_32">JSON-RPC</label><label for="grpc_32">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="33:2"><input checked="checked" id="json-rpc_32" name="__tabbed_33" type="radio" /><input id="grpc_32" name="__tabbed_33" type="radio" /><div class="tabbed-labels"><label for="json-rpc_32">JSON-RPC</label><label for="grpc_32">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-75-1"><a id="__codelineno-75-1" name="__codelineno-75-1" href="#__codelineno-75-1"></a><span class="cm">/**</span>
@@ -5657,7 +5680,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <h3 id="77-taskspushnotificationconfiglist">7.7. <code>tasks/pushNotificationConfig/list</code><a class="headerlink" href="#77-taskspushnotificationconfiglist" title="Permanent link">&para;</a></h3>
 <p>Retrieves the associated push notification configurations for a specified task. Requires the server to have <code>AgentCard.capabilities.pushNotifications: true</code>.</p>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="33:3"><input checked="checked" id="json-rpc_33" name="__tabbed_33" type="radio" /><input id="grpc_33" name="__tabbed_33" type="radio" /><input id="rest_6" name="__tabbed_33" type="radio" /><div class="tabbed-labels"><label for="json-rpc_33">JSON-RPC</label><label for="grpc_33">gRPC</label><label for="rest_6">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="34:3"><input checked="checked" id="json-rpc_33" name="__tabbed_34" type="radio" /><input id="grpc_33" name="__tabbed_34" type="radio" /><input id="rest_6" name="__tabbed_34" type="radio" /><div class="tabbed-labels"><label for="json-rpc_33">JSON-RPC</label><label for="grpc_33">gRPC</label><label for="rest_6">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5693,7 +5716,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </div>
 <h4 id="771-listtaskpushnotificationconfigparams-object-taskspushnotificationconfiglist">7.7.1. <code>ListTaskPushNotificationConfigParams</code> Object (<code>tasks/pushNotificationConfig/list</code>)<a class="headerlink" href="#771-listtaskpushnotificationconfigparams-object-taskspushnotificationconfiglist" title="Permanent link">&para;</a></h4>
 <p>A object for fetching the push notification configurations for a task.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="34:2"><input checked="checked" id="json-rpc_34" name="__tabbed_34" type="radio" /><input id="grpc_34" name="__tabbed_34" type="radio" /><div class="tabbed-labels"><label for="json-rpc_34">JSON-RPC</label><label for="grpc_34">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="35:2"><input checked="checked" id="json-rpc_34" name="__tabbed_35" type="radio" /><input id="grpc_34" name="__tabbed_35" type="radio" /><div class="tabbed-labels"><label for="json-rpc_34">JSON-RPC</label><label for="grpc_34">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-78-1"><a id="__codelineno-78-1" name="__codelineno-78-1" href="#__codelineno-78-1"></a><span class="cm">/**</span>
@@ -5717,7 +5740,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </ul>
 <h4 id="781-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete">7.8.1. <code>DeleteTaskPushNotificationConfigParams</code> Object (<code>tasks/pushNotificationConfig/delete</code>)<a class="headerlink" href="#781-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete" title="Permanent link">&para;</a></h4>
 <p>A object for deleting an associated push notification configuration for a task.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="35:2"><input checked="checked" id="json-rpc_35" name="__tabbed_35" type="radio" /><input id="grpc_35" name="__tabbed_35" type="radio" /><div class="tabbed-labels"><label for="json-rpc_35">JSON-RPC</label><label for="grpc_35">gRPC</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="36:2"><input checked="checked" id="json-rpc_35" name="__tabbed_36" type="radio" /><input id="grpc_35" name="__tabbed_36" type="radio" /><div class="tabbed-labels"><label for="json-rpc_35">JSON-RPC</label><label for="grpc_35">gRPC</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-ts no-copy highlight"><pre><span></span><code><span id="__span-80-1"><a id="__codelineno-80-1" name="__codelineno-80-1" href="#__codelineno-80-1"></a><span class="cm">/**</span>
@@ -5741,7 +5764,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 <p>Allows a client to reconnect to an SSE stream for an ongoing task after a previous connection (from <code>message/stream</code> or an earlier <code>tasks/resubscribe</code>) was interrupted. Requires the server to have <code>AgentCard.capabilities.streaming: true</code>.</p>
 <p>The purpose is to resume receiving <em>subsequent</em> updates. The server's behavior regarding events missed during the disconnection period (e.g., whether it attempts to backfill some missed events or only sends new ones from the point of resubscription) is implementation-dependent and not strictly defined by this specification.</p>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="36:3"><input checked="checked" id="json-rpc_36" name="__tabbed_36" type="radio" /><input id="grpc_36" name="__tabbed_36" type="radio" /><input id="rest_7" name="__tabbed_36" type="radio" /><div class="tabbed-labels"><label for="json-rpc_36">JSON-RPC</label><label for="grpc_36">gRPC</label><label for="rest_7">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="37:3"><input checked="checked" id="json-rpc_36" name="__tabbed_37" type="radio" /><input id="grpc_36" name="__tabbed_37" type="radio" /><input id="rest_7" name="__tabbed_37" type="radio" /><div class="tabbed-labels"><label for="json-rpc_36">JSON-RPC</label><label for="grpc_36">gRPC</label><label for="rest_7">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
@@ -5806,7 +5829,7 @@ This follows the principles of <a href="https://datatracker.ietf.org/doc/html/rf
 </li>
 </ul>
 <div class="grid cards">
-<div class="tabbed-set tabbed-alternate" data-tabs="37:3"><input checked="checked" id="json-rpc_37" name="__tabbed_37" type="radio" /><input id="grpc_37" name="__tabbed_37" type="radio" /><input id="rest_8" name="__tabbed_37" type="radio" /><div class="tabbed-labels"><label for="json-rpc_37">JSON-RPC</label><label for="grpc_37">gRPC</label><label for="rest_8">REST</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="38:3"><input checked="checked" id="json-rpc_37" name="__tabbed_38" type="radio" /><input id="grpc_37" name="__tabbed_38" type="radio" /><input id="rest_8" name="__tabbed_38" type="radio" /><div class="tabbed-labels"><label for="json-rpc_37">JSON-RPC</label><label for="grpc_37">gRPC</label><label for="rest_8">REST</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <ul>
