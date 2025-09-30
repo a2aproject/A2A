@@ -590,7 +590,12 @@ export interface TaskIdParams {
  * Defines parameters for querying a task, with an option to limit history length.
  */
 export interface TaskQueryParams extends TaskIdParams {
-  /** The number of most recent messages from the task's history to retrieve. */
+  /**
+   * The number of most recent messages from the task's history to retrieve. An unset value
+   * means the client does not impose any limit. A value of zero is a request to not include
+   * any messages. The server MUST NOT return more messages than the provided value, but MAY
+   * apply a lower limit.
+   */
   historyLength?: number;
 }
 // --8<-- [end:TaskQueryParams]
@@ -633,7 +638,12 @@ export interface DeleteTaskPushNotificationConfigParams extends TaskIdParams {
 export interface MessageSendConfiguration {
   /** A list of output MIME types the client is prepared to accept in the response. */
   acceptedOutputModes?: string[];
-  /** The number of most recent messages from the task's history to retrieve in the response. */
+  /**
+   * The number of most recent messages from the task's history to retrieve in the response.
+   * An unset value means the client does not impose any limit. A value of zero is a request
+   * to not include any messages. The server MUST NOT return more messages than the provided
+   * value, but MAY apply a lower limit.
+   */
   historyLength?: number;
   /** Configuration for the agent to send push notifications for updates after the initial response. */
   pushNotificationConfig?: PushNotificationConfig;

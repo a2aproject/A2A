@@ -1681,7 +1681,7 @@
                     "type": "boolean"
                 },
                 "historyLength": {
-                    "description": "The number of most recent messages from the task's history to retrieve in the response.",
+                    "description": "The number of most recent messages from the task's history to retrieve in the response.\nAn unset value means the client does not impose any limit. A value of zero is a request\nto not include any messages. The server MUST NOT return more messages than the provided\nvalue, but MAY apply a lower limit.",
                     "type": "integer"
                 },
                 "pushNotificationConfig": {
@@ -2386,7 +2386,7 @@
             "description": "Defines parameters for querying a task, with an option to limit history length.",
             "properties": {
                 "historyLength": {
-                    "description": "The number of most recent messages from the task's history to retrieve.",
+                    "description": "The number of most recent messages from the task's history to retrieve. An unset value\nmeans the client does not impose any limit. A value of zero is a request to not include\nany messages. The server MUST NOT return more messages than the provided value, but MAY\napply a lower limit.",
                     "type": "integer"
                 },
                 "id": {
