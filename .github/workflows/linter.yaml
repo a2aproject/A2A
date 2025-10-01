@@ -5,9 +5,13 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  lint:
     name: Lint Code Base
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
 
     steps:
       - name: Checkout Code
@@ -15,27 +19,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base
+      - name: GitHub Super Linter
         uses: super-linter/super-linter/slim@v8
         env:
-          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LOG_LEVEL: WARN
           SHELLCHECK_OPTS: -e SC1091 -e 2086
           VALIDATE_ALL_CODEBASE: false
-          FILTER_REGEX_EXCLUDE: "^(\\.github/|\\.vscode/).*|CODE_OF_CONDUCT.md|CHANGELOG.md|GOVERNANCE.md|\\.mkdocs/overrides/.*|docs/404.html"
-          VALIDATE_PYTHON_BLACK: false
-          VALIDATE_PYTHON_FLAKE8: false
-          VALIDATE_PYTHON_ISORT: false
-          VALIDATE_PYTHON_MYPY: false
-          VALIDATE_PYTHON_PYLINT: false
-          VALIDATE_CHECKOV: false
-          VALIDATE_NATURAL_LANGUAGE: false
-          MARKDOWN_CONFIG_FILE: ".markdownlint.json"
-          VALIDATE_MARKDOWN_PRETTIER: false
+          FILTER_REGEX_EXCLUDE: "^(\\.github/|\\.vscode/).*|CODE_OF_CONDUCT.md|CHANGELOG.md|GOVERNANCE.md"
+          VALIDATE_BASH: true
+          VALIDATE_BASH_EXEC: true
+          VALIDATE_CSS: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_GITLEAKS: true
+          VALIDATE_JSON: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_PROTOBUF: true
+          VALIDATE_PYTHON_RUFF: true
+          VALIDATE_SHELL_SHFMT: true
+          VALIDATE_TOML: true
+          VALIDATE_TYPESCRIPT_ES: true
+          VALIDATE_YAML: true
           TYPESCRIPT_ES_CONFIG_FILE: ".eslintrc.js"
-          VALIDATE_JAVASCRIPT_PRETTIER: false
-          VALIDATE_JSON_PRETTIER: false
-          VALIDATE_YAML_PRETTIER: false
-          VALIDATE_GIT_COMMITLINT: false
-          VALIDATE_GITHUB_ACTIONS_ZIZMOR: false
+          MARKDOWN_CONFIG_FILE: ".markdownlint.json"
