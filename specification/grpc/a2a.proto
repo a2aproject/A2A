@@ -54,8 +54,8 @@ service A2AService {
   //
   // The initial SendMessageRequest from the client MAY specify a
   // SendMessageConfiguration. Subsequent requests from the client must either
-  // send the same SendMessageConfiguration or omit the
-  // SendMessageConfiguration.
+// send the same SendMessageConfiguration or omit it. If omitted, the agent
+// MUST continue to use the configuration from the initial request.
   //
   // The initial Message provided by the client MAY include non-empty task_id
   // and context_id values. All subsequent Messages MUST either specify the
@@ -71,7 +71,7 @@ service A2AService {
   // `NOT_FOUND` error. Otherwise, the agent should send the current state of
   // the Task and begin sending updates. If a separate client has already
   // established a bidirectional connection with the agent for the specified
-  // task, the agent MAY reject the request with `UNIMPLEMENTED` if multiple
+// task, the agent MAY reject the request with `FAILED_PRECONDITION` if multiple
   // active request streams are not supported.
   //
   // If the agent does not support this method, it returns `UNIMPLEMENTED`.
