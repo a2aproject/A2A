@@ -24,13 +24,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHELLCHECK_OPTS: -e SC1091 -e 2086
-          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_ALL_CODEBASE: true
           FILTER_REGEX_EXCLUDE: "^(\\.github/|\\.vscode/).*|CODE_OF_CONDUCT.md|CHANGELOG.md|GOVERNANCE.md|MAINTAINERS.md"
           VALIDATE_BASH: true
           VALIDATE_BASH_EXEC: true
           VALIDATE_CSS: true
+          VALIDATE_EDITORCONFIG: true
+          VALIDATE_GIT_MERGE_CONFLICT_MARKERS: true
           VALIDATE_GITHUB_ACTIONS: true
           VALIDATE_GITLEAKS: true
+          VALIDATE_JSCPD: true
           VALIDATE_JSON: true
           VALIDATE_MARKDOWN: true
           VALIDATE_PROTOBUF: true
