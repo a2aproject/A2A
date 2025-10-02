@@ -14,6 +14,8 @@ treating remote agents as standard HTTP-based enterprise applications.
 
 ## Transport Level Security (TLS)
 
+Normative transport & authentication requirements live in the specification ([Spec §§3–5, 10.2, 16](/specification/)). This topic elaborates operational guidance.
+
 Ensuring the confidentiality and integrity of data in transit is fundamental for
 any enterprise application.
 
