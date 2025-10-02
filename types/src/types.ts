@@ -29,6 +29,8 @@ export interface AgentCapabilities {
   pushNotifications?: boolean;
   /** Indicates if the agent provides a history of state transitions for a task. */
   stateTransitionHistory?: boolean;
+  /** Indicates if this agent supports bidirectional streaming (gRPC only). */
+  bidiStreaming?: boolean;
   /** A list of protocol extensions supported by the agent. */
   extensions?: AgentExtension[];
 }
