@@ -80,6 +80,7 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
 - [LangGraph](https://docs.langchain.com/langgraph-platform/server-a2a)
 - [Pydantic AI](https://ai.pydantic.dev/a2a/)
+- [Hector](https://github.com/kadirpekel/hector)
 
 ## The Future is Interoperable
 
