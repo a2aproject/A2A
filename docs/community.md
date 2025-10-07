@@ -78,9 +78,9 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 
 - [Agent Development Kit (ADK)](https://google.github.io/adk-docs/a2a/)
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
+- [Hector](https://github.com/kadirpekel/hector)
 - [LangGraph](https://docs.langchain.com/langgraph-platform/server-a2a)
 - [Pydantic AI](https://ai.pydantic.dev/a2a/)
-- [Hector](https://github.com/kadirpekel/hector)
 
 ## The Future is Interoperable
 
