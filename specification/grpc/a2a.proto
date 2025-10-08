@@ -119,9 +119,11 @@ message SendMessageConfiguration {
   repeated string accepted_output_modes = 1;
   // A configuration of a webhook that can be used to receive updates
   PushNotificationConfig push_notification = 2;
-  // The maximum number of messages to include in the history. if 0, the
-  // history will be unlimited.
-  int32 history_length = 3;
+  // The number of most recent messages from the task's history to retrieve in
+  // the response. An unset value means the client does not impose any limit. A
+  // value of zero is a request to not include any messages. The server MUST NOT
+  // return more messages than the provided value, but MAY apply a lower limit.
+  optional int32 history_length = 3;
   // If true, the message will be blocking until the task is completed. If
   // false, the message will be non-blocking and the task will be returned
   // immediately. It is the caller's responsibility to check for any task
@@ -704,8 +706,11 @@ message GetTaskRequest {
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
-  // The number of most recent messages from the task's history to retrieve.
-  int32 history_length = 2;
+  // The number of most recent messages from the task's history to retrieve. An
+  // unset value means the client does not impose any limit. A value of zero is
+  // a request to not include any messages. The server MUST NOT return more
+  // messages than the provided value, but MAY apply a lower limit.
+  optional int32 history_length = 2;
 }
 // --8<-- [end:GetTaskRequest]
 
