@@ -42,6 +42,15 @@ However, some foreseeable applications include:
 - **State Machine Extensions**: Adding new states or transitions to the task
   state machine.
 
+## List of Standard Extensions
+
+| Extension | Description |
+| :-------- | :------------ |
+| [Secure Passport Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/secure-passport) | Adds a trusted, contextual layer for immediate personalization and reduced overhead (v1). |
+| [Hello World or Timestamp Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/timestamp) | A simple extension demonstrating how to augment base A2A types by adding timestamps to the `metadata` field of `Message` and `Artifact` objects (v1). |
+| [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |
+| [Agent Gateway Protocol (AGP) Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp) | A Core Protocol Layer or Routing Extension that introduces Autonomous Squads (ASq) and routes Intent payloads based on declared Capabilities, enhancing scalability (v1). |
+
 ## Limitations
 
 There are some changes to the protocol that extensions don't allow, primarily
