@@ -250,6 +250,7 @@ For a comprehensive guide on enterprise security aspects, see [Enterprise-Ready 
 ### 4.1. Transport Security
 
 As stated in section 3.1, production deployments **MUST** use HTTPS. Implementations **SHOULD** use modern [TLS](https://datatracker.ietf.org/doc/html/rfc8446) configurations (TLS 1.3+ recommended) with strong cipher suites.
+production deployments **SHOULD** use Post Quantum Cryptography Key Exchange such as "X25519MLKEM768" to protect against HNDL (Harvest Now Decrypt later) attacks.  [X25519MLKEM768] (https://datatracker.ietf.org/doc/draft-ietf-tls-ecdhe-mlkem/)
 
 ### 4.2. Server Identity Verification
 
