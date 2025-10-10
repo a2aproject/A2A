@@ -42,7 +42,7 @@ However, some foreseeable applications include:
 - **State Machine Extensions**: Adding new states or transitions to the task
   state machine.
 
-## List of Standard Extensions
+## List of Sample Extensions
 
 | Extension | Description |
 | :-------- | :------------ |
