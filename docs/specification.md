@@ -1946,7 +1946,7 @@ To support verifiable, content-addressed artifacts, A2A **MAY** include the foll
 **Verification steps**
 
 1. Decode the payload content if encoded, then compute **canonical JSON** (stable key order).
-2. Compute **SHA-256** over the canonical JSON, compare to `hash`.
+2. Compute **SHA-256** over the canonical JSON. The resulting 64-character hexadecimal string MUST match the value in the `hash` field (excluding the `sha256:` prefix).
 3. If `signature` is present, verify it against the public key **over the hash**.
 4. Optionally validate the payload against `schemaRef`.
 
