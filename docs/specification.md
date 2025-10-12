@@ -1819,7 +1819,7 @@ A2A and MCP are complementary protocols designed for different aspects of agenti
 - **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/):** Focuses on standardizing how AI models and agents connect to and interact with **tools, APIs, data sources, and other external resources.** It defines structured ways to describe tool capabilities (like function calling in LLMs), pass inputs, and receive structured outputs. Think of MCP as the "how-to" for an agent to _use_ a specific capability or access a resource.
 - **Agent2Agent Protocol (A2A):** Focuses on standardizing how independent, often opaque, **AI agents communicate and collaborate with each other as peers.** A2A provides an application-level protocol for agents to discover each other, negotiate interaction modalities, manage shared tasks, and exchange conversational context or complex results. It's about how agents _partner_ or _delegate_ work.
 
-**How they work together:**
+**How they work together:**  
 An A2A Client agent might request an A2A Server agent to perform a complex task. The Server agent, in turn, might use MCP to interact with several underlying tools, APIs, or data sources to gather information or perform actions necessary to fulfill the A2A task.
 
 For a more detailed comparison, see the [A2A and MCP guide](./topics/a2a-and-mcp.md).
@@ -1830,24 +1830,58 @@ Security is a paramount concern in A2A. Key considerations include:
 
 - **Transport Security:** Always use HTTPS with strong TLS configurations in production environments.
 - **Authentication:**
-    - Handled via standard HTTP mechanisms (e.g., `Authorization` header with Bearer tokens, API keys).
-    - Requirements are declared in the `AgentCard`.
-    - Credentials MUST be obtained out-of-band by the client.
-    - A2A Servers MUST authenticate every request.
+  - Handled via standard HTTP mechanisms (e.g., `Authorization` header with Bearer tokens, API keys).
+  - Requirements are declared in the `AgentCard`.
+  - Credentials MUST be obtained out-of-band by the client.
+  - A2A Servers MUST authenticate every request.
 - **Authorization:**
-    - A server-side responsibility based on the authenticated identity.
-    - Implement the principle of least privilege.
-    - Can be granular, based on skills, actions, or data.
+  - A server-side responsibility based on the authenticated identity.
+  - Implement the principle of least privilege.
+  - Can be granular, based on skills, actions, or data.
 - **Push Notification Security:**
-    - Webhook URL validation (by the A2A Server sending notifications) is crucial to prevent SSRF.
-    - Authentication of the A2A Server to the client's webhook is essential.
-    - Authentication of the notification by the client's webhook receiver (verifying it came from the legitimate A2A Server and is relevant) is critical.
-    - See the [Streaming & Asynchronous Operations guide](./topics/streaming-and-async.md#security-considerations-for-push-notifications) for detailed push notification security.
+  - Webhook URL validation (by the A2A Server sending notifications) is crucial to prevent SSRF.
+  - Authentication of the A2A Server to the client's webhook is essential.
+  - Authentication of the notification by the client's webhook receiver (verifying it came from the legitimate A2A Server and is relevant) is critical.
+  - See the [Streaming & Asynchronous Operations guide](./topics/streaming-and-async.md#security-considerations-for-push-notifications) for detailed push notification security.
 - **Input Validation:** Servers MUST rigorously validate all RPC parameters and the content/structure of data in `Message` and `Artifact` parts to prevent injection attacks or processing errors.
 - **Resource Management:** Implement rate limiting, concurrency controls, and resource limits to protect agents from abuse or overload.
 - **Data Privacy:** Adhere to all applicable privacy regulations for data exchanged in `Message` and `Artifact` parts. Minimize sensitive data transfer.
 
 For a comprehensive discussion, refer to the [Enterprise-Ready Features guide](./topics/enterprise-ready.md).
+
+### 10.3. Content Integrity Profile (v1)
+
+To support verifiable, content-addressed artifacts, A2A **MAY** include the following optional fields on Task artifacts and streamed artifact updates.
+
+| Field        | Type         | Description                                                                 |
+|------------- |--------------|-----------------------------------------------------------------------------|
+| `hash`       | string       | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending).    |
+| `signature`  | object       | `{ alg: "ECDSA (secp256k1)", value: "<hex>", kid?: "<string>", jwks?: "<https-url>" }` signature over the 64-hex hash (DER-encoded r\|\|s). |
+| `schemaRef`  | string (URI) | JSON Schema reference for validating the artifact payload.                  |
+| `links`      | string[]     | Related artifact hashes, each formatted as `sha256:<64-hex>`, enabling provenance chains. |
+
+**Canonical JSON scope**
+
+For computing `hash`, the canonical JSON **MUST** include all fields of the artifact except for `hash`, `signature`, `schemaRef`, and `links`. Keys are sorted lexicographically at every level; whitespace is insignificant.
+
+**Public key discovery**
+
+Verifiers **SHOULD** obtain the signer’s public key via one of:
+- `signature.kid`: a key identifier resolvable in the verifier's trust store
+- `signature.jwks`: an HTTPS URL to a JWKS document (RFC 7517)
+
+If neither is present, key distribution is out-of-band and implementation-defined.
+
+**Signature serialization**
+
+`signature.value` **MUST** be the lowercase hexadecimal encoding of the ASN.1 DER-encoded ECDSA signature (sequence of two INTEGERs r and s). Other encodings (for example, a 64-byte raw r\|\|s value) are **not** permitted in v1.
+
+**Verification steps**
+
+1. Decode the payload content if encoded, then compute **canonical JSON** (stable key order).
+2. Compute **SHA-256** over the canonical JSON. The resulting 64-character hexadecimal string MUST match the value in the `hash` field (excluding the `sha256:` prefix).
+3. If `signature` is present, verify it against the public key **over the hash**.
+4. Optionally validate the payload against `schemaRef`.
 
 ## 11. A2A Compliance Requirements
 
@@ -1932,40 +1966,3 @@ Implementations **SHOULD** validate compliance through:
 - **Error handling**: Verify proper handling of all defined error conditions.
 - **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](https://github.com/a2aproject/A2A/blob/main/types/src/types.ts).
 - **Multi-transport consistency**: For multi-transport agents, verify functional equivalence across all supported transports.
-## Appendix: Content Integrity Profile (v1)
-
-To support verifiable, content-addressed artifacts, A2A **MAY** include the following optional fields on Task artifacts and streamed artifact updates:
-
-| Field        | Type            | Description |
-|--------------|-----------------|--------------|
-| `hash`       | string           | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending). |
-| `signature`  | object           | `{ alg: "ECDSA-secp256k1", value: "<hex>", kid?: "<string>", jwks?: "<https-url>" }` signature over the 64-hex hash (DER-encoded r||s). |
-| `schemaRef`  | string (URI)     | JSON Schema reference for validating the artifact payload. |
-| `links`      | string[]         | Related artifact hashes, each formatted as `sha256:<64-hex>`, enabling provenance chains. |
-**Canonical JSON scope**
-
-For computing `hash`, the canonical JSON **MUST** include all fields of the artifact
-except for `hash`, `signature`, `schemaRef`, and `links`. Keys are sorted
-lexicographically at every level; whitespace is insignificant.
-**Public key discovery**
-
-Verifiers **SHOULD** obtain the signer’s public key via one of:
-- `signature.kid`: a key identifier resolvable in the verifier’s trust store
-- `signature.jwks`: an HTTPS URL to a JWKS document (RFC 7517)
-
-If neither is present, key distribution is out-of-band and implementation-defined.
-
-**Signature serialization**
-
-`signature.value` **MUST** be the lowercase hexadecimal encoding of the ASN.1 DER-encoded
-ECDSA signature (sequence of two INTEGERs r and s).  
-Other encodings (for example, a 64-byte raw r \|\| s value) are **not** permitted in v1.
-
-**Verification steps**
-
-1. Decode the payload content if encoded, then compute **canonical JSON** (stable key order).
-2. Compute **SHA-256** over the canonical JSON. The resulting 64-character hexadecimal string MUST match the value in the `hash` field (excluding the `sha256:` prefix).
-3. If `signature` is present, verify it against the public key **over the hash**.
-4. Optionally validate the payload against `schemaRef`.
-
-These fields are **OPTIONAL**; clients and servers **MAY** ignore them. They provide portable integrity/provenance without exposing internal execution, and are fully backward-compatible with existing A2A flows.
