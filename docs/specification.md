@@ -1932,3 +1932,22 @@ Implementations **SHOULD** validate compliance through:
 - **Error handling**: Verify proper handling of all defined error conditions.
 - **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](https://github.com/a2aproject/A2A/blob/main/types/src/types.ts).
 - **Multi-transport consistency**: For multi-transport agents, verify functional equivalence across all supported transports.
+## Appendix: Content Integrity Profile (v1)
+
+To support verifiable, content-addressed artifacts, A2A **MAY** include the following optional fields on Task artifacts and streamed artifact updates:
+
+| Field        | Type            | Description                                                                 |
+|--------------|-----------------|-----------------------------------------------------------------------------|
+| `hash`       | string          | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending).    |
+| `signature`  | object          | `{ alg: "ECDSA-secp256k1", value: "<hex>" }` signature over the 64-hex hash.|
+| `schemaRef`  | string (URI)    | JSON Schema reference for validating the artifact payload.                  |
+| `links`      | string[]        | Related artifact hashes enabling provenance chains.                         |
+
+**Verification steps**
+
+1. Decode the payload content if encoded, then compute **canonical JSON** (stable key order).
+2. Compute **SHA-256** over the canonical JSON, compare to `hash`.
+3. If `signature` is present, verify it against the public key **over the hash**.
+4. Optionally validate the payload against `schemaRef`.
+
+These fields are **OPTIONAL**; clients and servers **MAY** ignore them. They provide portable integrity/provenance without exposing internal execution, and are fully backward-compatible with existing A2A flows.
