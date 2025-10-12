@@ -1932,3 +1932,37 @@ Implementations **SHOULD** validate compliance through:
 - **Error handling**: Verify proper handling of all defined error conditions.
 - **Data format validation**: Ensure JSON schemas match the TypeScript type definitions in [`types/src/types.ts`](https://github.com/a2aproject/A2A/blob/main/types/src/types.ts).
 - **Multi-transport consistency**: For multi-transport agents, verify functional equivalence across all supported transports.
+
+## Appendix: Content Integrity Profile (v1)
+
+To support verifiable, content-addressed artifacts, A2A **MAY** include the following optional fields on Task artifacts and streamed artifact updates.
+
+| Field       | Type         | Description                                                                 |
+|------------|--------------|-----------------------------------------------------------------------------|
+| `hash`     | string       | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending).    |
+| `signature`| object       | `{ alg: "ECDSA-secp256k1", value: "<hex>", kid?: "<string>", jwks?: "<https-url>" }` signature over the 64-hex hash (DER-encoded r\|\|s). |
+| `schemaRef`| string (URI) | JSON Schema reference for validating the artifact payload.                  |
+| `links`    | string[]     | Related artifact hashes, each formatted as `sha256:<64-hex>`, enabling provenance chains. |
+
+**Canonical JSON scope**
+
+For computing `hash`, the canonical JSON **MUST** include all fields of the artifact except for `hash`, `signature`, `schemaRef`, and `links`. Keys are sorted lexicographically at every level; whitespace is insignificant.
+
+**Public key discovery**
+
+Verifiers **SHOULD** obtain the signer’s public key via one of:
+- `signature.kid`: a key identifier resolvable in the verifier’s trust store
+- `signature.jwks`: an HTTPS URL to a JWKS document (RFC 7517)
+
+If neither is present, key distribution is out-of-band and implementation-defined.
+
+**Signature serialization**
+
+`signature.value` **MUST** be the lowercase hexadecimal encoding of the ASN.1 DER-encoded ECDSA signature (sequence of two INTEGERs r and s). Other encodings (for example, a 64-byte raw r\|\|s value) are **not** permitted in v1.
+
+**Verification steps**
+
+1. Decode the payload content if encoded, then compute **canonical JSON** (stable key order).
+2. Compute **SHA-256** over the canonical JSON. The resulting 64-character hexadecimal string MUST match the value in the `hash` field (excluding the `sha256:` prefix).
+3. If `signature` is present, verify it against the public key **over the hash**.
+4. Optionally validate the payload against `schemaRef`.
