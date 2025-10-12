@@ -1936,12 +1936,30 @@ Implementations **SHOULD** validate compliance through:
 
 To support verifiable, content-addressed artifacts, A2A **MAY** include the following optional fields on Task artifacts and streamed artifact updates:
 
-| Field        | Type            | Description                                                                 |
-|--------------|-----------------|-----------------------------------------------------------------------------|
-| `hash`       | string          | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending).    |
-| `signature`  | object          | `{ alg: "ECDSA-secp256k1", value: "<hex>" }` signature over the 64-hex hash.|
-| `schemaRef`  | string (URI)    | JSON Schema reference for validating the artifact payload.                  |
-| `links`      | string[]        | Related artifact hashes, each formatted as `sha256:<64-hex>`, enabling provenance chains. |
+| Field        | Type            | Description |
+|--------------|-----------------|--------------|
+| `hash`       | string           | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending). |
+| `signature`  | object           | `{ alg: "ECDSA-secp256k1", value: "<hex>", kid?: "<string>", jwks?: "<https-url>" }` signature over the 64-hex hash (DER-encoded r||s). |
+| `schemaRef`  | string (URI)     | JSON Schema reference for validating the artifact payload. |
+| `links`      | string[]         | Related artifact hashes, each formatted as `sha256:<64-hex>`, enabling provenance chains. |
+**Canonical JSON scope**
+
+For computing `hash`, the canonical JSON **MUST** include all fields of the artifact
+except for `hash`, `signature`, `schemaRef`, and `links`. Keys are sorted
+lexicographically at every level; whitespace is insignificant.
+**Public key discovery**
+
+Verifiers **SHOULD** obtain the signer’s public key via one of:
+- `signature.kid`: a key identifier resolvable in the verifier’s trust store
+- `signature.jwks`: an HTTPS URL to a JWKS document (RFC 7517)
+
+If neither is present, key distribution is out-of-band and implementation-defined.
+
+**Signature serialization**
+
+`signature.value` **MUST** be the lowercase hexadecimal encoding of the ASN.1 DER-encoded
+ECDSA signature (sequence of two INTEGERs r and s).  
+Other encodings (for example, a 64-byte raw r \|\| s value) are **not** permitted in v1.
 
 **Verification steps**
 
