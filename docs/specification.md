@@ -1856,7 +1856,7 @@ To support verifiable, content-addressed artifacts, A2A **MAY** include the foll
 | Field       | Type         | Description                                                                 |
 |------------|--------------|-----------------------------------------------------------------------------|
 | `hash`     | string       | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending).    |
-| `signature`| object       | `{ alg: "ECDSA-secp256k1", value: "<hex>", kid?: "<string>", jwks?: "<https-url>" }` signature over the 64-hex hash (DER-encoded r\|\|s). |
+| `signature`| object       | `{ alg: "ECDSA (secp256k1)", value: "<hex>", kid?: "<string>", jwks?: "<https-url>" }` signature over the 64-hex hash (DER-encoded r\|\|s). |
 | `schemaRef`| string (URI) | JSON Schema reference for validating the artifact payload.                  |
 | `links`    | string[]     | Related artifact hashes, each formatted as `sha256:<64-hex>`, enabling provenance chains. |
 
@@ -1866,8 +1866,8 @@ For computing `hash`, the canonical JSON **MUST** include all fields of the arti
 
 **Public key discovery**
 
-Verifiers **SHOULD** obtain the signer’s public key via one of:
-- `signature.kid`: a key identifier resolvable in the verifier’s trust store
+Verifiers **SHOULD** obtain the signer's public key via one of:
+- `signature.kid`: a key identifier resolvable in the verifier's trust store
 - `signature.jwks`: an HTTPS URL to a JWKS document (RFC 7517)
 
 If neither is present, key distribution is out-of-band and implementation-defined.
