@@ -1941,7 +1941,7 @@ To support verifiable, content-addressed artifacts, A2A **MAY** include the foll
 | `hash`       | string          | `sha256:<64-hex>` of the canonical JSON payload (keys sorted ascending).    |
 | `signature`  | object          | `{ alg: "ECDSA-secp256k1", value: "<hex>" }` signature over the 64-hex hash.|
 | `schemaRef`  | string (URI)    | JSON Schema reference for validating the artifact payload.                  |
-| `links`      | string[]        | Related artifact hashes enabling provenance chains.                         |
+| `links`      | string[]        | Related artifact hashes, each formatted as `sha256:<64-hex>`, enabling provenance chains. |
 
 **Verification steps**
 
