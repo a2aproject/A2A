@@ -9,7 +9,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | **Cisco** | Luca Muscariello | Principal Engineer | [@muscariello](https://github.com/muscariello) |
 | **Amazon Web Services** | Nicholas Aldridge | Principal Engineer | [@000-000-000-000-000](https://github.com/000-000-000-000-000) |
 | **Salesforce** | Gary Lerhaupt | VP, Product Architecture | [@lerhaupt](https://github.com/lerhaupt) |
-| **ServiceNow** | Sean Hughes | AI Ecosystem Director | [@hughesthe1st](https://github.com/hughesthe1st) |
+| **ServiceNow** | Sean Hughes | Director of Open Science | [@hughesthe1st](https://github.com/hughesthe1st) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
 | **IBM Research** | Kate Blair | Director of Incubation | [@geneknit](https://github.com/geneknit) |
 
