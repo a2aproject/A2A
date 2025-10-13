@@ -5,7 +5,7 @@
   "scripts": {
     "generate": "./node_modules/.bin/typescript-json-schema tsconfig.json \"*\" --defaultNumberType integer --required --out ../specification/json/a2a.json",
     "generate-types": "./node_modules/.bin/proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments -I ./node_modules/google-proto-files/ ../specification/grpc/ -O src/types --grpcLib @grpc/grpc-js a2a.proto",
-    "prettier": "prettier src/types.ts --write"
+    "prettier": "prettier \"src/types/**/*.ts\" --write"
   },
   "author": "",
   "description": "A2A Types",
