@@ -1,6 +1,9 @@
 // Original file: ../specification/grpc/a2a.proto
 
-import type { Struct as _google_protobuf_Struct, Struct__Output as _google_protobuf_Struct__Output } from '../../google/protobuf/Struct';
+import type {
+  Struct as _google_protobuf_Struct,
+  Struct__Output as _google_protobuf_Struct__Output,
+} from "../../google/protobuf/Struct";
 
 /**
  * --8<-- [start:AgentCardSignature]
@@ -12,15 +15,15 @@ export interface AgentCardSignature {
    * The protected JWS header for the signature. This is always a
    * base64url-encoded JSON object. Required.
    */
-  'protected'?: (string);
+  protected?: string;
   /**
    * The computed signature, base64url-encoded. Required.
    */
-  'signature'?: (string);
+  signature?: string;
   /**
    * The unprotected JWS header values.
    */
-  'header'?: (_google_protobuf_Struct | null);
+  header?: _google_protobuf_Struct | null;
 }
 
 /**
@@ -33,13 +36,13 @@ export interface AgentCardSignature__Output {
    * The protected JWS header for the signature. This is always a
    * base64url-encoded JSON object. Required.
    */
-  'protected': (string);
+  protected: string;
   /**
    * The computed signature, base64url-encoded. Required.
    */
-  'signature': (string);
+  signature: string;
   /**
    * The unprotected JWS header values.
    */
-  'header': (_google_protobuf_Struct__Output | null);
+  header: _google_protobuf_Struct__Output | null;
 }

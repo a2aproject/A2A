@@ -1,6 +1,9 @@
 // Original file: node_modules/google-proto-files/google/api/client.proto
 
-import type { ClientLibraryDestination as _google_api_ClientLibraryDestination, ClientLibraryDestination__Output as _google_api_ClientLibraryDestination__Output } from '../../google/api/ClientLibraryDestination';
+import type {
+  ClientLibraryDestination as _google_api_ClientLibraryDestination,
+  ClientLibraryDestination__Output as _google_api_ClientLibraryDestination__Output,
+} from "../../google/api/ClientLibraryDestination";
 
 /**
  * Required information for every language.
@@ -11,11 +14,11 @@ export interface CommonLanguageSettings {
    * https://cloud.google.com/nodejs/docs/reference/asset/latest
    * @deprecated
    */
-  'reference_docs_uri'?: (string);
+  reference_docs_uri?: string;
   /**
    * The destination where API teams want this client library to be published.
    */
-  'destinations'?: (_google_api_ClientLibraryDestination)[];
+  destinations?: _google_api_ClientLibraryDestination[];
 }
 
 /**
@@ -27,9 +30,9 @@ export interface CommonLanguageSettings__Output {
    * https://cloud.google.com/nodejs/docs/reference/asset/latest
    * @deprecated
    */
-  'reference_docs_uri': (string);
+  reference_docs_uri: string;
   /**
    * The destination where API teams want this client library to be published.
    */
-  'destinations': (_google_api_ClientLibraryDestination__Output)[];
+  destinations: _google_api_ClientLibraryDestination__Output[];
 }

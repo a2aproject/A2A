@@ -1,6 +1,5 @@
 // Original file: ../specification/grpc/a2a.proto
 
-
 /**
  * --8<-- [start:APIKeySecurityScheme]
  */
@@ -8,15 +7,15 @@ export interface APIKeySecurityScheme {
   /**
    * Description of this security scheme.
    */
-  'description'?: (string);
+  description?: string;
   /**
    * Location of the API key, valid values are "query", "header", or "cookie"
    */
-  'location'?: (string);
+  location?: string;
   /**
    * Name of the header, query or cookie parameter to be used.
    */
-  'name'?: (string);
+  name?: string;
 }
 
 /**
@@ -26,13 +25,13 @@ export interface APIKeySecurityScheme__Output {
   /**
    * Description of this security scheme.
    */
-  'description': (string);
+  description: string;
   /**
    * Location of the API key, valid values are "query", "header", or "cookie"
    */
-  'location': (string);
+  location: string;
   /**
    * Name of the header, query or cookie parameter to be used.
    */
-  'name': (string);
+  name: string;
 }

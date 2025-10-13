@@ -1,6 +1,9 @@
 // Original file: ../specification/grpc/a2a.proto
 
-import type { Struct as _google_protobuf_Struct, Struct__Output as _google_protobuf_Struct__Output } from '../../google/protobuf/Struct';
+import type {
+  Struct as _google_protobuf_Struct,
+  Struct__Output as _google_protobuf_Struct__Output,
+} from "../../google/protobuf/Struct";
 
 /**
  * --8<-- [start:AgentExtension]
@@ -11,21 +14,21 @@ export interface AgentExtension {
    * The URI of the extension.
    * Example: "https://developers.google.com/identity/protocols/oauth2"
    */
-  'uri'?: (string);
+  uri?: string;
   /**
    * A description of how this agent uses this extension.
    * Example: "Google OAuth 2.0 authentication"
    */
-  'description'?: (string);
+  description?: string;
   /**
    * Whether the client must follow specific requirements of the extension.
    * Example: false
    */
-  'required'?: (boolean);
+  required?: boolean;
   /**
    * Optional configuration for the extension.
    */
-  'params'?: (_google_protobuf_Struct | null);
+  params?: _google_protobuf_Struct | null;
 }
 
 /**
@@ -37,19 +40,19 @@ export interface AgentExtension__Output {
    * The URI of the extension.
    * Example: "https://developers.google.com/identity/protocols/oauth2"
    */
-  'uri': (string);
+  uri: string;
   /**
    * A description of how this agent uses this extension.
    * Example: "Google OAuth 2.0 authentication"
    */
-  'description': (string);
+  description: string;
   /**
    * Whether the client must follow specific requirements of the extension.
    * Example: false
    */
-  'required': (boolean);
+  required: boolean;
   /**
    * Optional configuration for the extension.
    */
-  'params': (_google_protobuf_Struct__Output | null);
+  params: _google_protobuf_Struct__Output | null;
 }

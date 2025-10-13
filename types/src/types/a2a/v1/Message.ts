@@ -1,8 +1,17 @@
 // Original file: ../specification/grpc/a2a.proto
 
-import type { Role as _a2a_v1_Role, Role__Output as _a2a_v1_Role__Output } from '../../a2a/v1/Role';
-import type { Part as _a2a_v1_Part, Part__Output as _a2a_v1_Part__Output } from '../../a2a/v1/Part';
-import type { Struct as _google_protobuf_Struct, Struct__Output as _google_protobuf_Struct__Output } from '../../google/protobuf/Struct';
+import type {
+  Role as _a2a_v1_Role,
+  Role__Output as _a2a_v1_Role__Output,
+} from "../../a2a/v1/Role";
+import type {
+  Part as _a2a_v1_Part,
+  Part__Output as _a2a_v1_Part__Output,
+} from "../../a2a/v1/Part";
+import type {
+  Struct as _google_protobuf_Struct,
+  Struct__Output as _google_protobuf_Struct__Output,
+} from "../../google/protobuf/Struct";
 
 /**
  * --8<-- [start:Message]
@@ -19,35 +28,35 @@ export interface Message {
    * The unique identifier (e.g. UUID)of the message. This is required and
    * created by the message creator.
    */
-  'message_id'?: (string);
+  message_id?: string;
   /**
    * The context id of the message. This is optional and if set, the message
    * will be associated with the given context.
    */
-  'context_id'?: (string);
+  context_id?: string;
   /**
    * The task id of the message. This is optional and if set, the message
    * will be associated with the given task.
    */
-  'task_id'?: (string);
+  task_id?: string;
   /**
    * A role for the message.
    */
-  'role'?: (_a2a_v1_Role);
+  role?: _a2a_v1_Role;
   /**
    * protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
    * Content is the container of the message content.
    */
-  'content'?: (_a2a_v1_Part)[];
+  content?: _a2a_v1_Part[];
   /**
    * protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
    * Any optional metadata to provide along with the message.
    */
-  'metadata'?: (_google_protobuf_Struct | null);
+  metadata?: _google_protobuf_Struct | null;
   /**
    * The URIs of extensions that are present or contributed to this Message.
    */
-  'extensions'?: (string)[];
+  extensions?: string[];
 }
 
 /**
@@ -65,33 +74,33 @@ export interface Message__Output {
    * The unique identifier (e.g. UUID)of the message. This is required and
    * created by the message creator.
    */
-  'message_id': (string);
+  message_id: string;
   /**
    * The context id of the message. This is optional and if set, the message
    * will be associated with the given context.
    */
-  'context_id': (string);
+  context_id: string;
   /**
    * The task id of the message. This is optional and if set, the message
    * will be associated with the given task.
    */
-  'task_id': (string);
+  task_id: string;
   /**
    * A role for the message.
    */
-  'role': (_a2a_v1_Role__Output);
+  role: _a2a_v1_Role__Output;
   /**
    * protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
    * Content is the container of the message content.
    */
-  'content': (_a2a_v1_Part__Output)[];
+  content: _a2a_v1_Part__Output[];
   /**
    * protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
    * Any optional metadata to provide along with the message.
    */
-  'metadata': (_google_protobuf_Struct__Output | null);
+  metadata: _google_protobuf_Struct__Output | null;
   /**
    * The URIs of extensions that are present or contributed to this Message.
    */
-  'extensions': (string)[];
+  extensions: string[];
 }

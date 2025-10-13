@@ -8,15 +8,15 @@ export const LaunchStage = {
   /**
    * Do not use this default value.
    */
-  LAUNCH_STAGE_UNSPECIFIED: 'LAUNCH_STAGE_UNSPECIFIED',
+  LAUNCH_STAGE_UNSPECIFIED: "LAUNCH_STAGE_UNSPECIFIED",
   /**
    * The feature is not yet implemented. Users can not use it.
    */
-  UNIMPLEMENTED: 'UNIMPLEMENTED',
+  UNIMPLEMENTED: "UNIMPLEMENTED",
   /**
    * Prelaunch features are hidden from users and are only visible internally.
    */
-  PRELAUNCH: 'PRELAUNCH',
+  PRELAUNCH: "PRELAUNCH",
   /**
    * Early Access features are limited to a closed group of testers. To use
    * these features, you must sign up in advance and sign a Trusted Tester
@@ -24,7 +24,7 @@ export const LaunchStage = {
    * be unstable, changed in backward-incompatible ways, and are not
    * guaranteed to be released.
    */
-  EARLY_ACCESS: 'EARLY_ACCESS',
+  EARLY_ACCESS: "EARLY_ACCESS",
   /**
    * Alpha is a limited availability test for releases before they are cleared
    * for widespread use. By Alpha, all significant design issues are resolved
@@ -36,7 +36,7 @@ export const LaunchStage = {
    * test environments or for limited-use tests -- just like they would in
    * normal production cases.
    */
-  ALPHA: 'ALPHA',
+  ALPHA: "ALPHA",
   /**
    * Beta is the point at which we are ready to open a release for any
    * customer to use. There are no SLA or technical support obligations in a
@@ -44,12 +44,12 @@ export const LaunchStage = {
    * may have some open outstanding issues. Beta releases are suitable for
    * limited production use cases.
    */
-  BETA: 'BETA',
+  BETA: "BETA",
   /**
    * GA features are open to all developers and are considered stable and
    * fully qualified for production use.
    */
-  GA: 'GA',
+  GA: "GA",
   /**
    * Deprecated features are scheduled to be shut down and removed. For more
    * information, see the "Deprecation Policy" section of our [Terms of
@@ -57,7 +57,7 @@ export const LaunchStage = {
    * and the [Google Cloud Platform Subject to the Deprecation
    * Policy](https://cloud.google.com/terms/deprecation) documentation.
    */
-  DEPRECATED: 'DEPRECATED',
+  DEPRECATED: "DEPRECATED",
 } as const;
 
 /**
@@ -68,17 +68,17 @@ export type LaunchStage =
   /**
    * Do not use this default value.
    */
-  | 'LAUNCH_STAGE_UNSPECIFIED'
+  | "LAUNCH_STAGE_UNSPECIFIED"
   | 0
   /**
    * The feature is not yet implemented. Users can not use it.
    */
-  | 'UNIMPLEMENTED'
+  | "UNIMPLEMENTED"
   | 6
   /**
    * Prelaunch features are hidden from users and are only visible internally.
    */
-  | 'PRELAUNCH'
+  | "PRELAUNCH"
   | 7
   /**
    * Early Access features are limited to a closed group of testers. To use
@@ -87,7 +87,7 @@ export type LaunchStage =
    * be unstable, changed in backward-incompatible ways, and are not
    * guaranteed to be released.
    */
-  | 'EARLY_ACCESS'
+  | "EARLY_ACCESS"
   | 1
   /**
    * Alpha is a limited availability test for releases before they are cleared
@@ -100,7 +100,7 @@ export type LaunchStage =
    * test environments or for limited-use tests -- just like they would in
    * normal production cases.
    */
-  | 'ALPHA'
+  | "ALPHA"
   | 2
   /**
    * Beta is the point at which we are ready to open a release for any
@@ -109,13 +109,13 @@ export type LaunchStage =
    * may have some open outstanding issues. Beta releases are suitable for
    * limited production use cases.
    */
-  | 'BETA'
+  | "BETA"
   | 3
   /**
    * GA features are open to all developers and are considered stable and
    * fully qualified for production use.
    */
-  | 'GA'
+  | "GA"
   | 4
   /**
    * Deprecated features are scheduled to be shut down and removed. For more
@@ -124,11 +124,12 @@ export type LaunchStage =
    * and the [Google Cloud Platform Subject to the Deprecation
    * Policy](https://cloud.google.com/terms/deprecation) documentation.
    */
-  | 'DEPRECATED'
-  | 5
+  | "DEPRECATED"
+  | 5;
 
 /**
  * The launch stage as defined by [Google Cloud Platform
  * Launch Stages](https://cloud.google.com/terms/launch-stages).
  */
-export type LaunchStage__Output = typeof LaunchStage[keyof typeof LaunchStage]
+export type LaunchStage__Output =
+  (typeof LaunchStage)[keyof typeof LaunchStage];

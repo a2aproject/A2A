@@ -8,23 +8,24 @@ export const ClientLibraryOrganization = {
   /**
    * Not useful.
    */
-  CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED: 'CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED',
+  CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED:
+    "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED",
   /**
    * Google Cloud Platform Org.
    */
-  CLOUD: 'CLOUD',
+  CLOUD: "CLOUD",
   /**
    * Ads (Advertising) Org.
    */
-  ADS: 'ADS',
+  ADS: "ADS",
   /**
    * Photos Org.
    */
-  PHOTOS: 'PHOTOS',
+  PHOTOS: "PHOTOS",
   /**
    * Street View Org.
    */
-  STREET_VIEW: 'STREET_VIEW',
+  STREET_VIEW: "STREET_VIEW",
 } as const;
 
 /**
@@ -35,31 +36,32 @@ export type ClientLibraryOrganization =
   /**
    * Not useful.
    */
-  | 'CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED'
+  | "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED"
   | 0
   /**
    * Google Cloud Platform Org.
    */
-  | 'CLOUD'
+  | "CLOUD"
   | 1
   /**
    * Ads (Advertising) Org.
    */
-  | 'ADS'
+  | "ADS"
   | 2
   /**
    * Photos Org.
    */
-  | 'PHOTOS'
+  | "PHOTOS"
   | 3
   /**
    * Street View Org.
    */
-  | 'STREET_VIEW'
-  | 4
+  | "STREET_VIEW"
+  | 4;
 
 /**
  * The organization for which the client libraries are being published.
  * Affects the url where generated docs are published, etc.
  */
-export type ClientLibraryOrganization__Output = typeof ClientLibraryOrganization[keyof typeof ClientLibraryOrganization]
+export type ClientLibraryOrganization__Output =
+  (typeof ClientLibraryOrganization)[keyof typeof ClientLibraryOrganization];

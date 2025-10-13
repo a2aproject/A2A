@@ -1,6 +1,9 @@
 // Original file: ../specification/grpc/a2a.proto
 
-import type { Security as _a2a_v1_Security, Security__Output as _a2a_v1_Security__Output } from '../../a2a/v1/Security';
+import type {
+  Security as _a2a_v1_Security,
+  Security__Output as _a2a_v1_Security__Output,
+} from "../../a2a/v1/Security";
 
 /**
  * --8<-- [start:AgentSkill]
@@ -14,36 +17,36 @@ export interface AgentSkill {
   /**
    * Unique identifier of the skill within this agent.
    */
-  'id'?: (string);
+  id?: string;
   /**
    * A human readable name for the skill.
    */
-  'name'?: (string);
+  name?: string;
   /**
    * A human (or llm) readable description of the skill
    * details and behaviors.
    */
-  'description'?: (string);
+  description?: string;
   /**
    * A set of tags for the skill to enhance categorization/utilization.
    * Example: ["cooking", "customer support", "billing"]
    */
-  'tags'?: (string)[];
+  tags?: string[];
   /**
    * A set of example queries that this skill is designed to address.
    * These examples should help the caller to understand how to craft requests
    * to the agent to achieve specific goals.
    * Example: ["I need a recipe for bread"]
    */
-  'examples'?: (string)[];
+  examples?: string[];
   /**
    * Possible input modalities supported.
    */
-  'input_modes'?: (string)[];
+  input_modes?: string[];
   /**
    * Possible output modalities produced
    */
-  'output_modes'?: (string)[];
+  output_modes?: string[];
   /**
    * protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
    * Security schemes necessary for the agent to leverage this skill.
@@ -51,7 +54,7 @@ export interface AgentSkill {
    * security requirement objects. Each object is a set of security schemes
    * that must be used together (a logical AND).
    */
-  'security'?: (_a2a_v1_Security)[];
+  security?: _a2a_v1_Security[];
 }
 
 /**
@@ -66,36 +69,36 @@ export interface AgentSkill__Output {
   /**
    * Unique identifier of the skill within this agent.
    */
-  'id': (string);
+  id: string;
   /**
    * A human readable name for the skill.
    */
-  'name': (string);
+  name: string;
   /**
    * A human (or llm) readable description of the skill
    * details and behaviors.
    */
-  'description': (string);
+  description: string;
   /**
    * A set of tags for the skill to enhance categorization/utilization.
    * Example: ["cooking", "customer support", "billing"]
    */
-  'tags': (string)[];
+  tags: string[];
   /**
    * A set of example queries that this skill is designed to address.
    * These examples should help the caller to understand how to craft requests
    * to the agent to achieve specific goals.
    * Example: ["I need a recipe for bread"]
    */
-  'examples': (string)[];
+  examples: string[];
   /**
    * Possible input modalities supported.
    */
-  'input_modes': (string)[];
+  input_modes: string[];
   /**
    * Possible output modalities produced
    */
-  'output_modes': (string)[];
+  output_modes: string[];
   /**
    * protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
    * Security schemes necessary for the agent to leverage this skill.
@@ -103,5 +106,5 @@ export interface AgentSkill__Output {
    * security requirement objects. Each object is a set of security schemes
    * that must be used together (a logical AND).
    */
-  'security': (_a2a_v1_Security__Output)[];
+  security: _a2a_v1_Security__Output[];
 }
