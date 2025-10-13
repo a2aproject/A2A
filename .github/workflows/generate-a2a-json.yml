@@ -31,10 +31,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies and generate a2a.json
+      - name: Install dependencies and generate a2a.json from a2a.proto
         working-directory: types
         run: |
           npm install
+          npm run generate-types
           npm run generate
         id: generate_schema
 

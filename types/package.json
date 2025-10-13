@@ -4,11 +4,15 @@
   "main": "index.js",
   "scripts": {
     "generate": "./node_modules/.bin/typescript-json-schema tsconfig.json \"*\" --defaultNumberType integer --required --out ../specification/json/a2a.json",
+    "generate-types": "./node_modules/.bin/proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments -I ./node_modules/google-proto-files/ ../specification/grpc/ -O src/types --grpcLib @grpc/grpc-js a2a.proto",
     "prettier": "prettier src/types.ts --write"
   },
   "author": "",
   "description": "A2A Types",
   "dependencies": {
+    "@grpc/grpc-js": "^1.1.8",
+    "@grpc/proto-loader": "^0.7.13",
+    "google-proto-files": "^3.0.0",
     "typescript-json-schema": "^0.65.1"
   },
   "devDependencies": {
