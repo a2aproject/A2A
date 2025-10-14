@@ -274,11 +274,117 @@
 </dd></dl>
 
 </section>
-<section id="a2a-server-tasks-database-push-notification-config-store-module">
-<h2>a2a.server.tasks.database_push_notification_config_store module<a class="headerlink" href="#a2a-server-tasks-database-push-notification-config-store-module" title="Link to this heading">¶</a></h2>
+<section id="module-a2a.server.tasks.database_push_notification_config_store">
+<span id="a2a-server-tasks-database-push-notification-config-store-module"></span><h2>a2a.server.tasks.database_push_notification_config_store module<a class="headerlink" href="#module-a2a.server.tasks.database_push_notification_config_store" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.tasks.database_push_notification_config_store.</span></span><span class="sig-name descname"><span class="pre">DatabasePushNotificationConfigStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncEngine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'push_notification_configs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encryption_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore" title="a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">PushNotificationConfigStore</span></code></a></p>
+<p>SQLAlchemy-based implementation of PushNotificationConfigStore.</p>
+<p>Stores push notification configurations in a database supported by SQLAlchemy.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.async_session_maker">
+<span class="sig-name descname"><span class="pre">async_session_maker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">async_sessionmaker</span><span class="p"><span class="pre">[</span></span><span class="pre">AsyncSession</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.async_session_maker" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.config_model">
+<span class="sig-name descname"><span class="pre">config_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.server.html#a2a.server.models.PushNotificationConfigModel" title="a2a.server.models.PushNotificationConfigModel"><span class="pre">PushNotificationConfigModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.config_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.create_table">
+<span class="sig-name descname"><span class="pre">create_table</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.create_table" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.delete_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.delete_info" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes push notification configurations for a task.</p>
+<p>If config_id is provided, only that specific configuration is deleted.
+If config_id is None, all configurations for the task are deleted.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.engine">
+<span class="sig-name descname"><span class="pre">engine</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AsyncEngine</span></em><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.engine" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.get_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.PushNotificationConfig" title="a2a.types.PushNotificationConfig"><span class="pre">PushNotificationConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.get_info" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all push notification configurations for a task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.initialize">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.initialize" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the database and create the table if needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.set_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notification_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.PushNotificationConfig" title="a2a.types.PushNotificationConfig"><span class="pre">PushNotificationConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.set_info" title="Link to this definition">¶</a></dt>
+<dd><p>Sets or updates the push notification configuration for a task.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="a2a-server-tasks-database-task-store-module">
-<h2>a2a.server.tasks.database_task_store module<a class="headerlink" href="#a2a-server-tasks-database-task-store-module" title="Link to this heading">¶</a></h2>
+<section id="module-a2a.server.tasks.database_task_store">
+<span id="a2a-server-tasks-database-task-store-module"></span><h2>a2a.server.tasks.database_task_store module<a class="headerlink" href="#module-a2a.server.tasks.database_task_store" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.tasks.database_task_store.</span></span><span class="sig-name descname"><span class="pre">DatabaseTaskStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncEngine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tasks'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#a2a.server.tasks.task_store.TaskStore" title="a2a.server.tasks.task_store.TaskStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskStore</span></code></a></p>
+<p>SQLAlchemy-based implementation of TaskStore.</p>
+<p>Stores task objects in a database supported by SQLAlchemy.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.async_session_maker">
+<span class="sig-name descname"><span class="pre">async_session_maker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">async_sessionmaker</span><span class="p"><span class="pre">[</span></span><span class="pre">AsyncSession</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.async_session_maker" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.create_table">
+<span class="sig-name descname"><span class="pre">create_table</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.create_table" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a task from the database by ID.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.engine">
+<span class="sig-name descname"><span class="pre">engine</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AsyncEngine</span></em><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.engine" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.get">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.get" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a task from the database by ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.initialize">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.initialize" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the database and create the table if needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.save">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.save" title="Link to this definition">¶</a></dt>
+<dd><p>Saves or updates a task in the database.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.database_task_store.DatabaseTaskStore.task_model">
+<span class="sig-name descname"><span class="pre">task_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.server.html#a2a.server.models.TaskModel" title="a2a.server.models.TaskModel"><span class="pre">TaskModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.task_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-a2a.server.tasks.inmemory_push_notification_config_store">
 <span id="a2a-server-tasks-inmemory-push-notification-config-store-module"></span><h2>a2a.server.tasks.inmemory_push_notification_config_store module<a class="headerlink" href="#module-a2a.server.tasks.inmemory_push_notification_config_store" title="Link to this heading">¶</a></h2>
@@ -745,16 +851,108 @@ to the history first.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.tasks.</span></span><span class="sig-name descname"><span class="pre">DatabasePushNotificationConfigStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Placeholder for DatabasePushNotificationConfigStore when dependencies are not installed.</p>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.tasks.</span></span><span class="sig-name descname"><span class="pre">DatabasePushNotificationConfigStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncEngine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'push_notification_configs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encryption_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bytes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore" title="a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">PushNotificationConfigStore</span></code></a></p>
+<p>SQLAlchemy-based implementation of PushNotificationConfigStore.</p>
+<p>Stores push notification configurations in a database supported by SQLAlchemy.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.async_session_maker">
+<span class="sig-name descname"><span class="pre">async_session_maker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">async_sessionmaker</span><span class="p"><span class="pre">[</span></span><span class="pre">AsyncSession</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.async_session_maker" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.config_model">
+<span class="sig-name descname"><span class="pre">config_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.server.html#a2a.server.models.PushNotificationConfigModel" title="a2a.server.models.PushNotificationConfigModel"><span class="pre">PushNotificationConfigModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.config_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.create_table">
+<span class="sig-name descname"><span class="pre">create_table</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.create_table" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.delete_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.delete_info" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes push notification configurations for a task.</p>
+<p>If config_id is provided, only that specific configuration is deleted.
+If config_id is None, all configurations for the task are deleted.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.engine">
+<span class="sig-name descname"><span class="pre">engine</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AsyncEngine</span></em><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.engine" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.get_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.PushNotificationConfig" title="a2a.types.PushNotificationConfig"><span class="pre">PushNotificationConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.get_info" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all push notification configurations for a task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.initialize">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.initialize" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the database and create the table if needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabasePushNotificationConfigStore.set_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notification_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.PushNotificationConfig" title="a2a.types.PushNotificationConfig"><span class="pre">PushNotificationConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.set_info" title="Link to this definition">¶</a></dt>
+<dd><p>Sets or updates the push notification configuration for a task.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.tasks.</span></span><span class="sig-name descname"><span class="pre">DatabaseTaskStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Placeholder for DatabaseTaskStore when dependencies are not installed.</p>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.tasks.</span></span><span class="sig-name descname"><span class="pre">DatabaseTaskStore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AsyncEngine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tasks'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#a2a.server.tasks.task_store.TaskStore" title="a2a.server.tasks.task_store.TaskStore"><code class="xref py py-class docutils literal notranslate"><span class="pre">TaskStore</span></code></a></p>
+<p>SQLAlchemy-based implementation of TaskStore.</p>
+<p>Stores task objects in a database supported by SQLAlchemy.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.async_session_maker">
+<span class="sig-name descname"><span class="pre">async_session_maker</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">async_sessionmaker</span><span class="p"><span class="pre">[</span></span><span class="pre">AsyncSession</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.async_session_maker" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.create_table">
+<span class="sig-name descname"><span class="pre">create_table</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.create_table" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.delete">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.delete" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes a task from the database by ID.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.engine">
+<span class="sig-name descname"><span class="pre">engine</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">AsyncEngine</span></em><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.engine" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.get">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.get" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a task from the database by ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.initialize">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.initialize" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the database and create the table if needed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.save">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.save" title="Link to this definition">¶</a></dt>
+<dd><p>Saves or updates a task in the database.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.tasks.DatabaseTaskStore.task_model">
+<span class="sig-name descname"><span class="pre">task_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.server.html#a2a.server.models.TaskModel" title="a2a.server.models.TaskModel"><span class="pre">TaskModel</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#a2a.server.tasks.DatabaseTaskStore.task_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1247,8 +1445,34 @@ to the history first.</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#a2a-server-tasks-database-push-notification-config-store-module">a2a.server.tasks.database_push_notification_config_store module</a></li>
-<li><a class="reference internal" href="#a2a-server-tasks-database-task-store-module">a2a.server.tasks.database_task_store module</a></li>
+<li><a class="reference internal" href="#module-a2a.server.tasks.database_push_notification_config_store">a2a.server.tasks.database_push_notification_config_store module</a><ul>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.async_session_maker"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.async_session_maker</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.config_model"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.config_model</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.create_table"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.create_table</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.delete_info"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.delete_info()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.engine"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.engine</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.get_info"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.get_info()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.initialize"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.initialize()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore.set_info"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.set_info()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-a2a.server.tasks.database_task_store">a2a.server.tasks.database_task_store module</a><ul>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.async_session_maker"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.async_session_maker</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.create_table"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.create_table</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.delete"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.delete()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.engine"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.engine</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.get"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.get()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.initialize"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.initialize()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.save"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.save()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.database_task_store.DatabaseTaskStore.task_model"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.task_model</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-a2a.server.tasks.inmemory_push_notification_config_store">a2a.server.tasks.inmemory_push_notification_config_store module</a><ul>
 <li><a class="reference internal" href="#a2a.server.tasks.inmemory_push_notification_config_store.InMemoryPushNotificationConfigStore"><code class="docutils literal notranslate"><span class="pre">InMemoryPushNotificationConfigStore</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.server.tasks.inmemory_push_notification_config_store.InMemoryPushNotificationConfigStore.delete_info"><code class="docutils literal notranslate"><span class="pre">InMemoryPushNotificationConfigStore.delete_info()</span></code></a></li>
@@ -1335,8 +1559,28 @@ to the history first.</p>
 <li><a class="reference internal" href="#a2a.server.tasks.BasePushNotificationSender.send_notification"><code class="docutils literal notranslate"><span class="pre">BasePushNotificationSender.send_notification()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore</span></code></a></li>
-<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.async_session_maker"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.async_session_maker</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.config_model"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.config_model</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.create_table"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.create_table</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.delete_info"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.delete_info()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.engine"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.engine</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.get_info"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.get_info()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.initialize"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.initialize()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabasePushNotificationConfigStore.set_info"><code class="docutils literal notranslate"><span class="pre">DatabasePushNotificationConfigStore.set_info()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.async_session_maker"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.async_session_maker</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.create_table"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.create_table</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.delete"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.delete()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.engine"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.engine</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.get"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.get()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.initialize"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.initialize()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.save"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.save()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.DatabaseTaskStore.task_model"><code class="docutils literal notranslate"><span class="pre">DatabaseTaskStore.task_model</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#a2a.server.tasks.InMemoryPushNotificationConfigStore"><code class="docutils literal notranslate"><span class="pre">InMemoryPushNotificationConfigStore</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.server.tasks.InMemoryPushNotificationConfigStore.delete_info"><code class="docutils literal notranslate"><span class="pre">InMemoryPushNotificationConfigStore.delete_info()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.tasks.InMemoryPushNotificationConfigStore.get_info"><code class="docutils literal notranslate"><span class="pre">InMemoryPushNotificationConfigStore.get_info()</span></code></a></li>

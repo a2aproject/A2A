@@ -262,8 +262,178 @@
 <span id="a2a-grpc-a2a-pb2-module"></span><h2>a2a.grpc.a2a_pb2 module<a class="headerlink" href="#module-a2a.grpc.a2a_pb2" title="Link to this heading">¶</a></h2>
 <p>Generated protocol buffer code.</p>
 </section>
-<section id="a2a-grpc-a2a-pb2-grpc-module">
-<h2>a2a.grpc.a2a_pb2_grpc module<a class="headerlink" href="#a2a-grpc-a2a-pb2-grpc-module" title="Link to this heading">¶</a></h2>
+<section id="module-a2a.grpc.a2a_pb2_grpc">
+<span id="a2a-grpc-a2a-pb2-grpc-module"></span><h2>a2a.grpc.a2a_pb2_grpc module<a class="headerlink" href="#module-a2a.grpc.a2a_pb2_grpc" title="Link to this heading">¶</a></h2>
+<p>Client and server classes corresponding to protobuf-defined services.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.grpc.a2a_pb2_grpc.</span></span><span class="sig-name descname"><span class="pre">A2AService</span></span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A2AService defines the gRPC version of the A2A protocol. This has a slightly
+different shape than the JSONRPC version to better conform to AIP-127,
+where appropriate. The nouns are AgentCard, Message, Task and
+TaskPushNotificationConfig.
+- Messages are not a standard resource so there is no get/delete/update/list
+interface, only a send and stream custom methods.
+- Tasks have a get interface and custom cancel and subscribe methods.
+- TaskPushNotificationConfig are a resource whose parent is a task.
+They have get, list and create methods.
+- AgentCard is a static resource with only a get method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.CancelTask">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CancelTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.CancelTask" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.CreateTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CreateTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.CreateTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.DeleteTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DeleteTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.DeleteTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.GetAgentCard">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetAgentCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.GetAgentCard" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.GetTask">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.GetTask" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.GetTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.GetTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.ListTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ListTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.ListTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.SendMessage">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SendMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.SendMessage" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.SendStreamingMessage">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SendStreamingMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.SendStreamingMessage" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AService.TaskSubscription">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TaskSubscription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">call_credentials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insecure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait_for_ready</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AService.TaskSubscription" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.grpc.a2a_pb2_grpc.</span></span><span class="sig-name descname"><span class="pre">A2AServiceServicer</span></span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A2AService defines the gRPC version of the A2A protocol. This has a slightly
+different shape than the JSONRPC version to better conform to AIP-127,
+where appropriate. The nouns are AgentCard, Message, Task and
+TaskPushNotificationConfig.
+- Messages are not a standard resource so there is no get/delete/update/list
+interface, only a send and stream custom methods.
+- Tasks have a get interface and custom cancel and subscribe methods.
+- TaskPushNotificationConfig are a resource whose parent is a task.
+They have get, list and create methods.
+- AgentCard is a static resource with only a get method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.CancelTask">
+<span class="sig-name descname"><span class="pre">CancelTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.CancelTask" title="Link to this definition">¶</a></dt>
+<dd><p>Cancel a task from the agent. If supported one should expect no
+more task updates for the task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.CreateTaskPushNotificationConfig">
+<span class="sig-name descname"><span class="pre">CreateTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.CreateTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Set a push notification config for a task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.DeleteTaskPushNotificationConfig">
+<span class="sig-name descname"><span class="pre">DeleteTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.DeleteTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a push notification config for a task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetAgentCard">
+<span class="sig-name descname"><span class="pre">GetAgentCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetAgentCard" title="Link to this definition">¶</a></dt>
+<dd><p>GetAgentCard returns the agent card for the agent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetTask">
+<span class="sig-name descname"><span class="pre">GetTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetTask" title="Link to this definition">¶</a></dt>
+<dd><p>Get the current state of a task from the agent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetTaskPushNotificationConfig">
+<span class="sig-name descname"><span class="pre">GetTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Get a push notification config for a task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.ListTaskPushNotificationConfig">
+<span class="sig-name descname"><span class="pre">ListTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.ListTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Get a list of push notifications configured for a task.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.SendMessage">
+<span class="sig-name descname"><span class="pre">SendMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.SendMessage" title="Link to this definition">¶</a></dt>
+<dd><p>Send a message to the agent. This is a blocking call that will return the
+task once it is completed, or a LRO if requested.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.SendStreamingMessage">
+<span class="sig-name descname"><span class="pre">SendStreamingMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.SendStreamingMessage" title="Link to this definition">¶</a></dt>
+<dd><p>SendStreamingMessage is a streaming call that will return a stream of
+task update events until the Task is in an interrupted or terminal state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.TaskSubscription">
+<span class="sig-name descname"><span class="pre">TaskSubscription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.TaskSubscription" title="Link to this definition">¶</a></dt>
+<dd><p>TaskSubscription is a streaming call that will return a stream of task
+update events. This attaches the stream to an existing in process task.
+If the task is complete the stream will return the completed task (like
+GetTask) and close the stream.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.A2AServiceStub">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.grpc.a2a_pb2_grpc.</span></span><span class="sig-name descname"><span class="pre">A2AServiceStub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceStub" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A2AService defines the gRPC version of the A2A protocol. This has a slightly
+different shape than the JSONRPC version to better conform to AIP-127,
+where appropriate. The nouns are AgentCard, Message, Task and
+TaskPushNotificationConfig.
+- Messages are not a standard resource so there is no get/delete/update/list
+interface, only a send and stream custom methods.
+- Tasks have a get interface and custom cancel and subscribe methods.
+- TaskPushNotificationConfig are a resource whose parent is a task.
+They have get, list and create methods.
+- AgentCard is a static resource with only a get method.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.grpc.a2a_pb2_grpc.add_A2AServiceServicer_to_server">
+<span class="sig-prename descclassname"><span class="pre">a2a.grpc.a2a_pb2_grpc.</span></span><span class="sig-name descname"><span class="pre">add_A2AServiceServicer_to_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">servicer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.grpc.a2a_pb2_grpc.add_A2AServiceServicer_to_server" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
 <section id="module-a2a.grpc">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-a2a.grpc" title="Link to this heading">¶</a></h2>
@@ -328,7 +498,37 @@
 <li><a class="reference internal" href="#">a2a.grpc package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-a2a.grpc.a2a_pb2">a2a.grpc.a2a_pb2 module</a></li>
-<li><a class="reference internal" href="#a2a-grpc-a2a-pb2-grpc-module">a2a.grpc.a2a_pb2_grpc module</a></li>
+<li><a class="reference internal" href="#module-a2a.grpc.a2a_pb2_grpc">a2a.grpc.a2a_pb2_grpc module</a><ul>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService"><code class="docutils literal notranslate"><span class="pre">A2AService</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.CancelTask"><code class="docutils literal notranslate"><span class="pre">A2AService.CancelTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.CreateTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AService.CreateTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.DeleteTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AService.DeleteTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.GetAgentCard"><code class="docutils literal notranslate"><span class="pre">A2AService.GetAgentCard()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.GetTask"><code class="docutils literal notranslate"><span class="pre">A2AService.GetTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.GetTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AService.GetTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.ListTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AService.ListTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.SendMessage"><code class="docutils literal notranslate"><span class="pre">A2AService.SendMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.SendStreamingMessage"><code class="docutils literal notranslate"><span class="pre">A2AService.SendStreamingMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AService.TaskSubscription"><code class="docutils literal notranslate"><span class="pre">A2AService.TaskSubscription()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.CancelTask"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.CancelTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.CreateTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.CreateTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.DeleteTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.DeleteTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetAgentCard"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.GetAgentCard()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetTask"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.GetTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.GetTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.GetTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.ListTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.ListTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.SendMessage"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.SendMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.SendStreamingMessage"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.SendStreamingMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer.TaskSubscription"><code class="docutils literal notranslate"><span class="pre">A2AServiceServicer.TaskSubscription()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.A2AServiceStub"><code class="docutils literal notranslate"><span class="pre">A2AServiceStub</span></code></a></li>
+<li><a class="reference internal" href="#a2a.grpc.a2a_pb2_grpc.add_A2AServiceServicer_to_server"><code class="docutils literal notranslate"><span class="pre">add_A2AServiceServicer_to_server()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-a2a.grpc">Module contents</a></li>
 </ul>
 </li>

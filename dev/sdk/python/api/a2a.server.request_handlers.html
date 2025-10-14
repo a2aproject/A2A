@@ -336,8 +336,185 @@ Requires the task and its queue to still be active.</p>
 </dd></dl>
 
 </section>
-<section id="a2a-server-request-handlers-grpc-handler-module">
-<h2>a2a.server.request_handlers.grpc_handler module<a class="headerlink" href="#a2a-server-request-handlers-grpc-handler-module" title="Link to this heading">¶</a></h2>
+<section id="module-a2a.server.request_handlers.grpc_handler">
+<span id="a2a-server-request-handlers-grpc-handler-module"></span><h2>a2a.server.request_handlers.grpc_handler module<a class="headerlink" href="#module-a2a.server.request_handlers.grpc_handler" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.CallContextBuilder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.request_handlers.grpc_handler.</span></span><span class="sig-name descname"><span class="pre">CallContextBuilder</span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.CallContextBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>A class for building ServerCallContexts using the Starlette Request.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.CallContextBuilder.build">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.CallContextBuilder.build" title="Link to this definition">¶</a></dt>
+<dd><p>Builds a ServerCallContext from a gRPC Request.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.DefaultCallContextBuilder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.request_handlers.grpc_handler.</span></span><span class="sig-name descname"><span class="pre">DefaultCallContextBuilder</span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.DefaultCallContextBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.CallContextBuilder" title="a2a.server.request_handlers.grpc_handler.CallContextBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">CallContextBuilder</span></code></a></p>
+<p>A default implementation of CallContextBuilder.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.DefaultCallContextBuilder.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.DefaultCallContextBuilder.build" title="Link to this definition">¶</a></dt>
+<dd><p>Builds the ServerCallContext.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.request_handlers.grpc_handler.</span></span><span class="sig-name descname"><span class="pre">GrpcHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_card</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.AgentCard" title="a2a.types.AgentCard"><span class="pre">AgentCard</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.request_handlers.request_handler.RequestHandler" title="a2a.server.request_handlers.request_handler.RequestHandler"><span class="pre">RequestHandler</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.CallContextBuilder" title="a2a.server.request_handlers.grpc_handler.CallContextBuilder"><span class="pre">CallContextBuilder</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">card_modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.AgentCard" title="a2a.types.AgentCard"><span class="pre">AgentCard</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="a2a.html#a2a.types.AgentCard" title="a2a.types.AgentCard"><span class="pre">AgentCard</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="a2a.grpc.html#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer" title="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer"><code class="xref py py-class docutils literal notranslate"><span class="pre">A2AServiceServicer</span></code></a></p>
+<p>Maps incoming gRPC requests to the appropriate request handler method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.CancelTask">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CancelTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CancelTaskRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Task</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.CancelTask" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘CancelTask’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>CancelTaskRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>Task</cite> object containing the updated Task or a gRPC error.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.CreateTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CreateTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CreateTaskPushNotificationConfigRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TaskPushNotificationConfig</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.CreateTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘CreateTaskPushNotificationConfig’ gRPC method.</p>
+<p>Requires the agent to support push notifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>CreateTaskPushNotificationConfigRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>TaskPushNotificationConfig</cite> object</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="a2a.utils.html#a2a.utils.errors.ServerError" title="a2a.utils.errors.ServerError"><strong>ServerError</strong></a> – If push notifications are not supported by the agent
+    (due to the <cite>&#64;validate</cite> decorator).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.GetAgentCard">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetAgentCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetAgentCardRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AgentCard</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.GetAgentCard" title="Link to this definition">¶</a></dt>
+<dd><p>Get the agent card for the agent served.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.GetTask">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetTaskRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Task</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.GetTask" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘GetTask’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>GetTaskRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>Task</cite> object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.GetTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetTaskPushNotificationConfigRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TaskPushNotificationConfig</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.GetTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘GetTaskPushNotificationConfig’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>GetTaskPushNotificationConfigRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>TaskPushNotificationConfig</cite> object containing the config.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.SendMessage">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SendMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SendMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SendMessageResponse</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.SendMessage" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘SendMessage’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>SendMessageRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>SendMessageResponse</cite> object containing the result (Task or
+Message) or throws an error response if a <cite>ServerError</cite> is raised
+by the handler.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.SendStreamingMessage">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SendStreamingMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SendMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">StreamResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.SendStreamingMessage" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘StreamMessage’ gRPC method.</p>
+<p>Yields response objects as they are produced by the underlying handler’s
+stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>SendMessageRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>StreamResponse</cite> objects containing streaming events
+(Task, Message, TaskStatusUpdateEvent, TaskArtifactUpdateEvent)
+or gRPC error responses if a <cite>ServerError</cite> is raised.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.TaskSubscription">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TaskSubscription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TaskSubscriptionRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">StreamResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.TaskSubscription" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘TaskSubscription’ gRPC method.</p>
+<p>Yields response objects as they are produced by the underlying handler’s
+stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>TaskSubscriptionRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>StreamResponse</cite> objects containing streaming events</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.grpc_handler.GrpcHandler.abort_context">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abort_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.utils.html#a2a.utils.errors.ServerError" title="a2a.utils.errors.ServerError"><span class="pre">ServerError</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.abort_context" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the grpc errors appropriately in the context.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-a2a.server.request_handlers.jsonrpc_handler">
 <span id="a2a-server-request-handlers-jsonrpc-handler-module"></span><h2>a2a.server.request_handlers.jsonrpc_handler module<a class="headerlink" href="#module-a2a.server.request_handlers.jsonrpc_handler" title="Link to this heading">¶</a></h2>
@@ -795,7 +972,7 @@ with Envoy is not feasible for a given deployment solution. Use this handler
 and a related application if you desire to ONLY server the RESTful API.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.get_push_notification">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.get_push_notification" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.get_push_notification" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/pushNotificationConfig/get’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -812,7 +989,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.list_push_notifications">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_push_notifications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.list_push_notifications" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_push_notifications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.list_push_notifications" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/pushNotificationConfig/list’ REST method.</p>
 <p>This method is currently not implemented.</p>
 <dl class="field-list simple">
@@ -833,7 +1010,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.list_tasks">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.list_tasks" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.list_tasks" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/list’ REST method.</p>
 <p>This method is currently not implemented.</p>
 <dl class="field-list simple">
@@ -854,7 +1031,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.on_cancel_task">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_cancel_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_cancel_task" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_cancel_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_cancel_task" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/cancel’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -871,7 +1048,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.on_get_task">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_get_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_get_task" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_get_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_get_task" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘v1/tasks/{id}’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -888,7 +1065,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.on_message_send">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_message_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_message_send" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_message_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_message_send" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘message/send’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -905,7 +1082,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.on_message_send_stream">
-<span class="sig-name descname"><span class="pre">on_message_send_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_message_send_stream" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">on_message_send_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_message_send_stream" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘message/stream’ REST method.</p>
 <p>Yields response objects as they are produced by the underlying handler’s stream.</p>
 <dl class="field-list simple">
@@ -924,7 +1101,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.on_resubscribe_to_task">
-<span class="sig-name descname"><span class="pre">on_resubscribe_to_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_resubscribe_to_task" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">on_resubscribe_to_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.on_resubscribe_to_task" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/resubscribe’ REST method.</p>
 <p>Yields response objects as they are produced by the underlying handler’s stream.</p>
 <dl class="field-list simple">
@@ -942,7 +1119,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.rest_handler.RESTHandler.set_push_notification">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.set_push_notification" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.rest_handler.RESTHandler.set_push_notification" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/pushNotificationConfig/set’ REST method.</p>
 <p>Requires the agent to support push notifications.</p>
 <dl class="field-list simple">
@@ -1046,9 +1223,153 @@ Requires the task and its queue to still be active.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.request_handlers.</span></span><span class="sig-name descname"><span class="pre">GrpcHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Placeholder for GrpcHandler when dependencies are not installed.</p>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.request_handlers.</span></span><span class="sig-name descname"><span class="pre">GrpcHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_card</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.AgentCard" title="a2a.types.AgentCard"><span class="pre">AgentCard</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.request_handlers.request_handler.RequestHandler" title="a2a.server.request_handlers.request_handler.RequestHandler"><span class="pre">RequestHandler</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_builder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.CallContextBuilder" title="a2a.server.request_handlers.grpc_handler.CallContextBuilder"><span class="pre">CallContextBuilder</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">card_modifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.AgentCard" title="a2a.types.AgentCard"><span class="pre">AgentCard</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="a2a.html#a2a.types.AgentCard" title="a2a.types.AgentCard"><span class="pre">AgentCard</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="a2a.grpc.html#a2a.grpc.a2a_pb2_grpc.A2AServiceServicer" title="a2a.grpc.a2a_pb2_grpc.A2AServiceServicer"><code class="xref py py-class docutils literal notranslate"><span class="pre">A2AServiceServicer</span></code></a></p>
+<p>Maps incoming gRPC requests to the appropriate request handler method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.CancelTask">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CancelTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CancelTaskRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Task</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.CancelTask" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘CancelTask’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>CancelTaskRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>Task</cite> object containing the updated Task or a gRPC error.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.CreateTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CreateTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CreateTaskPushNotificationConfigRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TaskPushNotificationConfig</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.CreateTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘CreateTaskPushNotificationConfig’ gRPC method.</p>
+<p>Requires the agent to support push notifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>CreateTaskPushNotificationConfigRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>TaskPushNotificationConfig</cite> object</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="a2a.utils.html#a2a.utils.errors.ServerError" title="a2a.utils.errors.ServerError"><strong>ServerError</strong></a> – If push notifications are not supported by the agent
+    (due to the <cite>&#64;validate</cite> decorator).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.GetAgentCard">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetAgentCard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetAgentCardRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AgentCard</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.GetAgentCard" title="Link to this definition">¶</a></dt>
+<dd><p>Get the agent card for the agent served.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.GetTask">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetTaskRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Task</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.GetTask" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘GetTask’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>GetTaskRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>Task</cite> object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.GetTaskPushNotificationConfig">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GetTaskPushNotificationConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetTaskPushNotificationConfigRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TaskPushNotificationConfig</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.GetTaskPushNotificationConfig" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘GetTaskPushNotificationConfig’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>GetTaskPushNotificationConfigRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>TaskPushNotificationConfig</cite> object containing the config.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.SendMessage">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SendMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SendMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SendMessageResponse</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.SendMessage" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘SendMessage’ gRPC method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>SendMessageRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A <cite>SendMessageResponse</cite> object containing the result (Task or
+Message) or throws an error response if a <cite>ServerError</cite> is raised
+by the handler.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.SendStreamingMessage">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SendStreamingMessage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SendMessageRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">StreamResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.SendStreamingMessage" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘StreamMessage’ gRPC method.</p>
+<p>Yields response objects as they are produced by the underlying handler’s
+stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>SendMessageRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>StreamResponse</cite> objects containing streaming events
+(Task, Message, TaskStatusUpdateEvent, TaskArtifactUpdateEvent)
+or gRPC error responses if a <cite>ServerError</cite> is raised.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.TaskSubscription">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TaskSubscription</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TaskSubscriptionRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">StreamResponse</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.TaskSubscription" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the ‘TaskSubscription’ gRPC method.</p>
+<p>Yields response objects as they are produced by the underlying handler’s
+stream.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – The incoming <cite>TaskSubscriptionRequest</cite> object.</p></li>
+<li><p><strong>context</strong> – Context provided by the server.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>StreamResponse</cite> objects containing streaming events</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.request_handlers.GrpcHandler.abort_context">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">abort_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.utils.html#a2a.utils.errors.ServerError" title="a2a.utils.errors.ServerError"><span class="pre">ServerError</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ServicerContext</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.request_handlers.GrpcHandler.abort_context" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the grpc errors appropriately in the context.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1251,7 +1572,7 @@ with Envoy is not feasible for a given deployment solution. Use this handler
 and a related application if you desire to ONLY server the RESTful API.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.get_push_notification">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.get_push_notification" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.get_push_notification" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/pushNotificationConfig/get’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1268,7 +1589,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.list_push_notifications">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_push_notifications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.list_push_notifications" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_push_notifications</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.list_push_notifications" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/pushNotificationConfig/list’ REST method.</p>
 <p>This method is currently not implemented.</p>
 <dl class="field-list simple">
@@ -1289,7 +1610,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.list_tasks">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.list_tasks" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.list_tasks" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/list’ REST method.</p>
 <p>This method is currently not implemented.</p>
 <dl class="field-list simple">
@@ -1310,7 +1631,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.on_cancel_task">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_cancel_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_cancel_task" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_cancel_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_cancel_task" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/cancel’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1327,7 +1648,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.on_get_task">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_get_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_get_task" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_get_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_get_task" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘v1/tasks/{id}’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1344,7 +1665,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.on_message_send">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_message_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_message_send" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_message_send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_message_send" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘message/send’ REST method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1361,7 +1682,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.on_message_send_stream">
-<span class="sig-name descname"><span class="pre">on_message_send_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_message_send_stream" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">on_message_send_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_message_send_stream" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘message/stream’ REST method.</p>
 <p>Yields response objects as they are produced by the underlying handler’s stream.</p>
 <dl class="field-list simple">
@@ -1380,7 +1701,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.on_resubscribe_to_task">
-<span class="sig-name descname"><span class="pre">on_resubscribe_to_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_resubscribe_to_task" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">on_resubscribe_to_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncIterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.on_resubscribe_to_task" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/resubscribe’ REST method.</p>
 <p>Yields response objects as they are produced by the underlying handler’s stream.</p>
 <dl class="field-list simple">
@@ -1398,7 +1719,7 @@ and a related application if you desire to ONLY server the RESTful API.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.request_handlers.RESTHandler.set_push_notification">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.set_push_notification" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_push_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.request_handlers.RESTHandler.set_push_notification" title="Link to this definition">¶</a></dt>
 <dd><p>Handles the ‘tasks/pushNotificationConfig/set’ REST method.</p>
 <p>Requires the agent to support push notifications.</p>
 <dl class="field-list simple">
@@ -1720,7 +2041,29 @@ or an error response.</p>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#a2a-server-request-handlers-grpc-handler-module">a2a.server.request_handlers.grpc_handler module</a></li>
+<li><a class="reference internal" href="#module-a2a.server.request_handlers.grpc_handler">a2a.server.request_handlers.grpc_handler module</a><ul>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.CallContextBuilder"><code class="docutils literal notranslate"><span class="pre">CallContextBuilder</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.CallContextBuilder.build"><code class="docutils literal notranslate"><span class="pre">CallContextBuilder.build()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.DefaultCallContextBuilder"><code class="docutils literal notranslate"><span class="pre">DefaultCallContextBuilder</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.DefaultCallContextBuilder.build"><code class="docutils literal notranslate"><span class="pre">DefaultCallContextBuilder.build()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler"><code class="docutils literal notranslate"><span class="pre">GrpcHandler</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.CancelTask"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.CancelTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.CreateTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.CreateTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.GetAgentCard"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.GetAgentCard()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.GetTask"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.GetTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.GetTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.GetTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.SendMessage"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.SendMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.SendStreamingMessage"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.SendStreamingMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.TaskSubscription"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.TaskSubscription()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.grpc_handler.GrpcHandler.abort_context"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.abort_context()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-a2a.server.request_handlers.jsonrpc_handler">a2a.server.request_handlers.jsonrpc_handler module</a><ul>
 <li><a class="reference internal" href="#a2a.server.request_handlers.jsonrpc_handler.JSONRPCHandler"><code class="docutils literal notranslate"><span class="pre">JSONRPCHandler</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.server.request_handlers.jsonrpc_handler.JSONRPCHandler.delete_push_notification_config"><code class="docutils literal notranslate"><span class="pre">JSONRPCHandler.delete_push_notification_config()</span></code></a></li>
@@ -1788,7 +2131,18 @@ or an error response.</p>
 <li><a class="reference internal" href="#a2a.server.request_handlers.DefaultRequestHandler.on_set_task_push_notification_config"><code class="docutils literal notranslate"><span class="pre">DefaultRequestHandler.on_set_task_push_notification_config()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler"><code class="docutils literal notranslate"><span class="pre">GrpcHandler</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler"><code class="docutils literal notranslate"><span class="pre">GrpcHandler</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.CancelTask"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.CancelTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.CreateTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.CreateTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.GetAgentCard"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.GetAgentCard()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.GetTask"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.GetTask()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.GetTaskPushNotificationConfig"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.GetTaskPushNotificationConfig()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.SendMessage"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.SendMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.SendStreamingMessage"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.SendStreamingMessage()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.TaskSubscription"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.TaskSubscription()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.request_handlers.GrpcHandler.abort_context"><code class="docutils literal notranslate"><span class="pre">GrpcHandler.abort_context()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#a2a.server.request_handlers.JSONRPCHandler"><code class="docutils literal notranslate"><span class="pre">JSONRPCHandler</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.server.request_handlers.JSONRPCHandler.delete_push_notification_config"><code class="docutils literal notranslate"><span class="pre">JSONRPCHandler.delete_push_notification_config()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.request_handlers.JSONRPCHandler.get_authenticated_extended_card"><code class="docutils literal notranslate"><span class="pre">JSONRPCHandler.get_authenticated_extended_card()</span></code></a></li>
