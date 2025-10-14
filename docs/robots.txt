@@ -1,24 +1,5 @@
-# -----------------------------------------------------------------------------
-# Allow major search engines and generative AI crawlers to crawl the entire site.
-# -----------------------------------------------------------------------------
-
-# Major search engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Baiduspider
-Allow: /
-
-User-agent: Yandex
+# Allow all crawlers to access the entire site.
+User-agent: *
 Allow: /
 
 # Generative AI and LLM crawlers
@@ -43,53 +24,16 @@ Allow: /
 User-agent: Applebot
 Allow: /
 
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 User-agent: GoogleOther
 Allow: /
 
 User-agent: DuckAssistBot
 Allow: /
 
-# -----------------------------------------------------------------------------
-# Default rule: Disallow all unknown bots.
-# -----------------------------------------------------------------------------
-User-agent: *
-Disallow: /
-
-# -----------------------------------------------------------------------------
-# Disallow common build, temporary, and configuration directories/files
-# -----------------------------------------------------------------------------
-Disallow: /_site/          # Common Jekyll build directory
-Disallow: /_temp/          # General temporary directory
-Disallow: /build/          # General build output directory
-Disallow: /dist/           # Distribution/output directory
-Disallow: /.cache/         # Caching directory
-Disallow: /.git/           # Git repository files (if somehow exposed by accident)
-Disallow: /.github/        # GitHub Actions workflows and internal configuration files
-Disallow: /node_modules/   # Node.js dependencies (often large and irrelevant for indexing)
-Disallow: /vendor/         # Third-party libraries or assets
-
-# -----------------------------------------------------------------------------
-# Disallow configuration and lock files
-# -----------------------------------------------------------------------------
-Disallow: /_config.yml
-Disallow: /package.json
-Disallow: /package-lock.json
-Disallow: /yarn.lock
-
-# -----------------------------------------------------------------------------
-# Disallow temporary or internal file types
-# -----------------------------------------------------------------------------
-Disallow: /*.bak$
-Disallow: /*.tmp$
-Disallow: /*.log$
-Disallow: /*.swp$
-
-# -----------------------------------------------------------------------------
-# Disallow draft content
-# -----------------------------------------------------------------------------
-Disallow: /_drafts/
-
-# -----------------------------------------------------------------------------
-# Sitemap
-# -----------------------------------------------------------------------------
 Sitemap: https://a2a-protocol.org/latest/sitemap.xml
