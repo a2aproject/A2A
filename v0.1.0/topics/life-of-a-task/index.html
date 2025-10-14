@@ -12,13 +12,13 @@
         <meta name="author" content="The Linux Foundation">
       
       
-        <link rel="canonical" href="https://a2a-protocol.org/latest/topics/a2a-and-mcp/">
+        <link rel="canonical" href="https://a2a-protocol.org/latest/topics/life-of-a-task/">
       
       
-        <link rel="prev" href="../streaming-and-async/">
+        <link rel="prev" href="../enterprise-ready/">
       
       
-        <link rel="next" href="../../tutorials/">
+        <link rel="next" href="../extensions/">
       
       
       <link rel="icon" href="../../assets/a2a-logo-black.svg">
@@ -26,7 +26,7 @@
     
     
       
-        <title>A2A and MCP - A2A Protocol</title>
+        <title>Life of a Task - A2A Protocol</title>
       
     
     
@@ -155,7 +155,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#a2a-and-mcp-detailed-comparison" class="md-skip">
+        <a href="#life-of-a-task" class="md-skip">
           Skip to content
         </a>
       
@@ -190,7 +190,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              A2A and MCP
+              Life of a Task
             
           </span>
         </div>
@@ -490,10 +490,32 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../life-of-a-task/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Life of a Task
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -504,6 +526,98 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#group-related-interactions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Group Related Interactions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#agent-response-message-or-task" class="md-nav__link">
+    <span class="md-ellipsis">
+      Agent Response: Message or Task
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-refinements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task Refinements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-immutability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task Immutability
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parallel-follow-ups" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Follow-ups
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencing-previous-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencing Previous Artifacts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tracking-artifact-mutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tracking Artifact Mutation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-follow-up-scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Follow-up Scenario
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -559,32 +673,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    A2A and MCP
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../a2a-and-mcp/" class="md-nav__link">
         
   
   
@@ -595,86 +687,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#model-context-protocol" class="md-nav__link">
-    <span class="md-ellipsis">
-      Model Context Protocol
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#agent2agent-protocol" class="md-nav__link">
-    <span class="md-ellipsis">
-      Agent2Agent Protocol
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#why-different-protocols" class="md-nav__link">
-    <span class="md-ellipsis">
-      Why Different Protocols?
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#a2a-mcp-complementary-protocols-for-agentic-systems" class="md-nav__link">
-    <span class="md-ellipsis">
-      A2A ❤️ MCP: Complementary Protocols for Agentic Systems
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="A2A ❤️ MCP: Complementary Protocols for Agentic Systems">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-scenario-the-auto-repair-shop" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Scenario: The Auto Repair Shop
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#representing-a2a-agents-as-mcp-resources" class="md-nav__link">
-    <span class="md-ellipsis">
-      Representing A2A Agents as MCP Resources
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1197,60 +1209,72 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#model-context-protocol" class="md-nav__link">
+  <a href="#group-related-interactions" class="md-nav__link">
     <span class="md-ellipsis">
-      Model Context Protocol
+      Group Related Interactions
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#agent2agent-protocol" class="md-nav__link">
+  <a href="#agent-response-message-or-task" class="md-nav__link">
     <span class="md-ellipsis">
-      Agent2Agent Protocol
+      Agent Response: Message or Task
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-different-protocols" class="md-nav__link">
+  <a href="#task-refinements" class="md-nav__link">
     <span class="md-ellipsis">
-      Why Different Protocols?
+      Task Refinements
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#a2a-mcp-complementary-protocols-for-agentic-systems" class="md-nav__link">
+  <a href="#task-immutability" class="md-nav__link">
     <span class="md-ellipsis">
-      A2A ❤️ MCP: Complementary Protocols for Agentic Systems
+      Task Immutability
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="A2A ❤️ MCP: Complementary Protocols for Agentic Systems">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-scenario-the-auto-repair-shop" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example Scenario: The Auto Repair Shop
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#representing-a2a-agents-as-mcp-resources" class="md-nav__link">
+  <a href="#parallel-follow-ups" class="md-nav__link">
     <span class="md-ellipsis">
-      Representing A2A Agents as MCP Resources
+      Parallel Follow-ups
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencing-previous-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Referencing Previous Artifacts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tracking-artifact-mutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tracking Artifact Mutation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-follow-up-scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Follow-up Scenario
     </span>
   </a>
   
@@ -1275,128 +1299,243 @@
   
 
 
-<h1 id="a2a-and-mcp-detailed-comparison">A2A and MCP: Detailed Comparison<a class="headerlink" href="#a2a-and-mcp-detailed-comparison" title="Permanent link">&para;</a></h1>
-<p>In AI agent development, two key protocol types emerge to facilitate
-interoperability. One connects agents to tools and resources. The other enables
-agent-to-agent collaboration. The Agent2Agent (A2A) Protocol and the
-<a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP) address these distinct but highly complementary needs.</p>
-<h2 id="model-context-protocol">Model Context Protocol<a class="headerlink" href="#model-context-protocol" title="Permanent link">&para;</a></h2>
-<p>The Model Context Protocol (MCP) defines how an AI agent interacts with and utilizes individual tools and resources, such as a database or an API.</p>
-<p>This protocol offers the following capabilities:</p>
+<h1 id="life-of-a-task">Life of a Task<a class="headerlink" href="#life-of-a-task" title="Permanent link">&para;</a></h1>
+<p>In the Agent2Agent (A2A) Protocol, interactions can range from simple, stateless
+exchanges to complex, long-running processes. When an agent receives a message
+from a client, it can respond in one of two fundamental ways:</p>
 <ul>
-<li>Standardizes how AI models and agents connect to and interact with tools,
-  APIs, and other external resources.</li>
-<li>Defines a structured way to describe tool capabilities, similar to function
-  calling in Large Language Models.</li>
-<li>Passes inputs to tools and receives structured outputs.</li>
-<li>Supports common use cases, such as an LLM calling an external API, an agent
-  querying a database, or an agent connecting to predefined functions.</li>
+<li><strong>Respond with a Stateless <code>Message</code></strong>: This type of response is
+    typically used for immediate, self-contained interactions that conclude
+    without requiring further state management.</li>
+<li><strong>Initiate a Stateful <code>Task</code></strong>: If the response is a <code>Task</code>, the agent will
+    process it through a defined lifecycle, communicating progress and requiring
+    input as needed, until it reaches an interrupted state (e.g.,
+    <code>input-required</code>, <code>auth-required</code>) or a terminal state (e.g., <code>completed</code>,
+    <code>canceled</code>, <code>rejected</code>, <code>failed</code>).</li>
 </ul>
-<h2 id="agent2agent-protocol">Agent2Agent Protocol<a class="headerlink" href="#agent2agent-protocol" title="Permanent link">&para;</a></h2>
-<p>The Agent2Agent Protocol focuses on enabling different agents to collaborate with one another to achieve a common goal.</p>
-<p>This protocol offers the following capabilities:</p>
+<h2 id="group-related-interactions">Group Related Interactions<a class="headerlink" href="#group-related-interactions" title="Permanent link">&para;</a></h2>
+<p>A <code>contextId</code> is a crucial identifier that logically groups multiple <code>Task</code>
+objects and independent <code>Message</code> objects, providing continuity across a series of
+interactions.</p>
 <ul>
-<li>Standardizes how independent, often opaque, AI agents communicate and
-  collaborate as peers.</li>
-<li>Provides an application-level protocol for agents to discover each other,
-  negotiate interactions, manage shared tasks, and exchange conversational
-  context and complex data.</li>
-<li>Supports typical use cases, including a customer service agent delegating an
-  inquiry to a billing agent, or a travel agent coordinating with flight,
-  hotel, and activity agents.</li>
+<li>When a client sends a message for the first time, the agent responds
+    with a new <code>contextId</code>. If a task is initiated, it will also have a <code>taskId</code>.</li>
+<li>Clients can send subsequent messages and include the same <code>contextId</code> to
+    indicate that they are continuing their previous interaction within the same
+    context.</li>
+<li>Clients optionally attach the <code>taskId</code> to a subsequent message to
+    indicate that it continues that specific task.</li>
 </ul>
-<h2 id="why-different-protocols">Why Different Protocols?<a class="headerlink" href="#why-different-protocols" title="Permanent link">&para;</a></h2>
-<p>Both the MCP and A2A protocols are essential for building complex AI systems, and they address distinct but highly complementary needs. The distinction between A2A and MCP depends on what an agent interacts with.</p>
+<p>The <code>contextId</code> enables collaboration towards a common goal or a shared
+contextual session across multiple, potentially concurrent tasks. Internally, an
+A2A agent (especially one using an LLM) uses the <code>contextId</code> to manage its internal
+conversational state or its LLM context.</p>
+<h2 id="agent-response-message-or-task">Agent Response: Message or Task<a class="headerlink" href="#agent-response-message-or-task" title="Permanent link">&para;</a></h2>
+<p>The choice between responding with a <code>Message</code> or a <code>Task</code> depends on the
+nature of the interaction and the agent's capabilities:</p>
 <ul>
-<li><strong>Tools and Resources (MCP Domain)</strong>:<ul>
-<li><strong>Characteristics:</strong> These are typically primitives with well-defined,
-    structured inputs and outputs. They perform specific, often stateless,
-    functions. Examples include a calculator, a database query API, or a
-    weather lookup service.</li>
-<li><strong>Purpose:</strong> Agents use tools to gather information and perform discrete
-    functions.</li>
+<li><strong>Messages for Trivial Interactions</strong>: <code>Message</code> objects are suitable for
+    transactional interactions that don't require long-running
+    processing or complex state management. An agent might use messages to
+    negotiate the acceptance or scope of a task before committing to a <code>Task</code>
+    object.</li>
+<li><strong>Tasks for Stateful Interactions</strong>: Once an agent maps the intent of an
+    incoming message to a supported capability that requires substantial,
+    trackable work over an extended period, the agent responds with a <code>Task</code>
+    object.</li>
 </ul>
-</li>
-<li><strong>Agents (A2A domain)</strong>:<ul>
-<li><strong>Characteristics:</strong> These are more autonomous systems. They reason,
-    plan, use multiple tools, maintain state over longer interactions, and
-    engage in complex, often multi-turn dialogues to achieve novel or
-    evolving tasks.</li>
-<li><strong>Purpose:</strong> Agents collaborate with other agents to tackle broader, more
-    complex goals.</li>
-</ul>
-</li>
-</ul>
-<h2 id="a2a-mcp-complementary-protocols-for-agentic-systems">A2A ❤️ MCP: Complementary Protocols for Agentic Systems<a class="headerlink" href="#a2a-mcp-complementary-protocols-for-agentic-systems" title="Permanent link">&para;</a></h2>
-<p>An agentic application might primarily use A2A to communicate with other agents.
-Each individual agent internally uses MCP to interact with its specific tools
-and resources.</p>
-<div style="text-align: center; margin: 20px;">
-<p><img alt="Diagram showing A2A and MCP working together. A User interacts with Agent A using A2A. Agent A interacts with Agent B using A2A. Agent B uses MCP to interact with Tool 1 and Tool 2." src="../../assets/a2a-mcp.png" width="80%" /></p>
-<p><em>An agentic application might use A2A to communicate with other agents, while each agent internally uses MCP to interact with its specific tools and resources.</em></p>
-</div>
-<h3 id="example-scenario-the-auto-repair-shop">Example Scenario: The Auto Repair Shop<a class="headerlink" href="#example-scenario-the-auto-repair-shop" title="Permanent link">&para;</a></h3>
-<p>Consider an auto repair shop staffed by autonomous AI agent "mechanics".
-These mechanics use special-purpose tools, such as vehicle diagnostic scanners,
-repair manuals, and platform lifts, to diagnose and repair problems. The repair
-process can involve extensive conversations, research, and interaction with part
-suppliers.</p>
+<p>Conceptually, agents operate at different levels of complexity:</p>
 <ul>
-<li>
-<p><strong>Customer Interaction (User-to-Agent using A2A)</strong>: A customer (or their
-    primary assistant agent) uses A2A to communicate with the "Shop Manager"
-    agent.</p>
-<p>For example, the customer might say, "My car is making a rattling noise".</p>
-</li>
-<li>
-<p><strong>Multi-turn Diagnostic Conversation (Agent-to-Agent using A2A)</strong>: The Shop
-    Manager agent uses A2A for a multi-turn diagnostic conversation.</p>
-<p>For example, the Manager might ask, "Can you send a video of the noise?" or "I see some fluid leaking. How long has this been happening?".</p>
-</li>
-<li>
-<p><strong>Internal Tool Usage (Agent-to-Tool using MCP)</strong>: The Mechanic agent,
-    assigned the task by the Shop Manager, needs to diagnose the issue. The
-    Mechanic agent uses MCP to interact with its specialized tools.</p>
+<li><strong>Message-only Agents</strong>: Always respond with <code>Message</code> objects. They
+    typically don't manage complex state or long-running executions, and use
+    <code>contextId</code> to tie messages together. These agents might directly wrap LLM
+    invocations and simple tools.</li>
+<li><strong>Task-generating Agents</strong>: Always respond with <code>Task</code> objects, even for
+    responses, which are then modeled as completed tasks. Once a task is
+    created, the agent will only return <code>Task</code> objects in response to messages
+    sent, and once a task is complete, no more messages can be sent. This
+    approach avoids deciding between <code>Task</code> versus <code>Message</code>, but creates completed task objects
+    for even simple interactions.</li>
+<li><strong>Hybrid Agents</strong>: Generate both <code>Message</code> and <code>Task</code> objects. These agents
+    use messages to negotiate agent capability and the scope of work for a task,
+    then send a <code>Task</code> object to track execution and manage states like
+    <code>input-required</code> or error handling. Once a task is created, the agent will
+    only return <code>Task</code> objects in response to messages sent, and once a task is
+    complete, no more messages can be sent. A hybrid agent uses messages to
+    negotiate the scope of a task, and then generate a task to track its
+    execution.
+    For more information about hybrid agents, see <a href="https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879">A2A protocol: Demystifying Tasks vs Messages</a>.</li>
+</ul>
+<h2 id="task-refinements">Task Refinements<a class="headerlink" href="#task-refinements" title="Permanent link">&para;</a></h2>
+<p>Clients often need to send new requests based on task results or refine the
+outputs of previous tasks. This is modeled by starting another interaction using
+the same <code>contextId</code> as the original task. Clients further hint the agent by
+providing references to the original task using <code>referenceTaskIds</code> in the
+<code>Message</code> object. The agent then responds with either a new <code>Task</code> or a
+<code>Message</code>.</p>
+<h2 id="task-immutability">Task Immutability<a class="headerlink" href="#task-immutability" title="Permanent link">&para;</a></h2>
+<p>Once a task reaches a terminal state (completed, canceled, rejected, or failed),
+it cannot restart. Any subsequent interaction related to that task, such as a
+refinement, must initiate a new task within the same <code>contextId</code>. This principle
+offers several benefits:</p>
+<ul>
+<li><strong>Task Immutability.</strong> Clients reliably reference tasks and their
+    associated state, artifacts, and messages, providing a clean mapping of
+    inputs to outputs. This is valuable for orchestration and traceability.</li>
+<li><strong>Clear Unit of Work.</strong> Every new request, refinement, or follow-up becomes
+    a distinct task. This simplifies bookkeeping, allows for granular tracking
+    of an agent's work, and enables tracing each artifact to a specific unit of
+    work.</li>
+<li><strong>Easier Implementation.</strong> This removes ambiguity for agent developers
+    regarding whether to create a new task or restart an existing one.</li>
+</ul>
+<h2 id="parallel-follow-ups">Parallel Follow-ups<a class="headerlink" href="#parallel-follow-ups" title="Permanent link">&para;</a></h2>
+<p>A2A supports parallel work by enabling agents to create distinct, parallel
+tasks for each follow-up message sent within the same <code>contextId</code>. This allows
+clients to track individual tasks and create new dependent tasks as soon as a
+prerequisite task is complete.</p>
 <p>For example:</p>
 <ul>
-<li>MCP call to a "Vehicle Diagnostic Scanner" tool:
-    <code>scan_vehicle_for_error_codes(vehicle_id='XYZ123')</code></li>
-<li>MCP call to a "Repair Manual Database" tool:
-    <code>get_repair_procedure(error_code='P0300', vehicle_make='Toyota',
-    vehicle_model='Camry')</code></li>
-<li>MCP call to a "Platform Lift" tool: <code>raise_platform(height_meters=2)</code></li>
+<li>Task 1: Book a flight to Helsinki.</li>
+<li>Task 2: Based on Task 1, book a hotel.</li>
+<li>Task 3: Based on Task 1, book a snowmobile activity.</li>
+<li>Task 4: Based on Task 2, add a spa reservation to the hotel booking.</li>
 </ul>
-</li>
-<li>
-<p><strong>Supplier Interaction (Agent-to-Agent using A2A)</strong>: The Mechanic agent
-    determines that a specific part is needed. The Mechanic agent uses A2A to
-    communicate with a "Parts Supplier" agent to order a part.
-    For example, the
-    Mechanic agent might ask, "Do you have part #12345 in stock for a Toyota Camry 2018?"</p>
-</li>
-<li>
-<p><strong>Order processing (Agent-to-Agent using A2A)</strong>: The Parts Supplier agent,
-    which is also an A2A-compliant system, responds, potentially leading to an
-    order.</p>
-</li>
-</ul>
-<p>In this example:</p>
+<h2 id="referencing-previous-artifacts">Referencing Previous Artifacts<a class="headerlink" href="#referencing-previous-artifacts" title="Permanent link">&para;</a></h2>
+<p>The serving agent infers the relevant artifact from a referenced task or from the
+<code>contextId</code>. As the domain expert, the serving agent is best suited to resolve
+ambiguity or identify missing information. If there is ambiguity, the agent asks
+the client for clarification by returning an <code>input-required</code> state. The client
+then specifies the artifact in its response, optionally populating artifact
+references (<code>artifactId</code>, <code>taskId</code>) in <code>Part</code> metadata.</p>
+<h2 id="tracking-artifact-mutation">Tracking Artifact Mutation<a class="headerlink" href="#tracking-artifact-mutation" title="Permanent link">&para;</a></h2>
+<p>Follow-up or refinement tasks often lead to the creation of new artifacts based on older ones. Tracking these mutations is important to ensure that only the most recent version of an artifact is used in subsequent interactions. This could be conceptualized as a version history, where each new artifact is linked to its predecessor.</p>
+<p>However, the client is in the best position to manage this artifact linkage. The client determines what constitutes an acceptable result and has the ability to accept or reject new versions. Therefore, the serving agent shouldn't be responsible for tracking artifact mutations, and this linkage is not part of the A2A protocol specification. Clients should maintain this version history on their end and present the latest acceptable version to the user.</p>
+<p>To facilitate client-side tracking, serving agents should use a consistent <code>artifact-name</code> when generating a refined version of an existing artifact.</p>
+<p>When initiating follow-up or refinement tasks, the client should explicitly reference the specific artifact they intend to refine, ideally the "latest" version from their perspective. If the artifact reference is not provided, the serving agent can:</p>
 <ul>
-<li>A2A facilitates the higher-level, conversational, and task-oriented
-    interactions between the customer and the shop, and between the shop's
-    agents and external supplier agents.</li>
-<li>MCP enables the mechanic agent to use its specific, structured tools to
-    perform its diagnostic and repair functions.</li>
+<li>Attempt to infer the intended artifact based on the current <code>contextId</code>.</li>
+<li>If there is ambiguity or insufficient context, the agent should respond with an <code>input-required</code> task state to request clarification from the client.</li>
 </ul>
-<p>An A2A server could expose some of its skills as MCP-compatible resources.
-However, A2A's primary strength lies in its support for more flexible, stateful,
-and collaborative interactions. These interactions go beyond a typical tool
-invocation. A2A focuses on agents partnering on tasks, whereas MCP focuses on
-agents using capabilities.</p>
-<h2 id="representing-a2a-agents-as-mcp-resources">Representing A2A Agents as MCP Resources<a class="headerlink" href="#representing-a2a-agents-as-mcp-resources" title="Permanent link">&para;</a></h2>
-<p>An A2A Server (a remote agent) could expose some of its skills as MCP-compatible resources, especially if those skills are well-defined and can be invoked in a more tool-like, stateless manner. In such a case, another agent might "discover" this A2A agent's specific skill through an MCP-style tool description (perhaps derived from its Agent Card).</p>
-<p>However, the primary strength of A2A lies in its support for more flexible, stateful, and collaborative interactions that go beyond typical tool invocation. A2A is about agents <em>partnering</em> on tasks, while MCP is more about agents <em>using</em> capabilities.</p>
-<p>By leveraging both A2A for inter-agent collaboration and MCP for tool integration, developers can build more powerful, flexible, and interoperable AI systems.</p>
+<h2 id="example-follow-up-scenario">Example Follow-up Scenario<a class="headerlink" href="#example-follow-up-scenario" title="Permanent link">&para;</a></h2>
+<p>The following example illustrates a typical task flow with a follow-up:</p>
+<ol>
+<li>
+<p>Client sends a message to the agent:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;req-001&quot;</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;message.send&quot;</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">&quot;params&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">      </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="p">{</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">          </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">          </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Generate an image of a sailboat on the ocean.&quot;</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">      </span><span class="p">]</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">      </span><span class="nt">&quot;messageId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;msg-user-001&quot;</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+<li>
+<p>Agent responds with a boat image (completed task):</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;req-001&quot;</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">&quot;result&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-boat-gen-123&quot;</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ctx-conversation-abc&quot;</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">&quot;artifacts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="nt">&quot;artifactId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;artifact-boat-v1-xyz&quot;</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sailboat_image.png&quot;</span><span class="p">,</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A generated image of a sailboat on the ocean.&quot;</span><span class="p">,</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">          </span><span class="p">{</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">            </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">            </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">              </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sailboat_image.png&quot;</span><span class="p">,</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">              </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">              </span><span class="nt">&quot;bytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base64_encoded_png_data_of_a_sailboat&quot;</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">          </span><span class="p">}</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">        </span><span class="p">]</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="p">],</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task&quot;</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+<li>
+<p>Client asks to color the boat red. This refinement request refers to the
+    previous <code>taskId</code> and uses the same <code>contextId</code>.</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;req-002&quot;</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;message.send&quot;</span><span class="p">,</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">&quot;params&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">      </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="nt">&quot;messageId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;msg-user-002&quot;</span><span class="p">,</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">      </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ctx-conversation-abc&quot;</span><span class="p">,</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">      </span><span class="nt">&quot;referenceTaskIds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="s2">&quot;task-boat-gen-123&quot;</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">      </span><span class="p">],</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">      </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="p">{</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">          </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">          </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Please modify the sailboat to be red.&quot;</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">      </span><span class="p">]</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+<li>
+<p>Agent responds with a new image artifact (new task, same context, updated
+    artifact name): The agent creates a new task within the same <code>contextId</code>. The
+    new boat image artifact retains the same name but has a new <code>artifactId</code>.</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;req-002&quot;</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;result&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-boat-color-456&quot;</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ctx-conversation-abc&quot;</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="nt">&quot;artifacts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">        </span><span class="nt">&quot;artifactId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;artifact-boat-v2-red-pqr&quot;</span><span class="p">,</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sailboat_image.png&quot;</span><span class="p">,</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A generated image of a red sailboat on the ocean.&quot;</span><span class="p">,</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">          </span><span class="p">{</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">            </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">            </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">              </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sailboat_image.png&quot;</span><span class="p">,</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">              </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">              </span><span class="nt">&quot;bytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base64_encoded_png_data_of_a_RED_sailboat&quot;</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">          </span><span class="p">}</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">        </span><span class="p">]</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">    </span><span class="p">],</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">    </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task&quot;</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="p">}</span>
+</span></code></pre></div>
+</li>
+</ol>
 
 
 
@@ -1436,7 +1575,7 @@ agents using capabilities.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../streaming-and-async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Streaming &amp; Asynchronous Operations">
+          <a href="../enterprise-ready/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Enterprise Features">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1446,20 +1585,20 @@ agents using capabilities.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Streaming & Asynchronous Operations
+                Enterprise Features
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../tutorials/" class="md-footer__link md-footer__link--next" aria-label="Next: Tutorials">
+          <a href="../extensions/" class="md-footer__link md-footer__link--next" aria-label="Next: Extensions">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Tutorials
+                Extensions
               </div>
             </div>
             <div class="md-footer__button md-icon">
