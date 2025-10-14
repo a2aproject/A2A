@@ -1,0 +1,170 @@
+# A2A (Agent2Agent) Protocol High-Level Summary
+
+This project defines and demonstrates the **Agent2Agent (A2A) protocol**, an open standard initiated by Google and donated to the Linux Foundation, designed to enable communication and interoperability between disparate AI agent systems. The core goal is to allow agents built on different frameworks (e.g., LangGraph, CrewAI, Google ADK, Genkit) or by different vendors to discover each other's capabilities, negotiate interaction modes, and collaborate on tasks securely.
+
+The repository provides:
+
+1.  **Formal Specification:** A detailed JSON Schema (`specification/json/a2a.json`) and Protobuf definitions (`specification/grpc/a2a.proto`) that define the structure of A2A messages, including requests, responses, tasks, artifacts, and agent metadata (Agent Cards).
+2.  **Core Concepts Documentation:** A comprehensive set of documents in the `docs/topics/` directory covering agent discovery, task lifecycle, streaming, push notifications, and enterprise-readiness.
+3.  **SDKs and Sample Implementations:**
+    *   **SDKs:** Production-ready SDKs for Python, Java, JavaScript, and C#/.NET, with more in development.
+    *   **Example Agents:** Demonstrations of integrating A2A into various agent frameworks:
+        *   **Python:** LangGraph (currency conversion, streaming), CrewAI (image generation, file artifacts), Google ADK (expense reports, form handling).
+        *   **JavaScript/TypeScript:** Genkit (movie info via API, code generation with file artifacts).
+    *   **Example Hosts:** Applications that consume A2A services, including CLIs for direct interaction and a Python-based multi-agent orchestrator.
+4.  **Demo Web Application:** A web UI demonstrating multi-agent interactions facilitated by the A2A protocol, including visualization of conversations, tasks, events, and agent discovery.
+
+Key features of the A2A protocol include: agent discovery via Agent Cards, standardized task management (`send`, `get`, `cancel`), support for rich content types (text, files, structured data), real-time streaming updates for long-running tasks, and mechanisms for asynchronous push notifications. The project is open-source and encourages community contribution.
+
+# A2A (Agent2Agent) Protocol
+
+## 1. Overview
+
+-   **Project Name:** Agent2Agent (A2A) Protocol
+-   **Purpose:** An open protocol enabling communication and interoperability between AI agents built on different frameworks or by different vendors.
+-   **Core Goal:** Allow agents to discover capabilities, negotiate interaction, and collaborate securely on tasks.
+-   **Communication:** Uses JSON-RPC 2.0 over HTTP(S). Supports standard request/response and Server-Sent Events (SSE) for streaming. Also includes a gRPC specification.
+-   **Key Components:** Formal Specification (JSON Schema, Protobuf), SDKs (Python, JS, Java, .NET), Sample Implementations, and Core Documentation.
+
+## 2. Protocol Specification (`specification/json/a2a.json`)
+
+### 2.1. Core JSON-RPC Structures
+
+-   **`JSONRPCMessage`:** Base for requests/responses. Contains `jsonrpc: "2.0"` and optional `id`.
+-   **`JSONRPCRequest`:** Represents a request with `method`, `params`, and `id`.
+-   **`JSONRPCResponse`:** Represents a response with either `result` or `error`, and a matching `id`.
+-   **`JSONRPCError`:** Represents an error with `code`, `message`, and optional `data`.
+
+### 2.2. Key A2A Data Objects
+
+-   **`AgentCard`:** Metadata describing an agent, typically found at `/.well-known/agent-card.json`.
+    -   `protocolVersion`: (string) The version of the A2A protocol supported.
+    -   `name`, `description`, `version`: (string) Agent's identity.
+    -   `url`: (string) The preferred endpoint URL for the agent's A2A service.
+    -   `provider`: (`AgentProvider`) Organization details.
+    -   `capabilities`: (`AgentCapabilities`) Features supported (streaming, push notifications, extensions).
+    -   `securitySchemes`, `security`: (object, array) Authentication and authorization requirements, following OpenAPI specifications.
+    -   `defaultInputModes`, `defaultOutputModes`: (string[]) Default supported MIME types.
+    -   `skills`: (`AgentSkill[]`) List of specific capabilities.
+    -   `supportsAuthenticatedExtendedCard`: (boolean) Indicates if a more detailed card is available post-authentication.
+    -   `signatures`: (`AgentCardSignature[]`) JWS signatures for verifying the card's integrity.
+-   **`AgentSkill`:** A specific capability of an agent, with `id`, `name`, `description`, `tags`, and `examples`.
+-   **`Task`:** Represents a stateful unit of work.
+    -   `id`, `contextId`: (string) Unique identifiers for the task and its conversational context.
+    -   `status`: (`TaskStatus`) Current state information.
+    -   `artifacts`: (`Artifact[]`) Outputs produced by the agent.
+    -   `history`: (`Message[]`) The conversation history associated with the task (if enabled by `stateTransitionHistory` capability).
+    -   `metadata`: (object) Custom key-value data.
+    -   `kind`: ("task") Type discriminator.
+-   **`TaskStatus`:**
+    -   `state`: (`TaskState`) Current lifecycle state (e.g., "working", "completed").
+    -   `message`: (`Message`) An optional, human-readable message from the agent providing status details.
+    -   `timestamp`: (string) ISO-8601 timestamp.
+-   **`TaskState`:** (enum) `submitted`, `working`, `input-required`, `completed`, `failed`, `canceled`, `rejected`, `auth-required`, `unknown`.
+-   **`Message`:** A single unit of communication.
+    -   `role`: ("user" | "agent") Sender's role.
+    -   `parts`: (`Part[]`) The content of the message.
+    -   `messageId`, `taskId`, `contextId`: (string) Identifiers linking the message.
+    -   `referenceTaskIds`: (string[]) List of prior tasks for context.
+-   **`Part` (Union Type):** A segment of content within a `Message` or `Artifact`.
+    -   **`TextPart`:** Plain text content.
+    -   **`FilePart`:** A file, referenced by URI or with inline base64-encoded bytes.
+    -   **`DataPart`:** Structured JSON data.
+-   **`Artifact`:** A tangible output generated by a task, composed of one or more `Part`s.
+-   **`PushNotificationConfig`:** Configuration for receiving asynchronous updates via a webhook URL.
+-   **`agent/getAuthenticatedExtendedCard`:** An RPC method to retrieve a more detailed `AgentCard` after authentication.
+
+### 2.3. A2A RPC Methods
+
+-   **`message/send`:** Sends a message to initiate or continue a task. Returns a final `Task` or `Message` object.
+-   **`message/stream`:** Sends a message and subscribes to real-time updates via Server-Sent Events (SSE).
+-   **`tasks/get`:** Retrieves the current state of a task by its ID.
+-   **`tasks/cancel`:** Requests cancellation of a running task.
+-   **`tasks/pushNotificationConfig/set`:** Sets the webhook configuration for a task.
+-   **`tasks/pushNotificationConfig/get`:** Retrieves the push notification configuration for a task.
+-   **`tasks/resubscribe`:** Resubscribes to a task's update stream after a disconnection.
+
+### 2.4. Streaming Events (`message/stream`, `tasks/resubscribe`)
+
+When using a streaming method, the server sends a sequence of JSON-RPC 2.0 response objects. The `result` field of each response object will contain one of the following payload types:
+-   **`Task`:** The initial state of the newly created task. Sent as the first event in a new task stream.
+-   **`Message`:** An immediate, self-contained message from the agent.
+-   **`TaskStatusUpdateEvent`:** Signals a change in the task's lifecycle state (e.g., `working`, `completed`). A final event is marked with `final: true`.
+-   **`TaskArtifactUpdateEvent`:** Delivers a new or updated `Artifact` generated by the task, which can be sent in chunks.
+
+### 2.5. Standard Error Codes
+
+-   `-32700`: `JSONParseError`
+-   `-32600`: `InvalidRequestError`
+-   `-32601`: `MethodNotFoundError`
+-   `-32602`: `InvalidParamsError`
+-   `-32603`: `InternalError`
+
+### 2.6. A2A Specific Error Codes
+
+-   `-32001`: `TaskNotFoundError`
+-   `-32002`: `TaskNotCancelableError`
+-   `-32003`: `PushNotificationNotSupportedError`
+-   `-32004`: `UnsupportedOperationError`
+-   `-32005`: `ContentTypeNotSupportedError`
+-   `-32006`: `InvalidAgentResponseError`
+-   `-32007`: `AuthenticatedExtendedCardNotConfiguredError`
+
+## 3. Core Concepts
+
+-   **Agent Discovery:** Clients find agents by fetching their `AgentCard` JSON, typically from a `/.well-known/agent-card.json` URI or a curated registry.
+-   **Task Lifecycle:** Tasks progress through defined states (`submitted` -> `working` -> `completed`/`failed`, etc.), enabling tracking of long-running operations.
+-   **Communication:** Interactions use `Message` objects containing `Part`s (text, file, data). Task outputs are delivered as `Artifact`s.
+-   **Streaming:** Long-running tasks provide real-time updates via SSE using the `message/stream` method. Updates can be `Task`, `Message`, `TaskStatusUpdateEvent`, or `TaskArtifactUpdateEvent` objects.
+-   **Push Notifications:** For disconnected clients, agents can send updates to a webhook URL configured via `tasks/pushNotificationConfig/set`.
+-   **Authentication:** A2A leverages standard web security (e.g., OAuth, API keys), declared in the `AgentCard`. Credentials are sent via HTTP headers, not in the A2A payload.
+
+## 4. Security Considerations
+
+-   **Transport Security:** Production environments MUST use HTTPS with modern TLS.
+-   **Authentication:** Servers MUST authenticate every request based on schemes declared in the `AgentCard`.
+-   **Authorization:** Authorization logic is implementation-specific and MUST enforce the principle of least privilege, potentially on a per-skill basis.
+-   **Push Notification Security:** Both the server (validating webhook URLs to prevent SSRF) and the client (verifying incoming notifications) have critical security responsibilities.
+-   **Input Validation:** Servers MUST rigorously validate all RPC parameters and message content.
+
+## 5. Implementations & Samples
+
+### 5.1. SDKs
+-   **Python:** `a2a-sdk` on PyPI.
+-   **JavaScript/TypeScript:** `@a2a-js/sdk` on npm.
+-   **Java:** `a2a-java` on Maven.
+-   **C#/.NET:** `A2A` on NuGet.
+
+### 5.2. Python Samples
+-   **Location:** `a2a-samples/samples/python/`
+-   **Agents:**
+    -   **LangGraph:** Currency conversion agent demonstrating tool use, multi-turn conversation (`input-required`), and streaming via `message/stream`.
+    -   **CrewAI:** Image generation agent demonstrating file artifact handling.
+    -   **Google ADK:** Expense report agent demonstrating structured data/forms.
+-   **Hosts:**
+    -   **CLI:** Command-line client for interacting with any A2A agent.
+    -   **Multi-Agent Orchestrator:** An ADK-based agent that delegates tasks to other A2A agents.
+
+### 5.3. JavaScript/TypeScript Samples
+-   **Location:** `a2a-samples/samples/js/`
+-   **Framework:** Genkit
+-   **Agents:**
+    -   **Movie Agent:** Uses an external API to answer questions.
+    -   **Coder Agent:** Generates code and demonstrates file artifact creation.
+
+### 5.4. Demo Application
+-   **Location:** `a2a-samples/demo/`
+-   A web application built with Mesop that visualizes multi-agent conversations orchestrated by a host agent, rendering text, images, and forms.
+
+## 6. Development & Setup
+
+-   **Prerequisites:** Python (>=3.10), Node.js (>=18).
+-   **API Keys:** LLM access requires API keys (e.g., `GOOGLE_API_KEY`), typically set via `.env` files.
+-   **Running Samples:** Involves starting an agent server and then running a host/client application to interact with it.
+
+## 7. Contribution
+
+-   See `CONTRIBUTING.md` for guidelines.
+-   Join discussions on the [A2A GitHub Discussions page](https://github.com/a2aproject/A2A/discussions).
+-   Report issues or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).
+-   Provide private feedback via this [Google Form](https://goo.gle/a2a-feedback).
