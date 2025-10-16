@@ -1,4 +1,4 @@
-# A2A Protocol Overview
+# What is A2A?
 
 The A2A protocol is an open standard that enables seamless communication and
 collaboration between AI agents. It provides a common language for agents built

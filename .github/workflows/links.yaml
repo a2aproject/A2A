@@ -21,7 +21,7 @@ jobs:
       - name: Get relevant changed files
         id: changed-files
         if: github.event_name == 'pull_request'
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           files: |
             **/*.md
@@ -47,7 +47,7 @@ jobs:
 
       - name: Create Issue on Failure
         if: failure() && github.event_name != 'pull_request'
-        uses: peter-evans/create-issue-from-file@v5
+        uses: peter-evans/create-issue-from-file@v6
         with:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
