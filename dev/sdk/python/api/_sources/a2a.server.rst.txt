@@ -24,6 +24,14 @@ a2a.server.context module
    :show-inheritance:
    :undoc-members:
 
+a2a.server.id\_generator module
+-------------------------------
+
+.. automodule:: a2a.server.id_generator
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 a2a.server.models module
 ------------------------
 

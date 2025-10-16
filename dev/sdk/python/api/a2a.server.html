@@ -883,6 +883,57 @@
 </dd></dl>
 
 </section>
+<section id="module-a2a.server.id_generator">
+<span id="a2a-server-id-generator-module"></span><h2>a2a.server.id_generator module<a class="headerlink" href="#module-a2a.server.id_generator" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.id_generator.IDGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.id_generator.</span></span><span class="sig-name descname"><span class="pre">IDGenerator</span></span><a class="headerlink" href="#a2a.server.id_generator.IDGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Interface for generating unique identifiers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.id_generator.IDGenerator.generate">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.id_generator.IDGeneratorContext" title="a2a.server.id_generator.IDGeneratorContext"><span class="pre">IDGeneratorContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.server.id_generator.IDGenerator.generate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.id_generator.IDGeneratorContext">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.id_generator.</span></span><span class="sig-name descname"><span class="pre">IDGeneratorContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.id_generator.IDGeneratorContext" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Context for providing additional information to ID generators.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.id_generator.IDGeneratorContext.context_id">
+<span class="sig-name descname"><span class="pre">context_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#a2a.server.id_generator.IDGeneratorContext.context_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.id_generator.IDGeneratorContext.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">ConfigDict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#a2a.server.id_generator.IDGeneratorContext.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.server.id_generator.IDGeneratorContext.task_id">
+<span class="sig-name descname"><span class="pre">task_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#a2a.server.id_generator.IDGeneratorContext.task_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.id_generator.UUIDGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.id_generator.</span></span><span class="sig-name descname"><span class="pre">UUIDGenerator</span></span><a class="headerlink" href="#a2a.server.id_generator.UUIDGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#a2a.server.id_generator.IDGenerator" title="a2a.server.id_generator.IDGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">IDGenerator</span></code></a></p>
+<p>UUID implementation of the IDGenerator interface.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.id_generator.UUIDGenerator.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.id_generator.IDGeneratorContext" title="a2a.server.id_generator.IDGeneratorContext"><span class="pre">IDGeneratorContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.server.id_generator.UUIDGenerator.generate" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a random UUID, ignoring the context.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-a2a.server.models">
 <span id="a2a-server-models-module"></span><h2>a2a.server.models module<a class="headerlink" href="#module-a2a.server.models" title="Link to this heading">¶</a></h2>
 <dl class="py class">
@@ -1378,13 +1429,18 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<p># Create a task model with default table name
-TaskModel = create_task_model()</p>
-<p># Create a task model with custom table name
-CustomTaskModel = create_task_model(‘my_tasks’)</p>
-<p># Use with a custom base
-from myapp.database import Base as MyBase
-TaskModel = create_task_model(‘tasks’, MyBase)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a task model with default table name</span>
+<span class="n">TaskModel</span> <span class="o">=</span> <span class="n">create_task_model</span><span class="p">()</span>
+
+<span class="c1"># Create a task model with custom table name</span>
+<span class="n">CustomTaskModel</span> <span class="o">=</span> <span class="n">create_task_model</span><span class="p">(</span><span class="s1">&#39;my_tasks&#39;</span><span class="p">)</span>
+
+<span class="c1"># Use with a custom base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">myapp.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">Base</span> <span class="k">as</span> <span class="n">MyBase</span>
+
+<span class="n">TaskModel</span> <span class="o">=</span> <span class="n">create_task_model</span><span class="p">(</span><span class="s1">&#39;tasks&#39;</span><span class="p">,</span> <span class="n">MyBase</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -1465,6 +1521,23 @@ TaskModel = create_task_model(‘tasks’, MyBase)</p>
 <li><a class="reference internal" href="#a2a.server.context.ServerCallContext.requested_extensions"><code class="docutils literal notranslate"><span class="pre">ServerCallContext.requested_extensions</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.context.ServerCallContext.state"><code class="docutils literal notranslate"><span class="pre">ServerCallContext.state</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.context.ServerCallContext.user"><code class="docutils literal notranslate"><span class="pre">ServerCallContext.user</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-a2a.server.id_generator">a2a.server.id_generator module</a><ul>
+<li><a class="reference internal" href="#a2a.server.id_generator.IDGenerator"><code class="docutils literal notranslate"><span class="pre">IDGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.id_generator.IDGenerator.generate"><code class="docutils literal notranslate"><span class="pre">IDGenerator.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.server.id_generator.IDGeneratorContext"><code class="docutils literal notranslate"><span class="pre">IDGeneratorContext</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.id_generator.IDGeneratorContext.context_id"><code class="docutils literal notranslate"><span class="pre">IDGeneratorContext.context_id</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.id_generator.IDGeneratorContext.model_config"><code class="docutils literal notranslate"><span class="pre">IDGeneratorContext.model_config</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.id_generator.IDGeneratorContext.task_id"><code class="docutils literal notranslate"><span class="pre">IDGeneratorContext.task_id</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.server.id_generator.UUIDGenerator"><code class="docutils literal notranslate"><span class="pre">UUIDGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.id_generator.UUIDGenerator.generate"><code class="docutils literal notranslate"><span class="pre">UUIDGenerator.generate()</span></code></a></li>
 </ul>
 </li>
 </ul>
