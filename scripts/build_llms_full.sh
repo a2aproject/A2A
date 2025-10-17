@@ -20,14 +20,16 @@ append_file() {
   local file_path="$1"
   if [ -f "$file_path" ]; then
     echo "Appending: $file_path"
-    echo "--- START OF FILE ${file_path} ---" >> "${OUTPUT_FILE}"
-    echo "" >> "${OUTPUT_FILE}"
-    cat "$file_path" >> "${OUTPUT_FILE}"
-    echo "" >> "${OUTPUT_FILE}"
-    echo "=================================================" >> "${OUTPUT_FILE}"
-    echo "" >> "${OUTPUT_FILE}"
+    {
+        echo "--- START OF FILE ${file_path} ---"
+        echo
+        cat "$file_path"
+        echo
+        echo "================================================="
+        echo
+    } >> "${OUTPUT_FILE}"
   else
-    echo "Warning: File not found, skipping: $file_path"
+    echo "Warning: File not found, skipping: $file_path" >&2
   fi
 }
 
