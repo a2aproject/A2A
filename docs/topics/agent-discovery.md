@@ -16,6 +16,8 @@ Client agents use the Agent Card to determine an agent's suitability, structure 
 
 ## Discovery Strategies
 
+Normative discovery elements (well-known location, Agent Card structure, conditional disclosure) are defined in [Spec §5](/specification/#5-agent-discovery-the-agent-card).
+
 The following sections detail common strategies used by client agents to discover remote Agent Cards:
 
 ### 1. Well-Known URI
