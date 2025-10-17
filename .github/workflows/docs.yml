@@ -73,6 +73,9 @@ jobs:
           # Build the HTML from the generated RST files
           sphinx-build -b html docs/sdk/python docs/sdk/python/api
 
+      - name: Generate consolidated llms-full.txt file
+        run: bash scripts/build_llms_full.sh
+
       - name: Build Documentation (PR Check)
         if: github.event_name == 'pull_request'
         run: mkdocs build

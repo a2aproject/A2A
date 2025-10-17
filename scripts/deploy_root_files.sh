@@ -13,7 +13,7 @@ set -e
 
 # --- Configuration ---
 # List of files to copy from the source directory to the root of the gh-pages branch.
-FILES_TO_DEPLOY=("404.html" "robots.txt" "llms.txt")
+FILES_TO_DEPLOY=("404.html" "robots.txt" "llms.txt", "llms-full.txt")
 # The source directory in the main branch where these files are located.
 SOURCE_DIR="docs"
 
