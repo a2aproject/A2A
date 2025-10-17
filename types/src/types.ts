@@ -29,6 +29,8 @@ export interface AgentCapabilities {
   pushNotifications?: boolean;
   /** Indicates if the agent provides a history of state transitions for a task. */
   stateTransitionHistory?: boolean;
+  /** Indicates if the agent enforces messageId-based idempotency for task creation. */
+  idempotencyEnforced?: boolean;
   /** A list of protocol extensions supported by the agent. */
   extensions?: AgentExtension[];
 }
@@ -1597,6 +1599,30 @@ export interface AuthenticatedExtendedCardNotConfiguredError
 }
 // --8<-- [end:AuthenticatedExtendedCardNotConfiguredError]
 
+// --8<-- [start:MessageIdAlreadyExistsError]
+/**
+ * An A2A-specific error indicating that the provided message ID already exists for an active task.
+ */
+export interface MessageIdAlreadyExistsError extends JSONRPCError {
+  /** The error code for when a message ID already exists for an active task. */
+  readonly code: -32008;
+  /**
+   * The error message.
+   * @default "Message ID already exists for active task"
+   */
+  message: string;
+  /**
+   * Additional data that includes the duplicate message ID and existing task ID for client recovery.
+   */
+  data: {
+    /** The message ID that already exists. */
+    messageId: string;
+    /** The ID of the existing task associated with this message ID. */
+    existingTaskId: string;
+  };
+}
+// --8<-- [end:MessageIdAlreadyExistsError]
+
 // --8<-- [start:A2AError]
 /**
  * A discriminated union of all standard JSON-RPC and A2A-specific error types.
@@ -1613,5 +1639,6 @@ export type A2AError =
   | UnsupportedOperationError
   | ContentTypeNotSupportedError
   | InvalidAgentResponseError
-  | AuthenticatedExtendedCardNotConfiguredError;
+  | AuthenticatedExtendedCardNotConfiguredError
+  | MessageIdAlreadyExistsError;
 // --8<-- [end:A2AError]

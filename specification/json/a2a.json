@@ -38,6 +38,9 @@
                 },
                 {
                     "$ref": "#/definitions/AuthenticatedExtendedCardNotConfiguredError"
+                },
+                {
+                    "$ref": "#/definitions/MessageIdAlreadyExistsError"
                 }
             ],
             "description": "A discriminated union of all standard JSON-RPC and A2A-specific error types."
@@ -122,6 +125,10 @@
                         "$ref": "#/definitions/AgentExtension"
                     },
                     "type": "array"
+                },
+                "idempotencyEnforced": {
+                    "description": "Indicates if the agent enforces messageId-based idempotency for task creation.",
+                    "type": "boolean"
                 },
                 "pushNotifications": {
                     "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
@@ -1372,6 +1379,9 @@
                         },
                         {
                             "$ref": "#/definitions/AuthenticatedExtendedCardNotConfiguredError"
+                        },
+                        {
+                            "$ref": "#/definitions/MessageIdAlreadyExistsError"
                         }
                     ],
                     "description": "An object describing the error that occurred."
@@ -1810,6 +1820,45 @@
                 "messageId",
                 "parts",
                 "role"
+            ],
+            "type": "object"
+        },
+        "MessageIdAlreadyExistsError": {
+            "description": "An A2A-specific error indicating that the provided message ID already exists for an active task.",
+            "properties": {
+                "code": {
+                    "const": -32008,
+                    "description": "The error code for when a message ID already exists for an active task.",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "Additional data that includes the duplicate message ID and existing task ID for client recovery.",
+                    "properties": {
+                        "existingTaskId": {
+                            "description": "The ID of the existing task associated with this message ID.",
+                            "type": "string"
+                        },
+                        "messageId": {
+                            "description": "The message ID that already exists.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "existingTaskId",
+                        "messageId"
+                    ],
+                    "type": "object"
+                },
+                "message": {
+                    "default": "Message ID already exists for active task",
+                    "description": "The error message.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "data",
+                "message"
             ],
             "type": "object"
         },
