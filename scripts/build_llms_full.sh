@@ -13,7 +13,7 @@ TYPES_DIR="types"
 echo "--- Generating consolidated LLM file: ${OUTPUT_FILE} ---"
 
 # Clear the output file to start fresh
-> "${OUTPUT_FILE}"
+>"${OUTPUT_FILE}"
 
 # --- Helper function to append file content with a header ---
 append_file() {
@@ -21,13 +21,13 @@ append_file() {
   if [ -f "$file_path" ]; then
     echo "Appending: $file_path"
     {
-        echo "--- START OF FILE ${file_path} ---"
-        echo
-        cat "$file_path"
-        echo
-        echo "================================================="
-        echo
-    } >> "${OUTPUT_FILE}"
+      echo "--- START OF FILE ${file_path} ---"
+      echo
+      cat "$file_path"
+      echo
+      echo "================================================="
+      echo
+    } >>"${OUTPUT_FILE}"
   else
     echo "Warning: File not found, skipping: $file_path" >&2
   fi
