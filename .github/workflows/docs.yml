@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
-      - "scripts/deploy-404.sh"
+      - "scripts/deploy_root_files.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -15,13 +15,14 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
-      - "scripts/deploy-404.sh"
+      - "scripts/deploy_root_files.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
   release:
     types:
       - published
+  workflow_dispatch:
 
 jobs:
   build_and_deploy:
@@ -58,7 +59,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install documentation dependencies
-        run: pip install -r requirements-docs.txt
+        run: pip install --upgrade -r requirements-docs.txt
 
       - name: Generate and Build Python SDK Docs
         run: |
@@ -85,7 +86,7 @@ jobs:
           mike set-default --push latest
 
           # Deploy 404 page
-          bash scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy new release version and set as latest
         if: github.event_name == 'release'
@@ -99,6 +100,6 @@ jobs:
           mike set-default --push latest
 
           # Call the reusable script to deploy the 404 page, passing the token
-          bash scripts/deploy-404.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
