@@ -1054,6 +1054,8 @@ Allows a client to reconnect to an SSE stream for an ongoing task after a previo
 
 The purpose is to resume receiving _subsequent_ updates. The server's behavior regarding events missed during the disconnection period (e.g., whether it attempts to backfill some missed events or only sends new ones from the point of resubscription) is implementation-dependent and not strictly defined by this specification.
 
+If a server intends to only send new events from the point of resubscription then it SHOULD send a `Task` as the first event.
+
 <div class="grid cards" markdown>
 
 === "JSON-RPC"
