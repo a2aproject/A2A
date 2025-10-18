@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Features
+
+* **grpc:** Add `reference_task_ids` field to Message for cross-task context references
+* **grpc:** Add `state_transition_history` capability flag to AgentCapabilities
+
+### Bug Fixes
+
+* **grpc:** Align gRPC specification with JSON specification by adding missing fields
 ## [0.4.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v0.4.0) (2025-09-15)
 
 ### Features
