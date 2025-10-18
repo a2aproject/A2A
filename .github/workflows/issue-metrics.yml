@@ -35,7 +35,7 @@ jobs:
           SEARCH_QUERY: 'repo:a2aproject/A2A is:issue created:${{ env.last_month }} -reason:"not planned"'
 
       - name: Create issue
-        uses: peter-evans/create-issue-from-file@v5
+        uses: peter-evans/create-issue-from-file@v6
         with:
           title: Monthly issue metrics report
           token: ${{ secrets.GITHUB_TOKEN }}
