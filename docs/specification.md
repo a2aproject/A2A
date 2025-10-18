@@ -969,7 +969,7 @@ Retrieves the current push notification configuration for a specified task. Requ
     -   **HTTP Method:** `POST`
     -   **Payload:**
         ```proto
-        message TaskSubscriptionRequest {
+        message GetTaskPushNotificationConfigRequest {
           // name=tasks/{id}/pushNotification/{id}
           string name;
         }

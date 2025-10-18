@@ -38,7 +38,7 @@ Streaming with SSE is best suited for:
 Refer to the Protocol Specification for detailed structures:
 
 - [`message/stream`](../specification.md#72-messagestream)
-- [`tasks/resubscribe`](../specification.md#79-tasksresubscribe)
+- [`tasks/resubscribe`](../specification.md#710-tasksresubscribe)
 
 ## Push Notifications for Disconnected Scenarios
 
@@ -67,8 +67,8 @@ Push notifications are ideal for:
 
 Refer to the Protocol Specification for detailed structures:
 
-- [`tasks/pushNotificationConfig/set`](../specification.md#75-taskspushnotificationconfigset)
-- [`tasks/get`](../specification.md#76-taskspushnotificationconfigget)
+- [`tasks/pushNotificationConfig/set`](../specification.md#76-taskspushnotificationconfigset)
+- [`tasks/pushNotificationConfig/get`](../specification.md#77-taskspushnotificationconfigget)
 
 ### Client-Side Push Notification Service
 
