@@ -64,14 +64,14 @@ service A2AService {
       body: "*"
     };
   }
-  // TaskSubscription is a streaming call that will return a stream of task
-  // update events. This attaches the stream to an existing in process task.
-  // If the task is complete the stream will return the completed task (like
-  // GetTask) and close the stream.
-  rpc TaskSubscription(TaskSubscriptionRequest)
+  // TaskResubscription is a streaming call that will return a stream of task
+  // update events. This attaches the stream to an existing in process task
+  // that was started using message/stream. If the task is complete the stream
+  // will return the completed task (like GetTask) and close the stream.
+  rpc TaskResubscription(TaskResubscriptionRequest)
       returns (stream StreamResponse) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*}:subscribe"
+      get: "/v1/{name=tasks/*}:resubscribe"
     };
   }
 
@@ -790,8 +790,8 @@ message CreateTaskPushNotificationConfigRequest {
 // --8<-- [end:SetTaskPushNotificationConfigRequest]
 
 // --8<-- [start:TaskResubscriptionRequest]
-message TaskSubscriptionRequest {
-  // The resource name of the task to subscribe to.
+message TaskResubscriptionRequest {
+  // The resource name of the task to resubscribe to.
   // Format: tasks/{task_id}
   string name = 1;
 }
