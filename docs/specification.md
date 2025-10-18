@@ -1105,7 +1105,7 @@ The purpose is to resume receiving _subsequent_ updates. The server's behavior r
 
 </div>
 
-### 7.10. `agent/getAuthenticatedExtendedCard`
+### 7.11. `agent/getAuthenticatedExtendedCard`
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`.
 
