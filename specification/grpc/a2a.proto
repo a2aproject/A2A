@@ -270,6 +270,8 @@ message Message {
   google.protobuf.Struct metadata = 6;
   // The URIs of extensions that are present or contributed to this Message.
   repeated string extensions = 7;
+  // A list of task IDs that this message references for additional context.
+  repeated string reference_task_ids = 8;
 }
 // --8<-- [end:Message]
 
@@ -458,6 +460,8 @@ message AgentCapabilities {
   bool push_notifications = 2;
   // Extensions supported by this agent.
   repeated AgentExtension extensions = 3;
+  // If the agent provides a history of state transitions for a task.
+  bool state_transition_history = 4;
 }
 // --8<-- [end:AgentCapabilities]
 
