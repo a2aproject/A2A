@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v0.4.0) (2025-09-15)
+
+### Features
+
+* **spec:** Add `tasks/list` method for retrieving and filtering tasks with pagination
+
 ## [0.3.0](https://github.com/a2aproject/A2A/compare/v0.2.6...v0.3.0) (2025-07-30)
 
 
