@@ -705,7 +705,7 @@ The `error` response for all transports in case of failure is a [`JSONRPCError`]
 
 Sends a message to an agent to initiate/continue a task AND subscribes the client to real-time updates for that task via Server-Sent Events (SSE). This method requires the server to have `AgentCard.capabilities.streaming: true`. Just like `message/send`, a task which has reached a terminal state (completed, canceled, rejected, or failed) can't be restarted. Sending a message to such a task will result in an error. For more information, refer to the [Life of a Task guide](./topics/life-of-a-task.md).
 
-The first event returned by a server in response to a `message/stream` method MUST contain either a `Message` or `Task`.  If a `Message` is returned, then the server MUST end the SSE stream immediately after. Alternatively, if a `Task` is returned, then subsequent events MAY include either `TaskStatusUpdateEvent` or `TaskArtifactUpdateEvent`.  The server MUST end the SSE stream after sending a `TaskStatusUpdateEvent` with a terminal status.
+The first event returned by a server in response to a `message/stream` method MUST contain either a `Message` or `Task`.  If a `Message` is returned, then the server MUST end the SSE stream immediately after. Alternatively, if a `Task` is returned, then subsequent events MAY include either `TaskStatusUpdateEvent` or `TaskArtifactUpdateEvent`.  The server MUST end the SSE stream after sending a `TaskStatusUpdateEvent` with a terminal state (completed, canceled, rejected, or failed).
 
 <div class="grid cards" markdown>
 
