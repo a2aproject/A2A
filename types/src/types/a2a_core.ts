@@ -2,7 +2,7 @@
 // versions:
 //   protoc-gen-ts_proto  v2.7.5
 //   protoc               v3.21.12
-// source: a2a.proto
+// source: a2a_core.proto
 
 /* eslint-disable */
 
@@ -55,23 +55,6 @@ export enum Role {
   ROLE_USER = 1,
   /** ROLE_AGENT - AGENT role refers to communication from the server to the client. */
   ROLE_AGENT = 2,
-  UNRECOGNIZED = -1,
-}
-
-export enum JsonRPCErrorCode {
-  JSON_RPC_ERROR_CODE_UNSPECIFIED = 0,
-  PARSE_ERROR = -32700,
-  INVALID_REQUEST = -32600,
-  METHOD_NOT_FOUND = -32601,
-  INVALID_PARAMS = -32602,
-  INTERNAL_ERROR = -32603,
-  TASK_NOT_FOUND = -32001,
-  TASK_NOT_CACHEABLE = -32002,
-  PUSH_NOTIFICATION_NOT_SUPPORTED = -32003,
-  UNSUPPORTED_OPERATION_ERROR = -32004,
-  CONTENT_TYPE_NOT_SUPPORTED = -32005,
-  INVALID_AGENT_RESPONSE = -32006,
-  AUTHENTICATED_CARD_NOT_CONFIGURED = -32007,
   UNRECOGNIZED = -1,
 }
 
@@ -909,55 +892,4 @@ export interface ListTaskPushNotificationConfigResponse {
    * If this field is omitted, there are no subsequent pages.
    */
   nextPageToken: string;
-}
-
-/** ///// JSON-RPC Support ///////// */
-export interface A2AJsonRPCRequest {
-  jsonrpc: string;
-  method: string;
-  id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
-  params?:
-    | { $case: "sendMessageRequest"; value: SendMessageRequest }
-    | { $case: "getTaskRequest"; value: GetTaskRequest }
-    | { $case: "cancelTaskRequest"; value: CancelTaskRequest }
-    | { $case: "taskSubscriptionRequest"; value: TaskSubscriptionRequest }
-    | { $case: "createTaskPushNotificationConfigRequest"; value: CreateTaskPushNotificationConfigRequest }
-    | { $case: "getTaskPushNotificationConfigRequest"; value: GetTaskPushNotificationConfigRequest }
-    | { $case: "listTaskPushNotificationConfigRequest"; value: ListTaskPushNotificationConfigRequest }
-    | { $case: "deleteTaskPushNotificationConfigRequest"; value: DeleteTaskPushNotificationConfigRequest }
-    | { $case: "getAgentCardRequest"; value: GetAgentCardRequest }
-    | undefined;
-}
-
-export interface A2AJsonRPCResponse {
-  response?:
-    | { $case: "success"; value: A2AJsonRPCResponseSuccess }
-    | { $case: "error"; value: A2AJsonRPCResponseError }
-    | undefined;
-}
-
-export interface A2AJsonRPCResponseSuccess {
-  jsonrpc: string;
-  id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
-  result?:
-    | { $case: "sendMessageResponse"; value: SendMessageResponse }
-    | { $case: "getTaskResponse"; value: Task }
-    | { $case: "cancelTaskResponse"; value: Task }
-    | { $case: "listTaskPushNotificationConfigResponse"; value: ListTaskPushNotificationConfigResponse }
-    | { $case: "getTaskPushNotificationConfigResponse"; value: TaskPushNotificationConfig }
-    | { $case: "createTaskPushNotificationConfigResponse"; value: TaskPushNotificationConfig }
-    | { $case: "getAgentCardResponse"; value: AgentCard }
-    | undefined;
-}
-
-export interface A2AJsonRPCResponseError {
-  jsonrpc: string;
-  id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
-  error: A2AJsonRPCErrorResponse | undefined;
-}
-
-export interface A2AJsonRPCErrorResponse {
-  code: JsonRPCErrorCode;
-  message: string;
-  data: { [key: string]: any } | undefined;
 }

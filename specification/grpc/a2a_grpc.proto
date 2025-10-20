@@ -1,0 +1,110 @@
+// Older protoc compilers don't understand edition yet.
+syntax = "proto3";
+package a2a.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/protobuf/empty.proto";
+
+import "a2a_core.proto";
+
+option csharp_namespace = "A2a.V1";
+option go_package = "google.golang.org/a2a/v1";
+option java_multiple_files = true;
+option java_outer_classname = "A2A";
+option java_package = "com.google.a2a.v1";
+
+// A2AService defines the gRPC version of the A2A protocol. This has a slightly
+// different shape than the JSONRPC version to better conform to AIP-127,
+// where appropriate. The nouns are AgentCard, Message, Task and
+// TaskPushNotificationConfig.
+// - Messages are not a standard resource so there is no get/delete/update/list
+//   interface, only a send and stream custom methods.
+// - Tasks have a get interface and custom cancel and subscribe methods.
+// - TaskPushNotificationConfig are a resource whose parent is a task.
+//   They have get, list and create methods.
+// - AgentCard is a static resource with only a get method.
+service A2AService {
+  // Send a message to the agent. This is a blocking call that will return the
+  // task once it is completed, or a LRO if requested.
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {
+    option (google.api.http) = {
+      post: "/v1/message:send"
+      body: "*"
+    };
+  }
+  // SendStreamingMessage is a streaming call that will return a stream of
+  // task update events until the Task is in an interrupted or terminal state.
+  rpc SendStreamingMessage(SendMessageRequest) returns (stream StreamResponse) {
+    option (google.api.http) = {
+      post: "/v1/message:stream"
+      body: "*"
+    };
+  }
+
+  // Get the current state of a task from the agent.
+  rpc GetTask(GetTaskRequest) returns (Task) {
+    option (google.api.http) = {
+      get: "/v1/{name=tasks/*}"
+    };
+    option (google.api.method_signature) = "name";
+  }
+  // Cancel a task from the agent. If supported one should expect no
+  // more task updates for the task.
+  rpc CancelTask(CancelTaskRequest) returns (Task) {
+    option (google.api.http) = {
+      post: "/v1/{name=tasks/*}:cancel"
+      body: "*"
+    };
+  }
+  // TaskSubscription is a streaming call that will return a stream of task
+  // update events. This attaches the stream to an existing in process task.
+  // If the task is complete the stream will return the completed task (like
+  // GetTask) and close the stream.
+  rpc TaskSubscription(TaskSubscriptionRequest)
+      returns (stream StreamResponse) {
+    option (google.api.http) = {
+      get: "/v1/{name=tasks/*}:subscribe"
+    };
+  }
+
+  // Set a push notification config for a task.
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest)
+      returns (TaskPushNotificationConfig) {
+    option (google.api.http) = {
+      post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
+      body: "config"
+    };
+    option (google.api.method_signature) = "parent,config";
+  }
+  // Get a push notification config for a task.
+  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest)
+      returns (TaskPushNotificationConfig) {
+    option (google.api.http) = {
+      get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+    };
+    option (google.api.method_signature) = "name";
+  }
+  // Get a list of push notifications configured for a task.
+  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest)
+      returns (ListTaskPushNotificationConfigResponse) {
+    option (google.api.http) = {
+      get: "/v1/{parent=tasks/*}/pushNotificationConfigs"
+    };
+    option (google.api.method_signature) = "parent";
+  }
+  // GetAgentCard returns the agent card for the agent.
+  rpc GetAgentCard(GetAgentCardRequest) returns (AgentCard) {
+    option (google.api.http) = {
+      get: "/v1/card"
+    };
+  }
+  // Delete a push notification config for a task.
+  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest)
+      returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+    };
+    option (google.api.method_signature) = "name";
+  }
+}

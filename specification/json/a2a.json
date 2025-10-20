@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "A2AJsonRPCErrorResponse": {
+        "A2AJsonRPCError": {
             "properties": {
                 "code": {
                     "$ref": "#/definitions/JsonRPCErrorCode"
@@ -22,7 +22,6 @@
             "type": "object"
         },
         "A2AJsonRPCRequest": {
-            "description": "///// JSON-RPC Support /////////",
             "properties": {
                 "id": {
                     "anyOf": [
@@ -265,7 +264,7 @@
         "A2AJsonRPCResponseError": {
             "properties": {
                 "error": {
-                    "$ref": "#/definitions/A2AJsonRPCErrorResponse"
+                    "$ref": "#/definitions/A2AJsonRPCError"
                 },
                 "id": {
                     "anyOf": [
@@ -813,7 +812,7 @@
         },
         "ArrayBuffer": {
             "properties": {
-                "__@toStringTag@4587": {
+                "__@toStringTag@4605": {
                     "type": "string"
                 },
                 "byteLength": {
@@ -821,7 +820,7 @@
                 }
             },
             "required": [
-                "__@toStringTag@4587",
+                "__@toStringTag@4605",
                 "byteLength"
             ],
             "type": "object"
@@ -1089,7 +1088,7 @@
                                         "BYTES_PER_ELEMENT": {
                                             "type": "integer"
                                         },
-                                        "__@toStringTag@4587": {
+                                        "__@toStringTag@4605": {
                                             "const": "Uint8Array",
                                             "type": "string"
                                         },
@@ -1108,7 +1107,7 @@
                                     },
                                     "required": [
                                         "BYTES_PER_ELEMENT",
-                                        "__@toStringTag@4587",
+                                        "__@toStringTag@4605",
                                         "buffer",
                                         "byteLength",
                                         "byteOffset",
@@ -1238,6 +1237,7 @@
             "type": "object"
         },
         "JsonRPCErrorCode": {
+            "description": "Older protoc compilers don't understand edition yet.",
             "enum": [
                 0,
                 -32700,
@@ -1840,10 +1840,10 @@
         },
         "SharedArrayBuffer": {
             "properties": {
-                "__@species@4624": {
+                "__@species@4642": {
                     "$ref": "#/definitions/SharedArrayBuffer"
                 },
-                "__@toStringTag@4587": {
+                "__@toStringTag@4605": {
                     "const": "SharedArrayBuffer",
                     "type": "string"
                 },
@@ -1852,8 +1852,8 @@
                 }
             },
             "required": [
-                "__@species@4624",
-                "__@toStringTag@4587",
+                "__@species@4642",
+                "__@toStringTag@4605",
                 "byteLength"
             ],
             "type": "object"
