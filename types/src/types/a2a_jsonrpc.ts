@@ -26,27 +26,35 @@ export const protobufPackage = "a2a.v1";
 
 /** Older protoc compilers don't understand edition yet. */
 
-export enum JsonRPCErrorCode {
-  JSON_RPC_ERROR_CODE_UNSPECIFIED = 0,
-  PARSE_ERROR = -32700,
-  INVALID_REQUEST = -32600,
-  METHOD_NOT_FOUND = -32601,
-  INVALID_PARAMS = -32602,
-  INTERNAL_ERROR = -32603,
-  TASK_NOT_FOUND = -32001,
-  TASK_NOT_CACHEABLE = -32002,
-  PUSH_NOTIFICATION_NOT_SUPPORTED = -32003,
-  UNSUPPORTED_OPERATION_ERROR = -32004,
-  CONTENT_TYPE_NOT_SUPPORTED = -32005,
-  INVALID_AGENT_RESPONSE = -32006,
-  AUTHENTICATED_CARD_NOT_CONFIGURED = -32007,
-  UNRECOGNIZED = -1,
+export enum JSONRPCErrorCode {
+  JSON_RPC_ERROR_CODE_UNSPECIFIED = "JSON_RPC_ERROR_CODE_UNSPECIFIED",
+  PARSE_ERROR = "PARSE_ERROR",
+  INVALID_REQUEST = "INVALID_REQUEST",
+  METHOD_NOT_FOUND = "METHOD_NOT_FOUND",
+  INVALID_PARAMS = "INVALID_PARAMS",
+  INTERNAL_ERROR = "INTERNAL_ERROR",
+  TASK_NOT_FOUND = "TASK_NOT_FOUND",
+  TASK_NOT_CACHEABLE = "TASK_NOT_CACHEABLE",
+  PUSH_NOTIFICATION_NOT_SUPPORTED = "PUSH_NOTIFICATION_NOT_SUPPORTED",
+  UNSUPPORTED_OPERATION_ERROR = "UNSUPPORTED_OPERATION_ERROR",
+  CONTENT_TYPE_NOT_SUPPORTED = "CONTENT_TYPE_NOT_SUPPORTED",
+  INVALID_AGENT_RESPONSE = "INVALID_AGENT_RESPONSE",
+  AUTHENTICATED_CARD_NOT_CONFIGURED = "AUTHENTICATED_CARD_NOT_CONFIGURED",
+  UNRECOGNIZED = "UNRECOGNIZED",
 }
 
-export interface A2AJsonRPCRequest {
+/** A2AJsonRPCRequest represents a JSON-RPC request for the A2A protocol. */
+export interface JSONRPCRequest {
+  /** The JSON-RPC version, must be "2.0". */
   jsonrpc: string;
+  /** The method to be invoked. */
   method: string;
-  id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
+  /** The identifier for this request. */
+  id?:
+    | { $case: "idString"; value: string }
+    | { $case: "idInt"; value: number }
+    | undefined;
+  /** The parameters for the method. */
   params?:
     | { $case: "sendMessageRequest"; value: SendMessageRequest }
     | { $case: "getTaskRequest"; value: GetTaskRequest }
@@ -60,14 +68,14 @@ export interface A2AJsonRPCRequest {
     | undefined;
 }
 
-export interface A2AJsonRPCResponse {
+export interface JSONRPCResponse {
   response?:
-    | { $case: "success"; value: A2AJsonRPCResponseSuccess }
-    | { $case: "error"; value: A2AJsonRPCResponseError }
+    | { $case: "success"; value: JSONRPCSuccessResponse }
+    | { $case: "error"; value: JSONRPCErrorResponse }
     | undefined;
 }
 
-export interface A2AJsonRPCResponseSuccess {
+export interface JSONRPCSuccessResponse {
   jsonrpc: string;
   id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
   result?:
@@ -81,14 +89,14 @@ export interface A2AJsonRPCResponseSuccess {
     | undefined;
 }
 
-export interface A2AJsonRPCResponseError {
+export interface JSONRPCErrorResponse {
   jsonrpc: string;
   id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
-  error: A2AJsonRPCError | undefined;
+  error: JSONRPCError | undefined;
 }
 
-export interface A2AJsonRPCError {
-  code: JsonRPCErrorCode;
+export interface JSONRPCError {
+  code: JSONRPCErrorCode;
   message: string;
   data: { [key: string]: any } | undefined;
 }

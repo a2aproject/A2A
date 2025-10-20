@@ -1,480 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "A2AJsonRPCError": {
-            "properties": {
-                "code": {
-                    "$ref": "#/definitions/JsonRPCErrorCode"
-                },
-                "data": {
-                    "additionalProperties": {},
-                    "type": "object"
-                },
-                "message": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "code",
-                "data",
-                "message"
-            ],
-            "type": "object"
-        },
-        "A2AJsonRPCRequest": {
-            "properties": {
-                "id": {
-                    "anyOf": [
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "idString",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "idInt",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "integer"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        }
-                    ]
-                },
-                "jsonrpc": {
-                    "type": "string"
-                },
-                "method": {
-                    "type": "string"
-                },
-                "params": {
-                    "anyOf": [
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "sendMessageRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/SendMessageRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "getTaskRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/GetTaskRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "cancelTaskRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/CancelTaskRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "taskSubscriptionRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/TaskSubscriptionRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "createTaskPushNotificationConfigRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/CreateTaskPushNotificationConfigRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "getTaskPushNotificationConfigRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/GetTaskPushNotificationConfigRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "listTaskPushNotificationConfigRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/ListTaskPushNotificationConfigRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "deleteTaskPushNotificationConfigRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/DeleteTaskPushNotificationConfigRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "getAgentCardRequest",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/GetAgentCardRequest"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        }
-                    ]
-                }
-            },
-            "required": [
-                "jsonrpc",
-                "method"
-            ],
-            "type": "object"
-        },
-        "A2AJsonRPCResponse": {
-            "properties": {
-                "response": {
-                    "anyOf": [
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "success",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/A2AJsonRPCResponseSuccess"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "error",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/A2AJsonRPCResponseError"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        }
-                    ]
-                }
-            },
-            "type": "object"
-        },
-        "A2AJsonRPCResponseError": {
-            "properties": {
-                "error": {
-                    "$ref": "#/definitions/A2AJsonRPCError"
-                },
-                "id": {
-                    "anyOf": [
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "idString",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "idInt",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "integer"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        }
-                    ]
-                },
-                "jsonrpc": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "error",
-                "jsonrpc"
-            ],
-            "type": "object"
-        },
-        "A2AJsonRPCResponseSuccess": {
-            "properties": {
-                "id": {
-                    "anyOf": [
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "idString",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "idInt",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "integer"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        }
-                    ]
-                },
-                "jsonrpc": {
-                    "type": "string"
-                },
-                "result": {
-                    "anyOf": [
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "sendMessageResponse",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/SendMessageResponse"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "getTaskResponse",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/Task"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "cancelTaskResponse",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/Task"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "listTaskPushNotificationConfigResponse",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/ListTaskPushNotificationConfigResponse"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "getTaskPushNotificationConfigResponse",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/TaskPushNotificationConfig"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "createTaskPushNotificationConfigResponse",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/TaskPushNotificationConfig"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        },
-                        {
-                            "properties": {
-                                "$case": {
-                                    "const": "getAgentCardResponse",
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "$ref": "#/definitions/AgentCard"
-                                }
-                            },
-                            "required": [
-                                "$case",
-                                "value"
-                            ],
-                            "type": "object"
-                        }
-                    ]
-                }
-            },
-            "required": [
-                "jsonrpc"
-            ],
-            "type": "object"
-        },
         "APIKeySecurityScheme": {
             "description": "--8<-- [start:APIKeySecurityScheme]",
             "properties": {
@@ -810,31 +336,6 @@
             ],
             "type": "object"
         },
-        "ArrayBuffer": {
-            "properties": {
-                "__@toStringTag@4605": {
-                    "type": "string"
-                },
-                "byteLength": {
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "__@toStringTag@4605",
-                "byteLength"
-            ],
-            "type": "object"
-        },
-        "ArrayBufferLike": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/ArrayBuffer"
-                },
-                {
-                    "$ref": "#/definitions/SharedArrayBuffer"
-                }
-            ]
-        },
         "Artifact": {
             "description": "--8<-- [start:Artifact]\nArtifacts are the container for task completed results. These are similar\nto Messages but are intended to be the product of a task, as opposed to\npoint-to-point communication.",
             "properties": {
@@ -1078,42 +579,7 @@
                                     "type": "string"
                                 },
                                 "value": {
-                                    "additionalProperties": false,
-                                    "patternProperties": {
-                                        "^[0-9]+$": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "properties": {
-                                        "BYTES_PER_ELEMENT": {
-                                            "type": "integer"
-                                        },
-                                        "__@toStringTag@4605": {
-                                            "const": "Uint8Array",
-                                            "type": "string"
-                                        },
-                                        "buffer": {
-                                            "$ref": "#/definitions/ArrayBufferLike"
-                                        },
-                                        "byteLength": {
-                                            "type": "integer"
-                                        },
-                                        "byteOffset": {
-                                            "type": "integer"
-                                        },
-                                        "length": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "required": [
-                                        "BYTES_PER_ELEMENT",
-                                        "__@toStringTag@4605",
-                                        "buffer",
-                                        "byteLength",
-                                        "byteOffset",
-                                        "length"
-                                    ],
-                                    "type": "object"
+                                    "type": "string"
                                 }
                             },
                             "required": [
@@ -1236,25 +702,504 @@
             ],
             "type": "object"
         },
-        "JsonRPCErrorCode": {
+        "JSONRPCError": {
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/JSONRPCErrorCode"
+                },
+                "data": {
+                    "additionalProperties": {},
+                    "type": "object"
+                },
+                "message": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "data",
+                "message"
+            ],
+            "type": "object"
+        },
+        "JSONRPCErrorCode": {
             "description": "Older protoc compilers don't understand edition yet.",
             "enum": [
-                0,
-                -32700,
-                -32600,
-                -32601,
-                -32602,
-                -32603,
-                -32001,
-                -32002,
-                -32003,
-                -32004,
-                -32005,
-                -32006,
-                -32007,
-                -1
+                "JSON_RPC_ERROR_CODE_UNSPECIFIED",
+                "PARSE_ERROR",
+                "INVALID_REQUEST",
+                "METHOD_NOT_FOUND",
+                "INVALID_PARAMS",
+                "INTERNAL_ERROR",
+                "TASK_NOT_FOUND",
+                "TASK_NOT_CACHEABLE",
+                "PUSH_NOTIFICATION_NOT_SUPPORTED",
+                "UNSUPPORTED_OPERATION_ERROR",
+                "CONTENT_TYPE_NOT_SUPPORTED",
+                "INVALID_AGENT_RESPONSE",
+                "AUTHENTICATED_CARD_NOT_CONFIGURED",
+                "UNRECOGNIZED"
             ],
-            "type": "number"
+            "type": "string"
+        },
+        "JSONRPCErrorResponse": {
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/JSONRPCError"
+                },
+                "id": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "idString",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "idInt",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                },
+                "jsonrpc": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "error",
+                "jsonrpc"
+            ],
+            "type": "object"
+        },
+        "JSONRPCRequest": {
+            "description": "A2AJsonRPCRequest represents a JSON-RPC request for the A2A protocol.",
+            "properties": {
+                "id": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "idString",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "idInt",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ],
+                    "description": "The identifier for this request."
+                },
+                "jsonrpc": {
+                    "description": "The JSON-RPC version, must be \"2.0\".",
+                    "type": "string"
+                },
+                "method": {
+                    "description": "The method to be invoked.",
+                    "type": "string"
+                },
+                "params": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "sendMessageRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/SendMessageRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "getTaskRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/GetTaskRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "cancelTaskRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/CancelTaskRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "taskSubscriptionRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/TaskSubscriptionRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "createTaskPushNotificationConfigRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/CreateTaskPushNotificationConfigRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "getTaskPushNotificationConfigRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/GetTaskPushNotificationConfigRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "listTaskPushNotificationConfigRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/ListTaskPushNotificationConfigRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "deleteTaskPushNotificationConfigRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/DeleteTaskPushNotificationConfigRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "getAgentCardRequest",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/GetAgentCardRequest"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ],
+                    "description": "The parameters for the method."
+                }
+            },
+            "required": [
+                "jsonrpc",
+                "method"
+            ],
+            "type": "object"
+        },
+        "JSONRPCResponse": {
+            "properties": {
+                "response": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "success",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/JSONRPCSuccessResponse"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "error",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/JSONRPCErrorResponse"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "JSONRPCSuccessResponse": {
+            "properties": {
+                "id": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "idString",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "idInt",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                },
+                "jsonrpc": {
+                    "type": "string"
+                },
+                "result": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "sendMessageResponse",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/SendMessageResponse"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "getTaskResponse",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/Task"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "cancelTaskResponse",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/Task"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "listTaskPushNotificationConfigResponse",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/ListTaskPushNotificationConfigResponse"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "getTaskPushNotificationConfigResponse",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/TaskPushNotificationConfig"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "createTaskPushNotificationConfigResponse",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/TaskPushNotificationConfig"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "getAgentCardResponse",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/AgentCard"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "jsonrpc"
+            ],
+            "type": "object"
         },
         "ListTaskPushNotificationConfigRequest": {
             "description": "--8<-- [start:ListTaskPushNotificationConfigRequest]",
@@ -1615,12 +1560,12 @@
         },
         "Role": {
             "enum": [
-                0,
-                1,
-                2,
-                -1
+                "ROLE_UNSPECIFIED",
+                "ROLE_USER",
+                "ROLE_AGENT",
+                "UNRECOGNIZED"
             ],
-            "type": "number"
+            "type": "string"
         },
         "Security": {
             "properties": {
@@ -1838,26 +1783,6 @@
             },
             "type": "object"
         },
-        "SharedArrayBuffer": {
-            "properties": {
-                "__@species@4642": {
-                    "$ref": "#/definitions/SharedArrayBuffer"
-                },
-                "__@toStringTag@4605": {
-                    "const": "SharedArrayBuffer",
-                    "type": "string"
-                },
-                "byteLength": {
-                    "type": "integer"
-                }
-            },
-            "required": [
-                "__@species@4642",
-                "__@toStringTag@4605",
-                "byteLength"
-            ],
-            "type": "object"
-        },
         "StreamResponse": {
             "description": "--8<-- [start:SendStreamingMessageSuccessResponse]\nThe stream response for a message. The stream should be one of the following\nsequences:\nIf the response is a message, the stream should contain one, and only one,\nmessage and then close\nIf the response is a task lifecycle, the first response should be a Task\nobject followed by zero or more TaskStatusUpdateEvents and\nTaskArtifactUpdateEvents. The stream should complete when the Task\nif in an interrupted or terminal state. A stream that ends before these\nconditions are met are",
             "properties": {
@@ -2052,18 +1977,18 @@
         "TaskState": {
             "description": "--8<-- [start:TaskState]\nThe set of states a Task can be in.",
             "enum": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                -1
+                "TASK_STATE_UNSPECIFIED",
+                "TASK_STATE_SUBMITTED",
+                "TASK_STATE_WORKING",
+                "TASK_STATE_COMPLETED",
+                "TASK_STATE_FAILED",
+                "TASK_STATE_CANCELLED",
+                "TASK_STATE_INPUT_REQUIRED",
+                "TASK_STATE_REJECTED",
+                "TASK_STATE_AUTH_REQUIRED",
+                "UNRECOGNIZED"
             ],
-            "type": "number"
+            "type": "string"
         },
         "TaskStatus": {
             "description": "--8<-- [start:TaskStatus]\nA container for the status of a task",

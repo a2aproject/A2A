@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "generate": "./node_modules/.bin/typescript-json-schema tsconfig.json \"*\" --defaultNumberType integer --required --out ../specification/json/a2a.json",
-    "generate-types": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/types --ts_proto_opt=outputEncodeMethods=false,outputPartialMethods=false,outputJsonMethods=false,outputServices=false,emitImportedFiles=false,oneof=unions-value -I ./node_modules/google-proto-files -I ../specification/grpc ../specification/grpc/*.proto",
+    "generate-types": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./src/types --ts_proto_opt=outputEncodeMethods=false,outputPartialMethods=false,outputJsonMethods=false,outputServices=false,emitImportedFiles=false,oneof=unions-value,stringEnums=true,env=node -I ./node_modules/google-proto-files -I ../specification/grpc ../specification/grpc/*.proto",
     "prettier": "prettier \"src/types/**/*.ts\" --write"
   },
   "author": "",

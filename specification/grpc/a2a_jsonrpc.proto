@@ -14,17 +14,18 @@ option java_package = "com.google.a2a.v1";
 
 /////// JSON-RPC Support /////////
 
-message A2AJsonRPCRequest {
-
+// A2AJsonRPCRequest represents a JSON-RPC request for the A2A protocol.
+message JSONRPCRequest {
+  // The JSON-RPC version, must be "2.0".
   string jsonrpc = 1;
-
+  // The method to be invoked.
   string method = 2;
-
+  // The identifier for this request.
   oneof id {
     string id_string = 3;
     int64 id_int = 4;
   }
-
+  // The parameters for the method.
   oneof params {
     SendMessageRequest send_message_request = 5;
     GetTaskRequest get_task_request = 6;
@@ -38,15 +39,15 @@ message A2AJsonRPCRequest {
   }
 }
 
-message A2AJsonRPCResponse {
+message JSONRPCResponse {
 
   oneof response {
-    A2AJsonRPCResponseSuccess success = 1;
-    A2AJsonRPCResponseError error = 2;
+    JSONRPCSuccessResponse success = 1;
+    JSONRPCErrorResponse error = 2;
   }
 }
 
-message A2AJsonRPCResponseSuccess {
+message JSONRPCSuccessResponse {
 
   string jsonrpc = 1;
 
@@ -66,7 +67,7 @@ message A2AJsonRPCResponseSuccess {
   }
 }
 
-message A2AJsonRPCResponseError {
+message JSONRPCErrorResponse {
 
   string jsonrpc = 1;
 
@@ -75,16 +76,16 @@ message A2AJsonRPCResponseError {
     int64 id_int = 3;
   }
 
-  A2AJsonRPCError error = 4;
+  JSONRPCError error = 4;
 }
 
-message A2AJsonRPCError {
-  JsonRPCErrorCode code = 1;
+message JSONRPCError {
+  JSONRPCErrorCode code = 1;
   string message = 2;
   google.protobuf.Struct data = 3;
 }
 
-enum JsonRPCErrorCode {
+enum JSONRPCErrorCode {
   JSON_RPC_ERROR_CODE_UNSPECIFIED = 0;
 
   PARSE_ERROR = -32700;
