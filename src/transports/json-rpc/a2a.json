@@ -1,0 +1,1740 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "APIKeySecurityScheme": {
+            "description": "--8<-- [start:APIKeySecurityScheme]",
+            "properties": {
+                "description": {
+                    "description": "Description of this security scheme.",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "Location of the API key, valid values are \"query\", \"header\", or \"cookie\"",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Name of the header, query or cookie parameter to be used.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "location",
+                "name"
+            ],
+            "type": "object"
+        },
+        "AgentCapabilities": {
+            "description": "--8<-- [start:AgentCapabilities]\nDefines the A2A feature set supported by the agent",
+            "properties": {
+                "extensions": {
+                    "description": "Extensions supported by this agent.",
+                    "items": {
+                        "$ref": "#/definitions/AgentExtension"
+                    },
+                    "type": "array"
+                },
+                "pushNotifications": {
+                    "description": "If the agent can send push notifications to the clients webhook",
+                    "type": "boolean"
+                },
+                "streaming": {
+                    "description": "If the agent will support streaming responses",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "extensions",
+                "pushNotifications",
+                "streaming"
+            ],
+            "type": "object"
+        },
+        "AgentCard": {
+            "description": "--8<-- [start:AgentCard]\nAgentCard conveys key information:\n- Overall details (version, name, description, uses)\n- Skills; a set of actions/solutions the agent can perform\n- Default modalities/content types supported by the agent.\n- Authentication requirements\nNext ID: 19",
+            "properties": {
+                "additionalInterfaces": {
+                    "description": "Announcement of additional supported transports. Client can use any of\nthe supported transports.",
+                    "items": {
+                        "$ref": "#/definitions/AgentInterface"
+                    },
+                    "type": "array"
+                },
+                "capabilities": {
+                    "$ref": "#/definitions/AgentCapabilities",
+                    "description": "A2A Capability set supported by the agent."
+                },
+                "defaultInputModes": {
+                    "description": "protolint:enable REPEATED_FIELD_NAMES_PLURALIZED\nThe set of interaction modes that the agent supports across all skills.\nThis can be overridden per skill. Defined as mime types.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "defaultOutputModes": {
+                    "description": "The mime types supported as outputs from this agent.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "description": {
+                    "description": "A description of the agent's domain of action/solution space.\nExample: \"Agent that helps users with recipes and cooking.\"",
+                    "type": "string"
+                },
+                "documentationUrl": {
+                    "description": "A url to provide additional documentation about the agent.",
+                    "type": "string"
+                },
+                "iconUrl": {
+                    "description": "An optional URL to an icon for the agent.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "A human readable name for the agent.\nExample: \"Recipe Agent\"",
+                    "type": "string"
+                },
+                "preferredTransport": {
+                    "description": "The transport of the preferred endpoint. If empty, defaults to JSONRPC.",
+                    "type": "string"
+                },
+                "protocolVersion": {
+                    "description": "The version of the A2A protocol this agent supports.",
+                    "type": "string"
+                },
+                "provider": {
+                    "$ref": "#/definitions/AgentProvider",
+                    "description": "The service provider of the agent."
+                },
+                "security": {
+                    "description": "protolint:disable REPEATED_FIELD_NAMES_PLURALIZED\nSecurity requirements for contacting the agent.\nThis list can be seen as an OR of ANDs. Each object in the list describes\none possible set of security requirements that must be present on a\nrequest. This allows specifying, for example, \"callers must either use\nOAuth OR an API Key AND mTLS.\"\nExample:\nsecurity {\n  schemes { key: \"oauth\" value { list: [\"read\"] } }\n}\nsecurity {\n  schemes { key: \"api-key\" }\n  schemes { key: \"mtls\" }\n}",
+                    "items": {
+                        "$ref": "#/definitions/Security"
+                    },
+                    "type": "array"
+                },
+                "securitySchemes": {
+                    "additionalProperties": {
+                        "$ref": "#/definitions/SecurityScheme"
+                    },
+                    "description": "The security scheme details used for authenticating with this agent.",
+                    "type": "object"
+                },
+                "signatures": {
+                    "description": "JSON Web Signatures computed for this AgentCard.",
+                    "items": {
+                        "$ref": "#/definitions/AgentCardSignature"
+                    },
+                    "type": "array"
+                },
+                "skills": {
+                    "description": "Skills represent a unit of ability an agent can perform. This may\nsomewhat abstract but represents a more focused set of actions that the\nagent is highly likely to succeed at.",
+                    "items": {
+                        "$ref": "#/definitions/AgentSkill"
+                    },
+                    "type": "array"
+                },
+                "supportsAuthenticatedExtendedCard": {
+                    "description": "Whether the agent supports providing an extended agent card when\nthe user is authenticated, i.e. is the card from .well-known\ndifferent than the card from GetAgentCard.",
+                    "type": "boolean"
+                },
+                "url": {
+                    "description": "A URL to the address the agent is hosted at. This represents the\npreferred endpoint as declared by the agent.",
+                    "type": "string"
+                },
+                "version": {
+                    "description": "The version of the agent.\nExample: \"1.0.0\"",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "additionalInterfaces",
+                "capabilities",
+                "defaultInputModes",
+                "defaultOutputModes",
+                "description",
+                "documentationUrl",
+                "iconUrl",
+                "name",
+                "preferredTransport",
+                "protocolVersion",
+                "provider",
+                "security",
+                "securitySchemes",
+                "signatures",
+                "skills",
+                "supportsAuthenticatedExtendedCard",
+                "url",
+                "version"
+            ],
+            "type": "object"
+        },
+        "AgentCardSignature": {
+            "description": "--8<-- [start:AgentCardSignature]\nAgentCardSignature represents a JWS signature of an AgentCard.\nThis follows the JSON format of an RFC 7515 JSON Web Signature (JWS).",
+            "properties": {
+                "header": {
+                    "additionalProperties": {},
+                    "description": "The unprotected JWS header values.",
+                    "type": "object"
+                },
+                "protected": {
+                    "description": "The protected JWS header for the signature. This is always a\nbase64url-encoded JSON object. Required.",
+                    "type": "string"
+                },
+                "signature": {
+                    "description": "The computed signature, base64url-encoded. Required.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "header",
+                "protected",
+                "signature"
+            ],
+            "type": "object"
+        },
+        "AgentCard_SecuritySchemesEntry": {
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "$ref": "#/definitions/SecurityScheme"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ],
+            "type": "object"
+        },
+        "AgentExtension": {
+            "description": "--8<-- [start:AgentExtension]\nA declaration of an extension supported by an Agent.",
+            "properties": {
+                "description": {
+                    "description": "A description of how this agent uses this extension.\nExample: \"Google OAuth 2.0 authentication\"",
+                    "type": "string"
+                },
+                "params": {
+                    "additionalProperties": {},
+                    "description": "Optional configuration for the extension.",
+                    "type": "object"
+                },
+                "required": {
+                    "description": "Whether the client must follow specific requirements of the extension.\nExample: false",
+                    "type": "boolean"
+                },
+                "uri": {
+                    "description": "The URI of the extension.\nExample: \"https://developers.google.com/identity/protocols/oauth2\"",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "params",
+                "required",
+                "uri"
+            ],
+            "type": "object"
+        },
+        "AgentInterface": {
+            "description": "--8<-- [start:AgentInterface]\nDefines additional transport information for the agent.",
+            "properties": {
+                "transport": {
+                    "description": "The transport supported this url. This is an open form string, to be\neasily extended for many transport protocols. The core ones officially\nsupported are JSONRPC, GRPC and HTTP+JSON.",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "The url this interface is found at.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "transport",
+                "url"
+            ],
+            "type": "object"
+        },
+        "AgentProvider": {
+            "description": "--8<-- [start:AgentProvider]\nRepresents information about the service provider of an agent.",
+            "properties": {
+                "organization": {
+                    "description": "The providers organization name\nExample: \"Google\"",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "The providers reference url\nExample: \"https://ai.google.dev\"",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "organization",
+                "url"
+            ],
+            "type": "object"
+        },
+        "AgentSkill": {
+            "description": "--8<-- [start:AgentSkill]\nAgentSkill represents a unit of action/solution that the agent can perform.\nOne can think of this as a type of highly reliable solution that an agent\ncan be tasked to provide. Agents have the autonomy to choose how and when\nto use specific skills, but clients should have confidence that if the\nskill is defined that unit of action can be reliably performed.",
+            "properties": {
+                "description": {
+                    "description": "A human (or llm) readable description of the skill\ndetails and behaviors.",
+                    "type": "string"
+                },
+                "examples": {
+                    "description": "A set of example queries that this skill is designed to address.\nThese examples should help the caller to understand how to craft requests\nto the agent to achieve specific goals.\nExample: [\"I need a recipe for bread\"]",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "id": {
+                    "description": "Unique identifier of the skill within this agent.",
+                    "type": "string"
+                },
+                "inputModes": {
+                    "description": "Possible input modalities supported.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "name": {
+                    "description": "A human readable name for the skill.",
+                    "type": "string"
+                },
+                "outputModes": {
+                    "description": "Possible output modalities produced",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "security": {
+                    "description": "protolint:disable REPEATED_FIELD_NAMES_PLURALIZED\nSecurity schemes necessary for the agent to leverage this skill.\nAs in the overall AgentCard.security, this list represents a logical OR of\nsecurity requirement objects. Each object is a set of security schemes\nthat must be used together (a logical AND).",
+                    "items": {
+                        "$ref": "#/definitions/Security"
+                    },
+                    "type": "array"
+                },
+                "tags": {
+                    "description": "A set of tags for the skill to enhance categorization/utilization.\nExample: [\"cooking\", \"customer support\", \"billing\"]",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "description",
+                "examples",
+                "id",
+                "inputModes",
+                "name",
+                "outputModes",
+                "security",
+                "tags"
+            ],
+            "type": "object"
+        },
+        "Artifact": {
+            "description": "--8<-- [start:Artifact]\nArtifacts are the container for task completed results. These are similar\nto Messages but are intended to be the product of a task, as opposed to\npoint-to-point communication.",
+            "properties": {
+                "artifactId": {
+                    "description": "Unique identifier (e.g. UUID) for the artifact. It must be at least unique\nwithin a task.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "A human readable description of the artifact, optional.",
+                    "type": "string"
+                },
+                "extensions": {
+                    "description": "The URIs of extensions that are present or contributed to this Artifact.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata included with the artifact.",
+                    "type": "object"
+                },
+                "name": {
+                    "description": "A human readable name for the artifact.",
+                    "type": "string"
+                },
+                "parts": {
+                    "description": "The content of the artifact.",
+                    "items": {
+                        "$ref": "#/definitions/Part"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "artifactId",
+                "description",
+                "extensions",
+                "metadata",
+                "name",
+                "parts"
+            ],
+            "type": "object"
+        },
+        "AuthenticationInfo": {
+            "description": "--8<-- [start:PushNotificationAuthenticationInfo]\nDefines authentication details, used for push notifications.",
+            "properties": {
+                "credentials": {
+                    "description": "Optional credentials",
+                    "type": "string"
+                },
+                "schemes": {
+                    "description": "Supported authentication schemes - e.g. Basic, Bearer, etc",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "credentials",
+                "schemes"
+            ],
+            "type": "object"
+        },
+        "AuthorizationCodeOAuthFlow": {
+            "description": "--8<-- [start:AuthorizationCodeOAuthFlow]",
+            "properties": {
+                "authorizationUrl": {
+                    "description": "The authorization URL to be used for this flow. This MUST be in the\nform of a URL. The OAuth2 standard requires the use of TLS",
+                    "type": "string"
+                },
+                "refreshUrl": {
+                    "description": "The URL to be used for obtaining refresh tokens. This MUST be in the\nform of a URL. The OAuth2 standard requires the use of TLS.",
+                    "type": "string"
+                },
+                "scopes": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "The available scopes for the OAuth2 security scheme. A map between the\nscope name and a short description for it. The map MAY be empty.",
+                    "type": "object"
+                },
+                "tokenUrl": {
+                    "description": "The token URL to be used for this flow. This MUST be in the form of a URL.\nThe OAuth2 standard requires the use of TLS.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "authorizationUrl",
+                "refreshUrl",
+                "scopes",
+                "tokenUrl"
+            ],
+            "type": "object"
+        },
+        "AuthorizationCodeOAuthFlow_ScopesEntry": {
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ],
+            "type": "object"
+        },
+        "CancelTaskRequest": {
+            "description": "--8<-- [start:CancelTaskRequest]",
+            "properties": {
+                "name": {
+                    "description": "The resource name of the task to cancel.\nFormat: tasks/{task_id}",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        },
+        "ClientCredentialsOAuthFlow": {
+            "description": "--8<-- [start:ClientCredentialsOAuthFlow]",
+            "properties": {
+                "refreshUrl": {
+                    "description": "The URL to be used for obtaining refresh tokens. This MUST be in the\nform of a URL. The OAuth2 standard requires the use of TLS.",
+                    "type": "string"
+                },
+                "scopes": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "The available scopes for the OAuth2 security scheme. A map between the\nscope name and a short description for it. The map MAY be empty.",
+                    "type": "object"
+                },
+                "tokenUrl": {
+                    "description": "The token URL to be used for this flow. This MUST be in the form of a URL.\nThe OAuth2 standard requires the use of TLS.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "refreshUrl",
+                "scopes",
+                "tokenUrl"
+            ],
+            "type": "object"
+        },
+        "ClientCredentialsOAuthFlow_ScopesEntry": {
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ],
+            "type": "object"
+        },
+        "CreateTaskPushNotificationConfigRequest": {
+            "description": "--8<-- [start:CreateTaskPushNotificationConfigRequest]",
+            "properties": {
+                "config": {
+                    "$ref": "#/definitions/TaskPushNotificationConfig",
+                    "description": "The configuration to create."
+                },
+                "configId": {
+                    "description": "The ID for the new config.",
+                    "type": "string"
+                },
+                "parent": {
+                    "description": "The parent task resource for this config.\nFormat: tasks/{task_id}",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "config",
+                "configId",
+                "parent"
+            ],
+            "type": "object"
+        },
+        "DataPart": {
+            "description": "--8<-- [start:DataPart]\nDataPart represents a structured blob. This is most commonly a JSON payload.",
+            "properties": {
+                "data": {
+                    "additionalProperties": {},
+                    "type": "object"
+                }
+            },
+            "required": [
+                "data"
+            ],
+            "type": "object"
+        },
+        "DeleteTaskPushNotificationConfigRequest": {
+            "description": "--8<-- [start:DeleteTaskPushNotificationConfigRequest]",
+            "properties": {
+                "name": {
+                    "description": "The resource name of the config to delete.\nFormat: tasks/{task_id}/pushNotificationConfigs/{config_id}",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        },
+        "FilePart": {
+            "description": "--8<-- [start:FilePart]\nFilePart represents the different ways files can be provided. If files are\nsmall, directly feeding the bytes is supported via file_with_bytes. If the\nfile is large, the agent should read the content as appropriate directly\nfrom the file_with_uri source.",
+            "properties": {
+                "file": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "fileWithUri",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "fileWithBytes",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                },
+                "mimeType": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "mimeType",
+                "name"
+            ],
+            "type": "object"
+        },
+        "GetAgentCardRequest": {
+            "description": "--8<-- [start:GetAgentCardRequest]",
+            "type": "object"
+        },
+        "GetTaskPushNotificationConfigRequest": {
+            "description": "--8<-- [start:GetTaskPushNotificationConfigRequest]",
+            "properties": {
+                "name": {
+                    "description": "The resource name of the config to retrieve.\nFormat: tasks/{task_id}/pushNotificationConfigs/{config_id}",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        },
+        "GetTaskRequest": {
+            "description": "--8<-- [start:GetTaskRequest]",
+            "properties": {
+                "historyLength": {
+                    "description": "The number of most recent messages from the task's history to retrieve.",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "The resource name of the task.\nFormat: tasks/{task_id}",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "historyLength",
+                "name"
+            ],
+            "type": "object"
+        },
+        "HTTPAuthSecurityScheme": {
+            "description": "--8<-- [start:HTTPAuthSecurityScheme]",
+            "properties": {
+                "bearerFormat": {
+                    "description": "A hint to the client to identify how the bearer token is formatted.\nBearer tokens are usually generated by an authorization server, so\nthis information is primarily for documentation purposes.",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Description of this security scheme.",
+                    "type": "string"
+                },
+                "scheme": {
+                    "description": "The name of the HTTP Authentication scheme to be used in the\nAuthorization header as defined in RFC7235. The values used SHOULD be\nregistered in the IANA Authentication Scheme registry.\nThe value is case-insensitive, as defined in RFC7235.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "bearerFormat",
+                "description",
+                "scheme"
+            ],
+            "type": "object"
+        },
+        "ImplicitOAuthFlow": {
+            "description": "--8<-- [start:ImplicitOAuthFlow]",
+            "properties": {
+                "authorizationUrl": {
+                    "description": "The authorization URL to be used for this flow. This MUST be in the\nform of a URL. The OAuth2 standard requires the use of TLS",
+                    "type": "string"
+                },
+                "refreshUrl": {
+                    "description": "The URL to be used for obtaining refresh tokens. This MUST be in the\nform of a URL. The OAuth2 standard requires the use of TLS.",
+                    "type": "string"
+                },
+                "scopes": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "The available scopes for the OAuth2 security scheme. A map between the\nscope name and a short description for it. The map MAY be empty.",
+                    "type": "object"
+                }
+            },
+            "required": [
+                "authorizationUrl",
+                "refreshUrl",
+                "scopes"
+            ],
+            "type": "object"
+        },
+        "ImplicitOAuthFlow_ScopesEntry": {
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ],
+            "type": "object"
+        },
+        "JSONRPCError": {
+            "properties": {
+                "code": {
+                    "$ref": "#/definitions/JSONRPCErrorCode",
+                    "description": "A number that indicates the error type that occurred."
+                },
+                "data": {
+                    "additionalProperties": {},
+                    "description": "A primitive or structured value containing additional information about the error.\nThis may be omitted.",
+                    "type": "object"
+                },
+                "message": {
+                    "description": "A string providing a short description of the error.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "code",
+                "data",
+                "message"
+            ],
+            "type": "object"
+        },
+        "JSONRPCErrorCode": {
+            "description": "Older protoc compilers don't understand edition yet.",
+            "enum": [
+                -32700,
+                -32600,
+                -32601,
+                -32602,
+                -32603,
+                -32001,
+                -32002,
+                -32003,
+                -32004,
+                -32005,
+                -32006,
+                -32007
+            ],
+            "type": "number"
+        },
+        "JSONRPCErrorResponse": {
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/JSONRPCError"
+                },
+                "id": {
+                    "description": "The identifier for this request.",
+                    "type": [
+                        "string",
+                        "integer"
+                    ]
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "description": "The JSON-RPC version, must be \"2.0\".",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "error",
+                "jsonrpc"
+            ],
+            "type": "object"
+        },
+        "JSONRPCRequest": {
+            "description": "A2AJsonRPCRequest represents a JSON-RPC request for the A2A protocol.",
+            "properties": {
+                "id": {
+                    "description": "The identifier for this request.",
+                    "type": [
+                        "string",
+                        "integer"
+                    ]
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "description": "The JSON-RPC version, must be \"2.0\".",
+                    "type": "string"
+                },
+                "method": {
+                    "description": "The method to be invoked.",
+                    "type": "string"
+                },
+                "params": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/SendMessageRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/GetTaskRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/CancelTaskRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/GetTaskPushNotificationConfigRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/DeleteTaskPushNotificationConfigRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/CreateTaskPushNotificationConfigRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/TaskSubscriptionRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/ListTaskPushNotificationConfigRequest"
+                        },
+                        {
+                            "$ref": "#/definitions/GetAgentCardRequest"
+                        }
+                    ],
+                    "description": "The parameters for the method."
+                }
+            },
+            "required": [
+                "jsonrpc",
+                "method"
+            ],
+            "type": "object"
+        },
+        "JSONRPCResponse": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/JSONRPCSuccessResponse"
+                },
+                {
+                    "$ref": "#/definitions/JSONRPCErrorResponse"
+                }
+            ]
+        },
+        "JSONRPCSuccessResponse": {
+            "properties": {
+                "id": {
+                    "description": "The identifier for this request.",
+                    "type": [
+                        "string",
+                        "integer"
+                    ]
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "description": "The JSON-RPC version, must be \"2.0\".",
+                    "type": "string"
+                },
+                "result": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/Task"
+                        },
+                        {
+                            "$ref": "#/definitions/AgentCard"
+                        },
+                        {
+                            "$ref": "#/definitions/TaskPushNotificationConfig"
+                        },
+                        {
+                            "$ref": "#/definitions/SendMessageResponse"
+                        },
+                        {
+                            "$ref": "#/definitions/ListTaskPushNotificationConfigResponse"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "jsonrpc",
+                "result"
+            ],
+            "type": "object"
+        },
+        "ListTaskPushNotificationConfigRequest": {
+            "description": "--8<-- [start:ListTaskPushNotificationConfigRequest]",
+            "properties": {
+                "pageSize": {
+                    "description": "For AIP-158 these fields are present. Usually not used/needed.\nThe maximum number of configurations to return.\nIf unspecified, all configs will be returned.",
+                    "type": "integer"
+                },
+                "pageToken": {
+                    "description": "A page token received from a previous\nListTaskPushNotificationConfigRequest call.\nProvide this to retrieve the subsequent page.\nWhen paginating, all other parameters provided to\n`ListTaskPushNotificationConfigRequest` must match the call that provided\nthe page token.",
+                    "type": "string"
+                },
+                "parent": {
+                    "description": "The parent task resource.\nFormat: tasks/{task_id}",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "pageSize",
+                "pageToken",
+                "parent"
+            ],
+            "type": "object"
+        },
+        "ListTaskPushNotificationConfigResponse": {
+            "description": "--8<-- [start:ListTaskPushNotificationConfigResponse]",
+            "properties": {
+                "configs": {
+                    "description": "The list of push notification configurations.",
+                    "items": {
+                        "$ref": "#/definitions/TaskPushNotificationConfig"
+                    },
+                    "type": "array"
+                },
+                "nextPageToken": {
+                    "description": "A token, which can be sent as `page_token` to retrieve the next page.\nIf this field is omitted, there are no subsequent pages.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "configs",
+                "nextPageToken"
+            ],
+            "type": "object"
+        },
+        "Message": {
+            "description": "--8<-- [start:Message]\nMessage is one unit of communication between client and server. It is\nassociated with a context and optionally a task. Since the server is\nresponsible for the context definition, it must always provide a context_id\nin its messages. The client can optionally provide the context_id if it\nknows the context to associate the message to. Similarly for task_id,\nexcept the server decides if a task is created and whether to include the\ntask_id.",
+            "properties": {
+                "content": {
+                    "description": "protolint:disable REPEATED_FIELD_NAMES_PLURALIZED\nContent is the container of the message content.",
+                    "items": {
+                        "$ref": "#/definitions/Part"
+                    },
+                    "type": "array"
+                },
+                "contextId": {
+                    "description": "The context id of the message. This is optional and if set, the message\nwill be associated with the given context.",
+                    "type": "string"
+                },
+                "extensions": {
+                    "description": "The URIs of extensions that are present or contributed to this Message.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "messageId": {
+                    "description": "The unique identifier (e.g. UUID)of the message. This is required and\ncreated by the message creator.",
+                    "type": "string"
+                },
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "protolint:enable REPEATED_FIELD_NAMES_PLURALIZED\nAny optional metadata to provide along with the message.",
+                    "type": "object"
+                },
+                "role": {
+                    "$ref": "#/definitions/Role",
+                    "description": "A role for the message."
+                },
+                "taskId": {
+                    "description": "The task id of the message. This is optional and if set, the message\nwill be associated with the given task.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "content",
+                "contextId",
+                "extensions",
+                "messageId",
+                "metadata",
+                "role",
+                "taskId"
+            ],
+            "type": "object"
+        },
+        "MutualTlsSecurityScheme": {
+            "description": "--8<-- [start:MutualTLSSecurityScheme]",
+            "properties": {
+                "description": {
+                    "description": "Description of this security scheme.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description"
+            ],
+            "type": "object"
+        },
+        "OAuth2SecurityScheme": {
+            "description": "--8<-- [start:OAuth2SecurityScheme]",
+            "properties": {
+                "description": {
+                    "description": "Description of this security scheme.",
+                    "type": "string"
+                },
+                "flows": {
+                    "$ref": "#/definitions/OAuthFlows",
+                    "description": "An object containing configuration information for the flow types supported"
+                },
+                "oauth2MetadataUrl": {
+                    "description": "URL to the oauth2 authorization server metadata\n[RFC8414](https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "flows",
+                "oauth2MetadataUrl"
+            ],
+            "type": "object"
+        },
+        "OAuthFlows": {
+            "description": "--8<-- [start:OAuthFlows]",
+            "properties": {
+                "flow": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "authorizationCode",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/AuthorizationCodeOAuthFlow"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "clientCredentials",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/ClientCredentialsOAuthFlow"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "implicit",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/ImplicitOAuthFlow"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "password",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/PasswordOAuthFlow"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "OpenIdConnectSecurityScheme": {
+            "description": "--8<-- [start:OpenIdConnectSecurityScheme]",
+            "properties": {
+                "description": {
+                    "description": "Description of this security scheme.",
+                    "type": "string"
+                },
+                "openIdConnectUrl": {
+                    "description": "Well-known URL to discover the [[OpenID-Connect-Discovery]] provider\nmetadata.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "openIdConnectUrl"
+            ],
+            "type": "object"
+        },
+        "Part": {
+            "description": "--8<-- [start:Part]\nPart represents a container for a section of communication content.\nParts can be purely textual, some sort of file (image, video, etc) or\na structured data blob (i.e. JSON).",
+            "properties": {
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata associated with this part.",
+                    "type": "object"
+                },
+                "part": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "text",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "file",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/FilePart"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "data",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/DataPart"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "metadata"
+            ],
+            "type": "object"
+        },
+        "PasswordOAuthFlow": {
+            "description": "--8<-- [start:PasswordOAuthFlow]",
+            "properties": {
+                "refreshUrl": {
+                    "description": "The URL to be used for obtaining refresh tokens. This MUST be in the\nform of a URL. The OAuth2 standard requires the use of TLS.",
+                    "type": "string"
+                },
+                "scopes": {
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "The available scopes for the OAuth2 security scheme. A map between the\nscope name and a short description for it. The map MAY be empty.",
+                    "type": "object"
+                },
+                "tokenUrl": {
+                    "description": "The token URL to be used for this flow. This MUST be in the form of a URL.\nThe OAuth2 standard requires the use of TLS.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "refreshUrl",
+                "scopes",
+                "tokenUrl"
+            ],
+            "type": "object"
+        },
+        "PasswordOAuthFlow_ScopesEntry": {
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ],
+            "type": "object"
+        },
+        "PushNotificationConfig": {
+            "description": "--8<-- [start:PushNotificationConfig]\nConfiguration for setting up push notifications for task updates.",
+            "properties": {
+                "authentication": {
+                    "$ref": "#/definitions/AuthenticationInfo",
+                    "description": "Information about the authentication to sent with the notification"
+                },
+                "id": {
+                    "description": "A unique identifier (e.g. UUID) for this push notification.",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "Token unique for this task/session",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "Url to send the notification too",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "authentication",
+                "id",
+                "token",
+                "url"
+            ],
+            "type": "object"
+        },
+        "Role": {
+            "enum": [
+                "ROLE_UNSPECIFIED",
+                "ROLE_USER",
+                "ROLE_AGENT",
+                "UNRECOGNIZED"
+            ],
+            "type": "string"
+        },
+        "Security": {
+            "properties": {
+                "schemes": {
+                    "additionalProperties": {
+                        "$ref": "#/definitions/StringList"
+                    },
+                    "type": "object"
+                }
+            },
+            "required": [
+                "schemes"
+            ],
+            "type": "object"
+        },
+        "SecurityScheme": {
+            "description": "--8<-- [start:SecurityScheme]",
+            "properties": {
+                "scheme": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "apiKeySecurityScheme",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/APIKeySecurityScheme"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "httpAuthSecurityScheme",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/HTTPAuthSecurityScheme"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "oauth2SecurityScheme",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/OAuth2SecurityScheme"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "openIdConnectSecurityScheme",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/OpenIdConnectSecurityScheme"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "mtlsSecurityScheme",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/MutualTlsSecurityScheme"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "Security_SchemesEntry": {
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "$ref": "#/definitions/StringList"
+                }
+            },
+            "required": [
+                "key",
+                "value"
+            ],
+            "type": "object"
+        },
+        "SendMessageConfiguration": {
+            "description": "--8<-- [start:MessageSendConfiguration]\nConfiguration of a send message request.",
+            "properties": {
+                "acceptedOutputModes": {
+                    "description": "The output modes that the agent is expected to respond with.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "blocking": {
+                    "description": "If true, the message will be blocking until the task is completed. If\nfalse, the message will be non-blocking and the task will be returned\nimmediately. It is the caller's responsibility to check for any task\nupdates.",
+                    "type": "boolean"
+                },
+                "historyLength": {
+                    "description": "The maximum number of messages to include in the history. if 0, the\nhistory will be unlimited.",
+                    "type": "integer"
+                },
+                "pushNotification": {
+                    "$ref": "#/definitions/PushNotificationConfig",
+                    "description": "A configuration of a webhook that can be used to receive updates"
+                }
+            },
+            "required": [
+                "acceptedOutputModes",
+                "blocking",
+                "historyLength",
+                "pushNotification"
+            ],
+            "type": "object"
+        },
+        "SendMessageRequest": {
+            "description": "/////////// Request Messages ///////////\n--8<-- [start:SendMessageRequest]",
+            "properties": {
+                "configuration": {
+                    "$ref": "#/definitions/SendMessageConfiguration",
+                    "description": "Configuration for the send request."
+                },
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata for the request.",
+                    "type": "object"
+                },
+                "request": {
+                    "$ref": "#/definitions/Message",
+                    "description": "The message to send to the agent."
+                }
+            },
+            "required": [
+                "configuration",
+                "metadata",
+                "request"
+            ],
+            "type": "object"
+        },
+        "SendMessageResponse": {
+            "description": "////// Response Messages ///////////\n--8<-- [start:SendMessageResponse]",
+            "properties": {
+                "payload": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "task",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/Task"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "msg",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/Message"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "StreamResponse": {
+            "description": "--8<-- [start:StreamResponse]\nThe stream response for a message. The stream should be one of the following\nsequences:\nIf the response is a message, the stream should contain one, and only one,\nmessage and then close\nIf the response is a task lifecycle, the first response should be a Task\nobject followed by zero or more TaskStatusUpdateEvents and\nTaskArtifactUpdateEvents. The stream should complete when the Task\nif in an interrupted or terminal state. A stream that ends before these\nconditions are met are",
+            "properties": {
+                "payload": {
+                    "anyOf": [
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "task",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/Task"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "msg",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/Message"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "statusUpdate",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/TaskStatusUpdateEvent"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        },
+                        {
+                            "properties": {
+                                "$case": {
+                                    "const": "artifactUpdate",
+                                    "type": "string"
+                                },
+                                "value": {
+                                    "$ref": "#/definitions/TaskArtifactUpdateEvent"
+                                }
+                            },
+                            "required": [
+                                "$case",
+                                "value"
+                            ],
+                            "type": "object"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "StringList": {
+            "description": "protolint:disable REPEATED_FIELD_NAMES_PLURALIZED",
+            "properties": {
+                "list": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "list"
+            ],
+            "type": "object"
+        },
+        "Task": {
+            "description": "--8<-- [start:Task]\nTask is the core unit of action for A2A. It has a current status\nand when results are created for the task they are stored in the\nartifact. If there are multiple turns for a task, these are stored in\nhistory.",
+            "properties": {
+                "artifacts": {
+                    "description": "A set of output artifacts for a Task.",
+                    "items": {
+                        "$ref": "#/definitions/Artifact"
+                    },
+                    "type": "array"
+                },
+                "contextId": {
+                    "description": "Unique identifier (e.g. UUID) for the contextual collection of interactions\n(tasks and messages). Created by the A2A server.",
+                    "type": "string"
+                },
+                "history": {
+                    "description": "protolint:disable REPEATED_FIELD_NAMES_PLURALIZED\nThe history of interactions from a task.",
+                    "items": {
+                        "$ref": "#/definitions/Message"
+                    },
+                    "type": "array"
+                },
+                "id": {
+                    "description": "Unique identifier (e.g. UUID) for the task, generated by the server for a\nnew task.",
+                    "type": "string"
+                },
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "protolint:enable REPEATED_FIELD_NAMES_PLURALIZED\nA key/value object to store custom metadata about a task.",
+                    "type": "object"
+                },
+                "status": {
+                    "$ref": "#/definitions/TaskStatus",
+                    "description": "The current status of a Task, including state and a message."
+                }
+            },
+            "required": [
+                "artifacts",
+                "contextId",
+                "history",
+                "id",
+                "metadata",
+                "status"
+            ],
+            "type": "object"
+        },
+        "TaskArtifactUpdateEvent": {
+            "description": "--8<-- [start:TaskArtifactUpdateEvent]\nTaskArtifactUpdateEvent represents a task delta where an artifact has\nbeen generated.",
+            "properties": {
+                "append": {
+                    "description": "Whether this should be appended to a prior one produced",
+                    "type": "boolean"
+                },
+                "artifact": {
+                    "$ref": "#/definitions/Artifact",
+                    "description": "The artifact itself"
+                },
+                "contextId": {
+                    "description": "The id of the context that this task belongs too",
+                    "type": "string"
+                },
+                "lastChunk": {
+                    "description": "Whether this represents the last part of an artifact",
+                    "type": "boolean"
+                },
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata associated with the artifact update.",
+                    "type": "object"
+                },
+                "taskId": {
+                    "description": "The id of the task for this artifact",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "append",
+                "artifact",
+                "contextId",
+                "lastChunk",
+                "metadata",
+                "taskId"
+            ],
+            "type": "object"
+        },
+        "TaskPushNotificationConfig": {
+            "description": "--8<-- [start:TaskPushNotificationConfig]",
+            "properties": {
+                "name": {
+                    "description": "The resource name of the config.\nFormat: tasks/{task_id}/pushNotificationConfigs/{config_id}",
+                    "type": "string"
+                },
+                "pushNotificationConfig": {
+                    "$ref": "#/definitions/PushNotificationConfig",
+                    "description": "The push notification configuration details."
+                }
+            },
+            "required": [
+                "name",
+                "pushNotificationConfig"
+            ],
+            "type": "object"
+        },
+        "TaskState": {
+            "description": "--8<-- [start:TaskState]\nThe set of states a Task can be in.",
+            "enum": [
+                "TASK_STATE_UNSPECIFIED",
+                "TASK_STATE_SUBMITTED",
+                "TASK_STATE_WORKING",
+                "TASK_STATE_COMPLETED",
+                "TASK_STATE_FAILED",
+                "TASK_STATE_CANCELLED",
+                "TASK_STATE_INPUT_REQUIRED",
+                "TASK_STATE_REJECTED",
+                "TASK_STATE_AUTH_REQUIRED",
+                "UNRECOGNIZED"
+            ],
+            "type": "string"
+        },
+        "TaskStatus": {
+            "description": "--8<-- [start:TaskStatus]\nA container for the status of a task",
+            "properties": {
+                "state": {
+                    "$ref": "#/definitions/TaskState",
+                    "description": "The current state of this task"
+                },
+                "timestamp": {
+                    "description": "Timestamp when the status was recorded.\nExample: \"2023-10-27T10:00:00Z\"",
+                    "format": "date-time",
+                    "type": "string"
+                },
+                "update": {
+                    "$ref": "#/definitions/Message",
+                    "description": "A message associated with the status."
+                }
+            },
+            "required": [
+                "state",
+                "timestamp",
+                "update"
+            ],
+            "type": "object"
+        },
+        "TaskStatusUpdateEvent": {
+            "description": "--8<-- [start:TaskStatusUpdateEvent]\nTaskStatusUpdateEvent is a delta even on a task indicating that a task\nhas changed.",
+            "properties": {
+                "contextId": {
+                    "description": "The id of the context that the task belongs to",
+                    "type": "string"
+                },
+                "final": {
+                    "description": "Whether this is the last status update expected for this task.",
+                    "type": "boolean"
+                },
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata to associate with the task update.",
+                    "type": "object"
+                },
+                "status": {
+                    "$ref": "#/definitions/TaskStatus",
+                    "description": "The new status of the task."
+                },
+                "taskId": {
+                    "description": "The id of the task that is changed",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "contextId",
+                "final",
+                "metadata",
+                "status",
+                "taskId"
+            ],
+            "type": "object"
+        },
+        "TaskSubscriptionRequest": {
+            "description": "--8<-- [start:TaskSubscriptionRequest]",
+            "properties": {
+                "name": {
+                    "description": "The resource name of the task to subscribe to.\nFormat: tasks/{task_id}",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        }
+    }
+}
+
