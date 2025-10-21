@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "generate": "./node_modules/.bin/typescript-json-schema tsconfig.json \"*\" --defaultNumberType integer --required --out ./trasports/json-rpc/a2a.json",
+    "generate": "./node_modules/.bin/typescript-json-schema tsconfig.json \"*\" --defaultNumberType integer --required --out ./transports/json-rpc/a2a.json",
     "generate-types": "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./data/types --ts_proto_opt=outputEncodeMethods=false,outputPartialMethods=false,outputJsonMethods=false,outputServices=false,emitImportedFiles=false,oneof=unions-value,stringEnums=true,env=node -I ./node_modules/google-proto-files -I ./data ./data/a2a_core.proto",
     "prettier": "prettier \"src/types/**/*.ts\" --write"
   },
