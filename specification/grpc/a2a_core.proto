@@ -589,7 +589,7 @@ message PasswordOAuthFlow {
 // --8<-- [end:PasswordOAuthFlow]
 
 ///////////// Request Messages ///////////
-// --8<-- [start:MessageSendParams]
+// --8<-- [start:SendMessageRequest]
 message SendMessageRequest {
   // The message to send to the agent.
   Message request = 1
@@ -599,7 +599,7 @@ message SendMessageRequest {
   // Optional metadata for the request.
   google.protobuf.Struct metadata = 3;
 }
-// --8<-- [end:MessageSendParams]
+// --8<-- [end:SendMessageRequest]
 
 // --8<-- [start:GetTaskRequest]
 message GetTaskRequest {
@@ -635,7 +635,7 @@ message DeleteTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
-// --8<-- [start:SetTaskPushNotificationConfigRequest]
+// --8<-- [start:CreateTaskPushNotificationConfigRequest]
 message CreateTaskPushNotificationConfigRequest {
   // The parent task resource for this config.
   // Format: tasks/{task_id}
@@ -646,15 +646,15 @@ message CreateTaskPushNotificationConfigRequest {
   TaskPushNotificationConfig config = 3
       [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:SetTaskPushNotificationConfigRequest]
+// --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
-// --8<-- [start:TaskResubscriptionRequest]
+// --8<-- [start:TaskSubscriptionRequest]
 message TaskSubscriptionRequest {
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
 }
-// --8<-- [end:TaskResubscriptionRequest]
+// --8<-- [end:TaskSubscriptionRequest]
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
@@ -676,23 +676,23 @@ message ListTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:ListTaskPushNotificationConfigRequest]
 
-// --8<-- [start:GetAuthenticatedExtendedCardRequest]
+// --8<-- [start:GetAgentCardRequest]
 message GetAgentCardRequest {
   // Empty. Added to fix linter violation.
 }
-// --8<-- [end:GetAuthenticatedExtendedCardRequest]
+// --8<-- [end:GetAgentCardRequest]
 
 //////// Response Messages ///////////
-// --8<-- [start:SendMessageSuccessResponse]
+// --8<-- [start:SendMessageResponse]
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
     Message msg = 2 [json_name = "message"];
   }
 }
-// --8<-- [end:SendMessageSuccessResponse]
+// --8<-- [end:SendMessageResponse]
 
-// --8<-- [start:SendStreamingMessageSuccessResponse]
+// --8<-- [start:StreamResponse]
 // The stream response for a message. The stream should be one of the following
 // sequences:
 // If the response is a message, the stream should contain one, and only one,
@@ -710,9 +710,9 @@ message StreamResponse {
     TaskArtifactUpdateEvent artifact_update = 4;
   }
 }
-// --8<-- [end:SendStreamingMessageSuccessResponse]
+// --8<-- [end:StreamResponse]
 
-// --8<-- [start:ListTaskPushNotificationConfigSuccessResponse]
+// --8<-- [start:ListTaskPushNotificationConfigResponse]
 message ListTaskPushNotificationConfigResponse {
   // The list of push notification configurations.
   repeated TaskPushNotificationConfig configs = 1;
@@ -720,4 +720,4 @@ message ListTaskPushNotificationConfigResponse {
   // If this field is omitted, there are no subsequent pages.
   string next_page_token = 2;
 }
-// --8<-- [end:ListTaskPushNotificationConfigSuccessResponse]
+// --8<-- [end:ListTaskPushNotificationConfigResponse]

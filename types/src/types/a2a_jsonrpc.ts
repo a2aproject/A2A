@@ -27,20 +27,29 @@ export const protobufPackage = "a2a.v1";
 /** Older protoc compilers don't understand edition yet. */
 
 export enum JSONRPCErrorCode {
-  JSON_RPC_ERROR_CODE_UNSPECIFIED = "JSON_RPC_ERROR_CODE_UNSPECIFIED",
-  PARSE_ERROR = "PARSE_ERROR",
-  INVALID_REQUEST = "INVALID_REQUEST",
-  METHOD_NOT_FOUND = "METHOD_NOT_FOUND",
-  INVALID_PARAMS = "INVALID_PARAMS",
-  INTERNAL_ERROR = "INTERNAL_ERROR",
-  TASK_NOT_FOUND = "TASK_NOT_FOUND",
-  TASK_NOT_CACHEABLE = "TASK_NOT_CACHEABLE",
-  PUSH_NOTIFICATION_NOT_SUPPORTED = "PUSH_NOTIFICATION_NOT_SUPPORTED",
-  UNSUPPORTED_OPERATION_ERROR = "UNSUPPORTED_OPERATION_ERROR",
-  CONTENT_TYPE_NOT_SUPPORTED = "CONTENT_TYPE_NOT_SUPPORTED",
-  INVALID_AGENT_RESPONSE = "INVALID_AGENT_RESPONSE",
-  AUTHENTICATED_CARD_NOT_CONFIGURED = "AUTHENTICATED_CARD_NOT_CONFIGURED",
-  UNRECOGNIZED = "UNRECOGNIZED",
+  PARSE_ERROR = -32700,
+
+  INVALID_REQUEST = -32600,
+
+  METHOD_NOT_FOUND = -32601,
+
+  INVALID_PARAMS = -32602,
+
+  INTERNAL_ERROR = -32603,
+
+  TASK_NOT_FOUND = -32001,
+
+  TASK_NOT_CACHEABLE = -32002,
+
+  PUSH_NOTIFICATION_NOT_SUPPORTED = -32003,
+
+  UNSUPPORTED_OPERATION_ERROR = -32004,
+
+  CONTENT_TYPE_NOT_SUPPORTED = -32005,
+
+  INVALID_AGENT_RESPONSE = -32006,
+
+  AUTHENTICATED_CARD_NOT_CONFIGURED = -32007,
 }
 
 /** A2AJsonRPCRequest represents a JSON-RPC request for the A2A protocol. */
@@ -50,53 +59,50 @@ export interface JSONRPCRequest {
   /** The method to be invoked. */
   method: string;
   /** The identifier for this request. */
-  id?:
-    | { $case: "idString"; value: string }
-    | { $case: "idInt"; value: number }
-    | undefined;
+  id?: string | number;
   /** The parameters for the method. */
   params?:
-    | { $case: "sendMessageRequest"; value: SendMessageRequest }
-    | { $case: "getTaskRequest"; value: GetTaskRequest }
-    | { $case: "cancelTaskRequest"; value: CancelTaskRequest }
-    | { $case: "taskSubscriptionRequest"; value: TaskSubscriptionRequest }
-    | { $case: "createTaskPushNotificationConfigRequest"; value: CreateTaskPushNotificationConfigRequest }
-    | { $case: "getTaskPushNotificationConfigRequest"; value: GetTaskPushNotificationConfigRequest }
-    | { $case: "listTaskPushNotificationConfigRequest"; value: ListTaskPushNotificationConfigRequest }
-    | { $case: "deleteTaskPushNotificationConfigRequest"; value: DeleteTaskPushNotificationConfigRequest }
-    | { $case: "getAgentCardRequest"; value: GetAgentCardRequest }
-    | undefined;
+    | SendMessageRequest 
+    | GetTaskRequest 
+    | CancelTaskRequest 
+    | TaskSubscriptionRequest 
+    | CreateTaskPushNotificationConfigRequest 
+    | GetTaskPushNotificationConfigRequest 
+    | ListTaskPushNotificationConfigRequest 
+    | DeleteTaskPushNotificationConfigRequest 
+    | GetAgentCardRequest
 }
 
-export interface JSONRPCResponse {
-  response?:
-    | { $case: "success"; value: JSONRPCSuccessResponse }
-    | { $case: "error"; value: JSONRPCErrorResponse }
-    | undefined;
-}
+export type JSONRPCResponse = JSONRPCSuccessResponse | JSONRPCErrorResponse;
 
 export interface JSONRPCSuccessResponse {
+  /** The JSON-RPC version, must be "2.0". */
   jsonrpc: string;
-  id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
-  result?:
-    | { $case: "sendMessageResponse"; value: SendMessageResponse }
-    | { $case: "getTaskResponse"; value: Task }
-    | { $case: "cancelTaskResponse"; value: Task }
-    | { $case: "listTaskPushNotificationConfigResponse"; value: ListTaskPushNotificationConfigResponse }
-    | { $case: "getTaskPushNotificationConfigResponse"; value: TaskPushNotificationConfig }
-    | { $case: "createTaskPushNotificationConfigResponse"; value: TaskPushNotificationConfig }
-    | { $case: "getAgentCardResponse"; value: AgentCard }
-    | undefined;
+  /** The identifier for this request. */
+  id?: string | number;
+  result:
+    | SendMessageResponse
+    | Task
+    | ListTaskPushNotificationConfigResponse
+    | TaskPushNotificationConfig
+    | TaskPushNotificationConfig
+    | AgentCard
 }
 
 export interface JSONRPCErrorResponse {
+  /** The JSON-RPC version, must be "2.0". */
   jsonrpc: string;
-  id?: { $case: "idString"; value: string } | { $case: "idInt"; value: number } | undefined;
-  error: JSONRPCError | undefined;
+  /** The identifier for this request. */
+  id?: string | number;
+  error: JSONRPCError;
 }
 
 export interface JSONRPCError {
+  /** A number that indicates the error type that occurred. */
   code: JSONRPCErrorCode;
+  /**A string providing a short description of the error.*/
   message: string;
+  /** A primitive or structured value containing additional information about the error.
+   * This may be omitted. */
   data: { [key: string]: any } | undefined;
 }

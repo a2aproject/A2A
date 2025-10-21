@@ -751,7 +751,7 @@ export interface PasswordOAuthFlow_ScopesEntry {
 
 /**
  * /////////// Request Messages ///////////
- * --8<-- [start:MessageSendParams]
+ * --8<-- [start:SendMessageRequest]
  */
 export interface SendMessageRequest {
   /** The message to send to the agent. */
@@ -804,7 +804,7 @@ export interface DeleteTaskPushNotificationConfigRequest {
   name: string;
 }
 
-/** --8<-- [start:SetTaskPushNotificationConfigRequest] */
+/** --8<-- [start:CreateTaskPushNotificationConfigRequest] */
 export interface CreateTaskPushNotificationConfigRequest {
   /**
    * The parent task resource for this config.
@@ -817,7 +817,7 @@ export interface CreateTaskPushNotificationConfigRequest {
   config: TaskPushNotificationConfig | undefined;
 }
 
-/** --8<-- [start:TaskResubscriptionRequest] */
+/** --8<-- [start:TaskSubscriptionRequest] */
 export interface TaskSubscriptionRequest {
   /**
    * The resource name of the task to subscribe to.
@@ -850,20 +850,20 @@ export interface ListTaskPushNotificationConfigRequest {
   pageToken: string;
 }
 
-/** --8<-- [start:GetAuthenticatedExtendedCardRequest] */
+/** --8<-- [start:GetAgentCardRequest] */
 export interface GetAgentCardRequest {
 }
 
 /**
  * ////// Response Messages ///////////
- * --8<-- [start:SendMessageSuccessResponse]
+ * --8<-- [start:SendMessageResponse]
  */
 export interface SendMessageResponse {
   payload?: { $case: "task"; value: Task } | { $case: "msg"; value: Message } | undefined;
 }
 
 /**
- * --8<-- [start:SendStreamingMessageSuccessResponse]
+ * --8<-- [start:StreamResponse]
  * The stream response for a message. The stream should be one of the following
  * sequences:
  * If the response is a message, the stream should contain one, and only one,
@@ -883,7 +883,7 @@ export interface StreamResponse {
     | undefined;
 }
 
-/** --8<-- [start:ListTaskPushNotificationConfigSuccessResponse] */
+/** --8<-- [start:ListTaskPushNotificationConfigResponse] */
 export interface ListTaskPushNotificationConfigResponse {
   /** The list of push notification configurations. */
   configs: TaskPushNotificationConfig[];
