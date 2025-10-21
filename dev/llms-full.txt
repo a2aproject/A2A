@@ -4264,7 +4264,7 @@ The primary part kinds are:
 
 - `TextPart`: Contains plain textual content.
 - `FilePart`: Represents a file. It can be transmitted either inline (Base64
-   encoded) or through a URI. It includes metadata like "filename" and "mimeType".
+   encoded) or through a URI. It includes metadata like "name" and "mimeType".
 - `DataPart`: Carries structured JSON data. This is useful for forms,
    parameters, or any machine-readable information.
 
@@ -5720,13 +5720,15 @@ message Message {
   // A role for the message.
   Role role = 4;
   // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
-  // Content is the container of the message content.
-  repeated Part content = 5;
+  // Parts is the container of the message content.
+  repeated Part parts = 5;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // Any optional metadata to provide along with the message.
   google.protobuf.Struct metadata = 6;
   // The URIs of extensions that are present or contributed to this Message.
   repeated string extensions = 7;
+  // A list of task IDs that this message references for additional context.
+  repeated string reference_task_ids = 8;
 }
 // --8<-- [end:Message]
 
@@ -5915,6 +5917,8 @@ message AgentCapabilities {
   bool push_notifications = 2;
   // Extensions supported by this agent.
   repeated AgentExtension extensions = 3;
+  // If the agent provides a history of state transitions for a task.
+  bool state_transition_history = 4;
 }
 // --8<-- [end:AgentCapabilities]
 
@@ -9364,7 +9368,7 @@ export interface AgentSkill {
  * Supported A2A transport protocols.
  */
 export enum TransportProtocol {
-  JSONRPC = "JSONRPC", // JSON-RPC 2.0 over HTTP (mandatory)
+  JSONRPC = "JSONRPC", // JSON-RPC 2.0 over HTTP (optional)
   GRPC = "GRPC", // gRPC over HTTP/2 (optional)
   HTTP_JSON = "HTTP+JSON", // REST-style HTTP with JSON (optional)
 }
