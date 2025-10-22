@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.4.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v0.4.0) (2025-10-22)
+
+
+### Features
+
+* **spec:** Add `tasks/list` method with filtering and pagination to the specification ([#831](https://github.com/a2aproject/A2A/issues/831)) ([0a9f629](https://github.com/a2aproject/A2A/commit/0a9f629e801d4ae89f94991fc28afe9429c91cbc))
+
+
+### Bug Fixes
+
+* Add missing metadata field to Part message in gRPC specification ([#1019](https://github.com/a2aproject/A2A/issues/1019)) ([b3b266d](https://github.com/a2aproject/A2A/commit/b3b266d127dde3d1000ec103b252d1de81289e83)), closes [#1005](https://github.com/a2aproject/A2A/issues/1005)
+* Add name field to FilePart protobuf message ([#983](https://github.com/a2aproject/A2A/issues/983)) ([2b7cb6f](https://github.com/a2aproject/A2A/commit/2b7cb6f8408e6324c48fb82c71839c67a18f1fab)), closes [#984](https://github.com/a2aproject/A2A/issues/984)
+* **grpc:** Fix inconsistent property name between gRPC and JSON-RPC in Message object ([#1100](https://github.com/a2aproject/A2A/issues/1100)) ([2a1f819](https://github.com/a2aproject/A2A/commit/2a1f819aaa2540602ee81498e159ebe0192be818))
+* **grpc:** missing field in gRPC spec - state_transition_history  ([#1138](https://github.com/a2aproject/A2A/issues/1138)) ([a2de798](https://github.com/a2aproject/A2A/commit/a2de7981cadeaa5197bee56cbd6ab7b2c5da2541)), closes [#1139](https://github.com/a2aproject/A2A/issues/1139)
+* **grpc:** Update `CreateTaskPushNotificationConfig` endpoint to `/v1/{parent=tasks/*/pushNotificationConfigs}` ([#979](https://github.com/a2aproject/A2A/issues/979)) ([911f9b0](https://github.com/a2aproject/A2A/commit/911f9b059c52dd65497b76ccf63d196ca84c7f0e))
+* **proto:** Add icon_url to a2a.proto ([#986](https://github.com/a2aproject/A2A/issues/986)) ([17e7f62](https://github.com/a2aproject/A2A/commit/17e7f62df9a3e4ca0768ab8d4f0bb7573b3d73e1))
+* **proto:** Adds metadata field to A2A DataPart proto ([#1004](https://github.com/a2aproject/A2A/issues/1004)) ([a8b45dc](https://github.com/a2aproject/A2A/commit/a8b45dcc429a5571ef8a24c36336bf84b89bbd7f))
+* Revert "chore(gRPC): Update a2a.proto to include metadata on GetTaskRequest" ([#1000](https://github.com/a2aproject/A2A/issues/1000)) ([e6b8c65](https://github.com/a2aproject/A2A/commit/e6b8c654a86a6ee461bb5c7be5d5b81004b80a92))
+* **spec:** Suggest Unique Identifier fields to be UUID ([#966](https://github.com/a2aproject/A2A/issues/966)) ([00cf76e](https://github.com/a2aproject/A2A/commit/00cf76e7bbc752842ef254f3d4136ed1b5751f6e))
+
 ## [0.4.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v0.4.0) (2025-09-15)
 
 ### Features
