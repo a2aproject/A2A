@@ -14,7 +14,7 @@
     ```
 {% endmacro %}
 
-??? note "**Latest Version** [`0.3.0`](https://a2a-protocol.org/v0.3.0/specification)"
+??? note "**Latest Released Version** [`0.3.0`](https://a2a-protocol.org/v0.3.0/specification)"
 
     **Previous Versions**
 
