@@ -262,8 +262,25 @@
 <span id="a2a-utils-artifact-module"></span><h2>a2a.utils.artifact module<a class="headerlink" href="#module-a2a.utils.artifact" title="Link to this heading">¶</a></h2>
 <p>Utility functions for creating A2A Artifact objects.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.artifact.get_artifact_text">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.artifact.</span></span><span class="sig-name descname"><span class="pre">get_artifact_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'\n'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.utils.artifact.get_artifact_text" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts and joins all text content from an Artifact’s parts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>artifact</strong> – The <cite>Artifact</cite> object.</p></li>
+<li><p><strong>delimiter</strong> – The string to use when joining text from multiple TextParts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A single string containing all text content, or an empty string if no text parts are found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.artifact.new_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.artifact.</span></span><span class="sig-name descname"><span class="pre">new_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.artifact.new_artifact" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.artifact.</span></span><span class="sig-name descname"><span class="pre">new_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.artifact.new_artifact" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new Artifact object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -281,7 +298,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.artifact.new_data_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.artifact.</span></span><span class="sig-name descname"><span class="pre">new_data_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.artifact.new_data_artifact" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.artifact.</span></span><span class="sig-name descname"><span class="pre">new_data_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.artifact.new_data_artifact" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new Artifact object containing only a single DataPart.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -299,7 +316,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.artifact.new_text_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.artifact.</span></span><span class="sig-name descname"><span class="pre">new_text_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.artifact.new_text_artifact" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.artifact.</span></span><span class="sig-name descname"><span class="pre">new_text_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.artifact.new_text_artifact" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new Artifact object containing only a single TextPart.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -587,34 +604,6 @@ The validation happens before the generator starts yielding values.</p>
 <span id="a2a-utils-message-module"></span><h2>a2a.utils.message module<a class="headerlink" href="#module-a2a.utils.message" title="Link to this heading">¶</a></h2>
 <p>Utility functions for creating and handling A2A Message objects.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.message.get_data_parts">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.message.</span></span><span class="sig-name descname"><span class="pre">get_data_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.message.get_data_parts" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts dictionary data from all DataPart objects in a list of Parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of dictionaries containing the data from any <cite>DataPart</cite> objects found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.message.get_file_parts">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.message.</span></span><span class="sig-name descname"><span class="pre">get_file_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.FileWithBytes" title="a2a.types.FileWithBytes"><span class="pre">FileWithBytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.html#a2a.types.FileWithUri" title="a2a.types.FileWithUri"><span class="pre">FileWithUri</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.message.get_file_parts" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts file data from all FilePart objects in a list of Parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of <cite>FileWithBytes</cite> or <cite>FileWithUri</cite> objects containing the file data from any <cite>FilePart</cite> objects found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.message.get_message_text">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.message.</span></span><span class="sig-name descname"><span class="pre">get_message_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'\n'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.utils.message.get_message_text" title="Link to this definition">¶</a></dt>
 <dd><p>Extracts and joins all text content from a Message’s parts.</p>
@@ -627,20 +616,6 @@ The validation happens before the generator starts yielding values.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A single string containing all text content, or an empty string if no text parts are found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.message.get_text_parts">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.message.</span></span><span class="sig-name descname"><span class="pre">get_text_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.message.get_text_parts" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts text content from all TextPart objects in a list of Parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of strings containing the text content from any <cite>TextPart</cite> objects found.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -677,6 +652,52 @@ The validation happens before the generator starts yielding values.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A new <cite>Message</cite> object with role ‘agent’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-a2a.utils.parts">
+<span id="a2a-utils-parts-module"></span><h2>a2a.utils.parts module<a class="headerlink" href="#module-a2a.utils.parts" title="Link to this heading">¶</a></h2>
+<p>Utility functions for creating and handling A2A Parts objects.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.parts.get_data_parts">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.parts.</span></span><span class="sig-name descname"><span class="pre">get_data_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.parts.get_data_parts" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts dictionary data from all DataPart objects in a list of Parts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of dictionaries containing the data from any <cite>DataPart</cite> objects found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.parts.get_file_parts">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.parts.</span></span><span class="sig-name descname"><span class="pre">get_file_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.FileWithBytes" title="a2a.types.FileWithBytes"><span class="pre">FileWithBytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.html#a2a.types.FileWithUri" title="a2a.types.FileWithUri"><span class="pre">FileWithUri</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.parts.get_file_parts" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts file data from all FilePart objects in a list of Parts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of <cite>FileWithBytes</cite> or <cite>FileWithUri</cite> objects containing the file data from any <cite>FilePart</cite> objects found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.parts.get_text_parts">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.parts.</span></span><span class="sig-name descname"><span class="pre">get_text_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.parts.get_text_parts" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts text content from all TextPart objects in a list of Parts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of strings containing the text content from any <cite>TextPart</cite> objects found.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -772,7 +793,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.FromProto.role">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f0fc091f050&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.role" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f8691dba750&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.role" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -837,7 +858,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.FromProto.task_state">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f0fc0da97b0&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.task_state" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state:</span> <span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f8692de6690&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.task_state" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -934,7 +955,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.ToProto.role">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f0fc091f050&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.role" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f8691dba750&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.role" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -984,7 +1005,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.ToProto.task_state">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f0fc0da97b0&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.task_state" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f8692de6690&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.task_state" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1330,6 +1351,23 @@ finishes and produces artifacts.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.get_artifact_text">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">get_artifact_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'\n'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.utils.get_artifact_text" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts and joins all text content from an Artifact’s parts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>artifact</strong> – The <cite>Artifact</cite> object.</p></li>
+<li><p><strong>delimiter</strong> – The string to use when joining text from multiple TextParts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A single string containing all text content, or an empty string if no text parts are found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.get_data_parts">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">get_data_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.get_data_parts" title="Link to this definition">¶</a></dt>
 <dd><p>Extracts dictionary data from all DataPart objects in a list of Parts.</p>
@@ -1426,7 +1464,7 @@ finishes and produces artifacts.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.new_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_artifact" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_artifact" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new Artifact object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1444,7 +1482,7 @@ finishes and produces artifacts.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.new_data_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_data_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_data_artifact" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_data_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_data_artifact" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new Artifact object containing only a single DataPart.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1483,7 +1521,7 @@ finishes and produces artifacts.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.new_text_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_text_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_text_artifact" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_text_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_text_artifact" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new Artifact object containing only a single TextPart.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1552,6 +1590,7 @@ finishes and produces artifacts.</p>
 <li><a class="reference internal" href="#">a2a.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-a2a.utils.artifact">a2a.utils.artifact module</a><ul>
+<li><a class="reference internal" href="#a2a.utils.artifact.get_artifact_text"><code class="docutils literal notranslate"><span class="pre">get_artifact_text()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.artifact.new_artifact"><code class="docutils literal notranslate"><span class="pre">new_artifact()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.artifact.new_data_artifact"><code class="docutils literal notranslate"><span class="pre">new_data_artifact()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.artifact.new_text_artifact"><code class="docutils literal notranslate"><span class="pre">new_text_artifact()</span></code></a></li>
@@ -1579,12 +1618,15 @@ finishes and produces artifacts.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-a2a.utils.message">a2a.utils.message module</a><ul>
-<li><a class="reference internal" href="#a2a.utils.message.get_data_parts"><code class="docutils literal notranslate"><span class="pre">get_data_parts()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.message.get_file_parts"><code class="docutils literal notranslate"><span class="pre">get_file_parts()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.message.get_message_text"><code class="docutils literal notranslate"><span class="pre">get_message_text()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.message.get_text_parts"><code class="docutils literal notranslate"><span class="pre">get_text_parts()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.message.new_agent_parts_message"><code class="docutils literal notranslate"><span class="pre">new_agent_parts_message()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.message.new_agent_text_message"><code class="docutils literal notranslate"><span class="pre">new_agent_text_message()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-a2a.utils.parts">a2a.utils.parts module</a><ul>
+<li><a class="reference internal" href="#a2a.utils.parts.get_data_parts"><code class="docutils literal notranslate"><span class="pre">get_data_parts()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.parts.get_file_parts"><code class="docutils literal notranslate"><span class="pre">get_file_parts()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.parts.get_text_parts"><code class="docutils literal notranslate"><span class="pre">get_text_parts()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-a2a.utils.proto_utils">a2a.utils.proto_utils module</a><ul>
@@ -1684,6 +1726,7 @@ finishes and produces artifacts.</p>
 <li><a class="reference internal" href="#a2a.utils.build_text_artifact"><code class="docutils literal notranslate"><span class="pre">build_text_artifact()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.completed_task"><code class="docutils literal notranslate"><span class="pre">completed_task()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.create_task_obj"><code class="docutils literal notranslate"><span class="pre">create_task_obj()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.get_artifact_text"><code class="docutils literal notranslate"><span class="pre">get_artifact_text()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.get_data_parts"><code class="docutils literal notranslate"><span class="pre">get_data_parts()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.get_file_parts"><code class="docutils literal notranslate"><span class="pre">get_file_parts()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.get_message_text"><code class="docutils literal notranslate"><span class="pre">get_message_text()</span></code></a></li>

@@ -52,6 +52,14 @@ a2a.utils.message module
    :show-inheritance:
    :undoc-members:
 
+a2a.utils.parts module
+----------------------
+
+.. automodule:: a2a.utils.parts
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 a2a.utils.proto\_utils module
 -----------------------------
 
