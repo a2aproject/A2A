@@ -13,6 +13,8 @@ from a client, it can respond in one of two fundamental ways:
     `input-required`, `auth-required`) or a terminal state (e.g., `completed`,
     `canceled`, `rejected`, `failed`).
 
+Normative refinement rules are captured in [Spec §13 Task Refinement & Follow-Ups](/specification/#13-task-refinement--follow-ups).
+
 ## Group Related Interactions
 
 A `contextId` is a crucial identifier that logically groups multiple `Task`
