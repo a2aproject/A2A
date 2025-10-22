@@ -14,7 +14,7 @@ import {
   Task,
   TaskPushNotificationConfig,
   TaskSubscriptionRequest,
-} from "./a2a_core";
+} from "./a2a_types";
 
 export const protobufPackage = "a2a.v1";
 
