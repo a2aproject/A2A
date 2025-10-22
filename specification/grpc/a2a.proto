@@ -699,6 +699,8 @@ message PasswordOAuthFlow {
 ///////////// Request Messages ///////////
 // --8<-- [start:MessageSendParams]
 message SendMessageRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 4;
   // The message to send to the agent.
   Message request = 1
       [(google.api.field_behavior) = REQUIRED, json_name = "message"];
@@ -711,6 +713,8 @@ message SendMessageRequest {
 
 // --8<-- [start:GetTaskRequest]
 message GetTaskRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -721,6 +725,8 @@ message GetTaskRequest {
 
 // --8<-- [start:ListTasksRequest]
 message ListTasksRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 8;
   // Filter tasks by context ID to get tasks from a specific conversation
   // or session.
   string context_id = 1;
@@ -758,6 +764,8 @@ message ListTasksResponse {
 
 // --8<-- [start:CancelTaskRequest]
 message CancelTaskRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
@@ -766,6 +774,8 @@ message CancelTaskRequest {
 
 // --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -774,6 +784,8 @@ message GetTaskPushNotificationConfigRequest {
 
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
 message DeleteTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -782,6 +794,8 @@ message DeleteTaskPushNotificationConfigRequest {
 
 // --8<-- [start:SetTaskPushNotificationConfigRequest]
 message CreateTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 4;
   // The parent task resource for this config.
   // Format: tasks/{task_id}
   string parent = 1 [(google.api.field_behavior) = REQUIRED];
@@ -795,6 +809,8 @@ message CreateTaskPushNotificationConfigRequest {
 
 // --8<-- [start:TaskResubscriptionRequest]
 message TaskSubscriptionRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
@@ -803,6 +819,8 @@ message TaskSubscriptionRequest {
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 4;
   // The parent task resource.
   // Format: tasks/{task_id}
   string parent = 1;
@@ -823,7 +841,8 @@ message ListTaskPushNotificationConfigRequest {
 
 // --8<-- [start:GetAuthenticatedExtendedCardRequest]
 message GetAgentCardRequest {
-  // Empty. Added to fix linter violation.
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 1;
 }
 // --8<-- [end:GetAuthenticatedExtendedCardRequest]
 
