@@ -8,7 +8,8 @@ site_dir: site
 edit_uri: edit/main/docs/
 
 extra:
-  a2a_version: !ENV [MIKE_VERSION, 'dev']
+  a2a_version: !ENV [MIKE_VERSION, "dev"]
+
   analytics:
     provider: google
     property: G-RB39M83WHB
@@ -17,29 +18,29 @@ extra:
 nav:
   - Home: index.md
   - Documentation:
-    - What is A2A?: topics/what-is-a2a.md
-    - Core Concepts: topics/key-concepts.md
-    - Agent Discovery: topics/agent-discovery.md
-    - Enterprise Features: topics/enterprise-ready.md
-    - Life of a Task: topics/life-of-a-task.md
-    - Extensions: topics/extensions.md
-    - Streaming & Asynchronous Operations: topics/streaming-and-async.md
-    - A2A and MCP: topics/a2a-and-mcp.md
+      - What is A2A?: topics/what-is-a2a.md
+      - Core Concepts: topics/key-concepts.md
+      - Agent Discovery: topics/agent-discovery.md
+      - Enterprise Features: topics/enterprise-ready.md
+      - Life of a Task: topics/life-of-a-task.md
+      - Extensions: topics/extensions.md
+      - Streaming & Asynchronous Operations: topics/streaming-and-async.md
+      - A2A and MCP: topics/a2a-and-mcp.md
   - Tutorials and Samples:
-    - tutorials/index.md
-    - Quickstart (Python):
-      - Introduction: tutorials/python/1-introduction.md
-      - Setup: tutorials/python/2-setup.md
-      - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
-      - Agent Executor: tutorials/python/4-agent-executor.md
-      - Start Server: tutorials/python/5-start-server.md
-      - Interact with Server: tutorials/python/6-interact-with-server.md
-      - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
-      - Next Steps: tutorials/python/8-next-steps.md
+      - tutorials/index.md
+      - Quickstart (Python):
+          - Introduction: tutorials/python/1-introduction.md
+          - Setup: tutorials/python/2-setup.md
+          - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
+          - Agent Executor: tutorials/python/4-agent-executor.md
+          - Start Server: tutorials/python/5-start-server.md
+          - Interact with Server: tutorials/python/6-interact-with-server.md
+          - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
+          - Next Steps: tutorials/python/8-next-steps.md
   - Specification: specification.md
   - SDK Reference:
-    - sdk/index.md
-    - Python: sdk/python/api/index.html
+      - sdk/index.md
+      - Python: sdk/python/api/index.html
   - Community: community.md
   - Partners: partners.md
   - Roadmap: roadmap.md
@@ -110,9 +111,7 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.emoji
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
@@ -125,12 +124,8 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
-      slugify: !!python/object/apply:pymdownx.slugs.slugify
-        kwds:
-          case: lower
   - toc:
       permalink: true
 
@@ -140,33 +135,33 @@ plugins:
   - macros
   - redirects:
       redirect_maps:
-        "spec-json.md": https://raw.githubusercontent.com/a2aproject/A2A/refs/heads/main/specification/json/a2a.json
-        "specification/overview.md": "specification.md"
-        "specification/agent-card.md": "specification.md#5-agent-discovery-the-agent-card"
-        "specification/agent-to-agent-communication.md": "specification.md#6-protocol-data-objects"
-        "specification/sample-messages.md": "specification.md#9-common-workflows-examples"
-        "specification/details.md": "specification.md"
-        "documentation.md": "topics/key-concepts.md"
-        "resources.md": "index.md"
-        "topics/push-notifications.md": "topics/streaming-and-async.md"
-        "specification/topics/a2a_and_mcp.md": "topics/a2a-and-mcp.md"
-        "specification/topics/agent_discovery.md": "topics/agent-discovery.md"
-        "specification/topics/enterprise_ready.md": "topics/enterprise-ready.md"
-        "specification/topics/push_notification.md": "topics/streaming-and-async.md"
-        "specification/topics/push_notifications.md": "topics/streaming-and-async.md"
-        "topics/index.md": "topics/what-is-a2a.md"
-        "topics/roadmap.md": "roadmap.md"
+        spec-json.md: spec-json/a2a.json
+        specification/overview.md: specification.md
+        specification/agent-card.md: specification.md#5-agent-discovery-the-agent-card
+        specification/agent-to-agent-communication.md: specification.md#6-protocol-data-objects
+        specification/sample-messages.md: specification.md#9-common-workflows-examples
+        specification/details.md: specification.md
+        documentation.md: topics/key-concepts.md
+        resources.md: index.md
+        topics/push-notifications.md: topics/streaming-and-async.md
+        specification/topics/a2a_and_mcp.md: topics/a2a-and-mcp.md
+        specification/topics/agent_discovery.md: topics/agent-discovery.md
+        specification/topics/enterprise_ready.md: topics/enterprise-ready.md
+        specification/topics/push_notification.md: topics/streaming-and-async.md
+        specification/topics/push_notifications.md: topics/streaming-and-async.md
+        topics/index.md: topics/what-is-a2a.md
+        topics/roadmap.md: roadmap.md
         # Tutorial
-        "tutorials/python/index.md": "tutorials/python/1-introduction.md"
-        "tutorials/python/1_introduction.md": "tutorials/python/1-introduction.md"
-        "tutorials/python/3-create-project.md": "tutorials/python/2-setup.md"
-        "tutorials/python/4-agent-skills.md": "tutorials/python/3-agent-skills-and-card.md"
-        "tutorials/python/5-add-agent-card.md": "tutorials/python/3-agent-skills-and-card.md"
-        "tutorials/python/6-start-server.md": "tutorials/python/5-start-server.md"
-        "tutorials/python/7-interact-with-server.md": "tutorials/python/6-interact-with-server.md"
-        "tutorials/python/8-agent-capabilities.md": "tutorials/python/7-streaming-and-multiturn.md"
-        "tutorials/python/9-ollama-agent.md": "tutorials/python/7-streaming-and-multiturn.md"
-        "tutorials/python/10-next-steps.md": "tutorials/python/8-next-steps.md"
-        "sdk/python/": "sdk/python/api/index.html"
+        tutorials/python/index.md: tutorials/python/1-introduction.md
+        tutorials/python/1_introduction.md: tutorials/python/1-introduction.md
+        tutorials/python/3-create-project.md: tutorials/python/2-setup.md
+        tutorials/python/4-agent-skills.md: tutorials/python/3-agent-skills-and-card.md
+        tutorials/python/5-add-agent-card.md: tutorials/python/3-agent-skills-and-card.md
+        tutorials/python/6-start-server.md: tutorials/python/5-start-server.md
+        tutorials/python/7-interact-with-server.md: tutorials/python/6-interact-with-server.md
+        tutorials/python/8-agent-capabilities.md: tutorials/python/7-streaming-and-multiturn.md
+        tutorials/python/9-ollama-agent.md: tutorials/python/7-streaming-and-multiturn.md
+        tutorials/python/10-next-steps.md: tutorials/python/8-next-steps.md
+        sdk/python/: sdk/python/api/index.html
   - mike:
       canonical_version: latest
