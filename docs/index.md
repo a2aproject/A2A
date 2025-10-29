@@ -22,7 +22,7 @@ Originally developed by Google and now donated to the Linux Foundation, A2A prov
     **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
     equip with **[![MCP Logo](https://modelcontextprotocol.io/mcp.png){class="twemoji lg middle"} MCP](https://modelcontextprotocol.io)** _(or any tool)_,
     and communicate with
-    **![A2A Logo](./assets/a2a-logo-black.svg){class="twemoji sm middle"} A2A**,
+    **![A2A Logo](./assets/a2a-logo-black.svg){class="twemoji lg middle"} A2A**,
     to remote agents, local agents, and humans.
 
 ## Get started with A2A
