@@ -77,6 +77,7 @@ The launch of A2A has sparked lively discussions and positive reactions across v
 These agentic frameworks have built-in A2A integration, making it easy to get started:
 
 - [Agent Development Kit (ADK)](https://google.github.io/adk-docs/a2a/)
+- [AG2](https://docs.ag2.ai/latest/docs/user-guide/a2a/)
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
 - [LangGraph](https://docs.langchain.com/langgraph-platform/server-a2a)
 - [Pydantic AI](https://ai.pydantic.dev/a2a/)
