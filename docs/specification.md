@@ -234,7 +234,7 @@ For quick reference, the following table summarizes the method mappings across a
 | `tasks/get` | `GetTask` | `GET /v1/tasks/{id}` | Get task status |
 | `tasks/list` | `ListTask` | `GET /v1/tasks` | List tasks (gRPC/REST only) |
 | `tasks/cancel` | `CancelTask` | `POST /v1/tasks/{id}:cancel` | Cancel task |
-| `tasks/resubscribe` | `TaskSubscription` | `POST /v1/tasks/{id}:subscribe` | Resume task streaming |
+| `tasks/resubscribe` | `TaskResubscription` | `POST /v1/tasks/{id}:resubscribe` | Resume task streaming |
 | `tasks/pushNotificationConfig/set` | `CreateTaskPushNotification` | `POST /v1/tasks/{id}/pushNotificationConfigs` | Set push notification config |
 | `tasks/pushNotificationConfig/get` | `GetTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` | Get push notification config |
 | `tasks/pushNotificationConfig/list` | `ListTaskPushNotification` | `GET /v1/tasks/{id}/pushNotificationConfigs` | List push notification configs |
@@ -969,7 +969,7 @@ Retrieves the current push notification configuration for a specified task. Requ
     -   **HTTP Method:** `POST`
     -   **Payload:**
         ```proto
-        message TaskSubscriptionRequest {
+        message GetTaskPushNotificationConfigRequest {
           // name=tasks/{id}/pushNotification/{id}
           string name;
         }
@@ -1050,7 +1050,11 @@ A object for deleting an associated push notification configuration for a task.
 
 Allows a client to reconnect to an SSE stream for an ongoing task after a previous connection (from `message/stream` or an earlier `tasks/resubscribe`) was interrupted. Requires the server to have `AgentCard.capabilities.streaming: true`.
 
+**Note:** This method can only be used to resubscribe to tasks that were initiated using the `message/stream` method. Tasks created via `message/send` do not support resubscription.
+
 The purpose is to resume receiving _subsequent_ updates. The server's behavior regarding events missed during the disconnection period (e.g., whether it attempts to backfill some missed events or only sends new ones from the point of resubscription) is implementation-dependent and not strictly defined by this specification.
+
+If a server intends to only send new events from the point of resubscription then it SHOULD send a `Task` as the first event.
 
 <div class="grid cards" markdown>
 
@@ -1061,11 +1065,11 @@ The purpose is to resume receiving _subsequent_ updates. The server's behavior r
     -   **Response**: A stream of Server-Sent Events. Each SSE `data` field contains a [`SendStreamingMessageResponse`](#721-sendstreamingmessageresponse-object)
 
 === "gRPC"
-    -   **URL:** `TaskSubscription`
+    -   **URL:** `TaskResubscription`
     -   **HTTP Method:** `POST`
     -   **Payload:**
         ```proto
-        message TaskSubscriptionRequest{
+        message TaskResubscriptionRequest{
           // name=tasks/{id}
           string name;
         }
@@ -1083,7 +1087,7 @@ The purpose is to resume receiving _subsequent_ updates. The server's behavior r
         ```
 
 === "REST"
-    -   **URL:** `/v1/tasks/{id}:subscribe`
+    -   **URL:** `/v1/tasks/{id}:resubscribe`
     -   **HTTP Method:** `POST`
     -   **Payload:**
         ```typescript
@@ -1103,7 +1107,7 @@ The purpose is to resume receiving _subsequent_ updates. The server's behavior r
 
 </div>
 
-### 7.10. `agent/getAuthenticatedExtendedCard`
+### 7.11. `agent/getAuthenticatedExtendedCard`
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`.
 
