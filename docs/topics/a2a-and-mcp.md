@@ -3,7 +3,7 @@
 In AI agent development, two key protocol types emerge to facilitate
 interoperability. One connects agents to tools and resources. The other enables
 agent-to-agent collaboration. The Agent2Agent (A2A) Protocol and the
-[Model Context Protocol](https://modelcontextprotocol.io/) (MCP) addresses these distinct but highly complementary needs.
+[Model Context Protocol](https://modelcontextprotocol.io/) (MCP) address these distinct but highly complementary needs.
 
 ## Model Context Protocol
 
