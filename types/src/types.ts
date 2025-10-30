@@ -582,6 +582,8 @@ export interface TaskIdParams {
   metadata?: {
     [key: string]: any;
   };
+  /** The version of the A2A protocol the associated request follows. */
+  protocolVersion?: string;
 }
 // --8<-- [end:TaskIdParams]
 
@@ -611,7 +613,7 @@ export interface GetTaskPushNotificationConfigParams extends TaskIdParams {
 /**
  * Defines parameters for listing all push notification configurations associated with a task.
  */
-export interface ListTaskPushNotificationConfigParams extends TaskIdParams {}
+export interface ListTaskPushNotificationConfigParams extends TaskIdParams { }
 // --8<-- [end:ListTaskPushNotificationConfigParams]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigParams]
@@ -647,6 +649,8 @@ export interface ListTasksParams {
   metadata?: {
     [key: string]: any;
   };
+  /** The version of the A2A protocol the associated request follows. */
+  protocolVersion?: string;
 }
 // --8<-- [end:ListTasksParams]
 
@@ -694,6 +698,8 @@ export interface MessageSendParams {
   metadata?: {
     [key: string]: any;
   };
+  /** The version of the A2A protocol the associated request follows. */
+  protocolVersion?: string;
 }
 // --8<-- [end:MessageSendParams]
 
