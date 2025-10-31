@@ -582,6 +582,8 @@ export interface TaskIdParams {
   metadata?: {
     [key: string]: any;
   };
+  /** The version of the A2A protocol the associated request follows. */
+  protocolVersion?: string;
 }
 // --8<-- [end:TaskIdParams]
 
@@ -647,6 +649,8 @@ export interface ListTasksParams {
   metadata?: {
     [key: string]: any;
   };
+  /** The version of the A2A protocol the associated request follows. */
+  protocolVersion?: string;
 }
 // --8<-- [end:ListTasksParams]
 
@@ -694,6 +698,8 @@ export interface MessageSendParams {
   metadata?: {
     [key: string]: any;
   };
+  /** The version of the A2A protocol the associated request follows. */
+  protocolVersion?: string;
 }
 // --8<-- [end:MessageSendParams]
 

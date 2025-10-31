@@ -706,6 +706,8 @@ message SendMessageRequest {
   SendMessageConfiguration configuration = 2;
   // Optional metadata for the request.
   google.protobuf.Struct metadata = 3;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 4;
 }
 // --8<-- [end:MessageSendParams]
 
@@ -716,6 +718,8 @@ message GetTaskRequest {
   string name = 1 [(google.api.field_behavior) = REQUIRED];
   // The number of most recent messages from the task's history to retrieve.
   int32 history_length = 2;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 3;
 }
 // --8<-- [end:GetTaskRequest]
 
@@ -741,6 +745,8 @@ message ListTasksRequest {
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.
   bool include_artifacts = 7;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 8;
 }
 // --8<-- [end:ListTasksRequest]
 
@@ -761,6 +767,8 @@ message CancelTaskRequest {
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 2;
 }
 // --8<-- [end:CancelTaskRequest]
 
@@ -769,6 +777,8 @@ message GetTaskPushNotificationConfigRequest {
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 2;
 }
 // --8<-- [end:GetTaskPushNotificationConfigRequest]
 
@@ -777,6 +787,8 @@ message DeleteTaskPushNotificationConfigRequest {
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 2;
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
@@ -790,6 +802,8 @@ message CreateTaskPushNotificationConfigRequest {
   // The configuration to create.
   TaskPushNotificationConfig config = 3
       [(google.api.field_behavior) = REQUIRED];
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 4;
 }
 // --8<-- [end:SetTaskPushNotificationConfigRequest]
 
@@ -798,6 +812,8 @@ message TaskSubscriptionRequest {
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 2;
 }
 // --8<-- [end:TaskResubscriptionRequest]
 
@@ -818,6 +834,8 @@ message ListTaskPushNotificationConfigRequest {
   // `ListTaskPushNotificationConfigRequest` must match the call that provided
   // the page token.
   string page_token = 3;
+  // The version of the A2A protocol this request follows.
+  string protocol_version = 4;
 }
 // --8<-- [end:ListTaskPushNotificationConfigRequest]
 
