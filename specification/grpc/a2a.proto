@@ -76,7 +76,7 @@ service A2AService {
   }
 
   // Set a push notification config for a task.
-  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest)
+  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest)
       returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
@@ -100,10 +100,10 @@ service A2AService {
     };
     option (google.api.method_signature) = "parent";
   }
-  // GetAgentCard returns the agent card for the agent.
-  rpc GetAgentCard(GetAgentCardRequest) returns (AgentCard) {
+  // GetExtendedAgentCard returns the extended agent card for authenticated agents.
+  rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
-      get: "/v1/card"
+      get: "/v1/extendedAgentCard"
     };
   }
   // Delete a push notification config for a task.
@@ -125,9 +125,10 @@ message SendMessageConfiguration {
   repeated string accepted_output_modes = 1;
   // A configuration of a webhook that can be used to receive updates
   PushNotificationConfig push_notification = 2;
-  // The maximum number of messages to include in the history. if 0, the
-  // history will be unlimited.
-  int32 history_length = 3;
+  // The maximum number of messages to include in the history. If unset,
+  // no limit is imposed. If 0, no history should be returned. If greater
+  // than 0, at most that many recent messages should be returned.
+  optional int32 history_length = 3;
   // If true, the message will be blocking until the task is completed. If
   // false, the message will be non-blocking and the task will be returned
   // immediately. It is the caller's responsibility to check for any task
@@ -436,7 +437,7 @@ message AgentCard {
   repeated AgentSkill skills = 12;
   // Whether the agent supports providing an extended agent card when
   // the user is authenticated, i.e. is the card from .well-known
-  // different than the card from GetAgentCard.
+  // different than the card from GetExtendedAgentCard.
   bool supports_authenticated_extended_card = 13;
   // JSON Web Signatures computed for this AgentCard.
   repeated AgentCardSignature signatures = 17;
@@ -697,7 +698,7 @@ message PasswordOAuthFlow {
 // --8<-- [end:PasswordOAuthFlow]
 
 ///////////// Request Messages ///////////
-// --8<-- [start:MessageSendParams]
+// --8<-- [start:SendMessageRequest]
 message SendMessageRequest {
   // The message to send to the agent.
   Message request = 1
@@ -707,15 +708,17 @@ message SendMessageRequest {
   // Optional metadata for the request.
   google.protobuf.Struct metadata = 3;
 }
-// --8<-- [end:MessageSendParams]
+// --8<-- [end:SendMessageRequest]
 
 // --8<-- [start:GetTaskRequest]
 message GetTaskRequest {
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
-  // The number of most recent messages from the task's history to retrieve.
-  int32 history_length = 2;
+  // The maximum number of messages to include in the history. If unset,
+  // no limit is imposed. If 0, no history should be returned. If greater
+  // than 0, at most that many recent messages should be returned.
+  optional int32 history_length = 2;
 }
 // --8<-- [end:GetTaskRequest]
 
@@ -732,15 +735,18 @@ message ListTasksRequest {
   // Token for pagination. Use the next_page_token from a previous
   // ListTasksResponse.
   string page_token = 4;
-  // Number of recent messages to include in each task's history.
-  // Must be non-negative. Defaults to 0 if not specified.
-  int32 history_length = 5;
-  // Filter tasks updated after this timestamp. Only tasks with a last
+  // The maximum number of messages to include in each task's history. If unset,
+  // no limit is imposed. If 0, no history should be returned. If greater
+  // than 0, at most that many recent messages should be returned.
+  optional int32 history_length = 5;
+  // Filter tasks updated after this timestamp (milliseconds since epoch). Only tasks with a last
   // updated time greater than or equal to this value will be returned.
-  google.protobuf.Timestamp last_updated_time = 6;
+  int64 last_updated_after = 6;
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.
   bool include_artifacts = 7;
+  // Request-specific metadata for extensions or custom parameters.
+  google.protobuf.Struct metadata = 8;
 }
 // --8<-- [end:ListTasksRequest]
 
@@ -781,7 +787,7 @@ message DeleteTaskPushNotificationConfigRequest {
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SetTaskPushNotificationConfigRequest]
-message CreateTaskPushNotificationConfigRequest {
+message SetTaskPushNotificationConfigRequest {
   // The parent task resource for this config.
   // Format: tasks/{task_id}
   string parent = 1 [(google.api.field_behavior) = REQUIRED];
@@ -821,23 +827,23 @@ message ListTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:ListTaskPushNotificationConfigRequest]
 
-// --8<-- [start:GetAuthenticatedExtendedCardRequest]
-message GetAgentCardRequest {
+// --8<-- [start:GetExtendedAgentCardRequest]
+message GetExtendedAgentCardRequest {
   // Empty. Added to fix linter violation.
 }
-// --8<-- [end:GetAuthenticatedExtendedCardRequest]
+// --8<-- [end:GetExtendedAgentCardRequest]
 
 //////// Response Messages ///////////
-// --8<-- [start:SendMessageSuccessResponse]
+// --8<-- [start:SendMessageResponse]
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
     Message msg = 2 [json_name = "message"];
   }
 }
-// --8<-- [end:SendMessageSuccessResponse]
+// --8<-- [end:SendMessageResponse]
 
-// --8<-- [start:SendStreamingMessageSuccessResponse]
+// --8<-- [start:StreamResponse]
 // The stream response for a message. The stream should be one of the following
 // sequences:
 // If the response is a message, the stream should contain one, and only one,
@@ -855,9 +861,9 @@ message StreamResponse {
     TaskArtifactUpdateEvent artifact_update = 4;
   }
 }
-// --8<-- [end:SendStreamingMessageSuccessResponse]
+// --8<-- [end:StreamResponse]
 
-// --8<-- [start:ListTaskPushNotificationConfigSuccessResponse]
+// --8<-- [start:ListTaskPushNotificationConfigResponse]
 message ListTaskPushNotificationConfigResponse {
   // The list of push notification configurations.
   repeated TaskPushNotificationConfig configs = 1;
@@ -865,4 +871,4 @@ message ListTaskPushNotificationConfigResponse {
   // If this field is omitted, there are no subsequent pages.
   string next_page_token = 2;
 }
-// --8<-- [end:ListTaskPushNotificationConfigSuccessResponse]
+// --8<-- [end:ListTaskPushNotificationConfigResponse]

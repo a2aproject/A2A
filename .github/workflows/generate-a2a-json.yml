@@ -1,69 +1,83 @@
-name: Auto-generate A2A JSON Schema
+name: Proto-derived JSON Schema Sync
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - "types/**"
+      - "specification/grpc/**/*.proto"
+      - "scripts/generate_openapi.sh"
+      - "scripts/extract_json_schema.sh"
     types:
       - opened
       - synchronize
       - reopened
+  push:
+    branches:
+      - main
+    paths:
+      - "specification/grpc/**/*.proto"
+      - "scripts/generate_openapi.sh"
+      - "scripts/extract_json_schema.sh"
 
 jobs:
   generate_json:
-    name: Generate JSON Schema
+    name: Generate a2a.json from proto
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          node-version: "20"
+          go-version: "1.25"
 
-      - name: Install dependencies and generate a2a.json
-        working-directory: types
+      - name: Install protoc and plugin
         run: |
-          npm install
-          npm run generate
-        id: generate_schema
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler git jq
+          go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+          echo "Go bin: $(go env GOPATH)/bin" >> $GITHUB_PATH
 
-      - name: Configure Git for Bot
-        if: github.event.pull_request.head.repo.full_name == github.repository
+      - name: Clone googleapis protos
+        run: |
+          git clone --depth 1 https://github.com/googleapis/googleapis.git third_party/googleapis
+
+      - name: Generate OpenAPI from proto
+        env:
+          GOOGLEAPIS_DIR: ${{ github.workspace }}/third_party/googleapis
+        run: |
+          bash scripts/generate_openapi.sh
+
+      - name: Extract JSON Schema definitions (uncommitted artifact)
+        run: |
+          bash scripts/extract_json_schema.sh specification/grpc/openapi/a2a.swagger.json specification/json/a2a.json
+
+      - name: Configure Git
         run: |
           git config user.name "a2a-bot"
           git config user.email "a2a-bot@google.com"
-
-      - name: Check for Changes
-        id: git_status
+      - name: Commit swagger changes (pull_request only, same repo)
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
-          git add specification/json/a2a.json
+          git add specification/grpc/openapi/a2a.swagger.json
           if ! git diff --cached --quiet --exit-code; then
-            echo "changes_detected=true" >> "$GITHUB_OUTPUT"
-            echo "a2a.json is not up-to-date with types.ts"
+            git commit -m "chore: update generated OpenAPI swagger"
+            git push
           else
-            echo "a2a.json is up-to-date."
-          fi
+            echo "No swagger changes detected."
 
-      - name: Commit and Push Changes (if on base repository)
-        if: steps.git_status.outputs.changes_detected == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+      - name: Commit swagger changes on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          git commit -m "chore: Auto-generate a2a.json from types.ts changes"
-          git push
-
-      - name: Fail on Fork PR if Changes Required
-        if: steps.git_status.outputs.changes_detected == 'true' && github.event.pull_request.head.repo.full_name != github.repository
-        run: |
-          echo "::error::a2a.json is out of date."
-          echo "Please run 'npm install' then 'npm run generate' in the 'types' directory of your branch and commit the updated 'specification/json/a2a.json' file."
-          exit 1 # Exit with a non-zero code to fail the workflow
+          git add specification/grpc/openapi/a2a.swagger.json
+          if ! git diff --cached --quiet --exit-code; then
+            git commit -m "chore: update generated OpenAPI swagger"
+            git push
+          else
+            echo "No swagger changes detected on main."
