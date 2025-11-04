@@ -1,3 +1,4 @@
+
 // Older protoc compilers don't understand edition yet.
 syntax = "proto3";
 package a2a.v1;
@@ -23,7 +24,7 @@ option java_package = "com.google.a2a.v1";
 //   interface, only a send and stream custom methods.
 // - Tasks have a get interface and custom cancel and subscribe methods.
 // - TaskPushNotificationConfig are a resource whose parent is a task.
-//   They have get, list and create methods.
+//   They have get, list, create and delete methods.
 // - AgentCard is a static resource with only a get method.
 service A2AService {
   // Send a message to the agent. This is a blocking call that will return the
@@ -371,6 +372,8 @@ message AgentInterface {
   // easily extended for many transport protocols. The core ones officially
   // supported are JSONRPC, GRPC and HTTP+JSON.
   string transport = 2;
+  // Scope to be set in the request when calling the agent.
+  string scope = 3;
 }
 // --8<-- [end:AgentInterface]
 
@@ -380,10 +383,12 @@ message AgentInterface {
 // - Skills; a set of actions/solutions the agent can perform
 // - Default modalities/content types supported by the agent.
 // - Authentication requirements
-// Next ID: 19
+// Next ID: 21
 message AgentCard {
   // The version of the A2A protocol this agent supports.
   string protocol_version = 16;
+  // Scope to be used in ScopedA2AService. Empty for non-scoped.
+  string scope = 19;
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1;
@@ -392,12 +397,23 @@ message AgentCard {
   string description = 2;
   // A URL to the address the agent is hosted at. This represents the
   // preferred endpoint as declared by the agent.
-  string url = 3;
+  // DEPRECATED: in favor of "supported_interfaces",
+  // used only if "supported_interfaces" is empty.
+  string url = 3 [deprecated = true];
   // The transport of the preferred endpoint. If empty, defaults to JSONRPC.
-  string preferred_transport = 14;
+  // DEPRECATED: in favor of "supported_interfaces".
+  // used only if "supported_interfaces" is empty.
+  string preferred_transport = 14 [deprecated = true];
   // Announcement of additional supported transports. Client can use any of
   // the supported transports.
-  repeated AgentInterface additional_interfaces = 15;
+  // DEPRECATED: in favor of "supported_interfaces".
+  // used only if "supported_interfaces" is empty.
+  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
+  // Supported transports (at least one). Client can use any of the these.
+  // This field replaces fields "url", "preferred_transport" and
+  // "additional_interfaces" and is meant to be a sum of them.
+  // If not empty, the other three fields are ignored.
+  repeated AgentInterface supported_interfaces = 20;
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
@@ -699,6 +715,8 @@ message PasswordOAuthFlow {
 ///////////// Request Messages ///////////
 // --8<-- [start:MessageSendParams]
 message SendMessageRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 4;
   // The message to send to the agent.
   Message request = 1
       [(google.api.field_behavior) = REQUIRED, json_name = "message"];
@@ -711,6 +729,8 @@ message SendMessageRequest {
 
 // --8<-- [start:GetTaskRequest]
 message GetTaskRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -721,6 +741,8 @@ message GetTaskRequest {
 
 // --8<-- [start:ListTasksRequest]
 message ListTasksRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 8;
   // Filter tasks by context ID to get tasks from a specific conversation
   // or session.
   string context_id = 1;
@@ -758,6 +780,8 @@ message ListTasksResponse {
 
 // --8<-- [start:CancelTaskRequest]
 message CancelTaskRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
@@ -766,6 +790,8 @@ message CancelTaskRequest {
 
 // --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -774,6 +800,8 @@ message GetTaskPushNotificationConfigRequest {
 
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
 message DeleteTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -782,6 +810,8 @@ message DeleteTaskPushNotificationConfigRequest {
 
 // --8<-- [start:SetTaskPushNotificationConfigRequest]
 message CreateTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 4;
   // The parent task resource for this config.
   // Format: tasks/{task_id}
   string parent = 1 [(google.api.field_behavior) = REQUIRED];
@@ -795,6 +825,8 @@ message CreateTaskPushNotificationConfigRequest {
 
 // --8<-- [start:TaskResubscriptionRequest]
 message TaskSubscriptionRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 2;
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
@@ -803,6 +835,8 @@ message TaskSubscriptionRequest {
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 4;
   // The parent task resource.
   // Format: tasks/{task_id}
   string parent = 1;
@@ -823,7 +857,8 @@ message ListTaskPushNotificationConfigRequest {
 
 // --8<-- [start:GetAuthenticatedExtendedCardRequest]
 message GetAgentCardRequest {
-  // Empty. Added to fix linter violation.
+  // Scope of the request, only used in ScopedA2AService.
+  string scope = 1;
 }
 // --8<-- [end:GetAuthenticatedExtendedCardRequest]
 
