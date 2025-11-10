@@ -14,9 +14,13 @@ Tutorial | Description | Difficulty
 
 ## Java
 
-Tutorial | Description
-:--------|:-----------
-[Multi-language translator agent using Java](https://github.com/a2aproject/a2a-samples/tree/main/samples/java) | Implement the A2A protocol using Java SDK to create an interactive language translation service.
+Tutorial | Description | Difficulty
+:--------|:------------|:-----------
+[Weather Agent](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/weather_mcp) | Build a weather information agent using an MCP server.<br><br>**To make use of this agent in a multi-language, multi-agent system, check out the [weather_and_airbnb_planner sample](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/hosts/weather_and_airbnb_planner).** | Easy
+[Content Writer Agent](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/content_writer) | Build a content writer agent that generates engaging pieces of content from outlines.<br><br>**To make use of this agent in a content creation multi-language, multi-agent system, check out the [content_creation sample](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/hosts/content_creation).** | Easy
+[Content Editor Agent](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/content_editor) | Build a content editor agent that proof-reads and polishes content.<br><br>**To make use of this agent in a content creation multi-language, multi-agent system, check out the [content_creation sample](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/hosts/content_creation).** | Easy
+[Dice Agent (Multi-Transport)](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/dice_agent_multi_transport) | Build a multi-transport agent that rolls dice and checks for prime numbers. | Medium
+[Magic 8 Ball Agent (Security)](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/magic_8_ball_security) | Build a Magic 8 Ball agent to learn how to secure A2A servers with Keycloak using bearer token authentication and configure an A2A client to obtain and pass the required token. | Medium
 
 ## JavaScript
 
