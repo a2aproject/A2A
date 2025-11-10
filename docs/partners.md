@@ -103,7 +103,7 @@ collaborate effectively with each other and with users.
 - [New Relic](https://newrelic.com)
 - [Nisum](http://www.nisum.com)
 - [Noorle Inc](http://www.noorle.com)
-- [NTT DATA](https://www.nttdata.com/)
+- [NTT DATA](https://www.nttdata.com)
 - [Optimizely Inc](https://www.optimizely.com/)
 - [Oracle / NetSuite](https://www.oracle.com/netsuite)
 - [Palo Alto Networks](https://www.paloaltonetworks.com/)
