@@ -29,7 +29,7 @@ As the A2A ecosystem matures, it becomes critical for the A2A community to have 
 
 ### SDKs
 
-A2A Project currently hosts SDKs in four languages (Python, JS, Java, .NET) and contributors are adding more including Go (in progress).
+A2A Project currently hosts SDKs in five languages (Python, Go, JS, Java, .NET).
 
 ### Community best practices
 

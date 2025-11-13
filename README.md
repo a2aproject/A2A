@@ -51,6 +51,7 @@ As AI agents become more prevalent, their ability to interoperate is crucial for
 - 📝 **View the Specification:** [A2A Protocol Specification](https://a2a-protocol.org/latest/specification/)
 - Use the SDKs:
     - [🐍 A2A Python SDK](https://github.com/a2aproject/a2a-python) `pip install a2a-sdk`
+    - [🐿️ A2A Go SDK](https://github.com/a2aproject/a2a-go) `go get github.com/a2aproject/a2a-go`
     - [🧑‍💻 A2A JS SDK](https://github.com/a2aproject/a2a-js) `npm install @a2a-js/sdk`
     - [☕️ A2A Java SDK](https://github.com/a2aproject/a2a-java) using maven
     - [🔷 A2A .NET SDK](https://github.com/a2aproject/a2a-dotnet) using [NuGet](https://www.nuget.org/packages/A2A) `dotnet add package A2A`
