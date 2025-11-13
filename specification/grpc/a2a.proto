@@ -407,7 +407,7 @@ message AgentCard {
   // DEPRECATED: in favor of "supported_interfaces".
   // used only if "supported_interfaces" is empty.
   repeated AgentInterface additional_interfaces = 15 [deprecated = true];
-  // Supported transports (at least one). Client can use any of the these.
+  // Supported transports in order (highest preference first), required.
   // This field replaces fields "url", "preferred_transport" and
   // "additional_interfaces" and is meant to be a sum of them.
   // If not empty, the other three fields are ignored.
@@ -713,7 +713,7 @@ message PasswordOAuthFlow {
 ///////////// Request Messages ///////////
 // --8<-- [start:MessageSendParams]
 message SendMessageRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 4;
   // The message to send to the agent.
   Message request = 1
@@ -727,7 +727,7 @@ message SendMessageRequest {
 
 // --8<-- [start:GetTaskRequest]
 message GetTaskRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
@@ -739,7 +739,7 @@ message GetTaskRequest {
 
 // --8<-- [start:ListTasksRequest]
 message ListTasksRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 8;
   // Filter tasks by context ID to get tasks from a specific conversation
   // or session.
@@ -778,7 +778,7 @@ message ListTasksResponse {
 
 // --8<-- [start:CancelTaskRequest]
 message CancelTaskRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 2;
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
@@ -788,7 +788,7 @@ message CancelTaskRequest {
 
 // --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 2;
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
@@ -798,7 +798,7 @@ message GetTaskPushNotificationConfigRequest {
 
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
 message DeleteTaskPushNotificationConfigRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 2;
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
@@ -808,7 +808,7 @@ message DeleteTaskPushNotificationConfigRequest {
 
 // --8<-- [start:SetTaskPushNotificationConfigRequest]
 message CreateTaskPushNotificationConfigRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 4;
   // The parent task resource for this config.
   // Format: tasks/{task_id}
@@ -823,7 +823,7 @@ message CreateTaskPushNotificationConfigRequest {
 
 // --8<-- [start:TaskResubscriptionRequest]
 message TaskSubscriptionRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 2;
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
@@ -833,7 +833,7 @@ message TaskSubscriptionRequest {
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 4;
   // The parent task resource.
   // Format: tasks/{task_id}
@@ -855,7 +855,7 @@ message ListTaskPushNotificationConfigRequest {
 
 // --8<-- [start:GetAuthenticatedExtendedCardRequest]
 message GetAgentCardRequest {
-  // Scope of the request, only used in ScopedA2AService.
+  // Scope of the request, optional.
   string scope = 1;
 }
 // --8<-- [end:GetAuthenticatedExtendedCardRequest]
