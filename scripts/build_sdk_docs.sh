@@ -44,9 +44,21 @@ echo "--- Building HTML documentation ---"
 # Build the HTML documentation
 sphinx-build -b html "${DOCS_SOURCE_DIR}" "${DOCS_BUILD_DIR}/html"
 
+echo "--- Copying SDK docs to MkDocs integration path ---"
+
+# Copy SDK docs to where MkDocs expects them (docs/sdk/python/api/)
+SDK_API_DIR="${DOCS_SOURCE_DIR}/api"
+if [ -d "${DOCS_BUILD_DIR}/html" ]; then
+  rm -rf "${SDK_API_DIR}"
+  cp -r "${DOCS_BUILD_DIR}/html" "${SDK_API_DIR}"
+  echo "SDK docs copied to: ${SDK_API_DIR}"
+else
+  echo "Warning: SDK docs build directory not found at ${DOCS_BUILD_DIR}/html"
+fi
+
 # Deactivate the virtual environment
 deactivate
 
 echo ""
 echo "✅ Documentation build complete!"
-echo "View the docs by opening: ${DOCS_BUILD_DIR}/html/index.html"
+echo "View the docs by opening: ${SDK_API_DIR}/index.html"
