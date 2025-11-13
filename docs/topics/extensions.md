@@ -8,7 +8,7 @@ base protocol.
 
 Extensions allow for extending the A2A protocol with new data, requirements,
 RPC methods, and state machines. Agents declare their support for specific
-extensions in their Agent Card, and clients can then opt-in to the behavior
+extensions in their Agent Card, and clients can then opt in to the behavior
 offered by an extension as part of requests they make to the agent. Extensions
 are identified by a URI and defined by their own specification. Anyone is able to define, publish, and implement an extension.
 
@@ -30,7 +30,7 @@ However, some foreseeable applications include:
     values (for example, requiring all messages to use `DataParts` adhering to
     a specific schema). This can also include augmenting existing states in the
     task state machine by using metadata. For example, an extension could define
-    a 'generating-image' sub-state when `TaskStatus.state` is 'working' and
+    a 'generating-image' substate when `TaskStatus.state` is 'working' and
     `TaskStatus.message.metadata["generating-image"]` is true.
 - **Method Extensions (Extended Skills)**: Adding entirely new RPC methods
     beyond the core set defined by the protocol. An Extended Skill refers to a
@@ -57,7 +57,7 @@ There are some changes to the protocol that extensions don't allow, primarily
 to prevent breaking core type validations:
 
 - **Changing the Definition of Core Data Structures**: For example, adding new
-    fields or removing required fields to protocol-defined data structures).
+    fields or removing required fields to protocol-defined data structures.
     Extensions should place custom attributes in the `metadata` map present on
     core data structures.
 - **Adding New Values to Enum Types**: Extensions should use existing enum values
@@ -123,7 +123,7 @@ the agent should reject the incoming request with an appropriate error.
 
 The detailed behavior and structure of an extension are defined by its
 **specification**. While the exact format is not mandated, it should contain at
-at least:
+least:
 
 - The specific URI(s) that identify the extension.
 - The schema and meaning of objects specified in the `params` field of the

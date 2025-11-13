@@ -21,7 +21,7 @@ With A2A, agents can:
 
 - Discover each other's capabilities.
 - Negotiate interaction modalities (text, forms, media).
-- Securely collaborate on long running tasks.
+- Securely collaborate on long-running tasks.
 - Operate without exposing their internal state, memory, or tools.
 
 ## Intro to A2A Video

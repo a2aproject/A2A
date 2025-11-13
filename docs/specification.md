@@ -988,7 +988,7 @@ Retrieves the current push notification configuration for a specified task. Requ
 
 #### 7.7.1. `GetTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/get`)
 
-A object for fetching the push notification configuration for a task.
+An object for fetching the push notification configuration for a task.
 
 {{ render_spec_tabs('GetTaskPushNotificationConfigParams') }}
 
@@ -1028,7 +1028,7 @@ Retrieves the associated push notification configurations for a specified task. 
 
 #### 7.8.1. `ListTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/list`)
 
-A object for fetching the push notification configurations for a task.
+An object for fetching the push notification configurations for a task.
 
 {{ render_spec_tabs('ListTaskPushNotificationConfigParams') }}
 
@@ -1042,7 +1042,7 @@ Deletes an associated push notification configuration for a task. Requires the s
 
 #### 7.9.1. `DeleteTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/delete`)
 
-A object for deleting an associated push notification configuration for a task.
+An object for deleting an associated push notification configuration for a task.
 
 {{ render_spec_tabs('DeleteTaskPushNotificationConfigParams') }}
 
