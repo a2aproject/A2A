@@ -6,6 +6,8 @@ The Agent2Agent (A2A) protocol is explicitly designed to handle tasks that might
 
 For tasks that produce incremental results (like generating a long document or streaming media) or provide ongoing status updates, A2A supports real-time communication using Server-Sent Events (SSE). This approach is ideal when the client is able to maintain an active HTTP connection with the A2A Server.
 
+**Key Characteristics:** (See normative streaming & reconnection rules in [Spec §14 Streaming Semantics & Reconnection](/specification/#14-streaming-semantics--reconnection)).
+
 The following key features detail how SSE streaming is implemented and managed within the A2A protocol:
 
 - **Server Capability:** The A2A Server must indicate its support for streaming by setting `capabilities.streaming: true` in its Agent Card.
@@ -62,6 +64,8 @@ Push notifications are ideal for:
 - Very long-running tasks that can take minutes, hours, or days to complete.
 - Clients that cannot or prefer not to maintain persistent connections, such as mobile applications or serverless functions.
 - Scenarios where clients only need to be notified of significant state changes rather than continuous updates.
+
+Normative security requirements are centralized in [Spec §16 Push Notification Security](/specification/#16-push-notification-security-expanded). This section provides explanatory background.
 
 ### Protocol Specification References
 
