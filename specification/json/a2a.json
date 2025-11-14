@@ -76,6 +76,15 @@
                 },
                 {
                     "$ref": "#/definitions/GetAuthenticatedExtendedCardRequest"
+                },
+                {
+                    "$ref": "#/definitions/PublishRequest"
+                },
+                {
+                    "$ref": "#/definitions/SubscribeRequest"
+                },
+                {
+                    "$ref": "#/definitions/UnsubscribeRequest"
                 }
             ],
             "description": "A discriminated union representing all possible JSON-RPC 2.0 requests supported by the A2A specification."
@@ -122,6 +131,24 @@
                         "$ref": "#/definitions/AgentExtension"
                     },
                     "type": "array"
+                },
+                "patterns": {
+                    "description": "Defines the messaging patterns supported by the agent beyond basic RPC.\nThis allows for explicit capability negotiation and a clearer protocol architecture.",
+                    "properties": {
+                        "conversational": {
+                            "default": "false\r\nIf true, the agent supports direct, interactive, conversational messaging.\r\n(This formalizes the capability implied by SendMessageRequest or SendStreamingMessageRequest).",
+                            "type": "boolean"
+                        },
+                        "pubsub": {
+                            "default": "false\r\nIf true, the agent supports topic-based, many-to-many messaging. It is expected to understand PublishRequest, UnsubscribeRequest,\r\nand SubscribeRequest, and to push EventMessages to subscribers.",
+                            "type": "boolean"
+                        },
+                        "task_webhook": {
+                            "default": "false\r\nIf true, the agent can push status updates for individual tasks via webhooks.\r\n(This formalizes the capability implied by the TaskPushNotification series of requests).",
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
                 },
                 "pushNotifications": {
                     "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
@@ -1454,6 +1481,9 @@
         "JSONRPCResponse": {
             "anyOf": [
                 {
+                    "$ref": "#/definitions/JSONRPCSuccessResponse"
+                },
+                {
                     "$ref": "#/definitions/JSONRPCErrorResponse"
                 },
                 {
@@ -2023,6 +2053,72 @@
             ],
             "type": "object"
         },
+        "PublishParams": {
+            "description": "Defines the parameters for a request to publish a message to a topic. This can be used\nto create a new task, continue an existing one, or restart a task. The runtime is responsible for distributing this message\nto all current subscribers of the topic.",
+            "properties": {
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata for extensions.",
+                    "type": "object"
+                },
+                "payload": {
+                    "description": "The content of the message. The structure of the payload is contractually defined by the topic itself and is opaque to the\nruntime. To promote interoperability, it is highly recommended that this payload conforms to a standard event envelope\nformat, such as the CloudEvents specification."
+                },
+                "topic": {
+                    "description": "The target topic for the message.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "payload",
+                "topic"
+            ],
+            "type": "object"
+        },
+        "PublishRequest": {
+            "description": "Represents a JSON-RPC request for the `publish` method.",
+            "properties": {
+                "id": {
+                    "description": "The identifier for this request.",
+                    "type": [
+                        "string",
+                        "integer"
+                    ]
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "description": "The version of the JSON-RPC protocol. MUST be exactly \"2.0\".",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "publish",
+                    "description": "The method name. Must be 'publish'.",
+                    "type": "string"
+                },
+                "params": {
+                    "$ref": "#/definitions/PublishParams",
+                    "description": "The parameters for publishing a message."
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "PublishResponse": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/JSONRPCSuccessResponse"
+                },
+                {
+                    "$ref": "#/definitions/JSONRPCErrorResponse"
+                }
+            ],
+            "description": "Represents a JSON-RPC response for the `publish` method."
+        },
         "PushNotificationAuthenticationInfo": {
             "description": "Defines authentication details for a push notification endpoint.",
             "properties": {
@@ -2357,6 +2453,71 @@
             ],
             "type": "object"
         },
+        "SubscribeParams": {
+            "description": "Defines the parameters for a request to subscribe to a set of topics. This can be used\nto receive tasks or results.",
+            "properties": {
+                "metadata": {
+                    "additionalProperties": {},
+                    "description": "Optional metadata for extensions.",
+                    "type": "object"
+                },
+                "topics": {
+                    "description": "The target topics to subscribe.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "topics"
+            ],
+            "type": "object"
+        },
+        "SubscribeRequest": {
+            "description": "Represents a JSON-RPC request for the `subscribe` method.",
+            "properties": {
+                "id": {
+                    "description": "The identifier for this request.",
+                    "type": [
+                        "string",
+                        "integer"
+                    ]
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "description": "The version of the JSON-RPC protocol. MUST be exactly \"2.0\".",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "subscribe",
+                    "description": "The method name. Must be 'subscribe'.",
+                    "type": "string"
+                },
+                "params": {
+                    "$ref": "#/definitions/SubscribeParams",
+                    "description": "The parameters for subscribing."
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "SubscribeResponse": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/JSONRPCSuccessResponse"
+                },
+                {
+                    "$ref": "#/definitions/JSONRPCErrorResponse"
+                }
+            ],
+            "description": "Represents a JSON-RPC response for the `subscribe` method."
+        },
         "Task": {
             "description": "Represents a single, stateful operation or conversation between a client and an agent.",
             "properties": {
@@ -2686,6 +2847,10 @@
             ],
             "type": "object"
         },
+        "Topic": {
+            "description": "A Topic represents a logical channel for publishing and subscribing to messages.\nTopics are case-sensitive strings.",
+            "type": "string"
+        },
         "TransportProtocol": {
             "description": "Supported A2A transport protocols.",
             "enum": [
@@ -2694,6 +2859,50 @@
                 "HTTP+JSON"
             ],
             "type": "string"
+        },
+        "UnsubscribeRequest": {
+            "description": "Represents a JSON-RPC request for the `unsubscribe` method.",
+            "properties": {
+                "id": {
+                    "description": "The identifier for this request.",
+                    "type": [
+                        "string",
+                        "integer"
+                    ]
+                },
+                "jsonrpc": {
+                    "const": "2.0",
+                    "description": "The version of the JSON-RPC protocol. MUST be exactly \"2.0\".",
+                    "type": "string"
+                },
+                "method": {
+                    "const": "unsubscribe",
+                    "description": "The method name. Must be 'unsubscribe'.",
+                    "type": "string"
+                },
+                "params": {
+                    "$ref": "#/definitions/SubscribeParams",
+                    "description": "The parameters for unsubscribing."
+                }
+            },
+            "required": [
+                "id",
+                "jsonrpc",
+                "method",
+                "params"
+            ],
+            "type": "object"
+        },
+        "UnsubscribeResponse": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/JSONRPCSuccessResponse"
+                },
+                {
+                    "$ref": "#/definitions/JSONRPCErrorResponse"
+                }
+            ],
+            "description": "Represents a JSON-RPC response for the `unsubscribe` method."
         },
         "UnsupportedOperationError": {
             "description": "An A2A-specific error indicating that the requested operation is not supported by the agent.",
