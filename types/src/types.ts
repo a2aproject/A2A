@@ -373,6 +373,11 @@ export interface AgentCard {
    */
   protocolVersion: string;
   /**
+   * A stable unique identifier (UUID) for an agent, consistent across all its versions, optional.
+   * @format uuid
+   */
+  id?: string;
+  /**
    * A human-readable name for the agent.
    *
    * @TJS-examples ["Recipe Agent"]
