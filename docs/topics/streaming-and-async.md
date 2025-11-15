@@ -38,7 +38,7 @@ Streaming with SSE is best suited for:
 Refer to the Protocol Specification for detailed structures:
 
 - [`message/stream`](../specification.md#72-messagestream)
-- [`tasks/resubscribe`](../specification.md#79-tasksresubscribe)
+- [`tasks/subscribe`](../specification.md#79-taskssubscribe)
 
 ## Push Notifications for Disconnected Scenarios
 

@@ -61,6 +61,37 @@ jobs:
       - name: Install documentation dependencies
         run: pip install --upgrade -r requirements-docs.txt
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install build tools
+        run: |
+          # Install protoc
+          PROTOC_VERSION="28.3"
+          PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+          curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
+          sudo unzip -q /tmp/protoc.zip -d /usr/local
+          rm /tmp/protoc.zip
+
+          # Install protoc-gen-jsonschema
+          go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
+          sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
+
+          # Install buf CLI
+          go install github.com/bufbuild/buf/cmd/buf@latest
+          sudo cp "$(go env GOPATH)/bin/buf" /usr/local/bin/
+
+          # Clone googleapis
+          mkdir -p third_party
+          cd third_party
+          git clone --depth 1 https://github.com/googleapis/googleapis.git
+          cd ..
+
+      - name: Generate protocol specification files
+        run: ./scripts/build_docs.sh
+
       - name: Generate and Build Python SDK Docs
         run: |
           # Find the path to the installed package
