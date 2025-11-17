@@ -2395,13 +2395,21 @@
                 "status": {
                     "$ref": "#/definitions/TaskStatus",
                     "description": "The current status of the task, including its state and a descriptive message."
+                },
+                "updateTime": {
+                    "description": "An ISO 8601 datetime string indicating the last update to the task.",
+                    "examples": [
+                        "2023-10-27T10:00:00Z"
+                    ],
+                    "type": "string"
                 }
             },
             "required": [
                 "contextId",
                 "id",
                 "kind",
-                "status"
+                "status",
+                "updateTime"
             ],
             "type": "object"
         },

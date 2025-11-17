@@ -492,6 +492,12 @@ export interface Task {
   };
   /** The type of this object, used as a discriminator. Always 'task' for a Task. */
   readonly kind: "task";
+  /**
+   * An ISO 8601 datetime string indicating the last update to the task.
+   *
+   * @TJS-examples ["2023-10-27T10:00:00Z"]
+   */
+  updateTime: string;
 }
 // --8<-- [end:Task]
 
@@ -611,7 +617,7 @@ export interface GetTaskPushNotificationConfigParams extends TaskIdParams {
 /**
  * Defines parameters for listing all push notification configurations associated with a task.
  */
-export interface ListTaskPushNotificationConfigParams extends TaskIdParams {}
+export interface ListTaskPushNotificationConfigParams extends TaskIdParams { }
 // --8<-- [end:ListTaskPushNotificationConfigParams]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigParams]
