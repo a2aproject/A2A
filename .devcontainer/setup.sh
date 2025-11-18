@@ -10,33 +10,30 @@ sudo apt-get install -y \
   curl \
   git \
   jq \
-  unzip \
-  wget
-
-# Install yq (YAML processor)
-echo "→ Installing yq..."
-YQ_VERSION="v4.44.3"
-YQ_BINARY="yq_linux_amd64"
-wget -qO /tmp/yq "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY}"
-sudo mv /tmp/yq /usr/local/bin/yq
-sudo chmod +x /usr/local/bin/yq
+  unzip
 
 # Install Protocol Buffers compiler
 echo "→ Installing protoc..."
 PROTOC_VERSION="28.3"
 PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
-wget -qO /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
+curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
 sudo unzip -q /tmp/protoc.zip -d /usr/local
 rm /tmp/protoc.zip
 
-# Install protoc-gen-openapi (gnostic)
-echo "→ Installing protoc-gen-openapi..."
-go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
-# Copy from wherever go installed it
-if [ -f "$HOME/go/bin/protoc-gen-openapi" ]; then
-  sudo cp "$HOME/go/bin/protoc-gen-openapi" /usr/local/bin/
-elif [ -f "$(go env GOPATH)/bin/protoc-gen-openapi" ]; then
-  sudo cp "$(go env GOPATH)/bin/protoc-gen-openapi" /usr/local/bin/
+# Install protoc-gen-jsonschema (bufbuild)
+echo "→ Installing protoc-gen-jsonschema..."
+go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
+go_bin_path="$(go env GOPATH)/bin/protoc-gen-jsonschema"
+if [ -f "$go_bin_path" ]; then
+  sudo cp "$go_bin_path" /usr/local/bin/
+fi
+
+# Install buf CLI
+echo "→ Installing buf..."
+go install github.com/bufbuild/buf/cmd/buf@latest
+go_bin_path="$(go env GOPATH)/bin/buf"
+if [ -f "$go_bin_path" ]; then
+  sudo cp "$go_bin_path" /usr/local/bin/
 fi
 
 # Install googleapis proto files to third_party
@@ -59,8 +56,8 @@ pip install --no-cache-dir -r requirements-docs.txt
 echo ""
 echo "==> Verifying installations..."
 echo "protoc: $(protoc --version)"
-echo "protoc-gen-openapi: $(which protoc-gen-openapi)"
-echo "yq: $(yq --version)"
+echo "protoc-gen-jsonschema: $(which protoc-gen-jsonschema)"
+echo "buf: $(buf --version 2>/dev/null || echo 'not found')"
 echo "jq: $(jq --version)"
 echo "python: $(python --version)"
 echo "go: $(go version)"

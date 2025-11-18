@@ -4,10 +4,10 @@
 
 Generation pipeline:
 
-1. `scripts/proto_to_json_schema.sh` converts proto → OpenAPI v3 → JSON Schema in a single atomic operation.
-2. The resulting `a2a.json` (draft-07 schema bundle) is copied to `docs/spec-json/a2a.json` for site publishing.
+1. `scripts/proto_to_json_schema.sh` converts proto directly to JSON Schema using bufbuild's `protoc-gen-jsonschema` plugin.
+2. The resulting `a2a.json` (JSON Schema 2020-12 bundle) is copied to `docs/spec-json/a2a.json` for site publishing.
 
-The build uses `protoc` with `protoc-gen-openapi` plugin, `yq` for YAML conversion, and `jq` for schema extraction. Only source (`a2a.proto`) and scripts remain under version control.
+The build uses `protoc` with `protoc-gen-jsonschema` plugin and `jq` for bundling. Only source (`a2a.proto`) and scripts remain under version control.
 
 The artifact is generated automatically in:
 
@@ -39,24 +39,24 @@ To build the `a2a.json` artifact locally, you'll need several dependencies depen
    pip3 --version
    ```
 
-3. **Core build tools (`protoc`, `go`, `yq`, `jq`)**
+3. **Core build tools (`protoc`, `go`, `jq`)**
    - **macOS**:
 
      ```bash
-     brew install protobuf go yq jq
+     brew install protobuf go jq
      ```
 
    - **Debian/Ubuntu**:
 
      ```bash
-     sudo apt-get update && sudo apt-get install -y protobuf-compiler golang yq jq
+     sudo apt-get update && sudo apt-get install -y protobuf-compiler golang jq
      ```
 
-4. **protoc-gen-openapi plugin**
+4. **protoc-gen-jsonschema plugin**
 
    ```bash
    # Install via Go (requires Go to be installed first):
-   go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+   go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
    ```
 
 5. **Clone googleapis repository**
@@ -117,8 +117,7 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    protoc --version
    ```
 
-3. **Go programming language** (for `protoc-gen-openapi` plugin)
-
+3. **Go programming language** (for protoc-gen-jsonschema plugin)
    ```powershell
    # Install via WinGet:
    winget install GoLang.Go
@@ -128,28 +127,16 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    go version
    ```
 
-4. **`protoc-gen-openapi` plugin**
-
+4. **protoc-gen-jsonschema plugin**
    ```powershell
    # Install via Go (requires Go to be installed first):
-   go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+   go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
 
    # Verify installation (should be in your Go bin directory):
-   protoc-gen-openapi --version
+   protoc-gen-jsonschema --version
    ```
 
-5. **yq (YAML processor)**
-
-   ```powershell
-   # Install via WinGet:
-   winget install mikefarah.yq
-
-   # Verify installation:
-   yq --version
-   ```
-
-6. **jq (JSON processor)**
-
+5. **jq (JSON processor)**
    ```powershell
    # Install via WinGet:
    winget install jqlang.jq
@@ -158,8 +145,7 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    jq --version
    ```
 
-7. **Clone googleapis repository**
-
+6. **Clone googleapis repository**
    ```powershell
    # Clone to any location and set environment variable:
    git clone https://github.com/googleapis/googleapis.git C:\path\to\googleapis
@@ -168,9 +154,9 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    # To persist this setting, add the following line to your PowerShell profile.
    # You can open your profile for editing by running: notepad $PROFILE
    $env:GOOGLEAPIS_DIR = "C:\path\to\googleapis"
+   ```
 
-8. **Python documentation dependencies**
-
+7. **Python documentation dependencies**
    ```powershell
    # Create and activate virtual environment:
    python -m venv .venv-docs
@@ -194,8 +180,7 @@ Once all prerequisites are installed:
 
 The build script will:
 
-- Generate OpenAPI schema from Protocol Buffer definitions
-- Extract JSON schemas for documentation
+- Generate JSON Schema from Protocol Buffer definitions
 - Build the MkDocs site with all content
 
 </details>
@@ -203,9 +188,9 @@ The build script will:
 #### Troubleshooting
 
 - **protoc errors**: Ensure both `protoc` and the googleapis directory are properly configured
-- **yq/jq not found**: Ensure both tools are installed and in your `PATH`
+- **jq not found**: Ensure jq is installed and in your `PATH`
 - **Python import errors**: Activate the virtual environment and ensure all requirements are installed
-- **Missing schemas**: Check that `protoc-gen-openapi` is in your `PATH` (run `go env GOPATH` to find Go bin directory)
+- **Missing schemas**: Check that `protoc-gen-jsonschema` is in your `PATH` (run `go env GOPATH` to find Go bin directory)
 
 ## Future Work
 

@@ -2,14 +2,15 @@
 set -euo pipefail
 
 # Unified docs build script that ensures the non-normative JSON artifact is
-# regenerated (if stale) before invoking MkDocs. Uses pure shell + npm.
+# regenerated (if stale) before invoking MkDocs. Uses pure shell.
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 SCHEMA_JSON="$ROOT_DIR/specification/json/a2a.json"
-SCHEMA_JSON_SITE_DIR="$ROOT_DIR/docs/spec-json"
-SCHEMA_JSON_SITE_FILE="$SCHEMA_JSON_SITE_DIR/a2a.json"
 PROTO_SRC="$ROOT_DIR/specification/grpc/a2a.proto"
+SPEC_SITE_DIR="$ROOT_DIR/docs/spec"
+SCHEMA_JSON_SITE_FILE="$SPEC_SITE_DIR/a2a.json"
+PROTO_SITE_FILE="$SPEC_SITE_DIR/a2a.proto"
 PROTO_TO_SCHEMA_SCRIPT="$ROOT_DIR/scripts/proto_to_json_schema.sh"
 
 regen_needed() {
@@ -41,13 +42,21 @@ else
   echo "[build_docs] Schema is up-to-date, skipping regeneration" >&2
 fi
 
-# Always ensure schema is available in docs directory for MkDocs
+# Always ensure spec files are available in docs directory for MkDocs
+mkdir -p "$SPEC_SITE_DIR"
+
 if [ -f "$SCHEMA_JSON" ]; then
-  mkdir -p "$SCHEMA_JSON_SITE_DIR"
   cp "$SCHEMA_JSON" "$SCHEMA_JSON_SITE_FILE"
   echo "[build_docs] Published schema to $SCHEMA_JSON_SITE_FILE" >&2
 else
   echo "[build_docs] Warning: Schema file not found at $SCHEMA_JSON - MkDocs may fail" >&2
+fi
+
+if [ -f "$PROTO_SRC" ]; then
+  cp "$PROTO_SRC" "$PROTO_SITE_FILE"
+  echo "[build_docs] Published proto to $PROTO_SITE_FILE" >&2
+else
+  echo "[build_docs] Warning: Proto file not found at $PROTO_SRC" >&2
 fi
 
 # Build SDK documentation

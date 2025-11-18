@@ -7,8 +7,12 @@ site_author: The Linux Foundation
 site_dir: site
 edit_uri: edit/main/docs/
 
+# Exclude files from the docs directory
+exclude_docs: |
+  README.md
+
 extra:
-  a2a_version: !ENV [MIKE_VERSION, 'dev']
+  a2a_version: !ENV [MIKE_VERSION, "dev"]
   analytics:
     provider: google
     property: G-RB39M83WHB
@@ -17,29 +21,31 @@ extra:
 nav:
   - Home: index.md
   - Documentation:
-    - What is A2A?: topics/what-is-a2a.md
-    - Core Concepts: topics/key-concepts.md
-    - Agent Discovery: topics/agent-discovery.md
-    - Enterprise Features: topics/enterprise-ready.md
-    - Life of a Task: topics/life-of-a-task.md
-    - Extensions: topics/extensions.md
-    - Streaming & Asynchronous Operations: topics/streaming-and-async.md
-    - A2A and MCP: topics/a2a-and-mcp.md
+      - What is A2A?: topics/what-is-a2a.md
+      - Core Concepts: topics/key-concepts.md
+      - Agent Discovery: topics/agent-discovery.md
+      - Enterprise Features: topics/enterprise-ready.md
+      - Life of a Task: topics/life-of-a-task.md
+      - Extensions: topics/extensions.md
+      - Streaming & Asynchronous Operations: topics/streaming-and-async.md
+      - A2A and MCP: topics/a2a-and-mcp.md
   - Tutorials and Samples:
-    - tutorials/index.md
-    - Quickstart (Python):
-      - Introduction: tutorials/python/1-introduction.md
-      - Setup: tutorials/python/2-setup.md
-      - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
-      - Agent Executor: tutorials/python/4-agent-executor.md
-      - Start Server: tutorials/python/5-start-server.md
-      - Interact with Server: tutorials/python/6-interact-with-server.md
-      - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
-      - Next Steps: tutorials/python/8-next-steps.md
-  - Specification: specification.md
+      - tutorials/index.md
+      - Quickstart (Python):
+          - Introduction: tutorials/python/1-introduction.md
+          - Setup: tutorials/python/2-setup.md
+          - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
+          - Agent Executor: tutorials/python/4-agent-executor.md
+          - Start Server: tutorials/python/5-start-server.md
+          - Interact with Server: tutorials/python/6-interact-with-server.md
+          - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
+          - Next Steps: tutorials/python/8-next-steps.md
+  - Specification:
+      - Overview: specification.md
+      - Protocol Definition: definitions.md
   - SDK Reference:
-    - sdk/index.md
-    - Python: sdk/python/api/index.html
+      - sdk/index.md
+      - Python: sdk/python.md
   - Community: community.md
   - Partners: partners.md
   - Roadmap: roadmap.md
@@ -119,6 +125,7 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets:
+      base_path: docs
       url_download: true
       dedent_subsections: true
   - pymdownx.superfences:
@@ -140,7 +147,6 @@ plugins:
   - macros
   - redirects:
       redirect_maps:
-        "spec-json.md": https://raw.githubusercontent.com/a2aproject/A2A/refs/heads/main/specification/json/a2a.json
         "specification/overview.md": "specification.md"
         "specification/agent-card.md": "specification.md#5-agent-discovery-the-agent-card"
         "specification/agent-to-agent-communication.md": "specification.md#6-protocol-data-objects"

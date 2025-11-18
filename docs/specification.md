@@ -535,10 +535,10 @@ A key-value map for passing horizontally applicable context or parameters with c
 
 **Standard A2A Service Parameters:**
 
-| Header Name | Description | Example Value |
-| :---------- | :---------- | :------------ |
-| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
-| `A2A-Version` | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3` |
+| Header Name      | Description                                                                                                                                             | Example Value                                                                                 |
+| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
+| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
+| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
 
@@ -605,17 +605,17 @@ Protocol bindings **MUST** map these elements to their native error representati
 
 **A2A-Specific Errors:**
 
-| Error Name                          | Description                                                                                                                                                       |
-| :---------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TaskNotFoundError`                 | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
-| `TaskNotCancelableError`            | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`). |
-| `PushNotificationNotSupportedError` | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
-| `UnsupportedOperationError`         | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                          |
-| `ContentTypeNotSupportedError`      | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
-| `InvalidAgentResponseError`         | An agent returned a response that does not conform to the specification for the current method.                                                                    |
-| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                     |
-| `ExtensionSupportRequiredError`     | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                  |
-| `VersionNotSupportedError`          | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent. |
+| Error Name                            | Description                                                                                                                                                       |
+| :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
+| `TaskNotCancelableError`              | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`). |
+| `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
+| `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                          |
+| `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
+| `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                   |
+| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
+| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
+| `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
 
 #### 3.3.3. Asynchronous Processing
 
@@ -709,8 +709,8 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Set ([Section 3.1.7](#317-set-push-notification-config)), Get ([Section 3.1.8](#318-get-push-notification-config)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
-- Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-payloads))
+- Operations: Set ([Section 3.1.7](#75-taskspushnotificationconfigset)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
 
@@ -739,7 +739,7 @@ This capability enables scenarios such as:
 
 #### 3.5.3. Push Notification Delivery
 
-Push notifications are delivered via HTTP POST to client-registered webhook endpoints. The delivery semantics and reliability guarantees are defined in [Section 4.3](#43-push-notification-payloads).
+Push notifications are delivered via HTTP POST to client-registered webhook endpoints. The delivery semantics and reliability guarantees are defined in [Section 4.3](#43-push-notification-objects).
 
 ### 3.6 Versioning
 
@@ -1395,35 +1395,35 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 ### 5.3. Method Mapping Reference
 
-| Functionality                        | JSON-RPC Method                          | gRPC Method                          | REST Endpoint                                        |
-| :----------------------------------- | :--------------------------------------- | :----------------------------------- | :--------------------------------------------------- |
-| Send message                         | `SendMessage`                            | `SendMessage`                        | `POST /v1/message:send`                              |
-| Stream message                       | `SendStreamingMessage`                   | `SendStreamingMessage`               | `POST /v1/message:stream`                            |
-| Get task                             | `GetTask`                                | `GetTask`                            | `GET /v1/tasks/{id}`                                 |
-| List tasks                           | `ListTasks`                              | `ListTasks`                          | `GET /v1/tasks`                                      |
-| Cancel task                          | `CancelTask`                             | `CancelTask`                         | `POST /v1/tasks/{id}:cancel`                         |
-| Subscribe to task                    | `SubscribeToTask`                        | `SubscribeToTask`                    | `POST /v1/tasks/{id}:subscribe`                      |
-| Set push notification config         | `SetTaskPushNotificationConfig`          | `SetTaskPushNotificationConfig`      | `POST /v1/tasks/{id}/pushNotificationConfigs`        |
-| Get push notification config         | `GetTaskPushNotificationConfig`          | `GetTaskPushNotificationConfig`      | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` |
-| List push notification configs       | `ListTaskPushNotificationConfig`         | `ListTaskPushNotificationConfig`     | `GET /v1/tasks/{id}/pushNotificationConfigs`         |
-| Delete push notification config      | `DeleteTaskPushNotificationConfig`       | `DeleteTaskPushNotificationConfig`   | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` |
-| Get extended Agent Card              | `GetExtendedAgentCard`                   | `GetExtendedAgentCard`               | `GET /v1/extendedAgentCard`                          |
+| Functionality                   | JSON-RPC Method                    | gRPC Method                        | REST Endpoint                                              |
+| :------------------------------ | :--------------------------------- | :--------------------------------- | :--------------------------------------------------------- |
+| Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /v1/message:send`                                    |
+| Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /v1/message:stream`                                  |
+| Get task                        | `GetTask`                          | `GetTask`                          | `GET /v1/tasks/{id}`                                       |
+| List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /v1/tasks`                                            |
+| Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /v1/tasks/{id}:cancel`                               |
+| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /v1/tasks/{id}:subscribe`                            |
+| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /v1/tasks/{id}/pushNotificationConfigs`              |
+| Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}`    |
+| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /v1/tasks/{id}/pushNotificationConfigs`               |
+| Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` |
+| Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /v1/extendedAgentCard`                                |
 
 ### 5.4. Error Code Mappings
 
 All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST** be mapped to binding-specific error representations. The following table provides the canonical mappings for each standard protocol binding:
 
-| A2A Error Type                           | JSON-RPC Code | gRPC Status          | HTTP Status                  | HTTP Type URI                                                            |
-| :--------------------------------------- | :------------ | :------------------- | :--------------------------- | :----------------------------------------------------------------------- |
-| `TaskNotFoundError`                      | `-32001`      | `NOT_FOUND`          | `404 Not Found`              | `https://a2a-protocol.org/errors/task-not-found`                         |
-| `TaskNotCancelableError`                 | `-32002`      | `FAILED_PRECONDITION`| `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancelable`                    |
-| `PushNotificationNotSupportedError`      | `-32003`      | `UNIMPLEMENTED`      | `400 Bad Request`            | `https://a2a-protocol.org/errors/push-notification-not-supported`        |
-| `UnsupportedOperationError`              | `-32004`      | `UNIMPLEMENTED`      | `400 Bad Request`            | `https://a2a-protocol.org/errors/unsupported-operation`                  |
-| `ContentTypeNotSupportedError`           | `-32005`      | `INVALID_ARGUMENT`   | `415 Unsupported Media Type` | `https://a2a-protocol.org/errors/content-type-not-supported`             |
-| `InvalidAgentResponseError`              | `-32006`      | `INTERNAL`           | `502 Bad Gateway`            | `https://a2a-protocol.org/errors/invalid-agent-response`                 |
-| `ExtendedAgentCardNotConfiguredError`    | `-32007`      | `FAILED_PRECONDITION`| `400 Bad Request`            | `https://a2a-protocol.org/errors/extended-agent-card-not-configured`     |
-| `ExtensionSupportRequiredError`          | `-32008`      | `FAILED_PRECONDITION`| `400 Bad Request`            | `https://a2a-protocol.org/errors/extension-support-required`             |
-| `VersionNotSupportedError`               | `-32009`      | `UNIMPLEMENTED`      | `400 Bad Request`            | `https://a2a-protocol.org/errors/version-not-supported`                  |
+| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  | HTTP Type URI                                                        |
+| :------------------------------------ | :------------ | :-------------------- | :--------------------------- | :------------------------------------------------------------------- |
+| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              | `https://a2a-protocol.org/errors/task-not-found`                     |
+| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancelable`                |
+| `PushNotificationNotSupportedError`   | `-32003`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/push-notification-not-supported`    |
+| `UnsupportedOperationError`           | `-32004`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/unsupported-operation`              |
+| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `415 Unsupported Media Type` | `https://a2a-protocol.org/errors/content-type-not-supported`         |
+| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `502 Bad Gateway`            | `https://a2a-protocol.org/errors/invalid-agent-response`             |
+| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`            | `https://a2a-protocol.org/errors/extended-agent-card-not-configured` |
+| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`            | `https://a2a-protocol.org/errors/extension-support-required`         |
+| `VersionNotSupportedError`            | `-32009`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/version-not-supported`              |
 
 **Custom Binding Requirements:**
 
@@ -2179,7 +2179,7 @@ Before signing, the Agent Card content **MUST** be canonicalized using the JSON 
 
 **Canonicalization Rules:**
 
-1. **Field Presence and Default Value Handling**: Before canonicalization, the JSON representation **MUST** respect Protocol Buffer field presence semantics as defined in [Section 5.6.2](#562-field-presence-and-optionality). This ensures that the canonical form accurately reflects which fields were explicitly provided versus which were omitted, enabling signature verification when Agent Cards are reconstructed:
+1. **Field Presence and Default Value Handling**: Before canonicalization, the JSON representation **MUST** respect Protocol Buffer field presence semantics as defined in [Section 5.7](#57-field-presence-and-optionality). This ensures that the canonical form accurately reflects which fields were explicitly provided versus which were omitted, enabling signature verification when Agent Cards are reconstructed:
     - **Optional fields not explicitly set**: Fields marked with the `optional` keyword that were not explicitly set **MUST** be omitted from the JSON object
     - **Optional fields explicitly set to defaults**: Fields marked with `optional` that were explicitly set to a value (even if that value matches a default) **MUST** be included in the JSON object
     - **Required fields**: Fields marked with `REQUIRED` **MUST** always be present, even if the field value matches the default.
@@ -2577,13 +2577,13 @@ JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://ww
 
 **Standard JSON-RPC Error Codes:**
 
-| JSON-RPC Error Code | Error Name            | Standard Message                        | Description                                           |
-| :------------------ | :-------------------- | :-------------------------------------- | :---------------------------------------------------- |
-| `-32700`            | `JSONParseError`      | "Invalid JSON payload"                  | The server received invalid JSON                      |
-| `-32600`            | `InvalidRequestError` | "Request payload validation error"      | The JSON sent is not a valid Request object          |
-| `-32601`            | `MethodNotFoundError` | "Method not found"                      | The requested method does not exist or is not available |
-| `-32602`            | `InvalidParamsError`  | "Invalid parameters"                    | The method parameters are invalid                     |
-| `-32603`            | `InternalError`       | "Internal error"                        | An internal error occurred on the server             |
+| JSON-RPC Error Code | Error Name            | Standard Message                   | Description                                             |
+| :------------------ | :-------------------- | :--------------------------------- | :------------------------------------------------------ |
+| `-32700`            | `JSONParseError`      | "Invalid JSON payload"             | The server received invalid JSON                        |
+| `-32600`            | `InvalidRequestError` | "Request payload validation error" | The JSON sent is not a valid Request object             |
+| `-32601`            | `MethodNotFoundError` | "Method not found"                 | The requested method does not exist or is not available |
+| `-32602`            | `InvalidParamsError`  | "Invalid parameters"               | The method parameters are invalid                       |
+| `-32603`            | `InternalError`       | "Internal error"                   | An internal error occurred on the server                |
 
 **A2A-Specific Error Codes:**
 
@@ -3017,12 +3017,12 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 
 **Example Mappings:**
 
-| Protocol Buffer Field | Query Parameter Name | Example Usage |
-|----------------------|---------------------|---------------|
-| `context_id` | `contextId` | `?contextId=uuid` |
-| `page_size` | `pageSize` | `?pageSize=50` |
-| `page_token` | `pageToken` | `?pageToken=cursor` |
-| `task_id` | `taskId` | `?taskId=uuid` |
+| Protocol Buffer Field | Query Parameter Name | Example Usage       |
+| --------------------- | -------------------- | ------------------- |
+| `context_id`          | `contextId`          | `?contextId=uuid`   |
+| `page_size`           | `pageSize`           | `?pageSize=50`      |
+| `page_token`          | `pageToken`          | `?pageToken=cursor` |
+| `task_id`             | `taskId`             | `?taskId=uuid`      |
 
 **Usage Examples:**
 
@@ -3397,6 +3397,7 @@ AI agent platforms, agentic workflow systems, multi-agent collaboration tools, a
 **Fragment identifier considerations:** None
 
 **Additional information:**
+
 - **Deprecated alias names for this type:** None
 - **Magic number(s):** None
 - **File extension(s):** .a2a.json
@@ -3429,7 +3430,7 @@ A2A Protocol Working Group, a2a-protocol@example.org
 
 **Author/Change controller:** A2A Protocol Working Group
 
-**Specification document:** Section 3.2.5 of the A2A Protocol Specification (https://a2a-protocol.org/specification)
+**Specification document:** Section 3.2.5 of the A2A Protocol Specification
 
 **Related information:**
 The A2A-Version header field indicates the A2A protocol version that the client is using. The value MUST be in the format `Major.Minor` (e.g., "0.3"). If the version is not supported by the agent, the agent returns a `VersionNotSupportedError`.
@@ -3449,7 +3450,7 @@ A2A-Version: 0.3
 
 **Author/Change controller:** A2A Protocol Working Group
 
-**Specification document:** Section 3.2.5 of the A2A Protocol Specification (https://a2a-protocol.org/specification)
+**Specification document:** Section 3.2.5 of the A2A Protocol Specification
 
 **Related information:**
 The A2A-Extensions header field contains a comma-separated list of extension URIs that the client wants to use for the request. Extensions allow agents to provide additional functionality beyond the core A2A specification while maintaining backward compatibility.
@@ -3465,7 +3466,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 **Change controller:** A2A Protocol Working Group
 
-**Specification document:** Section 8.2 of the A2A Protocol Specification (https://a2a-protocol.org/specification)
+**Specification document:** Section 8.2 of the A2A Protocol Specification
 
 **Related information:**
 The `.well-known/agent-card.json` URI provides a standardized location for discovering an A2A agent's capabilities, supported protocols, authentication requirements, and available skills. The resource at this URI MUST return an AgentCard object as defined in Section 4.4.1 of the A2A specification.
@@ -3473,6 +3474,7 @@ The `.well-known/agent-card.json` URI provides a standardized location for disco
 **Status:** Permanent
 
 **Security considerations:**
+
 - The Agent Card MAY contain public information about an agent's capabilities and SHOULD NOT include sensitive credentials or internal implementation details
 - Implementations SHOULD support HTTPS to ensure authenticity and integrity of the Agent Card
 - Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object (Section 4.4.7)
@@ -3494,7 +3496,7 @@ This appendix catalogs renamed protocol messages and objects, their legacy ident
 | ----------------------------------------------- | ----------------------------------------- | ------------------------ | ------------------------------------------------------ |
 | `MessageSendParams`                             | `SendMessageRequest`                      | >= 0.5.0                 | Request payload rename for clarity (request vs params) |
 | `SendMessageSuccessResponse`                    | `SendMessageResponse`                     | >= 0.5.0                 | Unified success response naming                        |
-| `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response         |
+| `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response           |
 | `SetTaskPushNotificationConfigRequest`          | `CreateTaskPushNotificationConfigRequest` | >= 0.5.0                 | Explicit creation intent                               |
 | `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
 | `GetAuthenticatedExtendedCardRequest`           | `GetExtendedAgentCardRequest`             | >= 0.5.0                 | Removed "Authenticated" from naming                    |

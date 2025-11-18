@@ -23,8 +23,7 @@ check_command() {
 
 # Check dependencies
 check_command "protoc"
-check_command "protoc-gen-openapi"
-check_command "yq"
+check_command "protoc-gen-jsonschema"
 check_command "jq"
 
 # Create temporary directory for intermediate files
@@ -56,59 +55,43 @@ if [ "$ANNOTATIONS_FOUND" != true ]; then
   exit 1
 fi
 
-# Step 1: Pre-process proto and Generate OpenAPI v3
-echo "→ Cleaning proto comments and generating OpenAPI..." >&2
-
-# Define path for the cleaned proto in the temp directory
-CLEAN_PROTO_FILE="$TEMP_DIR/$(basename "$PROTO_FILE")"
-
-# Use sed to remove lines containing specific patterns:
-# 1. matches "// --8<--"
-# 2. matches "// protolint:"
-sed -e '/\/\/ --8<--/d' \
-    -e '/\/\/ protolint:/d' \
-    "$PROTO_FILE" > "$CLEAN_PROTO_FILE"
-
-# Add the temp dir to the include path so protoc finds the clean file context
-# We prepend it so it takes precedence over the original file
-INCLUDE_FLAGS=("-I$TEMP_DIR" "${INCLUDE_FLAGS[@]}")
-
-if ! protoc "${INCLUDE_FLAGS[@]}" --openapi_out "$TEMP_DIR" \
-    --openapi_opt naming=json \
-    "$CLEAN_PROTO_FILE"; then
+# Step 1: Generate individual JSON Schema files with JSON field names (camelCase)
+echo "→ Generating JSON Schema from proto..." >&2
+if ! protoc "${INCLUDE_FLAGS[@]}" \
+    --jsonschema_out="$TEMP_DIR" \
+    --jsonschema_opt=target=json \
+    "$PROTO_FILE" 2>&1; then
   echo "Error: protoc generation failed" >&2
   exit 1
 fi
 
-OPENAPI_YAML="$TEMP_DIR/openapi.yaml"
-if [[ ! -f "$OPENAPI_YAML" ]]; then
-  echo "Error: No openapi.yaml produced" >&2
+# Step 2: Bundle all schemas into a single file with cleaned names
+echo "→ Creating JSON Schema bundle..." >&2
+
+# Check if any JSON files were generated
+JSON_FILES=("$TEMP_DIR"/*.json)
+if [ ! -f "${JSON_FILES[0]}" ]; then
+  echo "Error: No JSON schema files generated" >&2
   exit 1
 fi
 
-# Step 2: Convert YAML to JSON
-echo "→ Converting YAML to JSON..." >&2
-OPENAPI_JSON="$TEMP_DIR/openapi.json"
-yq -o=json '.' "$OPENAPI_YAML" > "$OPENAPI_JSON"
-
-# Step 3: Extract schemas and wrap in JSON Schema structure
-echo "→ Extracting schemas..." >&2
-SCHEMA_DEFS=$(jq 'if .components and .components.schemas then .components.schemas elif .definitions then .definitions else {} end' "$OPENAPI_JSON")
-
-if [[ -z "$SCHEMA_DEFS" || "$SCHEMA_DEFS" == "null" || "$SCHEMA_DEFS" == "{}" ]]; then
-  echo "Warning: No schemas found in OpenAPI document" >&2
-  SCHEMA_DEFS="{}"
-fi
-
-# Step 4: Create final JSON Schema bundle
-echo "→ Creating JSON Schema bundle..." >&2
-jq -n --argjson defs "$SCHEMA_DEFS" '{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  title: "A2A Protocol Schemas",
-  description: "Non-normative JSON Schema bundle extracted from proto definitions via OpenAPI.",
-  version: "v1",
-  definitions: $defs
-}' > "$OUTPUT"
+jq -s '
+  (if .[0]."$schema" then .[0]."$schema" else "http://json-schema.org/draft-07/schema#" end) as $schema |
+  (reduce .[] as $item ({};
+    if $item.title then
+      . + {($item.title): ($item | del(."$id"))}
+    else
+      .
+    end
+  )) as $defs |
+  {
+    "$schema": $schema,
+    title: "A2A Protocol Schemas",
+    description: "Non-normative JSON Schema bundle extracted from proto definitions.",
+    version: "v1",
+    definitions: $defs
+  }
+' "$TEMP_DIR"/*.json > "$OUTPUT"
 
 # Count definitions
 DEF_COUNT=$(jq '.definitions | length' "$OUTPUT")

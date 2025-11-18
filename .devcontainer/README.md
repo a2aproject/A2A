@@ -6,15 +6,13 @@ This devcontainer provides a fully configured development environment for the A2
 
 ### Build Tools
 - **protoc** (v28.3) - Protocol Buffers compiler
-- **protoc-gen-openapi** (gnostic) - OpenAPI v3 generator for protobuf
-- **yq** (v4.44.3) - YAML processor
+- **protoc-gen-jsonschema** (bufbuild) - JSON Schema generator for protobuf
 - **jq** (latest) - JSON processor
 - **googleapis** - Google API proto definitions
 
 ### Development Tools
 - **Python 3.12** with all documentation dependencies
 - **Go** (latest) - for protoc plugin compilation
-- **Node.js** (LTS) - for additional tooling
 
 ### VS Code Extensions
 - Python language support with Pylance
@@ -53,7 +51,7 @@ This devcontainer configuration also works with GitHub Codespaces:
 ## Benefits
 
 - **Reproducible builds**: Everyone uses the same tool versions
-- **No local setup**: No need to install protoc, yq, jq, etc. on your host machine
+- **No local setup**: No need to install protoc, jq, etc. on your host machine
 - **Quick onboarding**: New contributors can start developing immediately
 - **CI/CD alignment**: Same environment as CI can use similar container
 
@@ -62,7 +60,7 @@ This devcontainer configuration also works with GitHub Codespaces:
 To modify the environment:
 
 - **Add tools**: Edit `.devcontainer/setup.sh`
-- **Change Python/Go/Node versions**: Edit `features` in `devcontainer.json`
+- **Change Python/Go versions**: Edit `features` in `devcontainer.json`
 - **Add VS Code extensions**: Edit `customizations.vscode.extensions` in `devcontainer.json`
 
 ## Troubleshooting
