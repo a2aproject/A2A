@@ -984,7 +984,7 @@ Retrieves the current push notification configuration for a specified task. Requ
 
 </div>
 
-**Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors)).
+**Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#822-a2a-specific-json-rpc-errors), [`TaskNotFoundError`](#822-a2a-specific-json-rpc-errors)).
 
 #### 7.7.1. `GetTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/get`)
 
@@ -1038,7 +1038,7 @@ Deletes an associated push notification configuration for a task. Requires the s
 
 - **Request `params` type**: [`DeleteTaskPushNotificationConfigParams`](#791-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete)
 - **Response `result` type (on success)**: [`null`]
-- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#82-a2a-specific-errors), [`TaskNotFoundError`](#82-a2a-specific-errors)).
+- **Response `error` type (on failure)**: [`JSONRPCError`](#612-jsonrpcerror-object) (e.g., [`PushNotificationNotSupportedError`](#822-a2a-specific-json-rpc-errors), [`TaskNotFoundError`](#822-a2a-specific-json-rpc-errors)).
 
 #### 7.9.1. `DeleteTaskPushNotificationConfigParams` Object (`tasks/pushNotificationConfig/delete`)
 
@@ -1142,9 +1142,22 @@ Clients retrieving this authenticated card **SHOULD** replace their cached publi
 
 ## 8. Error Handling
 
+A2A defines comprehensive error handling across all supported transport protocols to ensure consistent error semantics and functional equivalence as required by [Section 3.4.1](#341-functional-equivalence-requirements). This section specifies error handling for JSON-RPC 2.0, gRPC, and HTTP+JSON/REST transports.
+
+### 8.1. Error Handling Principles
+
+All A2A-compliant implementations **MUST** adhere to these error handling principles:
+
+- **Transport Equivalence**: Semantically equivalent errors **MUST** be reported consistently across all supported transports
+- **Error Code Consistency**: A2A-specific error conditions **MUST** map to appropriate transport-specific error representations
+- **Structured Error Information**: Error responses **MUST** include sufficient detail for clients to understand and handle the error condition
+- **Security Considerations**: Error messages **SHOULD NOT** expose sensitive implementation details or internal system information
+
+### 8.2. JSON-RPC 2.0 Error Handling
+
 A2A uses standard [JSON-RPC 2.0 error codes and structure](https://www.jsonrpc.org/specification#error_object) for reporting errors. Errors are returned in the `error` member of the `JSONRPCErrorResponse` object. See [`JSONRPCError` Object definition](#612-jsonrpcerror-object).
 
-### 8.1. Standard JSON-RPC Errors
+#### 8.2.1. Standard JSON-RPC Errors
 
 These are standard codes defined by the JSON-RPC 2.0 specification.
 
@@ -1157,7 +1170,7 @@ These are standard codes defined by the JSON-RPC 2.0 specification.
 | `-32603`             | Internal error        | Internal server error     | An unexpected error occurred on the server during processing.                                |
 | `-32000` to `-32099` | Server error          | _(Server-defined)_        | Reserved for implementation-defined server-errors. A2A-specific errors use this range.       |
 
-### 8.2. A2A-Specific Errors
+#### 8.2.2. A2A-Specific JSON-RPC Errors
 
 These are custom error codes defined within the JSON-RPC server error range (`-32000` to `-32099`) to provide more specific feedback about A2A-related issues. Servers **SHOULD** use these codes where applicable.
 
@@ -1172,6 +1185,169 @@ These are custom error codes defined within the JSON-RPC server error range (`-3
 | `-32007` | `AuthenticatedExtendedCardNotConfiguredError`         | Authenticated Extended Card not configured        | The agent does not have an Authenticated Extended Card configured.|
 
 Servers MAY define additional error codes within the `-32000` to `-32099` range for more specific scenarios not covered above, but they **SHOULD** document these clearly. The `data` field of the `JSONRPCError` object can be used to provide more structured details for any error.
+
+### 8.3. gRPC Error Handling
+
+When using gRPC transport, A2A agents **MUST** use standard [gRPC status codes](https://grpc.github.io/grpc/core/md_doc_statuscodes.html) and **SHOULD** provide detailed error information using [`google.rpc.Status`](https://cloud.google.com/apis/design/errors#error_model).
+
+#### 8.3.1. Standard gRPC Status Codes
+
+These standard gRPC status codes map to common A2A error conditions:
+
+| gRPC Status Code | Typical Condition | Description |
+|:-----------------|:------------------|:------------|
+| `OK` (0) | Success | The operation completed successfully |
+| `INVALID_ARGUMENT` (3) | Invalid parameters | Equivalent to JSON-RPC `-32602` |
+| `UNAUTHENTICATED` (16) | Authentication required | Client credentials are missing or invalid |
+| `PERMISSION_DENIED` (7) | Authorization failed | Client does not have permission for the operation |
+| `NOT_FOUND` (5) | Resource not found | Equivalent to `TaskNotFoundError` `-32001` |
+| `UNIMPLEMENTED` (12) | Method not supported | Equivalent to JSON-RPC `-32601` |
+| `INTERNAL` (13) | Internal server error | Equivalent to JSON-RPC `-32603` |
+| `UNAVAILABLE` (14) | Service unavailable | Server is temporarily unavailable |
+
+#### 8.3.2. A2A-Specific gRPC Error Mapping
+
+A2A-specific error conditions **MUST** be mapped to appropriate gRPC status codes with detailed error information:
+
+| A2A Error Code | A2A Error Name | gRPC Status Code | gRPC Details |
+|:---------------|:---------------|:-----------------|:-------------|
+| `-32001` | `TaskNotFoundError` | `NOT_FOUND` | Use `google.rpc.ErrorInfo` with `reason: "TASK_NOT_FOUND"` |
+| `-32002` | `TaskNotCancelableError` | `FAILED_PRECONDITION` | Use `google.rpc.ErrorInfo` with `reason: "TASK_NOT_CANCELABLE"` |
+| `-32003` | `PushNotificationNotSupportedError` | `UNIMPLEMENTED` | Use `google.rpc.ErrorInfo` with `reason: "PUSH_NOTIFICATIONS_NOT_SUPPORTED"` |
+| `-32004` | `UnsupportedOperationError` | `UNIMPLEMENTED` | Use `google.rpc.ErrorInfo` with `reason: "OPERATION_NOT_SUPPORTED"` |
+| `-32005` | `ContentTypeNotSupportedError` | `INVALID_ARGUMENT` | Use `google.rpc.ErrorInfo` with `reason: "CONTENT_TYPE_NOT_SUPPORTED"` |
+| `-32006` | `InvalidAgentResponseError` | `INTERNAL` | Use `google.rpc.ErrorInfo` with `reason: "INVALID_AGENT_RESPONSE"` |
+| `-32007` | `AuthenticatedExtendedCardNotConfiguredError` | `UNIMPLEMENTED` | Use `google.rpc.ErrorInfo` with `reason: "AUTHENTICATED_CARD_NOT_CONFIGURED"` |
+
+#### 8.3.3. gRPC Error Details Structure
+
+When providing detailed error information, gRPC implementations **SHOULD** use the following structure:
+
+```proto
+google.rpc.Status {
+  int32 code = 1;  // gRPC status code
+  string message = 2;  // Human-readable error message
+  repeated google.protobuf.Any details = 3;  // Additional error details
+}
+```
+
+Error details **SHOULD** include:
+
+- `google.rpc.ErrorInfo` with A2A-specific reason codes
+- `google.rpc.RequestInfo` with request identification
+- `google.rpc.ResourceInfo` for resource-related errors (e.g., task not found)
+
+### 8.4. HTTP+JSON/REST Error Handling
+
+When using HTTP+JSON/REST transport, A2A agents **MUST** use appropriate [HTTP status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) and **MUST** return error responses in a consistent JSON format that provides equivalent information to JSON-RPC and gRPC error responses.
+
+#### 8.4.1. Standard HTTP Status Codes
+
+These standard HTTP status codes map to common A2A error conditions:
+
+| HTTP Status Code | Typical Condition | Description |
+|:-----------------|:------------------|:------------|
+| `200 OK` | Success | The operation completed successfully |
+| `400 Bad Request` | Invalid parameters | Equivalent to JSON-RPC `-32602` and gRPC `INVALID_ARGUMENT` |
+| `401 Unauthorized` | Authentication required | Client credentials are missing or invalid |
+| `403 Forbidden` | Authorization failed | Client does not have permission for the operation |
+| `404 Not Found` | Resource not found | Equivalent to `TaskNotFoundError` (-32001) and gRPC `NOT_FOUND` |
+| `409 Conflict` | Resource state conflict | Operation conflicts with current resource state |
+| `415 Unsupported Media Type` | Content type not supported | Equivalent to `ContentTypeNotSupportedError` (-32005) |
+| `422 Unprocessable Entity` | Request semantically invalid | Request is valid but cannot be processed |
+| `501 Not Implemented` | Method not supported | Equivalent to JSON-RPC `-32601` and gRPC `UNIMPLEMENTED` |
+| `500 Internal Server Error` | Internal server error | Equivalent to JSON-RPC `-32603` and gRPC `INTERNAL` |
+| `503 Service Unavailable` | Service unavailable | Server is temporarily unavailable |
+
+#### 8.4.2. A2A-Specific HTTP Error Mapping
+
+A2A-specific error conditions **MUST** be mapped to appropriate HTTP status codes:
+
+| A2A Error Code | A2A Error Name | HTTP Status Code | HTTP Error Response |
+|:---------------|:---------------|:-----------------|:--------------------|
+| `-32001` | `TaskNotFoundError` | `404 Not Found` | Task resource not found |
+| `-32002` | `TaskNotCancelableError` | `409 Conflict` | Task cannot be canceled in current state |
+| `-32003` | `PushNotificationNotSupportedError` | `501 Not Implemented` | Push notifications not supported by agent |
+| `-32004` | `UnsupportedOperationError` | `501 Not Implemented` | Operation not supported by agent |
+| `-32005` | `ContentTypeNotSupportedError` | `415 Unsupported Media Type` | Content type not supported |
+| `-32006` | `InvalidAgentResponseError` | `500 Internal Server Error` | Agent generated invalid response |
+| `-32007` | `AuthenticatedExtendedCardNotConfiguredError` | `501 Not Implemented` | Authenticated card feature not configured |
+
+#### 8.4.3. HTTP Error Response Format
+
+HTTP+JSON/REST implementations **MUST** return Application specific error responses with `Content-Type: application/json` and a consistent JSON structure:
+
+```json
+{
+  "error": {
+    "code": "TASK_NOT_FOUND",
+    "message": "Task not found",
+    "details": {
+      "taskId": "invalid-task-id",
+      "reason": "Task may have expired or been purged"
+    }
+  }
+}
+```
+
+The error response **MUST** contain an `error` object with:
+
+**Required fields:**
+
+- `code`: A2A-specific error identifier (e.g., "TASK_NOT_FOUND", "OPERATION_NOT_SUPPORTED")
+- `message`: Human-readable error description
+
+**Optional fields:**
+
+- `details`: Additional structured error information (object with error-specific data)
+
+#### 8.4.4. HTTP Error Headers
+
+HTTP error responses **SHOULD** include appropriate headers:
+
+- `Content-Type: application/json` for all error responses
+- `WWW-Authenticate` header for `401 Unauthorized` responses
+- `Retry-After` header for `503 Service Unavailable` responses
+
+### 8.5. Cross-Transport Error Mapping
+
+To ensure functional equivalence across all supported transports as required by [Section 3.4.1](#341-functional-equivalence-requirements), the following comprehensive mapping table defines how A2A error conditions are represented in each transport protocol:
+
+| A2A Error Condition | JSON-RPC Code | JSON-RPC Message | gRPC Status | gRPC Reason | HTTP Status | HTTP Error Code |
+|:-------------------|:--------------|:-----------------|:------------|:------------|:------------|:----------------|
+| Parse/Format Error | `-32700` | Invalid JSON payload | `INVALID_ARGUMENT` | `PARSE_ERROR` | `400` | `PARSE_ERROR` |
+| Invalid Request | `-32600` | Invalid JSON-RPC Request | `INVALID_ARGUMENT` | `INVALID_REQUEST` | `400` | `INVALID_REQUEST` |
+| Method Not Found | `-32601` | Method not found | `UNIMPLEMENTED` | `METHOD_NOT_FOUND` | `501` | `METHOD_NOT_FOUND` |
+| Invalid Parameters | `-32602` | Invalid method parameters | `INVALID_ARGUMENT` | `INVALID_PARAMS` | `400` | `INVALID_PARAMS` |
+| Internal Error | `-32603` | Internal server error | `INTERNAL` | `INTERNAL_ERROR` | `500` | `INTERNAL_ERROR` |
+| Task Not Found | `-32001` | Task not found | `NOT_FOUND` | `TASK_NOT_FOUND` | `404` | `TASK_NOT_FOUND` |
+| Task Not Cancelable | `-32002` | Task cannot be canceled | `FAILED_PRECONDITION` | `TASK_NOT_CANCELABLE` | `409` | `TASK_NOT_CANCELABLE` |
+| Push Notifications Not Supported | `-32003` | Push Notification is not supported | `UNIMPLEMENTED` | `PUSH_NOTIFICATIONS_NOT_SUPPORTED` | `501` | `PUSH_NOTIFICATIONS_NOT_SUPPORTED` |
+| Unsupported Operation | `-32004` | This operation is not supported | `UNIMPLEMENTED` | `OPERATION_NOT_SUPPORTED` | `501` | `OPERATION_NOT_SUPPORTED` |
+| Content Type Not Supported | `-32005` | Incompatible content types | `INVALID_ARGUMENT` | `CONTENT_TYPE_NOT_SUPPORTED` | `415` | `CONTENT_TYPE_NOT_SUPPORTED` |
+| Invalid Agent Response | `-32006` | Invalid agent response type | `INTERNAL` | `INVALID_AGENT_RESPONSE` | `500` | `INVALID_AGENT_RESPONSE` |
+| Authenticated Card Not Configured | `-32007` | Authenticated Extended Card not configured | `UNIMPLEMENTED` | `AUTHENTICATED_CARD_NOT_CONFIGURED` | `501` | `AUTHENTICATED_CARD_NOT_CONFIGURED` |
+| Authentication Required | N/A | Authentication required | `UNAUTHENTICATED` | `AUTH_REQUIRED` | `401` | `AUTH_REQUIRED` |
+| Authorization Failed | N/A | Permission denied | `PERMISSION_DENIED` | `AUTH_FAILED` | `403` | `AUTH_FAILED` |
+| Service Unavailable | N/A | Service temporarily unavailable | `UNAVAILABLE` | `SERVICE_UNAVAILABLE` | `503` | `SERVICE_UNAVAILABLE` |
+
+#### 8.5.1. Error Equivalence Requirements
+
+When implementing multiple transports, agents **MUST** ensure:
+
+1. **Semantic Equivalence**: The same error condition **MUST** be represented consistently across all supported transports
+2. **Error Information Preservation**: Essential error information (error type, description, additional details) **MUST** be preserved across transport boundaries
+3. **Client Predictability**: Clients **MUST** be able to handle the same error condition regardless of which transport is used
+4. **Debugging Support**: Error responses **SHOULD** include sufficient information for debugging across all transports
+
+#### 8.5.2. Error Conversion Guidelines
+
+For agents supporting multiple transports:
+
+- **Error Detection**: Implement centralized error detection logic independent of transport
+- **Error Mapping**: Use the mapping table above to convert internal error representations to transport-specific formats
+- **Error Details**: Preserve additional error context (e.g., request IDs, timestamps, metadata) across all transports
+- **Error Logging**: Log errors in a transport-agnostic format for consistent monitoring and debugging
 
 ## 9. Common Workflows & Examples
 
@@ -2135,7 +2311,7 @@ For a client to be considered **A2A-compliant**, it **MUST**:
 #### 11.2.2. Protocol Implementation
 
 - **Core method usage**: **MUST** properly construct requests for at least `message/send` and `tasks/get` methods.
-- **Error handling**: **MUST** properly handle all A2A error codes defined in [Section 8.2](#82-a2a-specific-errors).
+- **Error handling**: **MUST** properly handle all A2A error codes defined in [Section 8.2](#822-a2a-specific-json-rpc-errors).
 - **Authentication**: **MUST** support at least one authentication method when interacting with agents that require authentication.
 
 #### 11.2.3. Optional Client Features
