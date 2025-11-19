@@ -32,7 +32,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
     a. **"Startup Phase."** At the inception of the Project, each organization listed in the [`GOVERNANCE`](GOVERNANCE.md) file in the governance repository of the Project will have the right to appoint (and remove and replace) one employee to serve as a voting member of the TSC.
 
-    b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, sub-project technical leads, or other method as determined by the TSC) for composition of the TSC from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
+    b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, subproject technical leads, or other method as determined by the TSC) for composition of the TSC from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
 
     c. The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the GOVERNANCE file. Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
 
@@ -52,9 +52,9 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 5. The TSC may elect a TSC Chair, who will preside over meetings of the TSC and will serve until their resignation or replacement by the TSC.
 6. **Responsibilities:** The TSC will be responsible for all aspects of oversight relating to the Project, which may include:
     1. coordinating the technical direction of the Project;
-    2. approving project or system proposals (including, but not limited to, incubation, deprecation, and changes to a sub-project's scope);
-    3. organizing sub-projects and removing sub-projects;
-    4. creating sub-committees or working groups to focus on cross-project technical issues and requirements;
+    2. approving project or system proposals (including, but not limited to, incubation, deprecation, and changes to a subproject's scope);
+    3. organizing subprojects and removing subprojects;
+    4. creating subcommittees or working groups to focus on cross-project technical issues and requirements;
     5. appointing representatives to work with other open source or open standards communities;
     6. establishing community norms, workflows, issuing releases, and security issue reporting policies;
     7. approving and implementing policies and processes for contributing (to be published in the [`CONTRIBUTING`](CONTRIBUTING.md) file) and coordinating with the series manager of the Project (as provided for in the Series Agreement, the "Series Manager") to resolve matters or concerns that may arise as set forth in Section 7 of this Charter;
