@@ -12,7 +12,7 @@ SPEC_DIR="specification"
 echo "--- Generating consolidated LLM file: ${OUTPUT_FILE} ---"
 
 # Clear the output file to start fresh
->"${OUTPUT_FILE}"
+true >"${OUTPUT_FILE}"
 
 # --- Helper function to append file content with a header ---
 append_file() {

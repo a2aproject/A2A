@@ -65,8 +65,8 @@ CLEAN_PROTO_FILE="$TEMP_DIR/$(basename "$PROTO_FILE")"
 # 1. matches "// --8<--"
 # 2. matches "// protolint:"
 sed -e '/\/\/ --8<--/d' \
-    -e '/\/\/ protolint:/d' \
-    "$PROTO_FILE" > "$CLEAN_PROTO_FILE"
+  -e '/\/\/ protolint:/d' \
+  "$PROTO_FILE" >"$CLEAN_PROTO_FILE"
 
 # Add the temp dir to the include path so protoc finds the clean file context
 # We prepend it so it takes precedence over the original file
@@ -75,9 +75,9 @@ INCLUDE_FLAGS=("-I$TEMP_DIR" "${INCLUDE_FLAGS[@]}")
 # Step 1: Generate individual JSON Schema files with JSON field names (camelCase)
 echo "→ Generating JSON Schema from proto..." >&2
 if ! protoc "${INCLUDE_FLAGS[@]}" \
-    --jsonschema_out="$TEMP_DIR" \
-    --jsonschema_opt=target=json \
-    "$CLEAN_PROTO_FILE" 2>&1; then
+  --jsonschema_out="$TEMP_DIR" \
+  --jsonschema_opt=target=json \
+  "$CLEAN_PROTO_FILE" 2>&1; then
   echo "Error: protoc generation failed" >&2
   exit 1
 fi
@@ -108,7 +108,7 @@ jq -s '
     version: "v1",
     definitions: $defs
   }
-' "$TEMP_DIR"/*.json > "$OUTPUT"
+' "$TEMP_DIR"/*.json >"$OUTPUT"
 
 # Count definitions
 DEF_COUNT=$(jq '.definitions | length' "$OUTPUT")
