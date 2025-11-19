@@ -55,12 +55,29 @@ if [ "$ANNOTATIONS_FOUND" != true ]; then
   exit 1
 fi
 
+# Step 0: Pre-process proto
+echo "→ Cleaning proto comments..." >&2
+
+# Define path for the cleaned proto in the temp directory
+CLEAN_PROTO_FILE="$TEMP_DIR/$(basename "$PROTO_FILE")"
+
+# Use sed to remove lines containing specific patterns:
+# 1. matches "// --8<--"
+# 2. matches "// protolint:"
+sed -e '/\/\/ --8<--/d' \
+    -e '/\/\/ protolint:/d' \
+    "$PROTO_FILE" > "$CLEAN_PROTO_FILE"
+
+# Add the temp dir to the include path so protoc finds the clean file context
+# We prepend it so it takes precedence over the original file
+INCLUDE_FLAGS=("-I$TEMP_DIR" "${INCLUDE_FLAGS[@]}")
+
 # Step 1: Generate individual JSON Schema files with JSON field names (camelCase)
 echo "→ Generating JSON Schema from proto..." >&2
 if ! protoc "${INCLUDE_FLAGS[@]}" \
     --jsonschema_out="$TEMP_DIR" \
     --jsonschema_opt=target=json \
-    "$PROTO_FILE" 2>&1; then
+    "$CLEAN_PROTO_FILE" 2>&1; then
   echo "Error: protoc generation failed" >&2
   exit 1
 fi
