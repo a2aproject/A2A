@@ -29,6 +29,30 @@ export interface AgentCapabilities {
   pushNotifications?: boolean;
   /** Indicates if the agent provides a history of state transitions for a task. */
   stateTransitionHistory?: boolean;
+  /**
+   * Defines the messaging patterns supported by the agent beyond basic RPC.
+   * This allows for explicit capability negotiation and a clearer protocol architecture.
+   */
+  patterns?: {
+    /**
+     * @default false
+     * If true, the agent supports topic-based, many-to-many messaging. It is expected to understand PublishRequest, UnsubscribeRequest,
+     * and SubscribeRequest, and to push EventMessages to subscribers.
+     */
+    pubsub?: boolean;
+    /**
+     * @default false
+     * If true, the agent supports direct, interactive, conversational messaging.
+     * (This formalizes the capability implied by SendMessageRequest or SendStreamingMessageRequest).
+     */
+    conversational?: boolean;
+    /**
+     * @default false
+     * If true, the agent can push status updates for individual tasks via webhooks.
+     * (This formalizes the capability implied by the TaskPushNotification series of requests).
+     */
+    task_webhook?: boolean;
+  }
   /** A list of protocol extensions supported by the agent. */
   extensions?: AgentExtension[];
 }
@@ -697,6 +721,51 @@ export interface MessageSendParams {
 }
 // --8<-- [end:MessageSendParams]
 
+// --8<-- [start:Topic]
+/**
+ * A Topic represents a logical channel for publishing and subscribing to messages.
+ * Topics are case-sensitive strings.
+ */
+export type Topic = string;
+// --8<-- [end:Topic]
+
+// --8<-- [start:PublishParams]
+/**
+ * Defines the parameters for a request to publish a message to a topic. This can be used
+ * to create a new task, continue an existing one, or restart a task. The runtime is responsible for distributing this message
+ * to all current subscribers of the topic.
+ */
+export interface PublishParams {
+  /**
+   * The content of the message. The structure of the payload is contractually defined by the topic itself and is opaque to the
+   * runtime. To promote interoperability, it is highly recommended that this payload conforms to a standard event envelope
+   * format, such as the CloudEvents specification.
+   */
+  payload: unknown;
+  /** The target topic for the message. */
+  topic: Topic;
+  /** Optional metadata for extensions. */
+  metadata?: {
+    [key: string]: any;
+  };
+}
+// --8<-- [end:PublishParams]
+
+// --8<-- [start:SubscribeParams]
+/**
+ * Defines the parameters for a request to subscribe to a set of topics. This can be used
+ * to receive tasks or results.
+ */
+export interface SubscribeParams {
+  /** The target topics to subscribe. */
+  topics: Topic[];
+  /** Optional metadata for extensions. */
+  metadata?: {
+    [key: string]: any;
+  };
+}
+// --8<-- [end:SubscribeParams]
+
 // --8<-- [start:TaskState]
 /**
  * Defines the lifecycle states of a Task.
@@ -1039,7 +1108,10 @@ export type JSONRPCResponse =
   | GetTaskPushNotificationConfigResponse
   | ListTaskPushNotificationConfigResponse
   | DeleteTaskPushNotificationConfigResponse
-  | GetAuthenticatedExtendedCardResponse;
+  | GetAuthenticatedExtendedCardResponse
+  | PublishResponse
+  | SubscribeResponse
+  | UnsubscribeResponse;
 // --8<-- [end:JSONRPCResponse]
 
 // --8<-- [start:SendMessageRequest]
@@ -1396,6 +1468,75 @@ export type GetAuthenticatedExtendedCardResponse =
   | JSONRPCErrorResponse;
 // --8<-- [end:GetAuthenticatedExtendedCardResponse]
 
+// --8<-- [start:PublishRequest]
+/**
+ * Represents a JSON-RPC request for the `publish` method.
+ */
+export interface PublishRequest extends JSONRPCRequest {
+  /** The identifier for this request. */
+  id: number | string;
+  /** The method name. Must be 'publish'. */
+  readonly method: "publish";
+  /** The parameters for publishing a message. */
+  params: PublishParams;
+}
+// --8<-- [end:PublishRequest]
+
+// --8<-- [start:PublishResponse]
+/**
+ * Represents a JSON-RPC response for the `publish` method.
+ */
+export type PublishResponse =
+  | JSONRPCSuccessResponse
+  | JSONRPCErrorResponse;
+// --8<-- [end:PublishResponse]
+
+// --8<-- [start:SubscribeRequest]
+/**
+ * Represents a JSON-RPC request for the `subscribe` method.
+ */
+export interface SubscribeRequest extends JSONRPCRequest {
+  /** The identifier for this request. */
+  id: number | string;
+  /** The method name. Must be 'subscribe'. */
+  readonly method: "subscribe";
+  /** The parameters for subscribing. */
+  params: SubscribeParams;
+}
+// --8<-- [end:SubscribeRequest]
+
+// --8<-- [start:SubscribeResponse]
+/**
+ * Represents a JSON-RPC response for the `subscribe` method.
+ */
+export type SubscribeResponse =
+  | JSONRPCSuccessResponse
+  | JSONRPCErrorResponse;
+// --8<-- [end:SubscribeResponse]
+
+// --8<-- [start:UnsubscribeRequest]
+/**
+ * Represents a JSON-RPC request for the `unsubscribe` method.
+ */
+export interface UnsubscribeRequest extends JSONRPCRequest {
+  /** The identifier for this request. */
+  id: number | string;
+  /** The method name. Must be 'unsubscribe'. */
+  readonly method: "unsubscribe";
+  /** The parameters for unsubscribing. */
+  params: SubscribeParams;
+}
+// --8<-- [end:UnsubscribeRequest]
+
+// --8<-- [start:UnsubscribeResponse]
+/**
+ * Represents a JSON-RPC response for the `unsubscribe` method.
+ */
+export type UnsubscribeResponse =
+  | JSONRPCSuccessResponse
+  | JSONRPCErrorResponse;
+// --8<-- [end:UnsubscribeResponse]
+
 // --8<-- [start:A2ARequest]
 /**
  * A discriminated union representing all possible JSON-RPC 2.0 requests supported by the A2A specification.
@@ -1411,7 +1552,10 @@ export type A2ARequest =
   | TaskResubscriptionRequest
   | ListTaskPushNotificationConfigRequest
   | DeleteTaskPushNotificationConfigRequest
-  | GetAuthenticatedExtendedCardRequest;
+  | GetAuthenticatedExtendedCardRequest
+  | PublishRequest
+  | SubscribeRequest
+  | UnsubscribeRequest;
 // --8<-- [end:A2ARequest]
 
 // --8<-- [start:JSONParseError]
