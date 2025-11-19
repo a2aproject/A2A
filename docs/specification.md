@@ -228,7 +228,7 @@ Extension methods **MUST** be clearly documented and **MUST NOT** conflict with 
 For quick reference, the following table summarizes the method mappings across all transports:
 
 | JSON-RPC Method | gRPC Method | REST Endpoint | Description |
-|:----------------|:------------|:--------------|:------------|
+| :-------------- | :---------- | :------------ | :---------- |
 | `message/send` | `SendMessage` | `POST /v1/message:send` | Send message to agent |
 | `message/stream` | `SendStreamingMessage` | `POST /v1/message:stream` | Send message with streaming |
 | `tasks/get` | `GetTask` | `GET /v1/tasks/{id}` | Get task status |
@@ -836,7 +836,7 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 The following table details specific error conditions that should result in an `InvalidParamsError` (-32602) response:
 
 | Parameter | Invalid Condition | Error Details | Example |
-|-----------|------------------|---------------|---------|
+| --------- | ---------------- | ------------- | ------- |
 | `pageSize` | Value outside 1–100 range | Must be between 1 and 100 inclusive | `pageSize: 0` or `pageSize: 101` |
 | `pageToken` | Malformed token format | Token is not a valid base64-encoded cursor | `pageToken: "invalid!@#"` |
 | `pageToken` | Expired token | Token has exceeded its validity period | `pageToken: "<expired-token>"` |
@@ -1161,15 +1161,15 @@ These are standard codes defined by the JSON-RPC 2.0 specification.
 
 These are custom error codes defined within the JSON-RPC server error range (`-32000` to `-32099`) to provide more specific feedback about A2A-related issues. Servers **SHOULD** use these codes where applicable.
 
-| Code     | Error Name (Conceptual)             | Typical `message` string           | Description                                                                                                                                                                                                                          |
-| :------- | :---------------------------------- | :--------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-32001` | `TaskNotFoundError`                 | Task not found                     | The specified task `id` does not correspond to an existing or active task. It might be invalid, expired, or already completed and purged.                                                                                            |
-| `-32002` | `TaskNotCancelableError`            | Task cannot be canceled            | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`).                                                                    |
-| `-32003` | `PushNotificationNotSupportedError` | Push Notification is not supported | Client attempted to use push notification features (e.g., `tasks/pushNotificationConfig/set`) but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).                              |
-| `-32004` | `UnsupportedOperationError`         | This operation is not supported    | The requested operation or a specific aspect of it (perhaps implied by parameters) is not supported by this server agent implementation. Broader than just method not found.                                                         |
-| `-32005` | `ContentTypeNotSupportedError`      | Incompatible content types         | A [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) provided in the request's `message.parts` (or implied for an artifact) is not supported by the agent or the specific skill being invoked. |
-| `-32006` | `InvalidAgentResponseError`         | Invalid agent response type        | Agent generated an invalid response for the requested method                                                                                                                                                                         |
-| `-32007` | `AuthenticatedExtendedCardNotConfiguredError`         | Authenticated Extended Card not configured        | The agent does not have an Authenticated Extended Card configured.|
+| Code     | Error Name (Conceptual)                       | Typical `message` string                     | Description                                                                                                                                                                                                                          |
+| :------- | :-------------------------------------------- | :------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-32001` | `TaskNotFoundError`                           | Task not found                               | The specified task `id` does not correspond to an existing or active task. It might be invalid, expired, or already completed and purged.                                                                                            |
+| `-32002` | `TaskNotCancelableError`                      | Task cannot be canceled                      | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`).                                                                    |
+| `-32003` | `PushNotificationNotSupportedError`           | Push Notification is not supported           | Client attempted to use push notification features (e.g., `tasks/pushNotificationConfig/set`) but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).                              |
+| `-32004` | `UnsupportedOperationError`                   | This operation is not supported              | The requested operation or a specific aspect of it (perhaps implied by parameters) is not supported by this server agent implementation. Broader than just method not found.                                                         |
+| `-32005` | `ContentTypeNotSupportedError`                | Incompatible content types                   | A [Media Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) provided in the request's `message.parts` (or implied for an artifact) is not supported by the agent or the specific skill being invoked.|
+| `-32006` | `InvalidAgentResponseError`                   | Invalid agent response type                  | Agent generated an invalid response for the requested method                                                                                                                                                                         |
+| `-32007` | `AuthenticatedExtendedCardNotConfiguredError` | Authenticated Extended Card not configured   | The agent does not have an Authenticated Extended Card configured.                                                                                                                                                                   |
 
 Servers MAY define additional error codes within the `-32000` to `-32099` range for more specific scenarios not covered above, but they **SHOULD** document these clearly. The `data` field of the `JSONRPCError` object can be used to provide more structured details for any error.
 
