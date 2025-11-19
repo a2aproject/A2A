@@ -12,7 +12,7 @@
     <h3>Definition</h3>
 
     ```protobuf
-    --8<-- "spec/a2a.proto"
+    --8<-- "docs/spec/a2a.proto"
     ```
 
 === "JSON"
@@ -27,6 +27,6 @@
     <h3>Definition</h3>
 
     ```json
-    --8<-- "spec/a2a.json"
+    --8<-- "docs/spec/a2a.json"
     ```
 

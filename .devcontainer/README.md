@@ -5,16 +5,19 @@ This devcontainer provides a fully configured development environment for the A2
 ## What's Included
 
 ### Build Tools
+
 - **protoc** (v28.3) - Protocol Buffers compiler
 - **protoc-gen-jsonschema** (bufbuild) - JSON Schema generator for protobuf
 - **jq** (latest) - JSON processor
 - **googleapis** - Google API proto definitions
 
 ### Development Tools
+
 - **Python 3.12** with all documentation dependencies
 - **Go** (latest) - for protoc plugin compilation
 
 ### VS Code Extensions
+
 - Python language support with Pylance
 - Buf for Protocol Buffers
 - Code Spell Checker
@@ -66,12 +69,14 @@ To modify the environment:
 ## Troubleshooting
 
 ### Container build fails
+
 ```bash
 # Rebuild without cache
 Dev Containers: Rebuild Container (without cache)
 ```
 
 ### Tools not found after setup
+
 ```bash
 # Re-run setup script manually
 bash .devcontainer/setup.sh
