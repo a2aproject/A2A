@@ -25,7 +25,7 @@ To build the `a2a.json` artifact locally, you'll need several dependencies depen
 <details>
 <summary>macOS/Linux</summary>
 
-#### Prerequisites for macOS/Linux
+### Prerequisites for macOS/Linux
 
 1. **Homebrew (macOS) or apt-get (Debian/Ubuntu)**
    - **macOS**: Install from [brew.sh](https://brew.sh/)
@@ -118,6 +118,7 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    ```
 
 3. **Go programming language** (for protoc-gen-jsonschema plugin)
+
    ```powershell
    # Install via WinGet:
    winget install GoLang.Go
@@ -128,6 +129,7 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    ```
 
 4. **protoc-gen-jsonschema plugin**
+
    ```powershell
    # Install via Go (requires Go to be installed first):
    go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
@@ -137,6 +139,7 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    ```
 
 5. **jq (JSON processor)**
+
    ```powershell
    # Install via WinGet:
    winget install jqlang.jq
@@ -146,6 +149,7 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    ```
 
 6. **Clone googleapis repository**
+
    ```powershell
    # Clone to any location and set environment variable:
    git clone https://github.com/googleapis/googleapis.git C:\path\to\googleapis
@@ -157,6 +161,7 @@ This script handles all necessary steps to generate the `a2a.json` artifact and 
    ```
 
 7. **Python documentation dependencies**
+
    ```powershell
    # Create and activate virtual environment:
    python -m venv .venv-docs

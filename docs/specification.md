@@ -1683,6 +1683,7 @@ A2A-Version: 0.5
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/problem+json
@@ -1718,6 +1719,7 @@ Authorization: Bearer token
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/a2a+json
@@ -1756,6 +1758,7 @@ Authorization: Bearer token
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/a2a+json
@@ -1804,6 +1807,7 @@ Authorization: Bearer token
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/a2a+json
@@ -1836,6 +1840,7 @@ Authorization: Bearer token
 ```
 
 **Response:**
+
 ```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/problem+json
@@ -2004,6 +2009,7 @@ Content-Type: application/a2a+json
 **Scenario:** Client asks for a list of open support tickets in a specific JSON format.
 
 **Request:**
+
 ```http
 POST /v1/message:send HTTP/1.1
 Host: agent.example.com
@@ -2090,9 +2096,10 @@ Host: example.com
 }
 ```
 
-**Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow)**
+### Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow)
 
-**Step 3: Client fetches authenticated extended Agent Card:**
+### Step 3: Client fetches authenticated extended Agent Card
+
 ```http
 GET /v1/extendedAgentCard HTTP/1.1
 Host: agent.example.com
@@ -2521,6 +2528,7 @@ Referenced Objects: [`Task`](#411-task), [`Message`](#414-message), [`TaskArtifa
 Retrieves the current state of a task.
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -2538,6 +2546,7 @@ Retrieves the current state of a task.
 Lists tasks with optional filtering and pagination.
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -2557,6 +2566,7 @@ Lists tasks with optional filtering and pagination.
 Cancels an ongoing task.
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -2603,6 +2613,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 Retrieves an extended Agent Card.
 
 **Request:**
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -2735,11 +2746,13 @@ service A2AService {
 Sends a message to an agent.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:SendMessageRequest"
 ```
 
 **Response:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:SendMessageResponse"
 ```
@@ -2749,6 +2762,7 @@ Sends a message to an agent.
 Sends a message with streaming updates.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:SendMessageRequest"
 ```
@@ -2760,6 +2774,7 @@ Sends a message with streaming updates.
 Retrieves task status.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:GetTaskRequest"
 ```
@@ -2771,11 +2786,13 @@ Retrieves task status.
 Lists tasks with filtering.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:ListTasksRequest"
 ```
 
 **Response:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:ListTasksResponse"
 ```
@@ -2785,6 +2802,7 @@ Lists tasks with filtering.
 Cancels a running task.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:CancelTaskRequest"
 ```
@@ -2796,6 +2814,7 @@ Cancels a running task.
 Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if the task is in a terminal state.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:SubscribeToTaskRequest"
 ```
@@ -2807,6 +2826,7 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 Creates a push notification configuration for a task.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:SetTaskPushNotificationConfigRequest"
 ```
@@ -2818,6 +2838,7 @@ Creates a push notification configuration for a task.
 Retrieves an existing push notification configuration for a task.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:GetTaskPushNotificationConfigRequest"
 ```
@@ -2829,11 +2850,13 @@ Retrieves an existing push notification configuration for a task.
 Lists all push notification configurations for a task.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:ListTaskPushNotificationConfigRequest"
 ```
 
 **Response:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:ListTaskPushNotificationConfigResponse"
 ```
@@ -2843,6 +2866,7 @@ Lists all push notification configurations for a task.
 Removes a push notification configuration for a task.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:DeleteTaskPushNotificationConfigRequest"
 ```
@@ -2854,6 +2878,7 @@ Removes a push notification configuration for a task.
 Retrieves the agent's extended capability card after authentication.
 
 **Request:**
+
 ```proto
 --8<-- "specification/grpc/a2a.proto:GetExtendedAgentCardRequest"
 ```
@@ -2935,11 +2960,9 @@ status {
 }
 ```
 
-
 ### 10.7. Streaming
 
 gRPC streaming uses server streaming RPCs for real-time updates. The `StreamResponse` message provides a union of possible streaming events:
-
 
 ```proto
 --8<-- "specification/grpc/a2a.proto:StreamResponse"
@@ -3015,6 +3038,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 All requests and responses use JSON objects structurally equivalent to the Protocol Buffer definitions.
 
 **Example Send Message:**
+
 ```http
 POST /v1/message:send
 Content-Type: application/json
@@ -3034,6 +3058,7 @@ Content-Type: application/json
 **Referenced Objects:** [`SendMessageRequest`](#321-sendmessagerequest), [`Message`](#414-message)
 
 **Response:**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -3071,11 +3096,13 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 **Usage Examples:**
 
 List tasks with filtering:
+
 ```http
 GET /v1/tasks?contextId=uuid&status=working&pageSize=50&pageToken=cursor
 ```
 
 Get task with history:
+
 ```http
 GET /v1/tasks/{id}?historyLength=10
 ```
@@ -3123,9 +3150,8 @@ Content-Type: application/problem+json
 
 Extension fields like `taskId` and `timestamp` provide additional context to help diagnose the error.
 
-
-
 ### 11.7. Streaming
+
 <span id="stream-response"></span>
 
 REST streaming uses Server-Sent Events with the `data` field containing JSON serializations of the protocol data objects:
@@ -3140,6 +3166,7 @@ Content-Type: application/json
 **Referenced Objects:** [`SendMessageRequest`](#321-sendmessagerequest)
 
 **Response:**
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
@@ -3150,6 +3177,7 @@ data: {"artifactUpdate": { /* TaskArtifactUpdateEvent */ }}
 
 data: {"statusUpdate": { /* TaskStatusUpdateEvent */ }}
 ```
+
 **Referenced Objects:** [`Task`](#411-task), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)
 <span id="4192-taskstatusupdateevent"></span><span id="4193-taskartifactupdateevent"></span>
 Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
@@ -3228,6 +3256,7 @@ Custom bindings **MUST** be declared in the Agent Card:
 3. **Documentation Link**: Include a URL to the complete binding specification
 
 **Example:**
+
 ```json
 {
   "supportedInterfaces": [
@@ -3247,8 +3276,6 @@ Custom binding implementers **SHOULD**:
 2. **Document Differences**: Clearly note any deviations from standard binding behavior
 3. **Provide Examples**: Include sample requests and responses
 4. **Test Edge Cases**: Verify handling of error conditions, large payloads, and long-running tasks
-
-
 
 ## 13. Security Considerations
 
@@ -3416,6 +3443,7 @@ This section provides registration templates for the A2A protocol's media type, 
 **Required parameters:** None
 
 **Optional parameters:**
+
 - None
 
 **Encoding considerations:** Binary (UTF-8 encoding MUST be used for JSON text)
@@ -3433,7 +3461,7 @@ This media type shares security considerations common to all JSON-based formats 
 The A2A protocol supports multiple protocol bindings. This media type is intended for the HTTP+JSON/REST binding.
 
 **Published specification:**
-Agent2Agent (A2A) Protocol Specification, available at: https://a2a-protocol.org/latest/specification
+Agent2Agent (A2A) Protocol Specification, available at: <https://a2a-protocol.org/latest/specification>
 
 **Applications that use this media type:**
 AI agent platforms, agentic workflow systems, multi-agent collaboration tools, and enterprise automation systems that implement the A2A protocol for agent-to-agent communication.
@@ -3448,7 +3476,7 @@ AI agent platforms, agentic workflow systems, multi-agent collaboration tools, a
 - **Macintosh file type code(s):** TEXT
 
 **Person & email address to contact for further information:**
-A2A Protocol Working Group, a2a-protocol@example.org
+A2A Protocol Working Group, <a2a-protocol@example.org>
 
 **Intended usage:** COMMON
 
@@ -3480,7 +3508,8 @@ A2A Protocol Working Group, a2a-protocol@example.org
 The A2A-Version header field indicates the A2A protocol version that the client is using. The value MUST be in the format `Major.Minor` (e.g., "0.3"). If the version is not supported by the agent, the agent returns a `VersionNotSupportedError`.
 
 **Example:**
-```
+
+```text
 A2A-Version: 0.3
 ```
 
@@ -3500,7 +3529,8 @@ A2A-Version: 0.3
 The A2A-Extensions header field contains a comma-separated list of extension URIs that the client wants to use for the request. Extensions allow agents to provide additional functionality beyond the core A2A specification while maintaining backward compatibility.
 
 **Example:**
-```
+
+```text
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
 ```
 
@@ -3526,7 +3556,8 @@ The `.well-known/agent-card.json` URI provides a standardized location for disco
 - Extended Agent Cards retrieved via authenticated endpoints (Section 3.1.11) MAY contain additional information and MUST enforce appropriate access controls
 
 **Example:**
-```
+
+```text
 https://agent.example.com/.well-known/agent-card.json
 ```
 
@@ -3617,6 +3648,7 @@ Server Implementations MAY:
 Objects used an inline `kind` field as a discriminator to identify the object type:
 
 **Example 1 - TextPart:**
+
 ```json
 {
   "kind": "TextPart",
@@ -3625,6 +3657,7 @@ Objects used an inline `kind` field as a discriminator to identify the object ty
 ```
 
 **Example 2 - FilePart:**
+
 ```json
 {
   "kind": "FilePart",
@@ -3638,6 +3671,7 @@ Objects used an inline `kind` field as a discriminator to identify the object ty
 Objects now use the **JSON member name** itself to identify the type. The member name acts as the discriminator, and the value structure depends on the specific type:
 
 **Example 1 - TextPart:**
+
 ```json
 {
   "text": "Hello, world!"
@@ -3645,6 +3679,7 @@ Objects now use the **JSON member name** itself to identify the type. The member
 ```
 
 **Example 2 - FilePart:**
+
 ```json
 {
   "file": {
@@ -3710,8 +3745,8 @@ Once the proto→schema generation pipeline lands, this appendix will be partial
 
 A2A and MCP are complementary protocols designed for different aspects of agentic systems:
 
-- **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/):** Focuses on standardizing how AI models and agents connect to and interact with **tools, APIs, data sources, and other external resources.** It defines structured ways to describe tool capabilities (like function calling in LLMs), pass inputs, and receive structured outputs. Think of MCP as the "how-to" for an agent to _use_ a specific capability or access a resource.
-- **Agent2Agent Protocol (A2A):** Focuses on standardizing how independent, often opaque, **AI agents communicate and collaborate with each other as peers.** A2A provides an application-level protocol for agents to discover each other, negotiate interaction modalities, manage shared tasks, and exchange conversational context or complex results. It's about how agents _partner_ or _delegate_ work.
+- **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/):** Focuses on standardizing how AI models and agents connect to and interact with **tools, APIs, data sources, and other external resources.** It defines structured ways to describe tool capabilities (like function calling in LLMs), pass inputs, and receive structured outputs. Think of MCP as the "how-to" for an agent to *use* a specific capability or access a resource.
+- **Agent2Agent Protocol (A2A):** Focuses on standardizing how independent, often opaque, **AI agents communicate and collaborate with each other as peers.** A2A provides an application-level protocol for agents to discover each other, negotiate interaction modalities, manage shared tasks, and exchange conversational context or complex results. It's about how agents *partner* or *delegate* work.
 
 **How they work together:**
 An A2A Client agent might request an A2A Server agent to perform a complex task. The Server agent, in turn, might use MCP to interact with several underlying tools, APIs, or data sources to gather information or perform actions necessary to fulfill the A2A task.

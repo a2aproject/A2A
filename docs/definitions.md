@@ -7,7 +7,7 @@
 
     <h3>Download</h3>
 
-    You can download the proto file directly: [a2a.proto](spec/a2a.proto)
+    You can download the proto file directly: [`a2a.proto`](spec/a2a.proto)
 
     <h3>Definition</h3>
 
@@ -22,11 +22,10 @@
 
     <h3>Download</h3>
 
-    You can download the schema file directly: [a2a.json](spec/a2a.json)
+    You can download the schema file directly: [`a2a.json`](spec/a2a.json)
 
     <h3>Definition</h3>
 
     ```json
     --8<-- "docs/spec/a2a.json"
     ```
-
