@@ -54,6 +54,8 @@ This decision was made with some reservation due to the dependency on ProtoJSON 
 * Migration effort required for existing implementations
 * **Ugly emums** Developers are not used to seeing enum values in SCREAMING_SNAKE_CASE in JSON, which may lead to confusion or errors during implementation
 * Changes to the ProtoJSON specification for the benefit of gRPC could have an impact on other protocol bindings.
+* Enums require a "unspecified" value even when they are only used for required fields to meet Proto best practices.
+* Certain field names need to have less than optimal names to avoid conflicts with proto keywords. e.g. message.
 
 #### Neutral
 
