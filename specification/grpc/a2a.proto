@@ -34,16 +34,12 @@ service A2AService {
 
   // Get the current state of a task from the agent.
   rpc GetTask(GetTaskRequest) returns (Task) {
-    option (google.api.http) = {
-      get: "/v1/{name=tasks/*}"
-    };
+    option (google.api.http) = {get: "/v1/{name=tasks/*}"};
     option (google.api.method_signature) = "name";
   }
   // List tasks with optional filtering and pagination.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
-    option (google.api.http) = {
-      get: "/v1/tasks"
-    };
+    option (google.api.http) = {get: "/v1/tasks"};
   }
   // Cancel a task.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
@@ -54,16 +50,12 @@ service A2AService {
   }
   // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
   // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
-  rpc SubscribeToTask(SubscribeToTaskRequest)
-      returns (stream StreamResponse) {
-    option (google.api.http) = {
-      get: "/v1/{name=tasks/*}:subscribe"
-    };
+  rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
+    option (google.api.http) = {get: "/v1/{name=tasks/*}:subscribe"};
   }
 
   // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
+  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
@@ -71,33 +63,22 @@ service A2AService {
     option (google.api.method_signature) = "parent,config";
   }
   // Get a push notification config for a task.
-  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
-    option (google.api.http) = {
-      get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
-    };
+  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
+    option (google.api.http) = {get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"};
     option (google.api.method_signature) = "name";
   }
   // Get a list of push notifications configured for a task.
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest)
-      returns (ListTaskPushNotificationConfigResponse) {
-    option (google.api.http) = {
-      get: "/v1/{parent=tasks/*}/pushNotificationConfigs"
-    };
+  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
+    option (google.api.http) = {get: "/v1/{parent=tasks/*}/pushNotificationConfigs"};
     option (google.api.method_signature) = "parent";
   }
   // GetExtendedAgentCard returns the extended agent card for authenticated agents.
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
-    option (google.api.http) = {
-      get: "/v1/extendedAgentCard"
-    };
+    option (google.api.http) = {get: "/v1/extendedAgentCard"};
   }
   // Delete a push notification config for a task.
-  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest)
-      returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
-    };
+  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"};
     option (google.api.method_signature) = "name";
   }
 }
@@ -385,9 +366,8 @@ message AgentInterface {
 // Next ID: 20
 message AgentCard {
   // The version of the A2A protocol this agent supports.
-  string protocol_version = 16;
-  // Scope to be used in ScopedA2AService. Empty for non-scoped.
-  string scope = 19;
+  // Default: "1.0"
+  optional string protocol_version = 16 [(google.api.field_behavior) = REQUIRED];
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -403,11 +383,6 @@ message AgentCard {
   optional string preferred_transport = 14 [deprecated = true];
   // DEPRECATED: Use 'supported_interfaces' instead.
   repeated AgentInterface additional_interfaces = 15 [deprecated = true];
-  // Supported transports (at least one). Client can use any of the these.
-  // This field replaces fields "url", "preferred_transport" and
-  // "additional_interfaces" and is meant to be a sum of them.
-  // If not empty, the other three fields are ignored.
-  repeated AgentInterface supported_interfaces = 20;
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
@@ -688,8 +663,10 @@ message SendMessageRequest {
   // Tenant to handle the request, optional.
   string tenant = 4;
   // The message to send to the agent.
-  Message request = 1
-      [(google.api.field_behavior) = REQUIRED, json_name = "message"];
+  Message request = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    json_name = "message"
+  ];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // Optional metadata for the request.
@@ -794,8 +771,7 @@ message SetTaskPushNotificationConfigRequest {
   // The ID for the new config.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
-  TaskPushNotificationConfig config = 3
-      [(google.api.field_behavior) = REQUIRED];
+  TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:SetTaskPushNotificationConfigRequest]
 
