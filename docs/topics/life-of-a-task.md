@@ -218,7 +218,7 @@ The following example illustrates a typical task flow with a follow-up:
     }
     ```
 
-4. Agent responds with a new image artifact (new task, same context, updated
+4. Agent responds with a new image artifact (new task, same context, same
     artifact name): The agent creates a new task within the same `contextId`. The
     new boat image artifact retains the same name but has a new `artifactId`.
 
