@@ -1866,7 +1866,8 @@ For computing `hash`, the canonical JSON **MUST** include all fields of the arti
 
 **Public key discovery**
 
-Verifiers **SHOULD** obtain the signer’s public key via one of:
+Verifiers **SHOULD** obtain the signer's public key via one of:
+
 - `signature.kid`: a key identifier resolvable in the verifier's trust store
 - `signature.jwks`: an HTTPS URL to a JWKS document (RFC 7517)
 
