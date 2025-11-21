@@ -47,7 +47,7 @@
 
 * [Neutral consequence 1]
 
-## Pros and Cons of the Options
+## [Optional] Pros and Cons of the Options
 
 ### [Option 1]
 
