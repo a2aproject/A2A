@@ -775,6 +775,7 @@ Represents the stateful unit of work being processed by the A2A Server for an A2
 - **`artifacts`** (optional, array of [`Artifact`](#419-artifact)): A set of output artifacts for a Task.
 - **`history`** (optional, array of [`Message`](#414-message)): The history of interactions from a task.
 - **`metadata`** (optional, object): A key/value object to store custom metadata about a task.
+- **`lastUpdated`** (required, string): Timestamp of the last update to the task, in ISO 8601 format (e.g., "2025-10-28T10:30:00Z").
 
 #### 4.1.2. TaskStatus
 
