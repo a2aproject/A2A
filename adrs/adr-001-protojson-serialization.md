@@ -33,7 +33,7 @@ Without a clearly specified approach to JSON serialization from proto definition
 
 The TSC has decided to leverage the ProtoJSON specification as the normative approach to serializing JSON based on the proto definition referenced by the specification. This provides a well-defined, standardized way to convert Protocol Buffer messages to JSON format.
 
-This decisions was made with some reservation due to the dependency on ProtoJSON mechanisms and potential impact on protocol bindings unrelated to protobuf and gRPC. However, the decision is reversible if we identify signficant issues during implementation, at which point we can duplicate the ProtoJSON conventions in the A2A specification where applicable and describe differences as needed.
+This decision was made with some reservation due to the dependency on ProtoJSON mechanisms and potential impact on protocol bindings unrelated to protobuf and gRPC. However, the decision is reversible if we identify significant issues during implementation, at which point we can duplicate the ProtoJSON conventions in the A2A specification where applicable and describe differences as needed.
 
 ### Consequences
 
