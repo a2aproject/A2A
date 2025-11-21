@@ -34,16 +34,12 @@ service A2AService {
 
   // Get the current state of a task from the agent.
   rpc GetTask(GetTaskRequest) returns (Task) {
-    option (google.api.http) = {
-      get: "/v1/{name=tasks/*}"
-    };
+    option (google.api.http) = {get: "/v1/{name=tasks/*}"};
     option (google.api.method_signature) = "name";
   }
   // List tasks with optional filtering and pagination.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
-    option (google.api.http) = {
-      get: "/v1/tasks"
-    };
+    option (google.api.http) = {get: "/v1/tasks"};
   }
   // Cancel a task.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
@@ -54,16 +50,12 @@ service A2AService {
   }
   // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
   // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
-  rpc SubscribeToTask(SubscribeToTaskRequest)
-      returns (stream StreamResponse) {
-    option (google.api.http) = {
-      get: "/v1/{name=tasks/*}:subscribe"
-    };
+  rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
+    option (google.api.http) = {get: "/v1/{name=tasks/*}:subscribe"};
   }
 
   // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
+  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
@@ -71,33 +63,22 @@ service A2AService {
     option (google.api.method_signature) = "parent,config";
   }
   // Get a push notification config for a task.
-  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
-    option (google.api.http) = {
-      get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
-    };
+  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
+    option (google.api.http) = {get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"};
     option (google.api.method_signature) = "name";
   }
   // Get a list of push notifications configured for a task.
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest)
-      returns (ListTaskPushNotificationConfigResponse) {
-    option (google.api.http) = {
-      get: "/v1/{parent=tasks/*}/pushNotificationConfigs"
-    };
+  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
+    option (google.api.http) = {get: "/v1/{parent=tasks/*}/pushNotificationConfigs"};
     option (google.api.method_signature) = "parent";
   }
   // GetExtendedAgentCard returns the extended agent card for authenticated agents.
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
-    option (google.api.http) = {
-      get: "/v1/extendedAgentCard"
-    };
+    option (google.api.http) = {get: "/v1/extendedAgentCard"};
   }
   // Delete a push notification config for a task.
-  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest)
-      returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
-    };
+  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"};
     option (google.api.method_signature) = "name";
   }
 }
@@ -368,6 +349,8 @@ message AgentInterface {
   // supported are JSONRPC, GRPC and HTTP+JSON.
   // Example: "JSONRPC", "GRPC", "HTTP+JSON"
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
+  // Scope to be set in the request when calling the agent.
+  string tenant = 3;
 }
 // --8<-- [end:AgentInterface]
 
@@ -677,9 +660,13 @@ message PasswordOAuthFlow {
 // --8<-- [start:SendMessageRequest]
 // Represents a request for the `message/send` method.
 message SendMessageRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 4;
   // The message to send to the agent.
-  Message request = 1
-      [(google.api.field_behavior) = REQUIRED, json_name = "message"];
+  Message request = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    json_name = "message"
+  ];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // Optional metadata for the request.
@@ -690,6 +677,8 @@ message SendMessageRequest {
 // --8<-- [start:GetTaskRequest]
 // Represents a request for the `tasks/get` method.
 message GetTaskRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -701,6 +690,8 @@ message GetTaskRequest {
 // --8<-- [start:ListTasksRequest]
 // Parameters for listing tasks with optional filtering criteria.
 message ListTasksRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 9;
   // Filter tasks by context ID to get tasks from a specific conversation or session.
   string context_id = 1;
   // Filter tasks by their current status state.
@@ -740,6 +731,8 @@ message ListTasksResponse {
 // --8<-- [start:CancelTaskRequest]
 // Represents a request for the `tasks/cancel` method.
 message CancelTaskRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 2;
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
@@ -748,6 +741,8 @@ message CancelTaskRequest {
 
 // --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 2;
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -757,6 +752,8 @@ message GetTaskPushNotificationConfigRequest {
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
 // Represents a request for the `tasks/pushNotificationConfig/delete` method.
 message DeleteTaskPushNotificationConfigRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 2;
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -766,19 +763,22 @@ message DeleteTaskPushNotificationConfigRequest {
 // --8<-- [start:SetTaskPushNotificationConfigRequest]
 // Represents a request for the `tasks/pushNotificationConfig/set` method.
 message SetTaskPushNotificationConfigRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 4;
   // The parent task resource for this config.
   // Format: tasks/{task_id}
   string parent = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID for the new config.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
-  TaskPushNotificationConfig config = 3
-      [(google.api.field_behavior) = REQUIRED];
+  TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:SetTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 2;
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
@@ -787,6 +787,8 @@ message SubscribeToTaskRequest {
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
+  // Tenant to handle the request, optional.
+  string tenant = 4;
   // The parent task resource.
   // Format: tasks/{task_id}
   string parent = 1;
@@ -800,7 +802,8 @@ message ListTaskPushNotificationConfigRequest {
 
 // --8<-- [start:GetExtendedAgentCardRequest]
 message GetExtendedAgentCardRequest {
-  // Empty. Added to fix linter violation.
+  // Tenant to handle the request, optional.
+  string tenant = 1;
 }
 // --8<-- [end:GetExtendedAgentCardRequest]
 
