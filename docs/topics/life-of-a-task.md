@@ -149,7 +149,7 @@ The following example illustrates a typical task flow with a follow-up:
             {
               "text": "Generate an image of a sailboat on the ocean."
             }
-          ]
+          ],
           "messageId": "msg-user-001"
         }
       }
