@@ -45,7 +45,7 @@ This decisions was made with some reservation due to the dependency on ProtoJSON
 * Reduced ambiguity in JSON representation
 * Built-in handling for proto3 types and conventions
 * Provides well-defined rules for wire-unsafe changes
-* Removes the needs to define data type handling rules for dates and numbers in the A2A specification
+* Removes the need to define data type handling rules for dates and numbers in the A2A specification
 
 #### Negative
 
