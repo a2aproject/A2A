@@ -120,5 +120,5 @@ A2A and [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) are com
 
 - **Model Context Protocol (MCP)**: Provides [agent-to-tool communication](https://cloud.google.com/discover/what-is-model-context-protocol). It's a complementary standard that standardizes how an agent connects to its tools, APIs, and resources to get information.
 - **IBM ACP**: [Incorporated into the A2A Protocol](https://github.com/orgs/i-am-bee/discussions/5)
-- **Cisco agntcy**: A framework for building the internal logic of a single, complex agent system, often with a supervisor/expert structure.
+- **Cisco agntcy**: A framework that provides components to the Internet of Agents with discovery, group communication, identity and observability and leverages A2A and MCP for agent communication and tool calling.
 - **A2A**: Provides agent-to-agent communication. As a universal, decentralized standard, A2A acts as the public internet that allows [ai agents](https://cloud.google.com/discover/what-are-ai-agents)—including those using MCP, or built with frameworks like agntcy—to interoperate, collaborate, and share their findings.

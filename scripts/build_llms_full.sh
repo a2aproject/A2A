@@ -8,12 +8,11 @@ set -e
 OUTPUT_FILE="docs/llms-full.txt"
 DOCS_DIR="docs"
 SPEC_DIR="specification"
-TYPES_DIR="types"
 
 echo "--- Generating consolidated LLM file: ${OUTPUT_FILE} ---"
 
 # Clear the output file to start fresh
->"${OUTPUT_FILE}"
+true >"${OUTPUT_FILE}"
 
 # --- Helper function to append file content with a header ---
 append_file() {
@@ -43,6 +42,5 @@ done
 # --- Process Specification Files ---
 append_file "${SPEC_DIR}/grpc/a2a.proto"
 append_file "${SPEC_DIR}/json/a2a.json"
-append_file "${TYPES_DIR}/src/types.ts"
 
 echo "✅ Consolidated LLM file generated successfully at ${OUTPUT_FILE}"
