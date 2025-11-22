@@ -107,13 +107,13 @@ service A2AService {
 // --8<-- [start:SendMessageConfiguration]
 // Configuration of a send message request.
 message SendMessageConfiguration {
-  // The output modes that the agent is expected to respond with.
+  // A list of media types the client is prepared to accept for response parts. Agents SHOULD use this to tailor their output.
   repeated string accepted_output_modes = 1;
-  // A configuration of a webhook that can be used to receive updates
+  // Configuration for the agent to send push notifications for task updates.
   PushNotificationConfig push_notification_config = 2;
   // The maximum number of messages to include in the history.
   optional int32 history_length = 3;
-  // If true, the message will be blocking until the task is completed.
+  // If true, the operation waits until the task reaches a terminal state before returning. Default is false.
   bool blocking = 4;
 }
 // --8<-- [end:SendMessageConfiguration]
@@ -139,23 +139,22 @@ message Task {
   repeated Message history = 5;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
-  // Optional metadata for extensions. The key is an extension-specific
-  // identifier.
   google.protobuf.Struct metadata = 6;
 }
 // --8<-- [end:Task]
 
 // --8<-- [start:TaskState]
-// The set of states a Task can be in.
+// Defines the possible lifecycle states of a Task.
 enum TaskState {
+  // The task is in an unknown or indeterminate state.
   TASK_STATE_UNSPECIFIED = 0;
-  // Represents the status that acknowledges a task is created
+  // Represents the status that acknowledges a task is created.
   TASK_STATE_SUBMITTED = 1;
-  // Represents the status that a task is actively being processed
+  // Represents the status that a task is actively being processed.
   TASK_STATE_WORKING = 2;
-  // Represents the status a task is finished. This is a terminal state
+  // Represents the status a task is finished. This is a terminal state.
   TASK_STATE_COMPLETED = 3;
-  // Represents the status a task is done but failed. This is a terminal state
+  // Represents the status a task is done but failed. This is a terminal state.
   TASK_STATE_FAILED = 4;
   // Represents the status a task was cancelled before it finished.
   // This is a terminal state.
@@ -225,9 +224,9 @@ message FilePart {
 // --8<-- [end:FilePart]
 
 // --8<-- [start:DataPart]
-// DataPart represents a structured blob. This is most commonly a JSON payload.
+// DataPart represents a structured blob.
 message DataPart {
-  // The structured data content.
+  //  A JSON object containing arbitrary data.
   google.protobuf.Struct data = 1 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:DataPart]
@@ -286,7 +285,7 @@ message Artifact {
   string name = 3;
   // A human readable description of the artifact, optional.
   string description = 4;
-  // The content of the artifact.
+  // The content of the artifact. Must contain at least one part.
   repeated Part parts = 5 [(google.api.field_behavior) = REQUIRED];
   // Optional metadata included with the artifact.
   google.protobuf.Struct metadata = 6;
@@ -365,8 +364,7 @@ message AgentInterface {
   string url = 1 [(google.api.field_behavior) = REQUIRED];
   // The protocol binding supported at this URL. This is an open form string, to be
   // easily extended for other protocol bindings. The core ones officially
-  // supported are JSONRPC, GRPC and HTTP+JSON.
-  // Example: "JSONRPC", "GRPC", "HTTP+JSON"
+  // supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:AgentInterface]
@@ -375,11 +373,6 @@ message AgentInterface {
 // AgentCard is a self-describing manifest for an agent. It provides essential
 // metadata including the agent's identity, capabilities, skills, supported
 // communication methods, and security requirements.
-// AgentCard conveys key information:
-// - Overall details (version, name, description, uses)
-// - Skills; a set of actions/solutions the agent can perform
-// - Default modalities/content types supported by the agent.
-// - Authentication requirements
 // Next ID: 20
 message AgentCard {
   // The version of the A2A protocol this agent supports.
@@ -420,9 +413,9 @@ message AgentCard {
   repeated string default_input_modes = 10 [(google.api.field_behavior) = REQUIRED];
   // The media types supported as outputs from this agent.
   repeated string default_output_modes = 11 [(google.api.field_behavior) = REQUIRED];
-  // Skills represent a unit of ability an agent can perform. This may
-  // somewhat abstract but represents a more focused set of actions that the
-  // agent is highly likely to succeed at.
+  // Skills represent an ability of an agent. It is largely
+  // a descriptive concept but represents a more focused set of behaviors that the
+  // agent is likely to succeed at.
   repeated AgentSkill skills = 12 [(google.api.field_behavior) = REQUIRED];
   // Whether the agent supports providing an extended agent card when authenticated.
   optional bool supports_authenticated_extended_card = 13;
@@ -539,10 +532,15 @@ message Security {
 // See: https://spec.openapis.org/oas/v3.2.0.html#security-scheme-object
 message SecurityScheme {
   oneof scheme {
+    // API key-based authentication.
     APIKeySecurityScheme api_key_security_scheme = 1;
+    // HTTP authentication (Basic, Bearer, etc.).
     HTTPAuthSecurityScheme http_auth_security_scheme = 2;
+    // OAuth 2.0 authentication.
     OAuth2SecurityScheme oauth2_security_scheme = 3;
+    // OpenID Connect authentication.
     OpenIdConnectSecurityScheme open_id_connect_security_scheme = 4;
+    // Mutual TLS authentication.
     MutualTlsSecurityScheme mtls_security_scheme = 5;
   }
 }
@@ -682,7 +680,7 @@ message SendMessageRequest {
       [(google.api.field_behavior) = REQUIRED, json_name = "message"];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
-  // Optional metadata for the request.
+  // A flexible key-value map for passing additional context or parameters.
   google.protobuf.Struct metadata = 3;
 }
 // --8<-- [end:SendMessageRequest]
@@ -815,12 +813,16 @@ message SendMessageResponse {
 // --8<-- [end:SendMessageResponse]
 
 // --8<-- [start:StreamResponse]
-// Response message containing task updates or messages.
+// A wrapper object used in streaming operations to encapsulate different types of response data.
 message StreamResponse {
   oneof payload {
+    // A Task object containing the current state of the task.
     Task task = 1;
+    // A Message object containing a message from the agent.
     Message msg = 2 [json_name = "message"];
+    // An event indicating a task status update.
     TaskStatusUpdateEvent status_update = 3;
+    // An event indicating a task artifact update.
     TaskArtifactUpdateEvent artifact_update = 4;
   }
 }
