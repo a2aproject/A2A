@@ -362,8 +362,7 @@ def _parse_proto_enum_full(content: str) -> Tuple[str, List[Dict[str, str]], str
         if not inside_enum and not enum_ended:
             if stripped.startswith('//'):
                 comment_text = stripped[2:].strip()
-                # Skip protolint directives and region markers
-                if not comment_text.startswith('protolint:') and not comment_text.startswith('--8<--'):
+                if not _should_skip_comment(comment_text):
                     description_lines.append(comment_text)
             elif stripped.startswith('enum '):
                 inside_enum = True
