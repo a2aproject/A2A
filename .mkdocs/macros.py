@@ -130,6 +130,87 @@ def define_env(env):
         return '\n'.join(output)
 
 
+def _should_skip_comment(comment_text: str) -> bool:
+    """Check if a comment line should be skipped (protolint directives, region markers, etc.)."""
+    return (comment_text.startswith('protolint:') or
+            comment_text.startswith('--8<--') or
+            comment_text.startswith('Next ID:'))
+
+
+def _parse_field_definition(field_def: str) -> Optional[Dict[str, any]]:
+    """
+    Parse a single field definition and extract its components.
+
+    Returns:
+        Dict with keys: field_type, field_name, annotations, is_repeated, is_optional, is_required
+        or None if the field definition doesn't match any known pattern
+    """
+    # Check for map type first
+    map_match = re.match(
+        r'map<[\w.]+,\s*([\w.]+)>\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
+        field_def
+    )
+    if map_match:
+        return {
+            'field_type': f'map<{map_match.group(1)}>',
+            'field_name': map_match.group(2),
+            'annotations': map_match.group(4) or '',
+            'is_repeated': False,
+            'is_optional': False,
+            'is_required': 'REQUIRED' in (map_match.group(4) or '')
+        }
+
+    # Check for optional keyword
+    optional_match = re.match(
+        r'optional\s+(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
+        field_def
+    )
+    if optional_match:
+        return {
+            'field_type': optional_match.group(2),
+            'field_name': optional_match.group(3),
+            'annotations': optional_match.group(5) or '',
+            'is_repeated': optional_match.group(1) is not None,
+            'is_optional': True,
+            'is_required': False
+        }
+
+    # Try regular field pattern
+    field_match = re.match(
+        r'(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
+        field_def
+    )
+    if field_match:
+        annotations = field_match.group(5) or ''
+        return {
+            'field_type': field_match.group(2),
+            'field_name': field_match.group(3),
+            'annotations': annotations,
+            'is_repeated': field_match.group(1) is not None,
+            'is_optional': False,
+            'is_required': 'REQUIRED' in annotations
+        }
+
+    return None
+
+
+def _get_display_name(field_name: str, annotations: str) -> str:
+    """Extract display name from json_name annotation or convert from snake_case."""
+    json_name_match = re.search(r'json_name\s*=\s*"([^"]+)"', annotations)
+    if json_name_match:
+        return json_name_match.group(1)
+    return _snake_to_camel_case(field_name)
+
+
+def _determine_required_value(is_required: bool, is_optional: bool) -> str:
+    """Determine the required column value for a field."""
+    if is_required:
+        return 'Yes'
+    elif is_optional:
+        return 'Optional'
+    return 'No'
+
+
 def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], str, Dict[str, List[str]]]:
     """
     Parse proto message content and extract description, fields, and notes.
@@ -157,10 +238,7 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
         if not inside_message and not message_ended:
             if stripped.startswith('//'):
                 comment_text = stripped[2:].strip()
-                # Skip protolint directives, region markers, and Next ID comments
-                if (not comment_text.startswith('protolint:') and
-                    not comment_text.startswith('--8<--') and
-                    not comment_text.startswith('Next ID:')):
+                if not _should_skip_comment(comment_text):
                     description_lines.append(comment_text)
             elif stripped.startswith('message '):
                 inside_message = True
@@ -172,9 +250,7 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
         elif message_ended:
             if stripped.startswith('//'):
                 comment_text = stripped[2:].strip()
-                if (not comment_text.startswith('protolint:') and
-                    not comment_text.startswith('--8<--') and
-                    not comment_text.startswith('Next ID:')):
+                if not _should_skip_comment(comment_text):
                     notes_lines.append(comment_text)
             continue
 
@@ -202,8 +278,7 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
             # Collect comment lines for fields
             if stripped.startswith('//'):
                 comment_text = stripped[2:].strip()
-                # Skip protolint directives and region markers
-                if not comment_text.startswith('protolint:') and not comment_text.startswith('--8<--'):
+                if not _should_skip_comment(comment_text):
                     current_comment.append(comment_text)
             # Parse field definition - handle multi-line definitions
             elif stripped and not stripped.startswith('message') and not stripped.startswith('enum'):
@@ -217,80 +292,29 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
                 if not accumulated_line.endswith(';'):
                     continue
 
-                # Now process the complete field definition
-                field_def = accumulated_line
+                # Parse the complete field definition
+                field_info = _parse_field_definition(accumulated_line)
                 accumulated_line = ''  # Reset for next field
 
-                # Check for map type first
-                map_match = re.match(
-                    r'map<[\w.]+,\s*([\w.]+)>\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
-                    field_def
-                )
-
-                if map_match:
-                    # This is a map field
-                    value_type = map_match.group(1)
-                    field_name = map_match.group(2)
-                    annotations = map_match.group(4) or ''
-                    is_repeated = False
-                    is_optional = False
-                    is_required = 'REQUIRED' in annotations
-                    field_type = f'map<{value_type}>'  # Special marker for map type
-                else:
-                    # Check for optional keyword
-                    optional_match = re.match(
-                        r'optional\s+(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
-                        field_def
-                    )
-
-                    if optional_match:
-                        # This is an optional field
-                        is_repeated = optional_match.group(1) is not None
-                        field_type = optional_match.group(2)
-                        field_name = optional_match.group(3)
-                        annotations = optional_match.group(5) or ''
-                        is_optional = True
-                        is_required = False
-                    else:
-                        # Try regular field pattern
-                        field_match = re.match(
-                            r'(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
-                            field_def
-                        )
-
-                        if field_match:
-                            is_repeated = field_match.group(1) is not None
-                            field_type = field_match.group(2)
-                            field_name = field_match.group(3)
-                            annotations = field_match.group(5) or ''
-                            is_optional = False
-                            # Check if field is required via annotation
-                            is_required = 'REQUIRED' in annotations
-                        else:
-                            field_match = None
-                            map_match = None
-
-                if map_match or optional_match or field_match:
+                if field_info:
                     # Convert proto type to readable format
-                    readable_type = _format_proto_type(field_type, is_repeated)
+                    readable_type = _format_proto_type(
+                        field_info['field_type'],
+                        field_info['is_repeated']
+                    )
 
                     # Join comment lines
                     description = ' '.join(current_comment) if current_comment else ''
 
-                    # Determine required column value
-                    if is_required:
-                        required_value = 'Yes'
-                    elif is_optional:
-                        required_value = 'Optional'
-                    else:
-                        required_value = 'No'
-
-                    # Check for json_name in annotations
-                    json_name_match = re.search(r'json_name\s*=\s*"([^"]+)"', annotations)
-                    if json_name_match:
-                        display_name = json_name_match.group(1)
-                    else:
-                        display_name = _snake_to_camel_case(field_name)
+                    # Get display name and required value
+                    display_name = _get_display_name(
+                        field_info['field_name'],
+                        field_info['annotations']
+                    )
+                    required_value = _determine_required_value(
+                        field_info['is_required'],
+                        field_info['is_optional']
+                    )
 
                     fields.append({
                         'name': display_name,
