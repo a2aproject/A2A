@@ -49,7 +49,7 @@ def define_env(env):
         message_content = match.group(1)
 
         # Extract description (before message), fields, and notes (after message)
-        description, fields, notes = _parse_proto_message_full(message_content)
+        description, fields, notes, oneof_groups = _parse_proto_message_full(message_content)
 
         if not fields:
             return f"**Error:** No fields found in message '{message_name}'"
@@ -62,6 +62,14 @@ def define_env(env):
             output.append('')  # Empty line
 
         output.append(_generate_markdown_table(fields))
+
+        # Add oneof notes after the table
+        if oneof_groups:
+            output.append('')  # Empty line
+            for oneof_name, oneof_fields in oneof_groups.items():
+                if len(oneof_fields) > 1:
+                    field_list = ', '.join(f'`{field}`' for field in oneof_fields)
+                    output.append(f'**Note:** A {message_name} MUST contain exactly one of the following: {field_list}')
 
         if notes:
             output.append('')  # Empty line
@@ -122,20 +130,25 @@ def define_env(env):
         return '\n'.join(output)
 
 
-def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], str]:
+def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], str, Dict[str, List[str]]]:
     """
     Parse proto message content and extract description, fields, and notes.
 
     Returns:
-        Tuple of (description_before, fields, notes_after)
+        Tuple of (description_before, fields, notes_after, oneof_groups)
+        where oneof_groups is a dict mapping oneof names to lists of field names
     """
     fields = []
+    oneof_groups = {}
     lines = content.split('\n')
     current_comment = []
     description_lines = []
     notes_lines = []
     inside_message = False
     message_ended = False
+    inside_oneof = False
+    current_oneof_name = None
+    accumulated_line = ''
 
     for line in lines:
         stripped = line.strip()
@@ -144,8 +157,10 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
         if not inside_message and not message_ended:
             if stripped.startswith('//'):
                 comment_text = stripped[2:].strip()
-                # Skip protolint directives and region markers
-                if not comment_text.startswith('protolint:') and not comment_text.startswith('--8<--'):
+                # Skip protolint directives, region markers, and Next ID comments
+                if (not comment_text.startswith('protolint:') and
+                    not comment_text.startswith('--8<--') and
+                    not comment_text.startswith('Next ID:')):
                     description_lines.append(comment_text)
             elif stripped.startswith('message '):
                 inside_message = True
@@ -157,15 +172,31 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
         elif message_ended:
             if stripped.startswith('//'):
                 comment_text = stripped[2:].strip()
-                if not comment_text.startswith('protolint:') and not comment_text.startswith('--8<--'):
+                if (not comment_text.startswith('protolint:') and
+                    not comment_text.startswith('--8<--') and
+                    not comment_text.startswith('Next ID:')):
                     notes_lines.append(comment_text)
             continue
 
         # Process content inside the message
         elif inside_message:
             # Check if message has ended
-            if stripped == '}':
+            if stripped == '}' and not inside_oneof:
                 message_ended = True
+                continue
+
+            # Check for end of oneof block
+            if stripped == '}' and inside_oneof:
+                inside_oneof = False
+                current_oneof_name = None
+                continue
+
+            # Check for start of oneof block
+            oneof_match = re.match(r'oneof\s+([\w_]+)\s*{', stripped)
+            if oneof_match:
+                inside_oneof = True
+                current_oneof_name = oneof_match.group(1)
+                oneof_groups[current_oneof_name] = []
                 continue
 
             # Collect comment lines for fields
@@ -174,41 +205,72 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
                 # Skip protolint directives and region markers
                 if not comment_text.startswith('protolint:') and not comment_text.startswith('--8<--'):
                     current_comment.append(comment_text)
-            # Parse field definition
+            # Parse field definition - handle multi-line definitions
             elif stripped and not stripped.startswith('message') and not stripped.startswith('enum'):
-                # Check for optional keyword
-                optional_match = re.match(
-                    r'optional\s+(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
-                    stripped
+                # Accumulate line if it doesn't end with semicolon
+                if accumulated_line:
+                    accumulated_line += ' ' + stripped
+                else:
+                    accumulated_line = stripped
+
+                # Process only when we have a complete field definition (ends with semicolon)
+                if not accumulated_line.endswith(';'):
+                    continue
+
+                # Now process the complete field definition
+                field_def = accumulated_line
+                accumulated_line = ''  # Reset for next field
+
+                # Check for map type first
+                map_match = re.match(
+                    r'map<[\w.]+,\s*([\w.]+)>\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
+                    field_def
                 )
 
-                if optional_match:
-                    # This is an optional field
-                    is_repeated = optional_match.group(1) is not None
-                    field_type = optional_match.group(2)
-                    field_name = optional_match.group(3)
-                    annotations = optional_match.group(5) or ''
-                    is_optional = True
-                    is_required = False
+                if map_match:
+                    # This is a map field
+                    value_type = map_match.group(1)
+                    field_name = map_match.group(2)
+                    annotations = map_match.group(4) or ''
+                    is_repeated = False
+                    is_optional = False
+                    is_required = 'REQUIRED' in annotations
+                    field_type = f'map<{value_type}>'  # Special marker for map type
                 else:
-                    # Try regular field pattern
-                    field_match = re.match(
-                        r'(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
-                        stripped
+                    # Check for optional keyword
+                    optional_match = re.match(
+                        r'optional\s+(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
+                        field_def
                     )
 
-                    if field_match:
-                        is_repeated = field_match.group(1) is not None
-                        field_type = field_match.group(2)
-                        field_name = field_match.group(3)
-                        annotations = field_match.group(5) or ''
-                        is_optional = False
-                        # Check if field is required via annotation
-                        is_required = 'REQUIRED' in annotations
+                    if optional_match:
+                        # This is an optional field
+                        is_repeated = optional_match.group(1) is not None
+                        field_type = optional_match.group(2)
+                        field_name = optional_match.group(3)
+                        annotations = optional_match.group(5) or ''
+                        is_optional = True
+                        is_required = False
                     else:
-                        field_match = None
+                        # Try regular field pattern
+                        field_match = re.match(
+                            r'(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
+                            field_def
+                        )
 
-                if optional_match or field_match:
+                        if field_match:
+                            is_repeated = field_match.group(1) is not None
+                            field_type = field_match.group(2)
+                            field_name = field_match.group(3)
+                            annotations = field_match.group(5) or ''
+                            is_optional = False
+                            # Check if field is required via annotation
+                            is_required = 'REQUIRED' in annotations
+                        else:
+                            field_match = None
+                            map_match = None
+
+                if map_match or optional_match or field_match:
                     # Convert proto type to readable format
                     readable_type = _format_proto_type(field_type, is_repeated)
 
@@ -223,36 +285,35 @@ def _parse_proto_message_full(content: str) -> Tuple[str, List[Dict[str, str]], 
                     else:
                         required_value = 'No'
 
+                    # Check for json_name in annotations
+                    json_name_match = re.search(r'json_name\s*=\s*"([^"]+)"', annotations)
+                    if json_name_match:
+                        display_name = json_name_match.group(1)
+                    else:
+                        display_name = _snake_to_camel_case(field_name)
+
                     fields.append({
-                        'name': _snake_to_camel_case(field_name),
+                        'name': display_name,
                         'type': readable_type,
                         'required': required_value,
                         'description': description
                     })
 
+                    # Track oneof fields
+                    if inside_oneof and current_oneof_name:
+                        oneof_groups[current_oneof_name].append(display_name)
+
                     # Reset comment buffer
                     current_comment = []
                 else:
-                    # Check for oneof blocks
-                    oneof_match = re.match(r'oneof\s+([\w_]+)\s*{', stripped)
-                    if not oneof_match:
+                    # Reset comment buffer if not a field
+                    if not inside_oneof:
                         current_comment = []
 
     description = ' '.join(description_lines).strip()
     notes = ' '.join(notes_lines).strip()
 
-    return description, fields, notes
-
-
-def _parse_proto_message(content: str) -> List[Dict[str, str]]:
-    """
-    Parse proto message content and extract field information.
-
-    Returns:
-        List of field dictionaries with 'name', 'type', 'required', and 'description'
-    """
-    _, fields, _ = _parse_proto_message_full(content)
-    return fields
+    return description, fields, notes, oneof_groups
 
 
 def _parse_proto_enum_full(content: str) -> Tuple[str, List[Dict[str, str]], str]:
@@ -331,21 +392,27 @@ def _parse_proto_enum_full(content: str) -> Tuple[str, List[Dict[str, str]], str
     return description, values, notes
 
 
-def _parse_proto_enum(content: str) -> List[Dict[str, str]]:
-    """
-    Parse proto enum content and extract value information.
-
-    Returns:
-        List of value dictionaries with 'name' and 'description'
-    """
-    _, values, _ = _parse_proto_enum_full(content)
-    return values
-
-
 def _format_proto_type(proto_type: str, is_repeated: bool) -> str:
     """
     Format proto type to a more readable format.
     """
+    # Check for map type first
+    map_match = re.match(r'map<(.+)>', proto_type)
+    if map_match:
+        value_type = map_match.group(1)
+        # Map proto types to readable types for the value
+        type_map = {
+            'string': 'string',
+            'int32': 'integer',
+            'int64': 'integer',
+            'bool': 'boolean',
+            'bytes': 'bytes',
+            'google.protobuf.Struct': 'object',
+            'google.protobuf.Timestamp': 'timestamp',
+        }
+        readable_value_type = type_map.get(value_type, value_type)
+        return f'map of {readable_value_type}'
+
     # Map proto types to readable types
     type_map = {
         'string': 'string',

@@ -485,8 +485,6 @@ The `blocking` field has no effect:
 
 {{ proto_to_table("specification/grpc/a2a.proto", "StreamResponse") }}
 
-**Note:** Exactly one of the following fields must be present: `task`, `message`, `taskStatusUpdateEvent`, or `taskArtifactUpdateEvent`.
-
 This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.
 
 #### 3.2.4. History Length Semantics
@@ -507,7 +505,7 @@ A key-value map for passing horizontally applicable context or parameters with c
 
 **Standard A2A Service Parameters:**
 
-| Header Name      | Description                                                                                                                                             | Example Value                                                                                 |
+| Name      | Description                                                                                                                                             | Example Value                                                                                 |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
 | `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
 | `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
@@ -757,13 +755,9 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 {{ proto_to_table("specification/grpc/a2a.proto", "Part") }}
 
-**Note:** A Part contains exactly one of the following content types: `text`, `file`, or `data`.
-
 #### 4.1.7. FilePart
 
 {{ proto_to_table("specification/grpc/a2a.proto", "FilePart") }}
-
-**Note:** A FilePart contains exactly one of the following: `fileWithUri` or `fileWithBytes`.
 
 #### 4.1.8. DataPart
 
@@ -800,9 +794,6 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 {{ proto_to_table("specification/grpc/a2a.proto", "PushNotificationAuthenticationInfo") }}
 
 #### 4.3.3. Push Notification Payload
-
-<parameter name="id">update-push-notification-payload-section-number
-<span id="434-push-notification-payload"></span>
 
 When a task update occurs, the agent sends an HTTP POST request to the configured webhook URL. The payload uses the same [`StreamResponse`](#323-stream-response) format as streaming operations, allowing push notifications to deliver the same event types as real-time streams.
 
@@ -891,50 +882,43 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 #### 4.5.2. APIKeySecurityScheme
 
-API key-based authentication scheme.
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`location`** (required, string): The location of the API key. Valid values are "query", "header", or "cookie".
-- **`name`** (required, string): The name of the header, query, or cookie parameter to be used.
+{{ proto_to_table("specification/grpc/a2a.proto", "APIKeySecurityScheme") }}
 
 #### 4.5.3. HTTPAuthSecurityScheme
 
-HTTP authentication scheme (Basic, Bearer, etc.).
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`scheme`** (required, string): The name of the HTTP Authentication scheme to be used in the Authorization header, as defined in RFC7235 (e.g., "Bearer"). This value should be registered in the IANA Authentication Scheme registry.
-- **`bearerFormat`** (optional, string): A hint to the client to identify how the bearer token is formatted (e.g., "JWT"). This is primarily for documentation purposes.
+{{ proto_to_table("specification/grpc/a2a.proto", "HTTPAuthSecurityScheme") }}
 
 #### 4.5.4. OAuth2SecurityScheme
 
-OAuth 2.0 authentication scheme.
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`flows`** (required, OAuthFlows): An object containing configuration information for the supported OAuth 2.0 flows.
-- **`oauth2MetadataUrl`** (optional, string): URL to the OAuth2 authorization server metadata per RFC8414. TLS is required.
+{{ proto_to_table("specification/grpc/a2a.proto", "OAuth2SecurityScheme") }}
 
 #### 4.5.5. OpenIdConnectSecurityScheme
 
-OpenID Connect authentication scheme.
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`openIdConnectUrl`** (required, string): The OpenID Connect Discovery URL for the OIDC provider's metadata.
+{{ proto_to_table("specification/grpc/a2a.proto", "OpenIdConnectSecurityScheme") }}
 
 #### 4.5.6. MutualTLSSecurityScheme
 
-Mutual TLS authentication scheme.
+{{ proto_to_table("specification/grpc/a2a.proto", "MutualTlsSecurityScheme") }}
 
-**Fields:**
+#### 4.5.7. OAuthFlows
 
-- **`description`** (optional, string): An optional description for the security scheme.
+{{ proto_to_table("specification/grpc/a2a.proto", "OAuthFlows") }}
+
+#### 4.5.8. AuthorizationCodeOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "AuthorizationCodeOAuthFlow") }}
+
+#### 4.5.9. ClientCredentialsOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "ClientCredentialsOAuthFlow") }}
+
+#### 4.5.10. ImplicitOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "ImplicitOAuthFlow") }}
+
+#### 4.5.11. PasswordOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "PasswordOAuthFlow") }}
 
 ### 4.6. Extensions
 
