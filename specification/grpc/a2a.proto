@@ -42,7 +42,8 @@ service A2AService {
   // List tasks with optional filtering and pagination.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
-      get: "/v1/tasks"
+      post: "/v1/tasks:list"
+      body: "*"
     };
   }
   // Cancel a task.
