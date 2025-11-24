@@ -420,23 +420,6 @@ def _format_proto_type(proto_type: str, is_repeated: bool) -> str:
     """
     Format proto type to a more readable format.
     """
-    # Check for map type first
-    map_match = re.match(r'map<(.+)>', proto_type)
-    if map_match:
-        value_type = map_match.group(1)
-        # Map proto types to readable types for the value
-        type_map = {
-            'string': 'string',
-            'int32': 'integer',
-            'int64': 'integer',
-            'bool': 'boolean',
-            'bytes': 'bytes',
-            'google.protobuf.Struct': 'object',
-            'google.protobuf.Timestamp': 'timestamp',
-        }
-        readable_value_type = type_map.get(value_type, value_type)
-        return f'map of {readable_value_type}'
-
     # Map proto types to readable types
     type_map = {
         'string': 'string',
@@ -448,12 +431,19 @@ def _format_proto_type(proto_type: str, is_repeated: bool) -> str:
         'google.protobuf.Timestamp': 'timestamp',
     }
 
+    # Check for map type first
+    map_match = re.match(r'map<(.+)>', proto_type)
+    if map_match:
+        value_type = map_match.group(1)
+        readable_value_type = type_map.get(value_type, value_type)
+        return f'map of `{readable_value_type}`'
+
     readable_type = type_map.get(proto_type, proto_type)
 
     if is_repeated:
-        return f'array of {readable_type}'
+        return f'array of `{readable_type}`'
 
-    return readable_type
+    return f'`{readable_type}`'
 
 
 def _snake_to_camel_case(snake_str: str) -> str:
