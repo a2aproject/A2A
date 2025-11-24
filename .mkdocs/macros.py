@@ -162,15 +162,15 @@ def _parse_field_definition(field_def: str) -> Optional[Dict[str, any]]:
 
     # Check for optional keyword
     optional_match = re.match(
-        r'optional\s+(repeated\s+)?([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)\])?;',
+        r'optional\s+([\w.]+)\s+([\w_]+)\s*=\s*\d+(\s*\[(.*?)])?;',
         field_def
     )
     if optional_match:
         return {
-            'field_type': optional_match.group(2),
-            'field_name': optional_match.group(3),
-            'annotations': optional_match.group(5) or '',
-            'is_repeated': optional_match.group(1) is not None,
+            'field_type': optional_match.group(1),
+            'field_name': optional_match.group(2),
+            'annotations': optional_match.group(4) or '',
+            'is_repeated': False,
             'is_optional': True,
             'is_required': False
         }
@@ -362,8 +362,7 @@ def _parse_proto_enum_full(content: str) -> Tuple[str, List[Dict[str, str]], str
         if not inside_enum and not enum_ended:
             if stripped.startswith('//'):
                 comment_text = stripped[2:].strip()
-                # Skip protolint directives and region markers
-                if not comment_text.startswith('protolint:') and not comment_text.startswith('--8<--'):
+                if not _should_skip_comment(comment_text):
                     description_lines.append(comment_text)
             elif stripped.startswith('enum '):
                 inside_enum = True
