@@ -10,6 +10,15 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 
+def _is_primitive_type(proto_type: str) -> bool:
+    """Check if a proto type is a primitive type that shouldn't be linked."""
+    primitive_types = {
+        'string', 'int32', 'int64', 'bool', 'bytes',
+        'google.protobuf.Struct', 'google.protobuf.Timestamp'
+    }
+    return proto_type in primitive_types
+
+
 def define_env(env):
     """
     Define custom macros for MkDocs.
@@ -417,7 +426,8 @@ def _parse_proto_enum_full(content: str) -> Tuple[str, List[Dict[str, str]], str
 
 def _format_proto_type(proto_type: str, is_repeated: bool) -> str:
     """
-    Format proto type to a more readable format.
+    Format proto type to a more readable format with links to specification.
+    Non-primitive types are automatically linked to their anchor in specification.md.
     """
     # Map proto types to readable types
     type_map = {
@@ -435,14 +445,25 @@ def _format_proto_type(proto_type: str, is_repeated: bool) -> str:
     if map_match:
         value_type = map_match.group(1)
         readable_value_type = type_map.get(value_type, value_type)
-        return f'map of `{readable_value_type}`'
+        # Create link for non-primitive types
+        if not _is_primitive_type(value_type):
+            readable_value_type = f'[`{readable_value_type}`](#{value_type})'
+        else:
+            readable_value_type = f'`{readable_value_type}`'
+        return f'map of {readable_value_type}'
 
     readable_type = type_map.get(proto_type, proto_type)
 
-    if is_repeated:
-        return f'array of `{readable_type}`'
+    # Create link for non-primitive types
+    if not _is_primitive_type(proto_type):
+        formatted_type = f'[`{readable_type}`](#{proto_type})'
+    else:
+        formatted_type = f'`{readable_type}`'
 
-    return f'`{readable_type}`'
+    if is_repeated:
+        return f'array of {formatted_type}'
+
+    return formatted_type
 
 
 def _snake_to_camel_case(snake_str: str) -> str:

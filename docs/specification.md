@@ -725,43 +725,55 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 ### 4.1. Core Objects
 
+<a id="Task"></a>
+
 #### 4.1.1. Task
 
-<span id="61-task-object"></span>
-
 {{ proto_to_table("specification/grpc/a2a.proto", "Task") }}
+
+<a id="TaskStatus"></a>
 
 #### 4.1.2. TaskStatus
 
 {{ proto_to_table("specification/grpc/a2a.proto", "TaskStatus") }}
 
-#### 4.1.3. TaskState
+<a id="TaskState"></a>
 
-<span id="63-taskstate-enum"></span>
+#### 4.1.3. TaskState
 
 {{ proto_enum_to_table("specification/grpc/a2a.proto", "TaskState") }}
 
+<a id="Message"></a>
+
 #### 4.1.4. Message
 
-<span id="4241-messagesendconfiguration"></span>
-
 {{ proto_to_table("specification/grpc/a2a.proto", "Message") }}
+
+<a id="Role"></a>
 
 #### 4.1.5. Role
 
 {{ proto_enum_to_table("specification/grpc/a2a.proto", "Role") }}
 
+<a id="Part"></a>
+
 #### 4.1.6. Part
 
 {{ proto_to_table("specification/grpc/a2a.proto", "Part") }}
+
+<a id="FilePart"></a>
 
 #### 4.1.7. FilePart
 
 {{ proto_to_table("specification/grpc/a2a.proto", "FilePart") }}
 
+<a id="DataPart"></a>
+
 #### 4.1.8. DataPart
 
 {{ proto_to_table("specification/grpc/a2a.proto", "DataPart") }}
+
+<a id="Artifact"></a>
 
 #### 4.1.9. Artifact
 
@@ -769,25 +781,27 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 ### 4.2. Streaming Events
 
-#### 4.2.1. TaskStatusUpdateEvent
+<a id="TaskStatusUpdateEvent"></a>
 
-<span id="4192-taskstatusupdateevent"></span><span id="722-taskstatusupdateevent-object"></span>
+#### 4.2.1. TaskStatusUpdateEvent
 
 {{ proto_to_table("specification/grpc/a2a.proto", "TaskStatusUpdateEvent") }}
 
-#### 4.2.2. TaskArtifactUpdateEvent
+<a id="TaskArtifactUpdateEvent"></a>
 
-<span id="4193-taskartifactupdateevent"></span><span id="723-taskartifactupdateevent-object"></span>
+#### 4.2.2. TaskArtifactUpdateEvent
 
 {{ proto_to_table("specification/grpc/a2a.proto", "TaskArtifactUpdateEvent") }}
 
 ### 4.3. Push Notification Objects
 
+<a id="PushNotificationConfig"></a>
+
 #### 4.3.1. PushNotificationConfig
 
-<span id="68-pushnotificationconfig-object"></span><span id="431-pushnotificationconfig"></span>
-
 {{ proto_to_table("specification/grpc/a2a.proto", "PushNotificationConfig") }}
+
+<a id="PushNotificationAuthenticationInfo"></a>
 
 #### 4.3.2. AuthenticationInfo
 
@@ -844,31 +858,43 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 ### 4.4. Agent Discovery Objects
 
+<a id="AgentCard"></a>
+
 #### 4.4.1. AgentCard
 
-<span id="710-agentgetauthenticatedextendedcard"></span><span id="421-agentcard"></span>
-
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentCard") }}
+
+<a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentProvider") }}
 
+<a id="AgentCapabilities"></a>
+
 #### 4.4.3. AgentCapabilities
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentCapabilities") }}
+
+<a id="AgentExtension"></a>
 
 #### 4.4.4. AgentExtension
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentExtension") }}
 
+<a id="AgentSkill"></a>
+
 #### 4.4.5. AgentSkill
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentSkill") }}
 
+<a id="AgentInterface"></a>
+
 #### 4.4.6. AgentInterface
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentInterface") }}
+
+<a id="AgentCardSignature"></a>
 
 #### 4.4.7. AgentCardSignature
 
@@ -876,45 +902,67 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 ### 4.5. Security Objects
 
+<a id="SecurityScheme"></a>
+
 #### 4.5.1. SecurityScheme
 
 {{ proto_to_table("specification/grpc/a2a.proto", "SecurityScheme") }}
+
+<a id="APIKeySecurityScheme"></a>
 
 #### 4.5.2. APIKeySecurityScheme
 
 {{ proto_to_table("specification/grpc/a2a.proto", "APIKeySecurityScheme") }}
 
+<a id="HTTPAuthSecurityScheme"></a>
+
 #### 4.5.3. HTTPAuthSecurityScheme
 
 {{ proto_to_table("specification/grpc/a2a.proto", "HTTPAuthSecurityScheme") }}
+
+<a id="OAuth2SecurityScheme"></a>
 
 #### 4.5.4. OAuth2SecurityScheme
 
 {{ proto_to_table("specification/grpc/a2a.proto", "OAuth2SecurityScheme") }}
 
+<a id="OpenIdConnectSecurityScheme"></a>
+
 #### 4.5.5. OpenIdConnectSecurityScheme
 
 {{ proto_to_table("specification/grpc/a2a.proto", "OpenIdConnectSecurityScheme") }}
+
+<a id="MutualTlsSecurityScheme"></a>
 
 #### 4.5.6. MutualTLSSecurityScheme
 
 {{ proto_to_table("specification/grpc/a2a.proto", "MutualTlsSecurityScheme") }}
 
+<a id="OAuthFlows"></a>
+
 #### 4.5.7. OAuthFlows
 
 {{ proto_to_table("specification/grpc/a2a.proto", "OAuthFlows") }}
+
+<a id="AuthorizationCodeOAuthFlow"></a>
 
 #### 4.5.8. AuthorizationCodeOAuthFlow
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AuthorizationCodeOAuthFlow") }}
 
+<a id="ClientCredentialsOAuthFlow"></a>
+
 #### 4.5.9. ClientCredentialsOAuthFlow
 
 {{ proto_to_table("specification/grpc/a2a.proto", "ClientCredentialsOAuthFlow") }}
 
+<a id="ImplicitOAuthFlow"></a>
+
 #### 4.5.10. ImplicitOAuthFlow
 
 {{ proto_to_table("specification/grpc/a2a.proto", "ImplicitOAuthFlow") }}
+
+<a id="PasswordOAuthFlow"></a>
 
 #### 4.5.11. PasswordOAuthFlow
 
