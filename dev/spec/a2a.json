@@ -69,7 +69,7 @@
     "Agent Card": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "AgentCard is a self-describing manifest for an agent. It provides essential\n metadata including the agent's identity, capabilities, skills, supported\n communication methods, and security requirements.\n AgentCard conveys key information:\n - Overall details (version, name, description, uses)\n - Skills; a set of actions/solutions the agent can perform\n - Default modalities/content types supported by the agent.\n - Authentication requirements\n Next ID: 20",
+      "description": "AgentCard is a self-describing manifest for an agent. It provides essential\n metadata including the agent's identity, capabilities, skills, supported\n communication methods, and security requirements.\n Next ID: 20",
       "patternProperties": {
         "^(additional_interfaces)$": {
           "description": "DEPRECATED: Use 'supported_interfaces' instead.",
@@ -211,7 +211,7 @@
           "type": "array"
         },
         "skills": {
-          "description": "Skills represent a unit of ability an agent can perform. This may\n somewhat abstract but represents a more focused set of actions that the\n agent is highly likely to succeed at.",
+          "description": "Skills represent an ability of an agent. It is largely\n a descriptive concept but represents a more focused set of behaviors that the\n agent is likely to succeed at.",
           "items": {
             "$ref": "a2a.v1.AgentSkill.jsonschema.json"
           },
@@ -299,14 +299,14 @@
       "patternProperties": {
         "^(protocol_binding)$": {
           "default": "",
-          "description": "The protocol binding supported at this URL. This is an open form string, to be\n easily extended for other protocol bindings. The core ones officially\n supported are JSONRPC, GRPC and HTTP+JSON.\n Example: \"JSONRPC\", \"GRPC\", \"HTTP+JSON\"",
+          "description": "The protocol binding supported at this URL. This is an open form string, to be\n easily extended for other protocol bindings. The core ones officially\n supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.",
           "type": "string"
         }
       },
       "properties": {
         "protocolBinding": {
           "default": "",
-          "description": "The protocol binding supported at this URL. This is an open form string, to be\n easily extended for other protocol bindings. The core ones officially\n supported are JSONRPC, GRPC and HTTP+JSON.\n Example: \"JSONRPC\", \"GRPC\", \"HTTP+JSON\"",
+          "description": "The protocol binding supported at this URL. This is an open form string, to be\n easily extended for other protocol bindings. The core ones officially\n supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.",
           "type": "string"
         },
         "url": {
@@ -451,7 +451,7 @@
           "type": "string"
         },
         "parts": {
-          "description": "The content of the artifact.",
+          "description": "The content of the artifact. Must contain at least one part.",
           "items": {
             "$ref": "a2a.v1.Part.jsonschema.json"
           },
@@ -591,11 +591,11 @@
     "Data Part": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "DataPart represents a structured blob. This is most commonly a JSON payload.",
+      "description": "DataPart represents a structured blob.",
       "properties": {
         "data": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "The structured data content."
+          "description": "A JSON object containing arbitrary data."
         }
       },
       "title": "Data Part",
@@ -1438,36 +1438,46 @@
       "description": "Defines a security scheme that can be used to secure an agent's endpoints.\n This is a discriminated union type based on the OpenAPI 3.2 Security Scheme Object.\n See: https://spec.openapis.org/oas/v3.2.0.html#security-scheme-object",
       "patternProperties": {
         "^(api_key_security_scheme)$": {
-          "$ref": "a2a.v1.APIKeySecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.APIKeySecurityScheme.jsonschema.json",
+          "description": "API key-based authentication."
         },
         "^(http_auth_security_scheme)$": {
-          "$ref": "a2a.v1.HTTPAuthSecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.HTTPAuthSecurityScheme.jsonschema.json",
+          "description": "HTTP authentication (Basic, Bearer, etc.)."
         },
         "^(mtls_security_scheme)$": {
-          "$ref": "a2a.v1.MutualTlsSecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.MutualTlsSecurityScheme.jsonschema.json",
+          "description": "Mutual TLS authentication."
         },
         "^(oauth2_security_scheme)$": {
-          "$ref": "a2a.v1.OAuth2SecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.OAuth2SecurityScheme.jsonschema.json",
+          "description": "OAuth 2.0 authentication."
         },
         "^(open_id_connect_security_scheme)$": {
-          "$ref": "a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json",
+          "description": "OpenID Connect authentication."
         }
       },
       "properties": {
         "apiKeySecurityScheme": {
-          "$ref": "a2a.v1.APIKeySecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.APIKeySecurityScheme.jsonschema.json",
+          "description": "API key-based authentication."
         },
         "httpAuthSecurityScheme": {
-          "$ref": "a2a.v1.HTTPAuthSecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.HTTPAuthSecurityScheme.jsonschema.json",
+          "description": "HTTP authentication (Basic, Bearer, etc.)."
         },
         "mtlsSecurityScheme": {
-          "$ref": "a2a.v1.MutualTlsSecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.MutualTlsSecurityScheme.jsonschema.json",
+          "description": "Mutual TLS authentication."
         },
         "oauth2SecurityScheme": {
-          "$ref": "a2a.v1.OAuth2SecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.OAuth2SecurityScheme.jsonschema.json",
+          "description": "OAuth 2.0 authentication."
         },
         "openIdConnectSecurityScheme": {
-          "$ref": "a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json"
+          "$ref": "a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json",
+          "description": "OpenID Connect authentication."
         }
       },
       "title": "Security Scheme",
@@ -1479,7 +1489,7 @@
       "description": "Configuration of a send message request.",
       "patternProperties": {
         "^(accepted_output_modes)$": {
-          "description": "The output modes that the agent is expected to respond with.",
+          "description": "A list of media types the client is prepared to accept for response parts. Agents SHOULD use this to tailor their output.",
           "items": {
             "type": "string"
           },
@@ -1501,12 +1511,12 @@
         },
         "^(push_notification_config)$": {
           "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
-          "description": "A configuration of a webhook that can be used to receive updates"
+          "description": "Configuration for the agent to send push notifications for task updates."
         }
       },
       "properties": {
         "acceptedOutputModes": {
-          "description": "The output modes that the agent is expected to respond with.",
+          "description": "A list of media types the client is prepared to accept for response parts. Agents SHOULD use this to tailor their output.",
           "items": {
             "type": "string"
           },
@@ -1514,7 +1524,7 @@
         },
         "blocking": {
           "default": false,
-          "description": "If true, the message will be blocking until the task is completed.",
+          "description": "If true, the operation waits until the task reaches a terminal state before returning. Default is false.",
           "type": "boolean"
         },
         "historyLength": {
@@ -1533,7 +1543,7 @@
         },
         "pushNotificationConfig": {
           "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
-          "description": "A configuration of a webhook that can be used to receive updates"
+          "description": "Configuration for the agent to send push notifications for task updates."
         }
       },
       "title": "Send Message Configuration",
@@ -1560,7 +1570,7 @@
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Optional metadata for the request."
+          "description": "A flexible key-value map for passing additional context or parameters."
         }
       },
       "title": "Send Message Request",
@@ -1619,30 +1629,37 @@
     "Stream Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Response message containing task updates or messages.",
+      "description": "A wrapper object used in streaming operations to encapsulate different types of response data.",
       "patternProperties": {
         "^(artifact_update)$": {
-          "$ref": "a2a.v1.TaskArtifactUpdateEvent.jsonschema.json"
+          "$ref": "a2a.v1.TaskArtifactUpdateEvent.jsonschema.json",
+          "description": "An event indicating a task artifact update."
         },
         "^(msg)$": {
-          "$ref": "a2a.v1.Message.jsonschema.json"
+          "$ref": "a2a.v1.Message.jsonschema.json",
+          "description": "A Message object containing a message from the agent."
         },
         "^(status_update)$": {
-          "$ref": "a2a.v1.TaskStatusUpdateEvent.jsonschema.json"
+          "$ref": "a2a.v1.TaskStatusUpdateEvent.jsonschema.json",
+          "description": "An event indicating a task status update."
         }
       },
       "properties": {
         "artifactUpdate": {
-          "$ref": "a2a.v1.TaskArtifactUpdateEvent.jsonschema.json"
+          "$ref": "a2a.v1.TaskArtifactUpdateEvent.jsonschema.json",
+          "description": "An event indicating a task artifact update."
         },
         "message": {
-          "$ref": "a2a.v1.Message.jsonschema.json"
+          "$ref": "a2a.v1.Message.jsonschema.json",
+          "description": "A Message object containing a message from the agent."
         },
         "statusUpdate": {
-          "$ref": "a2a.v1.TaskStatusUpdateEvent.jsonschema.json"
+          "$ref": "a2a.v1.TaskStatusUpdateEvent.jsonschema.json",
+          "description": "An event indicating a task status update."
         },
         "task": {
-          "$ref": "a2a.v1.Task.jsonschema.json"
+          "$ref": "a2a.v1.Task.jsonschema.json",
+          "description": "A Task object containing the current state of the task."
         }
       },
       "title": "Stream Response",
@@ -1713,7 +1730,7 @@
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "A key/value object to store custom metadata about a task.\n Optional metadata for extensions. The key is an extension-specific\n identifier."
+          "description": "A key/value object to store custom metadata about a task."
         },
         "status": {
           "$ref": "a2a.v1.TaskStatus.jsonschema.json",
