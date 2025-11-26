@@ -2225,10 +2225,11 @@ Sends a message to initiate or continue a task.
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "result": {  /* SendMessageResponse object
-      "task": { Task}
-      //or
-      "message": { Message } */
+  "result": {
+    /* SendMessageResponse object, contains one of:
+     * "task": { Task object }
+     * "message": { Message object }
+    */
   }
 ```
 
