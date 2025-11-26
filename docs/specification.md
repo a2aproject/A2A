@@ -2225,8 +2225,11 @@ Sends a message to initiate or continue a task.
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "result": { /* Task or Message object */ }
-}
+  "result": {  /* SendMessageResponse object
+      "task": { Task}
+      //or
+      "message": { Message } */
+  }
 ```
 
 **Referenced Objects:** [`Task`](#411-task), [`Message`](#414-message)
