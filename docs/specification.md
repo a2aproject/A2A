@@ -192,9 +192,9 @@ The primary operation for initiating agent interactions. Clients send a message 
 
 **Behavior:**
 
-The agent MAY create a new task to process the provided message asynchronously or MAY return a direct message response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a [`Task`](#411-task) is returned.
+The agent MAY create a new `Task` to process the provided message asynchronously or MAY return a direct `Message` response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a [`Task`](#411-task) is returned.
 
-#### 3.1.2. Stream Message
+#### 3.1.2. Send Streaming Message
 
 Similar to Send Message but with real-time streaming of updates during processing.
 
@@ -204,8 +204,9 @@ Similar to Send Message but with real-time streaming of updates during processin
 
 **Outputs:**
 
-- Initial response: [`Task`](#411-task) object OR [`Message`](#414-message) object
-- Subsequent events following a `Task` MAY include stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+- [`Stream Response`](#323-stream-response) object containing:
+    - Initial response: [`Task`](#411-task) object OR [`Message`](#414-message) object
+    - Subsequent events following a `Task` MAY include stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
 - Final completion indicator
 
 **Errors:**
@@ -219,11 +220,11 @@ Similar to Send Message but with real-time streaming of updates during processin
 
 The operation MUST establish a streaming connection for real-time updates. The stream MUST follow one of these patterns:
 
-1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one message object and then close immediately. No task tracking or updates are provided.
+1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` object and then close immediately. No task tracking or updates are provided.
 
 2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, cancelled, rejected).
 
-The agent MAY return a Task for complex processing with status/artifact updates or MAY return a Message for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
+The agent MAY return a `Task` for complex processing with status/artifact updates or MAY return a `Message` for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
 
 #### 3.1.3. Get Task
 
@@ -231,8 +232,9 @@ Retrieves the current state (including status, artifacts, and optionally history
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to retrieve
-- `historyLength` (optional): Number of recent messages to include in the task's history (see [History Length Semantics](#324-history-length-semantics) for details)
+{{ proto_to_table("specification/grpc/a2a.proto", "GetTaskRequest") }}
+
+See [History Length Semantics](#324-history-length-semantics) for details about `historyLength`.
 
 **Outputs:**
 
@@ -248,25 +250,15 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 **Inputs:**
 
-- `contextId` (optional): Filter tasks by context ID to get tasks from a specific conversation or session
-- `status` (optional): Filter tasks by their current status state
-- `pageSize` (optional): Maximum number of tasks to return (must be between 1 and 100, defaults to 50)
-- `pageToken` (optional): Token for pagination from a previous response
-- `historyLength` (optional): Number of recent messages to include in each task's history (see [History Length Semantics](#324-history-length-semantics) for details, defaults to 0)
-- `lastUpdatedAfter` (optional): Filter tasks updated after this timestamp (milliseconds since epoch)
-- `includeArtifacts` (optional): Whether to include artifacts in returned tasks (defaults to false)
-- [`metadata`](#325-metadata) (optional): Request-specific metadata for extensions or custom parameters
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTasksRequest") }}
 
-When includeArtifacts is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When includeArtifacts is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
+When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**
 
-- `tasks`: Array of [`Task`](#411-task) objects matching the specified criteria
-- `totalSize`: Total number of tasks available (before pagination)
-- `pageSize`: Maximum number of tasks returned in this response
-- `nextPageToken`: Token for retrieving the next page of results (empty if no more results)
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTasksResponse") }}
 
-Note on nextPageToken: The nextPageToken field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.
+Note on `nextPageToken`: The `nextPageToken` field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.
 
 **Errors:**
 
@@ -278,7 +270,7 @@ The operation MUST return only tasks visible to the authenticated client and MUS
 
 ***Pagination Strategy:***
 
-This method uses cursor-based pagination (via pageToken/nextPageToken) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).
+This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).
 
 ***Ordering:***
 
@@ -290,7 +282,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to cancel
+{{ proto_to_table("specification/grpc/a2a.proto", "CancelTaskRequest") }}
 
 **Outputs:**
 
@@ -313,13 +305,13 @@ Establishes a streaming connection to receive updates for an existing task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to monitor
+{{ proto_to_table("specification/grpc/a2a.proto", "SubscribeToTaskRequest") }}
 
 **Outputs:**
 
-- [Stream Response](#323-stream-response) object containing:
-- Initial response: [`Task`](#411-task) object with current state
-- Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+- [`Stream Response`](#323-stream-response) object containing:
+    - Initial response: [`Task`](#411-task) object with current state
+    - Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
 
 **Errors:**
 
@@ -341,8 +333,7 @@ Creates or updates a push notification configuration for a task to receive async
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to configure notifications for
-- [`PushNotificationConfig`](#431-pushnotificationconfig): Configuration specifying webhook URL and notification preferences
+{{ proto_to_table("specification/grpc/a2a.proto", "SetTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -367,8 +358,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task
-- `configId`: Unique identifier of the push notification configuration
+{{ proto_to_table("specification/grpc/a2a.proto", "GetTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -389,11 +379,11 @@ Retrieves all push notification configurations for a task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
-- Array of [`PushNotificationConfig`](#431-pushnotificationconfig) objects
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTaskPushNotificationConfigResponse") }}
 
 **Errors:**
 
@@ -410,8 +400,7 @@ Removes a push notification configuration for a task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task
-- `configId`: Unique identifier of the push notification configuration to delete
+{{ proto_to_table("specification/grpc/a2a.proto", "DeleteTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -432,7 +421,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 **Inputs:**
 
-- None (no parameters required)
+{{ proto_to_table("specification/grpc/a2a.proto", "GetExtendedAgentCardRequest") }}
 
 **Outputs:**
 
@@ -468,7 +457,7 @@ This section defines common parameter objects used across multiple operations.
 
 The `blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation waits for task completion:
 
-- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (completed, failed, cancelled, rejected) before returning. The response MUST include the final task state with all artifacts and status information.
+- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `cancelled`, `rejected`) before returning. The response MUST include the final task state with all artifacts and status information.
 
 - **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
@@ -505,10 +494,10 @@ A key-value map for passing horizontally applicable context or parameters with c
 
 **Standard A2A Service Parameters:**
 
-| Name      | Description                                                                                                                                             | Example Value                                                                                 |
+| Name | Description | Example Value |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
-| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
-| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
+| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
+| `A2A-Version` | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3` |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
 
@@ -667,7 +656,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-stream-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -2625,8 +2614,7 @@ Resource wrapper for push notification configurations. This is a gRPC-specific t
 
 **Fields:**
 
-- **`name`** (required, string): Resource name in the format "tasks/{taskId}/pushNotificationConfigs/{configId}".
-- **`pushNotificationConfig`** (required, [`PushNotificationConfig`](#431-pushnotificationconfig)): The push notification configuration.
+{{ proto_to_table("specification/grpc/a2a.proto", "TaskPushNotificationConfig") }}
 
 ### 10.6. Error Handling
 
