@@ -1264,10 +1264,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#312-stream-message" class="md-nav__link">
+  <a href="#312-send-streaming-message" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.1.2. Stream Message
+        3.1.2. Send Streaming Message
       
     </span>
   </a>
@@ -3925,10 +3925,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#312-stream-message" class="md-nav__link">
+  <a href="#312-send-streaming-message" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.1.2. Stream Message
+        3.1.2. Send Streaming Message
       
     </span>
   </a>
@@ -6428,8 +6428,8 @@
 <li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.</li>
 </ul>
 <p><strong>Behavior:</strong></p>
-<p>The agent MAY create a new task to process the provided message asynchronously or MAY return a direct message response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a <a href="#411-task"><code>Task</code></a> is returned.</p>
-<h4 id="312-stream-message">3.1.2. Stream Message<a class="headerlink" href="#312-stream-message" title="Permanent link">&para;</a></h4>
+<p>The agent MAY create a new <code>Task</code> to process the provided message asynchronously or MAY return a direct <code>Message</code> response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a <a href="#411-task"><code>Task</code></a> is returned.</p>
+<h4 id="312-send-streaming-message">3.1.2. Send Streaming Message<a class="headerlink" href="#312-send-streaming-message" title="Permanent link">&para;</a></h4>
 <p>Similar to Send Message but with real-time streaming of updates during processing.</p>
 <p><strong>Inputs:</strong></p>
 <ul>
@@ -6437,8 +6437,11 @@
 </ul>
 <p><strong>Outputs:</strong></p>
 <ul>
+<li><a href="#323-stream-response"><code>Stream Response</code></a> object containing:<ul>
 <li>Initial response: <a href="#411-task"><code>Task</code></a> object OR <a href="#414-message"><code>Message</code></a> object</li>
 <li>Subsequent events following a <code>Task</code> MAY include stream of <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a> and <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> objects</li>
+</ul>
+</li>
 <li>Final completion indicator</li>
 </ul>
 <p><strong>Errors:</strong></p>
@@ -6452,20 +6455,42 @@
 <p>The operation MUST establish a streaming connection for real-time updates. The stream MUST follow one of these patterns:</p>
 <ol>
 <li>
-<p><strong>Message-only stream:</strong> If the agent returns a <a href="#414-message"><code>Message</code></a>, the stream MUST contain exactly one message object and then close immediately. No task tracking or updates are provided.</p>
+<p><strong>Message-only stream:</strong> If the agent returns a <a href="#414-message"><code>Message</code></a>, the stream MUST contain exactly one <code>Message</code> object and then close immediately. No task tracking or updates are provided.</p>
 </li>
 <li>
 <p><strong>Task lifecycle stream:</strong> If the agent returns a <a href="#411-task"><code>Task</code></a>, the stream MUST begin with the Task object, followed by zero or more <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a> or <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, cancelled, rejected).</p>
 </li>
 </ol>
-<p>The agent MAY return a Task for complex processing with status/artifact updates or MAY return a Message for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.</p>
+<p>The agent MAY return a <code>Task</code> for complex processing with status/artifact updates or MAY return a <code>Message</code> for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.</p>
 <h4 id="313-get-task">3.1.3. Get Task<a class="headerlink" href="#313-get-task" title="Permanent link">&para;</a></h4>
 <p>Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with message/send, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>taskId</code>: Unique identifier of the task to retrieve</li>
-<li><code>historyLength</code> (optional): Number of recent messages to include in the task's history (see <a href="#324-history-length-semantics">History Length Semantics</a> for details)</li>
-</ul>
+<p>Represents a request for the <code>tasks/get</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource name of the task. Format: tasks/{task_id}</td>
+</tr>
+<tr>
+<td><code>historyLength</code></td>
+<td><code>integer</code></td>
+<td>Optional</td>
+<td>The maximum number of messages to include in the history.</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="#324-history-length-semantics">History Length Semantics</a> for details about <code>historyLength</code>.</p>
 <p><strong>Outputs:</strong></p>
 <ul>
 <li><a href="#411-task"><code>Task</code></a>: Current state and artifacts of the requested task</li>
@@ -6477,39 +6502,137 @@
 <h4 id="314-list-tasks">3.1.4. List Tasks<a class="headerlink" href="#314-list-tasks" title="Permanent link">&para;</a></h4>
 <p>Retrieves a list of tasks with optional filtering and pagination capabilities. This method allows clients to discover and manage multiple tasks across different contexts or with specific status criteria.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>contextId</code> (optional): Filter tasks by context ID to get tasks from a specific conversation or session</li>
-<li><code>status</code> (optional): Filter tasks by their current status state</li>
-<li><code>pageSize</code> (optional): Maximum number of tasks to return (must be between 1 and 100, defaults to 50)</li>
-<li><code>pageToken</code> (optional): Token for pagination from a previous response</li>
-<li><code>historyLength</code> (optional): Number of recent messages to include in each task's history (see <a href="#324-history-length-semantics">History Length Semantics</a> for details, defaults to 0)</li>
-<li><code>lastUpdatedAfter</code> (optional): Filter tasks updated after this timestamp (milliseconds since epoch)</li>
-<li><code>includeArtifacts</code> (optional): Whether to include artifacts in returned tasks (defaults to false)</li>
-<li><a href="#325-metadata"><code>metadata</code></a> (optional): Request-specific metadata for extensions or custom parameters</li>
-</ul>
-<p>When includeArtifacts is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When includeArtifacts is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).</p>
+<p>Parameters for listing tasks with optional filtering criteria.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>contextId</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Filter tasks by context ID to get tasks from a specific conversation or session.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><a href="#TaskState"><code>TaskState</code></a></td>
+<td>No</td>
+<td>Filter tasks by their current status state.</td>
+</tr>
+<tr>
+<td><code>pageSize</code></td>
+<td><code>integer</code></td>
+<td>Optional</td>
+<td>Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified.</td>
+</tr>
+<tr>
+<td><code>pageToken</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Token for pagination. Use the next_page_token from a previous ListTasksResponse.</td>
+</tr>
+<tr>
+<td><code>historyLength</code></td>
+<td><code>integer</code></td>
+<td>Optional</td>
+<td>The maximum number of messages to include in each task's history.</td>
+</tr>
+<tr>
+<td><code>lastUpdatedAfter</code></td>
+<td><code>integer</code></td>
+<td>No</td>
+<td>Filter tasks updated after this timestamp (milliseconds since epoch). Only tasks with a last updated time greater than or equal to this value will be returned.</td>
+</tr>
+<tr>
+<td><code>includeArtifacts</code></td>
+<td><code>boolean</code></td>
+<td>Optional</td>
+<td>Whether to include artifacts in the returned tasks. Defaults to false to reduce payload size.</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>object</code></td>
+<td>No</td>
+<td>Request-specific metadata.</td>
+</tr>
+</tbody>
+</table>
+<p>When <code>includeArtifacts</code> is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When <code>includeArtifacts</code> is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).</p>
 <p><strong>Outputs:</strong></p>
-<ul>
-<li><code>tasks</code>: Array of <a href="#411-task"><code>Task</code></a> objects matching the specified criteria</li>
-<li><code>totalSize</code>: Total number of tasks available (before pagination)</li>
-<li><code>pageSize</code>: Maximum number of tasks returned in this response</li>
-<li><code>nextPageToken</code>: Token for retrieving the next page of results (empty if no more results)</li>
-</ul>
-<p>Note on nextPageToken: The nextPageToken field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.</p>
+<p>Result object for tasks/list method containing an array of tasks and pagination information.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tasks</code></td>
+<td>array of <a href="#Task"><code>Task</code></a></td>
+<td>Yes</td>
+<td>Array of tasks matching the specified criteria.</td>
+</tr>
+<tr>
+<td><code>nextPageToken</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>Token for retrieving the next page. Empty string if no more results.</td>
+</tr>
+<tr>
+<td><code>pageSize</code></td>
+<td><code>integer</code></td>
+<td>Yes</td>
+<td>The size of page requested.</td>
+</tr>
+<tr>
+<td><code>totalSize</code></td>
+<td><code>integer</code></td>
+<td>Yes</td>
+<td>Total number of tasks available (before pagination).</td>
+</tr>
+</tbody>
+</table>
+<p>Note on <code>nextPageToken</code>: The <code>nextPageToken</code> field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.</p>
 <p><strong>Errors:</strong></p>
 <p>None specific to this operation beyond standard protocol errors.</p>
 <p><strong>Behavior:</strong></p>
 <p>The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Tasks MUST be sorted by last update time in descending order. Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See <a href="#131-data-access-and-authorization-scoping">Section 13.1 Data Access and Authorization Scoping</a> for detailed security requirements.</p>
 <p><strong><em>Pagination Strategy:</em></strong></p>
-<p>This method uses cursor-based pagination (via pageToken/nextPageToken) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).</p>
+<p>This method uses cursor-based pagination (via <code>pageToken</code>/<code>nextPageToken</code>) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).</p>
 <p><strong><em>Ordering:</em></strong></p>
 <p>Implementations MUST return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.</p>
 <h4 id="315-cancel-task">3.1.5. Cancel Task<a class="headerlink" href="#315-cancel-task" title="Permanent link">&para;</a></h4>
 <p>Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>taskId</code>: Unique identifier of the task to cancel</li>
-</ul>
+<p>Represents a request for the <code>tasks/cancel</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>The resource name of the task to cancel. Format: tasks/{task_id}</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Outputs:</strong></p>
 <ul>
 <li>Updated <a href="#411-task"><code>Task</code></a> with cancellation status</li>
@@ -6525,14 +6648,31 @@
 <p><span id="79-taskssubscribe"></span></p>
 <p>Establishes a streaming connection to receive updates for an existing task.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>taskId</code>: Unique identifier of the task to monitor</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>The resource name of the task to subscribe to. Format: tasks/{task_id}</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Outputs:</strong></p>
 <ul>
-<li><a href="#323-stream-response">Stream Response</a> object containing:</li>
+<li><a href="#323-stream-response"><code>Stream Response</code></a> object containing:<ul>
 <li>Initial response: <a href="#411-task"><code>Task</code></a> object with current state</li>
 <li>Stream of <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a> and <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> objects</li>
+</ul>
+</li>
 </ul>
 <p><strong>Errors:</strong></p>
 <ul>
@@ -6547,10 +6687,37 @@
 <p><span id="75-taskspushnotificationconfigset"></span></p>
 <p>Creates or updates a push notification configuration for a task to receive asynchronous updates via webhook.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>taskId</code>: Unique identifier of the task to configure notifications for</li>
-<li><a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a>: Configuration specifying webhook URL and notification preferences</li>
-</ul>
+<p>Represents a request for the <code>tasks/pushNotificationConfig/set</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parent</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The parent task resource for this config. Format: tasks/{task_id}</td>
+</tr>
+<tr>
+<td><code>configId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The ID for the new config.</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td><a href="#TaskPushNotificationConfig"><code>TaskPushNotificationConfig</code></a></td>
+<td>Yes</td>
+<td>The configuration to create.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Outputs:</strong></p>
 <ul>
 <li><a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a>: Created configuration with assigned ID</li>
@@ -6567,10 +6734,24 @@
 <p><span id="76-taskspushnotificationconfigget"></span></p>
 <p>Retrieves an existing push notification configuration for a task.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>taskId</code>: Unique identifier of the task</li>
-<li><code>configId</code>: Unique identifier of the push notification configuration</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>The resource name of the config to retrieve. Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Outputs:</strong></p>
 <ul>
 <li><a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a>: The requested configuration</li>
@@ -6585,13 +6766,62 @@
 <h4 id="319-list-push-notification-configs">3.1.9. List Push Notification Configs<a class="headerlink" href="#319-list-push-notification-configs" title="Permanent link">&para;</a></h4>
 <p>Retrieves all push notification configurations for a task.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>taskId</code>: Unique identifier of the task</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parent</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>The parent task resource. Format: tasks/{task_id}</td>
+</tr>
+<tr>
+<td><code>pageSize</code></td>
+<td><code>integer</code></td>
+<td>No</td>
+<td>The maximum number of configurations to return.</td>
+</tr>
+<tr>
+<td><code>pageToken</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>A page token received from a previous ListTaskPushNotificationConfigRequest call.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Outputs:</strong></p>
-<ul>
-<li>Array of <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> objects</li>
-</ul>
+<p>Represents a successful response for the <code>tasks/pushNotificationConfig/list</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>configs</code></td>
+<td>array of <a href="#TaskPushNotificationConfig"><code>TaskPushNotificationConfig</code></a></td>
+<td>No</td>
+<td>The list of push notification configurations.</td>
+</tr>
+<tr>
+<td><code>nextPageToken</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>A token, which can be sent as <code>page_token</code> to retrieve the next page. If this field is omitted, there are no subsequent pages.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Errors:</strong></p>
 <ul>
 <li><a href="#332-error-handling"><code>PushNotificationNotSupportedError</code></a>: Push notifications are not supported by the agent (see <a href="#334-capability-validation">Capability Validation</a>).</li>
@@ -6602,10 +6832,25 @@
 <h4 id="3110-delete-push-notification-config">3.1.10. Delete Push Notification Config<a class="headerlink" href="#3110-delete-push-notification-config" title="Permanent link">&para;</a></h4>
 <p>Removes a push notification configuration for a task.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li><code>taskId</code>: Unique identifier of the task</li>
-<li><code>configId</code>: Unique identifier of the push notification configuration to delete</li>
-</ul>
+<p>Represents a request for the <code>tasks/pushNotificationConfig/delete</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>The resource name of the config to delete. Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Outputs:</strong></p>
 <ul>
 <li>Confirmation of deletion (implementation-specific)</li>
@@ -6620,9 +6865,7 @@
 <h4 id="3111-get-extended-agent-card">3.1.11. Get Extended Agent Card<a class="headerlink" href="#3111-get-extended-agent-card" title="Permanent link">&para;</a></h4>
 <p>Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if <code>AgentCard.supportsAuthenticatedExtendedCard</code> is <code>true</code>.</p>
 <p><strong>Inputs:</strong></p>
-<ul>
-<li>None (no parameters required)</li>
-</ul>
+<p>None</p>
 <p><strong>Outputs:</strong></p>
 <ul>
 <li><a href="#441-agentcard"><code>AgentCard</code></a>: A complete Agent Card object, which may contain additional details or skills not present in the public card</li>
@@ -6716,7 +6959,7 @@
 <p>The <code>blocking</code> field in <a href="#322-sendmessageconfiguration"><code>SendMessageConfiguration</code></a> controls whether the operation waits for task completion:</p>
 <ul>
 <li>
-<p><strong>Blocking (<code>blocking: true</code>)</strong>: The operation MUST wait until the task reaches a terminal state (completed, failed, cancelled, rejected) before returning. The response MUST include the final task state with all artifacts and status information.</p>
+<p><strong>Blocking (<code>blocking: true</code>)</strong>: The operation MUST wait until the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, <code>rejected</code>) before returning. The response MUST include the final task state with all artifacts and status information.</p>
 </li>
 <li>
 <p><strong>Non-Blocking (<code>blocking: false</code>)</strong>: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., <code>working</code>, <code>input_required</code>). It is the caller's responsibility to poll for updates using <a href="#313-get-task">Get Task</a>, subscribe via <a href="#316-subscribe-to-task">Subscribe to Task</a>, or receive updates via push notifications.</p>
@@ -6992,7 +7235,7 @@
 <p><strong>Streaming:</strong></p>
 <ul>
 <li>Real-time delivery of events as they occur</li>
-<li>Operations: Stream Message (<a href="#312-stream-message">Section 3.1.2</a>) and Subscribe to Task (<a href="#316-subscribe-to-task">Section 3.1.6</a>)</li>
+<li>Operations: Stream Message (<a href="#312-send-streaming-message">Section 3.1.2</a>) and Subscribe to Task (<a href="#316-subscribe-to-task">Section 3.1.6</a>)</li>
 <li>Low latency, efficient for frequent updates</li>
 <li>Requires persistent connection support</li>
 <li>Best for: Interactive applications, real-time dashboards, live progress monitoring</li>
@@ -9927,10 +10170,31 @@
 </span><span id="__span-67-9"><a id="__codelineno-67-9" name="__codelineno-67-9" href="#__codelineno-67-9"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Fields:</strong></p>
-<ul>
-<li><strong><code>name</code></strong> (required, string): Resource name in the format "tasks/{taskId}/pushNotificationConfigs/{configId}".</li>
-<li><strong><code>pushNotificationConfig</code></strong> (required, <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a>): The push notification configuration.</li>
-</ul>
+<p>A container associating a push notification configuration with a specific task.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource name of the config. Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</td>
+</tr>
+<tr>
+<td><code>pushNotificationConfig</code></td>
+<td><a href="#PushNotificationConfig"><code>PushNotificationConfig</code></a></td>
+<td>Yes</td>
+<td>The push notification configuration details.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="106-error-handling">10.6. Error Handling<a class="headerlink" href="#106-error-handling" title="Permanent link">&para;</a></h3>
 <p>gRPC error responses use the standard <a href="https://grpc.io/docs/guides/error/">gRPC status</a> structure with <a href="https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto">google.rpc.Status</a>, which maps to the generic A2A error model defined in <a href="#332-error-handling">Section 3.3.2</a> as follows:</p>
 <ul>
