@@ -220,7 +220,7 @@ Similar to Send Message but with real-time streaming of updates during processin
 
 The operation MUST establish a streaming connection for real-time updates. The stream MUST follow one of these patterns:
 
-1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one Message object and then close immediately. No task tracking or updates are provided.
+1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` object and then close immediately. No task tracking or updates are provided.
 
 2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, cancelled, rejected).
 
