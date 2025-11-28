@@ -494,10 +494,10 @@ A key-value map for passing horizontally applicable context or parameters with c
 
 **Standard A2A Service Parameters:**
 
-| Name      | Description                                                                                                                                             | Example Value                                                                                 |
+| Name | Description | Example Value |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
-| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
-| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
+| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
+| `A2A-Version` | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3` |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
 
@@ -656,7 +656,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-stream-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
