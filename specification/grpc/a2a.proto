@@ -5,6 +5,7 @@ package a2a.v1;
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
@@ -61,14 +62,14 @@ service A2AService {
     };
   }
 
-  // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest)
+  // Create a push notification config for a task.
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest)
       returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
-      body: "config"
+      body: "task_push_notification_config"
     };
-    option (google.api.method_signature) = "parent,config";
+    option (google.api.method_signature) = "parent,task_push_notification_config";
   }
   // Get a push notification config for a task.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest)
@@ -761,19 +762,24 @@ message DeleteTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
-// --8<-- [start:SetTaskPushNotificationConfigRequest]
-// Represents a request for the `tasks/pushNotificationConfig/set` method.
-message SetTaskPushNotificationConfigRequest {
+// --8<-- [start:CreateTaskPushNotificationConfigRequest]
+// Represents a request for the `tasks/pushNotificationConfig/create` method.
+message CreateTaskPushNotificationConfigRequest {
   // The parent task resource for this config.
   // Format: tasks/{task_id}
-  string parent = 1 [(google.api.field_behavior) = REQUIRED];
-  // The ID for the new config.
-  string config_id = 2 [(google.api.field_behavior) = REQUIRED];
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {
+      child_type: "a2a.v1/TaskPushNotificationConfig"
+    }
+  ];
+  // The ID for the new config. Optional - server will generate if not provided.
+  string task_push_notification_config_id = 2;
   // The configuration to create.
-  TaskPushNotificationConfig config = 3
+  TaskPushNotificationConfig task_push_notification_config = 3
       [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:SetTaskPushNotificationConfigRequest]
+// --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {

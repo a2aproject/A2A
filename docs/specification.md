@@ -333,11 +333,11 @@ The operation enables real-time monitoring of task progress and can be used with
 
 The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
-#### 3.1.7. Set or Update Push Notification Config
+#### 3.1.7. Create Push Notification Config
 
 <span id="75-taskspushnotificationconfigset"></span>
 
-Creates or updates a push notification configuration for a task to receive asynchronous updates via webhook.
+Creates a push notification configuration for a task to receive asynchronous updates via webhook.
 
 **Inputs:**
 
@@ -679,7 +679,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Set ([Section 3.1.7](#75-taskspushnotificationconfigset)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Operations: Create ([Section 3.1.7](#75-taskspushnotificationconfigset)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -1141,7 +1141,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /v1/tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /v1/tasks/{id}:cancel`                               |
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /v1/tasks/{id}:subscribe`                            |
-| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /v1/tasks/{id}/pushNotificationConfigs`              |
+| Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /v1/tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}`    |
 | List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /v1/tasks/{id}/pushNotificationConfigs`               |
 | Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` |
@@ -2331,7 +2331,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 #### 9.4.7. Push Notification Configuration Methods
 
-- `SetTaskPushNotificationConfig` - Set push notification configuration
+- `CreateTaskPushNotificationConfig` - Create push notification configuration
 - `GetTaskPushNotificationConfig` - Get push notification configuration
 - `ListTaskPushNotificationConfig` - List push notification configurations
 - `DeleteTaskPushNotificationConfig` - Delete push notification configuration
@@ -2459,7 +2459,7 @@ service A2AService {
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
   rpc CancelTask(CancelTaskRequest) returns (Task);
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse);
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse);
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty);
@@ -2549,14 +2549,14 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
-#### 10.4.7. SetTaskPushNotificationConfig
+#### 10.4.7. CreateTaskPushNotificationConfig
 
 Creates a push notification configuration for a task.
 
 **Request:**
 
 ```proto
---8<-- "specification/grpc/a2a.proto:SetTaskPushNotificationConfigRequest"
+--8<-- "specification/grpc/a2a.proto:CreateTaskPushNotificationConfigRequest"
 ```
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
