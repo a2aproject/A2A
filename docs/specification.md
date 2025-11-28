@@ -192,9 +192,9 @@ The primary operation for initiating agent interactions. Clients send a message 
 
 **Behavior:**
 
-The agent MAY create a new task to process the provided message asynchronously or MAY return a direct message response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a [`Task`](#411-task) is returned.
+The agent MAY create a new `Task` to process the provided message asynchronously or MAY return a direct `Message` response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a [`Task`](#411-task) is returned.
 
-#### 3.1.2. Stream Message
+#### 3.1.2. Send Streaming Message
 
 Similar to Send Message but with real-time streaming of updates during processing.
 
@@ -204,8 +204,9 @@ Similar to Send Message but with real-time streaming of updates during processin
 
 **Outputs:**
 
-- Initial response: [`Task`](#411-task) object OR [`Message`](#414-message) object
-- Subsequent events following a `Task` MAY include stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+- [`Stream Response`](#323-stream-response) object containing:
+    - Initial response: [`Task`](#411-task) object OR [`Message`](#414-message) object
+    - Subsequent events following a `Task` MAY include stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
 - Final completion indicator
 
 **Errors:**
@@ -219,11 +220,11 @@ Similar to Send Message but with real-time streaming of updates during processin
 
 The operation MUST establish a streaming connection for real-time updates. The stream MUST follow one of these patterns:
 
-1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one message object and then close immediately. No task tracking or updates are provided.
+1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` object and then close immediately. No task tracking or updates are provided.
 
 2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, cancelled, rejected).
 
-The agent MAY return a Task for complex processing with status/artifact updates or MAY return a Message for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
+The agent MAY return a `Task` for complex processing with status/artifact updates or MAY return a `Message` for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
 
 #### 3.1.3. Get Task
 
@@ -231,8 +232,9 @@ Retrieves the current state (including status, artifacts, and optionally history
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to retrieve
-- `historyLength` (optional): Number of recent messages to include in the task's history (see [History Length Semantics](#324-history-length-semantics) for details)
+{{ proto_to_table("specification/grpc/a2a.proto", "GetTaskRequest") }}
+
+See [History Length Semantics](#324-history-length-semantics) for details about `historyLength`.
 
 **Outputs:**
 
@@ -248,25 +250,15 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 **Inputs:**
 
-- `contextId` (optional): Filter tasks by context ID to get tasks from a specific conversation or session
-- `status` (optional): Filter tasks by their current status state
-- `pageSize` (optional): Maximum number of tasks to return (must be between 1 and 100, defaults to 50)
-- `pageToken` (optional): Token for pagination from a previous response
-- `historyLength` (optional): Number of recent messages to include in each task's history (see [History Length Semantics](#324-history-length-semantics) for details, defaults to 0)
-- `lastUpdatedAfter` (optional): Filter tasks updated after this timestamp (milliseconds since epoch)
-- `includeArtifacts` (optional): Whether to include artifacts in returned tasks (defaults to false)
-- [`metadata`](#325-metadata) (optional): Request-specific metadata for extensions or custom parameters
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTasksRequest") }}
 
-When includeArtifacts is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When includeArtifacts is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
+When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**
 
-- `tasks`: Array of [`Task`](#411-task) objects matching the specified criteria
-- `totalSize`: Total number of tasks available (before pagination)
-- `pageSize`: Maximum number of tasks returned in this response
-- `nextPageToken`: Token for retrieving the next page of results (empty if no more results)
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTasksResponse") }}
 
-Note on nextPageToken: The nextPageToken field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.
+Note on `nextPageToken`: The `nextPageToken` field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.
 
 **Errors:**
 
@@ -278,7 +270,7 @@ The operation MUST return only tasks visible to the authenticated client and MUS
 
 ***Pagination Strategy:***
 
-This method uses cursor-based pagination (via pageToken/nextPageToken) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).
+This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).
 
 ***Ordering:***
 
@@ -290,7 +282,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to cancel
+{{ proto_to_table("specification/grpc/a2a.proto", "CancelTaskRequest") }}
 
 **Outputs:**
 
@@ -313,13 +305,13 @@ Establishes a streaming connection to receive updates for an existing task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to monitor
+{{ proto_to_table("specification/grpc/a2a.proto", "SubscribeToTaskRequest") }}
 
 **Outputs:**
 
-- [Stream Response](#323-stream-response) object containing:
-- Initial response: [`Task`](#411-task) object with current state
-- Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+- [`Stream Response`](#323-stream-response) object containing:
+    - Initial response: [`Task`](#411-task) object with current state
+    - Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
 
 **Errors:**
 
@@ -341,8 +333,7 @@ Creates or updates a push notification configuration for a task to receive async
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task to configure notifications for
-- [`PushNotificationConfig`](#431-pushnotificationconfig): Configuration specifying webhook URL and notification preferences
+{{ proto_to_table("specification/grpc/a2a.proto", "SetTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -367,8 +358,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task
-- `configId`: Unique identifier of the push notification configuration
+{{ proto_to_table("specification/grpc/a2a.proto", "GetTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -389,11 +379,11 @@ Retrieves all push notification configurations for a task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
-- Array of [`PushNotificationConfig`](#431-pushnotificationconfig) objects
+{{ proto_to_table("specification/grpc/a2a.proto", "ListTaskPushNotificationConfigResponse") }}
 
 **Errors:**
 
@@ -410,8 +400,7 @@ Removes a push notification configuration for a task.
 
 **Inputs:**
 
-- `taskId`: Unique identifier of the task
-- `configId`: Unique identifier of the push notification configuration to delete
+{{ proto_to_table("specification/grpc/a2a.proto", "DeleteTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -432,7 +421,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 **Inputs:**
 
-- None (no parameters required)
+{{ proto_to_table("specification/grpc/a2a.proto", "GetExtendedAgentCardRequest") }}
 
 **Outputs:**
 
@@ -458,38 +447,17 @@ This section defines common parameter objects used across multiple operations.
 
 #### 3.2.1. SendMessageRequest
 
-Request object for sending messages to an agent.
-
-```proto
---8<-- "specification/grpc/a2a.proto:SendMessageRequest"
-```
-
-**Fields:**
-
-- **`request`** (required): The [`Message`](#414-message) object to send to the agent.
-- **`configuration`** (optional): [`SendMessageConfiguration`](#322-sendmessageconfiguration) object containing options for this request.
-- **`metadata`** (optional): A flexible key-value map for passing additional context or parameters. See [Metadata](#325-metadata) for details.
+{{ proto_to_table("specification/grpc/a2a.proto", "SendMessageRequest") }}
 
 #### 3.2.2. SendMessageConfiguration
 
-Configuration options for message sending operations.
-
-```proto
---8<-- "specification/grpc/a2a.proto:SendMessageConfiguration"
-```
-
-**Fields:**
-
-- **`acceptedOutputModes`** (optional): A list of media types the client is prepared to accept in the response. Agents SHOULD use this to tailor their output format.
-- **`historyLength`** (optional): Number of recent messages from the task's history to include in the response. See [History Length Semantics](#324-history-length-semantics) for details.
-- **`pushNotificationConfig`** (optional): Configuration for the agent to send push notifications for task updates. See [PushNotificationConfig](#431-pushnotificationconfig) for details.
-- **`blocking`** (optional): If `true`, the operation waits until the task reaches a terminal state before returning. Default is `false`.
+{{ proto_to_table("specification/grpc/a2a.proto", "SendMessageConfiguration") }}
 
 **Blocking vs Non-Blocking Execution:**
 
 The `blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation waits for task completion:
 
-- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (completed, failed, cancelled, rejected) before returning. The response MUST include the final task state with all artifacts and status information.
+- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `cancelled`, `rejected`) before returning. The response MUST include the final task state with all artifacts and status information.
 
 - **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
@@ -504,18 +472,7 @@ The `blocking` field has no effect:
 <span id="323-stream-response"></span>
 <span id="72-messagestream"></span>
 
-A wrapper object used in streaming operations to encapsulate different types of response data.
-
-```proto
---8<-- "specification/grpc/a2a.proto:StreamResponse"
-```
-
-**Fields (exactly one of the following):**
-
-- **task**: A [`Task`](#411-task) object containing the current state of the task
-- **message**: A [`Message`](#414-message) object containing a message in the conversation
-- **taskStatusUpdateEvent**: A [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) object indicating a change in task status
-- **taskArtifactUpdateEvent**: A [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) object indicating updates to task artifacts
+{{ proto_to_table("specification/grpc/a2a.proto", "StreamResponse") }}
 
 This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.
 
@@ -537,10 +494,10 @@ A key-value map for passing horizontally applicable context or parameters with c
 
 **Standard A2A Service Parameters:**
 
-| Header Name      | Description                                                                                                                                             | Example Value                                                                                 |
+| Name | Description | Example Value |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
-| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
-| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
+| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
+| `A2A-Version` | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3` |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
 
@@ -699,7 +656,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-stream-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -757,238 +714,89 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 ### 4.1. Core Objects
 
+<a id="Task"></a>
+
 #### 4.1.1. Task
 
-<span id="61-task-object"></span>
+{{ proto_to_table("specification/grpc/a2a.proto", "Task") }}
 
-Represents the stateful unit of work being processed by the A2A Server for an A2A Client.
-
-```proto
---8<-- "specification/grpc/a2a.proto:Task"
-```
-
-**Fields:**
-
-- **`id`** (required, string): Unique identifier (e.g. UUID) for the task, generated by the server for a new task.
-- **`contextId`** (required, string): Unique identifier (e.g. UUID) for the contextual collection of interactions (tasks and messages). Created by the A2A server.
-- **`status`** (required, [`TaskStatus`](#412-taskstatus)): The current status of a Task, including state and an optional message.
-- **`artifacts`** (optional, array of [`Artifact`](#419-artifact)): A set of output artifacts for a Task.
-- **`history`** (optional, array of [`Message`](#414-message)): The history of interactions from a task.
-- **`metadata`** (optional, object): A key/value object to store custom metadata about a task.
+<a id="TaskStatus"></a>
 
 #### 4.1.2. TaskStatus
 
-Represents the current state and associated context of a Task.
+{{ proto_to_table("specification/grpc/a2a.proto", "TaskStatus") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:TaskStatus"
-```
-
-**Fields:**
-
-- **`state`** (required, [`TaskState`](#413-taskstate)): The current state of this task.
-- **`message`** (optional, [`Message`](#414-message)): A message associated with the status, providing context or updates about the current state.
-- **`timestamp`** (optional, string): Timestamp when the status was recorded, in ISO 8601 format (e.g., "2025-10-28T10:30:00Z").
+<a id="TaskState"></a>
 
 #### 4.1.3. TaskState
 
-<span id="63-taskstate-enum"></span>
+{{ proto_enum_to_table("specification/grpc/a2a.proto", "TaskState") }}
 
-Defines the possible lifecycle states of a Task.
-
-```proto
---8<-- "specification/grpc/a2a.proto:TaskState"
-```
-
-**JSON Values:**
-
-- **`submitted`**: Represents the status that acknowledges a task is created.
-- **`working`**: Represents the status that a task is actively being processed.
-- **`completed`**: Represents the status that a task is finished. This is a terminal state.
-- **`failed`**: Represents the status that a task is done but failed. This is a terminal state.
-- **`cancelled`**: Represents the status that a task was cancelled before it finished. This is a terminal state.
-- **`input-required`**: Represents the status that the task requires information to complete. This is an interrupted state.
-- **`rejected`**: Represents the status that the agent has decided to not perform the task. This may be done during initial task creation or later once an agent has determined it can't or won't proceed. This is a terminal state.
-- **`auth-required`**: Represents the state that some authentication is needed from the upstream client. Authentication is expected to come out-of-band thus this is not an interrupted or terminal state.
+<a id="Message"></a>
 
 #### 4.1.4. Message
 
-<span id="4241-messagesendconfiguration"></span>
+{{ proto_to_table("specification/grpc/a2a.proto", "Message") }}
 
-Represents a single communication turn between a client and an agent.
-
-```proto
---8<-- "specification/grpc/a2a.proto:Message"
-```
-
-**Fields:**
-
-- **`messageId`** (required, string): The unique identifier (e.g. UUID) of the message. This is created by the message creator.
-- **`contextId`** (optional, string): The context id of the message. If set, the message will be associated with the given context.
-- **`taskId`** (optional, string): The task id of the message. If set, the message will be associated with the given task.
-- **`role`** (required, [`Role`](#415-role)): The role of the message sender (user or agent).
-- **`parts`** (required, array of [`Part`](#416-part)): The container of the message content. Must contain at least one part.
-- **`metadata`** (optional, object): Any optional metadata to provide along with the message.
-- **`extensions`** (optional, array of strings): The URIs of extensions that are present or contributed to this Message.
-- **`referenceTaskIds`** (optional, array of strings): A list of task IDs that this message references for additional context.
+<a id="Role"></a>
 
 #### 4.1.5. Role
 
-Defines the sender of a message in the A2A protocol communication.
+{{ proto_enum_to_table("specification/grpc/a2a.proto", "Role") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:Role"
-```
-
-**JSON Values:**
-
-- **`user`**: Indicates communication from the client to the server.
-- **`agent`**: Indicates communication from the server to the client.
+<a id="Part"></a>
 
 #### 4.1.6. Part
 
-Represents a distinct piece of content within a Message or Artifact.
+{{ proto_to_table("specification/grpc/a2a.proto", "Part") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:Part"
-```
-
-**Fields:**
-
-A Part contains exactly one of the following content types:
-
-- **`text`** (string): Plain text content.
-- **`file`** ([`FilePart`](#417-filepart)): File-based content (image, document, etc.).
-- **`data`** ([`DataPart`](#418-datapart)): Structured JSON data.
-
-Additionally:
-
-- **`metadata`** (optional, object): Optional metadata associated with this part.
+<a id="FilePart"></a>
 
 #### 4.1.7. FilePart
 
-Represents file-based content within a Part.
+{{ proto_to_table("specification/grpc/a2a.proto", "FilePart") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:FilePart"
-```
-
-**Fields:**
-
-A FilePart contains exactly one of the following:
-
-- **`fileWithUri`** (string): URI reference to the file location.
-- **`fileWithBytes`** (bytes): The file content as base64-encoded bytes.
-
-Additionally:
-
-- **`mediaType`** (optional, string): The media type of the file (e.g., "application/pdf", "image/png").
-- **`name`** (optional, string): The filename.
+<a id="DataPart"></a>
 
 #### 4.1.8. DataPart
 
-Represents structured JSON data within a Part.
+{{ proto_to_table("specification/grpc/a2a.proto", "DataPart") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:DataPart"
-```
-
-**Fields:**
-
-- **`data`** (required, object): A structured JSON object containing arbitrary data.
+<a id="Artifact"></a>
 
 #### 4.1.9. Artifact
 
-Represents a tangible output generated by the agent during a task.
-
-```proto
---8<-- "specification/grpc/a2a.proto:Artifact"
-```
-
-**Fields:**
-
-- **`artifactId`** (required, string): Unique identifier (e.g. UUID) for the artifact. It must be at least unique within a task.
-- **`name`** (optional, string): A human readable name for the artifact.
-- **`description`** (optional, string): A human readable description of the artifact.
-- **`parts`** (required, array of [`Part`](#416-part)): The content of the artifact. Must contain at least one part.
-- **`metadata`** (optional, object): Optional metadata included with the artifact.
-- **`extensions`** (optional, array of strings): The URIs of extensions that are present or contributed to this Artifact.
+{{ proto_to_table("specification/grpc/a2a.proto", "Artifact") }}
 
 ### 4.2. Streaming Events
 
+<a id="TaskStatusUpdateEvent"></a>
+
 #### 4.2.1. TaskStatusUpdateEvent
 
-<span id="4192-taskstatusupdateevent"></span><span id="722-taskstatusupdateevent-object"></span>
+{{ proto_to_table("specification/grpc/a2a.proto", "TaskStatusUpdateEvent") }}
 
-Carries information about a change in task status during streaming.
-
-```proto
---8<-- "specification/grpc/a2a.proto:TaskStatusUpdateEvent"
-```
-
-**Fields:**
-
-- **`taskId`** (required, string): The id of the task that is changed.
-- **`contextId`** (required, string): The id of the context that the task belongs to.
-- **`status`** (required, [`TaskStatus`](#412-taskstatus)): The new status of the task.
-- **`final`** (required, boolean): Whether this is the last status update expected for this task.
-- **`metadata`** (optional, object): Optional metadata to associate with the task update.
+<a id="TaskArtifactUpdateEvent"></a>
 
 #### 4.2.2. TaskArtifactUpdateEvent
 
-<span id="4193-taskartifactupdateevent"></span><span id="723-taskartifactupdateevent-object"></span>
-
-Carries a new or updated artifact generated during streaming.
-
-```proto
---8<-- "specification/grpc/a2a.proto:TaskArtifactUpdateEvent"
-```
-
-**Fields:**
-
-- **`taskId`** (required, string): The id of the task for this artifact.
-- **`contextId`** (required, string): The id of the context that this task belongs to.
-- **`artifact`** (required, [`Artifact`](#419-artifact)): The artifact itself.
-- **`append`** (optional, boolean): Whether this should be appended to a prior artifact produced.
-- **`lastChunk`** (optional, boolean): Whether this represents the last part of an artifact.
-- **`metadata`** (optional, object): Optional metadata associated with the artifact update.
+{{ proto_to_table("specification/grpc/a2a.proto", "TaskArtifactUpdateEvent") }}
 
 ### 4.3. Push Notification Objects
 
+<a id="PushNotificationConfig"></a>
+
 #### 4.3.1. PushNotificationConfig
 
-<span id="68-pushnotificationconfig-object"></span><span id="431-pushnotificationconfig"></span>
+{{ proto_to_table("specification/grpc/a2a.proto", "PushNotificationConfig") }}
 
-Configuration for setting up push notifications for task updates.
-
-```proto
---8<-- "specification/grpc/a2a.proto:PushNotificationConfig"
-```
-
-**Fields:**
-
-- **`id`** (optional, string): A unique identifier (e.g. UUID) for this push notification.
-- **`url`** (required, string): URL to send the notification to.
-- **`token`** (optional, string): Token unique for this task/session.
-- **`authentication`** (optional, [`AuthenticationInfo`](#432-authenticationinfo)): Information about the authentication to send with the notification.
+<a id="PushNotificationAuthenticationInfo"></a>
 
 #### 4.3.2. AuthenticationInfo
 
-Defines authentication details for push notifications.
-
-```proto
---8<-- "specification/grpc/a2a.proto:PushNotificationAuthenticationInfo"
-```
-
-**Fields:**
-
-- **`schemes`** (required, array of strings): Supported authentication schemes (e.g., "Basic", "Bearer").
-- **`credentials`** (optional, string): Optional credentials string.
+{{ proto_to_table("specification/grpc/a2a.proto", "PushNotificationAuthenticationInfo") }}
 
 #### 4.3.3. Push Notification Payload
-
-<parameter name="id">update-push-notification-payload-section-number
-<span id="434-push-notification-payload"></span>
 
 When a task update occurs, the agent sends an HTTP POST request to the configured webhook URL. The payload uses the same [`StreamResponse`](#323-stream-response) format as streaming operations, allowing push notifications to deliver the same event types as real-time streams.
 
@@ -1039,17 +847,11 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 ### 4.4. Agent Discovery Objects
 
+<a id="AgentCard"></a>
+
 #### 4.4.1. AgentCard
 
-<span id="710-agentgetauthenticatedextendedcard"></span><span id="421-agentcard"></span>
-
-The primary metadata document describing an agent's capabilities and interface.
-
-```proto
---8<-- "specification/grpc/a2a.proto:AgentCard"
-```
-
-**Fields:**
+{{ proto_to_table("specification/grpc/a2a.proto", "AgentCard") }}
 
 - **`protocolVersion`** (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".
 - **`name`** (required, string): A human readable name for the agent.
@@ -1067,182 +869,109 @@ The primary metadata document describing an agent's capabilities and interface.
 - **`supportsExtendedAgentCard`** (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.
 - **`signatures`** (optional, array of [`AgentCardSignature`](#447-agentcardsignature)): JSON Web Signatures computed for this AgentCard.
 - **`iconUrl`** (optional, string): An optional URL to an icon for the agent.
+<a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
 
-Information about the organization providing the agent.
+{{ proto_to_table("specification/grpc/a2a.proto", "AgentProvider") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:AgentProvider"
-```
-
-**Fields:**
-
-- **`url`** (required, string): A URL for the agent provider's website or relevant documentation.
-- **`organization`** (required, string): The name of the agent provider's organization.
+<a id="AgentCapabilities"></a>
 
 #### 4.4.3. AgentCapabilities
 
-Defines optional A2A protocol features supported by the agent.
+{{ proto_to_table("specification/grpc/a2a.proto", "AgentCapabilities") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:AgentCapabilities"
-```
-
-**Fields:**
-
-- **`streaming`** (optional, boolean): Indicates if the agent supports streaming responses.
-- **`pushNotifications`** (optional, boolean): Indicates if the agent supports sending push notifications for asynchronous task updates.
-- **`extensions`** (optional, array of [`AgentExtension`](#444-agentextension)): A list of protocol extensions supported by the agent.
-- **`stateTransitionHistory`** (optional, boolean): Indicates if the agent provides a history of state transitions for a task.
+<a id="AgentExtension"></a>
 
 #### 4.4.4. AgentExtension
 
-Specifies a protocol extension supported by the agent.
+{{ proto_to_table("specification/grpc/a2a.proto", "AgentExtension") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:AgentExtension"
-```
-
-**Fields:**
-
-- **`uri`** (optional, string): The unique URI identifying the extension.
-- **`description`** (optional, string): A human-readable description of how this agent uses the extension.
-- **`required`** (optional, boolean): If true, the client must understand and comply with the extension's requirements.
-- **`params`** (optional, object): Optional, extension-specific configuration parameters.
+<a id="AgentSkill"></a>
 
 #### 4.4.5. AgentSkill
 
-Describes a specific capability or area of expertise the agent can perform.
+{{ proto_to_table("specification/grpc/a2a.proto", "AgentSkill") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:AgentSkill"
-```
-
-**Fields:**
-
-- **`id`** (required, string): A unique identifier for the agent's skill.
-- **`name`** (required, string): A human-readable name for the skill.
-- **`description`** (required, string): A detailed description of the skill.
-- **`tags`** (required, array of strings): A set of keywords describing the skill's capabilities.
-- **`examples`** (optional, array of strings): Example prompts or scenarios that this skill can handle.
-- **`inputModes`** (optional, array of strings): The set of supported input media types for this skill, overriding the agent's defaults.
-- **`outputModes`** (optional, array of strings): The set of supported output media types for this skill, overriding the agent's defaults.
-- **`security`** (optional, array of Security): Security schemes necessary for this skill.
+<a id="AgentInterface"></a>
 
 #### 4.4.6. AgentInterface
 
-Declares additional protocols supported by the agent.
+{{ proto_to_table("specification/grpc/a2a.proto", "AgentInterface") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:AgentInterface"
-```
-
-**Fields:**
-
-- **`url`** (required, string): The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
-- **`protocolBinding`** (required, string): The protocol binding supported at this URL. Examples: "JSONRPC", "GRPC", "HTTP+JSON".
+<a id="AgentCardSignature"></a>
 
 #### 4.4.7. AgentCardSignature
 
-Represents a JSON Web Signature for Agent Card verification.
-
-```proto
---8<-- "specification/grpc/a2a.proto:AgentCardSignature"
-```
-
-**Fields:**
-
-- **`protected`** (required, string): The protected JWS header for the signature. This is always a base64url-encoded JSON object.
-- **`signature`** (required, string): The computed signature, base64url-encoded.
-- **`header`** (optional, object): The unprotected JWS header values.
+{{ proto_to_table("specification/grpc/a2a.proto", "AgentCardSignature") }}
 
 ### 4.5. Security Objects
 
+<a id="SecurityScheme"></a>
+
 #### 4.5.1. SecurityScheme
 
-Base security scheme definition supporting multiple authentication types.
+{{ proto_to_table("specification/grpc/a2a.proto", "SecurityScheme") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:SecurityScheme"
-```
-
-**Fields:**
-
-A SecurityScheme contains exactly one of the following authentication types:
-
-- **`apiKeySecurityScheme`** ([`APIKeySecurityScheme`](#452-apikeysecurityscheme)): API key-based authentication.
-- **`httpAuthSecurityScheme`** ([`HTTPAuthSecurityScheme`](#453-httpauthsecurityscheme)): HTTP authentication (Basic, Bearer, etc.).
-- **`oauth2SecurityScheme`** ([`OAuth2SecurityScheme`](#454-oauth2securityscheme)): OAuth 2.0 authentication.
-- **`openIdConnectSecurityScheme`** ([`OpenIdConnectSecurityScheme`](#455-openidconnectsecurityscheme)): OpenID Connect authentication.
-- **`mtlsSecurityScheme`** ([`MutualTLSSecurityScheme`](#456-mutualtlssecurityscheme)): Mutual TLS authentication.
+<a id="APIKeySecurityScheme"></a>
 
 #### 4.5.2. APIKeySecurityScheme
 
-API key-based authentication scheme.
+{{ proto_to_table("specification/grpc/a2a.proto", "APIKeySecurityScheme") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:APIKeySecurityScheme"
-```
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`location`** (required, string): The location of the API key. Valid values are "query", "header", or "cookie".
-- **`name`** (required, string): The name of the header, query, or cookie parameter to be used.
+<a id="HTTPAuthSecurityScheme"></a>
 
 #### 4.5.3. HTTPAuthSecurityScheme
 
-HTTP authentication scheme (Basic, Bearer, etc.).
+{{ proto_to_table("specification/grpc/a2a.proto", "HTTPAuthSecurityScheme") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:HTTPAuthSecurityScheme"
-```
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`scheme`** (required, string): The name of the HTTP Authentication scheme to be used in the Authorization header, as defined in RFC7235 (e.g., "Bearer"). This value should be registered in the IANA Authentication Scheme registry.
-- **`bearerFormat`** (optional, string): A hint to the client to identify how the bearer token is formatted (e.g., "JWT"). This is primarily for documentation purposes.
+<a id="OAuth2SecurityScheme"></a>
 
 #### 4.5.4. OAuth2SecurityScheme
 
-OAuth 2.0 authentication scheme.
+{{ proto_to_table("specification/grpc/a2a.proto", "OAuth2SecurityScheme") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:OAuth2SecurityScheme"
-```
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`flows`** (required, OAuthFlows): An object containing configuration information for the supported OAuth 2.0 flows.
-- **`oauth2MetadataUrl`** (optional, string): URL to the OAuth2 authorization server metadata per RFC8414. TLS is required.
+<a id="OpenIdConnectSecurityScheme"></a>
 
 #### 4.5.5. OpenIdConnectSecurityScheme
 
-OpenID Connect authentication scheme.
+{{ proto_to_table("specification/grpc/a2a.proto", "OpenIdConnectSecurityScheme") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:OpenIdConnectSecurityScheme"
-```
-
-**Fields:**
-
-- **`description`** (optional, string): An optional description for the security scheme.
-- **`openIdConnectUrl`** (required, string): The OpenID Connect Discovery URL for the OIDC provider's metadata.
+<a id="MutualTlsSecurityScheme"></a>
 
 #### 4.5.6. MutualTLSSecurityScheme
 
-Mutual TLS authentication scheme.
+{{ proto_to_table("specification/grpc/a2a.proto", "MutualTlsSecurityScheme") }}
 
-```proto
---8<-- "specification/grpc/a2a.proto:MutualTLSSecurityScheme"
-```
+<a id="OAuthFlows"></a>
 
-**Fields:**
+#### 4.5.7. OAuthFlows
 
-- **`description`** (optional, string): An optional description for the security scheme.
+{{ proto_to_table("specification/grpc/a2a.proto", "OAuthFlows") }}
+
+<a id="AuthorizationCodeOAuthFlow"></a>
+
+#### 4.5.8. AuthorizationCodeOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "AuthorizationCodeOAuthFlow") }}
+
+<a id="ClientCredentialsOAuthFlow"></a>
+
+#### 4.5.9. ClientCredentialsOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "ClientCredentialsOAuthFlow") }}
+
+<a id="ImplicitOAuthFlow"></a>
+
+#### 4.5.10. ImplicitOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "ImplicitOAuthFlow") }}
+
+<a id="PasswordOAuthFlow"></a>
+
+#### 4.5.11. PasswordOAuthFlow
+
+{{ proto_to_table("specification/grpc/a2a.proto", "PasswordOAuthFlow") }}
 
 ### 4.6. Extensions
 
@@ -2501,8 +2230,12 @@ Sends a message to initiate or continue a task.
 {
   "jsonrpc": "2.0",
   "id": 1,
-  "result": { /* Task or Message object */ }
-}
+  "result": {
+    /* SendMessageResponse object, contains one of:
+     * "task": { Task object }
+     * "message": { Message object }
+    */
+  }
 ```
 
 **Referenced Objects:** [`Task`](#411-task), [`Message`](#414-message)
@@ -2897,8 +2630,7 @@ Resource wrapper for push notification configurations. This is a gRPC-specific t
 
 **Fields:**
 
-- **`name`** (required, string): Resource name in the format "tasks/{taskId}/pushNotificationConfigs/{configId}".
-- **`pushNotificationConfig`** (required, [`PushNotificationConfig`](#431-pushnotificationconfig)): The push notification configuration.
+{{ proto_to_table("specification/grpc/a2a.proto", "TaskPushNotificationConfig") }}
 
 ### 10.6. Error Handling
 
