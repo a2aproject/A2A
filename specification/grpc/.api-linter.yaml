@@ -1,25 +1,20 @@
----
 # API Linter Configuration
 # https://linter.aip.dev/
 
-configs:
-  - files:
-      - "**/*.proto"
-    disabled_rules:
-      # Formatting and blank line rules
-      - core::0191::java-multiple-files
-      - core::0191::java-outer-classname
-      - core::0191::java-package
-
-      # Comment and documentation rules
-      - core::0192::has-comments # Suppress missing comment warnings
-      - core::0123::resource-annotation # Resource name annotations
-      - core::0203::optional # Optional field comments
-      - core::0203::required # Required field comments
-      - core::0127::http-annotation # HTTP annotation comments
-      - core::0131::request-message-name # Request naming
-      - core::0132::response-message-name # Response naming
-      - core::0158::request-required-fields # Required request fields
-      - core::0203::input-only # Input only field comments
-      - core::0203::output-only # Output only field comments
-      - core::0203::immutable # Immutable field comments
+files:
+  - "**/*.proto"
+disabled_rules:
+  - core::0191::java-multiple-files
+  - core::0191::java-outer-classname
+  - core::0191::java-package
+  - core::0192::has-comments
+  - core::0123::resource-annotation
+  - core::0203::optional
+  - core::0203::required
+  - core::0127::http-annotation
+  - core::0131::request-message-name
+  - core::0132::response-message-name
+  - core::0158::request-required-fields
+  - core::0203::input-only
+  - core::0203::output-only
+  - core::0203::immutable
