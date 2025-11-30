@@ -27,3 +27,21 @@ jobs:
         uses: super-linter/super-linter/slim@v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  api-linter:
+    name: API Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Run API Linter
+        uses: googleapis/api-linter@v2.2.0
+        with:
+          # Lint all proto files in the specification/grpc directory
+          proto-path: specification/grpc
+          # Use the api-linter configuration file
+          config-path: specification/grpc/.api-linter.yaml
