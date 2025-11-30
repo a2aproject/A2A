@@ -54,10 +54,12 @@
 [Brief description of option 1]
 
 **Pros:**
+
 * [Advantage 1]
 * [Advantage 2]
 
 **Cons:**
+
 * [Disadvantage 1]
 * [Disadvantage 2]
 
@@ -66,10 +68,13 @@
 [Brief description of option 2]
 
 **Pros:**
+
 * [Advantage 1]
+* [Advantage 2]
 * [Advantage 2]
 
 **Cons:**
+
 * [Disadvantage 1]
 * [Disadvantage 2]
 
@@ -78,10 +83,13 @@
 [Brief description of option 3]
 
 **Pros:**
+
 * [Advantage 1]
+* [Advantage 2]
 * [Advantage 2]
 
 **Cons:**
+
 * [Disadvantage 1]
 * [Disadvantage 2]
 
