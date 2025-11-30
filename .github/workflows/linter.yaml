@@ -56,10 +56,23 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v6
 
+      - name: Install buf
+        run: |
+          curl -sSL "https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64" -o buf
+          sudo mv buf /usr/local/bin/buf
+          sudo chmod +x /usr/local/bin/buf
+
+      - name: Download proto dependencies
+        working-directory: specification/grpc
+        run: buf dep update
+
+      - name: Install api-linter
+        run: |
+          curl -L https://github.com/googleapis/api-linter/releases/latest/download/api-linter-linux-amd64.tar.gz | tar -xz
+          sudo mv api-linter /usr/local/bin/
+
       - name: Run API Linter
-        uses: googleapis/api-linter@v1
-        with:
-          # Lint all proto files in the specification/grpc directory
-          proto-path: specification/grpc
-          # Use the api-linter configuration file
-          config-path: specification/grpc/.api-linter.yaml
+        working-directory: specification/grpc
+        run: |
+          # Run api-linter with buf's module cache for imports
+          api-linter --config .api-linter.yaml --set-exit-status a2a.proto
