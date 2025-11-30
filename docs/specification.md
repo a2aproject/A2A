@@ -702,11 +702,25 @@ Push notifications are delivered via HTTP POST to client-registered webhook endp
 
 ### 3.6 Versioning
 
-The specific version of the A2A protocol in use is identified using the `Major.Minor` elements (e.g. `1.0`) of the corresponding A2A specification version. Patch version numbers do not affect protocol compatibility, SHOULD NOT be included in requests and responses, and MUST not be considered when clients and servers negotiate protocol versions.
+The specific version of the A2A protocol in use is identified using the `Major.Minor` elements (e.g. `1.0`) of the corresponding A2A specification version. Patch version numbers used by the specification, do not affect protocol compatibility. Patch version numbers SHOULD NOT be used in requests, responses and Agent Cards, and MUST not be considered when clients and servers negotiate protocol versions.
 
-Agents declare support for latest supported protocol version in the `protocolVersion` field in the Agent Card. Agents MAY also support earlier protocol versions. Clients SHOULD specify the desired protocol version in requests using the `A2A-Version` header. If the requested version is not supported by the agent, the agent MUST return a `VersionNotSupportedError`.
+Agents declare support for latest supported protocol version in the `protocolVersion` field in the Agent Card. Agents MAY also support earlier protocol versions.
 
-It is RECOMMENDED that clients send the `A2A-Version` header with each request to reduce the chances of being broken if an agent upgrades to a new version of the protocol. Sending the `A2A-Version` header provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
+#### 3.6.1 Client Responsibilities
+
+It is RECOMMENDED that clients send the `A2A-Version` header with each request to maintain compatibility after an agent upgrades to a new version of the protocol. Sending the `A2A-Version` header also provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
+
+#### 3.6.2 Server Responsibilities
+
+Agents that receive requests with a supported `A2A-Version` MUST process the request according to the semantics defined in the latest patch version of the specification with the same `Major.Minor` values. If the requested version is not supported by the agent, the agent MUST return a `VersionNotSupportedError`.
+
+#### 3.6.3 Client Fallback
+
+Clients that receive a `VersionNotSupportedError` can choose to retry the request with an earlier supported version, or fail the request. Requiring clients to explicitly handle version negotiation failures helps prevent unexpected behavior due to agents not properly handling new protocol features and fields.
+
+#### 3.6.4 Tooling support
+
+Tooling libraries and SDKs that implement the A2A protocol SHOULD provide mechanisms to help clients manage protocol versioning, such as providing configuration options to enable automatic fallback to earlier versions when a `VersionNotSupportedError` is encountered. Client Agents that require the latest features of the protocol should not enable automatic fallback, to avoid silently losing functionality.
 
 ## 4. Protocol Data Model
 
