@@ -45,3 +45,21 @@ jobs:
           TYPESCRIPT_ES_CONFIG_FILE: ".eslintrc.js"
           MARKDOWN_CONFIG_FILE: ".markdownlint.json"
           PROTOBUF_CONFIG_FILE: ".protolint.yaml"
+
+  api-linter:
+    name: API Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Run API Linter
+        uses: googleapis/api-linter@v1
+        with:
+          # Lint all proto files in the specification/grpc directory
+          proto-path: specification/grpc
+          # Use the api-linter configuration file
+          config-path: specification/grpc/.api-linter.yaml
