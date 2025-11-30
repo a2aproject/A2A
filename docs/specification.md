@@ -716,7 +716,7 @@ Agents that receive requests with a supported `A2A-Version` MUST process the req
 
 #### 3.6.3 Client Fallback
 
-Clients that receive a `VersionNotSupportedError` can choose to retry the request with an earlier supported version, or fail the request. Requiring clients to explicitly handle version negotiation failures helps prevent unexpected behavior due to agents not properly handling new protocol features and fields.
+Clients that receive a `VersionNotSupportedError` can choose to retry the request with an earlier supported version, or fail the request. This explicit failure handling helps prevent unexpected behavior that could arise if an agent processes a request containing protocol features or fields it does not recognize.
 
 #### 3.6.4 Tooling support
 
