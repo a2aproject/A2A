@@ -77,4 +77,5 @@ jobs:
         working-directory: specification/grpc
         run: |
           # Run api-linter with buf's module cache for imports
-          api-linter --config .api-linter.yaml --set-exit-status a2a.proto
+          # Buf stores dependencies in .buf/modules
+          api-linter --config .api-linter.yaml --set-exit-status --proto-path . --proto-path .buf a2a.proto
