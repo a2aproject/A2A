@@ -68,8 +68,10 @@ jobs:
 
       - name: Install api-linter
         run: |
-          curl -L https://github.com/googleapis/api-linter/releases/latest/download/api-linter-linux-amd64.tar.gz | tar -xz
+          curl -L https://github.com/googleapis/api-linter/releases/download/v1.67.6/api-linter-1.67.6-linux-amd64.tar.gz -o api-linter.tar.gz
+          tar -xzf api-linter.tar.gz
           sudo mv api-linter /usr/local/bin/
+          sudo chmod +x /usr/local/bin/api-linter
 
       - name: Run API Linter
         working-directory: specification/grpc
