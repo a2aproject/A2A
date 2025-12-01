@@ -60,8 +60,9 @@ def define_env(env):
         # Extract description (before message), fields, and notes (after message)
         description, fields, notes, oneof_groups = _parse_proto_message_full(message_content)
 
+        # Handle the case of empty proto message
         if not fields:
-            return f"**Error:** No fields found in message '{message_name}'"
+            return "None"
 
         # Build the output
         output = []
