@@ -45,8 +45,7 @@ service A2AService {
     option (google.api.http) = {
       get: "/v1/{name=tasks/*}"
       additional_bindings: {
-        post: "/{tenant}/v1/{name=tasks/*}"
-        body: "*"
+        get: "/{tenant}/v1/{name=tasks/*}"
       }
     };
     option (google.api.method_signature) = "name";
