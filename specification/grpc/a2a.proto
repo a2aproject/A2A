@@ -716,10 +716,6 @@ message SendMessageRequest {
     (google.api.field_behavior) = REQUIRED,
     json_name = "message"
   ];
-  Message request = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    json_name = "message"
-  ];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // A flexible key-value map for passing additional context or parameters.
@@ -822,7 +818,6 @@ message SetTaskPushNotificationConfigRequest {
   // The ID for the new config.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
-  TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
   TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:SetTaskPushNotificationConfigRequest]
