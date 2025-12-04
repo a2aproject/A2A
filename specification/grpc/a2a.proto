@@ -400,8 +400,6 @@ message AgentInterface {
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
   // Tenant to be set in the request when calling the agent.
   string tenant = 3;
-  // Tenant to be set in the request when calling the agent.
-  string tenant = 3;
 }
 // --8<-- [end:AgentInterface]
 
@@ -713,8 +711,6 @@ message PasswordOAuthFlow {
 message SendMessageRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
-  // Optional tenant, provided as a path parameter.
-  string tenant = 4;
   // The message to send to the agent.
   Message request = 1 [
     (google.api.field_behavior) = REQUIRED,
@@ -736,8 +732,6 @@ message SendMessageRequest {
 message GetTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 3;
-  // Optional tenant, provided as a path parameter.
-  string tenant = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -749,8 +743,6 @@ message GetTaskRequest {
 // --8<-- [start:ListTasksRequest]
 // Parameters for listing tasks with optional filtering criteria.
 message ListTasksRequest {
-  // Optional tenant, provided as a path parameter.
-  string tenant = 9;
   // Optional tenant, provided as a path parameter.
   string tenant = 9;
   // Filter tasks by context ID to get tasks from a specific conversation or session.
@@ -792,8 +784,6 @@ message ListTasksResponse {
 message CancelTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // Optional tenant, provided as a path parameter.
-  string tenant = 2;
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
@@ -802,8 +792,6 @@ message CancelTaskRequest {
 
 // --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
-  // Optional tenant, provided as a path parameter.
-  string tenant = 2;
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
   // The resource name of the config to retrieve.
@@ -817,8 +805,6 @@ message GetTaskPushNotificationConfigRequest {
 message DeleteTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // Optional tenant, provided as a path parameter.
-  string tenant = 2;
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -828,8 +814,6 @@ message DeleteTaskPushNotificationConfigRequest {
 // --8<-- [start:SetTaskPushNotificationConfigRequest]
 // Represents a request for the `tasks/pushNotificationConfig/set` method.
 message SetTaskPushNotificationConfigRequest {
-  // Optional tenant, provided as a path parameter.
-  string tenant = 4;
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The parent task resource for this config.
@@ -847,8 +831,6 @@ message SetTaskPushNotificationConfigRequest {
 message SubscribeToTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // Optional tenant, provided as a path parameter.
-  string tenant = 2;
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
@@ -857,8 +839,6 @@ message SubscribeToTaskRequest {
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
-  // Optional tenant, provided as a path parameter.
-  string tenant = 4;
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The parent task resource.
@@ -874,8 +854,6 @@ message ListTaskPushNotificationConfigRequest {
 
 // --8<-- [start:GetExtendedAgentCardRequest]
 message GetExtendedAgentCardRequest {
-  // Optional tenant, provided as a path parameter.
-  string tenant = 1;
   // Optional tenant, provided as a path parameter.
   string tenant = 1;
 }
