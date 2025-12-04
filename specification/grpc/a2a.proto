@@ -73,7 +73,6 @@ service A2AService {
   // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
   // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
-  rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       get: "/{name=tasks/*}:subscribe"
       additional_bindings: {
@@ -83,7 +82,6 @@ service A2AService {
   }
 
   // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
   rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/{parent=tasks/*/pushNotificationConfigs}"
@@ -97,7 +95,6 @@ service A2AService {
   }
   // Get a push notification config for a task.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
-  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       get: "/{name=tasks/*/pushNotificationConfigs/*}"
       additional_bindings: {
@@ -107,7 +104,6 @@ service A2AService {
     option (google.api.method_signature) = "name";
   }
   // Get a list of push notifications configured for a task.
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
       get: "/{parent=tasks/*}/pushNotificationConfigs"
@@ -127,7 +123,6 @@ service A2AService {
     };
   }
   // Delete a push notification config for a task.
-  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/{name=tasks/*/pushNotificationConfigs/*}"
