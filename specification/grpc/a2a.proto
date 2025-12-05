@@ -59,6 +59,28 @@ service A2AService {
       }
     };
   }
+  // Pause a task.
+  rpc PauseTask(PauseTaskRequest) returns (Task) {
+    option (google.api.http) = {
+      post: "/{name=tasks/*}:pause"
+      body: "*"
+      additional_bindings: {
+        post: "/{tenant}/{name=tasks/*}:pause"
+        body: "*"
+      }
+    };
+  }
+  // Resume a task.
+  rpc ResumeTask(ResumeTaskRequest) returns (Task) {
+    option (google.api.http) = {
+      post: "/{name=tasks/*}:resume"
+      body: "*"
+      additional_bindings: {
+        post: "/{tenant}/{name=tasks/*}:resume"
+        body: "*"
+      }
+    };
+  }
   // Cancel a task.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
     option (google.api.http) = {
@@ -483,6 +505,8 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent provides a history of state transitions for a task.
   optional bool state_transition_history = 4;
+  // Indicates if the agent supports pause and resume of tasks.
+  optional bool pause_resume = 5;
 }
 // --8<-- [end:AgentCapabilities]
 
@@ -774,6 +798,28 @@ message ListTasksResponse {
   int32 total_size = 4 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:ListTasksResponse]
+
+// --8<-- [start:PauseTaskRequest]
+// Represents a request for the `tasks/cancel` method.
+message PauseTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
+  // The resource name of the task to cancel.
+  // Format: tasks/{task_id}
+  string name = 1;
+}
+// --8<-- [end:PauseTaskRequest]
+
+// --8<-- [start:ResumeTaskRequest]
+// Represents a request for the `tasks/cancel` method.
+message ResumeTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
+  // The resource name of the task to cancel.
+  // Format: tasks/{task_id}
+  string name = 1;
+}
+// --8<-- [end:ResumeTaskRequest]
 
 // --8<-- [start:CancelTaskRequest]
 // Represents a request for the `tasks/cancel` method.
