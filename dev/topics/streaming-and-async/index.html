@@ -1788,7 +1788,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 </ul>
 </li>
 <li><strong>Notification Trigger:</strong> The A2A Server decides when to send a push notification, typically when a task reaches a significant state change (for example, terminal state, <code>input-required</code>, or <code>auth-required</code>).</li>
-<li><strong>Notification Payload:</strong> The A2A protocol does not strictly define the HTTP body payload, but it SHOULD contain sufficient information for the client to identify the Task ID and understand the general nature of the update (for example, the new <code>TaskState</code>).</li>
+<li><strong>Notification Payload:</strong> The A2A protocol defines the HTTP body payload as a <a href="../../specification/#323-stream-response"><code>StreamResponse</code></a> object, matching the format used in streaming operations. The payload contains one of: <code>task</code>, <code>message</code>, <code>statusUpdate</code>, or <code>artifactUpdate</code>. See <a href="../../specification/#434-push-notification-payload">Push Notification Payload</a> for detailed structure.</li>
 <li><strong>Client Action:</strong> Upon receiving a push notification (and successfully verifying its authenticity), the client typically uses the <code>tasks/get</code> RPC method with the <code>taskId</code> from the notification to retrieve the complete, updated <code>Task</code> object, including any new artifacts.</li>
 </ul>
 <h3 id="when-to-use-push-notifications">When to Use Push Notifications<a class="headerlink" href="#when-to-use-push-notifications" title="Permanent link">&para;</a></h3>

@@ -309,6 +309,11 @@
           "description": "The protocol binding supported at this URL. This is an open form string, to be\n easily extended for other protocol bindings. The core ones officially\n supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.",
           "type": "string"
         },
+        "tenant": {
+          "default": "",
+          "description": "Tenant to be set in the request when calling the agent.",
+          "type": "string"
+        },
         "url": {
           "default": "",
           "description": "The URL where this interface is available. Must be a valid absolute HTTPS URL in production.\n Example: \"https://api.example.com/a2a/v1\", \"https://grpc.example.com/a2a\"",
@@ -542,6 +547,11 @@
           "default": "",
           "description": "The resource name of the task to cancel.\n Format: tasks/{task_id}",
           "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
+          "type": "string"
         }
       },
       "title": "Cancel Task Request",
@@ -610,6 +620,11 @@
           "default": "",
           "description": "The resource name of the config to delete.\n Format: tasks/{task_id}/pushNotificationConfigs/{config_id}",
           "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
+          "type": "string"
         }
       },
       "title": "Delete Task Push Notification Config Request",
@@ -662,7 +677,13 @@
     "Get Extended Agent Card Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "properties": {},
+      "properties": {
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
+          "type": "string"
+        }
+      },
       "title": "Get Extended Agent Card Request",
       "type": "object"
     },
@@ -673,6 +694,11 @@
         "name": {
           "default": "",
           "description": "The resource name of the config to retrieve.\n Format: tasks/{task_id}/pushNotificationConfigs/{config_id}",
+          "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -717,6 +743,11 @@
         "name": {
           "default": "",
           "description": "The resource name of the task.\n Format: tasks/{task_id}",
+          "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -844,6 +875,11 @@
         "parent": {
           "default": "",
           "description": "The parent task resource.\n Format: tasks/{task_id}",
+          "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -976,10 +1012,6 @@
           "default": 0,
           "description": "Filter tasks updated after this timestamp (milliseconds since epoch).\n Only tasks with a last updated time greater than or equal to this value will be returned."
         },
-        "metadata": {
-          "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Request-specific metadata."
-        },
         "pageSize": {
           "anyOf": [
             {
@@ -1027,6 +1059,11 @@
           "default": 0,
           "description": "Filter tasks by their current status state.",
           "title": "Task State"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
+          "type": "string"
         }
       },
       "title": "List Tasks Request",
@@ -1571,6 +1608,11 @@
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
           "description": "A flexible key-value map for passing additional context or parameters."
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
+          "type": "string"
         }
       },
       "title": "Send Message Request",
@@ -1620,6 +1662,11 @@
         "parent": {
           "default": "",
           "description": "The parent task resource for this config.\n Format: tasks/{task_id}",
+          "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -1686,6 +1733,11 @@
         "name": {
           "default": "",
           "description": "The resource name of the task to subscribe to.\n Format: tasks/{task_id}",
+          "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
           "type": "string"
         }
       },
