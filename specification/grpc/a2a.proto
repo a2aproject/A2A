@@ -20,83 +20,115 @@ service A2AService {
   // Send a message to the agent.
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {
     option (google.api.http) = {
-      post: "/v1/message:send"
+      post: "/message:send"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:send"
+        body: "*"
+      }
     };
   }
   // SendStreamingMessage is a streaming version of SendMessage.
   rpc SendStreamingMessage(SendMessageRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      post: "/v1/message:stream"
+      post: "/message:stream"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:stream"
+        body: "*"
+      }
     };
   }
 
   // Get the current state of a task from the agent.
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*}"
+      get: "/{name=tasks/*}"
+      additional_bindings: {
+        get: "/{tenant}/{name=tasks/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
   // List tasks with optional filtering and pagination.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
-      get: "/v1/tasks"
+      get: "/tasks"
+      additional_bindings: {
+        get: "/{tenant}/tasks"
+      }
     };
   }
   // Cancel a task.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
     option (google.api.http) = {
-      post: "/v1/{name=tasks/*}:cancel"
+      post: "/{name=tasks/*}:cancel"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/{name=tasks/*}:cancel"
+        body: "*"
+      }
     };
   }
   // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
   // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
-  rpc SubscribeToTask(SubscribeToTaskRequest)
-      returns (stream StreamResponse) {
+  rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*}:subscribe"
+      get: "/{name=tasks/*}:subscribe"
+      additional_bindings: {
+        get: "/{tenant}/{name=tasks/*}:subscribe"
+      }
     };
   }
 
   // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
+  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
+      post: "/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
+      additional_bindings: {
+        post: "/{tenant}/{parent=tasks/*/pushNotificationConfigs}"
+        body: "config"
+      }
     };
     option (google.api.method_signature) = "parent,config";
   }
   // Get a push notification config for a task.
-  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
+  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+      get: "/{name=tasks/*/pushNotificationConfigs/*}"
+      additional_bindings: {
+        get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
   // Get a list of push notifications configured for a task.
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest)
-      returns (ListTaskPushNotificationConfigResponse) {
+  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
-      get: "/v1/{parent=tasks/*}/pushNotificationConfigs"
+      get: "/{parent=tasks/*}/pushNotificationConfigs"
+      additional_bindings: {
+        get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"
+      }
     };
     option (google.api.method_signature) = "parent";
   }
   // GetExtendedAgentCard returns the extended agent card for authenticated agents.
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
-      get: "/v1/extendedAgentCard"
+      get: "/extendedAgentCard"
+      additional_bindings: {
+        get: "/{tenant}/extendedAgentCard"
+      }
     };
   }
   // Delete a push notification config for a task.
-  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest)
-      returns (google.protobuf.Empty) {
+  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+      delete: "/{name=tasks/*/pushNotificationConfigs/*}"
+      additional_bindings: {
+        delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
@@ -366,6 +398,8 @@ message AgentInterface {
   // easily extended for other protocol bindings. The core ones officially
   // supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
+  // Tenant to be set in the request when calling the agent.
+  string tenant = 3;
 }
 // --8<-- [end:AgentInterface]
 
@@ -418,7 +452,7 @@ message AgentCard {
   // agent is likely to succeed at.
   repeated AgentSkill skills = 12 [(google.api.field_behavior) = REQUIRED];
   // Whether the agent supports providing an extended agent card when authenticated.
-  optional bool supports_authenticated_extended_card = 13;
+  optional bool supports_extended_agent_card = 13;
   // JSON Web Signatures computed for this AgentCard.
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
@@ -675,9 +709,13 @@ message PasswordOAuthFlow {
 // --8<-- [start:SendMessageRequest]
 // Represents a request for the `message/send` method.
 message SendMessageRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
   // The message to send to the agent.
-  Message request = 1
-      [(google.api.field_behavior) = REQUIRED, json_name = "message"];
+  Message request = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    json_name = "message"
+  ];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // A flexible key-value map for passing additional context or parameters.
@@ -688,6 +726,8 @@ message SendMessageRequest {
 // --8<-- [start:GetTaskRequest]
 // Represents a request for the `tasks/get` method.
 message GetTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -699,6 +739,8 @@ message GetTaskRequest {
 // --8<-- [start:ListTasksRequest]
 // Parameters for listing tasks with optional filtering criteria.
 message ListTasksRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 9;
   // Filter tasks by context ID to get tasks from a specific conversation or session.
   string context_id = 1;
   // Filter tasks by their current status state.
@@ -716,8 +758,6 @@ message ListTasksRequest {
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.
   optional bool include_artifacts = 7;
-  // Request-specific metadata.
-  google.protobuf.Struct metadata = 8;
 }
 // --8<-- [end:ListTasksRequest]
 
@@ -738,6 +778,8 @@ message ListTasksResponse {
 // --8<-- [start:CancelTaskRequest]
 // Represents a request for the `tasks/cancel` method.
 message CancelTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
@@ -746,6 +788,8 @@ message CancelTaskRequest {
 
 // --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -755,6 +799,8 @@ message GetTaskPushNotificationConfigRequest {
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
 // Represents a request for the `tasks/pushNotificationConfig/delete` method.
 message DeleteTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -764,19 +810,22 @@ message DeleteTaskPushNotificationConfigRequest {
 // --8<-- [start:SetTaskPushNotificationConfigRequest]
 // Represents a request for the `tasks/pushNotificationConfig/set` method.
 message SetTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
   // The parent task resource for this config.
   // Format: tasks/{task_id}
   string parent = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID for the new config.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
-  TaskPushNotificationConfig config = 3
-      [(google.api.field_behavior) = REQUIRED];
+  TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:SetTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
@@ -785,6 +834,8 @@ message SubscribeToTaskRequest {
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
   // The parent task resource.
   // Format: tasks/{task_id}
   string parent = 1;
@@ -798,7 +849,8 @@ message ListTaskPushNotificationConfigRequest {
 
 // --8<-- [start:GetExtendedAgentCardRequest]
 message GetExtendedAgentCardRequest {
-  // Empty. Added to fix linter violation.
+  // Optional tenant, provided as a path parameter.
+  string tenant = 1;
 }
 // --8<-- [end:GetExtendedAgentCardRequest]
 
