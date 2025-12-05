@@ -6905,7 +6905,7 @@
 <p><strong>Behavior:</strong></p>
 <p>The operation MUST permanently remove the specified push notification configuration. No further notifications will be sent to the configured webhook after deletion. This operation MUST be idempotent - multiple deletions of the same config have the same effect.</p>
 <h4 id="3111-get-extended-agent-card">3.1.11. Get Extended Agent Card<a class="headerlink" href="#3111-get-extended-agent-card" title="Permanent link">&para;</a></h4>
-<p>Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if <code>AgentCard.supportsAuthenticatedExtendedCard</code> is <code>true</code>.</p>
+<p>Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if <code>AgentCard.supportsExtendedAgentCard</code> is <code>true</code>.</p>
 <p><strong>Inputs:</strong></p>
 <table>
 <thead>
@@ -6939,7 +6939,7 @@
 <li><strong>Authentication</strong>: The client MUST authenticate the request using one of the schemes declared in the public <code>AgentCard.securitySchemes</code> and <code>AgentCard.security</code> fields.</li>
 <li><strong>Extended Information</strong>: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.</li>
 <li><strong>Card Replacement</strong>: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.</li>
-<li><strong>Availability</strong>: This operation is only available if the public Agent Card declares <code>supportsAuthenticatedExtendedCard: true</code>.</li>
+<li><strong>Availability</strong>: This operation is only available if the public Agent Card declares <code>supportsExtendedAgentCard: true</code>.</li>
 </ul>
 <p>For detailed security guidance on extended agent cards, see <a href="#133-extended-agent-card-access-control">Section 13.3 Extended Agent Card Access Control</a>.</p>
 <h3 id="32-operation-parameter-objects">3.2. Operation Parameter Objects<a class="headerlink" href="#32-operation-parameter-objects" title="Permanent link">&para;</a></h3>
@@ -7240,7 +7240,7 @@
 <ul>
 <li><strong>Push Notifications</strong>: If <code>AgentCard.capabilities.pushNotifications</code> is <code>false</code> or not present, operations related to push notification configuration (Set, Get, List, Delete) <strong>MUST</strong> return <a href="#332-error-handling"><code>PushNotificationNotSupportedError</code></a>.</li>
 <li><strong>Streaming</strong>: If <code>AgentCard.capabilities.streaming</code> is <code>false</code> or not present, attempts to use <code>SendStreamingMessage</code> or <code>SubscribeToTask</code> operations <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>.</li>
-<li><strong>Extended Agent Card</strong>: If <code>AgentCard.supportsAuthenticatedExtendedCard</code> is <code>false</code> or not present, attempts to call the Get Extended Agent Card operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>. If the agent declares support but has not configured an extended card, it <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a>.</li>
+<li><strong>Extended Agent Card</strong>: If <code>AgentCard.supportsExtendedAgentCard</code> is <code>false</code> or not present, attempts to call the Get Extended Agent Card operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>. If the agent declares support but has not configured an extended card, it <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a>.</li>
 <li><strong>Extensions</strong>: When a client requests use of an extension marked as <code>required: true</code> in the Agent Card but the client does not declare support for it, the agent <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtensionSupportRequiredError</code></a>.</li>
 </ul>
 <p>Clients <strong>SHOULD</strong> validate capability support by examining the Agent Card before attempting operations that require optional capabilities.</p>
@@ -8032,7 +8032,7 @@
 <td>Skills represent an ability of an agent. It is largely a descriptive concept but represents a more focused set of behaviors that the agent is likely to succeed at.</td>
 </tr>
 <tr>
-<td><code>supportsAuthenticatedExtendedCard</code></td>
+<td><code>supportsExtendedAgentCard</code></td>
 <td><code>boolean</code></td>
 <td>Optional</td>
 <td>Whether the agent supports providing an extended agent card when authenticated.</td>
@@ -8051,7 +8051,25 @@
 </tr>
 </tbody>
 </table>
-<p><a id="AgentProvider"></a></p>
+<ul>
+<li><strong><code>protocolVersion</code></strong> (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".</li>
+<li><strong><code>name</code></strong> (required, string): A human readable name for the agent.</li>
+<li><strong><code>description</code></strong> (required, string): A human-readable description of the agent, assisting users and other agents in understanding its purpose.</li>
+<li><strong><code>supportedInterfaces</code></strong> (optional, array of <a href="#446-agentinterface"><code>AgentInterface</code></a>): An ordered list of supported interfaces (protocol binding and URL combinations). The first item in the list is the preferred interface that clients should use when possible. Clients can select any interface from this list based on their preferences, but SHOULD prefer earlier entries when multiple options are supported.</li>
+<li><strong><code>provider</code></strong> (optional, <a href="#442-agentprovider"><code>AgentProvider</code></a>): The service provider of the agent.</li>
+<li><strong><code>version</code></strong> (required, string): The version of the agent (e.g., "1.0.0").</li>
+<li><strong><code>documentationUrl</code></strong> (optional, string): A URL to provide additional documentation about the agent.</li>
+<li><strong><code>capabilities</code></strong> (required, <a href="#443-agentcapabilities"><code>AgentCapabilities</code></a>): A2A capability set supported by the agent.</li>
+<li><strong><code>securitySchemes</code></strong> (optional, map of string to <a href="#451-securityscheme"><code>SecurityScheme</code></a>): The security scheme details used for authenticating with this agent.</li>
+<li><strong><code>security</code></strong> (optional, array of Security): Security requirements for contacting the agent.</li>
+<li><strong><code>defaultInputModes</code></strong> (required, array of strings): The set of interaction modes that the agent supports across all skills, defined as media types.</li>
+<li><strong><code>defaultOutputModes</code></strong> (required, array of strings): The media types supported as outputs from this agent.</li>
+<li><strong><code>skills</code></strong> (required, array of <a href="#445-agentskill"><code>AgentSkill</code></a>): Skills represent units of ability an agent can perform.</li>
+<li><strong><code>supportsExtendedAgentCard</code></strong> (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.</li>
+<li><strong><code>signatures</code></strong> (optional, array of <a href="#447-agentcardsignature"><code>AgentCardSignature</code></a>): JSON Web Signatures computed for this AgentCard.</li>
+<li><strong><code>iconUrl</code></strong> (optional, string): An optional URL to an icon for the agent.
+<a id="AgentProvider"></a></li>
+</ul>
 <h4 id="442-agentprovider">4.4.2. AgentProvider<a class="headerlink" href="#442-agentprovider" title="Permanent link">&para;</a></h4>
 <p>Represents the service provider of an agent.</p>
 <table>
@@ -9461,7 +9479,7 @@
 </span></code></pre></div>
 <p><strong>Response includes:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="p">{</span>
-</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="w">  </span><span class="nt">&quot;supportsAuthenticatedExtendedCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="w">  </span><span class="nt">&quot;supportsExtendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 </span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="w">  </span><span class="nt">&quot;securitySchemes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="w">    </span><span class="nt">&quot;google&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="w">      </span><span class="nt">&quot;openIdConnectSecurityScheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -9762,7 +9780,7 @@
 </span><span id="__span-38-63"><a id="__codelineno-38-63" name="__codelineno-38-63" href="#__codelineno-38-63"></a><span class="w">      </span><span class="p">]</span>
 </span><span id="__span-38-64"><a id="__codelineno-38-64" name="__codelineno-38-64" href="#__codelineno-38-64"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-38-65"><a id="__codelineno-38-65" name="__codelineno-38-65" href="#__codelineno-38-65"></a><span class="w">  </span><span class="p">],</span>
-</span><span id="__span-38-66"><a id="__codelineno-38-66" name="__codelineno-38-66" href="#__codelineno-38-66"></a><span class="w">  </span><span class="nt">&quot;supportsAuthenticatedExtendedCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-38-66"><a id="__codelineno-38-66" name="__codelineno-38-66" href="#__codelineno-38-66"></a><span class="w">  </span><span class="nt">&quot;supportsExtendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 </span><span id="__span-38-67"><a id="__codelineno-38-67" name="__codelineno-38-67" href="#__codelineno-38-67"></a><span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 </span><span id="__span-38-68"><a id="__codelineno-38-68" name="__codelineno-38-68" href="#__codelineno-38-68"></a><span class="w">    </span><span class="p">{</span>
 </span><span id="__span-38-69"><a id="__codelineno-38-69" name="__codelineno-38-69" href="#__codelineno-38-69"></a><span class="w">      </span><span class="nt">&quot;protected&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0&quot;</span><span class="p">,</span>
@@ -10713,8 +10731,8 @@ Streaming responses are simple, linearly ordered sequences: first a <code>Task</
 </ul>
 <p><strong>Availability Declaration:</strong></p>
 <ul>
-<li>Agents declare extended card support via <code>AgentCard.supportsAuthenticatedExtendedCard</code></li>
-<li>When <code>supportsAuthenticatedExtendedCard</code> is <code>false</code> or not present, the operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a></li>
+<li>Agents declare extended card support via <code>AgentCard.supportsExtendedAgentCard</code></li>
+<li>When <code>supportsExtendedAgentCard</code> is <code>false</code> or not present, the operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a></li>
 <li>When support is declared but no extended card is configured, the operation <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a></li>
 </ul>
 <p>See also: <a href="#3111-get-extended-agent-card">Section 3.1.11 Get Extended Agent Card</a> and <a href="#334-capability-validation">Section 3.3.4 Capability Validation</a>.</p>
