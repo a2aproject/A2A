@@ -507,7 +507,7 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 - **Get operations** (Get Task, List Tasks, Get Extended Agent Card) are naturally idempotent
 - **Send Message** operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages.
-- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if a the task has already been cancelled and purged.
+- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if the task has already been cancelled and purged.
 
 #### 3.3.2. Error Handling
 
