@@ -188,7 +188,7 @@ The primary operation for initiating agent interactions. Clients send a message 
 **Errors:**
 
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, cancelled, rejected) cannot accept further messages.
 
 **Behavior:**
 
@@ -212,7 +212,7 @@ Similar to Send Message but with real-time streaming of updates during processin
 **Errors:**
 
 - [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, cancelled, rejected) cannot accept further messages.
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
@@ -290,7 +290,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Errors:**
 
-- [`TaskNotCancelableError`](#332-error-handling): The task is not in a cancelable state (e.g., already completed, failed, or canceled).
+- [`TaskNotCancellableError`](#332-error-handling): The task is not in a cancellable state (e.g., already completed, failed, or cancelled).
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
@@ -507,7 +507,7 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 - **Get operations** (Get Task, List Tasks, Get Extended Agent Card) are naturally idempotent
 - **Send Message** operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages.
-- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if a the task has already been canceled and purged.
+- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if a the task has already been cancelled and purged.
 
 #### 3.3.2. Error Handling
 
@@ -567,7 +567,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 | Error Name                            | Description                                                                                                                                                       |
 | :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
-| `TaskNotCancelableError`              | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`). |
+| `TaskNotCancellableError`              | An attempt was made to cancel a task that is not in a cancellable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `cancelled`). |
 | `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
 | `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                          |
 | `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
@@ -1159,7 +1159,7 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  | HTTP Type URI                                                        |
 | :------------------------------------ | :------------ | :-------------------- | :--------------------------- | :------------------------------------------------------------------- |
 | `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              | `https://a2a-protocol.org/errors/task-not-found`                     |
-| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancelable`                |
+| `TaskNotCancellableError`              | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancellable`                |
 | `PushNotificationNotSupportedError`   | `-32003`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/push-notification-not-supported`    |
 | `UnsupportedOperationError`           | `-32004`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/unsupported-operation`              |
 | `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `415 Unsupported Media Type` | `https://a2a-protocol.org/errors/content-type-not-supported`         |
@@ -1588,7 +1588,7 @@ Content-Type: application/problem+json
     },
     {
       "field": "status",
-      "message": "Invalid status value 'running'. Must be one of: pending, working, completed, failed, canceled"
+      "message": "Invalid status value 'running'. Must be one of: pending, working, completed, failed, cancelled"
     }
   ]
 }

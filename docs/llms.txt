@@ -60,7 +60,7 @@ Key features of the A2A protocol include: agent discovery via Agent Cards, stand
     -   `state`: (`TaskState`) Current lifecycle state (e.g., "working", "completed").
     -   `message`: (`Message`) An optional, human-readable message from the agent providing status details.
     -   `timestamp`: (string) ISO-8601 timestamp.
--   **`TaskState`:** (enum) `submitted`, `working`, `input-required`, `completed`, `failed`, `canceled`, `rejected`, `auth-required`, `unknown`.
+-   **`TaskState`:** (enum) `submitted`, `working`, `input-required`, `completed`, `failed`, `cancelled`, `rejected`, `auth-required`, `unknown`.
 -   **`Message`:** A single unit of communication.
     -   `role`: ("user" | "agent") Sender's role.
     -   `parts`: (`Part[]`) The content of the message.
@@ -95,7 +95,7 @@ Key features of the A2A protocol include: agent discovery via Agent Cards, stand
 - **`tasks/cancel`:** (Request/Response)
     - Requests cancellation of a running task.
     - `params`: `TaskIdParams` (includes `id`).
-    - `result`: `Task` (updated state, likely 'canceled') or error if not cancelable.
+    - `result`: `Task` (updated state, likely 'cancelled') or error if not cancellable.
 - **`tasks/pushNotificationConfig/set`:** (Request/Response)
     - Sets or updates the push notification configuration for a task.
     - `params`: `TaskPushNotificationConfig`.
@@ -143,7 +143,7 @@ Key features of the A2A protocol include: agent discovery via Agent Cards, stand
 ### 2.6. A2A Specific Error Codes
 
 -   `-32001`: `TaskNotFoundError`
--   `-32002`: `TaskNotCancelableError`
+-   `-32002`: `TaskNotCancellableError`
 -   `-32003`: `PushNotificationNotSupportedError`
 -   `-32004`: `UnsupportedOperationError`
 -   `-32005`: `ContentTypeNotSupportedError`
