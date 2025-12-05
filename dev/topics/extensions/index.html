@@ -1802,13 +1802,13 @@ experience for extension-unaware clients. Clients and agents perform
 negotiation to determine which extensions are active for a specific request.</p>
 <ol>
 <li><strong>Client Request</strong>: A client requests extension activation by including the
-    <code>X-A2A-Extensions</code> header in the HTTP request to the agent. The value is a
+    <code>A2A-Extensions</code> header in the HTTP request to the agent. The value is a
     comma-separated list of extension URIs the client intends to activate.</li>
 <li><strong>Agent Processing</strong>: Agents are responsible for identifying supported
     extensions in the request and performing the activation. Any requested
     extensions not supported by the agent can be ignored.</li>
 <li><strong>Response</strong>: Once the agent has identified all activated extensions, the
-    response SHOULD include the <code>X-A2A-Extensions</code> header, listing all
+    response SHOULD include the <code>A2A-Extensions</code> header, listing all
     extensions that were successfully activated for that request.</li>
 </ol>
 <p><img alt="A2A Extension Flow Diagram" src="https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png" style="margin:20px auto;display:block;" width="70%" /></p>
@@ -1816,7 +1816,7 @@ negotiation to determine which extensions are active for a specific request.</p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nf">POST</span> <span class="nn">/agents/eightball</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="na">X-A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/ext/konami-code/v1</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="na">A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/ext/konami-code/v1</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="na">Content-Length</span><span class="o">:</span> <span class="l">519</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="err">{</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
@@ -1838,7 +1838,7 @@ negotiation to determine which extensions are active for a specific request.</p>
 <p><strong>Corresponding response echoing activated extensions:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="na">X-A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/ext/konami-code/v1</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="na">A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/ext/konami-code/v1</span>
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="na">Content-Length</span><span class="o">:</span> <span class="l">338</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="err">{</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
