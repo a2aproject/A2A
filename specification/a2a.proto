@@ -137,6 +137,27 @@ service A2AService {
     };
     option (google.api.method_signature) = "task_id,id";
   }
+  // Publish a message to a topic.
+  rpc Publish(PublishRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/publish"
+      body: "*"
+    };
+  }
+  // Subscribe to a set of topics.
+  rpc Subscribe(SubscribeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/subscribe"
+      body: "*"
+    };
+  }
+  // Unsubscribe a set of topics.
+  rpc Unsubscribe(UnsubscribeRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/unsubscribe"
+      body: "*"
+    };
+  }
 }
 
 // Configuration of a send message request.
@@ -412,6 +433,8 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 4;
+  // Indicates if the agent supports publishing and subscribing.
+  optional bool pubsub = 5;
 }
 
 // A declaration of a protocol extension supported by an Agent.
@@ -758,6 +781,33 @@ message ListTaskPushNotificationConfigsRequest {
 message GetExtendedAgentCardRequest {
   // Optional. Tenant ID, provided as a path parameter.
   string tenant = 1;
+}
+
+// Represents a request for the `publish` method.
+message PublishRequest {
+  // The target topic for the message.
+  string topic = 1 [(google.api.field_behavior) = REQUIRED];
+  // The content of the message. The structure of the payload is contractually defined by the topic itself and is opaque to the runtime.
+  // To promote interoperability, it is highly recommended that this payload conforms to a standard event envelope format, such as the CloudEvents specification.
+  google.protobuf.Struct payload = 2 [(google.api.field_behavior) = REQUIRED];
+  // Optional metadata for extensions.
+  google.protobuf.Struct metadata = 3;
+}
+
+// Represents a request for the `subscribe` method.
+message SubscribeRequest {
+  // The target topics to subscribe.
+  repeated string topics = 1 [(google.api.field_behavior) = REQUIRED];
+  // Optional metadata for extensions.
+  google.protobuf.Struct metadata = 2;
+}
+
+// Represents a request for the `unsubscribe` method.
+message UnsubscribeRequest {
+  // The target topics to unsubscribe.
+  repeated string topics = 1 [(google.api.field_behavior) = REQUIRED];
+  // Optional metadata for extensions.
+  google.protobuf.Struct metadata = 2;
 }
 
 // Represents the response for the `SendMessage` method.
