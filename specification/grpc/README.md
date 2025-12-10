@@ -1,6 +1,6 @@
 # Protocol Buffer Definitions
 
-This folder contains the a2a specification in Protocol Buffer (protobuf) format
+This folder contains the A2A specification in Protocol Buffer (protobuf) format
 
 ## Prerequisites
 

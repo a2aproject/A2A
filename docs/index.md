@@ -13,19 +13,19 @@ hide:
 
 ## What is A2A Protocol?
 
-The **Agent2Agent (A2A) Protocol** is an open standard developed by Google and donated to the Linux Foundation designed to enable seamless communication and collaboration between AI agents.
+Welcome to the **official documentation** for the **Agent2Agent (A2A) Protocol**, an open standard designed to enable seamless communication and collaboration between AI agents.
 
-In a world where agents are built using diverse frameworks and by different vendors, A2A provides a common language, breaking down silos and fostering interoperability.
+Originally developed by Google and now donated to the Linux Foundation, A2A provides the definitive common language for agent interoperability in a world where agents are built using diverse frameworks and by different vendors.
 
 !!! abstract ""
     Build with
     **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
     equip with **[![MCP Logo](https://modelcontextprotocol.io/mcp.png){class="twemoji lg middle"} MCP](https://modelcontextprotocol.io)** _(or any tool)_,
     and communicate with
-    **![A2A Logo](./assets/a2a-logo-black.svg){class="twemoji sm middle"} A2A**,
+    **![A2A Logo](./assets/a2a-logo-black.svg){class="twemoji lg middle"} A2A**,
     to remote agents, local agents, and humans.
 
-## Get started with Agent2Agent (A2A) Protocol
+## Get started with A2A
 
 <div class="grid cards" markdown>
 
@@ -59,7 +59,7 @@ In a world where agents are built using diverse frameworks and by different vend
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
 
-- :material-code-braces:{ .lg .middle } **Download the SDK**
+- :material-code-braces:{ .lg .middle } **Download the Official SDKs**
 
     [:fontawesome-brands-python: Python](https://github.com/a2aproject/a2a-python)
 
@@ -120,5 +120,5 @@ A2A and [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) are com
 
 - **Model Context Protocol (MCP)**: Provides [agent-to-tool communication](https://cloud.google.com/discover/what-is-model-context-protocol). It's a complementary standard that standardizes how an agent connects to its tools, APIs, and resources to get information.
 - **IBM ACP**: [Incorporated into the A2A Protocol](https://github.com/orgs/i-am-bee/discussions/5)
-- **Cisco agntcy**: A framework for building the internal logic of a single, complex agent system, often with a supervisor/expert structure.
+- **Cisco agntcy**: A framework that provides components to the Internet of Agents with discovery, group communication, identity and observability and leverages A2A and MCP for agent communication and tool calling.
 - **A2A**: Provides agent-to-agent communication. As a universal, decentralized standard, A2A acts as the public internet that allows [ai agents](https://cloud.google.com/discover/what-are-ai-agents)—including those using MCP, or built with frameworks like agntcy—to interoperate, collaborate, and share their findings.

@@ -5,6 +5,7 @@ if available) who are part of the A2A community and are helping build, codify,
 and adopt A2A as the standard protocol for AI agents to communicate and
 collaborate effectively with each other and with users.
 
+- [A2A Net](https://a2anet.com)
 - [Accelirate Inc](https://www.accelirate.com)
 - [Accenture](https://www.accenture.com)
 - [Activeloop](https://www.activeloop.ai/)
@@ -103,10 +104,12 @@ collaborate effectively with each other and with users.
 - [New Relic](https://newrelic.com)
 - [Nisum](http://www.nisum.com)
 - [Noorle Inc](http://www.noorle.com)
+- [NTT DATA](https://www.nttdata.com)
 - [Optimizely Inc](https://www.optimizely.com/)
 - [Oracle / NetSuite](https://www.oracle.com/netsuite)
 - [Palo Alto Networks](https://www.paloaltonetworks.com/)
 - [PancakeAI](https://www.pancakeai.tech/)
+- [ParkourSC](https://www.parkoursc.com/)
 - [Pendo](https://www.pendo.io)
 - [PerfAI.ai](https://perfai.ai)
 - [Personal AI](https://personal.ai)
