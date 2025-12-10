@@ -70,8 +70,9 @@ content. This design allows A2A to be modality independent.
 The primary part kinds are:
 
 - `TextPart`: Contains plain textual content.
-- `FilePart`: Represents a file. It can be transmitted either inline (Base64
-   encoded) or through a URI. It includes metadata like "name" and "mimeType".
+- `FilePart`: Represents a file. It can be transmitted via URI, as base64-encoded
+   bytes (for binary content), or as plain text (for text-based file formats).
+   It includes metadata like "name" and "mediaType".
 - `DataPart`: Carries structured JSON data. This is useful for forms,
    parameters, or any machine-readable information.
 
