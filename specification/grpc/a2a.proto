@@ -20,10 +20,10 @@ service A2AService {
   // Send a message to the agent.
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {
     option (google.api.http) = {
-      post: "/v1/message:send"
+      post: "/message:send"
       body: "*"
       additional_bindings: {
-        post: "/{tenant}/v1/message:send"
+        post: "/{tenant}/message:send"
         body: "*"
       }
     };
@@ -31,10 +31,10 @@ service A2AService {
   // SendStreamingMessage is a streaming version of SendMessage.
   rpc SendStreamingMessage(SendMessageRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      post: "/v1/message:stream"
+      post: "/message:stream"
       body: "*"
       additional_bindings: {
-        post: "/{tenant}/v1/message:stream"
+        post: "/{tenant}/message:stream"
         body: "*"
       }
     };
@@ -43,9 +43,9 @@ service A2AService {
   // Get the current state of a task from the agent.
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*}"
+      get: "/{name=tasks/*}"
       additional_bindings: {
-        get: "/{tenant}/v1/{name=tasks/*}"
+        get: "/{tenant}/{name=tasks/*}"
       }
     };
     option (google.api.method_signature) = "name";
@@ -53,19 +53,19 @@ service A2AService {
   // List tasks with optional filtering and pagination.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
-      get: "/v1/tasks"
+      get: "/tasks"
       additional_bindings: {
-        get: "/{tenant}/v1/tasks"
+        get: "/{tenant}/tasks"
       }
     };
   }
   // Cancel a task.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
     option (google.api.http) = {
-      post: "/v1/{name=tasks/*}:cancel"
+      post: "/{name=tasks/*}:cancel"
       body: "*"
       additional_bindings: {
-        post: "/{tenant}/v1/{name=tasks/*}:cancel"
+        post: "/{tenant}/{name=tasks/*}:cancel"
         body: "*"
       }
     };
@@ -74,9 +74,9 @@ service A2AService {
   // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*}:subscribe"
+      get: "/{name=tasks/*}:subscribe"
       additional_bindings: {
-        get: "/{tenant}/v1/{name=tasks/*}:subscribe"
+        get: "/{tenant}/{name=tasks/*}:subscribe"
       }
     };
   }
@@ -84,10 +84,10 @@ service A2AService {
   // Set a push notification config for a task.
   rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
+      post: "/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
       additional_bindings: {
-        post: "/{tenant}/v1/{parent=tasks/*/pushNotificationConfigs}"
+        post: "/{tenant}/{parent=tasks/*/pushNotificationConfigs}"
         body: "config"
       }
     };
@@ -96,9 +96,9 @@ service A2AService {
   // Get a push notification config for a task.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+      get: "/{name=tasks/*/pushNotificationConfigs/*}"
       additional_bindings: {
-        get: "/{tenant}/v1/{name=tasks/*/pushNotificationConfigs/*}"
+        get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
       }
     };
     option (google.api.method_signature) = "name";
@@ -106,9 +106,9 @@ service A2AService {
   // Get a list of push notifications configured for a task.
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
-      get: "/v1/{parent=tasks/*}/pushNotificationConfigs"
+      get: "/{parent=tasks/*}/pushNotificationConfigs"
       additional_bindings: {
-        get: "/{tenant}/v1/{parent=tasks/*}/pushNotificationConfigs"
+        get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"
       }
     };
     option (google.api.method_signature) = "parent";
@@ -116,18 +116,18 @@ service A2AService {
   // GetExtendedAgentCard returns the extended agent card for authenticated agents.
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
-      get: "/v1/extendedAgentCard"
+      get: "/extendedAgentCard"
       additional_bindings: {
-        get: "/{tenant}/v1/extendedAgentCard"
+        get: "/{tenant}/extendedAgentCard"
       }
     };
   }
   // Delete a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+      delete: "/{name=tasks/*/pushNotificationConfigs/*}"
       additional_bindings: {
-        delete: "/{tenant}/v1/{name=tasks/*/pushNotificationConfigs/*}"
+        delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
       }
     };
     option (google.api.method_signature) = "name";
@@ -454,7 +454,7 @@ message AgentCard {
   // agent is likely to succeed at.
   repeated AgentSkill skills = 12 [(google.api.field_behavior) = REQUIRED];
   // Whether the agent supports providing an extended agent card when authenticated.
-  optional bool supports_authenticated_extended_card = 13;
+  optional bool supports_extended_agent_card = 13;
   // JSON Web Signatures computed for this AgentCard.
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
