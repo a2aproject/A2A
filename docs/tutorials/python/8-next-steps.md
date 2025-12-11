@@ -31,7 +31,7 @@ Here are some ideas and resources to continue your A2A journey:
 - **Experiment with Advanced Features:**
     - Implement robust task management with a persistent `TaskStore` if your agent handles long-running or multi-session tasks.
     - Explore implementing push notifications if your agent's tasks are very long-lived.
-    - Consider more complex input and output modalities (e.g., handling file uploads/downloads, or JSON data via `DataPart`).
+    - Consider more complex input and output modalities (e.g., handling file uploads/downloads, or any JSON value via `DataPart`).
 - **Contribute to the A2A Community:**
     - Join the discussions on the [A2A GitHub Discussions page](https://github.com/a2aproject/A2A/discussions).
     - Report issues or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).
