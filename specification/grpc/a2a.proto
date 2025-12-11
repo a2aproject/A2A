@@ -420,12 +420,6 @@ message AgentCard {
   string description = 2 [(google.api.field_behavior) = REQUIRED];
   // Ordered list of supported interfaces. First entry is preferred.
   repeated AgentInterface supported_interfaces = 19;
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string url = 3 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string preferred_transport = 14 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
