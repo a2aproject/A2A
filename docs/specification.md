@@ -1327,7 +1327,7 @@ data: {"task": {"id": "task-uuid", "status": {"state": "working"}}}
 
 data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "completed"}, "final": true}}
+data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "completed"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1662,8 +1662,7 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
     "status": {
       "state": "completed",
       "timestamp": "2024-03-15T18:30:00Z"
-    },
-    "final": true
+    }
   }
 }
 ```
@@ -3468,6 +3467,34 @@ This change aligns with modern API design practices and Protocol Buffers' `oneof
 - Simplifies code generation from schema definitions
 - Eliminates the need for representing inheritance structures in schema languages
 - Improves type safety in strongly-typed languages
+
+#### A.2.2 Breaking Change: Removal of `final` Field from TaskStatusUpdateEvent
+
+**Version 1.0 removes the `final` field** from `TaskStatusUpdateEvent` as it is redundant with terminal states.
+
+**Rationale:**
+
+Terminal states (COMPLETED, FAILED, CANCELLED, REJECTED) already indicate task completion. The `final` field created ambiguity about stream termination and was inaccessible to polling clients.
+
+**Proto Changes:**
+
+- Removed: `TaskStatusUpdateEvent.final` (field 4)
+
+**Migration:**
+
+**Agents:**
+- Remove `final` field from `TaskStatusUpdateEvent` messages
+- Close streams when tasks reach terminal states
+- Do not send updates after terminal states
+
+**Clients:**
+- Remove checks for `final` field
+- Detect completion by checking for terminal states
+- Expect stream closure upon terminal states
+
+**Behavior Change:**
+
+Streams now MUST close when a task reaches any terminal state. No further updates will be sent after COMPLETED, FAILED, CANCELLED, or REJECTED states.
 
 ### A.3 Future Automation
 
