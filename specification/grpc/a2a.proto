@@ -712,10 +712,7 @@ message SendMessageRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The message to send to the agent.
-  Message request = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    json_name = "message"
-  ];
+  Message message = 1 [(google.api.field_behavior) = REQUIRED];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // A flexible key-value map for passing additional context or parameters.
@@ -859,7 +856,7 @@ message GetExtendedAgentCardRequest {
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
   }
 }
 // --8<-- [end:SendMessageResponse]
@@ -871,7 +868,7 @@ message StreamResponse {
     // A Task object containing the current state of the task.
     Task task = 1;
     // A Message object containing a message from the agent.
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
     // An event indicating a task status update.
     TaskStatusUpdateEvent status_update = 3;
     // An event indicating a task artifact update.
