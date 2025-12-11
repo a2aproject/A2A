@@ -3504,20 +3504,25 @@ This change aligns with modern API design practices and Protocol Buffers' `oneof
 **Migration Steps:**
 
 For **Agent Implementations**:
+
 1. Remove `supportsExtendedAgentCard` from top-level AgentCard
 2. Add `extendedAgentCard` to `capabilities` object
 3. Update validation: `agentCard.capabilities?.extendedAgentCard`
 
 For **Client Implementations**:
+
 1. Update capability checks: `agentCard.capabilities?.extendedAgentCard`
 2. Temporary fallback (transition period):
+
    ```javascript
    const supported = agentCard.capabilities?.extendedAgentCard ||
                      agentCard.supportsExtendedAgentCard;
    ```
+
 3. Remove fallback after agent ecosystem migrates
 
 For **SDK Developers**:
+
 1. Regenerate code from updated proto
 2. Update type definitions
 3. Document breaking change in release notes
