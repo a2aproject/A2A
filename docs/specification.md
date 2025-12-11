@@ -567,7 +567,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 | Error Name                            | Description                                                                                                                                                       |
 | :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
-| `TaskNotCancellableError`              | An attempt was made to cancel a task that is not in a cancellable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `cancelled`). |
+| `TaskNotCancellableError`             | An attempt was made to cancel a task that is not in a cancellable state(e.g., it has already reached a terminal state like `completed`, `failed`, or `cancelled`).|
 | `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
 | `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                          |
 | `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
@@ -1159,7 +1159,7 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  | HTTP Type URI                                                        |
 | :------------------------------------ | :------------ | :-------------------- | :--------------------------- | :------------------------------------------------------------------- |
 | `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              | `https://a2a-protocol.org/errors/task-not-found`                     |
-| `TaskNotCancellableError`              | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancellable`                |
+| `TaskNotCancellableError`             | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancellable`               |
 | `PushNotificationNotSupportedError`   | `-32003`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/push-notification-not-supported`    |
 | `UnsupportedOperationError`           | `-32004`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/unsupported-operation`              |
 | `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `415 Unsupported Media Type` | `https://a2a-protocol.org/errors/content-type-not-supported`         |
