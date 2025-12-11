@@ -3530,6 +3530,7 @@ For **SDK Developers**:
 **Rationale:**
 
 All optional features enabling specific operations (`streaming`, `pushNotifications`, `stateTransitionHistory`) reside in `AgentCapabilities`. Moving `extendedAgentCard` achieves:
+
 - Architectural consistency
 - Improved discoverability
 - Semantic correctness (it is a capability)
