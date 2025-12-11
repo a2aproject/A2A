@@ -3496,7 +3496,7 @@ Terminal states (COMPLETED, FAILED, CANCELLED, REJECTED) already indicate task c
 
 **Behavior Change:**
 
-Streams now MUST close when a task reaches any terminal state. No further updates will be sent after COMPLETED, FAILED, CANCELLED, or REJECTED states.
+Streams now MUST close when a task reaches any terminal or interrupted state. No further updates will be sent after states like COMPLETED, FAILED, CANCELLED, REJECTED, or INPUT_REQUIRED.
 
 ### A.3 Future Automation
 
