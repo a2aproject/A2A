@@ -641,15 +641,15 @@ message MutualTlsSecurityScheme {
 // --8<-- [start:OAuthFlows]
 // Defines the configuration for the supported OAuth 2.0 flows.
 message OAuthFlows {
+  // Tags 3 and 4 were previously used by deprecated OAuth flows.
+  reserved 3, 4;
   oneof flow {
     // Configuration for the OAuth Authorization Code flow.
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
-    // Configuration for the OAuth Implicit flow.
-    ImplicitOAuthFlow implicit = 3;
-    // Configuration for the OAuth Resource Owner Password flow.
-    PasswordOAuthFlow password = 4;
+    // Configuration for the OAuth Device Code flow.
+    DeviceCodeOAuthFlow device_code = 5;
   }
 }
 // --8<-- [end:OAuthFlows]
@@ -665,6 +665,9 @@ message AuthorizationCodeOAuthFlow {
   string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
   map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
+  // Indicates if PKCE (RFC 7636) is required for this flow.
+  // PKCE should always be used for public clients and is recommended for all clients.
+  bool pkce_required = 5;
 }
 // --8<-- [end:AuthorizationCodeOAuthFlow]
 
@@ -680,29 +683,21 @@ message ClientCredentialsOAuthFlow {
 }
 // --8<-- [end:ClientCredentialsOAuthFlow]
 
-// --8<-- [start:ImplicitOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Implicit flow.
-message ImplicitOAuthFlow {
-  // The authorization URL to be used for this flow.
-  string authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
-  // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
-  // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
-}
-// --8<-- [end:ImplicitOAuthFlow]
-
-// --8<-- [start:PasswordOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Resource Owner Password flow.
-message PasswordOAuthFlow {
+// --8<-- [start:DeviceCodeOAuthFlow]
+// Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628).
+// This flow is designed for input-constrained devices such as IoT devices,
+// and CLI tools where the user authenticates on a separate device.
+message DeviceCodeOAuthFlow {
+  // The device authorization endpoint URL.
+  string device_authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
   // The token URL to be used for this flow.
-  string token_url = 1 [(google.api.field_behavior) = REQUIRED];
+  string token_url = 2 [(google.api.field_behavior) = REQUIRED];
   // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
+  string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
+  map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:PasswordOAuthFlow]
+// --8<-- [end:DeviceCodeOAuthFlow]
 
 ///////////// Request Messages ///////////
 // --8<-- [start:SendMessageRequest]
