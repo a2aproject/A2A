@@ -72,8 +72,9 @@ The primary part kinds are:
 - `TextPart`: Contains plain textual content.
 - `FilePart`: Represents a file. It can be transmitted either inline (Base64
    encoded) or through a URI. It includes metadata like "name" and "mimeType".
-- `DataPart`: Carries structured JSON data. This is useful for forms,
-   parameters, or any machine-readable information.
+- `DataPart`: Carries any JSON value (objects, arrays, strings, numbers,
+   booleans, or null). This is useful for forms, parameters, lists, or any
+   machine-readable information.
 
 ## Artifacts
 

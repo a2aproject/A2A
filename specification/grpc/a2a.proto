@@ -221,14 +221,14 @@ message TaskStatus {
 // --8<-- [start:Part]
 // Part represents a container for a section of communication content.
 // Parts can be purely textual, some sort of file (image, video, etc) or
-// a structured data blob (i.e. JSON).
+// arbitrary JSON data (objects, arrays, primitives, etc).
 message Part {
   oneof part {
     // The string content of the text part.
     string text = 1;
     // The file content, represented as either a URI or as base64-encoded bytes.
     FilePart file = 2;
-    // The structured data content.
+    // Arbitrary JSON data (object, array, string, number, boolean, or null).
     DataPart data = 3;
   }
   // Optional metadata associated with this part.
@@ -256,10 +256,10 @@ message FilePart {
 // --8<-- [end:FilePart]
 
 // --8<-- [start:DataPart]
-// DataPart represents a structured blob.
+// DataPart represents arbitrary JSON data.
 message DataPart {
-  //  A JSON object containing arbitrary data.
-  google.protobuf.Struct data = 1 [(google.api.field_behavior) = REQUIRED];
+  //  Any JSON value (object, array, string, number, boolean, or null).
+  google.protobuf.Value data = 1 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:DataPart]
 
