@@ -142,7 +142,7 @@ Centering the proto file as the normative source ensures protocol neutrality, re
 
 ### 2.1. Requirements Language
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 ### 2.2. Core Concepts
 
@@ -417,7 +417,7 @@ The operation MUST permanently remove the specified push notification configurat
 
 #### 3.1.11. Get Extended Agent Card
 
-Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsAuthenticatedExtendedCard` is `true`.
+Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsExtendedAgentCard` is `true`.
 
 **Inputs:**
 
@@ -437,7 +437,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 - **Authentication**: The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
 - **Extended Information**: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.
 - **Card Replacement**: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
-- **Availability**: This operation is only available if the public Agent Card declares `supportsAuthenticatedExtendedCard: true`.
+- **Availability**: This operation is only available if the public Agent Card declares `supportsExtendedAgentCard: true`.
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
@@ -507,7 +507,7 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 - **Get operations** (Get Task, List Tasks, Get Extended Agent Card) are naturally idempotent
 - **Send Message** operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages.
-- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if a the task has already been canceled and purged.
+- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if the task has already been canceled and purged.
 
 #### 3.3.2. Error Handling
 
@@ -586,7 +586,7 @@ Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). Whe
 
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Set, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
-- **Extended Agent Card**: If `AgentCard.supportsAuthenticatedExtendedCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
+- **Extended Agent Card**: If `AgentCard.supportsExtendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
 Clients **SHOULD** validate capability support by examining the Agent Card before attempting operations that require optional capabilities.
@@ -853,6 +853,22 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentCard") }}
 
+- **`protocolVersion`** (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".
+- **`name`** (required, string): A human-readable name for the agent.
+- **`description`** (required, string): A human-readable description of the agent, assisting users and other agents in understanding its purpose.
+- **`supportedInterfaces`** (optional, array of [`AgentInterface`](#446-agentinterface)): An ordered list of supported interfaces (protocol binding and URL combinations). The first item in the list is the preferred interface that clients should use when possible. Clients can select any interface from this list based on their preferences, but SHOULD prefer earlier entries when multiple options are supported.
+- **`provider`** (optional, [`AgentProvider`](#442-agentprovider)): The service provider of the agent.
+- **`version`** (required, string): The version of the agent (e.g., "1.0.0").
+- **`documentationUrl`** (optional, string): A URL to provide additional documentation about the agent.
+- **`capabilities`** (required, [`AgentCapabilities`](#443-agentcapabilities)): A2A capability set supported by the agent.
+- **`securitySchemes`** (optional, map of string to [`SecurityScheme`](#451-securityscheme)): The security scheme details used for authenticating with this agent.
+- **`security`** (optional, array of Security): Security requirements for contacting the agent.
+- **`defaultInputModes`** (required, array of strings): The set of interaction modes that the agent supports across all skills, defined as media types.
+- **`defaultOutputModes`** (required, array of strings): The media types supported as outputs from this agent.
+- **`skills`** (required, array of [`AgentSkill`](#445-agentskill)): Skills represent units of ability an agent can perform.
+- **`supportsExtendedAgentCard`** (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.
+- **`signatures`** (optional, array of [`AgentCardSignature`](#447-agentcardsignature)): JSON Web Signatures computed for this AgentCard.
+- **`iconUrl`** (optional, string): An optional URL to an icon for the agent.
 <a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
@@ -1799,7 +1815,7 @@ Host: example.com
 
 ```json
 {
-  "supportsAuthenticatedExtendedCard": true,
+  "supportsExtendedAgentCard": true,
   "securitySchemes": {
     "google": {
       "openIdConnectSecurityScheme": {
@@ -2128,7 +2144,7 @@ Clients verifying Agent Card signatures **MUST**:
       ]
     }
   ],
-  "supportsAuthenticatedExtendedCard": true,
+  "supportsExtendedAgentCard": true,
   "signatures": [
     {
       "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
@@ -3088,8 +3104,8 @@ The extended Agent Card feature allows agents to provide additional capabilities
 
 **Availability Declaration:**
 
-- Agents declare extended card support via `AgentCard.supportsAuthenticatedExtendedCard`
-- When `supportsAuthenticatedExtendedCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
+- Agents declare extended card support via `AgentCard.supportsExtendedAgentCard`
+- When `supportsExtendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
 - When support is declared but no extended card is configured, the operation **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling)
 
 See also: [Section 3.1.11 Get Extended Agent Card](#3111-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).

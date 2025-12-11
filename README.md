@@ -84,4 +84,4 @@ We welcome community contributions to enhance and evolve the A2A protocol!
 
 ## About
 
-The A2A Protocol is an open-source project by Google LLC, under the [Apache License 2.0](LICENSE), and is open to contributions from the community.
+The A2A Protocol is an open source project under the Linux Foundation, contributed by Google. It is licensed under the [Apache License 2.0](LICENSE) and is open to contributions from the community.
