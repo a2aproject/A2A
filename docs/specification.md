@@ -1670,6 +1670,8 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
 
 ### 6.7. File Exchange (Upload and Download)
 
+#### 6.7.1. Binary Files
+
 **Scenario:** Client sends an image for analysis, and the agent returns a modified image.
 
 **Request with File Upload:**
@@ -1729,6 +1731,40 @@ Content-Type: application/a2a+json
         ]
       }
     ]
+  }
+}
+```
+
+#### 6.7.2. Text-Based Files
+
+**Scenario:** Client sends a text-based file format for analysis.
+
+For text-based file formats like HTML, XML, CSV, or specialized JSON formats (e.g., CityJSON), use `fileWithText` to avoid unnecessary base64 encoding:
+
+**Request with Text-Based File:**
+
+```http
+POST /v1/message:send HTTP/1.1
+Host: agent.example.com
+Content-Type: application/a2a+json
+Authorization: Bearer token
+
+{
+  "message": {
+    "role": "user",
+    "parts": [
+      {
+        "text": "Analyze this 3D city model and provide a summary of the buildings."
+      },
+      {
+        "file": {
+          "name": "city_model.json",
+          "mediaType": "application/city+json",
+          "fileWithText": "{\"type\":\"CityJSON\",\"version\":\"2.0\",\"CityObjects\":{\"building-1\":{\"type\":\"Building\",\"geometry\":[...]}}}"
+        }
+      }
+    ],
+    "messageId": "7c8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2a"
   }
 }
 ```
