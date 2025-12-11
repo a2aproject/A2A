@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.0.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v1.0.0) (2025-12-11)
+
+
+### ⚠ BREAKING CHANGES
+
+* **spec:** Rename `supportsAuthenticatedExtendedCard` to `supportsExtendedAgentCard` ([#1222](https://github.com/a2aproject/A2A/issues/1222))
+* **spec:** Large refactor of specification to separate application protocol definition from mapping to transports
+
+### Features
+
+* **spec:** Add `tasks/list` method with filtering and pagination to the specification ([0a9f629](https://github.com/a2aproject/A2A/commit/0a9f629e801d4ae89f94991fc28afe9429c91cbc))
+* **spec:** Natively Support Multi-tenancy on gRPC through an additional scope field on the request. ([#1195](https://github.com/a2aproject/A2A/issues/1195)) ([cfbce32](https://github.com/a2aproject/A2A/commit/cfbce32cb0ac2a630597eb8b771691cac5b20a4b)), closes [#1148](https://github.com/a2aproject/A2A/issues/1148)
+* **spec:** Remove v1s from a2a url http bindings. ([#1269](https://github.com/a2aproject/A2A/issues/1269)) ([1bd263f](https://github.com/a2aproject/A2A/commit/1bd263f5373fdc8fa7c17ec8bdb24088996b6828))
+
+
+### Bug Fixes
+
+* Add missing metadata field to Part message in gRPC specification ([#1019](https://github.com/a2aproject/A2A/issues/1019)) ([b3b266d](https://github.com/a2aproject/A2A/commit/b3b266d127dde3d1000ec103b252d1de81289e83)), closes [#1005](https://github.com/a2aproject/A2A/issues/1005)
+* Add name field to FilePart protobuf message ([#983](https://github.com/a2aproject/A2A/issues/983)) ([2b7cb6f](https://github.com/a2aproject/A2A/commit/2b7cb6f8408e6324c48fb82c71839c67a18f1fab)), closes [#984](https://github.com/a2aproject/A2A/issues/984)
+* **doc:** Makes JSON-RPC SendMessage response clearer ([#1241](https://github.com/a2aproject/A2A/issues/1241)) ([5792804](https://github.com/a2aproject/A2A/commit/57928043727e5e002a1395dadfb5f699d0626b1c))
+* **grpc:** Fix inconsistent property name between gRPC and JSON-RPC in Message object ([#1100](https://github.com/a2aproject/A2A/issues/1100)) ([2a1f819](https://github.com/a2aproject/A2A/commit/2a1f819aaa2540602ee81498e159ebe0192be818))
+* **grpc:** missing field in gRPC spec - state_transition_history  ([#1138](https://github.com/a2aproject/A2A/issues/1138)) ([a2de798](https://github.com/a2aproject/A2A/commit/a2de7981cadeaa5197bee56cbd6ab7b2c5da2541)), closes [#1139](https://github.com/a2aproject/A2A/issues/1139)
+* **grpc:** Update `CreateTaskPushNotificationConfig` endpoint to `/v1/{parent=tasks/*/pushNotificationConfigs}` ([#979](https://github.com/a2aproject/A2A/issues/979)) ([911f9b0](https://github.com/a2aproject/A2A/commit/911f9b059c52dd65497b76ccf63d196ca84c7f0e))
+* **proto:** Add icon_url to a2a.proto ([#986](https://github.com/a2aproject/A2A/issues/986)) ([17e7f62](https://github.com/a2aproject/A2A/commit/17e7f62df9a3e4ca0768ab8d4f0bb7573b3d73e1))
+* **proto:** Adds metadata field to A2A DataPart proto ([#1004](https://github.com/a2aproject/A2A/issues/1004)) ([a8b45dc](https://github.com/a2aproject/A2A/commit/a8b45dcc429a5571ef8a24c36336bf84b89bbd7f))
+* Revert "chore(gRPC): Update a2a.proto to include metadata on GetTaskRequest" ([#1000](https://github.com/a2aproject/A2A/issues/1000)) ([e6b8c65](https://github.com/a2aproject/A2A/commit/e6b8c654a86a6ee461bb5c7be5d5b81004b80a92))
+* **spec:** Remove metadata field from ListTasksRequest ([#1235](https://github.com/a2aproject/A2A/issues/1235)) ([b6ef9ee](https://github.com/a2aproject/A2A/commit/b6ef9eec558c877fb69024df090a8bb63c542a1c))
+* **spec:** Rename `supportsAuthenticatedExtendedCard` to `supportsExtendedAgentCard` ([#1222](https://github.com/a2aproject/A2A/issues/1222)) ([c196824](https://github.com/a2aproject/A2A/commit/c196824396bb4af4c595f30e2c503a5ab1dbac4b)), closes [#1215](https://github.com/a2aproject/A2A/issues/1215)
+* **spec:** Suggest Unique Identifier fields to be UUID ([#966](https://github.com/a2aproject/A2A/issues/966)) ([00cf76e](https://github.com/a2aproject/A2A/commit/00cf76e7bbc752842ef254f3d4136ed1b5751f6e))
+* Update the Java tutorials and descriptions ([#1181](https://github.com/a2aproject/A2A/issues/1181)) ([202aa06](https://github.com/a2aproject/A2A/commit/202aa069e66f701bacf2156d42d8916fc96a5188))
+
+
+### Code Refactoring
+
+* **spec:** Large refactor of specification to separate application protocol definition from mapping to transports ([b078419](https://github.com/a2aproject/A2A/commit/b0784199543eebf2e95dcb02e9336cb213923506))
+
 ## [0.4.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v0.4.0) (2025-09-15)
 
 ### Features
