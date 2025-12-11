@@ -3483,11 +3483,13 @@ Terminal states (COMPLETED, FAILED, CANCELLED, REJECTED) already indicate task c
 **Migration:**
 
 **Agents:**
+
 - Remove `final` field from `TaskStatusUpdateEvent` messages
 - Close streams when tasks reach terminal states
 - Do not send updates after terminal states
 
 **Clients:**
+
 - Remove checks for `final` field
 - Detect completion by checking for terminal states
 - Expect stream closure upon terminal states
