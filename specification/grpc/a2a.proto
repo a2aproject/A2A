@@ -276,11 +276,11 @@ enum Role {
 
 // --8<-- [start:Message]
 // Message is one unit of communication between client and server. It can be
-// associated with a context and/or a task. For server messages context_id must
-// be provided and task_id only if a task was created. For client messages both
-// fields are optional with the caveat that if both are provided they have to
-// match (context_id has to be the one that is set on the task). If only
-// task_id is provided, server will infer context_id from it.
+// associated with a context and/or a task. For server messages, context_id must
+// be provided, and task_id only if a task was created. For client messages, both
+// fields are optional, with the caveat that if both are provided, they have to
+// match (the context_id has to be the one that is set on the task). If only
+// task_id is provided, the server will infer context_id from it.
 message Message {
   // The unique identifier (e.g. UUID) of the message. This is required and
   // created by the message creator.
