@@ -624,7 +624,7 @@ The A2A protocol supports several patterns for multi-turn interactions:
 - Clients **MAY** use `taskId` (with or without `contextId`) to continue or refine a specific task
 - Clients **MAY** use `contextId` without `taskId` to start a new task within an existing conversation context
 - Agents **MUST** infer `contextId` from the task if only `taskId` is provided
-- Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (`contextId` different than the one on the [`Task`](#411-task))
+- Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (i.e., the provided `contextId` is different from that of the referenced [`Task`](#411-task)).
 
 **Input Required State:**
 
