@@ -6386,7 +6386,7 @@
 <p>Centering the proto file as the normative source ensures protocol neutrality, reduces specification drift, and provides a deterministic evolution path for the ecosystem.</p>
 <h2 id="2-terminology">2. Terminology<a class="headerlink" href="#2-terminology" title="Permanent link">&para;</a></h2>
 <h3 id="21-requirements-language">2.1. Requirements Language<a class="headerlink" href="#21-requirements-language" title="Permanent link">&para;</a></h3>
-<p>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a>.</p>
+<p>The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a>.</p>
 <h3 id="22-core-concepts">2.2. Core Concepts<a class="headerlink" href="#22-core-concepts" title="Permanent link">&para;</a></h3>
 <p>A2A revolves around several key concepts. For detailed explanations, please refer to the <a href="../topics/key-concepts/">Key Concepts guide</a>.</p>
 <ul>
@@ -7117,7 +7117,7 @@
 <ul>
 <li><strong>Get operations</strong> (Get Task, List Tasks, Get Extended Agent Card) are naturally idempotent</li>
 <li><strong>Send Message</strong> operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages.</li>
-<li><strong>Cancel Task</strong> operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return <code>TaskNotFoundError</code> if a the task has already been canceled and purged.</li>
+<li><strong>Cancel Task</strong> operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return <code>TaskNotFoundError</code> if the task has already been canceled and purged.</li>
 </ul>
 <h4 id="332-error-handling">3.3.2. Error Handling<a class="headerlink" href="#332-error-handling" title="Permanent link">&para;</a></h4>
 <p>All operations may return errors in the following categories. Servers <strong>MUST</strong> return appropriate errors and <strong>SHOULD</strong> provide actionable information to help clients resolve issues.</p>
@@ -8053,7 +8053,7 @@
 </table>
 <ul>
 <li><strong><code>protocolVersion</code></strong> (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".</li>
-<li><strong><code>name</code></strong> (required, string): A human readable name for the agent.</li>
+<li><strong><code>name</code></strong> (required, string): A human-readable name for the agent.</li>
 <li><strong><code>description</code></strong> (required, string): A human-readable description of the agent, assisting users and other agents in understanding its purpose.</li>
 <li><strong><code>supportedInterfaces</code></strong> (optional, array of <a href="#446-agentinterface"><code>AgentInterface</code></a>): An ordered list of supported interfaces (protocol binding and URL combinations). The first item in the list is the preferred interface that clients should use when possible. Clients can select any interface from this list based on their preferences, but SHOULD prefer earlier entries when multiple options are supported.</li>
 <li><strong><code>provider</code></strong> (optional, <a href="#442-agentprovider"><code>AgentProvider</code></a>): The service provider of the agent.</li>

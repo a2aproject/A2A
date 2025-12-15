@@ -297,6 +297,7 @@
 <li class="toctree-l3"><a class="reference internal" href="a2a.utils.message.html">a2a.utils.message module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="a2a.utils.parts.html">a2a.utils.parts module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="a2a.utils.telemetry.html">a2a.utils.telemetry module</a></li>
 </ul>
@@ -439,7 +440,7 @@ to all outbound requests.</p></li>
 <span class="sig-prename descclassname"><span class="pre">a2a.client.client_factory.</span></span><span class="sig-name descname"><span class="pre">minimal_agent_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transports</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.AgentCard" title="a2a.types.AgentCard"><span class="pre">AgentCard</span></a></span></span><a class="headerlink" href="#a2a.client.client_factory.minimal_agent_card" title="Link to this definition">¶</a></dt>
 <dd><p>Generates a minimal card to simplify bootstrapping client creation.</p>
 <p>This minimal card is not viable itself to interact with the remote agent.
-Instead this is a short hand way to take a known url and transport option
+Instead this is a shorthand way to take a known url and transport option
 and interact with the get card endpoint of the agent server to get the
 correct agent card. This pattern is necessary for gRPC based card access
 as typically these servers won’t expose a well known path card.</p>

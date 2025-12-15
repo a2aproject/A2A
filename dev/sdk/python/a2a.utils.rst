@@ -68,6 +68,14 @@ a2a.utils.proto\_utils module
    :show-inheritance:
    :undoc-members:
 
+a2a.utils.signing module
+------------------------
+
+.. automodule:: a2a.utils.signing
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 a2a.utils.task module
 ---------------------
 
