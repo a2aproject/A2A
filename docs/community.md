@@ -60,12 +60,12 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
 - [CrewAI](https://docs.crewai.com/en/learn/a2a-agent-delegation)
 - [Hector](https://github.com/kadirpekel/hector)
-- [LangGraph](https://docs.langchain.com/langgraph-platform/server-a2a)
+- [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
 - [Pydantic AI](https://ai.pydantic.dev/a2a/)
 - [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
-- [Strands Agents](https://strandsagents.com/latest/documentation/docs/a2a)
+- [Strands Agents](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
 ## The Future is Interoperable
 
