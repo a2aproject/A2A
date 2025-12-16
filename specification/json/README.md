@@ -1,6 +1,6 @@
 # A2A JSON Artifact
 
-`a2a.json` is a **non-normative build artifact** derived from the canonical proto definition at `specification/grpc/a2a.proto`. It is generated during builds and intentionally **not** committed to source control.
+`a2a.json` is a **non-normative build artifact** derived from the canonical proto definition at `specification/a2a.proto`. It is generated during builds and intentionally **not** committed to source control.
 
 Generation pipeline:
 
