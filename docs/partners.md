@@ -16,6 +16,7 @@ collaborate effectively with each other and with users.
 - [Aisera](https://aisera.com/)
 - [Almawave.it](https://www.almawave.com/it/)
 - [AliCloud](http://www.alibabacloud.com)
+- [AmikoNet](https://amikonet.ai)
 - [ArcBlock](http://www.arcblock.io)
 - [Arize](https://arize.com/blog/arize-ai-and-future-of-agent-interoperability-embracing-googles-a2a-protocol/)
 - [Articul8](https://www.articul8.ai/blog/unleashing-the-next-frontier-of-enterprise-ai-introducing-model-mesh-dock-and-inter-lock-and-our-a2-a-partnership-with-google)
