@@ -96,12 +96,13 @@ service A2AService {
   // Get a push notification config for a task.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      get: "/{name=tasks/*/pushNotificationConfigs/*}"
+      get: "/{task_id=tasks/*/config_id=pushNotificationConfigs/*}"
       additional_bindings: {
-        get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+        get: "/{tenant}/{task_id=tasks/*/config_id=pushNotificationConfigs/*}"
       }
     };
-    option (google.api.method_signature) = "name";
+    option (google.api.method_signature) = "task_id,config_id";
+    option (google.api.method_signature) = "tenant,task_id,config_id";
   }
   // Get a list of push notifications configured for a task.
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
