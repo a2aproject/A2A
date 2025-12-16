@@ -102,7 +102,6 @@ service A2AService {
       }
     };
     option (google.api.method_signature) = "task_id,config_id";
-    option (google.api.method_signature) = "tenant,task_id,config_id";
   }
   // Get a list of push notifications configured for a task.
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
@@ -126,12 +125,12 @@ service A2AService {
   // Delete a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/{name=tasks/*/pushNotificationConfigs/*}"
+      delete: "/{task_id=tasks/*/config_id=pushNotificationConfigs/*}"
       additional_bindings: {
-        delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+        delete: "/{tenant}/{task_id=tasks/*/config_id=pushNotificationConfigs/*}"
       }
     };
-    option (google.api.method_signature) = "name";
+    option (google.api.method_signature) = "task_id,config_id";
   }
 }
 
