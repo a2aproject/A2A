@@ -790,9 +790,10 @@ message CancelTaskRequest {
 message GetTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
-  string name = 1;
+  string task_id = 1;
+  // The resource name of the config to retrieve.
+  string config_id = 3;
 }
 // --8<-- [end:GetTaskPushNotificationConfigRequest]
 
@@ -801,9 +802,10 @@ message GetTaskPushNotificationConfigRequest {
 message DeleteTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
-  string name = 1;
+  string task_id = 1;
+  // The resource name of the config to retrieve.
+  string config_id = 3;
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
