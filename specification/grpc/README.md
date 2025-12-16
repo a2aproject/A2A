@@ -1,6 +1,8 @@
 # Protocol Buffer Definitions
 
-This folder contains the A2A specification in Protocol Buffer (protobuf) format
+This folder contains the A2A specification in Protocol Buffer (protobuf) format.
+
+> **Note:** The main `a2a.proto` file has been moved to the parent `specification/` directory to reflect that it is the normative source for the A2A data and operation model, not just for gRPC.
 
 ## Prerequisites
 
@@ -11,7 +13,7 @@ Follow the installation instructions on the official `buf` GitHub repository:
 
 ## Validation
 
-To validate your protobuf definitions and ensure they adhere to linting rules, run the following command from the root of this folder:
+To validate your protobuf definitions and ensure they adhere to linting rules, run the following command from the `specification/` directory:
 
 ```sh
 buf lint
@@ -19,14 +21,14 @@ buf lint
 
 ## Code Generation
 
-`buf.gen.yaml` is configured to generate code for the following languages:
+`buf.gen.yaml` (in the `specification/` directory) is configured to generate code for the following languages:
 
 - Go
 - Java
 - Python
 - TypeScript
 
-To generate code for all configured languages, run the following command from the root of this folder:
+To generate code for all configured languages, run the following command from the `specification/` directory:
 
 ```sh
 buf generate
