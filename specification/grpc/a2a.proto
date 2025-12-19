@@ -44,9 +44,7 @@ service A2AService {
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
       get: "/{name=tasks/*}"
-      additional_bindings: {
-        get: "/{tenant}/{name=tasks/*}"
-      }
+      additional_bindings: {get: "/{tenant}/{name=tasks/*}"}
     };
     option (google.api.method_signature) = "name";
   }
@@ -54,9 +52,7 @@ service A2AService {
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
       get: "/tasks"
-      additional_bindings: {
-        get: "/{tenant}/tasks"
-      }
+      additional_bindings: {get: "/{tenant}/tasks"}
     };
   }
   // Cancel a task.
@@ -75,9 +71,7 @@ service A2AService {
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       get: "/{name=tasks/*}:subscribe"
-      additional_bindings: {
-        get: "/{tenant}/{name=tasks/*}:subscribe"
-      }
+      additional_bindings: {get: "/{tenant}/{name=tasks/*}:subscribe"}
     };
   }
 
@@ -97,9 +91,7 @@ service A2AService {
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       get: "/{name=tasks/*/pushNotificationConfigs/*}"
-      additional_bindings: {
-        get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
-      }
+      additional_bindings: {get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"}
     };
     option (google.api.method_signature) = "name";
   }
@@ -107,9 +99,7 @@ service A2AService {
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
       get: "/{parent=tasks/*}/pushNotificationConfigs"
-      additional_bindings: {
-        get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"
-      }
+      additional_bindings: {get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"}
     };
     option (google.api.method_signature) = "parent";
   }
@@ -117,18 +107,14 @@ service A2AService {
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
       get: "/extendedAgentCard"
-      additional_bindings: {
-        get: "/{tenant}/extendedAgentCard"
-      }
+      additional_bindings: {get: "/{tenant}/extendedAgentCard"}
     };
   }
   // Delete a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/{name=tasks/*/pushNotificationConfigs/*}"
-      additional_bindings: {
-        delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
-      }
+      additional_bindings: {delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"}
     };
     option (google.api.method_signature) = "name";
   }
@@ -160,7 +146,7 @@ message Task {
   // new task.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
   // Unique identifier (e.g. UUID) for the contextual collection of interactions
-  // (tasks and messages). Created by the A2A server.
+  // (tasks and messages).
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The current status of a Task, including state and a message.
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
@@ -483,6 +469,8 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent provides a history of state transitions for a task.
   optional bool state_transition_history = 4;
+  // Indicates if the agent can receive client-generated context id.
+  optional bool can_receive_client_generated_context_id = 5;
 }
 // --8<-- [end:AgentCapabilities]
 

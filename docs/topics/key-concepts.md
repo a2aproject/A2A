@@ -92,7 +92,7 @@ For more details, see [Life of a Task](./life-of-a-task.md).
 
 ## Other Important Concepts
 
-- **Context (`contextId`):** A server-generated identifier that can be used to logically group multiple related `Task` objects, providing context across a series of interactions.
+- **Context (`contextId`):** An identifier that can be used to logically group multiple related `Task`  and `Message` objects, providing context across a series of interactions.
 - **Transport and Format:** A2A communication occurs over HTTP(S). JSON-RPC 2.0 is used as the payload format for all requests and responses.
 - **Authentication & Authorization:** A2A relies on standard web security practices. Authentication requirements are declared in the Agent Card, and credentials (e.g., OAuth tokens, API keys) are typically passed through HTTP headers, separate from the A2A protocol messages themselves. For more information, see [Enterprise-Ready Features](./enterprise-ready.md).
 - **Agent Discovery:** The process by which clients find Agent Cards to learn about available A2A Servers and their capabilities. For more information, see [Agent Discovery](./agent-discovery.md).
