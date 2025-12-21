@@ -877,22 +877,6 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentCard") }}
 
-- **`protocolVersion`** (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".
-- **`name`** (required, string): A human-readable name for the agent.
-- **`description`** (required, string): A human-readable description of the agent, assisting users and other agents in understanding its purpose.
-- **`supportedInterfaces`** (optional, array of [`AgentInterface`](#446-agentinterface)): An ordered list of supported interfaces (protocol binding and URL combinations). The first item in the list is the preferred interface that clients should use when possible. Clients can select any interface from this list based on their preferences, but SHOULD prefer earlier entries when multiple options are supported.
-- **`provider`** (optional, [`AgentProvider`](#442-agentprovider)): The service provider of the agent.
-- **`version`** (required, string): The version of the agent (e.g., "1.0.0").
-- **`documentationUrl`** (optional, string): A URL to provide additional documentation about the agent.
-- **`capabilities`** (required, [`AgentCapabilities`](#443-agentcapabilities)): A2A capability set supported by the agent.
-- **`securitySchemes`** (optional, map of string to [`SecurityScheme`](#451-securityscheme)): The security scheme details used for authenticating with this agent.
-- **`security`** (optional, array of Security): Security requirements for contacting the agent.
-- **`defaultInputModes`** (required, array of strings): The set of interaction modes that the agent supports across all skills, defined as media types.
-- **`defaultOutputModes`** (required, array of strings): The media types supported as outputs from this agent.
-- **`skills`** (required, array of [`AgentSkill`](#445-agentskill)): Skills represent units of ability an agent can perform.
-- **`supportsExtendedAgentCard`** (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.
-- **`signatures`** (optional, array of [`AgentCardSignature`](#447-agentcardsignature)): JSON Web Signatures computed for this AgentCard.
-- **`iconUrl`** (optional, string): An optional URL to an icon for the agent.
 <a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
