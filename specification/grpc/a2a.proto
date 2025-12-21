@@ -409,9 +409,11 @@ message AgentInterface {
 // communication methods, and security requirements.
 // Next ID: 20
 message AgentCard {
-  // The version of the A2A protocol this agent supports.
-  // Default: "1.0"
-  optional string protocol_version = 16 [(google.api.field_behavior) = REQUIRED];
+  // The versions of the A2A protocol this agent supports.
+  // For stable versions (1.x+), list only the latest supported minor version per major version.
+  // For legacy experimental versions (0.x), explicitly list each supported version.
+  // Default: ["1.0"]
+  repeated string protocol_versions = 16 [(google.api.field_behavior) = REQUIRED];
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
