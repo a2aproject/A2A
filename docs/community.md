@@ -16,28 +16,6 @@ Stay up-to-date with the latest announcements, tutorials, and insights from the 
 
 ---
 
-## Upcoming Events
-
-Connect with us at these upcoming events to learn more about A2A, see live demos, and participate in hands-on hackathons.
-
-- **University of Florida Hackathon**
-    - *October (Date TBD)*
-    - Join us for a hackathon focused on building innovative solutions with A2A.
-
-- **São Paulo Summit**
-    - *September 10-11*
-    - Featuring key announcements, including the new Agent Payments Protocol.
-
-- **Mexico City Summit**
-    - *September 3-4*
-    - Explore the latest content and use cases for A2A.
-
-- **Tokyo Summit**
-    - *August 4*
-    - Discover how A2A is being used to power the next generation of AI agents.
-
----
-
 ## Use Case Highlights
 
 A2A unlocks powerful new ways for AI agents to collaborate and solve complex problems. Here are a few examples of what's possible:
@@ -77,11 +55,17 @@ The launch of A2A has sparked lively discussions and positive reactions across v
 These agentic frameworks have built-in A2A integration, making it easy to get started:
 
 - [Agent Development Kit (ADK)](https://google.github.io/adk-docs/a2a/)
+- [Agno](https://docs.agno.com/agent-os/interfaces/a2a/introduction)
 - [AG2](https://docs.ag2.ai/latest/docs/user-guide/a2a/)
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
+- [CrewAI](https://docs.crewai.com/en/learn/a2a-agent-delegation)
 - [Hector](https://github.com/kadirpekel/hector)
-- [LangGraph](https://docs.langchain.com/langgraph-platform/server-a2a)
+- [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
+- [LiteLLM](https://docs.litellm.ai/docs/a2a)
+- [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
 - [Pydantic AI](https://ai.pydantic.dev/a2a/)
+- [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
+- [Strands Agents](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
 ## The Future is Interoperable
 
