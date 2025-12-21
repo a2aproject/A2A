@@ -710,9 +710,19 @@ Agents declare support for latest supported protocol version in the `protocolVer
 
 It is RECOMMENDED that clients send the `A2A-Version` header with each request to maintain compatibility after an agent upgrades to a new version of the protocol. Sending the `A2A-Version` header also provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
 
+**Example: HTTP GET Request with Version Header**
+
+```http
+GET /tasks/task-123 HTTP/1.1
+Host: agent.example.com
+A2A-Version: 1.0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Accept: application/json
+```
+
 #### 3.6.2 Server Responsibilities
 
-Agents that receive requests with a supported `A2A-Version` MUST process the request according to the semantics defined in the latest patch version of the specification with the same `Major.Minor` values. If the requested version is not supported by the agent, the agent MUST return a `VersionNotSupportedError`.
+Agents that receive requests with a supported `A2A-Version` MUST process the request according to the semantics defined in the latest patch version of the specification with the same `Major.Minor` values. If the requested version is not supported by the agent, the agent MUST return a [`VersionNotSupportedError`](#332-error-handling).
 
 #### 3.6.3 Client Fallback
 
