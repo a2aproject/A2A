@@ -241,7 +241,7 @@ The agent provider signs the Agent Card using the following process:
 Before signing, prepare the Agent Card content:
 
 1. Remove the `signatures` field if present (to avoid circular dependency)
-2. Remove optional fields that have default values (per Protocol Buffer semantics)
+2. Omit fields set to their default value (e.g., `0`, `false`, empty strings/arrays), unless the field is defined as `required` or `optional` in the A2A protocol specification.
 3. Keep all required fields, even if they contain default values
 
 **Step 2: Canonicalize using RFC 8785**
