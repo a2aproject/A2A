@@ -1,0 +1,83 @@
+{
+  "protocolVersion": "1.0",
+  "name": "Recipe Agent",
+  "description": "An A2A agent that helps users with recipes and cooking",
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": true,
+    "stateTransitionHistory": false,
+    "extensions": [
+      {
+        "uri": "https://example.com/extensions/recipe-rating",
+        "description": "Provides recipe rating functionality",
+        "required": false
+      }
+    ]
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "search",
+      "name": "Search Recipes",
+      "description": "Search for recipes by name, ingredient, or cuisine",
+      "tags": ["search", "recipes"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["application/json"],
+      "examples": ["Find pasta recipes", "Search for vegan desserts"]
+    },
+    {
+      "id": "recommend",
+      "name": "Get Recommendations",
+      "description": "Get personalized recipe recommendations based on preferences",
+      "tags": ["recommendations", "personalization"],
+      "examples": ["Recommend dinner for tonight"]
+    },
+    {
+      "id": "convert",
+      "name": "Convert Measurements",
+      "description": "Convert between measurement units (cups, grams, etc.)",
+      "tags": ["conversion", "units"],
+      "examples": ["Convert 2 cups to ml", "How many grams in a tablespoon of flour?"]
+    }
+  ],
+  "supportedInterfaces": [
+    {
+      "url": "https://recipes.example.com/a2a",
+      "transport": "jsonrpc"
+    },
+    {
+      "url": "https://recipes.example.com/a2a/grpc",
+      "transport": "grpc"
+    }
+  ],
+  "provider": {
+    "url": "https://example.com",
+    "organization": "Example Corp"
+  },
+  "documentationUrl": "https://recipes.example.com/docs",
+  "securitySchemes": {
+    "bearerAuth": {
+      "httpAuthSecurityScheme": {
+        "scheme": "Bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "apiKey": {
+      "apiKeySecurityScheme": {
+        "location": "header",
+        "name": "X-API-Key"
+      }
+    }
+  },
+  "security": [
+    {
+      "schemes": {
+        "bearerAuth": []
+      }
+    }
+  ],
+  "supportsExtendedAgentCard": true,
+  "iconUrl": "https://recipes.example.com/icon.png"
+}
