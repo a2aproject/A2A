@@ -1160,7 +1160,7 @@
     "Message": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Message is one unit of communication between client and server. It is\n associated with a context and optionally a task. Since the server is\n responsible for the context definition, it must always provide a context_id\n in its messages. The client can optionally provide the context_id if it\n knows the context to associate the message to. Similarly for task_id,\n except the server decides if a task is created and whether to include the\n task_id.",
+      "description": "Message is one unit of communication between client and server. It can be\n associated with a context and/or a task. For server messages, context_id must\n be provided, and task_id only if a task was created. For client messages, both\n fields are optional, with the caveat that if both are provided, they have to\n match (the context_id has to be the one that is set on the task). If only\n task_id is provided, the server will infer context_id from it.",
       "patternProperties": {
         "^(context_id)$": {
           "default": "",
