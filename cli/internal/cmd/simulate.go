@@ -93,13 +93,11 @@ func runSimulate(cmd *cobra.Command, args []string) error {
 		// Parse agent card file to get URL
 		card, err := agentcard.ParseFile(input)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: failed to parse file: %v\n", err)
-			os.Exit(ExitFileNotFound)
+			return fmt.Errorf("failed to parse file: %w", err)
 		}
 
 		if len(card.SupportedInterfaces) == 0 {
-			fmt.Fprintf(os.Stderr, "Error: no supported interfaces found in agent card\n")
-			os.Exit(ExitInvalidArguments)
+			return fmt.Errorf("no supported interfaces found in agent card")
 		}
 
 		targetURL = card.SupportedInterfaces[0].URL
@@ -148,8 +146,7 @@ func sendSingleMessage(a2aClient *client.A2AClient, sessionMgr *client.SessionMa
 
 	resp, err := a2aClient.SendMessage(sessionMgr.Session(), simMessage)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(ExitNetworkError)
+		return fmt.Errorf("failed to send message: %w", err)
 	}
 
 	// Output response
@@ -175,8 +172,7 @@ func sendSingleMessage(a2aClient *client.A2AClient, sessionMgr *client.SessionMa
 func sendStreamingMessage(a2aClient *client.A2AClient, sessionMgr *client.SessionManager, message string, outputFmt output.Format) error {
 	events, err := a2aClient.SendMessageStream(sessionMgr.Session(), message)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(ExitNetworkError)
+		return fmt.Errorf("failed to start streaming: %w", err)
 	}
 
 	for event := range events {
