@@ -21,12 +21,6 @@ func SetVersionInfo(v, bt, gc string) {
 	gitCommit = gc
 }
 
-// SetVersion sets version and build time from main.
-func SetVersion(v, bt string) {
-	version = v
-	buildTime = bt
-}
-
 // GetVersion returns the current version.
 func GetVersion() string {
 	return version

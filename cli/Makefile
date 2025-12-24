@@ -5,7 +5,11 @@ BINARY_NAME := a2a
 VERSION := 1.0.0
 BUILD_DIR := ./build
 MAIN_PACKAGE := ./cmd/a2a
-LDFLAGS := -ldflags "-X main.version=$(VERSION) -X main.buildTime=$(shell date -u '+%Y-%m-%dT%H:%M:%SZ')"
+GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+BUILD_TIME := $(shell date -u '+%Y-%m-%dT%H:%M:%SZ')
+LDFLAGS := -ldflags "-X github.com/a2aproject/a2a/cli/internal/cmd.version=$(VERSION) \
+	-X github.com/a2aproject/a2a/cli/internal/cmd.buildTime=$(BUILD_TIME) \
+	-X github.com/a2aproject/a2a/cli/internal/cmd.gitCommit=$(GIT_COMMIT)"
 
 # Go commands
 GOCMD := go
@@ -63,9 +67,8 @@ vet:
 # Clean build artifacts
 .PHONY: clean
 clean:
-	rm -f $(BINARY_NAME)
+	rm -f $(BINARY_NAME) coverage.out coverage.html
 	rm -rf $(BUILD_DIR)
-	rm -f coverage.out coverage.html
 
 # Download dependencies
 .PHONY: deps
