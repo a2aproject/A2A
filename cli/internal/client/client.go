@@ -68,7 +68,7 @@ func (c *Client) TestConnection(url string, fetchCard bool) (*agentcard.Connecti
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		result.Error = fmt.Sprintf("failed to create request: %v", err)
-		return result, nil
+		return result, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	req.Header.Set("User-Agent", c.config.UserAgent)
@@ -77,7 +77,7 @@ func (c *Client) TestConnection(url string, fetchCard bool) (*agentcard.Connecti
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		result.Error = fmt.Sprintf("connection failed: %v", err)
-		return result, nil
+		return result, fmt.Errorf("connection failed: %w", err)
 	}
 	defer resp.Body.Close()
 
