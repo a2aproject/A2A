@@ -178,6 +178,28 @@ func IsURL(input string) bool {
 	return strings.HasPrefix(input, "http://") || strings.HasPrefix(input, "https://")
 }
 
+// ResolveEndpointURL extracts the target endpoint URL from either a direct URL
+// or an agent card file path. If input is a URL, it's returned as-is. If input
+// is a file path, the agent card is parsed and the first supported interface
+// URL is returned.
+func ResolveEndpointURL(input string) (string, error) {
+	if IsURL(input) {
+		return input, nil
+	}
+
+	// Parse agent card file to get URL
+	card, err := ParseFile(input)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse file: %w", err)
+	}
+
+	if len(card.SupportedInterfaces) == 0 {
+		return "", fmt.Errorf("no supported interfaces found in agent card")
+	}
+
+	return card.SupportedInterfaces[0].URL, nil
+}
+
 // ParseFileOrURL parses an Agent Card from either a file path or URL.
 func ParseFileOrURL(input string, opts ParseOptions) (*AgentCard, error) {
 	if IsURL(input) {

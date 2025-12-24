@@ -154,9 +154,8 @@ type StreamEvent struct {
 	Error   string          `json:"error,omitempty"`
 }
 
-// SendMessage sends a message to the agent and returns the response.
-func (c *A2AClient) SendMessage(session *agentcard.SimulationSession, content string) (*TaskResponse, error) {
-	// Build message payload
+// buildMessageParams creates SendMessageParams for a text message with session context.
+func buildMessageParams(session *agentcard.SimulationSession, content string) SendMessageParams {
 	params := SendMessageParams{
 		Message: MessagePayload{
 			Role: "user",
@@ -167,13 +166,19 @@ func (c *A2AClient) SendMessage(session *agentcard.SimulationSession, content st
 		},
 	}
 
-	// Add context if available
 	if session.ContextID != "" {
 		params.Message.ContextID = session.ContextID
 	}
 	if session.TaskID != "" {
 		params.Message.TaskID = session.TaskID
 	}
+
+	return params
+}
+
+// SendMessage sends a message to the agent and returns the response.
+func (c *A2AClient) SendMessage(session *agentcard.SimulationSession, content string) (*TaskResponse, error) {
+	params := buildMessageParams(session, content)
 
 	// Build JSON-RPC request
 	req := JSONRPCRequest{
@@ -233,24 +238,7 @@ func (c *A2AClient) SendMessage(session *agentcard.SimulationSession, content st
 
 // SendMessageStream sends a message and returns a channel of streaming events.
 func (c *A2AClient) SendMessageStream(session *agentcard.SimulationSession, content string) (<-chan StreamEvent, error) {
-	// Build message payload
-	params := SendMessageParams{
-		Message: MessagePayload{
-			Role: "user",
-			Parts: []Part{
-				{Type: "text", Text: content},
-			},
-			MessageID: uuid.New().String(),
-		},
-	}
-
-	// Add context if available
-	if session.ContextID != "" {
-		params.Message.ContextID = session.ContextID
-	}
-	if session.TaskID != "" {
-		params.Message.TaskID = session.TaskID
-	}
+	params := buildMessageParams(session, content)
 
 	// Build JSON-RPC request
 	req := JSONRPCRequest{

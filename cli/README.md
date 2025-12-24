@@ -115,11 +115,11 @@ a2a simulate --log session.json https://agent.example.com
 
 ## Global Flags
 
-| Flag          | Description                      |
-|---------------|----------------------------------|
-| `-o, --output`| Output format: text, json, yaml  |
-| `-v, --verbose`| Enable verbose output           |
-| `-h, --help`  | Help for any command             |
+| Flag            | Description                      |
+|-----------------|----------------------------------|
+| `-o, --output`  | Output format: text, json, yaml  |
+| `-v, --verbose` | Enable verbose output            |
+| `-h, --help`    | Help for any command             |
 
 ## Shell Completion
 

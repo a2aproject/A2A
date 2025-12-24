@@ -23,14 +23,9 @@ GOMOD := $(GOCMD) mod
 .PHONY: all
 all: build
 
-# Sync schema to validator package (go:embed cannot use .. paths)
-.PHONY: sync-schema
-sync-schema:
-	cp schemas/agentcard.json internal/validator/schema_data.json
-
 # Build the binary
 .PHONY: build
-build: sync-schema
+build:
 	$(GOBUILD) $(LDFLAGS) -o $(BINARY_NAME) $(MAIN_PACKAGE)
 
 # Install to GOPATH/bin
@@ -125,7 +120,6 @@ help:
 	@echo "  clean       - Clean build artifacts"
 	@echo "  deps        - Download dependencies"
 	@echo "  verify      - Verify dependencies"
-	@echo "  sync-schema - Sync schema to validator package"
 	@echo "  build-all   - Cross-compile for all platforms"
 	@echo "  completions - Generate shell completions"
 	@echo "  help        - Show this help"

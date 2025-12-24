@@ -57,24 +57,9 @@ Examples:
 }
 
 func runTest(cmd *cobra.Command, args []string) error {
-	input := args[0]
-	var targetURL string
-
-	// Determine if input is a URL or file
-	if agentcard.IsURL(input) {
-		targetURL = input
-	} else {
-		// Parse agent card file to get URL
-		card, err := agentcard.ParseFile(input)
-		if err != nil {
-			return fmt.Errorf("failed to parse file: %w", err)
-		}
-
-		if len(card.SupportedInterfaces) == 0 {
-			return fmt.Errorf("no supported interfaces found in agent card")
-		}
-
-		targetURL = card.SupportedInterfaces[0].URL
+	targetURL, err := agentcard.ResolveEndpointURL(args[0])
+	if err != nil {
+		return err
 	}
 
 	// Create client

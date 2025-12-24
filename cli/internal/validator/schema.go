@@ -2,20 +2,13 @@
 package validator
 
 import (
-	_ "embed"
 	"fmt"
 	"strings"
 	"sync"
 
+	"github.com/a2aproject/a2a/cli/schemas"
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
-
-// schema_data.json is copied from cli/schemas/agentcard.json by `make sync-schema`.
-// go:embed cannot use ".." paths, so we maintain a copy here.
-// Source of truth: cli/schemas/agentcard.json
-//
-//go:embed schema_data.json
-var schemaData string
 
 var (
 	agentCardSchema *jsonschema.Schema
@@ -33,14 +26,14 @@ func GetAgentCardSchema() (*jsonschema.Schema, error) {
 
 // loadSchema loads and compiles the Agent Card schema.
 func loadSchema() (*jsonschema.Schema, error) {
-	if schemaData == "" {
+	if schemas.AgentCardSchema == "" {
 		return nil, fmt.Errorf("schema data is empty")
 	}
 
 	compiler := jsonschema.NewCompiler()
 	compiler.Draft = jsonschema.Draft7
 
-	if err := compiler.AddResource("agentcard.json", strings.NewReader(schemaData)); err != nil {
+	if err := compiler.AddResource("agentcard.json", strings.NewReader(schemas.AgentCardSchema)); err != nil {
 		return nil, fmt.Errorf("failed to add schema resource: %w", err)
 	}
 
