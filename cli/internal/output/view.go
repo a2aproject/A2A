@@ -38,8 +38,8 @@ func WriteAgentCardOverview(w io.Writer, card *agentcard.AgentCard) {
 	WriteCapabilities(w, &card.Capabilities)
 
 	// Input/Output modes
-	fmt.Printf("Input Modes:  %s\n", strings.Join(card.DefaultInputModes, ", "))
-	fmt.Printf("Output Modes: %s\n", strings.Join(card.DefaultOutputModes, ", "))
+	fmt.Fprintf(w, "Input Modes:  %s\n", strings.Join(card.DefaultInputModes, ", "))
+	fmt.Fprintf(w, "Output Modes: %s\n", strings.Join(card.DefaultOutputModes, ", "))
 	fmt.Fprintln(w)
 
 	// Skills summary
