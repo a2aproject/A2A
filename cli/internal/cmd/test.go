@@ -67,13 +67,11 @@ func runTest(cmd *cobra.Command, args []string) error {
 		// Parse agent card file to get URL
 		card, err := agentcard.ParseFile(input)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error: failed to parse file: %v\n", err)
-			os.Exit(ExitFileNotFound)
+			return fmt.Errorf("failed to parse file: %w", err)
 		}
 
 		if len(card.SupportedInterfaces) == 0 {
-			fmt.Fprintf(os.Stderr, "Error: no supported interfaces found in agent card\n")
-			os.Exit(ExitInvalidArguments)
+			return fmt.Errorf("no supported interfaces found in agent card")
 		}
 
 		targetURL = card.SupportedInterfaces[0].URL
@@ -95,8 +93,7 @@ func runTest(cmd *cobra.Command, args []string) error {
 	// Test connection
 	result, err := c.TestConnection(targetURL, testFetchCard)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(ExitNetworkError)
+		return fmt.Errorf("connection test failed: %w", err)
 	}
 
 	// Determine output format
@@ -112,9 +109,9 @@ func runTest(cmd *cobra.Command, args []string) error {
 		printTestResultText(result)
 	}
 
-	// Exit with appropriate code
+	// Return error if not reachable
 	if !result.Reachable {
-		os.Exit(ExitNetworkError)
+		return fmt.Errorf("endpoint not reachable: %s", result.Error)
 	}
 
 	return nil
