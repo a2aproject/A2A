@@ -54,19 +54,13 @@ func runValidate(cmd *cobra.Command, args []string) error {
 
 	// Check if file exists
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		if !validateQuiet {
-			fmt.Fprintf(os.Stderr, "Error: file not found: %s\n", filePath)
-		}
-		os.Exit(ExitFileNotFound)
+		return fmt.Errorf("file not found: %s", filePath)
 	}
 
 	// Read and parse the file
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		if !validateQuiet {
-			fmt.Fprintf(os.Stderr, "Error: failed to read file: %v\n", err)
-		}
-		os.Exit(ExitFileNotFound)
+		return fmt.Errorf("failed to read file: %w", err)
 	}
 
 	// Detect format
@@ -75,10 +69,7 @@ func runValidate(cmd *cobra.Command, args []string) error {
 	// Validate
 	result, err := validator.Validate(data, format)
 	if err != nil {
-		if !validateQuiet {
-			fmt.Fprintf(os.Stderr, "Error: validation failed: %v\n", err)
-		}
-		os.Exit(ExitGeneralError)
+		return fmt.Errorf("validation failed: %w", err)
 	}
 
 	// Determine output format
