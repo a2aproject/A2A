@@ -307,6 +307,7 @@ func (c *A2AClient) SendMessageStream(session *agentcard.SimulationSession, cont
 
 				var event StreamEvent
 				if err := json.Unmarshal([]byte(data), &event); err != nil {
+					events <- StreamEvent{Type: "error", Error: fmt.Sprintf("failed to parse event: %v", err)}
 					continue
 				}
 
