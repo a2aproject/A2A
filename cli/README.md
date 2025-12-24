@@ -132,9 +132,15 @@ a2a completion zsh > "${fpath[1]}/_a2a"
 
 # Fish
 a2a completion fish > ~/.config/fish/completions/a2a.fish
+```
 
-# PowerShell
+```powershell
+# PowerShell - Load in current session
+a2a completion powershell | Out-String | Invoke-Expression
+
+# PowerShell - Make persistent (add to profile)
 a2a completion powershell > a2a.ps1
+# Then add `. /path/to/a2a.ps1` to your PowerShell profile
 ```
 
 ## Exit Codes
