@@ -1,6 +1,7 @@
 package agentcard
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -51,8 +52,14 @@ func ParseFile(path string) (*AgentCard, error) {
 
 // ParseURL fetches and parses an Agent Card from a URL.
 func ParseURL(url string, opts ParseOptions) (*AgentCard, error) {
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: opts.Insecure,
+		},
+	}
 	client := &http.Client{
-		Timeout: opts.Timeout,
+		Timeout:   opts.Timeout,
+		Transport: transport,
 	}
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
