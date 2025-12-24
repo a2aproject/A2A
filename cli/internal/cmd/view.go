@@ -65,11 +65,9 @@ func runView(cmd *cobra.Command, args []string) error {
 	card, err := agentcard.ParseFileOrURL(input, opts)
 	if err != nil {
 		if agentcard.IsURL(input) {
-			fmt.Fprintf(os.Stderr, "Error: failed to fetch URL: %v\n", err)
-			os.Exit(ExitNetworkError)
+			return fmt.Errorf("failed to fetch URL: %w", err)
 		}
-		fmt.Fprintf(os.Stderr, "Error: failed to parse file: %v\n", err)
-		os.Exit(ExitFileNotFound)
+		return fmt.Errorf("failed to parse file: %w", err)
 	}
 
 	// Determine output format
