@@ -10,6 +10,10 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v5"
 )
 
+// schema_data.json is copied from cli/schemas/agentcard.json by `make sync-schema`.
+// go:embed cannot use ".." paths, so we maintain a copy here.
+// Source of truth: cli/schemas/agentcard.json
+//
 //go:embed schema_data.json
 var schemaData string
 
