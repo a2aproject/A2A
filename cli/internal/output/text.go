@@ -11,7 +11,7 @@ func PrintSuccess(w io.Writer, message string) {
 	fmt.Fprintf(w, "\u2713 %s\n", message)
 }
 
-// PrintError prints an error message with an X.
+// PrintError prints an error message with an "X" marker.
 func PrintError(w io.Writer, message string) {
 	fmt.Fprintf(w, "\u2717 %s\n", message)
 }
