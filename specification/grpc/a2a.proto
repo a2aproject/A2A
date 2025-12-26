@@ -406,7 +406,7 @@ message AgentInterface {
 // AgentCard is a self-describing manifest for an agent. It provides essential
 // metadata including the agent's identity, capabilities, skills, supported
 // communication methods, and security requirements.
-// Next ID: 20
+// Next ID: 21
 message AgentCard {
   // The version of the A2A protocol this agent supports.
   // Default: "1.0"
@@ -456,6 +456,9 @@ message AgentCard {
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
   optional string icon_url = 18;
+  // An optional categorization of the agent type (e.g., "llm", "workflow", "assistant").
+  // This helps consumers identify the kind of agent they are interacting with.
+  optional string agent_type = 20;
 }
 // --8<-- [end:AgentCard]
 
