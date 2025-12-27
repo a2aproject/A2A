@@ -2186,9 +2186,9 @@ Clients verifying Agent Card signatures **MUST**:
 
 The Agent Catalog extends the agent discovery mechanism to support **open discovery of multiple agents served under a shared origin**.
 
-In the core specification ([Section 5](#5-agent-discovery-the-agent-card)), open discovery is typically performed using a well-known location—`/.well-known/agent.json`—which is the recommended way to expose an individual agent's Agent Card. This approach implicitly assumes a **one-agent-per-host** or **per-base-path** model, where each agent has its own dedicated and discoverable entry point.
+In the core specification ([Section 8](#5-agent-discovery-the-agent-card)), open discovery is typically performed using a well-known location—`/.well-known/agent-card.json`—which is the recommended way to expose an individual agent's Agent Card. This approach implicitly assumes a **one-agent-per-host** model, where each agent has its own dedicated and discoverable entry point.
 
-However, in real-world deployments, it is common for a single host or gateway to serve **multiple agents**, each accessible via distinct subpaths (e.g., `/a2a/agent1`, `/a2a/agent2`). The `/.well-known/agent.json` mechanism does not support enumerating such multi-agent deployments.
+However, in real-world deployments, it is common for a single host or gateway to serve **multiple agents**, each accessible via distinct subpaths (e.g., `/a2a/v1/agent1`, `/a2a/v1/agent2`). The `/.well-known/agent-card.json` mechanism does not support enumerating such multi-agent deployments.
 
 To address this limitation, the Agent Catalog adopts the [API Catalog format (RFC 9727)](https://datatracker.ietf.org/doc/rfc9727/) as standardized by the IETF.
 
@@ -2198,10 +2198,10 @@ Clients can discover Agent endpoints and Agent Cards through the following mecha
 
 - **Well-Known URI:** The Agent Catalog is exposed at a standard location such as `/.well-known/api-catalog` on the shared origin. This location is defined as a well-known URI in [RFC 9727](https://datatracker.ietf.org/doc/rfc9727/), enabling clients to locate catalogs in a consistent and interoperable manner.
 
-The Agent Catalog follows the [API Catalog format](https://datatracker.ietf.org/doc/rfc9727/), which is based on the [Linkset](https://datatracker.ietf.org/doc/rfc9264/) specification. This format allows a server to expose a collection of agent endpoints in a standardized structure, where each entry consists of:
+The Agent Catalog follows the [API Catalog format](https://datatracker.ietf.org/doc/rfc9727/), which is based on the [Linkset](https://datatracker.ietf.org/doc/rfc9264/) specification. This format allows a server to expose a collection of agent endpoints in a standardized structure, where each entry may include:
 
-- **An `anchor`:** The base URI for an individual agent (e.g., `https://example.org/a2a/agent1`)
-- **A `describedby` link:** Pointing to the agent's own Agent Card, which describes its capabilities and interface (e.g., `https://example.org/a2a/agent1/agent.json`)
+- **An `anchor` (optional):** The base URI for an individual agent (e.g., `https://example.org/a2a/v1/agent1`), if applicable.
+- **Link relations to the agent's description:** Typical examples include `describedby`, `service-desc`, or `service-meta`. Implementations may also use a URI pointing to the relevant section of the Agent Card specification (e.g., `https://a2a-protocol.org/latest/specification/#5-agent-discovery-the-agent-card`) as the link relation.
 
 This mechanism enables clients to enumerate all available agents under a shared origin and fetch their respective Agent Cards dynamically. It makes agent discovery interoperable, extensible, and well-suited for federated or platform-hosted environments.
 
@@ -2211,41 +2211,7 @@ Agent Catalogs may expose sensitive metadata depending on deployment context.
 
 For further considerations and best practices regarding the publication and protection of API Catalogs, refer to the [Security Considerations](https://datatracker.ietf.org/doc/rfc9727/) section of the RFC.
 
-### 8A.4. `AgentCatalog` Object Structure
-
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentCatalog"
-```
-
-| Field Name    | Type                                                  | Required | Description                                      |
-| :------------ | :---------------------------------------------------- | :------- | :----------------------------------------------- |
-| `linkset`     | [`AgentLinkContext[]`](#8a41-agentlinkcontext-object) | Yes      | An array of agent-specific link context objects. |
-
-### 8A.4.1. `AgentLinkContext` Object
-
-Represents a [Link Context (RFC 9264 §4.2.2.)](https://datatracker.ietf.org/doc/rfc9264/) object specifically for agents. Extends the general Link Context structure by requiring an `anchor` field and including a `describedby` relation to link to the agent's card endpoint.
-
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentLinkContext"
-```
-
-| Field Name              | Type                                                | Required | Description                                                                                                                       |
-| :---------------------- | :-------------------------------------------------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------- |
-| `anchor`                | `string`                                            | Yes      | A URI identifying the agent's primary endpoint. MUST be an absolute URI.                                                          |
-| `describedby`           | [`AgentLinkTarget[]`](#8a42-agentlinktarget-object) | Yes      | A list of links to the agent's metadata (Agent Card).                                                                             |
-| *Additional properties* | `unknown`                                           | No       | Additional [link relation types](https://www.iana.org/assignments/link-relations/link-relations.xhtml) MAY be included as needed. |
-
-### 8A.4.2. `AgentLinkTarget` Object
-
-Represents a [Link Target (RFC 9264 §4.2.3.)](https://datatracker.ietf.org/doc/rfc9264/) object that specifically points to an agent card in JSON format. This is a specialization of the generic Link Target with a fixed media type of `application/json` as required for agent metadata.
-
-| Field Name              | Type                 | Required | Description                                                                                                                   |
-| :---------------------- | :------------------- | :------- | :---------------------------------------------------------------------------------------------------------------------------- |
-| `href`                  | `string`             | Yes      | A URI pointing to the agent's metadata (Agent Card). MUST be absolute.                                                        |
-| `type`                  | `"application/json"` | Yes      | The media type of the Agent Card. MUST be `"application/json"` to conform to A2A expectations.                                |
-| *Additional properties* | `unknown`            | No       | Extension attributes may be included, as defined in [RFC 9264 §4.2.4.](https://www.rfc-editor.org/rfc/rfc9264#section-4.2.4). |
-
-### 8A.5. Sample Agent Catalog
+### 8A.4. Sample Agent Catalog
 
 ```json
 {
@@ -2254,7 +2220,7 @@ Represents a [Link Target (RFC 9264 §4.2.3.)](https://datatracker.ietf.org/doc/
       "anchor": "https://georoute-agent.example.com/a2a/v1/route_planner",
       "describedby": [
         {
-          "href": "https://georoute-agent.example.com/a2a/v1/route_planner/agent.json",
+          "href": "https://georoute-agent.example.com/a2a/v1/route_planner/agent-card.json",
           "type": "application/json",
           "title": "GeoSpatial Route Planner Agent Card"
         }
@@ -2262,7 +2228,7 @@ Represents a [Link Target (RFC 9264 §4.2.3.)](https://datatracker.ietf.org/doc/
     },
     {
       "anchor": "https://georoute-agent.example.com/a2a/v1/poi_finder",
-      "describedby": [
+      "https://a2a-protocol.org/latest/specification/#5-agent-discovery-the-agent-card": [
         {
           "href": "https://georoute-agent.example.com/a2a/v1/poi_finder/agent.json",
           "type": "application/json",
