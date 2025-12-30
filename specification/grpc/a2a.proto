@@ -456,9 +456,10 @@ message AgentCard {
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
   optional string icon_url = 18;
-  // An optional categorization of the agent type (e.g., "llm", "workflow", "assistant").
-  // This helps consumers identify the kind of agent they are interacting with.
-  optional string agent_type = 20;
+  // Optional tags for categorizing the agent (e.g., "llm", "workflow", "assistant", "customer-support").
+  // This helps consumers identify, filter, and display agents in registries.
+  // An agent can have multiple tags for different purposes based on business use cases.
+  repeated string agent_tags = 20;
 }
 // --8<-- [end:AgentCard]
 
