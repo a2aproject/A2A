@@ -871,7 +871,7 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 - **`supportsExtendedAgentCard`** (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.
 - **`signatures`** (optional, array of [`AgentCardSignature`](#447-agentcardsignature)): JSON Web Signatures computed for this AgentCard.
 - **`iconUrl`** (optional, string): An optional URL to an icon for the agent.
-- **`agentType`** (optional, string): An optional categorization of the agent type (e.g., "llm", "workflow", "assistant"). This helps consumers identify the kind of agent they are interacting with.
+- **`agentTags`** (optional, array of strings): Optional tags for categorizing the agent (e.g., "llm", "workflow", "assistant", "customer-support"). This helps consumers identify, filter, and display agents in registries. An agent can have multiple tags for different purposes based on business use cases.
 <a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
