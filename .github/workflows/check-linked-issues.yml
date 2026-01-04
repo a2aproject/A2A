@@ -1,0 +1,23 @@
+name: Check for Linked Issues
+
+on:
+  pull_request_target:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  check_pull_requests:
+    runs-on: ubuntu-latest
+    name: Check linked issues
+    permissions:
+      issues: read
+      pull-requests: write
+    steps:
+      - uses: nearform-actions/github-action-check-linked-issues@v1
+        id: check-linked-issues
+        with:
+          exclude-branches: 'release/**, dependabot/**, release-please--branches--main'
+          comment: false
+
+      # OPTIONAL: Use the output from the `check-linked-issues` step
+      - name: Get the output
+        run: echo "How many linked issues? ${{ steps.check-linked-issues.outputs.linked_issues_count }}"

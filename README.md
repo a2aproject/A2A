@@ -2,8 +2,17 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/a2a-sdk)](https://pypi.org/project/a2a-sdk)
 [![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+<a href="https://codewiki.google/github.com/a2aproject/a2a">
+  <img src="https://www.gstatic.com/_/boq-sdlc-agents-ui/_/r/Mvosg4klCA4.svg" alt="Ask Code Wiki" height="20">
+</a>
 
-![A2A Banner](docs/assets/a2a-banner.png)
+<!-- markdownlint-disable MD041 -->
+<div style="text-align: center;">
+  <div class="centered-logo-text-group">
+    <img src="docs/assets/a2a-logo-black.svg" alt="Agent2Agent Protocol Logo" width="100">
+    <h1>Agent2Agent (A2A) Protocol</h1>
+  </div>
+</div>
 
 **An open protocol enabling communication and interoperability between opaque agentic applications.**
 
@@ -18,7 +27,7 @@ With A2A, agents can:
 
 ## Intro to A2A Video
 
-[![A2A Intro Video](docs/assets/a2a-video-thumbnail.png)](https://goo.gle/a2a-video)
+[![A2A Intro Video](https://img.youtube.com/vi/Fbr_Solax1w/hqdefault.jpg)](https://goo.gle/a2a-video)
 
 ## Why A2A?
 
@@ -39,11 +48,14 @@ As AI agents become more prevalent, their ability to interoperate is crucial for
 
 ## Getting Started
 
-- 📚 **Explore the Documentation:** Visit the [Agent2Agent Protocol Documentation Site](https://goo.gle/a2a) for a complete overview, the full protocol specification, tutorials, and guides.
-- 📝 **View the Specification:** [A2A Protocol Specification](https://a2aproject.github.io/A2A/specification/)
-- 🐍 Use the SDKs:
-    - [A2A Python SDK](https://github.com/a2aproject/a2a-python) `pip install a2a-sdk`
-    - [A2A JS SDK](https://github.com/a2aproject/a2a-js) `npm install @a2a-js/sdk`
+- 📚 **Explore the Documentation:** Visit the [Agent2Agent Protocol Documentation Site](https://a2a-protocol.org) for a complete overview, the full protocol specification, tutorials, and guides.
+- 📝 **View the Specification:** [A2A Protocol Specification](https://a2a-protocol.org/latest/specification/)
+- Use the SDKs:
+    - [🐍 A2A Python SDK](https://github.com/a2aproject/a2a-python) `pip install a2a-sdk`
+    - [🐿️ A2A Go SDK](https://github.com/a2aproject/a2a-go) `go get github.com/a2aproject/a2a-go`
+    - [🧑‍💻 A2A JS SDK](https://github.com/a2aproject/a2a-js) `npm install @a2a-js/sdk`
+    - [☕️ A2A Java SDK](https://github.com/a2aproject/a2a-java) using maven
+    - [🔷 A2A .NET SDK](https://github.com/a2aproject/a2a-dotnet) using [NuGet](https://www.nuget.org/packages/A2A) `dotnet add package A2A`
 - 🎬 Use our [samples](https://github.com/a2aproject/a2a-samples) to see A2A in action
 
 ## Contributing
@@ -72,4 +84,4 @@ We welcome community contributions to enhance and evolve the A2A protocol!
 
 ## About
 
-The A2A Protocol is an open-source project by Google LLC, under the [Apache License 2.0](LICENSE), and is open to contributions from the community.
+The A2A Protocol is an open source project under the Linux Foundation, contributed by Google. It is licensed under the [Apache License 2.0](LICENSE) and is open to contributions from the community.

@@ -1,8 +1,6 @@
 # A2A Docs
 
-## Published A2A docs
-
-[`https://a2aproject.github.io/A2A`](https://a2aproject.github.io/A2A)
+<https://a2a-protocol.org>
 
 ## Developing A2A docs
 
@@ -25,3 +23,25 @@
   commits / merges to `main`.
 - The A2A documentation is hosted in GitHub pages, and the settings for this are
   in the A2A repository settings in GitHub.
+
+## Building the Python SDK Documentation
+
+The Python SDK documentation is built using [Sphinx](https://www.sphinx-doc.org/).
+
+### Prerequisites
+
+Ensure you have installed the documentation dependencies:
+
+```bash
+pip install -r ../../requirements-docs.txt
+```
+
+### Building the Docs
+
+1. Run the following command to build the HTML documentation:
+
+   ```bash
+   sphinx-build -b html docs/sdk/python docs/sdk/python/api
+   ```
+
+2. The generated HTML files will be in the `sdk/python/api` directory. You can open `sdk/python/api/index.html` in your browser to view the documentation.
