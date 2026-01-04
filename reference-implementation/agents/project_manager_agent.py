@@ -98,6 +98,30 @@ class ProjectManagerAgent(BaseAgent):
             analysis["agent_preferences"].append("Deep Researcher Agent")
             analysis["keywords"].extend([k for k in research_keywords if k in text_lower])
 
+        # Grant writing keywords
+        grant_keywords = ["grant", "nih", "proposal", "nsf", "funding", "application",
+                         "specific aims", "biosketch", "budget", "r01", "pdf format", "page limit"]
+        if any(keyword in text_lower for keyword in grant_keywords):
+            analysis["required_skills"].append("format_validation")
+            analysis["agent_preferences"].append("Grant Writing Genius Agent")
+            analysis["keywords"].extend([k for k in grant_keywords if k in text_lower])
+
+        # VPN and networking keywords
+        vpn_keywords = ["vpn", "outline", "shadowsocks", "proxy", "circumvent", "bypass",
+                       "socks5", "network", "censorship", "tunnel", "sdk integration"]
+        if any(keyword in text_lower for keyword in vpn_keywords):
+            analysis["required_skills"].append("outline_setup")
+            analysis["agent_preferences"].append("VPN Setup Agent")
+            analysis["keywords"].extend([k for k in vpn_keywords if k in text_lower])
+
+        # Bloom/LLM evaluation keywords
+        bloom_keywords = ["bloom", "evaluation", "behavior", "llm", "sycophancy", "bias",
+                         "judgment", "transcript", "seed.yaml", "ideation", "rollout"]
+        if any(keyword in text_lower for keyword in bloom_keywords):
+            analysis["required_skills"].append("evaluation_design")
+            analysis["agent_preferences"].append("Bloom Agent")
+            analysis["keywords"].extend([k for k in bloom_keywords if k in text_lower])
+
         # Determine complexity
         if any(word in text_lower for word in ["complex", "comprehensive", "deep", "detailed"]):
             analysis["complexity"] = "high"

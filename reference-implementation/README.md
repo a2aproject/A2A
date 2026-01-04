@@ -1,15 +1,21 @@
 # Multi-Agent Orchestrator System - A2A Protocol Reference Implementation
 
-A comprehensive reference implementation demonstrating the Agent2Agent (A2A) Protocol with intelligent multi-agent orchestration, task routing, and specialized capabilities including Hugging Face dataset integration.
+A comprehensive reference implementation demonstrating the Agent2Agent (A2A) Protocol with intelligent multi-agent orchestration, task routing, and 7 specialized domain expert agents.
 
 ## 🎯 Overview
 
 This implementation showcases a production-ready multi-agent system with:
 
+### Coordination Layer
 - **Orchestrator Agent** - Co-scientist mode for complex workflow coordination
 - **Project Manager Agent** - Intelligent task routing and agent selection
+
+### Specialized Domain Experts
+- **Dataset Ingestion Agent** - Seamless HuggingFace dataset integration (GLUE, etc.)
 - **Deep Researcher Agent** - Advanced research and knowledge synthesis
-- **Dataset Ingestion Agent** - Seamless Hugging Face dataset integration
+- **Grant Writing Genius Agent** - NIH grant application and scientific writing expert
+- **VPN Setup Agent** - Outline SDK and network circumvention specialist
+- **Bloom Agent** - LLM behavior evaluation and testing expert
 
 All agents follow the [A2A Protocol specification](../specification.md) for standardized agent-to-agent communication.
 
@@ -19,30 +25,46 @@ All agents follow the [A2A Protocol specification](../specification.md) for stan
 ┌─────────────────────────────────────────────────────────────────┐
 │                     Orchestrator Agent                          │
 │                  (Co-Scientist Mode)                            │
-│  • Strategic planning                                           │
-│  • Workflow coordination                                        │
-│  • Knowledge integration                                        │
+│  • Strategic planning • Workflow coordination                   │
+│  • Knowledge integration • Multi-agent synthesis                │
 └────────────────────┬────────────────────────────────────────────┘
                      │
                      ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                  Project Manager Agent                          │
-│                 (Task Router)                                   │
-│  • Task analysis                                                │
-│  • Agent selection                                              │
-│  • Workload optimization                                        │
-└────────┬────────────────────────────┬───────────────────────────┘
-         │                            │
-         ▼                            ▼
-┌──────────────────────┐    ┌──────────────────────────┐
-│  Deep Researcher     │    │  Dataset Ingestion       │
-│  Agent               │    │  Agent                   │
-│                      │    │                          │
-│  • Deep analysis     │    │  • HuggingFace loader    │
-│  • Literature review │    │  • Dataset analysis      │
-│  • Synthesis         │    │  • Metadata extraction   │
-│  • Hypotheses        │    │  • GLUE support          │
-└──────────────────────┘    └──────────────────────────┘
+│                 (Intelligent Task Router)                       │
+│  • Task analysis • Agent selection • Workload optimization      │
+└─┬────┬─────────┬────────────┬───────────────┬──────────────────┘
+  │    │         │            │               │
+  ▼    ▼         ▼            ▼               ▼
+┌────┐┌────┐  ┌────┐       ┌────┐          ┌────┐
+│ DS ││ RE ││  │ GW │       │ VPN│          │BLOM│
+│    ││    ││  │    │       │    │          │    │
+│ H  ││ D  ││  │ N  │       │ O  │          │ L  │
+│ F  ││ e  ││  │ I  │       │ u  │          │ L  │
+│    ││ e  ││  │ H  │       │ t  │          │ M  │
+│ D  ││ p  ││  │    │       │ l  │          │    │
+│ a  ││    ││  │ G  │       │ i  │          │ E  │
+│ t  ││ R  ││  │ r  │       │ n  │          │ v  │
+│ a  ││ e  ││  │ a  │       │ e  │          │ a  │
+│ s  ││ s  ││  │ n  │       │    │          │ l  │
+│ e  ││ e  ││  │ t  │       │ S  │          │    │
+│ t  ││ a  ││  │ s  │       │ D  │          │    │
+│    ││ r  ││  │    │       │ K  │          │    │
+│ A  ││ c  ││  │ E  │       │    │          │    │
+│ g  ││ h  ││  │ x  │       │ S  │          │    │
+│ e  ││    ││  │ p  │       │ p  │          │    │
+│ n  ││    ││  │ e  │       │ e  │          │    │
+│ t  ││    ││  │ r  │       │ c  │          │    │
+│    ││    ││  │ t  │       │    │          │    │
+└────┘└────┘  └────┘       └────┘          └────┘
+
+Specialized Domain Experts:
+  • Dataset Agent: HuggingFace datasets (GLUE, etc.)
+  • Researcher Agent: Deep analysis & knowledge synthesis
+  • Grant Writing Agent: NIH grants & scientific writing
+  • VPN Agent: Outline SDK & network circumvention
+  • Bloom Agent: LLM behavior evaluation
 ```
 
 ## 🚀 Quick Start
