@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
+      - "scripts/deploy_root_files.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -14,12 +15,14 @@ on:
       - main
     paths:
       - ".github/workflows/docs.yml"
+      - "scripts/deploy_root_files.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
   release:
     types:
       - published
+  workflow_dispatch:
 
 jobs:
   build_and_deploy:
@@ -32,17 +35,18 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Configure Git Credentials
         run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.13
 
@@ -55,7 +59,53 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install documentation dependencies
-        run: pip install -r requirements-docs.txt
+        run: pip install --upgrade -r requirements-docs.txt
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.24'
+
+      - name: Install build tools
+        run: |
+          # Install protoc
+          PROTOC_VERSION="28.3"
+          PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+          curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
+          sudo unzip -q /tmp/protoc.zip -d /usr/local
+          rm /tmp/protoc.zip
+
+          # Install protoc-gen-jsonschema
+          go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
+          sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
+
+          # Install buf CLI
+          go install github.com/bufbuild/buf/cmd/buf@latest
+          sudo cp "$(go env GOPATH)/bin/buf" /usr/local/bin/
+
+          # Clone googleapis
+          mkdir -p third_party
+          cd third_party
+          git clone --depth 1 https://github.com/googleapis/googleapis.git
+          cd ..
+
+      - name: Generate protocol specification files
+        run: ./scripts/build_docs.sh
+
+      - name: Generate and Build Python SDK Docs
+        run: |
+          # Find the path to the installed package
+          PACKAGE_PATH=$(python -c "import a2a, os; print(os.path.dirname(a2a.__file__))")
+          echo "Found 'a2a' package at: ${PACKAGE_PATH}"
+
+          # Generate RST source files from the installed package
+          sphinx-apidoc -f -o docs/sdk/python "${PACKAGE_PATH}"
+
+          # Build the HTML from the generated RST files
+          sphinx-build -b html docs/sdk/python docs/sdk/python/api
+
+      - name: Generate consolidated llms-full.txt file
+        run: bash scripts/build_llms_full.sh
 
       - name: Build Documentation (PR Check)
         if: github.event_name == 'pull_request'
@@ -64,16 +114,26 @@ jobs:
       - name: Deploy development version from main branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          echo "Deploying docs from main to the 'dev' version..."
-          mike deploy --push --update-aliases dev
+          mike deploy --push --update-aliases dev latest
+
+          echo "Setting 'latest' as the default version for the site..."
+          mike set-default --push latest
+
+          # Deploy 404 page
+          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy new release version and set as latest
         if: github.event_name == 'release'
         run: |
           # The release tag (e.g., v0.2.2) is used as the version number
-          VERSION=${{ github.event.release.tag_name }}
-          echo "Deploying docs for version $VERSION and setting it as 'latest'..."
-          mike deploy --push --update-aliases $VERSION latest
+          export MIKE_VERSION=${GITHUB_EVENT_RELEASE_TAG_NAME}
+          echo "Deploying docs for version $MIKE_VERSION and setting it as 'latest'..."
+          mike deploy --push --update-aliases $MIKE_VERSION latest
 
           echo "Setting 'latest' as the default version for the site..."
           mike set-default --push latest
+
+          # Call the reusable script to deploy the 404 page, passing the token
+          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}

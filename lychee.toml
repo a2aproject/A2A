@@ -1,4 +1,4 @@
-exclude = [ 
+exclude = [
     'https://fonts.gstatic.com/',
     'https://fonts.googleapis.com/',
     'http://go/github',
@@ -7,15 +7,19 @@ exclude = [
     'https://x.com/',
     'http://localhost:12000/',
     'http://localhost:10020/',
-    'https://www.askmarvin.ai/',
-    'https://www.bcg.com/',
-    'https://www.oracle.com/netsuite',
-    'https://www.spglobal.com/',
-    'https://www.epam.com/',
-    'https://www.servicenow.com/',
 ]
 exclude_path = [
     ".github/actions/spelling",
+    "CHANGELOG.md",
+    "docs/partners.md",
+    "docs/robots.txt",
+    "docs/llms.txt",
+    "docs/spec-json.md",
+    "docs/spec-proto.md",
+    "docs/sdk/python.md",
 ]
 
+accept = ["200..=299", 403, 408, 429]
+
 max_retries = 0
+skip_missing = true

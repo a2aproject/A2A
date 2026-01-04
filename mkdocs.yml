@@ -1,46 +1,61 @@
 # Project information
-site_name: Agent2Agent (A2A) Protocol
-site_url: https://a2aproject.github.io/A2A/
+site_name: A2A Protocol
+site_url: https://a2a-protocol.org/
 site_description: >-
-  An open protocol enabling communication and interoperability between opaque agentic applications.
+  The official documentation for the Agent2Agent (A2A) protocol. The A2A protocol is an open standard that allows different AI agents to securely communicate, collaborate, and solve complex problems together.
+site_author: The Linux Foundation
 site_dir: site
+edit_uri: edit/main/docs/
+
+# Exclude files from the docs directory
+exclude_docs: |
+  README.md
 
 extra:
-  a2a_version: !ENV [MIKE_VERSION, 'local-dev']
+  a2a_version: !ENV [MIKE_VERSION, "dev"]
+  analytics:
+    provider: google
+    property: G-RB39M83WHB
 
 # Navigation
 nav:
   - Home: index.md
-  - Topics:
-    - What is A2A?: topics/what-is-a2a.md
-    - Key Concepts: topics/key-concepts.md
-    - A2A and MCP: topics/a2a-and-mcp.md
-    - Agent Discovery: topics/agent-discovery.md
-    - Enterprise-Ready Features: topics/enterprise-ready.md
-    - Streaming & Asynchronous Operations: topics/streaming-and-async.md
-    - Extensions: topics/extensions.md
-    - Life of a Task: topics/life-of-a-task.md
-  - Specification: specification.md
+  - Documentation:
+      - What is A2A?: topics/what-is-a2a.md
+      - Core Concepts: topics/key-concepts.md
+      - Agent Discovery: topics/agent-discovery.md
+      - Enterprise Features: topics/enterprise-ready.md
+      - Life of a Task: topics/life-of-a-task.md
+      - Extensions: topics/extensions.md
+      - Streaming & Asynchronous Operations: topics/streaming-and-async.md
+      - A2A and MCP: topics/a2a-and-mcp.md
+  - Tutorials and Samples:
+      - tutorials/index.md
+      - Quickstart (Python):
+          - Introduction: tutorials/python/1-introduction.md
+          - Setup: tutorials/python/2-setup.md
+          - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
+          - Agent Executor: tutorials/python/4-agent-executor.md
+          - Start Server: tutorials/python/5-start-server.md
+          - Interact with Server: tutorials/python/6-interact-with-server.md
+          - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
+          - Next Steps: tutorials/python/8-next-steps.md
+  - Specification:
+      - Overview: specification.md
+      - Protocol Definition: definitions.md
+  - SDK Reference:
+      - sdk/index.md
+      - Python: sdk/python.md
   - Community: community.md
   - Partners: partners.md
-  - SDK Reference:
-    - Python: sdk/python/index.md
-  - Tutorial (Python):
-    - Introduction: tutorials/python/1-introduction.md
-    - Setup: tutorials/python/2-setup.md
-    - Agent Skills & Agent Card: tutorials/python/3-agent-skills-and-card.md
-    - Agent Executor: tutorials/python/4-agent-executor.md
-    - Start Server: tutorials/python/5-start-server.md
-    - Interact with Server: tutorials/python/6-interact-with-server.md
-    - Streaming & Multiturn: tutorials/python/7-streaming-and-multiturn.md
-    - Next Steps: tutorials/python/8-next-steps.md
+  - Roadmap: roadmap.md
 
 # Repository
 repo_name: a2aproject/A2A
 repo_url: https://github.com/a2aproject/A2A
 
 # Copyright
-copyright: Copyright Google 2025
+copyright: Copyright 2025 The Linux Foundation. Licensed under the Apache License, Version 2.0.
 
 # Custom CSS
 extra_css:
@@ -49,6 +64,7 @@ extra_css:
 # Configuration
 theme:
   name: material
+  custom_dir: .mkdocs/overrides
   font:
     text: Google Sans
     code: Roboto Mono
@@ -56,31 +72,36 @@ theme:
   favicon: assets/a2a-logo-black.svg
   icon:
     repo: fontawesome/brands/github
+    view: material/pencil-box-multiple
+    admonition:
+      note: fontawesome/solid/note-sticky
+      abstract: fontawesome/solid/book
+      info: fontawesome/solid/circle-info
+      tip: fontawesome/solid/bullhorn
+      success: fontawesome/solid/check
+      question: fontawesome/solid/circle-question
+      warning: fontawesome/solid/triangle-exclamation
+      failure: fontawesome/solid/bomb
+      danger: fontawesome/solid/skull
+      bug: fontawesome/solid/robot
+      example: fontawesome/solid/flask
+      quote: fontawesome/solid/quote-left
   palette:
     - scheme: default
       primary: indigo
       accent: white
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: white
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
   features:
+    - announce.dismiss
+    - content.action.view
     - content.code.annotate
     - content.code.copy
     - content.code.select
     - content.tabs.link
-    - navigation.expand
     - navigation.footer
     - navigation.indexes
     - navigation.instant
     - navigation.instant.progress
     - navigation.path
-    - navigation.tabs
     - navigation.top
     - navigation.tracking
     - toc.follow
@@ -89,6 +110,8 @@ theme:
 
 # Extensions
 markdown_extensions:
+  - meta
+  - footnotes
   - admonition
   - attr_list
   - md_in_html
@@ -102,6 +125,7 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets:
+      base_path: .
       url_download: true
       dedent_subsections: true
   - pymdownx.superfences:
@@ -120,10 +144,10 @@ markdown_extensions:
 # Plugins
 plugins:
   - search
-  - macros
+  - macros:
+      module_name: .mkdocs/macros
   - redirects:
       redirect_maps:
-        "spec-json.md": https://raw.githubusercontent.com/a2aproject/A2A/refs/heads/main/specification/json/a2a.json
         "specification/overview.md": "specification.md"
         "specification/agent-card.md": "specification.md#5-agent-discovery-the-agent-card"
         "specification/agent-to-agent-communication.md": "specification.md#6-protocol-data-objects"
@@ -138,8 +162,8 @@ plugins:
         "specification/topics/push_notification.md": "topics/streaming-and-async.md"
         "specification/topics/push_notifications.md": "topics/streaming-and-async.md"
         "topics/index.md": "topics/what-is-a2a.md"
+        "topics/roadmap.md": "roadmap.md"
         # Tutorial
-        "tutorials/index.md": "tutorials/python/1-introduction.md"
         "tutorials/python/index.md": "tutorials/python/1-introduction.md"
         "tutorials/python/1_introduction.md": "tutorials/python/1-introduction.md"
         "tutorials/python/3-create-project.md": "tutorials/python/2-setup.md"
@@ -150,14 +174,6 @@ plugins:
         "tutorials/python/8-agent-capabilities.md": "tutorials/python/7-streaming-and-multiturn.md"
         "tutorials/python/9-ollama-agent.md": "tutorials/python/7-streaming-and-multiturn.md"
         "tutorials/python/10-next-steps.md": "tutorials/python/8-next-steps.md"
-  - mkdocstrings:
-      handlers:
-        python:
-          options:
-            show_root_heading: false
-            show_object_full_path: false
-            show_if_no_docstring: true
-            filters: ["!^_"]
-            extra:
-              show_value: true
-              show_qualifiers: false
+        "sdk/python/": "sdk/python/api/index.html"
+  - mike:
+      canonical_version: latest

@@ -48,7 +48,7 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         3. It enqueues this message onto the `event_queue`. The underlying `DefaultRequestHandler` will then process this queue to send the response(s) to the client. For a single message like this, it will result in a single response for `message/send` or a single event for `message/stream` before the stream closes.
 
     - **`cancel`**:
-        The Helloworld example's `cancel` method simply raises an exception, indicating that cancellation is not supported for this basic agent.
+        The Hello World example's `cancel` method simply raises an exception, indicating that cancellation is not supported for this basic agent.
 
         ```python { .no-copy }
         --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_cancel"
