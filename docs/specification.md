@@ -710,7 +710,7 @@ The specific version of the A2A protocol in use is identified using the `Major.M
 
 It is RECOMMENDED that clients send the `A2A-Version` header with each request to maintain compatibility after an agent upgrades to a new version of the protocol. Sending the `A2A-Version` header also provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
 
-**Example: HTTP GET Request with Version Header**
+**Example of HTTP GET Request with Version Header:**
 
 ```http
 GET /tasks/task-123 HTTP/1.1
@@ -729,7 +729,7 @@ Agents SHOULD declare their supported protocol versions in the `protocolVersions
 - **For stable versions (1.x and above):** Backward compatibility within a major version is required. An agent supporting version `1.2` must also support `1.0` and `1.1`. Only the latest supported minor version per major version needs to be listed.
 - **For legacy experimental versions (0.x):** These early versions introduced breaking changes between minor versions. Agents that still support any `0.x` versions MUST explicitly list each one they support.
 
-**Example: Agent Card with Supported Protocol Versions**
+**Example of Agent Card with Supported Protocol Versions:**
 
 ```json
 {
