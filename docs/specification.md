@@ -1010,7 +1010,7 @@ Agents declare their supported extensions in the [`AgentCard`](#441-agentcard) u
 
 ```json
 {
-  "protocolVersions": ["0.3.0"],
+  "protocolVersions": ["0.3"],
   "name": "Research Assistant Agent",
   "description": "AI agent for academic research and fact-checking",
   "supportedInterfaces": [
