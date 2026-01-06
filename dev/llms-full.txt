@@ -4134,22 +4134,13 @@ The AgentCard **MUST** properly declare supported protocols:
 - Each interface **MUST** accurately declare its transport protocol and URL
 - URLs **MAY** be reused if multiple transports are available at the same endpoint
 
-**Backward Compatibility:**
-
-For backward compatibility, agents **MAY** continue to populate the deprecated fields (`url`, `preferredTransport`, `additionalInterfaces`) alongside `supportedInterfaces`:
-
-- The `url` field **SHOULD** match the URL of the first entry in `supportedInterfaces`
-- The `preferredTransport` field **SHOULD** match the transport of the first entry in `supportedInterfaces`
-- The `additionalInterfaces` field **SHOULD** contain all entries from `supportedInterfaces`
-
 #### 8.3.2. Client Protocol Selection
 
 Clients **MUST** follow these rules:
 
-1. **Modern Clients**: Parse `supportedInterfaces` if present, and select the first supported transport
-2. **Legacy Clients**: Parse `url`/`preferredTransport` and `additionalInterfaces` for backward compatibility
-3. Prefer earlier entries in the ordered list when multiple options are supported
-4. Use the correct URL for the selected transport
+1. Parse `supportedInterfaces` if present, and select the first supported transport
+2. Prefer earlier entries in the ordered list when multiple options are supported
+3. Use the correct URL for the selected transport
 
 ### 8.4. Agent Card Signing
 
@@ -8023,6 +8014,9 @@ message AgentInterface {
 // communication methods, and security requirements.
 // Next ID: 20
 message AgentCard {
+  // Reserve these field numbers as they were previously used by removed
+  // fields.
+  reserved 3, 14, 15;
   // The version of the A2A protocol this agent supports.
   // Default: "1.0"
   optional string protocol_version = 16 [(google.api.field_behavior) = REQUIRED];
@@ -8034,13 +8028,7 @@ message AgentCard {
   // Example: "Agent that helps users with recipes and cooking."
   string description = 2 [(google.api.field_behavior) = REQUIRED];
   // Ordered list of supported interfaces. First entry is preferred.
-  repeated AgentInterface supported_interfaces = 19;
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string url = 3 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string preferred_transport = 14 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
+  repeated AgentInterface supported_interfaces = 19 [(google.api.field_behavior) = REQUIRED];
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
@@ -8583,13 +8571,6 @@ message ListTaskPushNotificationConfigResponse {
       "additionalProperties": false,
       "description": "AgentCard is a self-describing manifest for an agent. It provides essential\n metadata including the agent's identity, capabilities, skills, supported\n communication methods, and security requirements.\n Next ID: 20",
       "patternProperties": {
-        "^(additional_interfaces)$": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
-          "items": {
-            "$ref": "a2a.v1.AgentInterface.jsonschema.json"
-          },
-          "type": "array"
-        },
         "^(default_input_modes)$": {
           "description": "The set of interaction modes that the agent supports across all skills.\n This can be overridden per skill. Defined as media types.",
           "items": {
@@ -8610,10 +8591,6 @@ message ListTaskPushNotificationConfigResponse {
         },
         "^(icon_url)$": {
           "description": "An optional URL to an icon for the agent.",
-          "type": "string"
-        },
-        "^(preferred_transport)$": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
           "type": "string"
         },
         "^(protocol_version)$": {
@@ -8643,13 +8620,6 @@ message ListTaskPushNotificationConfigResponse {
         }
       },
       "properties": {
-        "additionalInterfaces": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
-          "items": {
-            "$ref": "a2a.v1.AgentInterface.jsonschema.json"
-          },
-          "type": "array"
-        },
         "capabilities": {
           "$ref": "a2a.v1.AgentCapabilities.jsonschema.json",
           "description": "A2A Capability set supported by the agent."
@@ -8684,10 +8654,6 @@ message ListTaskPushNotificationConfigResponse {
         "name": {
           "default": "",
           "description": "A human readable name for the agent.\n Example: \"Recipe Agent\"",
-          "type": "string"
-        },
-        "preferredTransport": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
           "type": "string"
         },
         "protocolVersion": {
@@ -8739,10 +8705,6 @@ message ListTaskPushNotificationConfigResponse {
         "supportsExtendedAgentCard": {
           "description": "Whether the agent supports providing an extended agent card when authenticated.",
           "type": "boolean"
-        },
-        "url": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
-          "type": "string"
         },
         "version": {
           "default": "",

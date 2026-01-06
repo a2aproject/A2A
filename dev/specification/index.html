@@ -7958,26 +7958,8 @@
 <tr>
 <td><code>supportedInterfaces</code></td>
 <td>array of <a href="#AgentInterface"><code>AgentInterface</code></a></td>
-<td>No</td>
+<td>Yes</td>
 <td>Ordered list of supported interfaces. First entry is preferred.</td>
-</tr>
-<tr>
-<td><code>url</code></td>
-<td><code>string</code></td>
-<td>Optional</td>
-<td>DEPRECATED: Use 'supported_interfaces' instead.</td>
-</tr>
-<tr>
-<td><code>preferredTransport</code></td>
-<td><code>string</code></td>
-<td>Optional</td>
-<td>DEPRECATED: Use 'supported_interfaces' instead.</td>
-</tr>
-<tr>
-<td><code>additionalInterfaces</code></td>
-<td>array of <a href="#AgentInterface"><code>AgentInterface</code></a></td>
-<td>No</td>
-<td>DEPRECATED: Use 'supported_interfaces' instead.</td>
 </tr>
 <tr>
 <td><code>provider</code></td>
@@ -9565,18 +9547,10 @@
 <li>Each interface <strong>MUST</strong> accurately declare its transport protocol and URL</li>
 <li>URLs <strong>MAY</strong> be reused if multiple transports are available at the same endpoint</li>
 </ul>
-<p><strong>Backward Compatibility:</strong></p>
-<p>For backward compatibility, agents <strong>MAY</strong> continue to populate the deprecated fields (<code>url</code>, <code>preferredTransport</code>, <code>additionalInterfaces</code>) alongside <code>supportedInterfaces</code>:</p>
-<ul>
-<li>The <code>url</code> field <strong>SHOULD</strong> match the URL of the first entry in <code>supportedInterfaces</code></li>
-<li>The <code>preferredTransport</code> field <strong>SHOULD</strong> match the transport of the first entry in <code>supportedInterfaces</code></li>
-<li>The <code>additionalInterfaces</code> field <strong>SHOULD</strong> contain all entries from <code>supportedInterfaces</code></li>
-</ul>
 <h4 id="832-client-protocol-selection">8.3.2. Client Protocol Selection<a class="headerlink" href="#832-client-protocol-selection" title="Permanent link">&para;</a></h4>
 <p>Clients <strong>MUST</strong> follow these rules:</p>
 <ol>
-<li><strong>Modern Clients</strong>: Parse <code>supportedInterfaces</code> if present, and select the first supported transport</li>
-<li><strong>Legacy Clients</strong>: Parse <code>url</code>/<code>preferredTransport</code> and <code>additionalInterfaces</code> for backward compatibility</li>
+<li>Parse <code>supportedInterfaces</code> if present, and select the first supported transport</li>
 <li>Prefer earlier entries in the ordered list when multiple options are supported</li>
 <li>Use the correct URL for the selected transport</li>
 </ol>

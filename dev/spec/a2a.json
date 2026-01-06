@@ -71,13 +71,6 @@
       "additionalProperties": false,
       "description": "AgentCard is a self-describing manifest for an agent. It provides essential\n metadata including the agent's identity, capabilities, skills, supported\n communication methods, and security requirements.\n Next ID: 20",
       "patternProperties": {
-        "^(additional_interfaces)$": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
-          "items": {
-            "$ref": "a2a.v1.AgentInterface.jsonschema.json"
-          },
-          "type": "array"
-        },
         "^(default_input_modes)$": {
           "description": "The set of interaction modes that the agent supports across all skills.\n This can be overridden per skill. Defined as media types.",
           "items": {
@@ -98,10 +91,6 @@
         },
         "^(icon_url)$": {
           "description": "An optional URL to an icon for the agent.",
-          "type": "string"
-        },
-        "^(preferred_transport)$": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
           "type": "string"
         },
         "^(protocol_version)$": {
@@ -131,13 +120,6 @@
         }
       },
       "properties": {
-        "additionalInterfaces": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
-          "items": {
-            "$ref": "a2a.v1.AgentInterface.jsonschema.json"
-          },
-          "type": "array"
-        },
         "capabilities": {
           "$ref": "a2a.v1.AgentCapabilities.jsonschema.json",
           "description": "A2A Capability set supported by the agent."
@@ -172,10 +154,6 @@
         "name": {
           "default": "",
           "description": "A human readable name for the agent.\n Example: \"Recipe Agent\"",
-          "type": "string"
-        },
-        "preferredTransport": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
           "type": "string"
         },
         "protocolVersion": {
@@ -227,10 +205,6 @@
         "supportsExtendedAgentCard": {
           "description": "Whether the agent supports providing an extended agent card when authenticated.",
           "type": "boolean"
-        },
-        "url": {
-          "description": "DEPRECATED: Use 'supported_interfaces' instead.",
-          "type": "string"
         },
         "version": {
           "default": "",
