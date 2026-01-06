@@ -1920,22 +1920,13 @@ The AgentCard **MUST** properly declare supported protocols:
 - Each interface **MUST** accurately declare its transport protocol and URL
 - URLs **MAY** be reused if multiple transports are available at the same endpoint
 
-**Backward Compatibility:**
-
-For backward compatibility, agents **MAY** continue to populate the deprecated fields (`url`, `preferredTransport`, `additionalInterfaces`) alongside `supportedInterfaces`:
-
-- The `url` field **SHOULD** match the URL of the first entry in `supportedInterfaces`
-- The `preferredTransport` field **SHOULD** match the transport of the first entry in `supportedInterfaces`
-- The `additionalInterfaces` field **SHOULD** contain all entries from `supportedInterfaces`
-
 #### 8.3.2. Client Protocol Selection
 
 Clients **MUST** follow these rules:
 
-1. **Modern Clients**: Parse `supportedInterfaces` if present, and select the first supported transport
-2. **Legacy Clients**: Parse `url`/`preferredTransport` and `additionalInterfaces` for backward compatibility
-3. Prefer earlier entries in the ordered list when multiple options are supported
-4. Use the correct URL for the selected transport
+1. Parse `supportedInterfaces` if present, and select the first supported transport
+2. Prefer earlier entries in the ordered list when multiple options are supported
+3. Use the correct URL for the selected transport
 
 ### 8.4. Agent Card Signing
 
