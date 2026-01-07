@@ -275,13 +275,12 @@ enum Role {
 // --8<-- [end:Role]
 
 // --8<-- [start:Message]
-// Message is one unit of communication between client and server. It is
-// associated with a context and optionally a task. Since the server is
-// responsible for the context definition, it must always provide a context_id
-// in its messages. The client can optionally provide the context_id if it
-// knows the context to associate the message to. Similarly for task_id,
-// except the server decides if a task is created and whether to include the
-// task_id.
+// Message is one unit of communication between client and server. It can be
+// associated with a context and/or a task. For server messages, context_id must
+// be provided, and task_id only if a task was created. For client messages, both
+// fields are optional, with the caveat that if both are provided, they have to
+// match (the context_id has to be the one that is set on the task). If only
+// task_id is provided, the server will infer context_id from it.
 message Message {
   // The unique identifier (e.g. UUID) of the message. This is required and
   // created by the message creator.
@@ -409,6 +408,9 @@ message AgentInterface {
 // communication methods, and security requirements.
 // Next ID: 20
 message AgentCard {
+  // Reserve these field numbers as they were previously used by removed
+  // fields.
+  reserved 3, 14, 15;
   // The version of the A2A protocol this agent supports.
   // Default: "1.0"
   optional string protocol_version = 16 [(google.api.field_behavior) = REQUIRED];
@@ -420,13 +422,7 @@ message AgentCard {
   // Example: "Agent that helps users with recipes and cooking."
   string description = 2 [(google.api.field_behavior) = REQUIRED];
   // Ordered list of supported interfaces. First entry is preferred.
-  repeated AgentInterface supported_interfaces = 19;
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string url = 3 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string preferred_transport = 14 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
+  repeated AgentInterface supported_interfaces = 19 [(google.api.field_behavior) = REQUIRED];
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
