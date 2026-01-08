@@ -963,17 +963,11 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("specification/grpc/a2a.proto", "ClientCredentialsOAuthFlow") }}
 
-<a id="ImplicitOAuthFlow"></a>
+<a id="DeviceCodeOAuthFlow"></a>
 
-#### 4.5.10. ImplicitOAuthFlow
+#### 4.5.10. DeviceCodeOAuthFlow
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ImplicitOAuthFlow") }}
-
-<a id="PasswordOAuthFlow"></a>
-
-#### 4.5.11. PasswordOAuthFlow
-
-{{ proto_to_table("specification/grpc/a2a.proto", "PasswordOAuthFlow") }}
+{{ proto_to_table("specification/grpc/a2a.proto", "DeviceCodeOAuthFlow") }}
 
 ### 4.6. Extensions
 
