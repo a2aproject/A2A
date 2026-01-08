@@ -1660,7 +1660,7 @@ generic methods. Extensions are A2A's powerful mechanism for layering new capabi
 base protocol.</p>
 <p>Extensions allow for extending the A2A protocol with new data, requirements,
 RPC methods, and state machines. Agents declare their support for specific
-extensions in their Agent Card, and clients can then opt-in to the behavior
+extensions in their Agent Card, and clients can then opt in to the behavior
 offered by an extension as part of requests they make to the agent. Extensions
 are identified by a URI and defined by their own specification. Anyone is able to define, publish, and implement an extension.</p>
 <p>The flexibility of extensions allows for customizing A2A without fragmenting
@@ -1679,7 +1679,7 @@ However, some foreseeable applications include:</p>
     values (for example, requiring all messages to use <code>DataParts</code> adhering to
     a specific schema). This can also include augmenting existing states in the
     task state machine by using metadata. For example, an extension could define
-    a 'generating-image' sub-state when <code>TaskStatus.state</code> is 'working' and
+    a 'generating-image' substate when <code>TaskStatus.state</code> is 'working' and
     <code>TaskStatus.message.metadata["generating-image"]</code> is true.</li>
 <li><strong>Method Extensions (Extended Skills)</strong>: Adding entirely new RPC methods
     beyond the core set defined by the protocol. An Extended Skill refers to a
@@ -1779,7 +1779,7 @@ the agent should reject the incoming request with an appropriate error.</p>
 <h2 id="extension-specification">Extension Specification<a class="headerlink" href="#extension-specification" title="Permanent link">&para;</a></h2>
 <p>The detailed behavior and structure of an extension are defined by its
 <strong>specification</strong>. While the exact format is not mandated, it should contain at
-at least:</p>
+least:</p>
 <ul>
 <li>The specific URI(s) that identify the extension.</li>
 <li>The schema and meaning of objects specified in the <code>params</code> field of the
