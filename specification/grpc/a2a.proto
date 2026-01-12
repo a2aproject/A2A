@@ -380,9 +380,9 @@ message PushNotificationConfig {
 // --8<-- [start:PushNotificationAuthenticationInfo]
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
-  // HTTP Authentication Schemes from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
+  // HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
   // Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
-  repeated string schemes = 1 [(google.api.field_behavior) = REQUIRED];
+  string scheme = 1 [(google.api.field_behavior) = REQUIRED];
   // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
   string credentials = 2;
 }
