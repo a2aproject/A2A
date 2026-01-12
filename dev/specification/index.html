@@ -8288,7 +8288,8 @@
 </tbody>
 </table>
 <h3 id="45-security-objects">4.5. Security Objects<a class="headerlink" href="#45-security-objects" title="Permanent link">&para;</a></h3>
-<p><a id="SecurityScheme"></a></p>
+<p><a id="Security"></a>
+<a id="SecurityScheme"></a></p>
 <h4 id="451-securityscheme">4.5.1. SecurityScheme<a class="headerlink" href="#451-securityscheme" title="Permanent link">&para;</a></h4>
 <p>Defines a security scheme that can be used to secure an agent's endpoints. This is a discriminated union type based on the OpenAPI 3.2 Security Scheme Object. See: https://spec.openapis.org/oas/v3.2.0.html#security-scheme-object</p>
 <table>
@@ -9500,7 +9501,7 @@
 <p>A2A Clients <strong>SHOULD</strong> verify the A2A Server's identity by validating its TLS certificate against trusted certificate authorities (CAs) during the TLS handshake.</p>
 <h3 id="73-client-authentication-process">7.3. Client Authentication Process<a class="headerlink" href="#73-client-authentication-process" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>Discovery of Requirements:</strong> The client discovers the server's required authentication schemes via the <code>security_schemes</code> field in the AgentCard.</li>
+<li><strong>Discovery of Requirements:</strong> The client discovers the server's required authentication schemes via the <code>securitySchemes</code> field in the AgentCard.</li>
 <li><strong>Credential Acquisition (Out-of-Band):</strong> The client obtains the necessary credentials through an out-of-band process specific to the required authentication scheme.</li>
 <li><strong>Credential Transmission:</strong> The client includes these credentials in protocol-appropriate headers or metadata for every A2A request.</li>
 </ol>
