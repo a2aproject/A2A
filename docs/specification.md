@@ -3488,10 +3488,6 @@ Terminal states (COMPLETED, FAILED, CANCELLED, REJECTED) already indicate task c
 - Detect completion by checking for terminal states
 - Expect stream closure upon terminal states
 
-**Behavior Change:**
-
-Streams now MUST close when a task reaches any terminal or interrupted state. No further updates will be sent after states like COMPLETED, FAILED, CANCELLED, REJECTED, or INPUT_REQUIRED.
-
 ### A.3 Future Automation
 
 Once the proto→schema generation pipeline lands, this appendix will be partially auto-generated (legacy mapping table sourced from a maintained manifest). Until then, edits MUST be manual and reviewed in PRs affecting `a2a.proto`.
