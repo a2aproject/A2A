@@ -93,9 +93,12 @@
           "description": "An optional URL to an icon for the agent.",
           "type": "string"
         },
-        "^(protocol_version)$": {
-          "description": "The version of the A2A protocol this agent supports.\n Default: \"1.0\"",
-          "type": "string"
+        "^(protocol_versions)$": {
+          "description": "The versions of the A2A protocol this agent supports.\n For stable versions (1.x+), list only the latest supported minor version per major version.\n For legacy experimental versions (0.x), explicitly list each supported version.\n Default: [\"1.0\"]",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         },
         "^(security_schemes)$": {
           "additionalProperties": {
@@ -156,9 +159,12 @@
           "description": "A human readable name for the agent.\n Example: \"Recipe Agent\"",
           "type": "string"
         },
-        "protocolVersion": {
-          "description": "The version of the A2A protocol this agent supports.\n Default: \"1.0\"",
-          "type": "string"
+        "protocolVersions": {
+          "description": "The versions of the A2A protocol this agent supports.\n For stable versions (1.x+), list only the latest supported minor version per major version.\n For legacy experimental versions (0.x), explicitly list each supported version.\n Default: [\"1.0\"]",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         },
         "provider": {
           "$ref": "a2a.v1.AgentProvider.jsonschema.json",
@@ -1564,12 +1570,6 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
       "description": "/////////// Request Messages ///////////\n Represents a request for the `message/send` method.",
-      "patternProperties": {
-        "^(request)$": {
-          "$ref": "a2a.v1.Message.jsonschema.json",
-          "description": "The message to send to the agent."
-        }
-      },
       "properties": {
         "configuration": {
           "$ref": "a2a.v1.SendMessageConfiguration.jsonschema.json",
@@ -1596,11 +1596,6 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
       "description": "////// Response Messages ///////////",
-      "patternProperties": {
-        "^(msg)$": {
-          "$ref": "a2a.v1.Message.jsonschema.json"
-        }
-      },
       "properties": {
         "message": {
           "$ref": "a2a.v1.Message.jsonschema.json"
@@ -1655,10 +1650,6 @@
         "^(artifact_update)$": {
           "$ref": "a2a.v1.TaskArtifactUpdateEvent.jsonschema.json",
           "description": "An event indicating a task artifact update."
-        },
-        "^(msg)$": {
-          "$ref": "a2a.v1.Message.jsonschema.json",
-          "description": "A Message object containing a message from the agent."
         },
         "^(status_update)$": {
           "$ref": "a2a.v1.TaskStatusUpdateEvent.jsonschema.json",
