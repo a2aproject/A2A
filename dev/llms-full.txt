@@ -2482,7 +2482,7 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 ***Ordering:***
 
-Implementations MUST return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
+Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
 
 #### 3.1.5. Cancel Task
 
@@ -8366,9 +8366,9 @@ message ListTasksRequest {
   string page_token = 4;
   // The maximum number of messages to include in each task's history.
   optional int32 history_length = 5;
-  // Filter tasks updated after this timestamp (milliseconds since epoch).
-  // Only tasks with a last updated time greater than or equal to this value will be returned.
-  int64 last_updated_after = 6;
+  // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
+  // Only tasks with a status timestamp time greater than or equal to this value will be returned.
+  google.protobuf.Timestamp status_timestamp_after = 6;
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.
   optional bool include_artifacts = 7;
@@ -9454,19 +9454,6 @@ message ListTaskPushNotificationConfigResponse {
           "description": "Whether to include artifacts in the returned tasks.\n Defaults to false to reduce payload size.",
           "type": "boolean"
         },
-        "^(last_updated_after)$": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "pattern": "^-?[0-9]+$",
-              "type": "string"
-            }
-          ],
-          "default": 0,
-          "description": "Filter tasks updated after this timestamp (milliseconds since epoch).\n Only tasks with a last updated time greater than or equal to this value will be returned."
-        },
         "^(page_size)$": {
           "anyOf": [
             {
@@ -9485,6 +9472,10 @@ message ListTaskPushNotificationConfigResponse {
           "default": "",
           "description": "Token for pagination. Use the next_page_token from a previous ListTasksResponse.",
           "type": "string"
+        },
+        "^(status_timestamp_after)$": {
+          "$ref": "google.protobuf.Timestamp.jsonschema.json",
+          "description": "Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., \"2023-10-27T10:00:00Z\").\n Only tasks with a status timestamp time greater than or equal to this value will be returned."
         }
       },
       "properties": {
@@ -9510,19 +9501,6 @@ message ListTaskPushNotificationConfigResponse {
         "includeArtifacts": {
           "description": "Whether to include artifacts in the returned tasks.\n Defaults to false to reduce payload size.",
           "type": "boolean"
-        },
-        "lastUpdatedAfter": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "pattern": "^-?[0-9]+$",
-              "type": "string"
-            }
-          ],
-          "default": 0,
-          "description": "Filter tasks updated after this timestamp (milliseconds since epoch).\n Only tasks with a last updated time greater than or equal to this value will be returned."
         },
         "pageSize": {
           "anyOf": [
@@ -9571,6 +9549,10 @@ message ListTaskPushNotificationConfigResponse {
           "default": 0,
           "description": "Filter tasks by their current status state.",
           "title": "Task State"
+        },
+        "statusTimestampAfter": {
+          "$ref": "google.protobuf.Timestamp.jsonschema.json",
+          "description": "Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., \"2023-10-27T10:00:00Z\").\n Only tasks with a status timestamp time greater than or equal to this value will be returned."
         },
         "tenant": {
           "default": "",

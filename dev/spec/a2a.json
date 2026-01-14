@@ -942,19 +942,6 @@
           "description": "Whether to include artifacts in the returned tasks.\n Defaults to false to reduce payload size.",
           "type": "boolean"
         },
-        "^(last_updated_after)$": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "pattern": "^-?[0-9]+$",
-              "type": "string"
-            }
-          ],
-          "default": 0,
-          "description": "Filter tasks updated after this timestamp (milliseconds since epoch).\n Only tasks with a last updated time greater than or equal to this value will be returned."
-        },
         "^(page_size)$": {
           "anyOf": [
             {
@@ -973,6 +960,10 @@
           "default": "",
           "description": "Token for pagination. Use the next_page_token from a previous ListTasksResponse.",
           "type": "string"
+        },
+        "^(status_timestamp_after)$": {
+          "$ref": "google.protobuf.Timestamp.jsonschema.json",
+          "description": "Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., \"2023-10-27T10:00:00Z\").\n Only tasks with a status timestamp time greater than or equal to this value will be returned."
         }
       },
       "properties": {
@@ -998,19 +989,6 @@
         "includeArtifacts": {
           "description": "Whether to include artifacts in the returned tasks.\n Defaults to false to reduce payload size.",
           "type": "boolean"
-        },
-        "lastUpdatedAfter": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "pattern": "^-?[0-9]+$",
-              "type": "string"
-            }
-          ],
-          "default": 0,
-          "description": "Filter tasks updated after this timestamp (milliseconds since epoch).\n Only tasks with a last updated time greater than or equal to this value will be returned."
         },
         "pageSize": {
           "anyOf": [
@@ -1059,6 +1037,10 @@
           "default": 0,
           "description": "Filter tasks by their current status state.",
           "title": "Task State"
+        },
+        "statusTimestampAfter": {
+          "$ref": "google.protobuf.Timestamp.jsonschema.json",
+          "description": "Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., \"2023-10-27T10:00:00Z\").\n Only tasks with a status timestamp time greater than or equal to this value will be returned."
         },
         "tenant": {
           "default": "",

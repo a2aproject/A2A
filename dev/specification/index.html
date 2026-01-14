@@ -6634,10 +6634,10 @@
 <td>The maximum number of messages to include in each task's history.</td>
 </tr>
 <tr>
-<td><code>lastUpdatedAfter</code></td>
-<td><code>integer</code></td>
+<td><code>statusTimestampAfter</code></td>
+<td><code>timestamp</code></td>
 <td>No</td>
-<td>Filter tasks updated after this timestamp (milliseconds since epoch). Only tasks with a last updated time greater than or equal to this value will be returned.</td>
+<td>Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z"). Only tasks with a status timestamp time greater than or equal to this value will be returned.</td>
 </tr>
 <tr>
 <td><code>includeArtifacts</code></td>
@@ -6694,7 +6694,7 @@
 <p><strong><em>Pagination Strategy:</em></strong></p>
 <p>This method uses cursor-based pagination (via <code>pageToken</code>/<code>nextPageToken</code>) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).</p>
 <p><strong><em>Ordering:</em></strong></p>
-<p>Implementations MUST return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.</p>
+<p>Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.</p>
 <h4 id="315-cancel-task">3.1.5. Cancel Task<a class="headerlink" href="#315-cancel-task" title="Permanent link">&para;</a></h4>
 <p>Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).</p>
 <p><strong>Inputs:</strong></p>
@@ -10173,9 +10173,9 @@
 </span><span id="__span-59-13"><a id="__codelineno-59-13" name="__codelineno-59-13" href="#__codelineno-59-13"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">page_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
 </span><span id="__span-59-14"><a id="__codelineno-59-14" name="__codelineno-59-14" href="#__codelineno-59-14"></a><span class="w">  </span><span class="c1">// The maximum number of messages to include in each task&#39;s history.</span>
 </span><span id="__span-59-15"><a id="__codelineno-59-15" name="__codelineno-59-15" href="#__codelineno-59-15"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">history_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
-</span><span id="__span-59-16"><a id="__codelineno-59-16" name="__codelineno-59-16" href="#__codelineno-59-16"></a><span class="w">  </span><span class="c1">// Filter tasks updated after this timestamp (milliseconds since epoch).</span>
-</span><span id="__span-59-17"><a id="__codelineno-59-17" name="__codelineno-59-17" href="#__codelineno-59-17"></a><span class="w">  </span><span class="c1">// Only tasks with a last updated time greater than or equal to this value will be returned.</span>
-</span><span id="__span-59-18"><a id="__codelineno-59-18" name="__codelineno-59-18" href="#__codelineno-59-18"></a><span class="w">  </span><span class="kt">int64</span><span class="w"> </span><span class="na">last_updated_after</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span>
+</span><span id="__span-59-16"><a id="__codelineno-59-16" name="__codelineno-59-16" href="#__codelineno-59-16"></a><span class="w">  </span><span class="c1">// Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., &quot;2023-10-27T10:00:00Z&quot;).</span>
+</span><span id="__span-59-17"><a id="__codelineno-59-17" name="__codelineno-59-17" href="#__codelineno-59-17"></a><span class="w">  </span><span class="c1">// Only tasks with a status timestamp time greater than or equal to this value will be returned.</span>
+</span><span id="__span-59-18"><a id="__codelineno-59-18" name="__codelineno-59-18" href="#__codelineno-59-18"></a><span class="w">  </span><span class="n">google.protobuf.Timestamp</span><span class="w"> </span><span class="na">status_timestamp_after</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span>
 </span><span id="__span-59-19"><a id="__codelineno-59-19" name="__codelineno-59-19" href="#__codelineno-59-19"></a><span class="w">  </span><span class="c1">// Whether to include artifacts in the returned tasks.</span>
 </span><span id="__span-59-20"><a id="__codelineno-59-20" name="__codelineno-59-20" href="#__codelineno-59-20"></a><span class="w">  </span><span class="c1">// Defaults to false to reduce payload size.</span>
 </span><span id="__span-59-21"><a id="__codelineno-59-21" name="__codelineno-59-21" href="#__codelineno-59-21"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="na">include_artifacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span>
