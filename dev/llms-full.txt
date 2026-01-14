@@ -3195,17 +3195,11 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("specification/grpc/a2a.proto", "ClientCredentialsOAuthFlow") }}
 
-<a id="ImplicitOAuthFlow"></a>
+<a id="DeviceCodeOAuthFlow"></a>
 
-#### 4.5.10. ImplicitOAuthFlow
+#### 4.5.10. DeviceCodeOAuthFlow
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ImplicitOAuthFlow") }}
-
-<a id="PasswordOAuthFlow"></a>
-
-#### 4.5.11. PasswordOAuthFlow
-
-{{ proto_to_table("specification/grpc/a2a.proto", "PasswordOAuthFlow") }}
+{{ proto_to_table("specification/grpc/a2a.proto", "DeviceCodeOAuthFlow") }}
 
 ### 4.6. Extensions
 
@@ -8270,15 +8264,15 @@ message MutualTlsSecurityScheme {
 // --8<-- [start:OAuthFlows]
 // Defines the configuration for the supported OAuth 2.0 flows.
 message OAuthFlows {
+  // Tags 3 and 4 were previously used by deprecated OAuth flows.
+  reserved 3, 4;
   oneof flow {
     // Configuration for the OAuth Authorization Code flow.
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
-    // Configuration for the OAuth Implicit flow.
-    ImplicitOAuthFlow implicit = 3;
-    // Configuration for the OAuth Resource Owner Password flow.
-    PasswordOAuthFlow password = 4;
+    // Configuration for the OAuth Device Code flow.
+    DeviceCodeOAuthFlow device_code = 5;
   }
 }
 // --8<-- [end:OAuthFlows]
@@ -8294,6 +8288,9 @@ message AuthorizationCodeOAuthFlow {
   string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
   map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
+  // Indicates if PKCE (RFC 7636) is required for this flow.
+  // PKCE should always be used for public clients and is recommended for all clients.
+  bool pkce_required = 5;
 }
 // --8<-- [end:AuthorizationCodeOAuthFlow]
 
@@ -8309,29 +8306,21 @@ message ClientCredentialsOAuthFlow {
 }
 // --8<-- [end:ClientCredentialsOAuthFlow]
 
-// --8<-- [start:ImplicitOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Implicit flow.
-message ImplicitOAuthFlow {
-  // The authorization URL to be used for this flow.
-  string authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
-  // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
-  // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
-}
-// --8<-- [end:ImplicitOAuthFlow]
-
-// --8<-- [start:PasswordOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Resource Owner Password flow.
-message PasswordOAuthFlow {
+// --8<-- [start:DeviceCodeOAuthFlow]
+// Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628).
+// This flow is designed for input-constrained devices such as IoT devices,
+// and CLI tools where the user authenticates on a separate device.
+message DeviceCodeOAuthFlow {
+  // The device authorization endpoint URL.
+  string device_authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
   // The token URL to be used for this flow.
-  string token_url = 1 [(google.api.field_behavior) = REQUIRED];
+  string token_url = 2 [(google.api.field_behavior) = REQUIRED];
   // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
+  string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
+  map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:PasswordOAuthFlow]
+// --8<-- [end:DeviceCodeOAuthFlow]
 
 ///////////// Request Messages ///////////
 // --8<-- [start:SendMessageRequest]
@@ -9000,6 +8989,11 @@ message ListTaskPushNotificationConfigResponse {
           "description": "The authorization URL to be used for this flow.",
           "type": "string"
         },
+        "^(pkce_required)$": {
+          "default": false,
+          "description": "Indicates if PKCE (RFC 7636) is required for this flow.\n PKCE should always be used for public clients and is recommended for all clients.",
+          "type": "boolean"
+        },
         "^(refresh_url)$": {
           "default": "",
           "description": "The URL to be used for obtaining refresh tokens.",
@@ -9016,6 +9010,11 @@ message ListTaskPushNotificationConfigResponse {
           "default": "",
           "description": "The authorization URL to be used for this flow.",
           "type": "string"
+        },
+        "pkceRequired": {
+          "default": false,
+          "description": "Indicates if PKCE (RFC 7636) is required for this flow.\n PKCE should always be used for public clients and is recommended for all clients.",
+          "type": "boolean"
         },
         "refreshUrl": {
           "default": "",
@@ -9131,6 +9130,57 @@ message ListTaskPushNotificationConfigResponse {
         }
       },
       "title": "Delete Task Push Notification Config Request",
+      "type": "object"
+    },
+    "Device CodeO Auth Flow": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628).\n This flow is designed for input-constrained devices such as IoT devices,\n and CLI tools where the user authenticates on a separate device.",
+      "patternProperties": {
+        "^(device_authorization_url)$": {
+          "default": "",
+          "description": "The device authorization endpoint URL.",
+          "type": "string"
+        },
+        "^(refresh_url)$": {
+          "default": "",
+          "description": "The URL to be used for obtaining refresh tokens.",
+          "type": "string"
+        },
+        "^(token_url)$": {
+          "default": "",
+          "description": "The token URL to be used for this flow.",
+          "type": "string"
+        }
+      },
+      "properties": {
+        "deviceAuthorizationUrl": {
+          "default": "",
+          "description": "The device authorization endpoint URL.",
+          "type": "string"
+        },
+        "refreshUrl": {
+          "default": "",
+          "description": "The URL to be used for obtaining refresh tokens.",
+          "type": "string"
+        },
+        "scopes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "The available scopes for the OAuth2 security scheme.",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "tokenUrl": {
+          "default": "",
+          "description": "The token URL to be used for this flow.",
+          "type": "string"
+        }
+      },
+      "title": "Device CodeO Auth Flow",
       "type": "object"
     },
     "File Part": {
@@ -9286,47 +9336,6 @@ message ListTaskPushNotificationConfigResponse {
         }
       },
       "title": "HTTP Auth Security Scheme",
-      "type": "object"
-    },
-    "ImplicitO Auth Flow": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "additionalProperties": false,
-      "description": "Defines configuration details for the OAuth 2.0 Implicit flow.",
-      "patternProperties": {
-        "^(authorization_url)$": {
-          "default": "",
-          "description": "The authorization URL to be used for this flow.",
-          "type": "string"
-        },
-        "^(refresh_url)$": {
-          "default": "",
-          "description": "The URL to be used for obtaining refresh tokens.",
-          "type": "string"
-        }
-      },
-      "properties": {
-        "authorizationUrl": {
-          "default": "",
-          "description": "The authorization URL to be used for this flow.",
-          "type": "string"
-        },
-        "refreshUrl": {
-          "default": "",
-          "description": "The URL to be used for obtaining refresh tokens.",
-          "type": "string"
-        },
-        "scopes": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "The available scopes for the OAuth2 security scheme.",
-          "propertyNames": {
-            "type": "string"
-          },
-          "type": "object"
-        }
-      },
-      "title": "ImplicitO Auth Flow",
       "type": "object"
     },
     "List Task Push Notification Config Request": {
@@ -9812,6 +9821,10 @@ message ListTaskPushNotificationConfigResponse {
         "^(client_credentials)$": {
           "$ref": "a2a.v1.ClientCredentialsOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Client Credentials flow."
+        },
+        "^(device_code)$": {
+          "$ref": "a2a.v1.DeviceCodeOAuthFlow.jsonschema.json",
+          "description": "Configuration for the OAuth Device Code flow."
         }
       },
       "properties": {
@@ -9823,13 +9836,9 @@ message ListTaskPushNotificationConfigResponse {
           "$ref": "a2a.v1.ClientCredentialsOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Client Credentials flow."
         },
-        "implicit": {
-          "$ref": "a2a.v1.ImplicitOAuthFlow.jsonschema.json",
-          "description": "Configuration for the OAuth Implicit flow."
-        },
-        "password": {
-          "$ref": "a2a.v1.PasswordOAuthFlow.jsonschema.json",
-          "description": "Configuration for the OAuth Resource Owner Password flow."
+        "deviceCode": {
+          "$ref": "a2a.v1.DeviceCodeOAuthFlow.jsonschema.json",
+          "description": "Configuration for the OAuth Device Code flow."
         }
       },
       "title": "O Auth Flows",
@@ -9884,47 +9893,6 @@ message ListTaskPushNotificationConfigResponse {
         }
       },
       "title": "Part",
-      "type": "object"
-    },
-    "PasswordO Auth Flow": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "additionalProperties": false,
-      "description": "Defines configuration details for the OAuth 2.0 Resource Owner Password flow.",
-      "patternProperties": {
-        "^(refresh_url)$": {
-          "default": "",
-          "description": "The URL to be used for obtaining refresh tokens.",
-          "type": "string"
-        },
-        "^(token_url)$": {
-          "default": "",
-          "description": "The token URL to be used for this flow.",
-          "type": "string"
-        }
-      },
-      "properties": {
-        "refreshUrl": {
-          "default": "",
-          "description": "The URL to be used for obtaining refresh tokens.",
-          "type": "string"
-        },
-        "scopes": {
-          "additionalProperties": {
-            "type": "string"
-          },
-          "description": "The available scopes for the OAuth2 security scheme.",
-          "propertyNames": {
-            "type": "string"
-          },
-          "type": "object"
-        },
-        "tokenUrl": {
-          "default": "",
-          "description": "The token URL to be used for this flow.",
-          "type": "string"
-        }
-      },
-      "title": "PasswordO Auth Flow",
       "type": "object"
     },
     "Push Notification Config": {

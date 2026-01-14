@@ -2100,21 +2100,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4510-implicitoauthflow" class="md-nav__link">
+  <a href="#4510-devicecodeoauthflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.5.10. ImplicitOAuthFlow
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4511-passwordoauthflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.5.11. PasswordOAuthFlow
+        4.5.10. DeviceCodeOAuthFlow
       
     </span>
   </a>
@@ -4811,21 +4800,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4510-implicitoauthflow" class="md-nav__link">
+  <a href="#4510-devicecodeoauthflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.5.10. ImplicitOAuthFlow
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#4511-passwordoauthflow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4.5.11. PasswordOAuthFlow
+        4.5.10. DeviceCodeOAuthFlow
       
     </span>
   </a>
@@ -8598,20 +8576,14 @@
 <td>Configuration for the OAuth Client Credentials flow.</td>
 </tr>
 <tr>
-<td><code>implicit</code></td>
-<td><a href="#ImplicitOAuthFlow"><code>ImplicitOAuthFlow</code></a></td>
+<td><code>deviceCode</code></td>
+<td><a href="#DeviceCodeOAuthFlow"><code>DeviceCodeOAuthFlow</code></a></td>
 <td>No</td>
-<td>Configuration for the OAuth Implicit flow.</td>
-</tr>
-<tr>
-<td><code>password</code></td>
-<td><a href="#PasswordOAuthFlow"><code>PasswordOAuthFlow</code></a></td>
-<td>No</td>
-<td>Configuration for the OAuth Resource Owner Password flow.</td>
+<td>Configuration for the OAuth Device Code flow.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> A OAuthFlows MUST contain exactly one of the following: <code>authorizationCode</code>, <code>clientCredentials</code>, <code>implicit</code>, <code>password</code></p>
+<p><strong>Note:</strong> A OAuthFlows MUST contain exactly one of the following: <code>authorizationCode</code>, <code>clientCredentials</code>, <code>deviceCode</code></p>
 <p><a id="AuthorizationCodeOAuthFlow"></a></p>
 <h4 id="458-authorizationcodeoauthflow">4.5.8. AuthorizationCodeOAuthFlow<a class="headerlink" href="#458-authorizationcodeoauthflow" title="Permanent link">&para;</a></h4>
 <p>Defines configuration details for the OAuth 2.0 Authorization Code flow.</p>
@@ -8649,6 +8621,12 @@
 <td>Yes</td>
 <td>The available scopes for the OAuth2 security scheme.</td>
 </tr>
+<tr>
+<td><code>pkceRequired</code></td>
+<td><code>boolean</code></td>
+<td>No</td>
+<td>Indicates if PKCE (RFC 7636) is required for this flow. PKCE should always be used for public clients and is recommended for all clients.</td>
+</tr>
 </tbody>
 </table>
 <p><a id="ClientCredentialsOAuthFlow"></a></p>
@@ -8684,9 +8662,9 @@
 </tr>
 </tbody>
 </table>
-<p><a id="ImplicitOAuthFlow"></a></p>
-<h4 id="4510-implicitoauthflow">4.5.10. ImplicitOAuthFlow<a class="headerlink" href="#4510-implicitoauthflow" title="Permanent link">&para;</a></h4>
-<p>Defines configuration details for the OAuth 2.0 Implicit flow.</p>
+<p><a id="DeviceCodeOAuthFlow"></a></p>
+<h4 id="4510-devicecodeoauthflow">4.5.10. DeviceCodeOAuthFlow<a class="headerlink" href="#4510-devicecodeoauthflow" title="Permanent link">&para;</a></h4>
+<p>Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628). This flow is designed for input-constrained devices such as IoT devices, and CLI tools where the user authenticates on a separate device.</p>
 <table>
 <thead>
 <tr>
@@ -8698,38 +8676,11 @@
 </thead>
 <tbody>
 <tr>
-<td><code>authorizationUrl</code></td>
+<td><code>deviceAuthorizationUrl</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The authorization URL to be used for this flow.</td>
+<td>The device authorization endpoint URL.</td>
 </tr>
-<tr>
-<td><code>refreshUrl</code></td>
-<td><code>string</code></td>
-<td>No</td>
-<td>The URL to be used for obtaining refresh tokens.</td>
-</tr>
-<tr>
-<td><code>scopes</code></td>
-<td>map of <code>string</code></td>
-<td>Yes</td>
-<td>The available scopes for the OAuth2 security scheme.</td>
-</tr>
-</tbody>
-</table>
-<p><a id="PasswordOAuthFlow"></a></p>
-<h4 id="4511-passwordoauthflow">4.5.11. PasswordOAuthFlow<a class="headerlink" href="#4511-passwordoauthflow" title="Permanent link">&para;</a></h4>
-<p>Defines configuration details for the OAuth 2.0 Resource Owner Password flow.</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
 <tr>
 <td><code>tokenUrl</code></td>
 <td><code>string</code></td>
