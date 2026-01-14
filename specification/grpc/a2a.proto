@@ -409,12 +409,14 @@ message AgentInterface {
 // communication methods, and security requirements.
 // Next ID: 20
 message AgentCard {
+  // The versions of the A2A protocol this agent supports.
+  // For stable versions (1.x+), list only the latest supported minor version per major version.
+  // For legacy experimental versions (0.x), explicitly list each supported version.
+  // Default: ["1.0"]
+  repeated string protocol_versions = 16 [(google.api.field_behavior) = REQUIRED];
   // Reserve these field numbers as they were previously used by removed
   // fields.
   reserved 3, 14, 15;
-  // The version of the A2A protocol this agent supports.
-  // Default: "1.0"
-  optional string protocol_version = 16 [(google.api.field_behavior) = REQUIRED];
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -639,15 +641,15 @@ message MutualTlsSecurityScheme {
 // --8<-- [start:OAuthFlows]
 // Defines the configuration for the supported OAuth 2.0 flows.
 message OAuthFlows {
+  // Tags 3 and 4 were previously used by deprecated OAuth flows.
+  reserved 3, 4;
   oneof flow {
     // Configuration for the OAuth Authorization Code flow.
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
-    // Configuration for the OAuth Implicit flow.
-    ImplicitOAuthFlow implicit = 3;
-    // Configuration for the OAuth Resource Owner Password flow.
-    PasswordOAuthFlow password = 4;
+    // Configuration for the OAuth Device Code flow.
+    DeviceCodeOAuthFlow device_code = 5;
   }
 }
 // --8<-- [end:OAuthFlows]
@@ -663,6 +665,9 @@ message AuthorizationCodeOAuthFlow {
   string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
   map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
+  // Indicates if PKCE (RFC 7636) is required for this flow.
+  // PKCE should always be used for public clients and is recommended for all clients.
+  bool pkce_required = 5;
 }
 // --8<-- [end:AuthorizationCodeOAuthFlow]
 
@@ -678,29 +683,21 @@ message ClientCredentialsOAuthFlow {
 }
 // --8<-- [end:ClientCredentialsOAuthFlow]
 
-// --8<-- [start:ImplicitOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Implicit flow.
-message ImplicitOAuthFlow {
-  // The authorization URL to be used for this flow.
-  string authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
-  // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
-  // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
-}
-// --8<-- [end:ImplicitOAuthFlow]
-
-// --8<-- [start:PasswordOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Resource Owner Password flow.
-message PasswordOAuthFlow {
+// --8<-- [start:DeviceCodeOAuthFlow]
+// Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628).
+// This flow is designed for input-constrained devices such as IoT devices,
+// and CLI tools where the user authenticates on a separate device.
+message DeviceCodeOAuthFlow {
+  // The device authorization endpoint URL.
+  string device_authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
   // The token URL to be used for this flow.
-  string token_url = 1 [(google.api.field_behavior) = REQUIRED];
+  string token_url = 2 [(google.api.field_behavior) = REQUIRED];
   // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
+  string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
+  map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:PasswordOAuthFlow]
+// --8<-- [end:DeviceCodeOAuthFlow]
 
 ///////////// Request Messages ///////////
 // --8<-- [start:SendMessageRequest]
@@ -709,10 +706,7 @@ message SendMessageRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The message to send to the agent.
-  Message request = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    json_name = "message"
-  ];
+  Message message = 1 [(google.api.field_behavior) = REQUIRED];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // A flexible key-value map for passing additional context or parameters.
@@ -856,7 +850,7 @@ message GetExtendedAgentCardRequest {
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
   }
 }
 // --8<-- [end:SendMessageResponse]
@@ -868,7 +862,7 @@ message StreamResponse {
     // A Task object containing the current state of the task.
     Task task = 1;
     // A Message object containing a message from the agent.
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
     // An event indicating a task status update.
     TaskStatusUpdateEvent status_update = 3;
     // An event indicating a task artifact update.

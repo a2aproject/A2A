@@ -704,11 +704,50 @@ Push notifications are delivered via HTTP POST to client-registered webhook endp
 
 ### 3.6 Versioning
 
-The specific version of the A2A protocol in use is identified using the `Major.Minor` elements (e.g. `1.0`) of the corresponding A2A specification version. Patch version numbers do not affect protocol compatibility, SHOULD NOT be included in requests and responses, and MUST not be considered when clients and servers negotiate protocol versions.
+The specific version of the A2A protocol in use is identified using the `Major.Minor` elements (e.g. `1.0`) of the corresponding A2A specification version. Patch version numbers used by the specification, do not affect protocol compatibility. Patch version numbers SHOULD NOT be used in requests, responses and Agent Cards, and MUST not be considered when clients and servers negotiate protocol versions.
 
-Agents declare support for latest supported protocol version in the `protocolVersion` field in the Agent Card. Agents MAY also support earlier protocol versions. Clients SHOULD specify the desired protocol version in requests using the `A2A-Version` header. If the requested version is not supported by the agent, the agent MUST return a `VersionNotSupportedError`.
+#### 3.6.1 Client Responsibilities
 
-It is RECOMMENDED that clients send the `A2A-Version` header with each request to reduce the chances of being broken if an agent upgrades to a new version of the protocol. Sending the `A2A-Version` header provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
+It is RECOMMENDED that clients send the `A2A-Version` header with each request to maintain compatibility after an agent upgrades to a new version of the protocol. Sending the `A2A-Version` header also provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
+
+**Example of HTTP GET Request with Version Header:**
+
+```http
+GET /tasks/task-123 HTTP/1.1
+Host: agent.example.com
+A2A-Version: 1.0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Accept: application/json
+```
+
+#### 3.6.2 Server Responsibilities
+
+Agents MUST process requests using the semantics of the requested `A2A-Version` (matching `Major.Minor`). If the version is not supported, agents MUST return a [`VersionNotSupportedError`](#332-error-handling).
+
+Agents SHOULD declare their supported protocol versions in the `protocolVersions` field of their Agent Card:
+
+- **For stable versions (1.x and above):** Backward compatibility within a major version is required. An agent supporting version `1.2` must also support `1.0` and `1.1`. Only the latest supported minor version per major version needs to be listed.
+- **For legacy experimental versions (0.x):** These early versions introduced breaking changes between minor versions. Agents that still support any `0.x` versions MUST explicitly list each one they support.
+
+**Example of Agent Card with Supported Protocol Versions:**
+
+```json
+{
+  "agentId": "agent-123",
+  "name": "Example Agent",
+  "protocolVersions": ["0.3", "1.1"]
+}
+```
+
+The above example indicates that the agent supports A2A protocol versions `0.3`, `1.0` and `1.1`.
+
+#### 3.6.3 Client Fallback
+
+Clients that receive a `VersionNotSupportedError` can choose to retry the request with an earlier supported version, or fail the request. This explicit failure handling helps prevent unexpected behavior that could arise if an agent processes a request containing protocol features or fields it does not recognize.
+
+#### 3.6.4 Tooling support
+
+Tooling libraries and SDKs that implement the A2A protocol SHOULD provide mechanisms to help clients manage protocol versioning, such as providing configuration options to enable automatic fallback to earlier versions when a `VersionNotSupportedError` is encountered. Client Agents that require the latest features of the protocol should not enable automatic fallback, to avoid silently losing functionality.
 
 ## 4. Protocol Data Model
 
@@ -855,22 +894,6 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentCard") }}
 
-- **`protocolVersion`** (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".
-- **`name`** (required, string): A human-readable name for the agent.
-- **`description`** (required, string): A human-readable description of the agent, assisting users and other agents in understanding its purpose.
-- **`supportedInterfaces`** (optional, array of [`AgentInterface`](#446-agentinterface)): An ordered list of supported interfaces (protocol binding and URL combinations). The first item in the list is the preferred interface that clients should use when possible. Clients can select any interface from this list based on their preferences, but SHOULD prefer earlier entries when multiple options are supported.
-- **`provider`** (optional, [`AgentProvider`](#442-agentprovider)): The service provider of the agent.
-- **`version`** (required, string): The version of the agent (e.g., "1.0.0").
-- **`documentationUrl`** (optional, string): A URL to provide additional documentation about the agent.
-- **`capabilities`** (required, [`AgentCapabilities`](#443-agentcapabilities)): A2A capability set supported by the agent.
-- **`securitySchemes`** (optional, map of string to [`SecurityScheme`](#451-securityscheme)): The security scheme details used for authenticating with this agent.
-- **`security`** (optional, array of Security): Security requirements for contacting the agent.
-- **`defaultInputModes`** (required, array of strings): The set of interaction modes that the agent supports across all skills, defined as media types.
-- **`defaultOutputModes`** (required, array of strings): The media types supported as outputs from this agent.
-- **`skills`** (required, array of [`AgentSkill`](#445-agentskill)): Skills represent units of ability an agent can perform.
-- **`supportsExtendedAgentCard`** (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.
-- **`signatures`** (optional, array of [`AgentCardSignature`](#447-agentcardsignature)): JSON Web Signatures computed for this AgentCard.
-- **`iconUrl`** (optional, string): An optional URL to an icon for the agent.
 <a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
@@ -964,17 +987,11 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("specification/grpc/a2a.proto", "ClientCredentialsOAuthFlow") }}
 
-<a id="ImplicitOAuthFlow"></a>
+<a id="DeviceCodeOAuthFlow"></a>
 
-#### 4.5.10. ImplicitOAuthFlow
+#### 4.5.10. DeviceCodeOAuthFlow
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ImplicitOAuthFlow") }}
-
-<a id="PasswordOAuthFlow"></a>
-
-#### 4.5.11. PasswordOAuthFlow
-
-{{ proto_to_table("specification/grpc/a2a.proto", "PasswordOAuthFlow") }}
+{{ proto_to_table("specification/grpc/a2a.proto", "DeviceCodeOAuthFlow") }}
 
 ### 4.6. Extensions
 
@@ -988,7 +1005,7 @@ Agents declare their supported extensions in the [`AgentCard`](#441-agentcard) u
 
 ```json
 {
-  "protocolVersion": "0.3.0",
+  "protocolVersions": ["0.3"],
   "name": "Research Assistant Agent",
   "description": "AI agent for academic research and fact-checking",
   "supportedInterfaces": [
@@ -1187,7 +1204,7 @@ All JSON serializations of the A2A protocol data model **MUST** use **camelCase*
 
 **Naming Convention:**
 
-- Protocol Buffer field: `protocol_version` → JSON field: `protocolVersion`
+- Protocol Buffer field: `protocol_versions` → JSON field: `protocolVersions`
 - Protocol Buffer field: `context_id` → JSON field: `contextId`
 - Protocol Buffer field: `default_input_modes` → JSON field: `defaultInputModes`
 - Protocol Buffer field: `push_notification_config` → JSON field: `pushNotificationConfig`
@@ -1246,7 +1263,7 @@ Fields marked with `[(google.api.field_behavior) = REQUIRED]` indicate that the 
 
 The Protocol Buffer `optional` keyword is used to distinguish between a field being explicitly set versus omitted. This distinction is critical for two scenarios:
 
-1. **Explicit Default Values:** Some fields in the specification define default values that differ from Protocol Buffer's implicit defaults (e.g., `protocolVersion` defaults to `"1.0"` rather than empty string). The `optional` keyword allows implementations to detect whether a value was explicitly provided or should use the specified default.
+1. **Explicit Default Values:** Some fields in the specification define default values that differ from Protocol Buffer's implicit defaults (e.g., `protocolVersions` defaults to `["1.0"]` rather than an empty array). Implementations should apply the default value when the field is not explicitly provided.
 
 2. **Agent Card Canonicalization:** When creating cryptographic signatures of Agent Cards, it is required to produce a canonical JSON representation. The `optional` keyword enables implementations to distinguish between fields that were explicitly set (and should be included in the canonical form) versus fields that were omitted (and should be excluded from canonicalization). This ensures Agent Cards can be reconstructed to accurately match their signature.
 
@@ -1845,7 +1862,7 @@ HTTP/1.1 200 OK
 Content-Type: application/a2a+json
 
 {
-  "protocolVersion": "0.3.0",
+  "protocolVersions": ["1.0"],
   "name": "Extended Agent with Additional Skills",
   "skills": [
     /* Extended skills available to authenticated users */
@@ -2073,7 +2090,7 @@ Clients verifying Agent Card signatures **MUST**:
 
 ```json
 {
-  "protocolVersion": "0.3.0",
+  "protocolVersions": ["1.0"],
   "name": "GeoSpatial Route Planner Agent",
   "description": "Provides advanced route planning, traffic analysis, and custom map generation services. This agent can calculate optimal routes, estimate travel times considering real-time traffic, and create personalized maps with points of interest.",
   "supportedInterfaces": [
@@ -3443,7 +3460,7 @@ For **Clients** upgrading from pre-0.3.x:
 
 1. Update parsers to expect wrapper objects with member names as discriminators
 2. When constructing requests, use the new wrapper format
-3. Implement version detection based on the agent's `protocolVersion` in the `AgentCard`
+3. Implement version detection based on the agent's `protocolVersions` in the `AgentCard`
 4. Consider maintaining backward compatibility by detecting and handling both formats during a transition period
 
 For **Servers** upgrading from pre-0.3.x:
@@ -3451,7 +3468,7 @@ For **Servers** upgrading from pre-0.3.x:
 1. Update serialization logic to emit wrapper objects
 2. **Breaking:** The `kind` field is no longer part of the protocol and should not be emitted
 3. Update deserialization to expect wrapper objects with member names
-4. Ensure the `AgentCard` declares the correct `protocolVersion` (1.0 or later)
+4. Ensure the `AgentCard` declares the correct `protocolVersions` (e.g., ["1.0"] or later)
 
 **Rationale:**
 
