@@ -2115,8 +2115,9 @@ Clients verifying Agent Card signatures **MUST**:
   },
   "securitySchemes": {
     "google": {
-      "type": "openIdConnect",
-      "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+      "openIdConnectSecurityScheme": {
+        "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+      }
     }
   },
   "security": [{ "google": ["openid", "profile", "email"] }],
