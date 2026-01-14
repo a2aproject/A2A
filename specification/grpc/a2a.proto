@@ -413,6 +413,9 @@ message AgentCard {
   // For legacy experimental versions (0.x), explicitly list each supported version.
   // Default: ["1.0"]
   repeated string protocol_versions = 16 [(google.api.field_behavior) = REQUIRED];
+  // Reserve these field numbers as they were previously used by removed
+  // fields.
+  reserved 3, 14, 15;
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -421,13 +424,7 @@ message AgentCard {
   // Example: "Agent that helps users with recipes and cooking."
   string description = 2 [(google.api.field_behavior) = REQUIRED];
   // Ordered list of supported interfaces. First entry is preferred.
-  repeated AgentInterface supported_interfaces = 19;
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string url = 3 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string preferred_transport = 14 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
+  repeated AgentInterface supported_interfaces = 19 [(google.api.field_behavior) = REQUIRED];
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
@@ -713,10 +710,7 @@ message SendMessageRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The message to send to the agent.
-  Message request = 1 [
-    (google.api.field_behavior) = REQUIRED,
-    json_name = "message"
-  ];
+  Message message = 1 [(google.api.field_behavior) = REQUIRED];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // A flexible key-value map for passing additional context or parameters.
@@ -860,7 +854,7 @@ message GetExtendedAgentCardRequest {
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
   }
 }
 // --8<-- [end:SendMessageResponse]
@@ -872,7 +866,7 @@ message StreamResponse {
     // A Task object containing the current state of the task.
     Task task = 1;
     // A Message object containing a message from the agent.
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
     // An event indicating a task status update.
     TaskStatusUpdateEvent status_update = 3;
     // An event indicating a task artifact update.

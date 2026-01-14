@@ -932,6 +932,7 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 ### 4.5. Security Objects
 
+<a id="Security"></a>
 <a id="SecurityScheme"></a>
 
 #### 4.5.1. SecurityScheme
@@ -1891,7 +1892,7 @@ A2A Clients **SHOULD** verify the A2A Server's identity by validating its TLS ce
 
 ### 7.3. Client Authentication Process
 
-1. **Discovery of Requirements:** The client discovers the server's required authentication schemes via the `security_schemes` field in the AgentCard.
+1. **Discovery of Requirements:** The client discovers the server's required authentication schemes via the `securitySchemes` field in the AgentCard.
 2. **Credential Acquisition (Out-of-Band):** The client obtains the necessary credentials through an out-of-band process specific to the required authentication scheme.
 3. **Credential Transmission:** The client includes these credentials in protocol-appropriate headers or metadata for every A2A request.
 
@@ -1949,22 +1950,13 @@ The AgentCard **MUST** properly declare supported protocols:
 - Each interface **MUST** accurately declare its transport protocol and URL
 - URLs **MAY** be reused if multiple transports are available at the same endpoint
 
-**Backward Compatibility:**
-
-For backward compatibility, agents **MAY** continue to populate the deprecated fields (`url`, `preferredTransport`, `additionalInterfaces`) alongside `supportedInterfaces`:
-
-- The `url` field **SHOULD** match the URL of the first entry in `supportedInterfaces`
-- The `preferredTransport` field **SHOULD** match the transport of the first entry in `supportedInterfaces`
-- The `additionalInterfaces` field **SHOULD** contain all entries from `supportedInterfaces`
-
 #### 8.3.2. Client Protocol Selection
 
 Clients **MUST** follow these rules:
 
-1. **Modern Clients**: Parse `supportedInterfaces` if present, and select the first supported transport
-2. **Legacy Clients**: Parse `url`/`preferredTransport` and `additionalInterfaces` for backward compatibility
-3. Prefer earlier entries in the ordered list when multiple options are supported
-4. Use the correct URL for the selected transport
+1. Parse `supportedInterfaces` if present, and select the first supported transport
+2. Prefer earlier entries in the ordered list when multiple options are supported
+3. Use the correct URL for the selected transport
 
 ### 8.4. Agent Card Signing
 
