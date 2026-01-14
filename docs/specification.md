@@ -12,6 +12,7 @@
     ```proto { .no-copy }
     --8<-- "specification/grpc/a2a.proto:{{ region_tag }}"
     ```
+
 {% endmacro %}
 
 ??? note "**Latest Released Version** [`0.3.0`](https://a2a-protocol.org/v0.3.0/specification)"
@@ -32,27 +33,27 @@ The Agent2Agent (A2A) Protocol is an open standard designed to facilitate commun
 
 This document provides the detailed technical specification for the A2A protocol. Its primary goal is to enable agents to:
 
-- Discover each other's capabilities.
-- Negotiate interaction modalities (text, files, structured data).
-- Manage collaborative tasks.
-- Securely exchange information to achieve user goals **without needing access to each other's internal state, memory, or tools.**
+-   Discover each other's capabilities.
+-   Negotiate interaction modalities (text, files, structured data).
+-   Manage collaborative tasks.
+-   Securely exchange information to achieve user goals **without needing access to each other's internal state, memory, or tools.**
 
 ### 1.1. Key Goals of A2A
 
-- **Interoperability:** Bridge the communication gap between disparate agentic systems.
-- **Collaboration:** Enable agents to delegate tasks, exchange context, and work together on complex user requests.
-- **Discovery:** Allow agents to dynamically find and understand the capabilities of other agents.
-- **Flexibility:** Support various interaction modes including synchronous request/response, streaming for real-time updates, and asynchronous push notifications for long-running tasks.
-- **Security:** Facilitate secure communication patterns suitable for enterprise environments, relying on standard web security practices.
-- **Asynchronicity:** Natively support long-running tasks and interactions that may involve human-in-the-loop scenarios.
+-   **Interoperability:** Bridge the communication gap between disparate agentic systems.
+-   **Collaboration:** Enable agents to delegate tasks, exchange context, and work together on complex user requests.
+-   **Discovery:** Allow agents to dynamically find and understand the capabilities of other agents.
+-   **Flexibility:** Support various interaction modes including synchronous request/response, streaming for real-time updates, and asynchronous push notifications for long-running tasks.
+-   **Security:** Facilitate secure communication patterns suitable for enterprise environments, relying on standard web security practices.
+-   **Asynchronicity:** Natively support long-running tasks and interactions that may involve human-in-the-loop scenarios.
 
 ### 1.2. Guiding Principles
 
-- **Simple:** Reuse existing, well-understood standards (HTTP, JSON-RPC 2.0, Server-Sent Events).
-- **Enterprise Ready:** Address authentication, authorization, security, privacy, tracing, and monitoring by aligning with established enterprise practices.
-- **Async First:** Designed for (potentially very) long-running tasks and human-in-the-loop interactions.
-- **Modality Agnostic:** Support exchange of diverse content types including text, audio/video (via file references), structured data/forms, and potentially embedded UI components (e.g., iframes referenced in parts).
-- **Opaque Execution:** Agents collaborate based on declared capabilities and exchanged information, without needing to share their internal thoughts, plans, or tool implementations.
+-   **Simple:** Reuse existing, well-understood standards (HTTP, JSON-RPC 2.0, Server-Sent Events).
+-   **Enterprise Ready:** Address authentication, authorization, security, privacy, tracing, and monitoring by aligning with established enterprise practices.
+-   **Async First:** Designed for (potentially very) long-running tasks and human-in-the-loop interactions.
+-   **Modality Agnostic:** Support exchange of diverse content types including text, audio/video (via file references), structured data/forms, and potentially embedded UI components (e.g., iframes referenced in parts).
+-   **Opaque Execution:** Agents collaborate based on declared capabilities and exchanged information, without needing to share their internal thoughts, plans, or tool implementations.
 
 For a broader understanding of A2A's purpose and benefits, see [What is A2A?](./topics/what-is-a2a.md).
 
@@ -113,10 +114,10 @@ graph TB
 
 This layered approach ensures that:
 
-- Core semantics remain consistent across all protocol bindings
-- New protocol bindings can be added without changing the fundamental data model
-- Developers can reason about A2A operations independently of binding concerns
-- Interoperability is maintained through shared understanding of the canonical data model
+-   Core semantics remain consistent across all protocol bindings
+-   New protocol bindings can be added without changing the fundamental data model
+-   Developers can reason about A2A operations independently of binding concerns
+-   Interoperability is maintained through shared understanding of the canonical data model
 
 ### 1.4 Normative Content
 
@@ -124,11 +125,11 @@ In addition to the protocol requirements defined in this document, the file `spe
 
 **Change Control and Deprecation Lifecycle:**
 
-- Introduction: When a proto message or field is renamed, the new name is added while existing published names remain available, but marked deprecated, until the next major release.
-- Documentation: This specification MUST include a Migration Appendix (Appendix A) enumerating legacy→current name mappings with planned removal versions.
-- Anchors: Legacy documentation anchors MUST be preserved (as hidden HTML anchors) to avoid breaking inbound links.
-- SDK/Schema Aliases: SDKs and JSON Schemas SHOULD provide deprecated alias types/definitions to maintain backward compatibility.
-- Removal: A deprecated name SHOULD NOT be removed earlier than the next major version after introduction of its replacement.
+-   Introduction: When a proto message or field is renamed, the new name is added while existing published names remain available, but marked deprecated, until the next major release.
+-   Documentation: Migration guidance MUST be provided via an ancillary document when introducing major breaking changes.
+-   Anchors: Legacy documentation anchors MUST be preserved (as hidden HTML anchors) to avoid breaking inbound links.
+-   SDK/Schema Aliases: SDKs and JSON Schemas SHOULD provide deprecated alias types/definitions to maintain backward compatibility.
+-   Removal: A deprecated name SHOULD NOT be removed earlier than the next major version after introduction of its replacement.
 
 **Automated Generation:**
 
@@ -148,17 +149,17 @@ The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SH
 
 A2A revolves around several key concepts. For detailed explanations, please refer to the [Key Concepts guide](./topics/key-concepts.md).
 
-- **A2A Client:** An application or agent that initiates requests to an A2A Server on behalf of a user or another system.
-- **A2A Server (Remote Agent):** An agent or agentic system that exposes an A2A-compliant endpoint, processing tasks and providing responses.
-- **Agent Card:** A JSON metadata document published by an A2A Server, describing its identity, capabilities, skills, service endpoint, and authentication requirements.
-- **Message:** A communication turn between a client and a remote agent, having a `role` ("user" or "agent") and containing one or more `Parts`.
-- **Task:** The fundamental unit of work managed by A2A, identified by a unique ID. Tasks are stateful and progress through a defined lifecycle.
-- **Part:** The smallest unit of content within a Message or Artifact (e.g., `TextPart`, `FilePart`, `DataPart`).
-- **Artifact:** An output (e.g., a document, image, structured data) generated by the agent as a result of a task, composed of `Parts`.
-- **Streaming:** Real-time, incremental updates for tasks (status changes, artifact chunks) delivered via protocol-specific streaming mechanisms.
-- **Push Notifications:** Asynchronous task updates delivered via server-initiated HTTP POST requests to a client-provided webhook URL, for long-running or disconnected scenarios.
-- **Context:** An optional, server-generated identifier to logically group related tasks and messages.
-- **Extension:** A mechanism for agents to provide additional functionality or data beyond the core A2A specification.
+-   **A2A Client:** An application or agent that initiates requests to an A2A Server on behalf of a user or another system.
+-   **A2A Server (Remote Agent):** An agent or agentic system that exposes an A2A-compliant endpoint, processing tasks and providing responses.
+-   **Agent Card:** A JSON metadata document published by an A2A Server, describing its identity, capabilities, skills, service endpoint, and authentication requirements.
+-   **Message:** A communication turn between a client and a remote agent, having a `role` ("user" or "agent") and containing one or more `Parts`.
+-   **Task:** The fundamental unit of work managed by A2A, identified by a unique ID. Tasks are stateful and progress through a defined lifecycle.
+-   **Part:** The smallest unit of content within a Message or Artifact. Parts can contain text, file references, or structured data.
+-   **Artifact:** An output (e.g., a document, image, structured data) generated by the agent as a result of a task, composed of `Parts`.
+-   **Streaming:** Real-time, incremental updates for tasks (status changes, artifact chunks) delivered via protocol-specific streaming mechanisms.
+-   **Push Notifications:** Asynchronous task updates delivered via server-initiated HTTP POST requests to a client-provided webhook URL, for long-running or disconnected scenarios.
+-   **Context:** An optional, server-generated identifier to logically group related tasks and messages.
+-   **Extension:** A mechanism for agents to provide additional functionality or data beyond the core A2A specification.
 
 ## 3. A2A Protocol Operations
 
@@ -168,9 +169,9 @@ This section describes the core operations of the A2A protocol in a binding-inde
 
 The following operations define the fundamental capabilities that all A2A implementations must support, independent of the specific protocol binding used. For a quick reference mapping of these operations to protocol-specific method names and endpoints, see [Section 5.3 (Method Mapping Reference)](#53-method-mapping-reference). For detailed protocol-specific implementation details, see:
 
-- [Section 9: JSON-RPC Protocol Binding](#9-json-rpc-protocol-binding)
-- [Section 10: gRPC Protocol Binding](#10-grpc-protocol-binding)
-- [Section 11: HTTP+JSON/REST Protocol Binding](#11-httpjsonrest-protocol-binding)
+-   [Section 9: JSON-RPC Protocol Binding](#9-json-rpc-protocol-binding)
+-   [Section 10: gRPC Protocol Binding](#10-grpc-protocol-binding)
+-   [Section 11: HTTP+JSON/REST Protocol Binding](#11-httpjsonrest-protocol-binding)
 
 #### 3.1.1. Send Message
 
@@ -178,17 +179,17 @@ The primary operation for initiating agent interactions. Clients send a message 
 
 **Inputs:**
 
-- [`SendMessageRequest`](#321-sendmessagerequest): Request object containing the message, configuration, and metadata
+-   [`SendMessageRequest`](#321-sendmessagerequest): Request object containing the message, configuration, and metadata
 
 **Outputs:**
 
-- [`Task`](#411-task): A task object representing the processing of the message, OR
-- [`Message`](#414-message): A direct response message (for simple interactions that don't require task tracking)
+-   [`Task`](#411-task): A task object representing the processing of the message, OR
+-   [`Message`](#414-message): A direct response message (for simple interactions that don't require task tracking)
 
 **Errors:**
 
-- [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+-   [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
+-   [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
 
 **Behavior:**
 
@@ -200,21 +201,21 @@ Similar to Send Message but with real-time streaming of updates during processin
 
 **Inputs:**
 
-- [`SendMessageRequest`](#321-sendmessagerequest): Request object containing the message, configuration, and metadata
+-   [`SendMessageRequest`](#321-sendmessagerequest): Request object containing the message, configuration, and metadata
 
 **Outputs:**
 
-- [`Stream Response`](#323-stream-response) object containing:
-    - Initial response: [`Task`](#411-task) object OR [`Message`](#414-message) object
-    - Subsequent events following a `Task` MAY include stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
-- Final completion indicator
+-   [`Stream Response`](#323-stream-response) object containing:
+    -   Initial response: [`Task`](#411-task) object OR [`Message`](#414-message) object
+    -   Subsequent events following a `Task` MAY include stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+-   Final completion indicator
 
 **Errors:**
 
-- [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
-- [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
-- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
+-   [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
+-   [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+-   [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
+-   [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
 
@@ -238,11 +239,11 @@ See [History Length Semantics](#324-history-length-semantics) for details about 
 
 **Outputs:**
 
-- [`Task`](#411-task): Current state and artifacts of the requested task
+-   [`Task`](#411-task): Current state and artifacts of the requested task
 
 **Errors:**
 
-- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
+-   [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 #### 3.1.4. List Tasks
 
@@ -268,11 +269,11 @@ None specific to this operation beyond standard protocol errors.
 
 The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Tasks MUST be sorted by last update time in descending order. Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See [Section 13.1 Data Access and Authorization Scoping](#131-data-access-and-authorization-scoping) for detailed security requirements.
 
-***Pagination Strategy:***
+**_Pagination Strategy:_**
 
 This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rather than offset-based pagination for better performance and consistency, especially with large datasets. Cursor-based pagination avoids the "deep pagination problem" where skipping large numbers of records becomes inefficient for databases. This approach is consistent with the gRPC specification, which also uses cursor-based pagination (page_token/next_page_token).
 
-***Ordering:***
+**_Ordering:_**
 
 Implementations MUST return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
 
@@ -286,12 +287,12 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Outputs:**
 
-- Updated [`Task`](#411-task) with cancellation status
+-   Updated [`Task`](#411-task) with cancellation status
 
 **Errors:**
 
-- [`TaskNotCancelableError`](#332-error-handling): The task is not in a cancelable state (e.g., already completed, failed, or canceled).
-- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
+-   [`TaskNotCancelableError`](#332-error-handling): The task is not in a cancelable state (e.g., already completed, failed, or canceled).
+-   [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
 
@@ -309,15 +310,15 @@ Establishes a streaming connection to receive updates for an existing task.
 
 **Outputs:**
 
-- [`Stream Response`](#323-stream-response) object containing:
-    - Initial response: [`Task`](#411-task) object with current state
-    - Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+-   [`Stream Response`](#323-stream-response) object containing:
+    -   Initial response: [`Task`](#411-task) object with current state
+    -   Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
 
 **Errors:**
 
-- [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
-- [`UnsupportedOperationError`](#332-error-handling): The operation is attempted on a task that is in a terminal state (`completed`, `failed`, `cancelled`, or `rejected`).
+-   [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
+-   [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
+-   [`UnsupportedOperationError`](#332-error-handling): The operation is attempted on a task that is in a terminal state (`completed`, `failed`, `cancelled`, or `rejected`).
 
 **Behavior:**
 
@@ -337,18 +338,18 @@ Creates or updates a push notification configuration for a task to receive async
 
 **Outputs:**
 
-- [`PushNotificationConfig`](#431-pushnotificationconfig): Created configuration with assigned ID
+-   [`PushNotificationConfig`](#431-pushnotificationconfig): Created configuration with assigned ID
 
 **Errors:**
 
-- [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
+-   [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
+-   [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
 
 The operation MUST establish a webhook endpoint for task update notifications. When task updates occur, the agent will send HTTP POST requests to the configured webhook URL with [`StreamResponse`](#323-stream-response) payloads (see [Push Notification Payload](#433-push-notification-payload) for details). This operation is only available if the agent supports push notifications capability. The configuration MUST persist until task completion or explicit deletion.
 
- <span id="tasks-push-notification-config-operations"></span><span id="grpc-push-notification-operations"></span><span id="push-notification-operations"></span>
+<span id="tasks-push-notification-config-operations"></span><span id="grpc-push-notification-operations"></span><span id="push-notification-operations"></span>
 
 #### 3.1.8. Get Push Notification Config
 
@@ -362,12 +363,12 @@ Retrieves an existing push notification configuration for a task.
 
 **Outputs:**
 
-- [`PushNotificationConfig`](#431-pushnotificationconfig): The requested configuration
+-   [`PushNotificationConfig`](#431-pushnotificationconfig): The requested configuration
 
 **Errors:**
 
-- [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`TaskNotFoundError`](#332-error-handling): The push notification configuration does not exist.
+-   [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
+-   [`TaskNotFoundError`](#332-error-handling): The push notification configuration does not exist.
 
 **Behavior:**
 
@@ -387,8 +388,8 @@ Retrieves all push notification configurations for a task.
 
 **Errors:**
 
-- [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
+-   [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
+-   [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
 
@@ -404,12 +405,12 @@ Removes a push notification configuration for a task.
 
 **Outputs:**
 
-- Confirmation of deletion (implementation-specific)
+-   Confirmation of deletion (implementation-specific)
 
 **Errors:**
 
-- [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist.
+-   [`PushNotificationNotSupportedError`](#332-error-handling): Push notifications are not supported by the agent (see [Capability Validation](#334-capability-validation)).
+-   [`TaskNotFoundError`](#332-error-handling): The task ID does not exist.
 
 **Behavior:**
 
@@ -425,19 +426,19 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 **Outputs:**
 
-- [`AgentCard`](#441-agentcard): A complete Agent Card object, which may contain additional details or skills not present in the public card
+-   [`AgentCard`](#441-agentcard): A complete Agent Card object, which may contain additional details or skills not present in the public card
 
 **Errors:**
 
-- [`UnsupportedOperationError`](#332-error-handling): The agent does not support authenticated extended cards (see [Capability Validation](#334-capability-validation)).
-- [`ExtendedAgentCardNotConfiguredError`](#332-error-handling): The agent declares support but does not have an extended agent card configured.
+-   [`UnsupportedOperationError`](#332-error-handling): The agent does not support authenticated extended cards (see [Capability Validation](#334-capability-validation)).
+-   [`ExtendedAgentCardNotConfiguredError`](#332-error-handling): The agent declares support but does not have an extended agent card configured.
 
 **Behavior:**
 
-- **Authentication**: The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
-- **Extended Information**: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.
-- **Card Replacement**: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
-- **Availability**: This operation is only available if the public Agent Card declares `supportsExtendedAgentCard: true`.
+-   **Authentication**: The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
+-   **Extended Information**: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.
+-   **Card Replacement**: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
+-   **Availability**: This operation is only available if the public Agent Card declares `supportsExtendedAgentCard: true`.
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
@@ -457,15 +458,15 @@ This section defines common parameter objects used across multiple operations.
 
 The `blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation waits for task completion:
 
-- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `cancelled`, `rejected`) before returning. The response MUST include the final task state with all artifacts and status information.
+-   **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `cancelled`, `rejected`) before returning. The response MUST include the final task state with all artifacts and status information.
 
-- **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
+-   **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
 The `blocking` field has no effect:
 
-- when the operation returns a direct [`Message`](#414-message) response instead of a task.
-- for streaming operations, which always return updates in real-time.
-- on configured push notification configurations, which operates independently of blocking mode.
+-   when the operation returns a direct [`Message`](#414-message) response instead of a task.
+-   for streaming operations, which always return updates in real-time.
+-   on configured push notification configurations, which operates independently of blocking mode.
 
 #### 3.2.3. Stream Response
 
@@ -480,9 +481,9 @@ This wrapper allows streaming endpoints to return different types of updates thr
 
 The `historyLength` parameter appears in multiple operations and controls how much task history is returned in responses. This parameter follows consistent semantics across all operations:
 
-- **Unset/undefined**: No limit imposed; server returns its default amount of history (implementation-defined, may be all history)
-- **0**: No history should be returned; the `history` field SHOULD be omitted
-- **> 0**: Return at most this many recent messages from the task's history
+-   **Unset/undefined**: No limit imposed; server returns its default amount of history (implementation-defined, may be all history)
+-   **0**: No history should be returned; the `history` field SHOULD be omitted
+-   **> 0**: Return at most this many recent messages from the task's history
 
 #### 3.2.5. Metadata
 
@@ -494,10 +495,10 @@ A key-value map for passing horizontally applicable context or parameters with c
 
 **Standard A2A Service Parameters:**
 
-| Name | Description | Example Value |
+| Name             | Description                                                                                                                                             | Example Value                                                                                 |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
-| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
-| `A2A-Version` | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3` |
+| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
+| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
 
@@ -505,9 +506,9 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 #### 3.3.1. Idempotency
 
-- **Get operations** (Get Task, List Tasks, Get Extended Agent Card) are naturally idempotent
-- **Send Message** operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages.
-- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if the task has already been canceled and purged.
+-   **Get operations** (Get Task, List Tasks, Get Extended Agent Card) are naturally idempotent
+-   **Send Message** operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages.
+-   **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if the task has already been canceled and purged.
 
 #### 3.3.2. Error Handling
 
@@ -515,39 +516,43 @@ All operations may return errors in the following categories. Servers **MUST** r
 
 **Error Categories and Server Requirements:**
 
-- **Authentication Errors**: Invalid or missing credentials
-    - Servers **MUST** reject requests with invalid or missing authentication credentials
-    - Servers **SHOULD** include authentication challenge information in the error response
-    - Servers **SHOULD** specify which authentication scheme is required
-    - Example error codes: HTTP `401 Unauthorized`, gRPC `UNAUTHENTICATED`, JSON-RPC custom error
-    - Example scenarios: Missing bearer token, expired API key, invalid OAuth token
+-   **Authentication Errors**: Invalid or missing credentials
 
-- **Authorization Errors**: Insufficient permissions for requested operation
-    - Servers **MUST** return an authorization error when the authenticated client lacks required permissions
-    - Servers **SHOULD** indicate what permission or scope is missing (without leaking sensitive information about resources the client cannot access)
-    - Servers **MUST NOT** reveal the existence of resources the client is not authorized to access
-    - Example error codes: HTTP `403 Forbidden`, gRPC `PERMISSION_DENIED`, JSON-RPC custom error
-    - Example scenarios: Attempting to access a task created by another user, insufficient OAuth scopes
+    -   Servers **MUST** reject requests with invalid or missing authentication credentials
+    -   Servers **SHOULD** include authentication challenge information in the error response
+    -   Servers **SHOULD** specify which authentication scheme is required
+    -   Example error codes: HTTP `401 Unauthorized`, gRPC `UNAUTHENTICATED`, JSON-RPC custom error
+    -   Example scenarios: Missing bearer token, expired API key, invalid OAuth token
 
-- **Validation Errors**: Invalid input parameters or message format
-    - Servers **MUST** validate all input parameters before processing
-    - Servers **SHOULD** specify which parameter(s) failed validation and why
-    - Servers **SHOULD** provide guidance on valid parameter values or formats
-    - Example error codes: HTTP `400 Bad Request`, gRPC `INVALID_ARGUMENT`, JSON-RPC `-32602 Invalid params`
-    - Example scenarios: Invalid task ID format, missing required message parts, unsupported content type
+-   **Authorization Errors**: Insufficient permissions for requested operation
 
-- **Resource Errors**: Requested task not found or not accessible
-    - Servers **MUST** return a not found error when a requested resource does not exist or is not accessible to the authenticated client
-    - Servers **SHOULD NOT** distinguish between "does not exist" and "not authorized" to prevent information leakage
-    - Example error codes: HTTP `404 Not Found`, gRPC `NOT_FOUND`, JSON-RPC custom error (see A2A-specific errors)
-    - Example scenarios: Task ID does not exist, task has been deleted, configuration not found
+    -   Servers **MUST** return an authorization error when the authenticated client lacks required permissions
+    -   Servers **SHOULD** indicate what permission or scope is missing (without leaking sensitive information about resources the client cannot access)
+    -   Servers **MUST NOT** reveal the existence of resources the client is not authorized to access
+    -   Example error codes: HTTP `403 Forbidden`, gRPC `PERMISSION_DENIED`, JSON-RPC custom error
+    -   Example scenarios: Attempting to access a task created by another user, insufficient OAuth scopes
 
-- **System Errors**: Internal agent failures or temporary unavailability
-    - Servers **SHOULD** return appropriate error codes for temporary failures vs. permanent errors
-    - Servers **MAY** include retry guidance (e.g., Retry-After header in HTTP)
-    - Servers **SHOULD** log system errors for diagnostic purposes
-    - Example error codes: HTTP `500 Internal Server Error` or `503 Service Unavailable`, gRPC `INTERNAL` or `UNAVAILABLE`, JSON-RPC `-32603 Internal error`
-    - Example scenarios: Database connection failure, downstream service timeout, rate limit exceeded
+-   **Validation Errors**: Invalid input parameters or message format
+
+    -   Servers **MUST** validate all input parameters before processing
+    -   Servers **SHOULD** specify which parameter(s) failed validation and why
+    -   Servers **SHOULD** provide guidance on valid parameter values or formats
+    -   Example error codes: HTTP `400 Bad Request`, gRPC `INVALID_ARGUMENT`, JSON-RPC `-32602 Invalid params`
+    -   Example scenarios: Invalid task ID format, missing required message parts, unsupported content type
+
+-   **Resource Errors**: Requested task not found or not accessible
+
+    -   Servers **MUST** return a not found error when a requested resource does not exist or is not accessible to the authenticated client
+    -   Servers **SHOULD NOT** distinguish between "does not exist" and "not authorized" to prevent information leakage
+    -   Example error codes: HTTP `404 Not Found`, gRPC `NOT_FOUND`, JSON-RPC custom error (see A2A-specific errors)
+    -   Example scenarios: Task ID does not exist, task has been deleted, configuration not found
+
+-   **System Errors**: Internal agent failures or temporary unavailability
+    -   Servers **SHOULD** return appropriate error codes for temporary failures vs. permanent errors
+    -   Servers **MAY** include retry guidance (e.g., Retry-After header in HTTP)
+    -   Servers **SHOULD** log system errors for diagnostic purposes
+    -   Example error codes: HTTP `500 Internal Server Error` or `503 Service Unavailable`, gRPC `INTERNAL` or `UNAVAILABLE`, JSON-RPC `-32603 Internal error`
+    -   Example scenarios: Database connection failure, downstream service timeout, rate limit exceeded
 
 **Error Payload Structure:**
 
@@ -584,10 +589,10 @@ A2A operations are designed for asynchronous task execution. Operations return i
 
 Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). When clients attempt to use operations or features that require capabilities not declared as supported in the Agent Card, the agent **MUST** return an appropriate error response:
 
-- **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Set, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
-- **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
-- **Extended Agent Card**: If `AgentCard.supportsExtendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
-- **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
+-   **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Set, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
+-   **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
+-   **Extended Agent Card**: If `AgentCard.supportsExtendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
+-   **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
 Clients **SHOULD** validate capability support by examining the Agent Card before attempting operations that require optional capabilities.
 
@@ -601,17 +606,17 @@ A `contextId` is an identifier that logically groups multiple related [`Task`](#
 
 **Generation and Assignment:**
 
-- Agents **MUST** generate a new `contextId` when processing a [`Message`](#414-message) that does not include a `contextId` field
-- The generated `contextId` **MUST** be included in the response (either [`Task`](#411-task) or [`Message`](#414-message))
-- Agents **MUST** accept and preserve client-provided `contextId` values if validations pass (i.e., it doesn't conflict with provided `taskId`)
-- `contextId` values **SHOULD** be treated as opaque identifiers by clients
+-   Agents **MUST** generate a new `contextId` when processing a [`Message`](#414-message) that does not include a `contextId` field
+-   The generated `contextId` **MUST** be included in the response (either [`Task`](#411-task) or [`Message`](#414-message))
+-   Agents **MUST** accept and preserve client-provided `contextId` values if validations pass (i.e., it doesn't conflict with provided `taskId`)
+-   `contextId` values **SHOULD** be treated as opaque identifiers by clients
 
 **Grouping and Scope:**
 
-- A `contextId` logically groups multiple [`Task`](#411-task) objects and [`Message`](#414-message) objects that are part of the same conversational context
-- All tasks and messages with the same `contextId` **SHOULD** be treated as part of the same conversational session
-- Agents **MAY** use the `contextId` to maintain internal state, conversational history, or LLM context across multiple interactions
-- Agents **MAY** implement context expiration or cleanup policies and **SHOULD** document any such policies
+-   A `contextId` logically groups multiple [`Task`](#411-task) objects and [`Message`](#414-message) objects that are part of the same conversational context
+-   All tasks and messages with the same `contextId` **SHOULD** be treated as part of the same conversational session
+-   Agents **MAY** use the `contextId` to maintain internal state, conversational history, or LLM context across multiple interactions
+-   Agents **MAY** implement context expiration or cleanup policies and **SHOULD** document any such policies
 
 #### 3.4.2. Multi-Turn Conversation Patterns
 
@@ -619,28 +624,28 @@ The A2A protocol supports several patterns for multi-turn interactions:
 
 **Context Continuity:**
 
-- [`Task`](#411-task) objects maintain conversation context through the `contextId` field
-- Clients **MAY** include the `contextId` in subsequent messages to indicate continuation of a previous interaction
-- Clients **MAY** use `taskId` (with or without `contextId`) to continue or refine a specific task
-- Clients **MAY** use `contextId` without `taskId` to start a new task within an existing conversation context
-- Agents **MUST** infer `contextId` from the task if only `taskId` is provided
-- Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (i.e., the provided `contextId` is different from that of the referenced [`Task`](#411-task)).
+-   [`Task`](#411-task) objects maintain conversation context through the `contextId` field
+-   Clients **MAY** include the `contextId` in subsequent messages to indicate continuation of a previous interaction
+-   Clients **MAY** use `taskId` (with or without `contextId`) to continue or refine a specific task
+-   Clients **MAY** use `contextId` without `taskId` to start a new task within an existing conversation context
+-   Agents **MUST** infer `contextId` from the task if only `taskId` is provided
+-   Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (i.e., the provided `contextId` is different from that of the referenced [`Task`](#411-task)).
 
 **Input Required State:**
 
-- Agents can request additional input mid-processing by transitioning a task to the `input-required` state
-- The client continues the interaction by sending a new message with the same `taskId` and `contextId`
+-   Agents can request additional input mid-processing by transitioning a task to the `input-required` state
+-   The client continues the interaction by sending a new message with the same `taskId` and `contextId`
 
 **Follow-up Messages:**
 
-- Clients can send additional messages with `taskId` references to continue or refine existing tasks
-- Clients **SHOULD** use the `referenceTaskIds` field in [`Message`](#414-message) to explicitly reference related tasks
-- Agents **SHOULD** use referenced tasks to understand the context and intent of follow-up requests
+-   Clients can send additional messages with `taskId` references to continue or refine existing tasks
+-   Clients **SHOULD** use the `referenceTaskIds` field in [`Message`](#414-message) to explicitly reference related tasks
+-   Agents **SHOULD** use referenced tasks to understand the context and intent of follow-up requests
 
 **Context Inheritance:**
 
-- New tasks created within the same `contextId` can inherit context from previous interactions
-- Agents **SHOULD** leverage the shared `contextId` to provide contextually relevant responses
+-   New tasks created within the same `contextId` can inherit context from previous interactions
+-   Agents **SHOULD** leverage the shared `contextId` to provide contextually relevant responses
 
 ### 3.5. Task Update Delivery Mechanisms
 
@@ -650,30 +655,30 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 
 **Polling (Get Task):**
 
-- Client periodically calls Get Task ([Section 3.1.3](#313-get-task)) to check task status
-- Simple to implement, works with all protocol bindings
-- Higher latency, potential for unnecessary requests
-- Best for: Simple integrations, infrequent updates, clients behind restrictive firewalls
+-   Client periodically calls Get Task ([Section 3.1.3](#313-get-task)) to check task status
+-   Simple to implement, works with all protocol bindings
+-   Higher latency, potential for unnecessary requests
+-   Best for: Simple integrations, infrequent updates, clients behind restrictive firewalls
 
 **Streaming:**
 
-- Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
-- Low latency, efficient for frequent updates
-- Requires persistent connection support
-- Best for: Interactive applications, real-time dashboards, live progress monitoring
-- Requires `AgentCard.capabilities.streaming` to be `true`
+-   Real-time delivery of events as they occur
+-   Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+-   Low latency, efficient for frequent updates
+-   Requires persistent connection support
+-   Best for: Interactive applications, real-time dashboards, live progress monitoring
+-   Requires `AgentCard.capabilities.streaming` to be `true`
 
 **Push Notifications (WebHooks):**
 
-- Agent sends HTTP POST requests to client-registered endpoints when task state changes
-- Client does not maintain persistent connection
-- Asynchronous delivery, client must be reachable via HTTP
-- Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Set ([Section 3.1.7](#75-taskspushnotificationconfigset)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
-- Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
-- Requires `AgentCard.capabilities.pushNotifications` to be `true`
-- Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
+-   Agent sends HTTP POST requests to client-registered endpoints when task state changes
+-   Client does not maintain persistent connection
+-   Asynchronous delivery, client must be reachable via HTTP
+-   Best for: Server-to-server integrations, long-running tasks, event-driven architectures
+-   Operations: Set ([Section 3.1.7](#75-taskspushnotificationconfigset)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+-   Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
+-   Requires `AgentCard.capabilities.pushNotifications` to be `true`
+-   Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
 
 #### 3.5.2. Streaming Event Delivery
 
@@ -687,16 +692,16 @@ An agent MAY serve multiple concurrent streams to one or more clients for the sa
 
 When multiple streams are active for a task:
 
-- Events MUST be broadcast to all active streams for that task
-- Each stream MUST receive the same events in the same order
-- Closing one stream MUST NOT affect other active streams for the same task
-- The task lifecycle is independent of any individual stream's lifecycle
+-   Events MUST be broadcast to all active streams for that task
+-   Each stream MUST receive the same events in the same order
+-   Closing one stream MUST NOT affect other active streams for the same task
+-   The task lifecycle is independent of any individual stream's lifecycle
 
 This capability enables scenarios such as:
 
-- Multiple team members monitoring the same long-running task
-- A client reconnecting to a task after a network interruption by opening a new stream
-- Different applications or dashboards displaying real-time updates for the same task
+-   Multiple team members monitoring the same long-running task
+-   A client reconnecting to a task after a network interruption by opening a new stream
+-   Different applications or dashboards displaying real-time updates for the same task
 
 #### 3.5.3. Push Notification Delivery
 
@@ -752,21 +757,9 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 {{ proto_to_table("specification/grpc/a2a.proto", "Part") }}
 
-<a id="FilePart"></a>
-
-#### 4.1.7. FilePart
-
-{{ proto_to_table("specification/grpc/a2a.proto", "FilePart") }}
-
-<a id="DataPart"></a>
-
-#### 4.1.8. DataPart
-
-{{ proto_to_table("specification/grpc/a2a.proto", "DataPart") }}
-
 <a id="Artifact"></a>
 
-#### 4.1.9. Artifact
+#### 4.1.7. Artifact
 
 {{ proto_to_table("specification/grpc/a2a.proto", "Artifact") }}
 
@@ -822,10 +815,10 @@ Content-Type: application/json
 
 The webhook payload is a [`StreamResponse`](#323-stream-response) object containing exactly one of the following:
 
-- **task**: A [`Task`](#411-task) object with the current task state
-- **message**: A [`Message`](#414-message) object containing a message response
-- **statusUpdate**: A [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) indicating a status change
-- **artifactUpdate**: A [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) indicating artifact updates
+-   **task**: A [`Task`](#411-task) object with the current task state
+-   **message**: A [`Message`](#414-message) object containing a message response
+-   **statusUpdate**: A [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) indicating a status change
+-   **artifactUpdate**: A [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) indicating artifact updates
 
 **Authentication:**
 
@@ -833,17 +826,17 @@ The agent MUST include authentication credentials in the request headers as spec
 
 **Client Responsibilities:**
 
-- Clients MUST respond with HTTP 2xx status codes to acknowledge successful receipt
-- Clients SHOULD process notifications idempotently, as duplicate deliveries may occur
-- Clients MUST validate the task ID matches an expected task
-- Clients SHOULD implement appropriate security measures to verify the notification source
+-   Clients MUST respond with HTTP 2xx status codes to acknowledge successful receipt
+-   Clients SHOULD process notifications idempotently, as duplicate deliveries may occur
+-   Clients MUST validate the task ID matches an expected task
+-   Clients SHOULD implement appropriate security measures to verify the notification source
 
 **Server Guarantees:**
 
-- Agents MUST attempt delivery at least once for each configured webhook
-- Agents MAY implement retry logic with exponential backoff for failed deliveries
-- Agents SHOULD include a reasonable timeout for webhook requests (recommended: 10-30 seconds)
-- Agents MAY stop attempting delivery after a configured number of consecutive failures
+-   Agents MUST attempt delivery at least once for each configured webhook
+-   Agents MAY implement retry logic with exponential backoff for failed deliveries
+-   Agents SHOULD include a reasonable timeout for webhook requests (recommended: 10-30 seconds)
+-   Agents MAY stop attempting delivery after a configured number of consecutive failures
 
 For detailed security guidance on push notifications, see [Section 13.2 Push Notification Security](#132-push-notification-security).
 
@@ -855,23 +848,23 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("specification/grpc/a2a.proto", "AgentCard") }}
 
-- **`protocolVersion`** (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".
-- **`name`** (required, string): A human-readable name for the agent.
-- **`description`** (required, string): A human-readable description of the agent, assisting users and other agents in understanding its purpose.
-- **`supportedInterfaces`** (optional, array of [`AgentInterface`](#446-agentinterface)): An ordered list of supported interfaces (protocol binding and URL combinations). The first item in the list is the preferred interface that clients should use when possible. Clients can select any interface from this list based on their preferences, but SHOULD prefer earlier entries when multiple options are supported.
-- **`provider`** (optional, [`AgentProvider`](#442-agentprovider)): The service provider of the agent.
-- **`version`** (required, string): The version of the agent (e.g., "1.0.0").
-- **`documentationUrl`** (optional, string): A URL to provide additional documentation about the agent.
-- **`capabilities`** (required, [`AgentCapabilities`](#443-agentcapabilities)): A2A capability set supported by the agent.
-- **`securitySchemes`** (optional, map of string to [`SecurityScheme`](#451-securityscheme)): The security scheme details used for authenticating with this agent.
-- **`security`** (optional, array of Security): Security requirements for contacting the agent.
-- **`defaultInputModes`** (required, array of strings): The set of interaction modes that the agent supports across all skills, defined as media types.
-- **`defaultOutputModes`** (required, array of strings): The media types supported as outputs from this agent.
-- **`skills`** (required, array of [`AgentSkill`](#445-agentskill)): Skills represent units of ability an agent can perform.
-- **`supportsExtendedAgentCard`** (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.
-- **`signatures`** (optional, array of [`AgentCardSignature`](#447-agentcardsignature)): JSON Web Signatures computed for this AgentCard.
-- **`iconUrl`** (optional, string): An optional URL to an icon for the agent.
-<a id="AgentProvider"></a>
+-   **`protocolVersion`** (required, string): The version of the A2A protocol this agent supports (e.g., "1.0"). Defaults to "1.0".
+-   **`name`** (required, string): A human-readable name for the agent.
+-   **`description`** (required, string): A human-readable description of the agent, assisting users and other agents in understanding its purpose.
+-   **`supportedInterfaces`** (optional, array of [`AgentInterface`](#446-agentinterface)): An ordered list of supported interfaces (protocol binding and URL combinations). The first item in the list is the preferred interface that clients should use when possible. Clients can select any interface from this list based on their preferences, but SHOULD prefer earlier entries when multiple options are supported.
+-   **`provider`** (optional, [`AgentProvider`](#442-agentprovider)): The service provider of the agent.
+-   **`version`** (required, string): The version of the agent (e.g., "1.0.0").
+-   **`documentationUrl`** (optional, string): A URL to provide additional documentation about the agent.
+-   **`capabilities`** (required, [`AgentCapabilities`](#443-agentcapabilities)): A2A capability set supported by the agent.
+-   **`securitySchemes`** (optional, map of string to [`SecurityScheme`](#451-securityscheme)): The security scheme details used for authenticating with this agent.
+-   **`security`** (optional, array of Security): Security requirements for contacting the agent.
+-   **`defaultInputModes`** (required, array of strings): The set of interaction modes that the agent supports across all skills, defined as media types.
+-   **`defaultOutputModes`** (required, array of strings): The media types supported as outputs from this agent.
+-   **`skills`** (required, array of [`AgentSkill`](#445-agentskill)): Skills represent units of ability an agent can perform.
+-   **`supportsExtendedAgentCard`** (optional, boolean): Whether the agent supports providing an extended agent card when authenticated.
+-   **`signatures`** (optional, array of [`AgentCardSignature`](#447-agentcardsignature)): JSON Web Signatures computed for this AgentCard.
+-   **`iconUrl`** (optional, string): An optional URL to an icon for the agent.
+    <a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
 
@@ -984,54 +977,54 @@ The A2A protocol supports extensions to provide additional functionality or data
 
 Agents declare their supported extensions in the [`AgentCard`](#441-agentcard) using the `extensions` field, which contains an array of [`AgentExtension`](#444-agentextension) objects.
 
-*Example: Agent declaring extension support in AgentCard:*
+_Example: Agent declaring extension support in AgentCard:_
 
 ```json
 {
-  "protocolVersion": "0.3.0",
-  "name": "Research Assistant Agent",
-  "description": "AI agent for academic research and fact-checking",
-  "supportedInterfaces": [
-    {
-      "url": "https://research-agent.example.com/a2a/v1",
-      "protocolBinding": "HTTP+JSON"
-    }
-  ],
-  "capabilities": {
-    "streaming": false,
-    "pushNotifications": false,
-    "extensions": [
-      {
-        "uri": "https://standards.org/extensions/citations/v1",
-        "description": "Provides citation formatting and source verification",
-        "required": false
-      },
-      {
-        "uri": "https://example.com/extensions/geolocation/v1",
-        "description": "Location-based search capabilities",
-        "required": false
-      }
+    "protocolVersion": "0.3.0",
+    "name": "Research Assistant Agent",
+    "description": "AI agent for academic research and fact-checking",
+    "supportedInterfaces": [
+        {
+            "url": "https://research-agent.example.com/a2a/v1",
+            "protocolBinding": "HTTP+JSON"
+        }
+    ],
+    "capabilities": {
+        "streaming": false,
+        "pushNotifications": false,
+        "extensions": [
+            {
+                "uri": "https://standards.org/extensions/citations/v1",
+                "description": "Provides citation formatting and source verification",
+                "required": false
+            },
+            {
+                "uri": "https://example.com/extensions/geolocation/v1",
+                "description": "Location-based search capabilities",
+                "required": false
+            }
+        ]
+    },
+    "defaultInputModes": ["text/plain"],
+    "defaultOutputModes": ["text/plain"],
+    "skills": [
+        {
+            "id": "academic-research",
+            "name": "Academic Research Assistant",
+            "description": "Provides research assistance with citations and source verification",
+            "tags": ["research", "citations", "academic"],
+            "examples": ["Find peer-reviewed articles on climate change"],
+            "inputModes": ["text/plain"],
+            "outputModes": ["text/plain"]
+        }
     ]
-  },
-  "defaultInputModes": ["text/plain"],
-  "defaultOutputModes": ["text/plain"],
-  "skills": [
-    {
-      "id": "academic-research",
-      "name": "Academic Research Assistant",
-      "description": "Provides research assistance with citations and source verification",
-      "tags": ["research", "citations", "academic"],
-      "examples": ["Find peer-reviewed articles on climate change"],
-      "inputModes": ["text/plain"],
-      "outputModes": ["text/plain"]
-    }
-  ]
 }
 ```
 
 Clients indicate their desire to opt into the use of specific extensions through binding-specific mechanisms such as HTTP headers, gRPC metadata, or JSON-RPC request parameters that identify the extension identifiers they wish to utilize during the interaction.
 
-*Example: HTTP client opting into extensions using headers:*
+_Example: HTTP client opting into extensions using headers:_
 
 ```http
 POST /v1/message:send HTTP/1.1
@@ -1063,23 +1056,21 @@ Extensions can be integrated into the A2A protocol at several well-defined exten
 
 Messages can be extended to allow clients to provide additional strongly typed context or parameters relevant to the message being sent, or TaskStatus Messages to include extra information about the task's progress.
 
-*Example: A location extension using the extensions and metadata arrays:*
+_Example: A location extension using the extensions and metadata arrays:_
 
 ```json
 {
-  "role": "user",
-  "parts": [
-    {"text": "Find restaurants near me"}
-  ],
-  "extensions": ["https://example.com/extensions/geolocation/v1"],
-  "metadata": {
-    "https://example.com/extensions/geolocation/v1": {
-      "latitude": 37.7749,
-      "longitude": -122.4194,
-      "accuracy": 10.0,
-      "timestamp": "2025-10-21T14:30:00Z"
+    "role": "user",
+    "parts": [{ "text": "Find restaurants near me" }],
+    "extensions": ["https://example.com/extensions/geolocation/v1"],
+    "metadata": {
+        "https://example.com/extensions/geolocation/v1": {
+            "latitude": 37.7749,
+            "longitude": -122.4194,
+            "accuracy": 10.0,
+            "timestamp": "2025-10-21T14:30:00Z"
+        }
     }
-  }
 }
 ```
 
@@ -1087,31 +1078,31 @@ Messages can be extended to allow clients to provide additional strongly typed c
 
 Artifacts can include extension data to provide strongly typed context or metadata about the generated content.
 
-*Example: An artifact with citation extension for research sources:*
+_Example: An artifact with citation extension for research sources:_
 
 ```json
 {
-  "artifactId": "research-summary-001",
-  "name": "Climate Change Summary",
-  "parts": [
-    {
-      "text": "Global temperatures have risen by 1.1°C since pre-industrial times, with significant impacts on weather patterns and sea levels."
-    }
-  ],
-  "extensions": ["https://standards.org/extensions/citations/v1"],
-  "metadata": {
-    "https://standards.org/extensions/citations/v1": {
-      "sources": [
+    "artifactId": "research-summary-001",
+    "name": "Climate Change Summary",
+    "parts": [
         {
-          "title": "Global Temperature Anomalies - 2023 Report",
-          "authors": ["Smith, J.", "Johnson, M."],
-          "url": "https://climate.gov/reports/2023-temperature",
-          "accessDate": "2025-10-21",
-          "relevantText": "Global temperatures have risen by 1.1°C"
+            "text": "Global temperatures have risen by 1.1°C since pre-industrial times, with significant impacts on weather patterns and sea levels."
         }
-      ]
+    ],
+    "extensions": ["https://standards.org/extensions/citations/v1"],
+    "metadata": {
+        "https://standards.org/extensions/citations/v1": {
+            "sources": [
+                {
+                    "title": "Global Temperature Anomalies - 2023 Report",
+                    "authors": ["Smith, J.", "Johnson, M."],
+                    "url": "https://climate.gov/reports/2023-temperature",
+                    "accessDate": "2025-10-21",
+                    "relevantText": "Global temperatures have risen by 1.1°C"
+                }
+            ]
+        }
     }
-  }
 }
 ```
 
@@ -1127,17 +1118,17 @@ If a client requests a versions of an extension that the agent does not support,
 
 When an agent supports multiple protocols, all supported protocols **MUST**:
 
-- **Identical Functionality**: Provide the same set of operations and capabilities
-- **Consistent Behavior**: Return semantically equivalent results for the same requests
-- **Same Error Handling**: Map errors consistently using appropriate protocol-specific codes
-- **Equivalent Authentication**: Support the same authentication schemes declared in the AgentCard
+-   **Identical Functionality**: Provide the same set of operations and capabilities
+-   **Consistent Behavior**: Return semantically equivalent results for the same requests
+-   **Same Error Handling**: Map errors consistently using appropriate protocol-specific codes
+-   **Equivalent Authentication**: Support the same authentication schemes declared in the AgentCard
 
 ### 5.2. Protocol Selection and Negotiation
 
-- **Agent Declaration**: Agents **MUST** declare all supported protocols in their AgentCard
-- **Client Choice**: Clients **MAY** choose any protocol declared by the agent
-- **No Dynamic Negotiation**: A2A does not define runtime protocol negotiation
-- **Fallback Behavior**: Clients **SHOULD** implement fallback logic for alternative protocols
+-   **Agent Declaration**: Agents **MUST** declare all supported protocols in their AgentCard
+-   **Client Choice**: Clients **MAY** choose any protocol declared by the agent
+-   **No Dynamic Negotiation**: A2A does not define runtime protocol negotiation
+-   **Fallback Behavior**: Clients **SHOULD** implement fallback logic for alternative protocols
 
 ### 5.3. Method Mapping Reference
 
@@ -1177,9 +1168,9 @@ Custom protocol bindings **MUST** define equivalent error code mappings that pre
 
 For binding-specific error structures and examples, see:
 
-- [JSON-RPC Error Handling](#95-error-handling)
-- [gRPC Error Handling](#106-error-handling)
-- [HTTP/REST Error Handling](#116-error-handling)
+-   [JSON-RPC Error Handling](#95-error-handling)
+-   [gRPC Error Handling](#106-error-handling)
+-   [HTTP/REST Error Handling](#116-error-handling)
 
 ### 5.5. JSON Field Naming Convention
 
@@ -1187,19 +1178,19 @@ All JSON serializations of the A2A protocol data model **MUST** use **camelCase*
 
 **Naming Convention:**
 
-- Protocol Buffer field: `protocol_version` → JSON field: `protocolVersion`
-- Protocol Buffer field: `context_id` → JSON field: `contextId`
-- Protocol Buffer field: `default_input_modes` → JSON field: `defaultInputModes`
-- Protocol Buffer field: `push_notification_config` → JSON field: `pushNotificationConfig`
+-   Protocol Buffer field: `protocol_version` → JSON field: `protocolVersion`
+-   Protocol Buffer field: `context_id` → JSON field: `contextId`
+-   Protocol Buffer field: `default_input_modes` → JSON field: `defaultInputModes`
+-   Protocol Buffer field: `push_notification_config` → JSON field: `pushNotificationConfig`
 
 **Enum Values:**
 
-- Enum values **MUST** be represented as their string names in JSON, using lower [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case) after removing any type name prefixes.
+-   Enum values **MUST** be represented as their string names in JSON, using lower [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case) after removing any type name prefixes.
 
 **Examples:**
 
-- Protocol Buffer enum: `TASK_STATE_INPUT_REQUIRED` → JSON value: `input-required`
-- Protocol Buffer enum: `ROLE_USER` → JSON value: `user`
+-   Protocol Buffer enum: `TASK_STATE_INPUT_REQUIRED` → JSON value: `input-required`
+-   Protocol Buffer enum: `ROLE_USER` → JSON value: `user`
 
 ### 5.6. Data Type Conventions
 
@@ -1211,28 +1202,28 @@ The A2A protocol uses [`google.protobuf.Timestamp`](https://protobuf.dev/referen
 
 **Format Requirements:**
 
-- **Format:** ISO 8601 combined date and time representation
-- **Timezone:** UTC (denoted by 'Z' suffix)
-- **Precision:** Millisecond precision **SHOULD** be used where available
-- **Pattern:** `YYYY-MM-DDTHH:mm:ss.sssZ`
+-   **Format:** ISO 8601 combined date and time representation
+-   **Timezone:** UTC (denoted by 'Z' suffix)
+-   **Precision:** Millisecond precision **SHOULD** be used where available
+-   **Pattern:** `YYYY-MM-DDTHH:mm:ss.sssZ`
 
 **Examples:**
 
 ```json
 {
-  "timestamp": "2025-10-28T10:30:00.000Z",
-  "createdAt": "2025-10-28T14:25:33.142Z",
-  "lastModified": "2025-10-31T17:45:22.891Z"
+    "timestamp": "2025-10-28T10:30:00.000Z",
+    "createdAt": "2025-10-28T14:25:33.142Z",
+    "lastModified": "2025-10-31T17:45:22.891Z"
 }
 ```
 
 **Implementation Notes:**
 
-- Protocol Buffer's `google.protobuf.Timestamp` represents time as seconds since Unix epoch (January 1, 1970, 00:00:00 UTC) plus nanoseconds
-- JSON serialization automatically converts this to ISO 8601 format when using standard Protocol Buffer JSON encoding
-- Clients and servers **MUST** parse and generate ISO 8601 timestamps correctly
-- When millisecond precision is not available, the fractional seconds portion **MAY** be omitted or zero-filled
-- Timestamps **MUST NOT** include timezone offsets other than 'Z' (all times are UTC)
+-   Protocol Buffer's `google.protobuf.Timestamp` represents time as seconds since Unix epoch (January 1, 1970, 00:00:00 UTC) plus nanoseconds
+-   JSON serialization automatically converts this to ISO 8601 format when using standard Protocol Buffer JSON encoding
+-   Clients and servers **MUST** parse and generate ISO 8601 timestamps correctly
+-   When millisecond precision is not available, the fractional seconds portion **MAY** be omitted or zero-filled
+-   Timestamps **MUST NOT** include timezone offsets other than 'Z' (all times are UTC)
 
 ### 5.7. Field Presence and Optionality
 
@@ -1691,11 +1682,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "file": {
-          "name": "input_image.png",
-          "mediaType": "image/png",
-          "fileWithBytes": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-        }
+        "bytes": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
+        "filename": "input_image.png",
+        "mediaType": "image/png"
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
@@ -1723,11 +1712,9 @@ Content-Type: application/a2a+json
         "name": "processed_image_with_faces.png",
         "parts": [
           {
-            "file": {
-              "name": "output.png",
-              "mediaType": "image/png",
-              "fileWithUri": "https://storage.example.com/processed/task-bbb/output.png?token=xyz"
-            }
+            "url": "https://storage.example.com/processed/task-bbb/output.png?token=xyz",
+            "filename": "output.png",
+            "mediaType": "image/png"
           }
         ]
       }
@@ -1754,8 +1741,8 @@ Authorization: Bearer token
     "parts": [
       {
         "text": "Show me a list of my open IT tickets",
+        "mediaType": "application/json",
         "metadata": {
-          "mediaType": "application/json",
           "schema": {
             "type": "array",
             "items": {
@@ -1817,14 +1804,14 @@ Host: example.com
 
 ```json
 {
-  "supportsExtendedAgentCard": true,
-  "securitySchemes": {
-    "google": {
-      "openIdConnectSecurityScheme": {
-        "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
-      }
+    "supportsExtendedAgentCard": true,
+    "securitySchemes": {
+        "google": {
+            "openIdConnectSecurityScheme": {
+                "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+            }
+        }
     }
-  }
 }
 ```
 
@@ -1877,9 +1864,9 @@ A2A Clients **SHOULD** verify the A2A Server's identity by validating its TLS ce
 
 The A2A Server:
 
-- **MUST** authenticate every incoming request based on the provided credentials and its declared authentication requirements.
-- **SHOULD** use appropriate binding-specific error codes for authentication challenges or rejections.
-- **SHOULD** provide relevant authentication challenge information with error responses.
+-   **MUST** authenticate every incoming request based on the provided credentials and its declared authentication requirements.
+-   **SHOULD** use appropriate binding-specific error codes for authentication challenges or rejections.
+-   **SHOULD** provide relevant authentication challenge information with error responses.
 
 ### 7.5. In-Task Authentication (Secondary Credentials)
 
@@ -1893,10 +1880,10 @@ If an agent requires additional credentials during task execution:
 
 Once authenticated, the A2A Server authorizes requests based on the authenticated identity and its own policies. Authorization logic is implementation-specific and **MAY** consider:
 
-- Specific skills requested
-- Actions attempted within tasks
-- Data access policies
-- OAuth scopes (if applicable)
+-   Specific skills requested
+-   Actions attempted within tasks
+-   Data access policies
+-   OAuth scopes (if applicable)
 
 ## 8. Agent Discovery: The Agent Card
 
@@ -1912,9 +1899,9 @@ For more on discovery strategies, see the [Agent Discovery guide](./topics/agent
 
 Clients can find Agent Cards through:
 
-- **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json`
-- **Registries/Catalogs:** Querying curated catalogs of agents
-- **Direct Configuration:** Pre-configured Agent Card URLs or content
+-   **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json`
+-   **Registries/Catalogs:** Querying curated catalogs of agents
+-   **Direct Configuration:** Pre-configured Agent Card URLs or content
 
 ### 8.3. Protocol Declaration Requirements
 
@@ -1922,10 +1909,10 @@ The AgentCard **MUST** properly declare supported protocols:
 
 #### 8.3.1. Supported Interfaces Declaration
 
-- The `supportedInterfaces` field **SHOULD** declare all supported protocol combinations in preference order
-- The first entry in `supportedInterfaces` represents the preferred interface
-- Each interface **MUST** accurately declare its transport protocol and URL
-- URLs **MAY** be reused if multiple transports are available at the same endpoint
+-   The `supportedInterfaces` field **SHOULD** declare all supported protocol combinations in preference order
+-   The first entry in `supportedInterfaces` represents the preferred interface
+-   Each interface **MUST** accurately declare its transport protocol and URL
+-   URLs **MAY** be reused if multiple transports are available at the same endpoint
 
 #### 8.3.2. Client Protocol Selection
 
@@ -1946,12 +1933,14 @@ Before signing, the Agent Card content **MUST** be canonicalized using the JSON 
 **Canonicalization Rules:**
 
 1. **Field Presence and Default Value Handling**: Before canonicalization, the JSON representation **MUST** respect Protocol Buffer field presence semantics as defined in [Section 5.7](#57-field-presence-and-optionality). This ensures that the canonical form accurately reflects which fields were explicitly provided versus which were omitted, enabling signature verification when Agent Cards are reconstructed:
+
     - **Optional fields not explicitly set**: Fields marked with the `optional` keyword that were not explicitly set **MUST** be omitted from the JSON object
     - **Optional fields explicitly set to defaults**: Fields marked with `optional` that were explicitly set to a value (even if that value matches a default) **MUST** be included in the JSON object
     - **Required fields**: Fields marked with `REQUIRED` **MUST** always be present, even if the field value matches the default.
     - **Default values**: Fields with default values **MUST** be omitted unless the field is marked as `REQUIRED` or has the `optional` keyword.
 
 2. **RFC 8785 Compliance**: The Agent Card JSON **MUST** be canonicalized according to RFC 8785, which specifies:
+
     - Predictable ordering of object properties (lexicographic by key)
     - Consistent representation of numbers, strings, and other primitive values
     - Removal of insignificant whitespace
@@ -1964,66 +1953,74 @@ Original Agent Card fragment:
 
 ```json
 {
-  "name": "Example Agent",
-  "description": "",
-  "capabilities": {
-    "streaming": false,
-    "pushNotifications": false,
-    "extensions": []
-  },
-  "skills": []
+    "name": "Example Agent",
+    "description": "",
+    "capabilities": {
+        "streaming": false,
+        "pushNotifications": false,
+        "extensions": []
+    },
+    "skills": []
 }
 ```
 
 Applying the canonicalization rules:
 
-- `name`: "Example Agent" - REQUIRED field → **include**
-- `description`: "" - REQUIRED field → **include**
-- `capabilities`: object - REQUIRED field → **include** (after processing children)
-    - `streaming`: false - optional field, present in JSON (explicitly set) → **include**
-    - `pushNotifications`: false - optional field, present in JSON (explicitly set) → **include**
-    - `extensions`: [] - repeated field (not REQUIRED) with empty array → **omit**
-- `skills`: [] - REQUIRED field → **include**
+-   `name`: "Example Agent" - REQUIRED field → **include**
+-   `description`: "" - REQUIRED field → **include**
+-   `capabilities`: object - REQUIRED field → **include** (after processing children)
+    -   `streaming`: false - optional field, present in JSON (explicitly set) → **include**
+    -   `pushNotifications`: false - optional field, present in JSON (explicitly set) → **include**
+    -   `extensions`: [] - repeated field (not REQUIRED) with empty array → **omit**
+-   `skills`: [] - REQUIRED field → **include**
 
 After applying RFC 8785:
 
 ```json
-{"capabilities":{"pushNotifications":false,"streaming":false},"description":"","name":"Example Agent","skills":[]}
+{
+    "capabilities": { "pushNotifications": false, "streaming": false },
+    "description": "",
+    "name": "Example Agent",
+    "skills": []
+}
 ```
 
 #### 8.4.2. Signature Format
 
 Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
 
-- **`protected`** (required, string): Base64url-encoded JSON object containing the JWS Protected Header
-- **`signature`** (required, string): Base64url-encoded signature value
-- **`header`** (optional, object): JWS Unprotected Header as a JSON object (not base64url-encoded)
+-   **`protected`** (required, string): Base64url-encoded JSON object containing the JWS Protected Header
+-   **`signature`** (required, string): Base64url-encoded signature value
+-   **`header`** (optional, object): JWS Unprotected Header as a JSON object (not base64url-encoded)
 
 **JWS Protected Header Parameters:**
 
 The protected header **MUST** include:
 
-- `alg`: Algorithm used for signing (e.g., "ES256", "RS256")
-- `typ`: **SHOULD** be set to "JOSE" for JWS
-- `kid`: Key ID for identifying the signing key
+-   `alg`: Algorithm used for signing (e.g., "ES256", "RS256")
+-   `typ`: **SHOULD** be set to "JOSE" for JWS
+-   `kid`: Key ID for identifying the signing key
 
 The protected header **MAY** include:
 
-- `jku`: URL to JSON Web Key Set (JWKS) containing the public key
+-   `jku`: URL to JSON Web Key Set (JWKS) containing the public key
 
 **Signature Generation Process:**
 
 1. **Prepare the payload:**
+
     - Remove properties with default values from the Agent Card
     - Exclude the `signatures` field
     - Canonicalize the resulting JSON using RFC 8785 to produce the canonical payload
 
 2. **Create the protected header:**
+
     - Construct a JSON object with the required header parameters (`alg`, `typ`, `kid`) and any optional parameters (`jku`)
     - Serialize the header to JSON
     - Base64url-encode the serialized header to produce the `protected` field value
 
 3. **Compute the signature:**
+
     - Construct the JWS Signing Input: `ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' || BASE64URL(JWS Payload))`
     - Sign the JWS Signing Input using the algorithm specified in the `alg` header parameter and the private key
     - Base64url-encode the resulting signature bytes to produce the `signature` field value
@@ -2039,15 +2036,20 @@ Given a canonical Agent Card payload and signing key, the signature generation p
 
 ```json
 {
-  "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
-  "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
+    "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
+    "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
 }
 ```
 
 Where the `protected` value decodes to:
 
 ```json
-{"alg":"ES256","typ":"JOSE","kid":"key-1","jku":"https://example.com/agent/jwks.json"}
+{
+    "alg": "ES256",
+    "typ": "JOSE",
+    "kid": "key-1",
+    "jku": "https://example.com/agent/jwks.json"
+}
 ```
 
 #### 8.4.3. Signature Verification
@@ -2063,87 +2065,96 @@ Clients verifying Agent Card signatures **MUST**:
 
 **Security Considerations:**
 
-- Clients **SHOULD** verify at least one signature before trusting an Agent Card
-- Public keys **SHOULD** be retrieved over secure channels (HTTPS)
-- Clients **MAY** maintain a trusted key store for known agent providers
-- Expired or revoked keys **MUST NOT** be used for verification
-- Multiple signatures **MAY** be present to support key rotation
+-   Clients **SHOULD** verify at least one signature before trusting an Agent Card
+-   Public keys **SHOULD** be retrieved over secure channels (HTTPS)
+-   Clients **MAY** maintain a trusted key store for known agent providers
+-   Expired or revoked keys **MUST NOT** be used for verification
+-   Multiple signatures **MAY** be present to support key rotation
 
 ### 8.5. Sample Agent Card
 
 ```json
 {
-  "protocolVersion": "0.3.0",
-  "name": "GeoSpatial Route Planner Agent",
-  "description": "Provides advanced route planning, traffic analysis, and custom map generation services. This agent can calculate optimal routes, estimate travel times considering real-time traffic, and create personalized maps with points of interest.",
-  "supportedInterfaces": [
-    {"url": "https://georoute-agent.example.com/a2a/v1", "protocolBinding": "JSONRPC"},
-    {"url": "https://georoute-agent.example.com/a2a/grpc", "protocolBinding": "GRPC"},
-    {"url": "https://georoute-agent.example.com/a2a/json", "protocolBinding": "HTTP+JSON"}
-  ],
-  "provider": {
-    "organization": "Example Geo Services Inc.",
-    "url": "https://www.examplegeoservices.com"
-  },
-  "iconUrl": "https://georoute-agent.example.com/icon.png",
-  "version": "1.2.0",
-  "documentationUrl": "https://docs.examplegeoservices.com/georoute-agent/api",
-  "capabilities": {
-    "streaming": true,
-    "pushNotifications": true,
-    "stateTransitionHistory": false
-  },
-  "securitySchemes": {
-    "google": {
-      "type": "openIdConnect",
-      "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
-    }
-  },
-  "security": [{ "google": ["openid", "profile", "email"] }],
-  "defaultInputModes": ["application/json", "text/plain"],
-  "defaultOutputModes": ["application/json", "image/png"],
-  "skills": [
-    {
-      "id": "route-optimizer-traffic",
-      "name": "Traffic-Aware Route Optimizer",
-      "description": "Calculates the optimal driving route between two or more locations, taking into account real-time traffic conditions, road closures, and user preferences (e.g., avoid tolls, prefer highways).",
-      "tags": ["maps", "routing", "navigation", "directions", "traffic"],
-      "examples": [
-        "Plan a route from '1600 Amphitheatre Parkway, Mountain View, CA' to 'San Francisco International Airport' avoiding tolls.",
-        "{\"origin\": {\"lat\": 37.422, \"lng\": -122.084}, \"destination\": {\"lat\": 37.7749, \"lng\": -122.4194}, \"preferences\": [\"avoid_ferries\"]}"
-      ],
-      "inputModes": ["application/json", "text/plain"],
-      "outputModes": [
-        "application/json",
-        "application/vnd.geo+json",
-        "text/html"
-      ]
+    "protocolVersion": "0.3.0",
+    "name": "GeoSpatial Route Planner Agent",
+    "description": "Provides advanced route planning, traffic analysis, and custom map generation services. This agent can calculate optimal routes, estimate travel times considering real-time traffic, and create personalized maps with points of interest.",
+    "supportedInterfaces": [
+        {
+            "url": "https://georoute-agent.example.com/a2a/v1",
+            "protocolBinding": "JSONRPC"
+        },
+        {
+            "url": "https://georoute-agent.example.com/a2a/grpc",
+            "protocolBinding": "GRPC"
+        },
+        {
+            "url": "https://georoute-agent.example.com/a2a/json",
+            "protocolBinding": "HTTP+JSON"
+        }
+    ],
+    "provider": {
+        "organization": "Example Geo Services Inc.",
+        "url": "https://www.examplegeoservices.com"
     },
-    {
-      "id": "custom-map-generator",
-      "name": "Personalized Map Generator",
-      "description": "Creates custom map images or interactive map views based on user-defined points of interest, routes, and style preferences. Can overlay data layers.",
-      "tags": ["maps", "customization", "visualization", "cartography"],
-      "examples": [
-        "Generate a map of my upcoming road trip with all planned stops highlighted.",
-        "Show me a map visualizing all coffee shops within a 1-mile radius of my current location."
-      ],
-      "inputModes": ["application/json"],
-      "outputModes": [
-        "image/png",
-        "image/jpeg",
-        "application/json",
-        "text/html"
-      ]
-    }
-  ],
-  "supportsExtendedAgentCard": true,
-  "signatures": [
-    {
-      "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
-      "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
-    }
-  ]
+    "iconUrl": "https://georoute-agent.example.com/icon.png",
+    "version": "1.2.0",
+    "documentationUrl": "https://docs.examplegeoservices.com/georoute-agent/api",
+    "capabilities": {
+        "streaming": true,
+        "pushNotifications": true,
+        "stateTransitionHistory": false
+    },
+    "securitySchemes": {
+        "google": {
+            "type": "openIdConnect",
+            "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+        }
+    },
+    "security": [{ "google": ["openid", "profile", "email"] }],
+    "defaultInputModes": ["application/json", "text/plain"],
+    "defaultOutputModes": ["application/json", "image/png"],
+    "skills": [
+        {
+            "id": "route-optimizer-traffic",
+            "name": "Traffic-Aware Route Optimizer",
+            "description": "Calculates the optimal driving route between two or more locations, taking into account real-time traffic conditions, road closures, and user preferences (e.g., avoid tolls, prefer highways).",
+            "tags": ["maps", "routing", "navigation", "directions", "traffic"],
+            "examples": [
+                "Plan a route from '1600 Amphitheatre Parkway, Mountain View, CA' to 'San Francisco International Airport' avoiding tolls.",
+                "{\"origin\": {\"lat\": 37.422, \"lng\": -122.084}, \"destination\": {\"lat\": 37.7749, \"lng\": -122.4194}, \"preferences\": [\"avoid_ferries\"]}"
+            ],
+            "inputModes": ["application/json", "text/plain"],
+            "outputModes": [
+                "application/json",
+                "application/vnd.geo+json",
+                "text/html"
+            ]
+        },
+        {
+            "id": "custom-map-generator",
+            "name": "Personalized Map Generator",
+            "description": "Creates custom map images or interactive map views based on user-defined points of interest, routes, and style preferences. Can overlay data layers.",
+            "tags": ["maps", "customization", "visualization", "cartography"],
+            "examples": [
+                "Generate a map of my upcoming road trip with all planned stops highlighted.",
+                "Show me a map visualizing all coffee shops within a 1-mile radius of my current location."
+            ],
+            "inputModes": ["application/json"],
+            "outputModes": [
+                "image/png",
+                "image/jpeg",
+                "application/json",
+                "text/html"
+            ]
+        }
+    ],
+    "supportsExtendedAgentCard": true,
+    "signatures": [
+        {
+            "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
+            "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
+        }
+    ]
 }
 ```
 
@@ -2153,10 +2164,10 @@ The JSON-RPC protocol binding provides a simple, HTTP-based interface using JSON
 
 ### 9.1. Protocol Requirements
 
-- **Protocol:** JSON-RPC 2.0 over HTTP(S)
-- **Content-Type:** `application/json` for requests and responses
-- **Method Naming:** PascalCase method names matching gRPC conventions (e.g., `SendMessage`, `GetTask`)
-- **Streaming:** Server-Sent Events (`text/event-stream`)
+-   **Protocol:** JSON-RPC 2.0 over HTTP(S)
+-   **Content-Type:** `application/json` for requests and responses
+-   **Method Naming:** PascalCase method names matching gRPC conventions (e.g., `SendMessage`, `GetTask`)
+-   **Streaming:** Server-Sent Events (`text/event-stream`)
 
 ### 9.2. Service Parameter Transmission
 
@@ -2164,9 +2175,9 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 
 **Service Parameter Requirements:**
 
-- Service parameter names **MUST** be transmitted as HTTP header fields
-- Service parameter keys are case-insensitive per HTTP specification (RFC 7230)
-- Multiple values for the same service parameter (e.g., `A2A-Extensions`) **SHOULD** be comma-separated in a single header field
+-   Service parameter names **MUST** be transmitted as HTTP header fields
+-   Service parameter keys are case-insensitive per HTTP specification (RFC 7230)
+-   Multiple values for the same service parameter (e.g., `A2A-Extensions`) **SHOULD** be comma-separated in a single header field
 
 **Example Request with A2A Service Parameters:**
 
@@ -2192,10 +2203,12 @@ All JSON-RPC requests **MUST** follow the standard JSON-RPC 2.0 format:
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": "unique-request-id",
-  "method": "category/action",
-  "params": { /* method-specific parameters */ }
+    "jsonrpc": "2.0",
+    "id": "unique-request-id",
+    "method": "category/action",
+    "params": {
+        /* method-specific parameters */
+    }
 }
 ```
 
@@ -2209,10 +2222,12 @@ Sends a message to initiate or continue a task.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "method": "SendMessage",
-  "params": { /* SendMessageRequest object */ }
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "SendMessage",
+    "params": {
+        /* SendMessageRequest object */
+    }
 }
 ```
 
@@ -2258,13 +2273,13 @@ Retrieves the current state of a task.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 2,
-  "method": "GetTask",
-  "params": {
-    "id": "task-uuid",
-    "historyLength": 10
-  }
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "GetTask",
+    "params": {
+        "id": "task-uuid",
+        "historyLength": 10
+    }
 }
 ```
 
@@ -2276,15 +2291,15 @@ Lists tasks with optional filtering and pagination.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 3,
-  "method": "ListTasks",
-  "params": {
-    "contextId": "context-uuid",
-    "status": "working",
-    "pageSize": 50,
-    "pageToken": "cursor-token"
-  }
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "ListTasks",
+    "params": {
+        "contextId": "context-uuid",
+        "status": "working",
+        "pageSize": 50,
+        "pageToken": "cursor-token"
+    }
 }
 ```
 
@@ -2296,12 +2311,12 @@ Cancels an ongoing task.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 4,
-  "method": "CancelTask",
-  "params": {
-    "id": "task-uuid"
-  }
+    "jsonrpc": "2.0",
+    "id": 4,
+    "method": "CancelTask",
+    "params": {
+        "id": "task-uuid"
+    }
 }
 ```
 
@@ -2315,12 +2330,12 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 5,
-  "method": "SubscribeToTask",
-  "params": {
-    "id": "task-uuid"
-  }
+    "jsonrpc": "2.0",
+    "id": 5,
+    "method": "SubscribeToTask",
+    "params": {
+        "id": "task-uuid"
+    }
 }
 ```
 
@@ -2330,10 +2345,10 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 #### 9.4.7. Push Notification Configuration Methods
 
-- `SetTaskPushNotificationConfig` - Set push notification configuration
-- `GetTaskPushNotificationConfig` - Get push notification configuration
-- `ListTaskPushNotificationConfig` - List push notification configurations
-- `DeleteTaskPushNotificationConfig` - Delete push notification configuration
+-   `SetTaskPushNotificationConfig` - Set push notification configuration
+-   `GetTaskPushNotificationConfig` - Get push notification configuration
+-   `ListTaskPushNotificationConfig` - List push notification configurations
+-   `DeleteTaskPushNotificationConfig` - Delete push notification configuration
 
 #### 9.4.8. `GetExtendedAgentCard`
 
@@ -2343,9 +2358,9 @@ Retrieves an extended Agent Card.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 6,
-  "method": "GetExtendedAgentCard"
+    "jsonrpc": "2.0",
+    "id": 6,
+    "method": "GetExtendedAgentCard"
 }
 ```
 
@@ -2353,9 +2368,9 @@ Retrieves an extended Agent Card.
 
 JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://www.jsonrpc.org/specification#error_object) structure, which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
 
-- **Error Code**: Mapped to `error.code` (numeric JSON-RPC error code)
-- **Error Message**: Mapped to `error.message` (human-readable string)
-- **Error Details**: Mapped to `error.data` (optional structured object)
+-   **Error Code**: Mapped to `error.code` (numeric JSON-RPC error code)
+-   **Error Message**: Mapped to `error.message` (human-readable string)
+-   **Error Details**: Mapped to `error.data` (optional structured object)
 
 **Standard JSON-RPC Error Codes:**
 
@@ -2375,15 +2390,15 @@ A2A-specific errors use codes in the range `-32001` to `-32099`. For the complet
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 1,
-  "error": {
-    "code": -32601,
-    "message": "Method not found",
-    "data": {
-      "method": "invalid/method"
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+        "code": -32601,
+        "message": "Method not found",
+        "data": {
+            "method": "invalid/method"
+        }
     }
-  }
 }
 ```
 
@@ -2391,16 +2406,16 @@ A2A-specific errors use codes in the range `-32001` to `-32099`. For the complet
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": 2,
-  "error": {
-    "code": -32001,
-    "message": "Task not found",
-    "data": {
-      "taskId": "nonexistent-task-id",
-      "timestamp": "2025-11-09T10:30:00.000Z"
+    "jsonrpc": "2.0",
+    "id": 2,
+    "error": {
+        "code": -32001,
+        "message": "Task not found",
+        "data": {
+            "taskId": "nonexistent-task-id",
+            "timestamp": "2025-11-09T10:30:00.000Z"
+        }
     }
-  }
 }
 ```
 
@@ -2412,10 +2427,10 @@ The gRPC Protocol Binding provides a high-performance, strongly-typed interface 
 
 ### 10.1. Protocol Requirements
 
-- **Protocol:** gRPC over HTTP/2 with TLS
-- **Definition:** Use the normative Protocol Buffers definition in `specification/grpc/a2a.proto`
-- **Serialization:** Protocol Buffers version 3
-- **Service:** Implement the `A2AService` gRPC service
+-   **Protocol:** gRPC over HTTP/2 with TLS
+-   **Definition:** Use the normative Protocol Buffers definition in `specification/grpc/a2a.proto`
+-   **Serialization:** Protocol Buffers version 3
+-   **Service:** Implement the `A2AService` gRPC service
 
 ### 10.2. Service Parameter Transmission
 
@@ -2423,9 +2438,9 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 
 **Service Parameter Requirements:**
 
-- Service parameter names **MUST** be transmitted as gRPC metadata keys
-- Metadata keys are case-insensitive and automatically converted to lowercase by gRPC
-- Multiple values for the same service parameter (e.g., `A2A-Extensions`) **SHOULD** be comma-separated in a single metadata entry
+-   Service parameter names **MUST** be transmitted as gRPC metadata keys
+-   Metadata keys are case-insensitive and automatically converted to lowercase by gRPC
+-   Multiple values for the same service parameter (e.g., `A2A-Extensions`) **SHOULD** be comma-separated in a single metadata entry
 
 **Example gRPC Request with A2A Service Parameters:**
 
@@ -2444,9 +2459,9 @@ response, err := client.SendMessage(ctx, request)
 
 **Metadata Handling:**
 
-- Implementations **MUST** extract A2A service parameters from gRPC metadata for processing
-- Servers **SHOULD** validate required service parameters (e.g., `A2A-Version`) from metadata
-- Service parameter keys in metadata are normalized to lowercase per gRPC conventions
+-   Implementations **MUST** extract A2A service parameters from gRPC metadata for processing
+-   Servers **SHOULD** validate required service parameters (e.g., `A2A-Version`) from metadata
+-   Service parameter keys in metadata are normalized to lowercase per gRPC conventions
 
 ### 10.3. Service Definition
 
@@ -2630,17 +2645,17 @@ Resource wrapper for push notification configurations. This is a gRPC-specific t
 
 gRPC error responses use the standard [gRPC status](https://grpc.io/docs/guides/error/) structure with [google.rpc.Status](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto), which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
 
-- **Error Code**: Mapped to `status.code` (gRPC status code enum)
-- **Error Message**: Mapped to `status.message` (human-readable string)
-- **Error Details**: Mapped to `status.details` (repeated google.protobuf.Any messages)
+-   **Error Code**: Mapped to `status.code` (gRPC status code enum)
+-   **Error Message**: Mapped to `status.message` (human-readable string)
+-   **Error Details**: Mapped to `status.details` (repeated google.protobuf.Any messages)
 
 **A2A Error Representation:**
 
 For A2A-specific errors, implementations **MUST** include a `google.rpc.ErrorInfo` message in the `status.details` array with:
 
-- `reason`: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., `TASK_NOT_FOUND`)
-- `domain`: Set to `"a2a-protocol.org"`
-- `metadata`: Optional map of additional error context
+-   `reason`: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., `TASK_NOT_FOUND`)
+-   `domain`: Set to `"a2a-protocol.org"`
+-   `metadata`: Optional map of additional error context
 
 For the complete mapping of A2A error types to gRPC status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings).
 
@@ -2700,11 +2715,11 @@ The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP 
 
 ### 11.1. Protocol Requirements
 
-- **Protocol:** HTTP(S) with JSON payloads
-- **Content-Type:** `application/json` for requests and responses
-- **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
-- **URL Patterns:** RESTful resource-based URLs
-- **Streaming:** Server-Sent Events for real-time updates
+-   **Protocol:** HTTP(S) with JSON payloads
+-   **Content-Type:** `application/json` for requests and responses
+-   **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
+-   **URL Patterns:** RESTful resource-based URLs
+-   **Streaming:** Server-Sent Events for real-time updates
 
 ### 11.2. Service Parameter Transmission
 
@@ -2712,9 +2727,9 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 
 **Service Parameter Requirements:**
 
-- Service parameter names **MUST** be transmitted as HTTP header fields
-- Service parameter keys are case-insensitive per HTTP specification (RFC 9110)
-- Multiple values for the same service parameter (e.g., `A2A-Extensions`) **SHOULD** be comma-separated in a single header field
+-   Service parameter names **MUST** be transmitted as HTTP header fields
+-   Service parameter keys are case-insensitive per HTTP specification (RFC 9110)
+-   Multiple values for the same service parameter (e.g., `A2A-Extensions`) **SHOULD** be comma-separated in a single header field
 
 **Example Request with A2A Service Parameters:**
 
@@ -2738,26 +2753,26 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 #### 11.3.1. Message Operations
 
-- `POST /v1/message:send` - Send message
-- `POST /v1/message:stream` - Send message with streaming (SSE response)
+-   `POST /v1/message:send` - Send message
+-   `POST /v1/message:stream` - Send message with streaming (SSE response)
 
 #### 11.3.2. Task Operations
 
-- `GET /v1/tasks/{id}` - Get task status
-- `GET /v1/tasks` - List tasks (with query parameters)
-- `POST /v1/tasks/{id}:cancel` - Cancel task
-- `POST /v1/tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
+-   `GET /v1/tasks/{id}` - Get task status
+-   `GET /v1/tasks` - List tasks (with query parameters)
+-   `POST /v1/tasks/{id}:cancel` - Cancel task
+-   `POST /v1/tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
 
 #### 11.3.3. Push Notification Configuration
 
-- `POST /v1/tasks/{id}/pushNotificationConfigs` - Create configuration
-- `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Get configuration
-- `GET /v1/tasks/{id}/pushNotificationConfigs` - List configurations
-- `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Delete configuration
+-   `POST /v1/tasks/{id}/pushNotificationConfigs` - Create configuration
+-   `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Get configuration
+-   `GET /v1/tasks/{id}/pushNotificationConfigs` - List configurations
+-   `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Delete configuration
 
 #### 11.3.4. Agent Card
 
-- `GET /v1/extendedAgentCard` - Get authenticated extended Agent Card
+-   `GET /v1/extendedAgentCard` - Get authenticated extended Agent Card
 
 ### 11.4. Request/Response Format
 
@@ -2835,12 +2850,12 @@ GET /v1/tasks/{id}?historyLength=10
 
 **Field Type Handling:**
 
-- **Strings**: Passed directly as query parameter values
-- **Booleans**: Represented as lowercase strings (`true`, `false`)
-- **Numbers**: Represented as decimal strings
-- **Enums**: Represented using their string values (e.g., `status=working`)
-- **Repeated Fields**: Multiple values **MAY** be passed by repeating the parameter name (e.g., `?tag=value1&tag=value2`) or as comma-separated values (e.g., `?tag=value1,value2`)
-- **Nested Objects**: Not supported in query parameters; operations requiring nested objects **MUST** use POST with a request body
+-   **Strings**: Passed directly as query parameter values
+-   **Booleans**: Represented as lowercase strings (`true`, `false`)
+-   **Numbers**: Represented as decimal strings
+-   **Enums**: Represented using their string values (e.g., `status=working`)
+-   **Repeated Fields**: Multiple values **MAY** be passed by repeating the parameter name (e.g., `?tag=value1&tag=value2`) or as comma-separated values (e.g., `?tag=value1,value2`)
+-   **Nested Objects**: Not supported in query parameters; operations requiring nested objects **MUST** use POST with a request body
 
 **URL Encoding:**
 
@@ -2850,9 +2865,9 @@ All query parameter values **MUST** be properly URL-encoded per [RFC 3986](https
 
 HTTP error responses use [RFC 9457 Problem Details](https://www.rfc-editor.org/rfc/rfc9457.html) format with `Content-Type: application/problem+json`, which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
 
-- **Error Code**: Mapped to `status` (HTTP status code) and `type` (URI identifier)
-- **Error Message**: Mapped to `detail` (human-readable string)
-- **Error Details**: Mapped to extension fields in the problem details object
+-   **Error Code**: Mapped to `status` (HTTP status code) and `type` (URI identifier)
+-   **Error Message**: Mapped to `detail` (human-readable string)
+-   **Error Details**: Mapped to extension fields in the problem details object
 
 **A2A Error Representation:**
 
@@ -2925,10 +2940,10 @@ Custom protocol bindings **MUST**:
 
 Custom bindings **MUST** provide clear mappings for:
 
-- **Protocol Buffer Types**: Define how each Protocol Buffer message type is represented
-- **Timestamps**: Follow the conventions in [Section 5.6.1 (Timestamps)](#561-timestamps)
-- **Binary Data**: Specify encoding for binary content (e.g., base64 for text-based protocols)
-- **Enumerations**: Define representation of enum values (e.g., strings, integers)
+-   **Protocol Buffer Types**: Define how each Protocol Buffer message type is represented
+-   **Timestamps**: Follow the conventions in [Section 5.6.1 (Timestamps)](#561-timestamps)
+-   **Binary Data**: Specify encoding for binary content (e.g., base64 for text-based protocols)
+-   **Enumerations**: Define representation of enum values (e.g., strings, integers)
 
 ### 12.3. Service Parameter Transmission
 
@@ -2941,8 +2956,8 @@ As specified in [Section 3.2.6 (Service Parameters)](#326-service-parameters), c
 
 **Example Documentation Requirements:**
 
-- **For native header support**: "Service parameters are transmitted using HTTP request headers. Service parameter keys are case-insensitive and must conform to RFC 7230. Service parameter values must be UTF-8 strings."
-- **For protocols without headers**: "Service parameters are serialized as a JSON object and transmitted in the request metadata field `a2a-service-parameters`."
+-   **For native header support**: "Service parameters are transmitted using HTTP request headers. Service parameter keys are case-insensitive and must conform to RFC 7230. Service parameter values must be UTF-8 strings."
+-   **For protocols without headers**: "Service parameters are serialized as a JSON object and transmitted in the request metadata field `a2a-service-parameters`."
 
 ### 12.4. Error Mapping
 
@@ -2985,12 +3000,12 @@ Custom bindings **MUST** be declared in the Agent Card:
 
 ```json
 {
-  "supportedInterfaces": [
-    {
-      "url": "wss://agent.example.com/a2a/websocket",
-      "protocolBinding": "WEBSOCKET"
-    }
-  ]
+    "supportedInterfaces": [
+        {
+            "url": "wss://agent.example.com/a2a/websocket",
+            "protocolBinding": "WEBSOCKET"
+        }
+    ]
 }
 ```
 
@@ -3013,27 +3028,27 @@ Implementations **MUST** ensure appropriate scope limitation based on the authen
 
 **Authorization Principles:**
 
-- Servers **MUST** implement authorization checks on every [A2A Protocol Operations](#3-a2a-protocol-operations) request
-- Implementations **MUST** scope results to the caller's authorized access boundaries as defined by the agent's authorization model
-- Even when `contextId` or other filter parameters are not specified in requests, implementations **MUST** scope results to the caller's authorized access boundaries
-- Authorization models are agent-defined and **MAY** be based on:
-    - User identity (user-based authorization)
-    - Organizational roles or groups (role-based authorization)
-    - Project or workspace membership (project-based authorization)
-    - Organizational or tenant boundaries (multi-tenant authorization)
-    - Custom authorization logic specific to the agent's domain
+-   Servers **MUST** implement authorization checks on every [A2A Protocol Operations](#3-a2a-protocol-operations) request
+-   Implementations **MUST** scope results to the caller's authorized access boundaries as defined by the agent's authorization model
+-   Even when `contextId` or other filter parameters are not specified in requests, implementations **MUST** scope results to the caller's authorized access boundaries
+-   Authorization models are agent-defined and **MAY** be based on:
+    -   User identity (user-based authorization)
+    -   Organizational roles or groups (role-based authorization)
+    -   Project or workspace membership (project-based authorization)
+    -   Organizational or tenant boundaries (multi-tenant authorization)
+    -   Custom authorization logic specific to the agent's domain
 
 **Operations Requiring Scope Limitation:**
 
-- [`List Tasks`](#314-list-tasks): **MUST** only return tasks visible to the authenticated client according to the agent's authorization model
-- [`Get Task`](#313-get-task): **MUST** verify the authenticated client has access to the requested task according to the agent's authorization model
-- Task-related operations (Cancel, Subscribe, Push Notification Config): **MUST** verify the client has appropriate access rights according to the agent's authorization model
+-   [`List Tasks`](#314-list-tasks): **MUST** only return tasks visible to the authenticated client according to the agent's authorization model
+-   [`Get Task`](#313-get-task): **MUST** verify the authenticated client has access to the requested task according to the agent's authorization model
+-   Task-related operations (Cancel, Subscribe, Push Notification Config): **MUST** verify the client has appropriate access rights according to the agent's authorization model
 
 **Implementation Requirements:**
 
-- Authorization boundaries are defined by each agent's authorization model, not prescribed by the protocol
-- Authorization checks **MUST** occur before any database queries or operations that could leak information about the existence of resources outside the caller's authorization scope
-- Agents **SHOULD** document their authorization model and access control policies
+-   Authorization boundaries are defined by each agent's authorization model, not prescribed by the protocol
+-   Authorization checks **MUST** occur before any database queries or operations that could leak information about the existence of resources outside the caller's authorization scope
+-   Agents **SHOULD** document their authorization model and access control policies
 
 See also: [Section 3.1.4 List Tasks (Security Note)](#314-list-tasks) for operation-specific requirements.
 
@@ -3043,30 +3058,30 @@ When implementing push notifications, both agents (as webhook callers) and clien
 
 **Agent (Webhook Caller) Requirements:**
 
-- Agents **MUST** include authentication credentials in webhook requests as specified in [`PushNotificationConfig.authentication`](#432-authenticationinfo)
-- Agents **SHOULD** implement reasonable timeout values for webhook requests (recommended: 10-30 seconds)
-- Agents **SHOULD** implement retry logic with exponential backoff for failed deliveries
-- Agents **MAY** stop attempting delivery after a configured number of consecutive failures
-- Agents **SHOULD** validate webhook URLs to prevent SSRF (Server-Side Request Forgery) attacks:
-    - Reject private IP ranges (127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
-    - Reject localhost and link-local addresses
-    - Implement URL allowlists where appropriate
+-   Agents **MUST** include authentication credentials in webhook requests as specified in [`PushNotificationConfig.authentication`](#432-authenticationinfo)
+-   Agents **SHOULD** implement reasonable timeout values for webhook requests (recommended: 10-30 seconds)
+-   Agents **SHOULD** implement retry logic with exponential backoff for failed deliveries
+-   Agents **MAY** stop attempting delivery after a configured number of consecutive failures
+-   Agents **SHOULD** validate webhook URLs to prevent SSRF (Server-Side Request Forgery) attacks:
+    -   Reject private IP ranges (127.0.0.0/8, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
+    -   Reject localhost and link-local addresses
+    -   Implement URL allowlists where appropriate
 
 **Client (Webhook Receiver) Requirements:**
 
-- Clients **MUST** validate webhook authenticity using the provided authentication credentials
-- Clients **SHOULD** verify the task ID in the payload matches an expected task they created
-- Clients **MUST** respond with HTTP 2xx status codes to acknowledge successful receipt
-- Clients **SHOULD** process notifications idempotently, as duplicate deliveries may occur
-- Clients **SHOULD** implement rate limiting to prevent webhook flooding
-- Clients **SHOULD** use HTTPS endpoints for webhook URLs to ensure confidentiality
+-   Clients **MUST** validate webhook authenticity using the provided authentication credentials
+-   Clients **SHOULD** verify the task ID in the payload matches an expected task they created
+-   Clients **MUST** respond with HTTP 2xx status codes to acknowledge successful receipt
+-   Clients **SHOULD** process notifications idempotently, as duplicate deliveries may occur
+-   Clients **SHOULD** implement rate limiting to prevent webhook flooding
+-   Clients **SHOULD** use HTTPS endpoints for webhook URLs to ensure confidentiality
 
 **Configuration Security:**
 
-- Webhook URLs **SHOULD** use HTTPS to protect payload confidentiality in transit
-- Authentication tokens in [`PushNotificationConfig`](#431-pushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
-- Agents **SHOULD** securely store push notification configurations and credentials
-- Clients **SHOULD** use unique, single-purpose tokens for each push notification configuration
+-   Webhook URLs **SHOULD** use HTTPS to protect payload confidentiality in transit
+-   Authentication tokens in [`PushNotificationConfig`](#431-pushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
+-   Agents **SHOULD** securely store push notification configurations and credentials
+-   Clients **SHOULD** use unique, single-purpose tokens for each push notification configuration
 
 See also: [Section 4.3 Push Notification Objects](#43-push-notification-objects) and [Section 4.3.3 Push Notification Payload](#433-push-notification-payload).
 
@@ -3076,30 +3091,30 @@ The extended Agent Card feature allows agents to provide additional capabilities
 
 **Access Control Requirements:**
 
-- The [`Get Extended Agent Card`](#3111-get-extended-agent-card) operation **MUST** require authentication
-- Agents **MUST** authenticate requests using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields
-- Agents **MAY** return different extended card content based on the authenticated client's identity or authorization level
-- Agents **SHOULD** implement appropriate caching headers to control client-side caching of extended cards
+-   The [`Get Extended Agent Card`](#3111-get-extended-agent-card) operation **MUST** require authentication
+-   Agents **MUST** authenticate requests using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields
+-   Agents **MAY** return different extended card content based on the authenticated client's identity or authorization level
+-   Agents **SHOULD** implement appropriate caching headers to control client-side caching of extended cards
 
 **Capability-Based Access:**
 
-- Extended cards **MAY** include additional skills not present in the public card
-- Extended cards **MAY** expose more detailed capability information (e.g., rate limits, quotas)
-- Extended cards **MAY** include organization-specific or user-specific configuration
-- Agents **SHOULD** document which capabilities are available at different authentication levels
+-   Extended cards **MAY** include additional skills not present in the public card
+-   Extended cards **MAY** expose more detailed capability information (e.g., rate limits, quotas)
+-   Extended cards **MAY** include organization-specific or user-specific configuration
+-   Agents **SHOULD** document which capabilities are available at different authentication levels
 
 **Security Considerations:**
 
-- Extended cards **SHOULD NOT** include sensitive information that could be exploited if leaked (e.g., internal service URLs, unmasked credentials)
-- Agents **MUST** validate that clients have appropriate permissions before returning privileged information in extended cards
-- Clients retrieving extended cards **SHOULD** replace their cached public Agent Card with the extended version for the duration of their authenticated session
-- Agents **SHOULD** version extended cards appropriately and honor client cache invalidation
+-   Extended cards **SHOULD NOT** include sensitive information that could be exploited if leaked (e.g., internal service URLs, unmasked credentials)
+-   Agents **MUST** validate that clients have appropriate permissions before returning privileged information in extended cards
+-   Clients retrieving extended cards **SHOULD** replace their cached public Agent Card with the extended version for the duration of their authenticated session
+-   Agents **SHOULD** version extended cards appropriately and honor client cache invalidation
 
 **Availability Declaration:**
 
-- Agents declare extended card support via `AgentCard.supportsExtendedAgentCard`
-- When `supportsExtendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
-- When support is declared but no extended card is configured, the operation **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling)
+-   Agents declare extended card support via `AgentCard.supportsExtendedAgentCard`
+-   When `supportsExtendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
+-   When support is declared but no extended card is configured, the operation **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling)
 
 See also: [Section 3.1.11 Get Extended Agent Card](#3111-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).
 
@@ -3107,50 +3122,50 @@ See also: [Section 3.1.11 Get Extended Agent Card](#3111-get-extended-agent-card
 
 **Transport Security:**
 
-- Production deployments **MUST** use encrypted communication (HTTPS for HTTP-based bindings, TLS for gRPC)
-- Implementations **SHOULD** use modern TLS configurations (TLS 1.3+ recommended) with strong cipher suites
-- Agents **SHOULD** enforce HSTS (HTTP Strict Transport Security) headers when using HTTP-based bindings
-- Implementations **SHOULD** disable support for deprecated SSL/TLS versions (SSLv3, TLS 1.0, TLS 1.1)
+-   Production deployments **MUST** use encrypted communication (HTTPS for HTTP-based bindings, TLS for gRPC)
+-   Implementations **SHOULD** use modern TLS configurations (TLS 1.3+ recommended) with strong cipher suites
+-   Agents **SHOULD** enforce HSTS (HTTP Strict Transport Security) headers when using HTTP-based bindings
+-   Implementations **SHOULD** disable support for deprecated SSL/TLS versions (SSLv3, TLS 1.0, TLS 1.1)
 
 **Input Validation:**
 
-- Agents **MUST** validate all input parameters before processing
-- Agents **SHOULD** implement appropriate limits on message sizes, file sizes, and request complexity
-- Agents **SHOULD** sanitize or validate file content types and reject unexpected media types
+-   Agents **MUST** validate all input parameters before processing
+-   Agents **SHOULD** implement appropriate limits on message sizes, file sizes, and request complexity
+-   Agents **SHOULD** sanitize or validate file content types and reject unexpected media types
 
 **Credential Management:**
 
-- API keys, tokens, and other credentials **MUST** be treated as secrets
-- Credentials **SHOULD** be rotated periodically
-- Credentials **SHOULD** be transmitted only over encrypted connections
-- Agents **SHOULD** implement credential revocation mechanisms
-- Agents **SHOULD** log authentication failures and implement rate limiting to prevent brute-force attacks
+-   API keys, tokens, and other credentials **MUST** be treated as secrets
+-   Credentials **SHOULD** be rotated periodically
+-   Credentials **SHOULD** be transmitted only over encrypted connections
+-   Agents **SHOULD** implement credential revocation mechanisms
+-   Agents **SHOULD** log authentication failures and implement rate limiting to prevent brute-force attacks
 
 **Audit and Monitoring:**
 
-- Agents **SHOULD** log security-relevant events (authentication failures, authorization denials, suspicious requests)
-- Agents **SHOULD** implement monitoring for unusual patterns (rapid task creation, excessive cancellations)
-- Agents **SHOULD** provide audit trails for sensitive operations
-- Logs **MUST NOT** include sensitive information (credentials, personal data) unless required and properly protected
+-   Agents **SHOULD** log security-relevant events (authentication failures, authorization denials, suspicious requests)
+-   Agents **SHOULD** implement monitoring for unusual patterns (rapid task creation, excessive cancellations)
+-   Agents **SHOULD** provide audit trails for sensitive operations
+-   Logs **MUST NOT** include sensitive information (credentials, personal data) unless required and properly protected
 
 **Rate Limiting and Abuse Prevention:**
 
-- Agents **SHOULD** implement rate limiting on all operations
-- Agents **SHOULD** return appropriate error responses when rate limits are exceeded
-- Agents **MAY** implement different rate limits for different operations or user tiers
+-   Agents **SHOULD** implement rate limiting on all operations
+-   Agents **SHOULD** return appropriate error responses when rate limits are exceeded
+-   Agents **MAY** implement different rate limits for different operations or user tiers
 
 **Data Privacy:**
 
-- Agents **MUST** comply with applicable data protection regulations
-- Agents **SHOULD** provide mechanisms for users to request deletion of their data
-- Agents **SHOULD** implement appropriate data retention policies
-- Agents **SHOULD** minimize logging of sensitive or personal information
+-   Agents **MUST** comply with applicable data protection regulations
+-   Agents **SHOULD** provide mechanisms for users to request deletion of their data
+-   Agents **SHOULD** implement appropriate data retention policies
+-   Agents **SHOULD** minimize logging of sensitive or personal information
 
 **Custom Binding Security:**
 
-- Custom protocol bindings **MUST** address security considerations in their specification
-- Custom bindings **SHOULD** follow the same security principles as standard bindings
-- Custom bindings **MUST** document authentication integration and credential transmission
+-   Custom protocol bindings **MUST** address security considerations in their specification
+-   Custom bindings **SHOULD** follow the same security principles as standard bindings
+-   Custom bindings **MUST** document authentication integration and credential transmission
 
 See also: [Section 12.6 Authentication and Authorization (Custom Bindings)](#126-authentication-and-authorization).
 
@@ -3170,18 +3185,18 @@ This section provides registration templates for the A2A protocol's media type, 
 
 **Optional parameters:**
 
-- None
+-   None
 
 **Encoding considerations:** Binary (UTF-8 encoding MUST be used for JSON text)
 
 **Security considerations:**
 This media type shares security considerations common to all JSON-based formats as described in RFC 8259, Section 12. Additionally:
 
-- Content MUST be validated against the A2A protocol schema before processing
-- Implementations MUST sanitize user-provided content to prevent injection attacks
-- File references within A2A messages MUST be validated to prevent server-side request forgery (SSRF)
-- Authentication and authorization MUST be enforced as specified in Section 7 of the A2A specification
-- Sensitive information in task history and artifacts MUST be protected according to applicable data protection regulations
+-   Content MUST be validated against the A2A protocol schema before processing
+-   Implementations MUST sanitize user-provided content to prevent injection attacks
+-   File references within A2A messages MUST be validated to prevent server-side request forgery (SSRF)
+-   Authentication and authorization MUST be enforced as specified in Section 7 of the A2A specification
+-   Sensitive information in task history and artifacts MUST be protected according to applicable data protection regulations
 
 **Interoperability considerations:**
 The A2A protocol supports multiple protocol bindings. This media type is intended for the HTTP+JSON/REST binding.
@@ -3196,10 +3211,10 @@ AI agent platforms, agentic workflow systems, multi-agent collaboration tools, a
 
 **Additional information:**
 
-- **Deprecated alias names for this type:** None
-- **Magic number(s):** None
-- **File extension(s):** .a2a.json
-- **Macintosh file type code(s):** TEXT
+-   **Deprecated alias names for this type:** None
+-   **Magic number(s):** None
+-   **File extension(s):** .a2a.json
+-   **Macintosh file type code(s):** TEXT
 
 **Person & email address to contact for further information:**
 A2A Protocol Working Group, <a2a-protocol@example.org>
@@ -3275,11 +3290,11 @@ The `.well-known/agent-card.json` URI provides a standardized location for disco
 
 **Security considerations:**
 
-- The Agent Card MAY contain public information about an agent's capabilities and SHOULD NOT include sensitive credentials or internal implementation details
-- Implementations SHOULD support HTTPS to ensure authenticity and integrity of the Agent Card
-- Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object (Section 4.4.7)
-- Clients SHOULD verify signatures when present to ensure the Agent Card has not been tampered with
-- Extended Agent Cards retrieved via authenticated endpoints (Section 3.1.11) MAY contain additional information and MUST enforce appropriate access controls
+-   The Agent Card MAY contain public information about an agent's capabilities and SHOULD NOT include sensitive credentials or internal implementation details
+-   Implementations SHOULD support HTTPS to ensure authenticity and integrity of the Agent Card
+-   Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object (Section 4.4.7)
+-   Clients SHOULD verify signatures when present to ensure the Agent Card has not been tampered with
+-   Extended Agent Cards retrieved via authenticated endpoints (Section 3.1.11) MAY contain additional information and MUST enforce appropriate access controls
 
 **Example:**
 
@@ -3289,190 +3304,12 @@ https://agent.example.com/.well-known/agent-card.json
 
 ---
 
-## Appendix A. Migration & Legacy Compatibility
-
-This appendix catalogs renamed protocol messages and objects, their legacy identifiers, and the planned deprecation/removal schedule. All legacy names and anchors MUST remain resolvable until the stated earliest removal version.
-
-| Legacy Name                                     | Current Name                              | Earliest Removal Version | Notes                                                  |
-| ----------------------------------------------- | ----------------------------------------- | ------------------------ | ------------------------------------------------------ |
-| `MessageSendParams`                             | `SendMessageRequest`                      | >= 0.5.0                 | Request payload rename for clarity (request vs params) |
-| `SendMessageSuccessResponse`                    | `SendMessageResponse`                     | >= 0.5.0                 | Unified success response naming                        |
-| `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response           |
-| `SetTaskPushNotificationConfigRequest`          | `CreateTaskPushNotificationConfigRequest` | >= 0.5.0                 | Explicit creation intent                               |
-| `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
-| `GetAuthenticatedExtendedCardRequest`           | `GetExtendedAgentCardRequest`             | >= 0.5.0                 | Removed "Authenticated" from naming                    |
-
-Planned Lifecycle (example timeline; adjust per release strategy):
-
-1. 0.3.x: New names introduced; legacy names documented; aliases added.
-2. 0.4.x: Legacy names marked "deprecated" in SDKs and schemas; warning notes added.
-3. ≥0.5.0: Legacy names eligible for removal after review; migration appendix updated.
-
-### A.1 Legacy Documentation Anchors
-
-Hidden anchor spans preserve old inbound links:
-
-<!-- Legacy inbound link compatibility anchors (old spec numbering & names) -->
-<span id="32-supported-transport-protocols"></span>
-<span id="324-transport-extensions"></span>
-<span id="35-method-mapping-and-naming-conventions"></span>
-<span id="5-agent-discovery-the-agent-card"></span>
-<span id="53-recommended-location"></span>
-<span id="55-agentcard-object-structure"></span>
-<span id="56-transport-declaration-and-url-relationships"></span>
-<span id="563-client-transport-selection-rules"></span>
-<span id="57-sample-agent-card"></span>
-<span id="6-protocol-data-objects"></span>
-<span id="61-task-object"></span>
-<span id="610-taskpushnotificationconfig-object"></span>
-<span id="611-json-rpc-structures"></span>
-<span id="612-jsonrpcerror-object"></span>
-<span id="63-taskstate-enum"></span>
-<span id="69-pushnotificationauthenticationinfo-object"></span>
-<span id="711-messagesendparams-object"></span>
-<span id="72-messagestream"></span>
-<span id="721-sendstreamingmessageresponse-object"></span>
-<span id="731-taskqueryparams-object"></span>
-<span id="741-listtasksparams-object"></span>
-<span id="742-listtasksresult-object"></span>
-<span id="751-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget"></span>
-<span id="77-taskspushnotificationconfigget"></span>
-<span id="771-gettaskpushnotificationconfigparams-object-taskspushnotificationconfigget"></span>
-<span id="781-listtaskpushnotificationconfigparams-object-taskspushnotificationconfiglist"></span>
-<span id="791-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete"></span>
-<span id="8-error-handling"></span>
-<span id="82-a2a-specific-errors"></span>
-<!-- Legacy renamed message/object name anchors -->
-<span id="messagesendparams"></span>
-<span id="sendmessagesuccessresponse"></span>
-<span id="sendstreamingmessagesuccessresponse"></span>
-<span id="settaskpushnotificationconfigrequest"></span>
-<span id="listtaskpushnotificationconfigsuccessresponse"></span>
-<span id="getauthenticatedextendedcardrequest"></span>
-<span id="938-agentgetauthenticatedextendedcard"></span>
-
-Each legacy span SHOULD be placed adjacent to the current object's heading (to be inserted during detailed object section edits). If an exact numeric-prefixed anchor existed (e.g., `#414-message`), add an additional span matching that historical form if known.
-
-### A.2 Migration Guidance
-
-Client Implementations SHOULD:
-
-- Prefer new names immediately for all new integrations.
-- Implement dual-handling where schemas/types permit (e.g., union type or backward-compatible decoder).
-- Log a warning when receiving legacy-named objects after the first deprecation announcement release.
-
-Server Implementations MAY:
-
-- Accept both legacy and current request message forms during the overlap period.
-- Emit only current form in responses (recommended) while providing explicit upgrade notes.
-
-#### A.2.1 Breaking Change: Kind Discriminator Removed
-
-**Version 1.0 introduces a breaking change** in how polymorphic objects are represented in the protocol. This affects `Part` types and streaming event types.
-
-**Legacy Pattern (v0.3.x):**
-Objects used an inline `kind` field as a discriminator to identify the object type:
-
-**Example 1 - TextPart:**
-
-```json
-{
-  "kind": "TextPart",
-  "text": "Hello, world!"
-}
-```
-
-**Example 2 - FilePart:**
-
-```json
-{
-  "kind": "FilePart",
-  "mimeType": "image/png",
-  "name": "diagram.png",
-  "fileWithBytes": "iVBORw0KGgo..."
-}
-```
-
-**Current Pattern (v1.0):**
-Objects now use the **JSON member name** itself to identify the type. The member name acts as the discriminator, and the value structure depends on the specific type:
-
-**Example 1 - TextPart:**
-
-```json
-{
-  "text": "Hello, world!"
-}
-```
-
-**Example 2 - FilePart:**
-
-```json
-{
-  "file": {
-    "mediaType": "image/png",
-    "name": "diagram.png",
-    "fileWithBytes": "iVBORw0KGgo..."
-  }
-}
-```
-
-**Affected Types:**
-
-1. **Part Union Types**:
-   - **TextPart**:
-     - **Legacy:** `{ "kind": "TextPart", "text": "..." }`
-     - **Current:** `{ "text": "..." }` (direct string value)
-   - **FilePart**:
-     - **Legacy:** `{ "kind": "FilePart", "mimeType": "...", "name": "...", "fileWithBytes": "..." }`
-     - **Current:** `{ "file": { "mediaType": "...", "name": "...", "fileWithBytes": "..." } }`
-   - **DataPart**:
-     - **Legacy:** `{ "kind": "DataPart", "data": {...} }`
-     - **Current:** `{ "data": { "data": {...} } }`
-
-2. **Streaming Event Types**:
-   - **TaskStatusUpdateEvent**:
-     - **Legacy:** `{ "kind": "TaskStatusUpdateEvent", "taskId": "...", "status": {...} }`
-     - **Current:** `{ "statusUpdate": { "taskId": "...", "status": {...} } }`
-   - **TaskArtifactUpdateEvent**:
-     - **Legacy:** `{ "kind": "TaskArtifactUpdateEvent", "taskId": "...", "artifact": {...} }`
-     - **Current:** `{ "artifactUpdate": { "taskId": "...", "artifact": {...} } }`
-
-**Migration Strategy:**
-
-For **Clients** upgrading from pre-0.3.x:
-
-1. Update parsers to expect wrapper objects with member names as discriminators
-2. When constructing requests, use the new wrapper format
-3. Implement version detection based on the agent's `protocolVersion` in the `AgentCard`
-4. Consider maintaining backward compatibility by detecting and handling both formats during a transition period
-
-For **Servers** upgrading from pre-0.3.x:
-
-1. Update serialization logic to emit wrapper objects
-2. **Breaking:** The `kind` field is no longer part of the protocol and should not be emitted
-3. Update deserialization to expect wrapper objects with member names
-4. Ensure the `AgentCard` declares the correct `protocolVersion` (1.0 or later)
-
-**Rationale:**
-
-This change aligns with modern API design practices and Protocol Buffers' `oneof` semantics, where the field name itself serves as the type discriminator. This approach:
-
-- Reduces redundancy (no need for both a field name and a `kind` value)
-- Aligns JSON-RPC and gRPC representations more closely
-- Simplifies code generation from schema definitions
-- Eliminates the need for representing inheritance structures in schema languages
-- Improves type safety in strongly-typed languages
-
-### A.3 Future Automation
-
-Once the proto→schema generation pipeline lands, this appendix will be partially auto-generated (legacy mapping table sourced from a maintained manifest). Until then, edits MUST be manual and reviewed in PRs affecting `a2a.proto`.
-
-## Appendix B. Relationship to MCP (Model Context Protocol)
+## Appendix A. Relationship to MCP (Model Context Protocol)
 
 A2A and MCP are complementary protocols designed for different aspects of agentic systems:
 
-- **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/):** Focuses on standardizing how AI models and agents connect to and interact with **tools, APIs, data sources, and other external resources.** It defines structured ways to describe tool capabilities (like function calling in LLMs), pass inputs, and receive structured outputs. Think of MCP as the "how-to" for an agent to *use* a specific capability or access a resource.
-- **Agent2Agent Protocol (A2A):** Focuses on standardizing how independent, often opaque, **AI agents communicate and collaborate with each other as peers.** A2A provides an application-level protocol for agents to discover each other, negotiate interaction modalities, manage shared tasks, and exchange conversational context or complex results. It's about how agents *partner* or *delegate* work.
+-   **[Model Context Protocol (MCP)](https://modelcontextprotocol.io/):** Focuses on standardizing how AI models and agents connect to and interact with **tools, APIs, data sources, and other external resources.** It defines structured ways to describe tool capabilities (like function calling in LLMs), pass inputs, and receive structured outputs. Think of MCP as the "how-to" for an agent to _use_ a specific capability or access a resource.
+-   **Agent2Agent Protocol (A2A):** Focuses on standardizing how independent, often opaque, **AI agents communicate and collaborate with each other as peers.** A2A provides an application-level protocol for agents to discover each other, negotiate interaction modalities, manage shared tasks, and exchange conversational context or complex results. It's about how agents _partner_ or _delegate_ work.
 
 **How they work together:**
 An A2A Client agent might request an A2A Server agent to perform a complex task. The Server agent, in turn, might use MCP to interact with several underlying tools, APIs, or data sources to gather information or perform actions necessary to fulfill the A2A task.
