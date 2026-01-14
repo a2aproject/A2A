@@ -449,8 +449,6 @@ message AgentCard {
   // a descriptive concept but represents a more focused set of behaviors that the
   // agent is likely to succeed at.
   repeated AgentSkill skills = 12 [(google.api.field_behavior) = REQUIRED];
-  // Whether the agent supports providing an extended agent card when authenticated.
-  optional bool supports_extended_agent_card = 13;
   // JSON Web Signatures computed for this AgentCard.
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
@@ -481,6 +479,8 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent provides a history of state transitions for a task.
   optional bool state_transition_history = 4;
+  // Indicates if the agent supports providing an extended agent card when authenticated.
+  optional bool extended_agent_card = 5;
 }
 // --8<-- [end:AgentCapabilities]
 

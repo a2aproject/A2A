@@ -3546,6 +3546,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#a22-breaking-change-extended-agent-card-field-relocated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.2.2 Breaking Change: Extended Agent Card Field Relocated
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6246,6 +6257,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#a22-breaking-change-extended-agent-card-field-relocated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A.2.2 Breaking Change: Extended Agent Card Field Relocated
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6983,7 +7005,7 @@
 <p><strong>Behavior:</strong></p>
 <p>The operation MUST permanently remove the specified push notification configuration. No further notifications will be sent to the configured webhook after deletion. This operation MUST be idempotent - multiple deletions of the same config have the same effect.</p>
 <h4 id="3111-get-extended-agent-card">3.1.11. Get Extended Agent Card<a class="headerlink" href="#3111-get-extended-agent-card" title="Permanent link">&para;</a></h4>
-<p>Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if <code>AgentCard.supportsExtendedAgentCard</code> is <code>true</code>.</p>
+<p>Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if <code>AgentCard.capabilities.extendedAgentCard</code> is <code>true</code>.</p>
 <p><strong>Inputs:</strong></p>
 <table>
 <thead>
@@ -7017,7 +7039,7 @@
 <li><strong>Authentication</strong>: The client MUST authenticate the request using one of the schemes declared in the public <code>AgentCard.securitySchemes</code> and <code>AgentCard.security</code> fields.</li>
 <li><strong>Extended Information</strong>: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.</li>
 <li><strong>Card Replacement</strong>: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.</li>
-<li><strong>Availability</strong>: This operation is only available if the public Agent Card declares <code>supportsExtendedAgentCard: true</code>.</li>
+<li><strong>Availability</strong>: This operation is only available if the public Agent Card declares <code>capabilities.extendedAgentCard: true</code>.</li>
 </ul>
 <p>For detailed security guidance on extended agent cards, see <a href="#133-extended-agent-card-access-control">Section 13.3 Extended Agent Card Access Control</a>.</p>
 <h3 id="32-operation-parameter-objects">3.2. Operation Parameter Objects<a class="headerlink" href="#32-operation-parameter-objects" title="Permanent link">&para;</a></h3>
@@ -7318,7 +7340,7 @@
 <ul>
 <li><strong>Push Notifications</strong>: If <code>AgentCard.capabilities.pushNotifications</code> is <code>false</code> or not present, operations related to push notification configuration (Set, Get, List, Delete) <strong>MUST</strong> return <a href="#332-error-handling"><code>PushNotificationNotSupportedError</code></a>.</li>
 <li><strong>Streaming</strong>: If <code>AgentCard.capabilities.streaming</code> is <code>false</code> or not present, attempts to use <code>SendStreamingMessage</code> or <code>SubscribeToTask</code> operations <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>.</li>
-<li><strong>Extended Agent Card</strong>: If <code>AgentCard.supportsExtendedAgentCard</code> is <code>false</code> or not present, attempts to call the Get Extended Agent Card operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>. If the agent declares support but has not configured an extended card, it <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a>.</li>
+<li><strong>Extended Agent Card</strong>: If <code>AgentCard.capabilities.extendedAgentCard</code> is <code>false</code> or not present, attempts to call the Get Extended Agent Card operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>. If the agent declares support but has not configured an extended card, it <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a>.</li>
 <li><strong>Extensions</strong>: When a client requests use of an extension marked as <code>required: true</code> in the Agent Card but the client does not declare support for it, the agent <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtensionSupportRequiredError</code></a>.</li>
 </ul>
 <p>Clients <strong>SHOULD</strong> validate capability support by examining the Agent Card before attempting operations that require optional capabilities.</p>
@@ -8120,12 +8142,6 @@
 <td>Skills represent an ability of an agent. It is largely a descriptive concept but represents a more focused set of behaviors that the agent is likely to succeed at.</td>
 </tr>
 <tr>
-<td><code>supportsExtendedAgentCard</code></td>
-<td><code>boolean</code></td>
-<td>Optional</td>
-<td>Whether the agent supports providing an extended agent card when authenticated.</td>
-</tr>
-<tr>
 <td><code>signatures</code></td>
 <td>array of <a href="#AgentCardSignature"><code>AgentCardSignature</code></a></td>
 <td>No</td>
@@ -8202,6 +8218,12 @@
 <td><code>boolean</code></td>
 <td>Optional</td>
 <td>Indicates if the agent provides a history of state transitions for a task.</td>
+</tr>
+<tr>
+<td><code>extendedAgentCard</code></td>
+<td><code>boolean</code></td>
+<td>Optional</td>
+<td>Indicates if the agent supports providing an extended agent card when authenticated.</td>
 </tr>
 </tbody>
 </table>
@@ -9523,15 +9545,17 @@
 </span></code></pre></div>
 <p><strong>Response includes:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="p">{</span>
-</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">  </span><span class="nt">&quot;supportsExtendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">  </span><span class="nt">&quot;securitySchemes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">    </span><span class="nt">&quot;google&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">      </span><span class="nt">&quot;openIdConnectSecurityScheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">        </span><span class="nt">&quot;openIdConnectUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://accounts.google.com/.well-known/openid-configuration&quot;</span>
-</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">      </span><span class="p">}</span>
-</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="p">}</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">    </span><span class="nt">&quot;extendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">  </span><span class="nt">&quot;securitySchemes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">    </span><span class="nt">&quot;google&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">      </span><span class="nt">&quot;openIdConnectSecurityScheme&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">        </span><span class="nt">&quot;openIdConnectUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://accounts.google.com/.well-known/openid-configuration&quot;</span>
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-33-11"><a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="step-2-client-obtains-credentials-out-of-band-oauth-20-flow">Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow)<a class="headerlink" href="#step-2-client-obtains-credentials-out-of-band-oauth-20-flow" title="Permanent link">&para;</a></h3>
 <h3 id="step-3-client-fetches-authenticated-extended-agent-card">Step 3: Client fetches authenticated extended Agent Card<a class="headerlink" href="#step-3-client-fetches-authenticated-extended-agent-card" title="Permanent link">&para;</a></h3>
@@ -9770,53 +9794,53 @@
 </span><span id="__span-40-17"><a id="__codelineno-40-17" name="__codelineno-40-17" href="#__codelineno-40-17"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-40-18"><a id="__codelineno-40-18" name="__codelineno-40-18" href="#__codelineno-40-18"></a><span class="w">    </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 </span><span id="__span-40-19"><a id="__codelineno-40-19" name="__codelineno-40-19" href="#__codelineno-40-19"></a><span class="w">    </span><span class="nt">&quot;pushNotifications&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a><span class="w">    </span><span class="nt">&quot;stateTransitionHistory&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
-</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a><span class="w">  </span><span class="p">},</span>
-</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a><span class="w">  </span><span class="nt">&quot;securitySchemes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-40-23"><a id="__codelineno-40-23" name="__codelineno-40-23" href="#__codelineno-40-23"></a><span class="w">    </span><span class="nt">&quot;google&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-40-24"><a id="__codelineno-40-24" name="__codelineno-40-24" href="#__codelineno-40-24"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openIdConnect&quot;</span><span class="p">,</span>
-</span><span id="__span-40-25"><a id="__codelineno-40-25" name="__codelineno-40-25" href="#__codelineno-40-25"></a><span class="w">      </span><span class="nt">&quot;openIdConnectUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://accounts.google.com/.well-known/openid-configuration&quot;</span>
-</span><span id="__span-40-26"><a id="__codelineno-40-26" name="__codelineno-40-26" href="#__codelineno-40-26"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-40-27"><a id="__codelineno-40-27" name="__codelineno-40-27" href="#__codelineno-40-27"></a><span class="w">  </span><span class="p">},</span>
-</span><span id="__span-40-28"><a id="__codelineno-40-28" name="__codelineno-40-28" href="#__codelineno-40-28"></a><span class="w">  </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;google&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;profile&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}],</span>
-</span><span id="__span-40-29"><a id="__codelineno-40-29" name="__codelineno-40-29" href="#__codelineno-40-29"></a><span class="w">  </span><span class="nt">&quot;defaultInputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="p">],</span>
-</span><span id="__span-40-30"><a id="__codelineno-40-30" name="__codelineno-40-30" href="#__codelineno-40-30"></a><span class="w">  </span><span class="nt">&quot;defaultOutputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">],</span>
-</span><span id="__span-40-31"><a id="__codelineno-40-31" name="__codelineno-40-31" href="#__codelineno-40-31"></a><span class="w">  </span><span class="nt">&quot;skills&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-40-32"><a id="__codelineno-40-32" name="__codelineno-40-32" href="#__codelineno-40-32"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-40-33"><a id="__codelineno-40-33" name="__codelineno-40-33" href="#__codelineno-40-33"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;route-optimizer-traffic&quot;</span><span class="p">,</span>
-</span><span id="__span-40-34"><a id="__codelineno-40-34" name="__codelineno-40-34" href="#__codelineno-40-34"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Traffic-Aware Route Optimizer&quot;</span><span class="p">,</span>
-</span><span id="__span-40-35"><a id="__codelineno-40-35" name="__codelineno-40-35" href="#__codelineno-40-35"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Calculates the optimal driving route between two or more locations, taking into account real-time traffic conditions, road closures, and user preferences (e.g., avoid tolls, prefer highways).&quot;</span><span class="p">,</span>
-</span><span id="__span-40-36"><a id="__codelineno-40-36" name="__codelineno-40-36" href="#__codelineno-40-36"></a><span class="w">      </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;maps&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;routing&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;navigation&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;directions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;traffic&quot;</span><span class="p">],</span>
-</span><span id="__span-40-37"><a id="__codelineno-40-37" name="__codelineno-40-37" href="#__codelineno-40-37"></a><span class="w">      </span><span class="nt">&quot;examples&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-40-38"><a id="__codelineno-40-38" name="__codelineno-40-38" href="#__codelineno-40-38"></a><span class="w">        </span><span class="s2">&quot;Plan a route from &#39;1600 Amphitheatre Parkway, Mountain View, CA&#39; to &#39;San Francisco International Airport&#39; avoiding tolls.&quot;</span><span class="p">,</span>
-</span><span id="__span-40-39"><a id="__codelineno-40-39" name="__codelineno-40-39" href="#__codelineno-40-39"></a><span class="w">        </span><span class="s2">&quot;{\&quot;origin\&quot;: {\&quot;lat\&quot;: 37.422, \&quot;lng\&quot;: -122.084}, \&quot;destination\&quot;: {\&quot;lat\&quot;: 37.7749, \&quot;lng\&quot;: -122.4194}, \&quot;preferences\&quot;: [\&quot;avoid_ferries\&quot;]}&quot;</span>
-</span><span id="__span-40-40"><a id="__codelineno-40-40" name="__codelineno-40-40" href="#__codelineno-40-40"></a><span class="w">      </span><span class="p">],</span>
-</span><span id="__span-40-41"><a id="__codelineno-40-41" name="__codelineno-40-41" href="#__codelineno-40-41"></a><span class="w">      </span><span class="nt">&quot;inputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="p">],</span>
-</span><span id="__span-40-42"><a id="__codelineno-40-42" name="__codelineno-40-42" href="#__codelineno-40-42"></a><span class="w">      </span><span class="nt">&quot;outputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-40-43"><a id="__codelineno-40-43" name="__codelineno-40-43" href="#__codelineno-40-43"></a><span class="w">        </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
-</span><span id="__span-40-44"><a id="__codelineno-40-44" name="__codelineno-40-44" href="#__codelineno-40-44"></a><span class="w">        </span><span class="s2">&quot;application/vnd.geo+json&quot;</span><span class="p">,</span>
-</span><span id="__span-40-45"><a id="__codelineno-40-45" name="__codelineno-40-45" href="#__codelineno-40-45"></a><span class="w">        </span><span class="s2">&quot;text/html&quot;</span>
-</span><span id="__span-40-46"><a id="__codelineno-40-46" name="__codelineno-40-46" href="#__codelineno-40-46"></a><span class="w">      </span><span class="p">]</span>
-</span><span id="__span-40-47"><a id="__codelineno-40-47" name="__codelineno-40-47" href="#__codelineno-40-47"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-40-48"><a id="__codelineno-40-48" name="__codelineno-40-48" href="#__codelineno-40-48"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-40-49"><a id="__codelineno-40-49" name="__codelineno-40-49" href="#__codelineno-40-49"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom-map-generator&quot;</span><span class="p">,</span>
-</span><span id="__span-40-50"><a id="__codelineno-40-50" name="__codelineno-40-50" href="#__codelineno-40-50"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Personalized Map Generator&quot;</span><span class="p">,</span>
-</span><span id="__span-40-51"><a id="__codelineno-40-51" name="__codelineno-40-51" href="#__codelineno-40-51"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Creates custom map images or interactive map views based on user-defined points of interest, routes, and style preferences. Can overlay data layers.&quot;</span><span class="p">,</span>
-</span><span id="__span-40-52"><a id="__codelineno-40-52" name="__codelineno-40-52" href="#__codelineno-40-52"></a><span class="w">      </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;maps&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;customization&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;visualization&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cartography&quot;</span><span class="p">],</span>
-</span><span id="__span-40-53"><a id="__codelineno-40-53" name="__codelineno-40-53" href="#__codelineno-40-53"></a><span class="w">      </span><span class="nt">&quot;examples&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-40-54"><a id="__codelineno-40-54" name="__codelineno-40-54" href="#__codelineno-40-54"></a><span class="w">        </span><span class="s2">&quot;Generate a map of my upcoming road trip with all planned stops highlighted.&quot;</span><span class="p">,</span>
-</span><span id="__span-40-55"><a id="__codelineno-40-55" name="__codelineno-40-55" href="#__codelineno-40-55"></a><span class="w">        </span><span class="s2">&quot;Show me a map visualizing all coffee shops within a 1-mile radius of my current location.&quot;</span>
-</span><span id="__span-40-56"><a id="__codelineno-40-56" name="__codelineno-40-56" href="#__codelineno-40-56"></a><span class="w">      </span><span class="p">],</span>
-</span><span id="__span-40-57"><a id="__codelineno-40-57" name="__codelineno-40-57" href="#__codelineno-40-57"></a><span class="w">      </span><span class="nt">&quot;inputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">],</span>
-</span><span id="__span-40-58"><a id="__codelineno-40-58" name="__codelineno-40-58" href="#__codelineno-40-58"></a><span class="w">      </span><span class="nt">&quot;outputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-40-59"><a id="__codelineno-40-59" name="__codelineno-40-59" href="#__codelineno-40-59"></a><span class="w">        </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
-</span><span id="__span-40-60"><a id="__codelineno-40-60" name="__codelineno-40-60" href="#__codelineno-40-60"></a><span class="w">        </span><span class="s2">&quot;image/jpeg&quot;</span><span class="p">,</span>
-</span><span id="__span-40-61"><a id="__codelineno-40-61" name="__codelineno-40-61" href="#__codelineno-40-61"></a><span class="w">        </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
-</span><span id="__span-40-62"><a id="__codelineno-40-62" name="__codelineno-40-62" href="#__codelineno-40-62"></a><span class="w">        </span><span class="s2">&quot;text/html&quot;</span>
-</span><span id="__span-40-63"><a id="__codelineno-40-63" name="__codelineno-40-63" href="#__codelineno-40-63"></a><span class="w">      </span><span class="p">]</span>
-</span><span id="__span-40-64"><a id="__codelineno-40-64" name="__codelineno-40-64" href="#__codelineno-40-64"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-40-65"><a id="__codelineno-40-65" name="__codelineno-40-65" href="#__codelineno-40-65"></a><span class="w">  </span><span class="p">],</span>
-</span><span id="__span-40-66"><a id="__codelineno-40-66" name="__codelineno-40-66" href="#__codelineno-40-66"></a><span class="w">  </span><span class="nt">&quot;supportsExtendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-40-20"><a id="__codelineno-40-20" name="__codelineno-40-20" href="#__codelineno-40-20"></a><span class="w">    </span><span class="nt">&quot;stateTransitionHistory&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</span><span id="__span-40-21"><a id="__codelineno-40-21" name="__codelineno-40-21" href="#__codelineno-40-21"></a><span class="w">    </span><span class="nt">&quot;extendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-40-22"><a id="__codelineno-40-22" name="__codelineno-40-22" href="#__codelineno-40-22"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-40-23"><a id="__codelineno-40-23" name="__codelineno-40-23" href="#__codelineno-40-23"></a><span class="w">  </span><span class="nt">&quot;securitySchemes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-40-24"><a id="__codelineno-40-24" name="__codelineno-40-24" href="#__codelineno-40-24"></a><span class="w">    </span><span class="nt">&quot;google&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-40-25"><a id="__codelineno-40-25" name="__codelineno-40-25" href="#__codelineno-40-25"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openIdConnect&quot;</span><span class="p">,</span>
+</span><span id="__span-40-26"><a id="__codelineno-40-26" name="__codelineno-40-26" href="#__codelineno-40-26"></a><span class="w">      </span><span class="nt">&quot;openIdConnectUrl&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://accounts.google.com/.well-known/openid-configuration&quot;</span>
+</span><span id="__span-40-27"><a id="__codelineno-40-27" name="__codelineno-40-27" href="#__codelineno-40-27"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-40-28"><a id="__codelineno-40-28" name="__codelineno-40-28" href="#__codelineno-40-28"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-40-29"><a id="__codelineno-40-29" name="__codelineno-40-29" href="#__codelineno-40-29"></a><span class="w">  </span><span class="nt">&quot;security&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nt">&quot;google&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;profile&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}],</span>
+</span><span id="__span-40-30"><a id="__codelineno-40-30" name="__codelineno-40-30" href="#__codelineno-40-30"></a><span class="w">  </span><span class="nt">&quot;defaultInputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="p">],</span>
+</span><span id="__span-40-31"><a id="__codelineno-40-31" name="__codelineno-40-31" href="#__codelineno-40-31"></a><span class="w">  </span><span class="nt">&quot;defaultOutputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">],</span>
+</span><span id="__span-40-32"><a id="__codelineno-40-32" name="__codelineno-40-32" href="#__codelineno-40-32"></a><span class="w">  </span><span class="nt">&quot;skills&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-40-33"><a id="__codelineno-40-33" name="__codelineno-40-33" href="#__codelineno-40-33"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-40-34"><a id="__codelineno-40-34" name="__codelineno-40-34" href="#__codelineno-40-34"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;route-optimizer-traffic&quot;</span><span class="p">,</span>
+</span><span id="__span-40-35"><a id="__codelineno-40-35" name="__codelineno-40-35" href="#__codelineno-40-35"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Traffic-Aware Route Optimizer&quot;</span><span class="p">,</span>
+</span><span id="__span-40-36"><a id="__codelineno-40-36" name="__codelineno-40-36" href="#__codelineno-40-36"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Calculates the optimal driving route between two or more locations, taking into account real-time traffic conditions, road closures, and user preferences (e.g., avoid tolls, prefer highways).&quot;</span><span class="p">,</span>
+</span><span id="__span-40-37"><a id="__codelineno-40-37" name="__codelineno-40-37" href="#__codelineno-40-37"></a><span class="w">      </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;maps&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;routing&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;navigation&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;directions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;traffic&quot;</span><span class="p">],</span>
+</span><span id="__span-40-38"><a id="__codelineno-40-38" name="__codelineno-40-38" href="#__codelineno-40-38"></a><span class="w">      </span><span class="nt">&quot;examples&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-40-39"><a id="__codelineno-40-39" name="__codelineno-40-39" href="#__codelineno-40-39"></a><span class="w">        </span><span class="s2">&quot;Plan a route from &#39;1600 Amphitheatre Parkway, Mountain View, CA&#39; to &#39;San Francisco International Airport&#39; avoiding tolls.&quot;</span><span class="p">,</span>
+</span><span id="__span-40-40"><a id="__codelineno-40-40" name="__codelineno-40-40" href="#__codelineno-40-40"></a><span class="w">        </span><span class="s2">&quot;{\&quot;origin\&quot;: {\&quot;lat\&quot;: 37.422, \&quot;lng\&quot;: -122.084}, \&quot;destination\&quot;: {\&quot;lat\&quot;: 37.7749, \&quot;lng\&quot;: -122.4194}, \&quot;preferences\&quot;: [\&quot;avoid_ferries\&quot;]}&quot;</span>
+</span><span id="__span-40-41"><a id="__codelineno-40-41" name="__codelineno-40-41" href="#__codelineno-40-41"></a><span class="w">      </span><span class="p">],</span>
+</span><span id="__span-40-42"><a id="__codelineno-40-42" name="__codelineno-40-42" href="#__codelineno-40-42"></a><span class="w">      </span><span class="nt">&quot;inputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="p">],</span>
+</span><span id="__span-40-43"><a id="__codelineno-40-43" name="__codelineno-40-43" href="#__codelineno-40-43"></a><span class="w">      </span><span class="nt">&quot;outputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-40-44"><a id="__codelineno-40-44" name="__codelineno-40-44" href="#__codelineno-40-44"></a><span class="w">        </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+</span><span id="__span-40-45"><a id="__codelineno-40-45" name="__codelineno-40-45" href="#__codelineno-40-45"></a><span class="w">        </span><span class="s2">&quot;application/vnd.geo+json&quot;</span><span class="p">,</span>
+</span><span id="__span-40-46"><a id="__codelineno-40-46" name="__codelineno-40-46" href="#__codelineno-40-46"></a><span class="w">        </span><span class="s2">&quot;text/html&quot;</span>
+</span><span id="__span-40-47"><a id="__codelineno-40-47" name="__codelineno-40-47" href="#__codelineno-40-47"></a><span class="w">      </span><span class="p">]</span>
+</span><span id="__span-40-48"><a id="__codelineno-40-48" name="__codelineno-40-48" href="#__codelineno-40-48"></a><span class="w">    </span><span class="p">},</span>
+</span><span id="__span-40-49"><a id="__codelineno-40-49" name="__codelineno-40-49" href="#__codelineno-40-49"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-40-50"><a id="__codelineno-40-50" name="__codelineno-40-50" href="#__codelineno-40-50"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;custom-map-generator&quot;</span><span class="p">,</span>
+</span><span id="__span-40-51"><a id="__codelineno-40-51" name="__codelineno-40-51" href="#__codelineno-40-51"></a><span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Personalized Map Generator&quot;</span><span class="p">,</span>
+</span><span id="__span-40-52"><a id="__codelineno-40-52" name="__codelineno-40-52" href="#__codelineno-40-52"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Creates custom map images or interactive map views based on user-defined points of interest, routes, and style preferences. Can overlay data layers.&quot;</span><span class="p">,</span>
+</span><span id="__span-40-53"><a id="__codelineno-40-53" name="__codelineno-40-53" href="#__codelineno-40-53"></a><span class="w">      </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;maps&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;customization&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;visualization&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cartography&quot;</span><span class="p">],</span>
+</span><span id="__span-40-54"><a id="__codelineno-40-54" name="__codelineno-40-54" href="#__codelineno-40-54"></a><span class="w">      </span><span class="nt">&quot;examples&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-40-55"><a id="__codelineno-40-55" name="__codelineno-40-55" href="#__codelineno-40-55"></a><span class="w">        </span><span class="s2">&quot;Generate a map of my upcoming road trip with all planned stops highlighted.&quot;</span><span class="p">,</span>
+</span><span id="__span-40-56"><a id="__codelineno-40-56" name="__codelineno-40-56" href="#__codelineno-40-56"></a><span class="w">        </span><span class="s2">&quot;Show me a map visualizing all coffee shops within a 1-mile radius of my current location.&quot;</span>
+</span><span id="__span-40-57"><a id="__codelineno-40-57" name="__codelineno-40-57" href="#__codelineno-40-57"></a><span class="w">      </span><span class="p">],</span>
+</span><span id="__span-40-58"><a id="__codelineno-40-58" name="__codelineno-40-58" href="#__codelineno-40-58"></a><span class="w">      </span><span class="nt">&quot;inputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;application/json&quot;</span><span class="p">],</span>
+</span><span id="__span-40-59"><a id="__codelineno-40-59" name="__codelineno-40-59" href="#__codelineno-40-59"></a><span class="w">      </span><span class="nt">&quot;outputModes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-40-60"><a id="__codelineno-40-60" name="__codelineno-40-60" href="#__codelineno-40-60"></a><span class="w">        </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+</span><span id="__span-40-61"><a id="__codelineno-40-61" name="__codelineno-40-61" href="#__codelineno-40-61"></a><span class="w">        </span><span class="s2">&quot;image/jpeg&quot;</span><span class="p">,</span>
+</span><span id="__span-40-62"><a id="__codelineno-40-62" name="__codelineno-40-62" href="#__codelineno-40-62"></a><span class="w">        </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+</span><span id="__span-40-63"><a id="__codelineno-40-63" name="__codelineno-40-63" href="#__codelineno-40-63"></a><span class="w">        </span><span class="s2">&quot;text/html&quot;</span>
+</span><span id="__span-40-64"><a id="__codelineno-40-64" name="__codelineno-40-64" href="#__codelineno-40-64"></a><span class="w">      </span><span class="p">]</span>
+</span><span id="__span-40-65"><a id="__codelineno-40-65" name="__codelineno-40-65" href="#__codelineno-40-65"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-40-66"><a id="__codelineno-40-66" name="__codelineno-40-66" href="#__codelineno-40-66"></a><span class="w">  </span><span class="p">],</span>
 </span><span id="__span-40-67"><a id="__codelineno-40-67" name="__codelineno-40-67" href="#__codelineno-40-67"></a><span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 </span><span id="__span-40-68"><a id="__codelineno-40-68" name="__codelineno-40-68" href="#__codelineno-40-68"></a><span class="w">    </span><span class="p">{</span>
 </span><span id="__span-40-69"><a id="__codelineno-40-69" name="__codelineno-40-69" href="#__codelineno-40-69"></a><span class="w">      </span><span class="nt">&quot;protected&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0&quot;</span><span class="p">,</span>
@@ -10761,8 +10785,8 @@ Streaming responses are simple, linearly ordered sequences: first a <code>Task</
 </ul>
 <p><strong>Availability Declaration:</strong></p>
 <ul>
-<li>Agents declare extended card support via <code>AgentCard.supportsExtendedAgentCard</code></li>
-<li>When <code>supportsExtendedAgentCard</code> is <code>false</code> or not present, the operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a></li>
+<li>Agents declare extended card support via <code>AgentCard.capabilities.extendedAgentCard</code></li>
+<li>When <code>capabilities.extendedAgentCard</code> is <code>false</code> or not present, the operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a></li>
 <li>When support is declared but no extended card is configured, the operation <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a></li>
 </ul>
 <p>See also: <a href="#3111-get-extended-agent-card">Section 3.1.11 Get Extended Agent Card</a> and <a href="#334-capability-validation">Section 3.3.4 Capability Validation</a>.</p>
@@ -11100,6 +11124,60 @@ Objects now use the <strong>JSON member name</strong> itself to identify the typ
 <li>Simplifies code generation from schema definitions</li>
 <li>Eliminates the need for representing inheritance structures in schema languages</li>
 <li>Improves type safety in strongly-typed languages</li>
+</ul>
+<h4 id="a22-breaking-change-extended-agent-card-field-relocated">A.2.2 Breaking Change: Extended Agent Card Field Relocated<a class="headerlink" href="#a22-breaking-change-extended-agent-card-field-relocated" title="Permanent link">&para;</a></h4>
+<p><strong>Version 1.0 relocates the extended agent card capability</strong> from a top-level field to the capabilities object for architectural consistency.</p>
+<p><strong>Legacy Structure (pre-1.0):</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-89-1"><a id="__codelineno-89-1" name="__codelineno-89-1" href="#__codelineno-89-1"></a><span class="p">{</span>
+</span><span id="__span-89-2"><a id="__codelineno-89-2" name="__codelineno-89-2" href="#__codelineno-89-2"></a><span class="w">  </span><span class="nt">&quot;supportsExtendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-89-3"><a id="__codelineno-89-3" name="__codelineno-89-3" href="#__codelineno-89-3"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-89-4"><a id="__codelineno-89-4" name="__codelineno-89-4" href="#__codelineno-89-4"></a><span class="w">    </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-89-5"><a id="__codelineno-89-5" name="__codelineno-89-5" href="#__codelineno-89-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-89-6"><a id="__codelineno-89-6" name="__codelineno-89-6" href="#__codelineno-89-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Current Structure (1.0+):</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-90-1"><a id="__codelineno-90-1" name="__codelineno-90-1" href="#__codelineno-90-1"></a><span class="p">{</span>
+</span><span id="__span-90-2"><a id="__codelineno-90-2" name="__codelineno-90-2" href="#__codelineno-90-2"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-90-3"><a id="__codelineno-90-3" name="__codelineno-90-3" href="#__codelineno-90-3"></a><span class="w">    </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-90-4"><a id="__codelineno-90-4" name="__codelineno-90-4" href="#__codelineno-90-4"></a><span class="w">    </span><span class="nt">&quot;extendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-90-5"><a id="__codelineno-90-5" name="__codelineno-90-5" href="#__codelineno-90-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-90-6"><a id="__codelineno-90-6" name="__codelineno-90-6" href="#__codelineno-90-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Proto Changes:</strong></p>
+<ul>
+<li>Removed: <code>AgentCard.supports_extended_agent_card</code> (field 13)</li>
+<li>Added: <code>AgentCapabilities.extended_agent_card</code> (field 5)</li>
+</ul>
+<p><strong>Migration Steps:</strong></p>
+<p>For <strong>Agent Implementations</strong>:</p>
+<ol>
+<li>Remove <code>supportsExtendedAgentCard</code> from top-level AgentCard</li>
+<li>Add <code>extendedAgentCard</code> to <code>capabilities</code> object</li>
+<li>Update validation: <code>agentCard.capabilities?.extendedAgentCard</code></li>
+</ol>
+<p>For <strong>Client Implementations</strong>:</p>
+<ol>
+<li>Update capability checks: <code>agentCard.capabilities?.extendedAgentCard</code></li>
+<li>Temporary fallback (transition period):</li>
+</ol>
+<div class="language-javascript highlight"><pre><span></span><code><span id="__span-91-1"><a id="__codelineno-91-1" name="__codelineno-91-1" href="#__codelineno-91-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">supported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">capabilities</span><span class="o">?</span><span class="p">.</span><span class="nx">extendedAgentCard</span><span class="w"> </span><span class="o">||</span>
+</span><span id="__span-91-2"><a id="__codelineno-91-2" name="__codelineno-91-2" href="#__codelineno-91-2"></a><span class="w">                  </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">supportsExtendedAgentCard</span><span class="p">;</span>
+</span></code></pre></div>
+<ol>
+<li>Remove fallback after agent ecosystem migrates</li>
+</ol>
+<p>For <strong>SDK Developers</strong>:</p>
+<ol>
+<li>Regenerate code from updated proto</li>
+<li>Update type definitions</li>
+<li>Document breaking change in release notes</li>
+</ol>
+<p><strong>Rationale:</strong></p>
+<p>All optional features enabling specific operations (<code>streaming</code>, <code>pushNotifications</code>, <code>stateTransitionHistory</code>) reside in <code>AgentCapabilities</code>. Moving <code>extendedAgentCard</code> achieves:</p>
+<ul>
+<li>Architectural consistency</li>
+<li>Improved discoverability</li>
+<li>Semantic correctness (it is a capability)</li>
 </ul>
 <h3 id="a3-future-automation">A.3 Future Automation<a class="headerlink" href="#a3-future-automation" title="Permanent link">&para;</a></h3>
 <p>Once the proto→schema generation pipeline lands, this appendix will be partially auto-generated (legacy mapping table sourced from a maintained manifest). Until then, edits MUST be manual and reviewed in PRs affecting <code>a2a.proto</code>.</p>

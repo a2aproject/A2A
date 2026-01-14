@@ -33,6 +33,10 @@
       "additionalProperties": false,
       "description": "Defines optional capabilities supported by an agent.",
       "patternProperties": {
+        "^(extended_agent_card)$": {
+          "description": "Indicates if the agent supports providing an extended agent card when authenticated.",
+          "type": "boolean"
+        },
         "^(push_notifications)$": {
           "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
           "type": "boolean"
@@ -43,6 +47,10 @@
         }
       },
       "properties": {
+        "extendedAgentCard": {
+          "description": "Indicates if the agent supports providing an extended agent card when authenticated.",
+          "type": "boolean"
+        },
         "extensions": {
           "description": "A list of protocol extensions supported by the agent.",
           "items": {
@@ -116,10 +124,6 @@
             "$ref": "a2a.v1.AgentInterface.jsonschema.json"
           },
           "type": "array"
-        },
-        "^(supports_extended_agent_card)$": {
-          "description": "Whether the agent supports providing an extended agent card when authenticated.",
-          "type": "boolean"
         }
       },
       "properties": {
@@ -207,10 +211,6 @@
             "$ref": "a2a.v1.AgentInterface.jsonschema.json"
           },
           "type": "array"
-        },
-        "supportsExtendedAgentCard": {
-          "description": "Whether the agent supports providing an extended agent card when authenticated.",
-          "type": "boolean"
         },
         "version": {
           "default": "",
