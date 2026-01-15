@@ -59,7 +59,7 @@ const Documentation = {
     Object.assign(Documentation.TRANSLATIONS, catalog.messages);
     Documentation.PLURAL_EXPR = new Function(
       "n",
-      `return (${catalog.plural_expr})`
+      `return (${catalog.plural_expr})`,
     );
     Documentation.LOCALE = catalog.locale;
   },
@@ -89,7 +89,7 @@ const Documentation = {
 
     const togglerElements = document.querySelectorAll("img.toggler");
     togglerElements.forEach((el) =>
-      el.addEventListener("click", (event) => toggler(event.currentTarget))
+      el.addEventListener("click", (event) => toggler(event.currentTarget)),
     );
     togglerElements.forEach((el) => (el.style.display = ""));
     if (DOCUMENTATION_OPTIONS.COLLAPSE_INDEX) togglerElements.forEach(toggler);
@@ -98,14 +98,15 @@ const Documentation = {
   initOnKeyListeners: () => {
     // only install a listener if it is really needed
     if (
-      !DOCUMENTATION_OPTIONS.NAVIGATION_WITH_KEYS &&
-      !DOCUMENTATION_OPTIONS.ENABLE_SEARCH_SHORTCUTS
+      !DOCUMENTATION_OPTIONS.NAVIGATION_WITH_KEYS
+      && !DOCUMENTATION_OPTIONS.ENABLE_SEARCH_SHORTCUTS
     )
       return;
 
     document.addEventListener("keydown", (event) => {
       // bail for input elements
-      if (BLACKLISTED_KEY_CONTROL_ELEMENTS.has(document.activeElement.tagName)) return;
+      if (BLACKLISTED_KEY_CONTROL_ELEMENTS.has(document.activeElement.tagName))
+        return;
       // bail with special keys
       if (event.altKey || event.ctrlKey || event.metaKey) return;
 

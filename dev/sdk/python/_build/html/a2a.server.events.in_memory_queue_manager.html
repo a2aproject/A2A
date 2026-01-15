@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.server.events.queue_manager module" href="a2a.server.events.queue_manager.html"><link rel="prev" title="a2a.server.events.event_queue module" href="a2a.server.events.event_queue.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>a2a.server.events.in_memory_queue_manager module - a2a-sdk documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -347,7 +347,7 @@
 <span id="a2a-server-events-in-memory-queue-manager-module"></span><h1>a2a.server.events.in_memory_queue_manager module<a class="headerlink" href="#module-a2a.server.events.in_memory_queue_manager" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="a2a.server.events.in_memory_queue_manager.InMemoryQueueManager">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.server.events.in_memory_queue_manager.</span></span><span class="sig-name descname"><span class="pre">InMemoryQueueManager</span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.server.events.in_memory_queue_manager.</span></span><span class="sig-name descname"><span class="pre">InMemoryQueueManager</span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="a2a.server.events.queue_manager.html#a2a.server.events.queue_manager.QueueManager" title="a2a.server.events.queue_manager.QueueManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueueManager</span></code></a></p>
 <p>InMemoryQueueManager is used for a single binary management.</p>
 <p>This implements the <cite>QueueManager</cite> interface using in-memory storage for event
@@ -357,7 +357,7 @@ same binary instance.</p>
 a distributed approach for scalable deployments.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.add">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.add" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.add" title="Link to this definition">¶</a></dt>
 <dd><p>Adds a new event queue for a task ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -368,7 +368,7 @@ a distributed approach for scalable deployments.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.close">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.close" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.close" title="Link to this definition">¶</a></dt>
 <dd><p>Closes and removes the event queue for a task ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
@@ -379,7 +379,7 @@ a distributed approach for scalable deployments.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.create_or_tap">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_or_tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.create_or_tap" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create_or_tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.create_or_tap" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a new event queue for a task ID if one doesn’t exist, otherwise taps the existing one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -390,7 +390,7 @@ a distributed approach for scalable deployments.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.get">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.get" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.get" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the event queue for a task ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -401,7 +401,7 @@ a distributed approach for scalable deployments.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.tap">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.tap" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueue" title="a2a.server.events.event_queue.EventQueue"><span class="pre">EventQueue</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.in_memory_queue_manager.InMemoryQueueManager.tap" title="Link to this definition">¶</a></dt>
 <dd><p>Taps the event queue for a task ID to create a child queue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -490,8 +490,8 @@ a distributed approach for scalable deployments.</p>
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.types module" href="a2a.types.html"><link rel="prev" title="a2a.utils.task module" href="a2a.utils.task.html">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>a2a.utils.telemetry module - a2a-sdk documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -398,20 +398,20 @@ pass</p>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="a2a.utils.telemetry.SpanKind">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">a2a.utils.telemetry.</span></span><span class="sig-name descname"><span class="pre">SpanKind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.telemetry.SpanKind" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.telemetry.</span></span><span class="sig-name descname"><span class="pre">SpanKind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.telemetry.SpanKind" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Specifies additional details on how this span relates to its parent span.</p>
 <p>Note that this enumeration is experimental and likely to change. See
 <a class="reference external" href="https://github.com/open-telemetry/opentelemetry-specification/pull/226">https://github.com/open-telemetry/opentelemetry-specification/pull/226</a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.utils.telemetry.SpanKind.CLIENT">
-<span class="sig-name descname"><span class="pre">CLIENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.CLIENT" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">CLIENT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.CLIENT" title="Link to this definition">¶</a></dt>
 <dd><p>Indicates that the span describes a request to some remote service.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.utils.telemetry.SpanKind.CONSUMER">
-<span class="sig-name descname"><span class="pre">CONSUMER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.CONSUMER" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">CONSUMER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.CONSUMER" title="Link to this definition">¶</a></dt>
 <dd><p>Indicates that the span describes a consumer receiving a message from a
 broker. Unlike client and server, there is usually no direct critical
 path latency relationship between producer and consumer spans.</p>
@@ -419,12 +419,12 @@ path latency relationship between producer and consumer spans.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.utils.telemetry.SpanKind.INTERNAL">
-<span class="sig-name descname"><span class="pre">INTERNAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.INTERNAL" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">INTERNAL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.INTERNAL" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.utils.telemetry.SpanKind.PRODUCER">
-<span class="sig-name descname"><span class="pre">PRODUCER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.PRODUCER" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PRODUCER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.PRODUCER" title="Link to this definition">¶</a></dt>
 <dd><p>Indicates that the span describes a producer sending a message to a
 broker. Unlike client and server, there is usually no direct critical
 path latency relationship between producer and consumer spans.</p>
@@ -432,7 +432,7 @@ path latency relationship between producer and consumer spans.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="a2a.utils.telemetry.SpanKind.SERVER">
-<span class="sig-name descname"><span class="pre">SERVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.SERVER" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">SERVER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#a2a.utils.telemetry.SpanKind.SERVER" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -515,8 +515,8 @@ path latency relationship between producer and consumer spans.</p>
     </aside>
   </div>
 </div><script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
     </body>
 </html>
