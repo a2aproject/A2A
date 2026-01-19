@@ -3479,32 +3479,6 @@ This change aligns with modern API design practices and Protocol Buffers' `oneof
 - Eliminates the need for representing inheritance structures in schema languages
 - Improves type safety in strongly-typed languages
 
-#### A.2.2 Breaking Change: Removal of `final` Field from TaskStatusUpdateEvent
-
-**Version 1.0 removes the `final` field** from `TaskStatusUpdateEvent` as it is redundant with terminal states.
-
-**Rationale:**
-
-Terminal states (COMPLETED, FAILED, CANCELLED, REJECTED) already indicate task completion. The `final` field created ambiguity about stream termination and was inaccessible to polling clients.
-
-**Proto Changes:**
-
-- Removed: `TaskStatusUpdateEvent.final` (field 4)
-
-**Migration:**
-
-**Agents:**
-
-- Remove `final` field from `TaskStatusUpdateEvent` messages
-- Close streams when tasks reach terminal states
-- Do not send updates after terminal states
-
-**Clients:**
-
-- Remove checks for `final` field
-- Detect completion by checking for terminal states
-- Expect stream closure upon terminal states
-
 ### A.3 Future Automation
 
 Once the proto→schema generation pipeline lands, this appendix will be partially auto-generated (legacy mapping table sourced from a maintained manifest). Until then, edits MUST be manual and reviewed in PRs affecting `a2a.proto`.
