@@ -26,3 +26,13 @@ Here are some additional things to keep in mind during the process:
 
 - **Test your changes.** Before you submit a pull request, make sure that your changes work as expected.
 - **Be patient.** It may take some time for your pull request to be reviewed and merged.
+
+## Versioning
+
+The A2A specification follows semantic versioning. When contributing:
+
+- **Patch releases** (x.x.X): Documentation/comment changes only (non-functional changes)
+- **Minor releases** (x.X.0): Any changes to `a2a.proto` or protocol behavior (functional changes)
+- **Major releases** (X.0.0): Breaking changes
+
+For detailed versioning guidelines, see [Section 3.6.5 of the specification](docs/specification.md#365-specification-versioning).
