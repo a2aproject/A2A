@@ -89,7 +89,7 @@
 
 ### Bug Fixes
 
-* Protocol should released as 0.2.2 ([22e7541](https://github.com/a2aproject/A2A/commit/22e7541be082c4f0845ff7fa044992cda05b437e))
+* Protocol should be released as 0.2.2 ([22e7541](https://github.com/a2aproject/A2A/commit/22e7541be082c4f0845ff7fa044992cda05b437e))
 * Resolve spec inconsistencies with JSON-RPC 2.0 ([628380e](https://github.com/a2aproject/A2A/commit/628380e7e392bc8f1778ae991d4719bd787c17a9))
 
 ## [0.2.1](https://github.com/a2aproject/A2A/compare/v0.2.0...v0.2.1) (2025-05-27)
