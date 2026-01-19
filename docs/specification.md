@@ -1051,7 +1051,7 @@ Clients indicate their desire to opt into the use of specific extensions through
 *Example: HTTP client opting into extensions using headers:*
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/json
 Authorization: Bearer token
@@ -1160,17 +1160,17 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 | Functionality                   | JSON-RPC Method                    | gRPC Method                        | REST Endpoint                                              |
 | :------------------------------ | :--------------------------------- | :--------------------------------- | :--------------------------------------------------------- |
-| Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /v1/message:send`                                    |
-| Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /v1/message:stream`                                  |
-| Get task                        | `GetTask`                          | `GetTask`                          | `GET /v1/tasks/{id}`                                       |
-| List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /v1/tasks`                                            |
-| Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /v1/tasks/{id}:cancel`                               |
-| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /v1/tasks/{id}:subscribe`                            |
-| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /v1/tasks/{id}/pushNotificationConfigs`              |
-| Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}`    |
-| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /v1/tasks/{id}/pushNotificationConfigs`               |
-| Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` |
-| Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /v1/extendedAgentCard`                                |
+| Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
+| Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
+| Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
+| List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
+| Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
+| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
+| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /tasks/{id}/pushNotificationConfigs`              |
+| Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
+| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /tasks/{id}/pushNotificationConfigs`               |
+| Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
+| Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /extendedAgentCard`                                |
 
 ### 5.4. Error Code Mappings
 
@@ -1282,7 +1282,7 @@ This section provides illustrative examples of common A2A interactions across di
 **Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1323,7 +1323,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/message:stream HTTP/1.1
+POST /message:stream HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1357,7 +1357,7 @@ data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "completed"}}
 **Initial Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1394,7 +1394,7 @@ Content-Type: application/a2a+json
 **Follow-up Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1416,7 +1416,7 @@ Authorization: Bearer token
 **Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1455,7 +1455,7 @@ Content-Type: application/problem+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1495,7 +1495,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1543,7 +1543,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1576,7 +1576,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1621,7 +1621,7 @@ Content-Type: application/problem+json
 **Initial Request with Push Notification Config:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1694,7 +1694,7 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
 **Request with File Upload:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1759,7 +1759,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1849,7 +1849,7 @@ Host: example.com
 ### Step 3: Client fetches authenticated extended Agent Card
 
 ```http
-GET /v1/extendedAgentCard HTTP/1.1
+GET /extendedAgentCard HTTP/1.1
 Host: agent.example.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
@@ -2735,7 +2735,7 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 **Example Request with A2A Service Parameters:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/json
 Authorization: Bearer token
@@ -2754,26 +2754,26 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 #### 11.3.1. Message Operations
 
-- `POST /v1/message:send` - Send message
-- `POST /v1/message:stream` - Send message with streaming (SSE response)
+- `POST /message:send` - Send message
+- `POST /message:stream` - Send message with streaming (SSE response)
 
 #### 11.3.2. Task Operations
 
-- `GET /v1/tasks/{id}` - Get task status
-- `GET /v1/tasks` - List tasks (with query parameters)
-- `POST /v1/tasks/{id}:cancel` - Cancel task
-- `POST /v1/tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
+- `GET /tasks/{id}` - Get task status
+- `GET /tasks` - List tasks (with query parameters)
+- `POST /tasks/{id}:cancel` - Cancel task
+- `POST /tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
 
 #### 11.3.3. Push Notification Configuration
 
-- `POST /v1/tasks/{id}/pushNotificationConfigs` - Create configuration
-- `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Get configuration
-- `GET /v1/tasks/{id}/pushNotificationConfigs` - List configurations
-- `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Delete configuration
+- `POST /tasks/{id}/pushNotificationConfigs` - Create configuration
+- `GET /tasks/{id}/pushNotificationConfigs/{configId}` - Get configuration
+- `GET /tasks/{id}/pushNotificationConfigs` - List configurations
+- `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` - Delete configuration
 
 #### 11.3.4. Agent Card
 
-- `GET /v1/extendedAgentCard` - Get authenticated extended Agent Card
+- `GET /extendedAgentCard` - Get authenticated extended Agent Card
 
 ### 11.4. Request/Response Format
 
@@ -2782,7 +2782,7 @@ All requests and responses use JSON objects structurally equivalent to the Proto
 **Example Send Message:**
 
 ```http
-POST /v1/message:send
+POST /message:send
 Content-Type: application/json
 
 {
@@ -2840,13 +2840,13 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 List tasks with filtering:
 
 ```http
-GET /v1/tasks?contextId=uuid&status=working&pageSize=50&pageToken=cursor
+GET /tasks?contextId=uuid&status=working&pageSize=50&pageToken=cursor
 ```
 
 Get task with history:
 
 ```http
-GET /v1/tasks/{id}?historyLength=10
+GET /tasks/{id}?historyLength=10
 ```
 
 **Field Type Handling:**
@@ -2899,7 +2899,7 @@ Extension fields like `taskId` and `timestamp` provide additional context to hel
 REST streaming uses Server-Sent Events with the `data` field containing JSON serializations of the protocol data objects:
 
 ```http
-POST /v1/message:stream
+POST /message:stream
 Content-Type: application/json
 
 { /* SendMessageRequest object */ }
