@@ -450,8 +450,6 @@ message AgentCard {
   // a descriptive concept but represents a more focused set of behaviors that the
   // agent is likely to succeed at.
   repeated AgentSkill skills = 12 [(google.api.field_behavior) = REQUIRED];
-  // Whether the agent supports providing an extended agent card when authenticated.
-  optional bool supports_extended_agent_card = 13;
   // JSON Web Signatures computed for this AgentCard.
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
@@ -482,6 +480,8 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent provides a history of state transitions for a task.
   optional bool state_transition_history = 4;
+  // Indicates if the agent supports providing an extended agent card when authenticated.
+  optional bool extended_agent_card = 5;
 }
 // --8<-- [end:AgentCapabilities]
 
@@ -743,9 +743,9 @@ message ListTasksRequest {
   string page_token = 4;
   // The maximum number of messages to include in each task's history.
   optional int32 history_length = 5;
-  // Filter tasks updated after this timestamp (milliseconds since epoch).
-  // Only tasks with a last updated time greater than or equal to this value will be returned.
-  int64 last_updated_after = 6;
+  // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
+  // Only tasks with a status timestamp time greater than or equal to this value will be returned.
+  google.protobuf.Timestamp status_timestamp_after = 6;
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.
   optional bool include_artifacts = 7;

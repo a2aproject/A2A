@@ -274,7 +274,7 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 ***Ordering:***
 
-Implementations MUST return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
+Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
 
 #### 3.1.5. Cancel Task
 
@@ -417,7 +417,7 @@ The operation MUST permanently remove the specified push notification configurat
 
 #### 3.1.11. Get Extended Agent Card
 
-Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsExtendedAgentCard` is `true`.
+Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.capabilities.extendedAgentCard` is `true`.
 
 **Inputs:**
 
@@ -437,7 +437,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 - **Authentication**: The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
 - **Extended Information**: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.
 - **Card Replacement**: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
-- **Availability**: This operation is only available if the public Agent Card declares `supportsExtendedAgentCard: true`.
+- **Availability**: This operation is only available if the public Agent Card declares `capabilities.extendedAgentCard: true`.
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
@@ -586,7 +586,7 @@ Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). Whe
 
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Set, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
-- **Extended Agent Card**: If `AgentCard.supportsExtendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
+- **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
 Clients **SHOULD** validate capability support by examining the Agent Card before attempting operations that require optional capabilities.
@@ -1834,7 +1834,9 @@ Host: example.com
 
 ```json
 {
-  "supportsExtendedAgentCard": true,
+  "capabilities": {
+    "extendedAgentCard": true
+  },
   "securitySchemes": {
     "google": {
       "openIdConnectSecurityScheme": {
@@ -2108,12 +2110,14 @@ Clients verifying Agent Card signatures **MUST**:
   "capabilities": {
     "streaming": true,
     "pushNotifications": true,
-    "stateTransitionHistory": false
+    "stateTransitionHistory": false,
+    "extendedAgentCard": true
   },
   "securitySchemes": {
     "google": {
-      "type": "openIdConnect",
-      "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+      "openIdConnectSecurityScheme": {
+        "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+      }
     }
   },
   "security": [{ "google": ["openid", "profile", "email"] }],
@@ -2154,7 +2158,6 @@ Clients verifying Agent Card signatures **MUST**:
       ]
     }
   ],
-  "supportsExtendedAgentCard": true,
   "signatures": [
     {
       "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
@@ -3114,8 +3117,8 @@ The extended Agent Card feature allows agents to provide additional capabilities
 
 **Availability Declaration:**
 
-- Agents declare extended card support via `AgentCard.supportsExtendedAgentCard`
-- When `supportsExtendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
+- Agents declare extended card support via `AgentCard.capabilities.extendedAgentCard`
+- When `capabilities.extendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
 - When support is declared but no extended card is configured, the operation **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling)
 
 See also: [Section 3.1.11 Get Extended Agent Card](#3111-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).
@@ -3479,6 +3482,71 @@ This change aligns with modern API design practices and Protocol Buffers' `oneof
 - Simplifies code generation from schema definitions
 - Eliminates the need for representing inheritance structures in schema languages
 - Improves type safety in strongly-typed languages
+
+#### A.2.2 Breaking Change: Extended Agent Card Field Relocated
+
+**Version 1.0 relocates the extended agent card capability** from a top-level field to the capabilities object for architectural consistency.
+
+**Legacy Structure (pre-1.0):**
+
+```json
+{
+  "supportsExtendedAgentCard": true,
+  "capabilities": {
+    "streaming": true
+  }
+}
+```
+
+**Current Structure (1.0+):**
+
+```json
+{
+  "capabilities": {
+    "streaming": true,
+    "extendedAgentCard": true
+  }
+}
+```
+
+**Proto Changes:**
+
+- Removed: `AgentCard.supports_extended_agent_card` (field 13)
+- Added: `AgentCapabilities.extended_agent_card` (field 5)
+
+**Migration Steps:**
+
+For **Agent Implementations**:
+
+1. Remove `supportsExtendedAgentCard` from top-level AgentCard
+2. Add `extendedAgentCard` to `capabilities` object
+3. Update validation: `agentCard.capabilities?.extendedAgentCard`
+
+For **Client Implementations**:
+
+1. Update capability checks: `agentCard.capabilities?.extendedAgentCard`
+2. Temporary fallback (transition period):
+
+   ```javascript
+   const supported = agentCard.capabilities?.extendedAgentCard ||
+                     agentCard.supportsExtendedAgentCard;
+   ```
+
+3. Remove fallback after agent ecosystem migrates
+
+For **SDK Developers**:
+
+1. Regenerate code from updated proto
+2. Update type definitions
+3. Document breaking change in release notes
+
+**Rationale:**
+
+All optional features enabling specific operations (`streaming`, `pushNotifications`, `stateTransitionHistory`) reside in `AgentCapabilities`. Moving `extendedAgentCard` achieves:
+
+- Architectural consistency
+- Improved discoverability
+- Semantic correctness (it is a capability)
 
 ### A.3 Future Automation
 
