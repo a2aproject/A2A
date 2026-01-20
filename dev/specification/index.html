@@ -8771,7 +8771,7 @@
 </span></code></pre></div>
 <p>Clients indicate their desire to opt into the use of specific extensions through binding-specific mechanisms such as HTTP headers, gRPC metadata, or JSON-RPC request parameters that identify the extension identifiers they wish to utilize during the interaction.</p>
 <p><em>Example: HTTP client opting into extensions using headers:</em></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -8873,67 +8873,67 @@
 <td style="text-align: left;">Send message</td>
 <td style="text-align: left;"><code>SendMessage</code></td>
 <td style="text-align: left;"><code>SendMessage</code></td>
-<td style="text-align: left;"><code>POST /v1/message:send</code></td>
+<td style="text-align: left;"><code>POST /message:send</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Stream message</td>
 <td style="text-align: left;"><code>SendStreamingMessage</code></td>
 <td style="text-align: left;"><code>SendStreamingMessage</code></td>
-<td style="text-align: left;"><code>POST /v1/message:stream</code></td>
+<td style="text-align: left;"><code>POST /message:stream</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Get task</td>
 <td style="text-align: left;"><code>GetTask</code></td>
 <td style="text-align: left;"><code>GetTask</code></td>
-<td style="text-align: left;"><code>GET /v1/tasks/{id}</code></td>
+<td style="text-align: left;"><code>GET /tasks/{id}</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">List tasks</td>
 <td style="text-align: left;"><code>ListTasks</code></td>
 <td style="text-align: left;"><code>ListTasks</code></td>
-<td style="text-align: left;"><code>GET /v1/tasks</code></td>
+<td style="text-align: left;"><code>GET /tasks</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Cancel task</td>
 <td style="text-align: left;"><code>CancelTask</code></td>
 <td style="text-align: left;"><code>CancelTask</code></td>
-<td style="text-align: left;"><code>POST /v1/tasks/{id}:cancel</code></td>
+<td style="text-align: left;"><code>POST /tasks/{id}:cancel</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Subscribe to task</td>
 <td style="text-align: left;"><code>SubscribeToTask</code></td>
 <td style="text-align: left;"><code>SubscribeToTask</code></td>
-<td style="text-align: left;"><code>POST /v1/tasks/{id}:subscribe</code></td>
+<td style="text-align: left;"><code>POST /tasks/{id}:subscribe</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Set push notification config</td>
 <td style="text-align: left;"><code>SetTaskPushNotificationConfig</code></td>
 <td style="text-align: left;"><code>SetTaskPushNotificationConfig</code></td>
-<td style="text-align: left;"><code>POST /v1/tasks/{id}/pushNotificationConfigs</code></td>
+<td style="text-align: left;"><code>POST /tasks/{id}/pushNotificationConfigs</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Get push notification config</td>
 <td style="text-align: left;"><code>GetTaskPushNotificationConfig</code></td>
 <td style="text-align: left;"><code>GetTaskPushNotificationConfig</code></td>
-<td style="text-align: left;"><code>GET /v1/tasks/{id}/pushNotificationConfigs/{configId}</code></td>
+<td style="text-align: left;"><code>GET /tasks/{id}/pushNotificationConfigs/{configId}</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">List push notification configs</td>
 <td style="text-align: left;"><code>ListTaskPushNotificationConfig</code></td>
 <td style="text-align: left;"><code>ListTaskPushNotificationConfig</code></td>
-<td style="text-align: left;"><code>GET /v1/tasks/{id}/pushNotificationConfigs</code></td>
+<td style="text-align: left;"><code>GET /tasks/{id}/pushNotificationConfigs</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Delete push notification config</td>
 <td style="text-align: left;"><code>DeleteTaskPushNotificationConfig</code></td>
 <td style="text-align: left;"><code>DeleteTaskPushNotificationConfig</code></td>
-<td style="text-align: left;"><code>DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}</code></td>
+<td style="text-align: left;"><code>DELETE /tasks/{id}/pushNotificationConfigs/{configId}</code></td>
 </tr>
 <tr>
 <td style="text-align: left;">Get extended Agent Card</td>
 <td style="text-align: left;"><code>GetExtendedAgentCard</code></td>
 <td style="text-align: left;"><code>GetExtendedAgentCard</code></td>
-<td style="text-align: left;"><code>GET /v1/extendedAgentCard</code></td>
+<td style="text-align: left;"><code>GET /extendedAgentCard</code></td>
 </tr>
 </tbody>
 </table>
@@ -9088,7 +9088,7 @@
 <h3 id="61-basic-task-execution">6.1. Basic Task Execution<a class="headerlink" href="#61-basic-task-execution" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Client asks a question and receives a completed task response.</p>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9121,7 +9121,7 @@
 <h3 id="62-streaming-task-execution">6.2. Streaming Task Execution<a class="headerlink" href="#62-streaming-task-execution" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Client requests a long-running task with real-time updates.</p>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:stream</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nf">POST</span> <span class="nn">/message:stream</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9147,7 +9147,7 @@
 <h3 id="63-multi-turn-interaction">6.3. Multi-Turn Interaction<a class="headerlink" href="#63-multi-turn-interaction" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Agent requires additional input to complete a task.</p>
 <p><strong>Initial Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9178,7 +9178,7 @@
 </span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Follow-up Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9195,7 +9195,7 @@
 <h3 id="64-version-negotiation-error">6.4. Version Negotiation Error<a class="headerlink" href="#64-version-negotiation-error" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Client requests an unsupported protocol version.</p>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9225,7 +9225,7 @@
 <p><strong>Scenario:</strong> Client wants to see all tasks from a specific context or all tasks with a particular status.</p>
 <h4 id="request-all-tasks-from-a-specific-context">Request: All tasks from a specific context<a class="headerlink" href="#request-all-tasks-from-a-specific-context" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nf">POST</span> <span class="nn">/v1/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9258,7 +9258,7 @@
 </span></code></pre></div>
 <h4 id="request-all-working-tasks-across-all-contexts">Request: All working tasks across all contexts<a class="headerlink" href="#request-all-working-tasks-across-all-contexts" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nf">POST</span> <span class="nn">/v1/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9299,7 +9299,7 @@
 </span></code></pre></div>
 <h4 id="pagination-example">Pagination Example<a class="headerlink" href="#pagination-example" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nf">POST</span> <span class="nn">/v1/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9325,7 +9325,7 @@
 </span></code></pre></div>
 <h4 id="validation-error-example">Validation Error Example<a class="headerlink" href="#validation-error-example" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nf">POST</span> <span class="nn">/v1/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9362,7 +9362,7 @@
 <h3 id="66-push-notification-setup-and-usage">6.6. Push Notification Setup and Usage<a class="headerlink" href="#66-push-notification-setup-and-usage" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Client requests a long-running report generation and wants to be notified via webhook when it's done.</p>
 <p><strong>Initial Request with Push Notification Config:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9425,7 +9425,7 @@
 <h3 id="67-file-exchange-upload-and-download">6.7. File Exchange (Upload and Download)<a class="headerlink" href="#67-file-exchange-upload-and-download" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Client sends an image for analysis, and the agent returns a modified image.</p>
 <p><strong>Request with File Upload:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9482,7 +9482,7 @@
 <h3 id="68-structured-data-exchange">6.8. Structured Data Exchange<a class="headerlink" href="#68-structured-data-exchange" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Client asks for a list of open support tickets in a specific JSON format.</p>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -9559,7 +9559,7 @@
 </span></code></pre></div>
 <h3 id="step-2-client-obtains-credentials-out-of-band-oauth-20-flow">Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow)<a class="headerlink" href="#step-2-client-obtains-credentials-out-of-band-oauth-20-flow" title="Permanent link">&para;</a></h3>
 <h3 id="step-3-client-fetches-authenticated-extended-agent-card">Step 3: Client fetches authenticated extended Agent Card<a class="headerlink" href="#step-3-client-fetches-authenticated-extended-agent-card" title="Permanent link">&para;</a></h3>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="nf">GET</span> <span class="nn">/v1/extendedAgentCard</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="nf">GET</span> <span class="nn">/extendedAgentCard</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span>
 </span></code></pre></div>
@@ -10447,7 +10447,7 @@
 <li>Multiple values for the same service parameter (e.g., <code>A2A-Extensions</code>) <strong>SHOULD</strong> be comma-separated in a single header field</li>
 </ul>
 <p><strong>Example Request with A2A Service Parameters:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-73-1"><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a><span class="nf">POST</span> <span class="nn">/v1/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-73-1"><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-73-2"><a id="__codelineno-73-2" name="__codelineno-73-2" href="#__codelineno-73-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
 </span><span id="__span-73-3"><a id="__codelineno-73-3" name="__codelineno-73-3" href="#__codelineno-73-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </span><span id="__span-73-4"><a id="__codelineno-73-4" name="__codelineno-73-4" href="#__codelineno-73-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
@@ -10464,31 +10464,31 @@
 <h3 id="113-url-patterns-and-http-methods">11.3. URL Patterns and HTTP Methods<a class="headerlink" href="#113-url-patterns-and-http-methods" title="Permanent link">&para;</a></h3>
 <h4 id="1131-message-operations">11.3.1. Message Operations<a class="headerlink" href="#1131-message-operations" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>POST /v1/message:send</code> - Send message</li>
-<li><code>POST /v1/message:stream</code> - Send message with streaming (SSE response)</li>
+<li><code>POST /message:send</code> - Send message</li>
+<li><code>POST /message:stream</code> - Send message with streaming (SSE response)</li>
 </ul>
 <h4 id="1132-task-operations">11.3.2. Task Operations<a class="headerlink" href="#1132-task-operations" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>GET /v1/tasks/{id}</code> - Get task status</li>
-<li><code>GET /v1/tasks</code> - List tasks (with query parameters)</li>
-<li><code>POST /v1/tasks/{id}:cancel</code> - Cancel task</li>
-<li><code>POST /v1/tasks/{id}:subscribe</code> - Subscribe to task updates (SSE response, returns error for terminal tasks)</li>
+<li><code>GET /tasks/{id}</code> - Get task status</li>
+<li><code>GET /tasks</code> - List tasks (with query parameters)</li>
+<li><code>POST /tasks/{id}:cancel</code> - Cancel task</li>
+<li><code>POST /tasks/{id}:subscribe</code> - Subscribe to task updates (SSE response, returns error for terminal tasks)</li>
 </ul>
 <h4 id="1133-push-notification-configuration">11.3.3. Push Notification Configuration<a class="headerlink" href="#1133-push-notification-configuration" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>POST /v1/tasks/{id}/pushNotificationConfigs</code> - Create configuration</li>
-<li><code>GET /v1/tasks/{id}/pushNotificationConfigs/{configId}</code> - Get configuration</li>
-<li><code>GET /v1/tasks/{id}/pushNotificationConfigs</code> - List configurations</li>
-<li><code>DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}</code> - Delete configuration</li>
+<li><code>POST /tasks/{id}/pushNotificationConfigs</code> - Create configuration</li>
+<li><code>GET /tasks/{id}/pushNotificationConfigs/{configId}</code> - Get configuration</li>
+<li><code>GET /tasks/{id}/pushNotificationConfigs</code> - List configurations</li>
+<li><code>DELETE /tasks/{id}/pushNotificationConfigs/{configId}</code> - Delete configuration</li>
 </ul>
 <h4 id="1134-agent-card">11.3.4. Agent Card<a class="headerlink" href="#1134-agent-card" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>GET /v1/extendedAgentCard</code> - Get authenticated extended Agent Card</li>
+<li><code>GET /extendedAgentCard</code> - Get authenticated extended Agent Card</li>
 </ul>
 <h3 id="114-requestresponse-format">11.4. Request/Response Format<a class="headerlink" href="#114-requestresponse-format" title="Permanent link">&para;</a></h3>
 <p>All requests and responses use JSON objects structurally equivalent to the Protocol Buffer definitions.</p>
 <p><strong>Example Send Message:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-74-1"><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a><span class="err">POST /v1/message:send</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-74-1"><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a><span class="err">POST /message:send</span>
 </span><span id="__span-74-2"><a id="__codelineno-74-2" name="__codelineno-74-2" href="#__codelineno-74-2"></a><span class="err">Content-Type: application/json</span>
 </span><span id="__span-74-3"><a id="__codelineno-74-3" name="__codelineno-74-3" href="#__codelineno-74-3"></a>
 </span><span id="__span-74-4"><a id="__codelineno-74-4" name="__codelineno-74-4" href="#__codelineno-74-4"></a><span class="err">{</span>
@@ -10556,10 +10556,10 @@
 </table>
 <p><strong>Usage Examples:</strong></p>
 <p>List tasks with filtering:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a><span class="err">GET /v1/tasks?contextId=uuid&amp;status=working&amp;pageSize=50&amp;pageToken=cursor</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a><span class="err">GET /tasks?contextId=uuid&amp;status=working&amp;pageSize=50&amp;pageToken=cursor</span>
 </span></code></pre></div>
 <p>Get task with history:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-77-1"><a id="__codelineno-77-1" name="__codelineno-77-1" href="#__codelineno-77-1"></a><span class="err">GET /v1/tasks/{id}?historyLength=10</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-77-1"><a id="__codelineno-77-1" name="__codelineno-77-1" href="#__codelineno-77-1"></a><span class="err">GET /tasks/{id}?historyLength=10</span>
 </span></code></pre></div>
 <p><strong>Field Type Handling:</strong></p>
 <ul>
@@ -10598,7 +10598,7 @@
 <h3 id="117-streaming">11.7. Streaming<a class="headerlink" href="#117-streaming" title="Permanent link">&para;</a></h3>
 <p><span id="stream-response"></span></p>
 <p>REST streaming uses Server-Sent Events with the <code>data</code> field containing JSON serializations of the protocol data objects:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-79-1"><a id="__codelineno-79-1" name="__codelineno-79-1" href="#__codelineno-79-1"></a><span class="err">POST /v1/message:stream</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-79-1"><a id="__codelineno-79-1" name="__codelineno-79-1" href="#__codelineno-79-1"></a><span class="err">POST /message:stream</span>
 </span><span id="__span-79-2"><a id="__codelineno-79-2" name="__codelineno-79-2" href="#__codelineno-79-2"></a><span class="err">Content-Type: application/json</span>
 </span><span id="__span-79-3"><a id="__codelineno-79-3" name="__codelineno-79-3" href="#__codelineno-79-3"></a>
 </span><span id="__span-79-4"><a id="__codelineno-79-4" name="__codelineno-79-4" href="#__codelineno-79-4"></a><span class="err">{ /* SendMessageRequest object */ }</span>
