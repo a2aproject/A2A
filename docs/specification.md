@@ -274,7 +274,7 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 ***Ordering:***
 
-Implementations MUST return tasks sorted by their last update time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
+Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
 
 #### 3.1.5. Cancel Task
 
@@ -417,7 +417,7 @@ The operation MUST permanently remove the specified push notification configurat
 
 #### 3.1.11. Get Extended Agent Card
 
-Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.supportsExtendedAgentCard` is `true`.
+Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.capabilities.extendedAgentCard` is `true`.
 
 **Inputs:**
 
@@ -437,7 +437,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 - **Authentication**: The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
 - **Extended Information**: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.
 - **Card Replacement**: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
-- **Availability**: This operation is only available if the public Agent Card declares `supportsExtendedAgentCard: true`.
+- **Availability**: This operation is only available if the public Agent Card declares `capabilities.extendedAgentCard: true`.
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
@@ -586,7 +586,7 @@ Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). Whe
 
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Set, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
-- **Extended Agent Card**: If `AgentCard.supportsExtendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
+- **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
 Clients **SHOULD** validate capability support by examining the Agent Card before attempting operations that require optional capabilities.
@@ -1051,7 +1051,7 @@ Clients indicate their desire to opt into the use of specific extensions through
 *Example: HTTP client opting into extensions using headers:*
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/json
 Authorization: Bearer token
@@ -1158,19 +1158,19 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 ### 5.3. Method Mapping Reference
 
-| Functionality                   | JSON-RPC Method                    | gRPC Method                        | REST Endpoint                                              |
-| :------------------------------ | :--------------------------------- | :--------------------------------- | :--------------------------------------------------------- |
-| Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /v1/message:send`                                    |
-| Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /v1/message:stream`                                  |
-| Get task                        | `GetTask`                          | `GetTask`                          | `GET /v1/tasks/{id}`                                       |
-| List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /v1/tasks`                                            |
-| Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /v1/tasks/{id}:cancel`                               |
-| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /v1/tasks/{id}:subscribe`                            |
-| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /v1/tasks/{id}/pushNotificationConfigs`              |
-| Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}`    |
-| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /v1/tasks/{id}/pushNotificationConfigs`               |
-| Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` |
-| Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /v1/extendedAgentCard`                                |
+| Functionality                   | JSON-RPC Method                    | gRPC Method                        | REST Endpoint                                           |
+| :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
+| Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
+| Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
+| Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
+| List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
+| Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
+| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
+| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /tasks/{id}/pushNotificationConfigs`              |
+| Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
+| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /tasks/{id}/pushNotificationConfigs`               |
+| Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
+| Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /extendedAgentCard`                                |
 
 ### 5.4. Error Code Mappings
 
@@ -1282,7 +1282,7 @@ This section provides illustrative examples of common A2A interactions across di
 **Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1323,7 +1323,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/message:stream HTTP/1.1
+POST /message:stream HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1357,7 +1357,7 @@ data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "completed"},
 **Initial Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1394,7 +1394,7 @@ Content-Type: application/a2a+json
 **Follow-up Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1416,7 +1416,7 @@ Authorization: Bearer token
 **Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1455,7 +1455,7 @@ Content-Type: application/problem+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1495,7 +1495,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1543,7 +1543,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1576,7 +1576,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/tasks/list HTTP/1.1
+POST /tasks/list HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1621,7 +1621,7 @@ Content-Type: application/problem+json
 **Initial Request with Push Notification Config:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1695,7 +1695,7 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
 **Request with File Upload:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1760,7 +1760,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
@@ -1834,7 +1834,9 @@ Host: example.com
 
 ```json
 {
-  "supportsExtendedAgentCard": true,
+  "capabilities": {
+    "extendedAgentCard": true
+  },
   "securitySchemes": {
     "google": {
       "openIdConnectSecurityScheme": {
@@ -1850,7 +1852,7 @@ Host: example.com
 ### Step 3: Client fetches authenticated extended Agent Card
 
 ```http
-GET /v1/extendedAgentCard HTTP/1.1
+GET /extendedAgentCard HTTP/1.1
 Host: agent.example.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
@@ -2108,12 +2110,14 @@ Clients verifying Agent Card signatures **MUST**:
   "capabilities": {
     "streaming": true,
     "pushNotifications": true,
-    "stateTransitionHistory": false
+    "stateTransitionHistory": false,
+    "extendedAgentCard": true
   },
   "securitySchemes": {
     "google": {
-      "type": "openIdConnect",
-      "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+      "openIdConnectSecurityScheme": {
+        "openIdConnectUrl": "https://accounts.google.com/.well-known/openid-configuration"
+      }
     }
   },
   "security": [{ "google": ["openid", "profile", "email"] }],
@@ -2154,7 +2158,6 @@ Clients verifying Agent Card signatures **MUST**:
       ]
     }
   ],
-  "supportsExtendedAgentCard": true,
   "signatures": [
     {
       "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
@@ -2736,7 +2739,7 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 **Example Request with A2A Service Parameters:**
 
 ```http
-POST /v1/message:send HTTP/1.1
+POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/json
 Authorization: Bearer token
@@ -2755,26 +2758,26 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 #### 11.3.1. Message Operations
 
-- `POST /v1/message:send` - Send message
-- `POST /v1/message:stream` - Send message with streaming (SSE response)
+- `POST /message:send` - Send message
+- `POST /message:stream` - Send message with streaming (SSE response)
 
 #### 11.3.2. Task Operations
 
-- `GET /v1/tasks/{id}` - Get task status
-- `GET /v1/tasks` - List tasks (with query parameters)
-- `POST /v1/tasks/{id}:cancel` - Cancel task
-- `POST /v1/tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
+- `GET /tasks/{id}` - Get task status
+- `GET /tasks` - List tasks (with query parameters)
+- `POST /tasks/{id}:cancel` - Cancel task
+- `POST /tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
 
 #### 11.3.3. Push Notification Configuration
 
-- `POST /v1/tasks/{id}/pushNotificationConfigs` - Create configuration
-- `GET /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Get configuration
-- `GET /v1/tasks/{id}/pushNotificationConfigs` - List configurations
-- `DELETE /v1/tasks/{id}/pushNotificationConfigs/{configId}` - Delete configuration
+- `POST /tasks/{id}/pushNotificationConfigs` - Create configuration
+- `GET /tasks/{id}/pushNotificationConfigs/{configId}` - Get configuration
+- `GET /tasks/{id}/pushNotificationConfigs` - List configurations
+- `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` - Delete configuration
 
 #### 11.3.4. Agent Card
 
-- `GET /v1/extendedAgentCard` - Get authenticated extended Agent Card
+- `GET /extendedAgentCard` - Get authenticated extended Agent Card
 
 ### 11.4. Request/Response Format
 
@@ -2783,7 +2786,7 @@ All requests and responses use JSON objects structurally equivalent to the Proto
 **Example Send Message:**
 
 ```http
-POST /v1/message:send
+POST /message:send
 Content-Type: application/json
 
 {
@@ -2841,13 +2844,13 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 List tasks with filtering:
 
 ```http
-GET /v1/tasks?contextId=uuid&status=working&pageSize=50&pageToken=cursor
+GET /tasks?contextId=uuid&status=working&pageSize=50&pageToken=cursor
 ```
 
 Get task with history:
 
 ```http
-GET /v1/tasks/{id}?historyLength=10
+GET /tasks/{id}?historyLength=10
 ```
 
 **Field Type Handling:**
@@ -2900,7 +2903,7 @@ Extension fields like `taskId` and `timestamp` provide additional context to hel
 REST streaming uses Server-Sent Events with the `data` field containing JSON serializations of the protocol data objects:
 
 ```http
-POST /v1/message:stream
+POST /message:stream
 Content-Type: application/json
 
 { /* SendMessageRequest object */ }
@@ -3114,8 +3117,8 @@ The extended Agent Card feature allows agents to provide additional capabilities
 
 **Availability Declaration:**
 
-- Agents declare extended card support via `AgentCard.supportsExtendedAgentCard`
-- When `supportsExtendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
+- Agents declare extended card support via `AgentCard.capabilities.extendedAgentCard`
+- When `capabilities.extendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
 - When support is declared but no extended card is configured, the operation **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling)
 
 See also: [Section 3.1.11 Get Extended Agent Card](#3111-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).
@@ -3479,6 +3482,71 @@ This change aligns with modern API design practices and Protocol Buffers' `oneof
 - Simplifies code generation from schema definitions
 - Eliminates the need for representing inheritance structures in schema languages
 - Improves type safety in strongly-typed languages
+
+#### A.2.2 Breaking Change: Extended Agent Card Field Relocated
+
+**Version 1.0 relocates the extended agent card capability** from a top-level field to the capabilities object for architectural consistency.
+
+**Legacy Structure (pre-1.0):**
+
+```json
+{
+  "supportsExtendedAgentCard": true,
+  "capabilities": {
+    "streaming": true
+  }
+}
+```
+
+**Current Structure (1.0+):**
+
+```json
+{
+  "capabilities": {
+    "streaming": true,
+    "extendedAgentCard": true
+  }
+}
+```
+
+**Proto Changes:**
+
+- Removed: `AgentCard.supports_extended_agent_card` (field 13)
+- Added: `AgentCapabilities.extended_agent_card` (field 5)
+
+**Migration Steps:**
+
+For **Agent Implementations**:
+
+1. Remove `supportsExtendedAgentCard` from top-level AgentCard
+2. Add `extendedAgentCard` to `capabilities` object
+3. Update validation: `agentCard.capabilities?.extendedAgentCard`
+
+For **Client Implementations**:
+
+1. Update capability checks: `agentCard.capabilities?.extendedAgentCard`
+2. Temporary fallback (transition period):
+
+   ```javascript
+   const supported = agentCard.capabilities?.extendedAgentCard ||
+                     agentCard.supportsExtendedAgentCard;
+   ```
+
+3. Remove fallback after agent ecosystem migrates
+
+For **SDK Developers**:
+
+1. Regenerate code from updated proto
+2. Update type definitions
+3. Document breaking change in release notes
+
+**Rationale:**
+
+All optional features enabling specific operations (`streaming`, `pushNotifications`, `stateTransitionHistory`) reside in `AgentCapabilities`. Moving `extendedAgentCard` achieves:
+
+- Architectural consistency
+- Improved discoverability
+- Semantic correctness (it is a capability)
 
 ### A.3 Future Automation
 
