@@ -327,6 +327,7 @@ The operation MUST return a `Task` object as the first event in the stream, repr
 
 #### 3.1.7. Create Push Notification Config
 
+<span id="75-taskspushnotificationconfigset"></span>
 <span id="317-create-push-notification-config"></span>
 
 Creates a push notification configuration for a task to receive asynchronous updates via webhook.
