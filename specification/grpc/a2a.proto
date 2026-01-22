@@ -44,9 +44,7 @@ service A2AService {
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
       get: "/{name=tasks/*}"
-      additional_bindings: {
-        get: "/{tenant}/{name=tasks/*}"
-      }
+      additional_bindings: {get: "/{tenant}/{name=tasks/*}"}
     };
     option (google.api.method_signature) = "name";
   }
@@ -54,9 +52,7 @@ service A2AService {
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
       get: "/tasks"
-      additional_bindings: {
-        get: "/{tenant}/tasks"
-      }
+      additional_bindings: {get: "/{tenant}/tasks"}
     };
   }
   // Cancel a task.
@@ -75,9 +71,7 @@ service A2AService {
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       get: "/{name=tasks/*}:subscribe"
-      additional_bindings: {
-        get: "/{tenant}/{name=tasks/*}:subscribe"
-      }
+      additional_bindings: {get: "/{tenant}/{name=tasks/*}:subscribe"}
     };
   }
 
@@ -97,9 +91,7 @@ service A2AService {
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       get: "/{name=tasks/*/pushNotificationConfigs/*}"
-      additional_bindings: {
-        get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
-      }
+      additional_bindings: {get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"}
     };
     option (google.api.method_signature) = "name";
   }
@@ -107,9 +99,7 @@ service A2AService {
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
       get: "/{parent=tasks/*}/pushNotificationConfigs"
-      additional_bindings: {
-        get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"
-      }
+      additional_bindings: {get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"}
     };
     option (google.api.method_signature) = "parent";
   }
@@ -117,18 +107,14 @@ service A2AService {
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
       get: "/extendedAgentCard"
-      additional_bindings: {
-        get: "/{tenant}/extendedAgentCard"
-      }
+      additional_bindings: {get: "/{tenant}/extendedAgentCard"}
     };
   }
   // Delete a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/{name=tasks/*/pushNotificationConfigs/*}"
-      additional_bindings: {
-        delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
-      }
+      additional_bindings: {delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"}
     };
     option (google.api.method_signature) = "name";
   }
@@ -402,6 +388,10 @@ message AgentInterface {
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
   // Tenant to be set in the request when calling the agent.
   string tenant = 3;
+  // The versions of the A2A protocol this transport supports.
+  // List only the latest supported minor version per major version.
+  // Default: ["0.3", "1.0"]
+  repeated string protocol_versions = 4 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:AgentInterface]
 
@@ -411,14 +401,9 @@ message AgentInterface {
 // communication methods, and security requirements.
 // Next ID: 20
 message AgentCard {
-  // The versions of the A2A protocol this agent supports.
-  // For stable versions (1.x+), list only the latest supported minor version per major version.
-  // For legacy experimental versions (0.x), explicitly list each supported version.
-  // Default: ["1.0"]
-  repeated string protocol_versions = 16 [(google.api.field_behavior) = REQUIRED];
   // Reserve these field numbers as they were previously used by removed
   // fields.
-  reserved 3, 14, 15;
+  reserved 16;
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -426,6 +411,17 @@ message AgentCard {
   // in understanding its purpose.
   // Example: "Agent that helps users with recipes and cooking."
   string description = 2 [(google.api.field_behavior) = REQUIRED];
+  // A URL to the address the agent is hosted at. This represents the
+  // preferred endpoint as declared by the agent.
+  // DEPRECATED: THIS IS ONLY USED FOR 0.3 VERSION OF THE TRANSPORT AND WILL BE REMOVED.
+  string url = 3 [deprecated = true];
+  // The transport of the preferred endpoint. If empty, defaults to JSONRPC.
+  // DEPRECATED: THIS IS ONLY USED FOR 0.3 VERSION OF THE TRANSPORT AND WILL BE REMOVED.
+  string preferred_transport = 14 [deprecated = true];
+  // Announcement of additional supported transports. Client can use any of
+  // the supported transports.
+  // DEPRECATED: THIS IS ONLY USED FOR 0.3 VERSION OF THE TRANSPORT AND WILL BE REMOVED.
+  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
   // Ordered list of supported interfaces. First entry is preferred.
   repeated AgentInterface supported_interfaces = 19 [(google.api.field_behavior) = REQUIRED];
   // The service provider of the agent.
