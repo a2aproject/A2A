@@ -415,7 +415,7 @@ Removes a push notification configuration for a task.
 
 The operation MUST permanently remove the specified push notification configuration. No further notifications will be sent to the configured webhook after deletion. This operation MUST be idempotent - multiple deletions of the same config have the same effect.
 
-#### 3.1.11. Get Extended Agent Card {: #getextendedagentcard }
+#### 3.1.11. Get Extended Agent Card <a id="getextendedagentcard"></a>
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.capabilities.extendedAgentCard` is `true`.
 
@@ -449,7 +449,7 @@ This section defines common parameter objects used across multiple operations.
 
 {{ proto_to_table("specification/a2a.proto", "SendMessageRequest") }}
 
-#### 3.2.2. SendMessageConfiguration {: #sendmessageconfiguration }
+#### 3.2.2. SendMessageConfiguration <a id="sendmessageconfiguration"></a>
 
 {{ proto_to_table("specification/a2a.proto", "SendMessageConfiguration") }}
 
@@ -624,7 +624,7 @@ The A2A protocol supports several patterns for multi-turn interactions:
 - Clients **MAY** use `taskId` (with or without `contextId`) to continue or refine a specific task
 - Clients **MAY** use `contextId` without `taskId` to start a new task within an existing conversation context
 - Agents **MUST** infer `contextId` from the task if only `taskId` is provided
-- Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (i.e., the provided `contextId` is different from that of the referenced [`Task`](#411-task)).
+- Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (i.e., the provided `contextId` is different from that of the referenced [`Task`](#task)).
 
 **Input Required State:**
 
@@ -755,63 +755,63 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 ### 4.1. Core Objects
 
-#### 4.1.1. Task {: #task }
+#### 4.1.1. Task <a id="task"></a>
 
 {{ proto_to_table("specification/a2a.proto", "Task") }}
 
-#### 4.1.2. TaskStatus {: #taskstatus }
+#### 4.1.2. TaskStatus <a id="taskstatus"></a>
 
 {{ proto_to_table("specification/a2a.proto", "TaskStatus") }}
 
-#### 4.1.3. TaskState {: #taskstate }
+#### 4.1.3. TaskState <a id="taskstate"></a>
 
 {{ proto_enum_to_table("specification/a2a.proto", "TaskState") }}
 
-#### 4.1.4. Message {: #message }
+#### 4.1.4. Message <a id="message"></a>
 
 {{ proto_to_table("specification/a2a.proto", "Message") }}
 
-#### 4.1.5. Role {: #role }
+#### 4.1.5. Role <a id="role"></a>
 
 {{ proto_enum_to_table("specification/a2a.proto", "Role") }}
 
-#### 4.1.6. Part {: #part }
+#### 4.1.6. Part <a id="part"></a>
 
 {{ proto_to_table("specification/a2a.proto", "Part") }}
 
-#### 4.1.7. FilePart {: #filepart }
+#### 4.1.7. FilePart <a id="filepart"></a>
 
 {{ proto_to_table("specification/a2a.proto", "FilePart") }}
 
-#### 4.1.8. DataPart {: #datapart }
+#### 4.1.8. DataPart <a id="datapart"></a>
 
 {{ proto_to_table("specification/a2a.proto", "DataPart") }}
 
-#### 4.1.9. Artifact {: #artifact }
+#### 4.1.9. Artifact <a id="artifact"></a>
 
 {{ proto_to_table("specification/a2a.proto", "Artifact") }}
 
 ### 4.2. Streaming Events
 
-#### 4.2.1. TaskStatusUpdateEvent {: #taskstatusupdateevent }
+#### 4.2.1. TaskStatusUpdateEvent <a id="taskstatusupdateevent"></a>
 
 {{ proto_to_table("specification/a2a.proto", "TaskStatusUpdateEvent") }}
 
-#### 4.2.2. TaskArtifactUpdateEvent {: #taskartifactupdateevent }
+#### 4.2.2. TaskArtifactUpdateEvent <a id="taskartifactupdateevent"></a>
 
 {{ proto_to_table("specification/a2a.proto", "TaskArtifactUpdateEvent") }}
 
 ### 4.3. Push Notification Objects
 
-#### 4.3.1. PushNotificationConfig {: #pushnotificationconfig }
+#### 4.3.1. PushNotificationConfig <a id="pushnotificationconfig"></a>
 
 {{ proto_to_table("specification/a2a.proto", "PushNotificationConfig") }}
 
-#### 4.3.2. AuthenticationInfo {: #authenticationinfo }
+#### 4.3.2. AuthenticationInfo <a id="authenticationinfo"></a>
 
 {{ proto_to_table("specification/a2a.proto", "PushNotificationAuthenticationInfo") }}
 
-#### 4.3.3. Push Notification Payload {: #pushnotificationpayload }
+#### 4.3.3. Push Notification Payload <a id="pushnotificationpayload"></a>
 
 When a task update occurs, the agent sends an HTTP POST request to the configured webhook URL. The payload uses the same [`StreamResponse`](#323-stream-response) format as streaming operations, allowing push notifications to deliver the same event types as real-time streams.
 
@@ -862,81 +862,81 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 ### 4.4. Agent Discovery Objects
 
-#### 4.4.1. AgentCard {: #agentcard }
+#### 4.4.1. AgentCard <a id="agentcard"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AgentCard") }}
 
-#### 4.4.2. AgentProvider {: #agentprovider }
+#### 4.4.2. AgentProvider <a id="agentprovider"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AgentProvider") }}
 
-#### 4.4.3. AgentCapabilities {: #agentcapabilities }
+#### 4.4.3. AgentCapabilities <a id="agentcapabilities"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AgentCapabilities") }}
 
-#### 4.4.4. AgentExtension {: #agentextension }
+#### 4.4.4. AgentExtension <a id="agentextension"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AgentExtension") }}
 
-#### 4.4.5. AgentSkill {: #agentskill }
+#### 4.4.5. AgentSkill <a id="agentskill"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AgentSkill") }}
 
-#### 4.4.6. AgentInterface {: #agentinterface }
+#### 4.4.6. AgentInterface <a id="agentinterface"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AgentInterface") }}
 
-#### 4.4.7. AgentCardSignature {: #agentcardsignature }
+#### 4.4.7. AgentCardSignature <a id="agentcardsignature"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AgentCardSignature") }}
 
 ### 4.5. Security Objects
 
-#### 4.5.1. SecurityScheme {: #securityscheme }
+#### 4.5.1. SecurityScheme <a id="securityscheme"></a>
 
 {{ proto_to_table("specification/a2a.proto", "SecurityScheme") }}
 
-#### 4.5.2. APIKeySecurityScheme {: #apikeysecurityscheme }
+#### 4.5.2. APIKeySecurityScheme <a id="apikeysecurityscheme"></a>
 
 {{ proto_to_table("specification/a2a.proto", "APIKeySecurityScheme") }}
 
-#### 4.5.3. HTTPAuthSecurityScheme {: #httpauthsecurityscheme }
+#### 4.5.3. HTTPAuthSecurityScheme <a id="httpauthsecurityscheme"></a>
 
 {{ proto_to_table("specification/a2a.proto", "HTTPAuthSecurityScheme") }}
 
-#### 4.5.4. OAuth2SecurityScheme {: #oauth2securityscheme }
+#### 4.5.4. OAuth2SecurityScheme <a id="oauth2securityscheme"></a>
 
 {{ proto_to_table("specification/a2a.proto", "OAuth2SecurityScheme") }}
 
-#### 4.5.5. OpenIdConnectSecurityScheme {: #openidconnectsecurityscheme }
+#### 4.5.5. OpenIdConnectSecurityScheme <a id="openidconnectsecurityscheme"></a>
 
 {{ proto_to_table("specification/a2a.proto", "OpenIdConnectSecurityScheme") }}
 
-#### 4.5.6. MutualTLSSecurityScheme {: #mutualtlssecurityscheme }
+#### 4.5.6. MutualTLSSecurityScheme <a id="mutualtlssecurityscheme"></a>
 
 {{ proto_to_table("specification/a2a.proto", "MutualTlsSecurityScheme") }}
 
-#### 4.5.7. OAuthFlows {: #oauthflows }
+#### 4.5.7. OAuthFlows <a id="oauthflows"></a>
 
 {{ proto_to_table("specification/a2a.proto", "OAuthFlows") }}
 
-#### 4.5.8. AuthorizationCodeOAuthFlow {: #authorizationcodeoauthflow }
+#### 4.5.8. AuthorizationCodeOAuthFlow <a id="authorizationcodeoauthflow"></a>
 
 {{ proto_to_table("specification/a2a.proto", "AuthorizationCodeOAuthFlow") }}
 
-#### 4.5.9. ClientCredentialsOAuthFlow {: #clientcredentialsoauthflow }
+#### 4.5.9. ClientCredentialsOAuthFlow <a id="clientcredentialsoauthflow"></a>
 
 {{ proto_to_table("specification/a2a.proto", "ClientCredentialsOAuthFlow") }}
 
-#### 4.5.10. DeviceCodeOAuthFlow {: #devicecodeoauthflow }
+#### 4.5.10. DeviceCodeOAuthFlow <a id="devicecodeoauthflow"></a>
 
 {{ proto_to_table("specification/a2a.proto", "DeviceCodeOAuthFlow") }}
 
-#### 4.5.11. Security {: #security }
+#### 4.5.11. Security <a id="security"></a>
 
 {{ proto_to_table("specification/a2a.proto", "Security") }}
 
-#### 4.5.12. StringList {: #stringlist }
+#### 4.5.12. StringList <a id="stringlist"></a>
 
 {{ proto_to_table("specification/a2a.proto", "StringList") }}
 
@@ -2581,7 +2581,7 @@ Retrieves the agent's extended capability card after authentication.
 
 ### 10.5. gRPC-Specific Data Types
 
-#### 10.5.1. TaskPushNotificationConfig {: #taskpushnotificationconfig }
+#### 10.5.1. TaskPushNotificationConfig <a id="taskpushnotificationconfig"></a>
 
 Resource wrapper for push notification configurations. This is a gRPC-specific type used in resource-oriented operations to provide the full resource name along with the configuration data.
 
