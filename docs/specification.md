@@ -2589,15 +2589,15 @@ Retrieves an existing push notification configuration for a task.
 
 **Request:**
 
---8<-- "specification/a2a.proto:CreateTaskPushNotificationConfigRequest"ig) object definition.
-
-#### 10.4.9. ListTaskPushNotificationConfig
-
 ```proto
 --8<-- "specification/a2a.proto:GetTaskPushNotificationConfigRequest"
 ```
 
-**Response:** See [`PushNotificationConfig`](#431-pushnotificationconf
+**Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
+
+#### 10.4.9. ListTaskPushNotificationConfig
+
+Lists all push notification configurations for a task.
 
 **Request:**
 
