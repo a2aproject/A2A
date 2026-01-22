@@ -3367,7 +3367,7 @@ Hidden anchor spans preserve old inbound links:
 <span id="messagesendparams"></span>
 <span id="sendmessagesuccessresponse"></span>
 <span id="sendstreamingmessagesuccessresponse"></span>
-<span id="createtaskpushnotificationconfigrequest"></span>
+<span id="settaskpushnotificationconfigrequest"></span>
 <span id="listtaskpushnotificationconfigsuccessresponse"></span>
 <span id="getauthenticatedextendedcardrequest"></span>
 <span id="938-agentgetauthenticatedextendedcard"></span>
