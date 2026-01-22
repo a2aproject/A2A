@@ -31,8 +31,8 @@ Here are some additional things to keep in mind during the process:
 
 The A2A specification follows semantic versioning. When contributing:
 
-- **Patch releases** (x.x.X): Documentation/comment changes only (non-functional changes)
-- **Minor releases** (x.X.0): Any changes to `a2a.proto` or protocol behavior (functional changes)
+- **Patch releases** (x.x.X): Non-functional changes only (e.g., documentation, comments, tests)
+- **Minor releases** (x.X.0): Any backward-compatible functional changes to `a2a.proto` or protocol behavior
 - **Major releases** (X.0.0): Breaking changes
 
 For detailed versioning guidelines, see [Section 3.6.5 of the specification](docs/specification.md#365-specification-versioning).

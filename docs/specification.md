@@ -790,15 +790,15 @@ Major releases are used for breaking changes that require implementations to upd
 
 Contributors should apply the following decision process when submitting changes:
 
-1. **Does the change modify `specification/grpc/a2a.proto`?**
+1. **Does the change introduce any functional modifications to `specification/grpc/a2a.proto`** (i.e., changes other than comments or formatting)?**
    - YES → Requires at least a minor release
    - NO → Continue to step 2
 
-2. **Does the change affect protocol behavior, semantics, or wire format?**
+2. **Does the change affect protocol behavior, semantics, or wire format in other ways?**
    - YES → Requires at least a minor release
    - NO → Continue to step 3
 
-3. **Is the change limited to documentation, comments, or examples?**
+3. **Is the change a non-functional update (e.g., documentation, comments, examples, tests, build scripts, CI configuration)?**
    - YES → Patch release is appropriate
    - NO → Requires at least a minor release
 
