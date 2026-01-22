@@ -552,14 +552,18 @@ message TaskPushNotificationConfig {
 // --8<-- [end:TaskPushNotificationConfig]
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
+// --8<-- [start:StringList]
 message StringList {
   repeated string list = 1;
 }
+// --8<-- [end:StringList]
 // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 
+// --8<-- [start:Security]
 message Security {
   map<string, StringList> schemes = 1;
 }
+// --8<-- [end:Security]
 
 // --8<-- [start:SecurityScheme]
 // Defines a security scheme that can be used to secure an agent's endpoints.

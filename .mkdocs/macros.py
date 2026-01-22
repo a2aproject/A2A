@@ -32,7 +32,7 @@ def define_env(env):
         Parse a Protocol Buffer message definition and render it with description and table.
 
         Args:
-            proto_file: Relative path to the .proto file (e.g., "specification/grpc/a2a.proto")
+            proto_file: Relative path to the .proto file (e.g., "specification/a2a.proto")
             message_name: Name of the message to extract (e.g., "Message")
 
         Returns:
@@ -448,7 +448,7 @@ def _format_proto_type(proto_type: str, is_repeated: bool) -> str:
         readable_value_type = type_map.get(value_type, value_type)
         # Create link for non-primitive types
         if not _is_primitive_type(value_type):
-            readable_value_type = f'[`{readable_value_type}`](#{value_type})'
+            readable_value_type = f'[`{readable_value_type}`](#{value_type.lower()})'
         else:
             readable_value_type = f'`{readable_value_type}`'
         return f'map of {readable_value_type}'
@@ -457,7 +457,7 @@ def _format_proto_type(proto_type: str, is_repeated: bool) -> str:
 
     # Create link for non-primitive types
     if not _is_primitive_type(proto_type):
-        formatted_type = f'[`{readable_type}`](#{proto_type})'
+        formatted_type = f'[`{readable_type}`](#{proto_type.lower()})'
     else:
         formatted_type = f'`{readable_type}`'
 

@@ -5,14 +5,13 @@
 Generation pipeline:
 
 1. `scripts/proto_to_json_schema.sh` converts proto directly to JSON Schema using bufbuild's `protoc-gen-jsonschema` plugin.
-2. The resulting `a2a.json` (JSON Schema 2020-12 bundle) is copied to `docs/spec-json/a2a.json` for site publishing.
+2. The resulting `a2a.json` (JSON Schema 2020-12 bundle) is copied to `docs/spec/a2a.json` for site publishing.
 
 The build uses `protoc` with `protoc-gen-jsonschema` plugin and `jq` for bundling. Only source (`a2a.proto`) and scripts remain under version control.
 
 The artifact is generated automatically in:
 
 - Local docs builds (`scripts/build_docs.sh`)
-- CI workflow (`.github/workflows/generate-a2a-json.yml`) on proto changes
 
 ## Do Not Edit
 
