@@ -411,17 +411,6 @@ message AgentCard {
   // in understanding its purpose.
   // Example: "Agent that helps users with recipes and cooking."
   string description = 2 [(google.api.field_behavior) = REQUIRED];
-  // A URL to the address the agent is hosted at. This represents the
-  // preferred endpoint as declared by the agent.
-  // DEPRECATED: THIS IS ONLY USED FOR 0.3 SDKs AND WILL BE REMOVED.
-  string url = 3 [deprecated = true];
-  // The transport of the preferred endpoint. If empty, defaults to JSONRPC.
-  // DEPRECATED: THIS IS ONLY USED FOR 0.3 SDKs AND WILL BE REMOVED.
-  string preferred_transport = 14 [deprecated = true];
-  // Announcement of additional supported transports. Client can use any of
-  // the supported transports.
-  // DEPRECATED: THIS IS ONLY USED FOR 0.3 SDKs AND WILL BE REMOVED.
-  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
   // Ordered list of supported interfaces. First entry is preferred.
   repeated AgentInterface supported_interfaces = 19 [(google.api.field_behavior) = REQUIRED];
   // The service provider of the agent.
@@ -433,12 +422,6 @@ message AgentCard {
   optional string documentation_url = 6;
   // A2A Capability set supported by the agent.
   AgentCapabilities capabilities = 7 [(google.api.field_behavior) = REQUIRED];
-  // The security scheme details used for authenticating with this agent.
-  // DEPRECATED: THIS IS ONLY USED FOR 0.3 SDKs AND WILL BE REMOVED.
-  optional google.protobuf.Struct security_schemes = 8;
-  // Security requirements for contacting the agent.
-  // DEPRECATED: THIS IS ONLY USED FOR 0.3 SDKs AND WILL BE REMOVED.
-  optional google.protobuf.ListValue security = 9;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // The set of interaction modes that the agent supports across all skills.
   // This can be overridden per skill. Defined as media types.
