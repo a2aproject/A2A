@@ -627,13 +627,13 @@ message MutualTlsSecurityScheme {
 // --8<-- [start:OAuthFlows]
 // Defines the configuration for the supported OAuth 2.0 flows.
 message OAuthFlows {
-  // Tags 3 and 4 were previously used by deprecated OAuth flows.
-  reserved 3, 4;
   oneof flow {
     // Configuration for the OAuth Authorization Code flow.
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
+    ImplicitOAuthFlow implicit = 3 [deprecated = true];
+    PasswordOAuthFlow password = 4 [deprecated = true];
     // Configuration for the OAuth Device Code flow.
     DeviceCodeOAuthFlow device_code = 5;
   }
@@ -668,6 +668,32 @@ message ClientCredentialsOAuthFlow {
   map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:ClientCredentialsOAuthFlow]
+
+// DEPRECATED
+message ImplicitOAuthFlow {
+  // The authorization URL to be used for this flow. This MUST be in the
+  // form of a URL. The OAuth2 standard requires the use of TLS
+  string authorization_url = 1;
+  // The URL to be used for obtaining refresh tokens. This MUST be in the
+  // form of a URL. The OAuth2 standard requires the use of TLS.
+  string refresh_url = 2;
+  // The available scopes for the OAuth2 security scheme. A map between the
+  // scope name and a short description for it. The map MAY be empty.
+  map<string, string> scopes = 3;
+}
+
+// DEPRECATED
+message PasswordOAuthFlow {
+  // The token URL to be used for this flow. This MUST be in the form of a URL.
+  // The OAuth2 standard requires the use of TLS.
+  string token_url = 1;
+  // The URL to be used for obtaining refresh tokens. This MUST be in the
+  // form of a URL. The OAuth2 standard requires the use of TLS.
+  string refresh_url = 2;
+  // The available scopes for the OAuth2 security scheme. A map between the
+  // scope name and a short description for it. The map MAY be empty.
+  map<string, string> scopes = 3;
+}
 
 // --8<-- [start:DeviceCodeOAuthFlow]
 // Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628).
