@@ -2533,15 +2533,16 @@ The operation enables real-time monitoring of task progress and can be used with
 
 The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
-#### 3.1.7. Set or Update Push Notification Config
+#### 3.1.7. Create Push Notification Config
 
 <span id="75-taskspushnotificationconfigset"></span>
+<span id="317-create-push-notification-config"></span>
 
-Creates or updates a push notification configuration for a task to receive asynchronous updates via webhook.
+Creates a push notification configuration for a task to receive asynchronous updates via webhook.
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "SetTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("specification/grpc/a2a.proto", "CreateTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -2792,7 +2793,7 @@ A2A operations are designed for asynchronous task execution. Operations return i
 
 Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). When clients attempt to use operations or features that require capabilities not declared as supported in the Agent Card, the agent **MUST** return an appropriate error response:
 
-- **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Set, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
+- **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
@@ -2878,7 +2879,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Set ([Section 3.1.7](#75-taskspushnotificationconfigset)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -3374,7 +3375,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
-| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /tasks/{id}/pushNotificationConfigs`              |
+| Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
 | List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /tasks/{id}/pushNotificationConfigs`               |
 | Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
@@ -4558,7 +4559,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 #### 9.4.7. Push Notification Configuration Methods
 
-- `SetTaskPushNotificationConfig` - Set push notification configuration
+- `CreateTaskPushNotificationConfig` - Create push notification configuration
 - `GetTaskPushNotificationConfig` - Get push notification configuration
 - `ListTaskPushNotificationConfig` - List push notification configurations
 - `DeleteTaskPushNotificationConfig` - Delete push notification configuration
@@ -4686,7 +4687,7 @@ service A2AService {
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
   rpc CancelTask(CancelTaskRequest) returns (Task);
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse);
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse);
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty);
@@ -4776,14 +4777,14 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
-#### 10.4.7. SetTaskPushNotificationConfig
+#### 10.4.7. CreateTaskPushNotificationConfig
 
 Creates a push notification configuration for a task.
 
 **Request:**
 
 ```proto
---8<-- "specification/grpc/a2a.proto:SetTaskPushNotificationConfigRequest"
+--8<-- "specification/grpc/a2a.proto:CreateTaskPushNotificationConfigRequest"
 ```
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
@@ -6861,7 +6862,7 @@ Push notifications are ideal for:
 
 Refer to the Protocol Specification for detailed structures:
 
-- [`tasks/pushNotificationConfig/set`](../specification.md#75-taskspushnotificationconfigset)
+- [`tasks/pushNotificationConfig/create`](../specification.md#317-create-push-notification-config)
 - [`tasks/get`](../specification.md#76-taskspushnotificationconfigget)
 
 ### Client-Side Push Notification Service
@@ -6889,7 +6890,7 @@ Security is paramount for push notifications due to their asynchronous and serve
 
 #### Example Asymmetric Key Flow (JWT + JWKS)
 
-1. Client sets `PushNotificationConfig` specifying `authentication.schemes: ["Bearer"]` and possibly an expected `issuer` or `audience` for the JWT.
+1. Client creates a `PushNotificationConfig` specifying `authentication.schemes: ["Bearer"]` and possibly an expected `issuer` or `audience` for the JWT.
 2. A2A Server, when sending a notification:
     - Generates a JWT, signing it with its private key. The JWT includes claims like `iss` (issuer), `aud` (audience), `iat` (issued at), `exp` (expires), `jti` (JWT ID), and `taskId`.
     - The JWT header indicates the signing algorithm and key ID (`kid`).
@@ -7773,8 +7774,8 @@ service A2AService {
     };
   }
 
-  // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
+  // Create a push notification config for a task.
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
@@ -7835,7 +7836,10 @@ message SendMessageConfiguration {
   repeated string accepted_output_modes = 1;
   // Configuration for the agent to send push notifications for task updates.
   PushNotificationConfig push_notification_config = 2;
-  // The maximum number of messages to include in the history.
+  // The maximum number of most recent messages from the task's history to retrieve in
+  // the response. An unset value means the client does not impose any limit. A
+  // value of zero is a request to not include any messages. The server MUST NOT
+  // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
   // If true, the operation waits until the task reaches a terminal state before returning. Default is false.
   bool blocking = 4;
@@ -8169,8 +8173,8 @@ message AgentCapabilities {
   optional bool push_notifications = 2;
   // A list of protocol extensions supported by the agent.
   repeated AgentExtension extensions = 3;
-  // Indicates if the agent provides a history of state transitions for a task.
-  optional bool state_transition_history = 4;
+  // Field 4 was previously used by state_transition_history capability.
+  reserved 4;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 5;
 }
@@ -8392,7 +8396,7 @@ message DeviceCodeOAuthFlow {
 
 ///////////// Request Messages ///////////
 // --8<-- [start:SendMessageRequest]
-// Represents a request for the `message/send` method.
+// Represents a request for the `SendMessage` method.
 message SendMessageRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
@@ -8406,14 +8410,17 @@ message SendMessageRequest {
 // --8<-- [end:SendMessageRequest]
 
 // --8<-- [start:GetTaskRequest]
-// Represents a request for the `tasks/get` method.
+// Represents a request for the `GetTask` method.
 message GetTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
-  // The maximum number of messages to include in the history.
+  // The maximum number of most recent messages from the task's history to retrieve. An
+  // unset value means the client does not impose any limit. A value of zero is
+  // a request to not include any messages. The server MUST NOT return more
+  // messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 2;
 }
 // --8<-- [end:GetTaskRequest]
@@ -8458,7 +8465,7 @@ message ListTasksResponse {
 // --8<-- [end:ListTasksResponse]
 
 // --8<-- [start:CancelTaskRequest]
-// Represents a request for the `tasks/cancel` method.
+// Represents a request for the `CancelTask` method.
 message CancelTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
@@ -8479,7 +8486,7 @@ message GetTaskPushNotificationConfigRequest {
 // --8<-- [end:GetTaskPushNotificationConfigRequest]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
-// Represents a request for the `tasks/pushNotificationConfig/delete` method.
+// Represents a request for the `DeleteTaskPushNotificationConfig` method.
 message DeleteTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
@@ -8489,9 +8496,9 @@ message DeleteTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
-// --8<-- [start:SetTaskPushNotificationConfigRequest]
-// Represents a request for the `tasks/pushNotificationConfig/set` method.
-message SetTaskPushNotificationConfigRequest {
+// --8<-- [start:CreateTaskPushNotificationConfigRequest]
+// Represents a request for the `CreateTaskPushNotificationConfig` method.
+message CreateTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The parent task resource for this config.
@@ -8502,7 +8509,7 @@ message SetTaskPushNotificationConfigRequest {
   // The configuration to create.
   TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:SetTaskPushNotificationConfigRequest]
+// --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {
@@ -8563,7 +8570,7 @@ message StreamResponse {
 // --8<-- [end:StreamResponse]
 
 // --8<-- [start:ListTaskPushNotificationConfigResponse]
-// Represents a successful response for the `tasks/pushNotificationConfig/list`
+// Represents a successful response for the `ListTaskPushNotificationConfig`
 // method.
 message ListTaskPushNotificationConfigResponse {
   // The list of push notification configurations.
@@ -8620,10 +8627,6 @@ message ListTaskPushNotificationConfigResponse {
         "^(push_notifications)$": {
           "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
           "type": "boolean"
-        },
-        "^(state_transition_history)$": {
-          "description": "Indicates if the agent provides a history of state transitions for a task.",
-          "type": "boolean"
         }
       },
       "properties": {
@@ -8640,10 +8643,6 @@ message ListTaskPushNotificationConfigResponse {
         },
         "pushNotifications": {
           "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
-          "type": "boolean"
-        },
-        "stateTransitionHistory": {
-          "description": "Indicates if the agent provides a history of state transitions for a task.",
           "type": "boolean"
         },
         "streaming": {
@@ -9111,7 +9110,7 @@ message ListTaskPushNotificationConfigResponse {
     "Cancel Task Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a request for the `tasks/cancel` method.",
+      "description": "Represents a request for the `CancelTask` method.",
       "properties": {
         "name": {
           "default": "",
@@ -9168,6 +9167,41 @@ message ListTaskPushNotificationConfigResponse {
       "title": "Client CredentialsO Auth Flow",
       "type": "object"
     },
+    "Create Task Push Notification Config Request": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "Represents a request for the `CreateTaskPushNotificationConfig` method.",
+      "patternProperties": {
+        "^(config_id)$": {
+          "default": "",
+          "description": "The ID for the new config.",
+          "type": "string"
+        }
+      },
+      "properties": {
+        "config": {
+          "$ref": "a2a.v1.TaskPushNotificationConfig.jsonschema.json",
+          "description": "The configuration to create."
+        },
+        "configId": {
+          "default": "",
+          "description": "The ID for the new config.",
+          "type": "string"
+        },
+        "parent": {
+          "default": "",
+          "description": "The parent task resource for this config.\n Format: tasks/{task_id}",
+          "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
+          "type": "string"
+        }
+      },
+      "title": "Create Task Push Notification Config Request",
+      "type": "object"
+    },
     "Data Part": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
@@ -9184,7 +9218,7 @@ message ListTaskPushNotificationConfigResponse {
     "Delete Task Push Notification Config Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a request for the `tasks/pushNotificationConfig/delete` method.",
+      "description": "Represents a request for the `DeleteTaskPushNotificationConfig` method.",
       "properties": {
         "name": {
           "default": "",
@@ -9329,7 +9363,7 @@ message ListTaskPushNotificationConfigResponse {
     "Get Task Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a request for the `tasks/get` method.",
+      "description": "Represents a request for the `GetTask` method.",
       "patternProperties": {
         "^(history_length)$": {
           "anyOf": [
@@ -9343,7 +9377,7 @@ message ListTaskPushNotificationConfigResponse {
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve. An\n unset value means the client does not impose any limit. A value of zero is\n a request to not include any messages. The server MUST NOT return more\n messages than the provided value, but MAY apply a lower limit."
         }
       },
       "properties": {
@@ -9359,7 +9393,7 @@ message ListTaskPushNotificationConfigResponse {
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve. An\n unset value means the client does not impose any limit. A value of zero is\n a request to not include any messages. The server MUST NOT return more\n messages than the provided value, but MAY apply a lower limit."
         },
         "name": {
           "default": "",
@@ -9469,7 +9503,7 @@ message ListTaskPushNotificationConfigResponse {
     "List Task Push Notification Config Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a successful response for the `tasks/pushNotificationConfig/list`\n method.",
+      "description": "Represents a successful response for the `ListTaskPushNotificationConfig`\n method.",
       "patternProperties": {
         "^(next_page_token)$": {
           "default": "",
@@ -10065,7 +10099,7 @@ message ListTaskPushNotificationConfigResponse {
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
         },
         "^(push_notification_config)$": {
           "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
@@ -10097,7 +10131,7 @@ message ListTaskPushNotificationConfigResponse {
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
         },
         "pushNotificationConfig": {
           "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
@@ -10110,7 +10144,7 @@ message ListTaskPushNotificationConfigResponse {
     "Send Message Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "/////////// Request Messages ///////////\n Represents a request for the `message/send` method.",
+      "description": "/////////// Request Messages ///////////\n Represents a request for the `SendMessage` method.",
       "properties": {
         "configuration": {
           "$ref": "a2a.v1.SendMessageConfiguration.jsonschema.json",
@@ -10146,41 +10180,6 @@ message ListTaskPushNotificationConfigResponse {
         }
       },
       "title": "Send Message Response",
-      "type": "object"
-    },
-    "Set Task Push Notification Config Request": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "additionalProperties": false,
-      "description": "Represents a request for the `tasks/pushNotificationConfig/set` method.",
-      "patternProperties": {
-        "^(config_id)$": {
-          "default": "",
-          "description": "The ID for the new config.",
-          "type": "string"
-        }
-      },
-      "properties": {
-        "config": {
-          "$ref": "a2a.v1.TaskPushNotificationConfig.jsonschema.json",
-          "description": "The configuration to create."
-        },
-        "configId": {
-          "default": "",
-          "description": "The ID for the new config.",
-          "type": "string"
-        },
-        "parent": {
-          "default": "",
-          "description": "The parent task resource for this config.\n Format: tasks/{task_id}",
-          "type": "string"
-        },
-        "tenant": {
-          "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
-          "type": "string"
-        }
-      },
-      "title": "Set Task Push Notification Config Request",
       "type": "object"
     },
     "Stream Response": {
