@@ -81,8 +81,8 @@ service A2AService {
     };
   }
 
-  // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
+  // Create a push notification config for a task.
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
@@ -143,7 +143,10 @@ message SendMessageConfiguration {
   repeated string accepted_output_modes = 1;
   // Configuration for the agent to send push notifications for task updates.
   PushNotificationConfig push_notification_config = 2;
-  // The maximum number of messages to include in the history.
+  // The maximum number of most recent messages from the task's history to retrieve in
+  // the response. An unset value means the client does not impose any limit. A
+  // value of zero is a request to not include any messages. The server MUST NOT
+  // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
   // If true, the operation waits until the task reaches a terminal state before returning. Default is false.
   bool blocking = 4;
@@ -477,8 +480,8 @@ message AgentCapabilities {
   optional bool push_notifications = 2;
   // A list of protocol extensions supported by the agent.
   repeated AgentExtension extensions = 3;
-  // Indicates if the agent provides a history of state transitions for a task.
-  optional bool state_transition_history = 4;
+  // Field 4 was previously used by state_transition_history capability.
+  reserved 4;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 5;
 }
@@ -700,7 +703,7 @@ message DeviceCodeOAuthFlow {
 
 ///////////// Request Messages ///////////
 // --8<-- [start:SendMessageRequest]
-// Represents a request for the `message/send` method.
+// Represents a request for the `SendMessage` method.
 message SendMessageRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
@@ -714,14 +717,17 @@ message SendMessageRequest {
 // --8<-- [end:SendMessageRequest]
 
 // --8<-- [start:GetTaskRequest]
-// Represents a request for the `tasks/get` method.
+// Represents a request for the `GetTask` method.
 message GetTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
-  // The maximum number of messages to include in the history.
+  // The maximum number of most recent messages from the task's history to retrieve. An
+  // unset value means the client does not impose any limit. A value of zero is
+  // a request to not include any messages. The server MUST NOT return more
+  // messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 2;
 }
 // --8<-- [end:GetTaskRequest]
@@ -766,7 +772,7 @@ message ListTasksResponse {
 // --8<-- [end:ListTasksResponse]
 
 // --8<-- [start:CancelTaskRequest]
-// Represents a request for the `tasks/cancel` method.
+// Represents a request for the `CancelTask` method.
 message CancelTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
@@ -787,7 +793,7 @@ message GetTaskPushNotificationConfigRequest {
 // --8<-- [end:GetTaskPushNotificationConfigRequest]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
-// Represents a request for the `tasks/pushNotificationConfig/delete` method.
+// Represents a request for the `DeleteTaskPushNotificationConfig` method.
 message DeleteTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
@@ -797,9 +803,9 @@ message DeleteTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
-// --8<-- [start:SetTaskPushNotificationConfigRequest]
-// Represents a request for the `tasks/pushNotificationConfig/set` method.
-message SetTaskPushNotificationConfigRequest {
+// --8<-- [start:CreateTaskPushNotificationConfigRequest]
+// Represents a request for the `CreateTaskPushNotificationConfig` method.
+message CreateTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The parent task resource for this config.
@@ -810,7 +816,7 @@ message SetTaskPushNotificationConfigRequest {
   // The configuration to create.
   TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:SetTaskPushNotificationConfigRequest]
+// --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {
@@ -871,7 +877,7 @@ message StreamResponse {
 // --8<-- [end:StreamResponse]
 
 // --8<-- [start:ListTaskPushNotificationConfigResponse]
-// Represents a successful response for the `tasks/pushNotificationConfig/list`
+// Represents a successful response for the `ListTaskPushNotificationConfig`
 // method.
 message ListTaskPushNotificationConfigResponse {
   // The list of push notification configurations.
