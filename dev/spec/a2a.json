@@ -40,10 +40,6 @@
         "^(push_notifications)$": {
           "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
           "type": "boolean"
-        },
-        "^(state_transition_history)$": {
-          "description": "Indicates if the agent provides a history of state transitions for a task.",
-          "type": "boolean"
         }
       },
       "properties": {
@@ -60,10 +56,6 @@
         },
         "pushNotifications": {
           "description": "Indicates if the agent supports sending push notifications for asynchronous task updates.",
-          "type": "boolean"
-        },
-        "stateTransitionHistory": {
-          "description": "Indicates if the agent provides a history of state transitions for a task.",
           "type": "boolean"
         },
         "streaming": {
@@ -531,7 +523,7 @@
     "Cancel Task Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a request for the `tasks/cancel` method.",
+      "description": "Represents a request for the `CancelTask` method.",
       "properties": {
         "name": {
           "default": "",
@@ -588,6 +580,41 @@
       "title": "Client CredentialsO Auth Flow",
       "type": "object"
     },
+    "Create Task Push Notification Config Request": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "Represents a request for the `CreateTaskPushNotificationConfig` method.",
+      "patternProperties": {
+        "^(config_id)$": {
+          "default": "",
+          "description": "The ID for the new config.",
+          "type": "string"
+        }
+      },
+      "properties": {
+        "config": {
+          "$ref": "a2a.v1.TaskPushNotificationConfig.jsonschema.json",
+          "description": "The configuration to create."
+        },
+        "configId": {
+          "default": "",
+          "description": "The ID for the new config.",
+          "type": "string"
+        },
+        "parent": {
+          "default": "",
+          "description": "The parent task resource for this config.\n Format: tasks/{task_id}",
+          "type": "string"
+        },
+        "tenant": {
+          "default": "",
+          "description": "Optional tenant, provided as a path parameter.",
+          "type": "string"
+        }
+      },
+      "title": "Create Task Push Notification Config Request",
+      "type": "object"
+    },
     "Data Part": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
@@ -604,7 +631,7 @@
     "Delete Task Push Notification Config Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a request for the `tasks/pushNotificationConfig/delete` method.",
+      "description": "Represents a request for the `DeleteTaskPushNotificationConfig` method.",
       "properties": {
         "name": {
           "default": "",
@@ -749,7 +776,7 @@
     "Get Task Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a request for the `tasks/get` method.",
+      "description": "Represents a request for the `GetTask` method.",
       "patternProperties": {
         "^(history_length)$": {
           "anyOf": [
@@ -763,7 +790,7 @@
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve. An\n unset value means the client does not impose any limit. A value of zero is\n a request to not include any messages. The server MUST NOT return more\n messages than the provided value, but MAY apply a lower limit."
         }
       },
       "properties": {
@@ -779,7 +806,7 @@
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve. An\n unset value means the client does not impose any limit. A value of zero is\n a request to not include any messages. The server MUST NOT return more\n messages than the provided value, but MAY apply a lower limit."
         },
         "name": {
           "default": "",
@@ -889,7 +916,7 @@
     "List Task Push Notification Config Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a successful response for the `tasks/pushNotificationConfig/list`\n method.",
+      "description": "Represents a successful response for the `ListTaskPushNotificationConfig`\n method.",
       "patternProperties": {
         "^(next_page_token)$": {
           "default": "",
@@ -1485,7 +1512,7 @@
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
         },
         "^(push_notification_config)$": {
           "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
@@ -1517,7 +1544,7 @@
               "type": "string"
             }
           ],
-          "description": "The maximum number of messages to include in the history."
+          "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
         },
         "pushNotificationConfig": {
           "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
@@ -1530,7 +1557,7 @@
     "Send Message Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "/////////// Request Messages ///////////\n Represents a request for the `message/send` method.",
+      "description": "/////////// Request Messages ///////////\n Represents a request for the `SendMessage` method.",
       "properties": {
         "configuration": {
           "$ref": "a2a.v1.SendMessageConfiguration.jsonschema.json",
@@ -1566,41 +1593,6 @@
         }
       },
       "title": "Send Message Response",
-      "type": "object"
-    },
-    "Set Task Push Notification Config Request": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "additionalProperties": false,
-      "description": "Represents a request for the `tasks/pushNotificationConfig/set` method.",
-      "patternProperties": {
-        "^(config_id)$": {
-          "default": "",
-          "description": "The ID for the new config.",
-          "type": "string"
-        }
-      },
-      "properties": {
-        "config": {
-          "$ref": "a2a.v1.TaskPushNotificationConfig.jsonschema.json",
-          "description": "The configuration to create."
-        },
-        "configId": {
-          "default": "",
-          "description": "The ID for the new config.",
-          "type": "string"
-        },
-        "parent": {
-          "default": "",
-          "description": "The parent task resource for this config.\n Format: tasks/{task_id}",
-          "type": "string"
-        },
-        "tenant": {
-          "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
-          "type": "string"
-        }
-      },
-      "title": "Set Task Push Notification Config Request",
       "type": "object"
     },
     "Stream Response": {

@@ -1801,7 +1801,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 <h3 id="protocol-specification-references_1">Protocol Specification References<a class="headerlink" href="#protocol-specification-references_1" title="Permanent link">&para;</a></h3>
 <p>Refer to the Protocol Specification for detailed structures:</p>
 <ul>
-<li><a href="../../specification/#75-taskspushnotificationconfigset"><code>tasks/pushNotificationConfig/set</code></a></li>
+<li><a href="../../specification/#317-create-push-notification-config"><code>tasks/pushNotificationConfig/create</code></a></li>
 <li><a href="../../specification/#76-taskspushnotificationconfigget"><code>tasks/get</code></a></li>
 </ul>
 <h3 id="client-side-push-notification-service">Client-Side Push Notification Service<a class="headerlink" href="#client-side-push-notification-service" title="Permanent link">&para;</a></h3>
@@ -1831,7 +1831,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 </ul>
 <h4 id="example-asymmetric-key-flow-jwt-jwks">Example Asymmetric Key Flow (JWT + JWKS)<a class="headerlink" href="#example-asymmetric-key-flow-jwt-jwks" title="Permanent link">&para;</a></h4>
 <ol>
-<li>Client sets <code>PushNotificationConfig</code> specifying <code>authentication.schemes: ["Bearer"]</code> and possibly an expected <code>issuer</code> or <code>audience</code> for the JWT.</li>
+<li>Client creates a <code>PushNotificationConfig</code> specifying <code>authentication.schemes: ["Bearer"]</code> and possibly an expected <code>issuer</code> or <code>audience</code> for the JWT.</li>
 <li>A2A Server, when sending a notification:<ul>
 <li>Generates a JWT, signing it with its private key. The JWT includes claims like <code>iss</code> (issuer), <code>aud</code> (audience), <code>iat</code> (issued at), <code>exp</code> (expires), <code>jti</code> (JWT ID), and <code>taskId</code>.</li>
 <li>The JWT header indicates the signing algorithm and key ID (<code>kid</code>).</li>

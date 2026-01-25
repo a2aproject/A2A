@@ -1319,10 +1319,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#317-set-or-update-push-notification-config" class="md-nav__link">
+  <a href="#317-create-push-notification-config" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.1.7. Set or Update Push Notification Config
+        3.1.7. Create Push Notification Config
       
     </span>
   </a>
@@ -2981,10 +2981,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#1047-settaskpushnotificationconfig" class="md-nav__link">
+  <a href="#1047-createtaskpushnotificationconfig" class="md-nav__link">
     <span class="md-ellipsis">
       
-        10.4.7. SetTaskPushNotificationConfig
+        10.4.7. CreateTaskPushNotificationConfig
       
     </span>
   </a>
@@ -4030,10 +4030,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#317-set-or-update-push-notification-config" class="md-nav__link">
+  <a href="#317-create-push-notification-config" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.1.7. Set or Update Push Notification Config
+        3.1.7. Create Push Notification Config
       
     </span>
   </a>
@@ -5692,10 +5692,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#1047-settaskpushnotificationconfig" class="md-nav__link">
+  <a href="#1047-createtaskpushnotificationconfig" class="md-nav__link">
     <span class="md-ellipsis">
       
-        10.4.7. SetTaskPushNotificationConfig
+        10.4.7. CreateTaskPushNotificationConfig
       
     </span>
   </a>
@@ -6565,7 +6565,7 @@
 <h4 id="313-get-task">3.1.3. Get Task<a class="headerlink" href="#313-get-task" title="Permanent link">&para;</a></h4>
 <p>Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with message/send, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.</p>
 <p><strong>Inputs:</strong></p>
-<p>Represents a request for the <code>tasks/get</code> method.</p>
+<p>Represents a request for the <code>GetTask</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6592,7 +6592,7 @@
 <td><code>historyLength</code></td>
 <td><code>integer</code></td>
 <td>Optional</td>
-<td>The maximum number of messages to include in the history.</td>
+<td>The maximum number of most recent messages from the task's history to retrieve. An unset value means the client does not impose any limit. A value of zero is a request to not include any messages. The server MUST NOT return more messages than the provided value, but MAY apply a lower limit.</td>
 </tr>
 </tbody>
 </table>
@@ -6720,7 +6720,7 @@
 <h4 id="315-cancel-task">3.1.5. Cancel Task<a class="headerlink" href="#315-cancel-task" title="Permanent link">&para;</a></h4>
 <p>Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).</p>
 <p><strong>Inputs:</strong></p>
-<p>Represents a request for the <code>tasks/cancel</code> method.</p>
+<p>Represents a request for the <code>CancelTask</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6801,11 +6801,12 @@
 <p><strong>Behavior:</strong></p>
 <p>The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, or <code>rejected</code>).</p>
 <p>The operation MUST return a <code>Task</code> object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to <code>GetTask</code> and calling <code>SubscribeToTask</code>.</p>
-<h4 id="317-set-or-update-push-notification-config">3.1.7. Set or Update Push Notification Config<a class="headerlink" href="#317-set-or-update-push-notification-config" title="Permanent link">&para;</a></h4>
-<p><span id="75-taskspushnotificationconfigset"></span></p>
-<p>Creates or updates a push notification configuration for a task to receive asynchronous updates via webhook.</p>
+<h4 id="317-create-push-notification-config">3.1.7. Create Push Notification Config<a class="headerlink" href="#317-create-push-notification-config" title="Permanent link">&para;</a></h4>
+<p><span id="75-taskspushnotificationconfigset"></span>
+<span id="317-create-push-notification-config"></span></p>
+<p>Creates a push notification configuration for a task to receive asynchronous updates via webhook.</p>
 <p><strong>Inputs:</strong></p>
-<p>Represents a request for the <code>tasks/pushNotificationConfig/set</code> method.</p>
+<p>Represents a request for the <code>CreateTaskPushNotificationConfig</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6933,7 +6934,7 @@
 </tbody>
 </table>
 <p><strong>Outputs:</strong></p>
-<p>Represents a successful response for the <code>tasks/pushNotificationConfig/list</code> method.</p>
+<p>Represents a successful response for the <code>ListTaskPushNotificationConfig</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6968,7 +6969,7 @@
 <h4 id="3110-delete-push-notification-config">3.1.10. Delete Push Notification Config<a class="headerlink" href="#3110-delete-push-notification-config" title="Permanent link">&para;</a></h4>
 <p>Removes a push notification configuration for a task.</p>
 <p><strong>Inputs:</strong></p>
-<p>Represents a request for the <code>tasks/pushNotificationConfig/delete</code> method.</p>
+<p>Represents a request for the <code>DeleteTaskPushNotificationConfig</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -7045,7 +7046,7 @@
 <h3 id="32-operation-parameter-objects">3.2. Operation Parameter Objects<a class="headerlink" href="#32-operation-parameter-objects" title="Permanent link">&para;</a></h3>
 <p>This section defines common parameter objects used across multiple operations.</p>
 <h4 id="321-sendmessagerequest">3.2.1. SendMessageRequest<a class="headerlink" href="#321-sendmessagerequest" title="Permanent link">&para;</a></h4>
-<p>Represents a request for the <code>message/send</code> method.</p>
+<p>Represents a request for the <code>SendMessage</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -7110,7 +7111,7 @@
 <td><code>historyLength</code></td>
 <td><code>integer</code></td>
 <td>Optional</td>
-<td>The maximum number of messages to include in the history.</td>
+<td>The maximum number of most recent messages from the task's history to retrieve in the response. An unset value means the client does not impose any limit. A value of zero is a request to not include any messages. The server MUST NOT return more messages than the provided value, but MAY apply a lower limit.</td>
 </tr>
 <tr>
 <td><code>blocking</code></td>
@@ -7338,7 +7339,7 @@
 <h4 id="334-capability-validation">3.3.4. Capability Validation<a class="headerlink" href="#334-capability-validation" title="Permanent link">&para;</a></h4>
 <p>Agents declare optional capabilities in their <a href="#441-agentcard"><code>AgentCard</code></a>. When clients attempt to use operations or features that require capabilities not declared as supported in the Agent Card, the agent <strong>MUST</strong> return an appropriate error response:</p>
 <ul>
-<li><strong>Push Notifications</strong>: If <code>AgentCard.capabilities.pushNotifications</code> is <code>false</code> or not present, operations related to push notification configuration (Set, Get, List, Delete) <strong>MUST</strong> return <a href="#332-error-handling"><code>PushNotificationNotSupportedError</code></a>.</li>
+<li><strong>Push Notifications</strong>: If <code>AgentCard.capabilities.pushNotifications</code> is <code>false</code> or not present, operations related to push notification configuration (Create, Get, List, Delete) <strong>MUST</strong> return <a href="#332-error-handling"><code>PushNotificationNotSupportedError</code></a>.</li>
 <li><strong>Streaming</strong>: If <code>AgentCard.capabilities.streaming</code> is <code>false</code> or not present, attempts to use <code>SendStreamingMessage</code> or <code>SubscribeToTask</code> operations <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>.</li>
 <li><strong>Extended Agent Card</strong>: If <code>AgentCard.capabilities.extendedAgentCard</code> is <code>false</code> or not present, attempts to call the Get Extended Agent Card operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>. If the agent declares support but has not configured an extended card, it <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a>.</li>
 <li><strong>Extensions</strong>: When a client requests use of an extension marked as <code>required: true</code> in the Agent Card but the client does not declare support for it, the agent <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtensionSupportRequiredError</code></a>.</li>
@@ -7414,7 +7415,7 @@
 <li>Client does not maintain persistent connection</li>
 <li>Asynchronous delivery, client must be reachable via HTTP</li>
 <li>Best for: Server-to-server integrations, long-running tasks, event-driven architectures</li>
-<li>Operations: Set (<a href="#75-taskspushnotificationconfigset">Section 3.1.7</a>), Get (<a href="#76-taskspushnotificationconfigget">Section 3.1.8</a>), List (<a href="#319-list-push-notification-configs">Section 3.1.9</a>), Delete (<a href="#3110-delete-push-notification-config">Section 3.1.10</a>)</li>
+<li>Operations: Create (<a href="#317-create-push-notification-config">Section 3.1.7</a>), Get (<a href="#76-taskspushnotificationconfigget">Section 3.1.8</a>), List (<a href="#319-list-push-notification-configs">Section 3.1.9</a>), Delete (<a href="#3110-delete-push-notification-config">Section 3.1.10</a>)</li>
 <li>Event types: TaskStatusUpdateEvent (<a href="#421-taskstatusupdateevent">Section 4.2.1</a>), TaskArtifactUpdateEvent (<a href="#422-taskartifactupdateevent">Section 4.2.2</a>), WebHook payloads (<a href="#43-push-notification-objects">Section 4.3</a>)</li>
 <li>Requires <code>AgentCard.capabilities.pushNotifications</code> to be <code>true</code></li>
 <li>Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding</li>
@@ -8214,12 +8215,6 @@
 <td>A list of protocol extensions supported by the agent.</td>
 </tr>
 <tr>
-<td><code>stateTransitionHistory</code></td>
-<td><code>boolean</code></td>
-<td>Optional</td>
-<td>Indicates if the agent provides a history of state transitions for a task.</td>
-</tr>
-<tr>
 <td><code>extendedAgentCard</code></td>
 <td><code>boolean</code></td>
 <td>Optional</td>
@@ -8906,9 +8901,9 @@
 <td style="text-align: left;"><code>POST /tasks/{id}:subscribe</code></td>
 </tr>
 <tr>
-<td style="text-align: left;">Set push notification config</td>
-<td style="text-align: left;"><code>SetTaskPushNotificationConfig</code></td>
-<td style="text-align: left;"><code>SetTaskPushNotificationConfig</code></td>
+<td style="text-align: left;">Create push notification config</td>
+<td style="text-align: left;"><code>CreateTaskPushNotificationConfig</code></td>
+<td style="text-align: left;"><code>CreateTaskPushNotificationConfig</code></td>
 <td style="text-align: left;"><code>POST /tasks/{id}/pushNotificationConfigs</code></td>
 </tr>
 <tr>
@@ -9981,7 +9976,7 @@
 <p><strong>Error:</strong> Returns <code>UnsupportedOperationError</code> if the task is in a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, or <code>rejected</code>).</p>
 <h4 id="947-push-notification-configuration-methods">9.4.7. Push Notification Configuration Methods<a class="headerlink" href="#947-push-notification-configuration-methods" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>SetTaskPushNotificationConfig</code> - Set push notification configuration</li>
+<li><code>CreateTaskPushNotificationConfig</code> - Create push notification configuration</li>
 <li><code>GetTaskPushNotificationConfig</code> - Get push notification configuration</li>
 <li><code>ListTaskPushNotificationConfig</code> - List push notification configurations</li>
 <li><code>DeleteTaskPushNotificationConfig</code> - Delete push notification configuration</li>
@@ -10118,7 +10113,7 @@
 </span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">ListTasks</span><span class="p">(</span><span class="n">ListTasksRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">ListTasksResponse</span><span class="p">);</span>
 </span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">CancelTask</span><span class="p">(</span><span class="n">CancelTaskRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">Task</span><span class="p">);</span>
 </span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">SubscribeToTask</span><span class="p">(</span><span class="n">SubscribeToTaskRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">stream</span><span class="w"> </span><span class="n">StreamResponse</span><span class="p">);</span>
-</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">SetTaskPushNotificationConfig</span><span class="p">(</span><span class="n">SetTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">TaskPushNotificationConfig</span><span class="p">);</span>
+</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">CreateTaskPushNotificationConfig</span><span class="p">(</span><span class="n">CreateTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">TaskPushNotificationConfig</span><span class="p">);</span>
 </span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">GetTaskPushNotificationConfig</span><span class="p">(</span><span class="n">GetTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">TaskPushNotificationConfig</span><span class="p">);</span>
 </span><span id="__span-54-10"><a id="__codelineno-54-10" name="__codelineno-54-10" href="#__codelineno-54-10"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">ListTaskPushNotificationConfig</span><span class="p">(</span><span class="n">ListTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">ListTaskPushNotificationConfigResponse</span><span class="p">);</span>
 </span><span id="__span-54-11"><a id="__codelineno-54-11" name="__codelineno-54-11" href="#__codelineno-54-11"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">DeleteTaskPushNotificationConfig</span><span class="p">(</span><span class="n">DeleteTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">google.protobuf.Empty</span><span class="p">);</span>
@@ -10129,7 +10124,7 @@
 <h4 id="1041-sendmessage">10.4.1. SendMessage<a class="headerlink" href="#1041-sendmessage" title="Permanent link">&para;</a></h4>
 <p>Sends a message to an agent.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="c1">// Represents a request for the `message/send` method.</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="c1">// Represents a request for the `SendMessage` method.</span>
 </span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SendMessageRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
@@ -10152,7 +10147,7 @@
 <h4 id="1042-sendstreamingmessage">10.4.2. SendStreamingMessage<a class="headerlink" href="#1042-sendstreamingmessage" title="Permanent link">&para;</a></h4>
 <p>Sends a message with streaming updates.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="c1">// Represents a request for the `message/send` method.</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="c1">// Represents a request for the `SendMessage` method.</span>
 </span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SendMessageRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
@@ -10168,16 +10163,19 @@
 <h4 id="1043-gettask">10.4.3. GetTask<a class="headerlink" href="#1043-gettask" title="Permanent link">&para;</a></h4>
 <p>Retrieves task status.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="c1">// Represents a request for the `tasks/get` method.</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="c1">// Represents a request for the `GetTask` method.</span>
 </span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">GetTaskRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
 </span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="w">  </span><span class="c1">// The resource name of the task.</span>
 </span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}</span>
 </span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="w">  </span><span class="c1">// The maximum number of messages to include in the history.</span>
-</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">history_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a><span class="p">}</span>
+</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="w">  </span><span class="c1">// The maximum number of most recent messages from the task&#39;s history to retrieve. An</span>
+</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="w">  </span><span class="c1">// unset value means the client does not impose any limit. A value of zero is</span>
+</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a><span class="w">  </span><span class="c1">// a request to not include any messages. The server MUST NOT return more</span>
+</span><span id="__span-58-11"><a id="__codelineno-58-11" name="__codelineno-58-11" href="#__codelineno-58-11"></a><span class="w">  </span><span class="c1">// messages than the provided value, but MAY apply a lower limit.</span>
+</span><span id="__span-58-12"><a id="__codelineno-58-12" name="__codelineno-58-12" href="#__codelineno-58-12"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">history_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</span><span id="__span-58-13"><a id="__codelineno-58-13" name="__codelineno-58-13" href="#__codelineno-58-13"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> See <a href="#411-task"><code>Task</code></a> object definition.</p>
 <h4 id="1044-listtasks">10.4.4. ListTasks<a class="headerlink" href="#1044-listtasks" title="Permanent link">&para;</a></h4>
@@ -10222,7 +10220,7 @@
 <h4 id="1045-canceltask">10.4.5. CancelTask<a class="headerlink" href="#1045-canceltask" title="Permanent link">&para;</a></h4>
 <p>Cancels a running task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="c1">// Represents a request for the `tasks/cancel` method.</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="c1">// Represents a request for the `CancelTask` method.</span>
 </span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">CancelTaskRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
@@ -10244,11 +10242,11 @@
 </span><span id="__span-62-7"><a id="__codelineno-62-7" name="__codelineno-62-7" href="#__codelineno-62-7"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> Server streaming <a href="#stream-response"><code>StreamResponse</code></a> objects.</p>
-<h4 id="1047-settaskpushnotificationconfig">10.4.7. SetTaskPushNotificationConfig<a class="headerlink" href="#1047-settaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
+<h4 id="1047-createtaskpushnotificationconfig">10.4.7. CreateTaskPushNotificationConfig<a class="headerlink" href="#1047-createtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Creates a push notification configuration for a task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="c1">// Represents a request for the `tasks/pushNotificationConfig/set` method.</span>
-</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SetTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="c1">// Represents a request for the `CreateTaskPushNotificationConfig` method.</span>
+</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">CreateTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-63-3"><a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-63-4"><a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
 </span><span id="__span-63-5"><a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a><span class="w">  </span><span class="c1">// The parent task resource for this config.</span>
@@ -10290,7 +10288,7 @@
 </span><span id="__span-65-12"><a id="__codelineno-65-12" name="__codelineno-65-12" href="#__codelineno-65-12"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-66-1"><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a><span class="c1">// Represents a successful response for the `tasks/pushNotificationConfig/list`</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-66-1"><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a><span class="c1">// Represents a successful response for the `ListTaskPushNotificationConfig`</span>
 </span><span id="__span-66-2"><a id="__codelineno-66-2" name="__codelineno-66-2" href="#__codelineno-66-2"></a><span class="c1">// method.</span>
 </span><span id="__span-66-3"><a id="__codelineno-66-3" name="__codelineno-66-3" href="#__codelineno-66-3"></a><span class="kd">message</span><span class="w"> </span><span class="nc">ListTaskPushNotificationConfigResponse</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-66-4"><a id="__codelineno-66-4" name="__codelineno-66-4" href="#__codelineno-66-4"></a><span class="w">  </span><span class="c1">// The list of push notification configurations.</span>
@@ -10303,7 +10301,7 @@
 <h4 id="10410-deletetaskpushnotificationconfig">10.4.10. DeleteTaskPushNotificationConfig<a class="headerlink" href="#10410-deletetaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Removes a push notification configuration for a task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-67-1"><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a><span class="c1">// Represents a request for the `tasks/pushNotificationConfig/delete` method.</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-67-1"><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a><span class="c1">// Represents a request for the `DeleteTaskPushNotificationConfig` method.</span>
 </span><span id="__span-67-2"><a id="__codelineno-67-2" name="__codelineno-67-2" href="#__codelineno-67-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">DeleteTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-67-3"><a id="__codelineno-67-3" name="__codelineno-67-3" href="#__codelineno-67-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-67-4"><a id="__codelineno-67-4" name="__codelineno-67-4" href="#__codelineno-67-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
