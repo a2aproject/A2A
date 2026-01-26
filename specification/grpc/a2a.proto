@@ -81,8 +81,8 @@ service A2AService {
     };
   }
 
-  // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
+  // Create a push notification config for a task.
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
@@ -478,8 +478,8 @@ message AgentCapabilities {
   optional bool push_notifications = 2;
   // A list of protocol extensions supported by the agent.
   repeated AgentExtension extensions = 3;
-  // Indicates if the agent provides a history of state transitions for a task.
-  optional bool state_transition_history = 4;
+  // Field 4 was previously used by state_transition_history capability.
+  reserved 4;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 5;
 }
@@ -827,9 +827,9 @@ message DeleteTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
-// --8<-- [start:SetTaskPushNotificationConfigRequest]
-// Represents a request for the `SetTaskPushNotificationConfig` method.
-message SetTaskPushNotificationConfigRequest {
+// --8<-- [start:CreateTaskPushNotificationConfigRequest]
+// Represents a request for the `CreateTaskPushNotificationConfig` method.
+message CreateTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The parent task resource for this config.
@@ -840,7 +840,7 @@ message SetTaskPushNotificationConfigRequest {
   // The configuration to create.
   TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:SetTaskPushNotificationConfigRequest]
+// --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {
