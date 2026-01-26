@@ -67,7 +67,7 @@ Push notifications are ideal for:
 
 Refer to the Protocol Specification for detailed structures:
 
-- [`tasks/pushNotificationConfig/set`](../specification.md#75-taskspushnotificationconfigset)
+- [`tasks/pushNotificationConfig/create`](../specification.md#317-create-push-notification-config)
 - [`tasks/get`](../specification.md#76-taskspushnotificationconfigget)
 
 ### Client-Side Push Notification Service
@@ -95,7 +95,7 @@ Security is paramount for push notifications due to their asynchronous and serve
 
 #### Example Asymmetric Key Flow (JWT + JWKS)
 
-1. Client sets `PushNotificationConfig` specifying `authentication.schemes: ["Bearer"]` and possibly an expected `issuer` or `audience` for the JWT.
+1. Client creates a `PushNotificationConfig` specifying `authentication.schemes: ["Bearer"]` and possibly an expected `issuer` or `audience` for the JWT.
 2. A2A Server, when sending a notification:
     - Generates a JWT, signing it with its private key. The JWT includes claims like `iss` (issuer), `aud` (audience), `iat` (issued at), `exp` (expires), `jti` (JWT ID), and `taskId`.
     - The JWT header indicates the signing algorithm and key ID (`kid`).
