@@ -417,7 +417,7 @@ message AgentInterface {
 message AgentCard {
   // Reserve these field numbers as they were previously used by removed
   // fields.
-  reserved 3, 14, 15, 16;
+  reserved 3, 9, 14, 15, 16;
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -439,7 +439,7 @@ message AgentCard {
   // The security scheme details used for authenticating with this agent.
   map<string, SecurityScheme> security_schemes = 8;
   // Security requirements for contacting the agent.
-  repeated SecurityRequirement security_requirements = 9;
+  repeated SecurityRequirement security_requirements = 19;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // The set of interaction modes that the agent supports across all skills.
   // This can be overridden per skill. Defined as media types.
