@@ -417,7 +417,7 @@ message AgentInterface {
 message AgentCard {
   // Reserve these field numbers as they were previously used by removed
   // fields.
-  reserved 3, 8, 9, 14, 15, 16;
+  reserved 3, 14, 15, 16;
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -436,6 +436,10 @@ message AgentCard {
   optional string documentation_url = 6;
   // A2A Capability set supported by the agent.
   AgentCapabilities capabilities = 7 [(google.api.field_behavior) = REQUIRED];
+  // The security scheme details used for authenticating with this agent.
+  map<string, SecurityScheme> security_schemes = 8;
+  // Security requirements for contacting the agent.
+  repeated SecurityRequirement security_requirements = 9;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // The set of interaction modes that the agent supports across all skills.
   // This can be overridden per skill. Defined as media types.
@@ -468,10 +472,6 @@ message AgentProvider {
 // --8<-- [start:AgentCapabilities]
 // Defines optional capabilities supported by an agent.
 message AgentCapabilities {
-  // The security scheme details used for authenticating with this agent.
-  map<string, SecurityScheme> security_schemes = 6;
-  // Security requirements for contacting the agent.
-  repeated Security securities = 7;
   // Indicates if the agent supports streaming responses.
   optional bool streaming = 1;
   // Indicates if the agent supports sending push notifications for asynchronous task updates.
@@ -555,7 +555,7 @@ message StringList {
 }
 // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 
-message Security {
+message SecurityRequirement {
   map<string, StringList> schemes = 1;
 }
 
