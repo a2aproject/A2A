@@ -373,7 +373,7 @@ message PushNotificationConfig {
   string url = 2 [(google.api.field_behavior) = REQUIRED];
   // Token unique for this task/session
   string token = 3;
-  // Information about the authentication to sent with the notification
+  // Authentication information required to send the notification
   AuthenticationInfo authentication = 4;
 }
 // --8<-- [end:PushNotificationConfig]
@@ -381,9 +381,10 @@ message PushNotificationConfig {
 // --8<-- [start:PushNotificationAuthenticationInfo]
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
-  // A list of supported authentication schemes (e.g., 'Basic', 'Bearer').
-  repeated string schemes = 1 [(google.api.field_behavior) = REQUIRED];
-  // Optional credentials
+  // HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
+  // Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
+  string scheme = 1 [(google.api.field_behavior) = REQUIRED];
+  // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
   string credentials = 2;
 }
 // --8<-- [end:PushNotificationAuthenticationInfo]
