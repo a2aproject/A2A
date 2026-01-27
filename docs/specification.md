@@ -325,15 +325,16 @@ The operation enables real-time monitoring of task progress and can be used with
 
 The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
-#### 3.1.7. Set or Update Push Notification Config
+#### 3.1.7. Create Push Notification Config
 
 <span id="75-taskspushnotificationconfigset"></span>
+<span id="317-create-push-notification-config"></span>
 
-Creates or updates a push notification configuration for a task to receive asynchronous updates via webhook.
+Creates a push notification configuration for a task to receive asynchronous updates via webhook.
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "SetTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("specification/grpc/a2a.proto", "CreateTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -584,7 +585,7 @@ A2A operations are designed for asynchronous task execution. Operations return i
 
 Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). When clients attempt to use operations or features that require capabilities not declared as supported in the Agent Card, the agent **MUST** return an appropriate error response:
 
-- **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Set, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
+- **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
@@ -613,7 +614,20 @@ A `contextId` is an identifier that logically groups multiple related [`Task`](#
 - Agents **MAY** use the `contextId` to maintain internal state, conversational history, or LLM context across multiple interactions
 - Agents **MAY** implement context expiration or cleanup policies and **SHOULD** document any such policies
 
-#### 3.4.2. Multi-Turn Conversation Patterns
+#### 3.4.2. Task Identifier Semantics
+
+A `taskId` is a unique identifier for a [`Task`](#411-task) object, representing a stateful unit of work with a defined lifecycle.
+
+**Generation and Assignment:**
+
+- Task IDs are **server-generated** when a new task is created in response to a [`Message`](#414-message)
+- Agents **MUST** generate a unique `taskId` for each new task they create
+- The generated `taskId` **MUST** be included in the [`Task`](#411-task) object returned to the client
+- When a client includes a `taskId` in a [`Message`](#414-message), it **MUST** reference an existing task
+- Agents **MUST** return a [`TaskNotFoundError`](#332-error-handling) if the provided `taskId` does not correspond to an existing task
+- Client-provided `taskId` values for creating new tasks is **NOT** supported
+
+#### 3.4.3. Multi-Turn Conversation Patterns
 
 The A2A protocol supports several patterns for multi-turn interactions:
 
@@ -670,7 +684,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Set ([Section 3.1.7](#75-taskspushnotificationconfigset)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -1166,7 +1180,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
-| Set push notification config    | `SetTaskPushNotificationConfig`    | `SetTaskPushNotificationConfig`    | `POST /tasks/{id}/pushNotificationConfigs`              |
+| Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
 | List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /tasks/{id}/pushNotificationConfigs`               |
 | Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
@@ -1347,7 +1361,7 @@ data: {"task": {"id": "task-uuid", "status": {"state": "working"}}}
 
 data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "completed"}, "final": true}}
+data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "completed"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1682,8 +1696,7 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
     "status": {
       "state": "completed",
       "timestamp": "2024-03-15T18:30:00Z"
-    },
-    "final": true
+    }
   }
 }
 ```
@@ -2350,7 +2363,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 #### 9.4.7. Push Notification Configuration Methods
 
-- `SetTaskPushNotificationConfig` - Set push notification configuration
+- `CreateTaskPushNotificationConfig` - Create push notification configuration
 - `GetTaskPushNotificationConfig` - Get push notification configuration
 - `ListTaskPushNotificationConfig` - List push notification configurations
 - `DeleteTaskPushNotificationConfig` - Delete push notification configuration
@@ -2478,7 +2491,7 @@ service A2AService {
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
   rpc CancelTask(CancelTaskRequest) returns (Task);
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse);
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse);
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty);
@@ -2568,14 +2581,14 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
-#### 10.4.7. SetTaskPushNotificationConfig
+#### 10.4.7. CreateTaskPushNotificationConfig
 
 Creates a push notification configuration for a task.
 
 **Request:**
 
 ```proto
---8<-- "specification/grpc/a2a.proto:SetTaskPushNotificationConfigRequest"
+--8<-- "specification/grpc/a2a.proto:CreateTaskPushNotificationConfigRequest"
 ```
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
