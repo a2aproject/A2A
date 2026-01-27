@@ -81,8 +81,8 @@ service A2AService {
     };
   }
 
-  // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
+  // Create a push notification config for a task.
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
@@ -338,8 +338,7 @@ message TaskStatusUpdateEvent {
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The new status of the task.
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
-  // If true, this is the final event in the stream for this interaction.
-  bool final = 4 [(google.api.field_behavior) = REQUIRED];
+  reserved 4;
   // Optional metadata to associate with the task update.
   google.protobuf.Struct metadata = 5;
 }
@@ -374,7 +373,7 @@ message PushNotificationConfig {
   string url = 2 [(google.api.field_behavior) = REQUIRED];
   // Token unique for this task/session
   string token = 3;
-  // Information about the authentication to sent with the notification
+  // Authentication information required to send the notification
   AuthenticationInfo authentication = 4;
 }
 // --8<-- [end:PushNotificationConfig]
@@ -382,9 +381,10 @@ message PushNotificationConfig {
 // --8<-- [start:PushNotificationAuthenticationInfo]
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
-  // A list of supported authentication schemes (e.g., 'Basic', 'Bearer').
-  repeated string schemes = 1 [(google.api.field_behavior) = REQUIRED];
-  // Optional credentials
+  // HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
+  // Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
+  string scheme = 1 [(google.api.field_behavior) = REQUIRED];
+  // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
   string credentials = 2;
 }
 // --8<-- [end:PushNotificationAuthenticationInfo]
@@ -480,8 +480,8 @@ message AgentCapabilities {
   optional bool push_notifications = 2;
   // A list of protocol extensions supported by the agent.
   repeated AgentExtension extensions = 3;
-  // Indicates if the agent provides a history of state transitions for a task.
-  optional bool state_transition_history = 4;
+  // Field 4 was previously used by state_transition_history capability.
+  reserved 4;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 5;
 }
@@ -803,9 +803,9 @@ message DeleteTaskPushNotificationConfigRequest {
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
-// --8<-- [start:SetTaskPushNotificationConfigRequest]
-// Represents a request for the `SetTaskPushNotificationConfig` method.
-message SetTaskPushNotificationConfigRequest {
+// --8<-- [start:CreateTaskPushNotificationConfigRequest]
+// Represents a request for the `CreateTaskPushNotificationConfig` method.
+message CreateTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
   // The parent task resource for this config.
@@ -816,7 +816,7 @@ message SetTaskPushNotificationConfigRequest {
   // The configuration to create.
   TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:SetTaskPushNotificationConfigRequest]
+// --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {
