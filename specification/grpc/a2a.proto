@@ -338,8 +338,7 @@ message TaskStatusUpdateEvent {
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The new status of the task.
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
-  // If true, this is the final event in the stream for this interaction.
-  bool final = 4 [(google.api.field_behavior) = REQUIRED];
+  reserved 4;
   // Optional metadata to associate with the task update.
   google.protobuf.Struct metadata = 5;
 }

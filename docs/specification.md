@@ -614,7 +614,20 @@ A `contextId` is an identifier that logically groups multiple related [`Task`](#
 - Agents **MAY** use the `contextId` to maintain internal state, conversational history, or LLM context across multiple interactions
 - Agents **MAY** implement context expiration or cleanup policies and **SHOULD** document any such policies
 
-#### 3.4.2. Multi-Turn Conversation Patterns
+#### 3.4.2. Task Identifier Semantics
+
+A `taskId` is a unique identifier for a [`Task`](#411-task) object, representing a stateful unit of work with a defined lifecycle.
+
+**Generation and Assignment:**
+
+- Task IDs are **server-generated** when a new task is created in response to a [`Message`](#414-message)
+- Agents **MUST** generate a unique `taskId` for each new task they create
+- The generated `taskId` **MUST** be included in the [`Task`](#411-task) object returned to the client
+- When a client includes a `taskId` in a [`Message`](#414-message), it **MUST** reference an existing task
+- Agents **MUST** return a [`TaskNotFoundError`](#332-error-handling) if the provided `taskId` does not correspond to an existing task
+- Client-provided `taskId` values for creating new tasks is **NOT** supported
+
+#### 3.4.3. Multi-Turn Conversation Patterns
 
 The A2A protocol supports several patterns for multi-turn interactions:
 
@@ -1685,8 +1698,7 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
     "status": {
       "state": "TASK_STATE_COMPLETED",
       "timestamp": "2024-03-15T18:30:00Z"
-    },
-    "final": true
+    }
   }
 }
 ```
