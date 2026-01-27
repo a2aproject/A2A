@@ -1073,7 +1073,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "Find restaurants near me"}],
     "extensions": ["https://example.com/extensions/geolocation/v1"],
     "metadata": {
@@ -1098,7 +1098,7 @@ Messages can be extended to allow clients to provide additional strongly typed c
 
 ```json
 {
-  "role": "user",
+  "role": "ROLE_USER",
   "parts": [
     {"text": "Find restaurants near me"}
   ],
@@ -1225,12 +1225,14 @@ All JSON serializations of the A2A protocol data model **MUST** use **camelCase*
 
 **Enum Values:**
 
-- Enum values **MUST** be represented as their string names in JSON, using lower [kebab-case](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case) after removing any type name prefixes.
+- Enum values **MUST** be represented according to the [ProtoJSON specification](https://protobuf.dev/programming-guides/json/), which serializes enums as their string names **as defined in the Protocol Buffer definition** (typically SCREAMING_SNAKE_CASE).
 
 **Examples:**
 
-- Protocol Buffer enum: `TASK_STATE_INPUT_REQUIRED` → JSON value: `input-required`
-- Protocol Buffer enum: `ROLE_USER` → JSON value: `user`
+- Protocol Buffer enum: `TASK_STATE_INPUT_REQUIRED` → JSON value: `"TASK_STATE_INPUT_REQUIRED"`
+- Protocol Buffer enum: `ROLE_USER` → JSON value: `"ROLE_USER"`
+
+**Note:** This follows the ProtoJSON specification as adopted in [ADR-001](../adrs/adr-001-protojson-serialization.md).
 
 ### 5.6. Data Type Conventions
 
@@ -1303,7 +1305,7 @@ Authorization: Bearer token
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "What is the weather today?"}],
     "messageId": "msg-uuid"
   }
@@ -1320,7 +1322,7 @@ Content-Type: application/a2a+json
   "task": {
     "id": "task-uuid",
     "contextId": "context-uuid",
-    "status": {"state": "completed"},
+    "status": {"state": "TASK_STATE_COMPLETED"},
     "artifacts": [{
       "artifactId": "artifact-uuid",
       "name": "Weather Report",
@@ -1344,7 +1346,7 @@ Authorization: Bearer token
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "Write a detailed report on climate change"}],
     "messageId": "msg-uuid"
   }
@@ -1357,11 +1359,11 @@ Authorization: Bearer token
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
-data: {"task": {"id": "task-uuid", "status": {"state": "working"}}}
+data: {"task": {"id": "task-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
 data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "completed"}}}
+data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}, "final": true}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1378,7 +1380,7 @@ Authorization: Bearer token
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "Book me a flight"}],
     "messageId": "msg-1"
   }
@@ -1395,9 +1397,9 @@ Content-Type: application/a2a+json
   "task": {
     "id": "task-uuid",
     "status": {
-      "state": "input-required",
+      "state": "TASK_STATE_INPUT_REQUIRED",
       "message": {
-        "role": "agent",
+        "role": "ROLE_AGENT",
         "parts": [{"text": "I need more details. Where would you like to fly from and to?"}]
       }
     }
@@ -1416,7 +1418,7 @@ Authorization: Bearer token
 {
   "message": {
     "taskId": "task-uuid",
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "From San Francisco to New York"}],
     "messageId": "msg-2"
   }
@@ -1438,7 +1440,7 @@ A2A-Version: 0.5
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "Hello"}],
     "messageId": "msg-uuid"
   }
@@ -1493,7 +1495,7 @@ Content-Type: application/a2a+json
       "id": "3f36680c-7f37-4a5f-945e-d78981fafd36",
       "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
       "status": {
-        "state": "completed",
+        "state": "TASK_STATE_COMPLETED",
         "timestamp": "2024-03-15T10:15:00Z"
       }
     }
@@ -1515,7 +1517,7 @@ Content-Type: application/a2a+json
 Authorization: Bearer token
 
 {
-  "status": "working",
+  "status": "TASK_STATE_WORKING",
   "pageSize": 20
 }
 ```
@@ -1532,9 +1534,9 @@ Content-Type: application/a2a+json
       "id": "789abc-def0-1234-5678-9abcdef01234",
       "contextId": "another-context-id",
       "status": {
-        "state": "working",
+        "state": "TASK_STATE_WORKING",
         "message": {
-          "role": "agent",
+          "role": "ROLE_AGENT",
           "parts": [
             {
               "text": "Processing your document analysis..."
@@ -1642,7 +1644,7 @@ Authorization: Bearer token
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [
       {
         "text": "Generate the Q1 sales report. This usually takes a while. Notify me when it's ready."
@@ -1694,7 +1696,7 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
     "taskId": "43667960-d455-4453-b0cf-1bae4955270d",
     "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
     "status": {
-      "state": "completed",
+      "state": "TASK_STATE_COMPLETED",
       "timestamp": "2024-03-15T18:30:00Z"
     }
   }
@@ -1715,7 +1717,7 @@ Authorization: Bearer token
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [
       {
         "text": "Analyze this image and highlight any faces."
@@ -1744,7 +1746,7 @@ Content-Type: application/a2a+json
     "id": "43667960-d455-4453-b0cf-1bae4955270d",
     "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
     "status": {
-      "state": "completed",
+      "state": "TASK_STATE_COMPLETED",
       "timestamp": "2024-03-15T12:05:00Z"
     },
     "artifacts": [
@@ -1780,7 +1782,7 @@ Authorization: Bearer token
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [
       {
         "text": "Show me a list of my open IT tickets",
@@ -1815,7 +1817,7 @@ Content-Type: application/a2a+json
     "id": "d8c6243f-5f7a-4f6f-821d-957ce51e856c",
     "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
     "status": {
-      "state": "completed",
+      "state": "TASK_STATE_COMPLETED",
       "timestamp": "2025-04-17T17:47:09.680794Z"
     },
     "artifacts": [
@@ -2314,7 +2316,7 @@ Lists tasks with optional filtering and pagination.
   "method": "ListTasks",
   "params": {
     "contextId": "context-uuid",
-    "status": "working",
+    "status": "TASK_STATE_WORKING",
     "pageSize": 50,
     "pageToken": "cursor-token"
   }
@@ -2761,7 +2763,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 {
   "message": {
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "Find restaurants near me"}]
   }
 }
@@ -2805,7 +2807,7 @@ Content-Type: application/json
 {
   "message": {
     "messageId": "uuid",
-    "role": "user",
+    "role": "ROLE_USER",
     "parts": [{"text": "Hello"}]
   },
   "configuration": {
@@ -2827,7 +2829,7 @@ Content-Type: application/json
     "id": "task-uuid",
     "contextId": "context-uuid",
     "status": {
-      "state": "completed"
+      "state": "TASK_STATE_COMPLETED"
     }
   }
 }
