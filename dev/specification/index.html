@@ -7912,12 +7912,6 @@
 <td>The new status of the task.</td>
 </tr>
 <tr>
-<td><code>final</code></td>
-<td><code>boolean</code></td>
-<td>Yes</td>
-<td>If true, this is the final event in the stream for this interaction.</td>
-</tr>
-<tr>
 <td><code>metadata</code></td>
 <td><code>object</code></td>
 <td>No</td>
@@ -8012,7 +8006,7 @@
 <td><code>authentication</code></td>
 <td><a href="#AuthenticationInfo"><code>AuthenticationInfo</code></a></td>
 <td>No</td>
-<td>Information about the authentication to sent with the notification</td>
+<td>Authentication information required to send the notification</td>
 </tr>
 </tbody>
 </table>
@@ -8030,16 +8024,16 @@
 </thead>
 <tbody>
 <tr>
-<td><code>schemes</code></td>
-<td>array of <code>string</code></td>
+<td><code>scheme</code></td>
+<td><code>string</code></td>
 <td>Yes</td>
-<td>A list of supported authentication schemes (e.g., 'Basic', 'Bearer').</td>
+<td>HTTP Authentication Scheme from the <a href="https://www.iana.org/assignments/http-authschemes/">IANA registry</a>. Common values: <code>Bearer</code>, <code>Basic</code>, <code>Digest</code>. Scheme names are case-insensitive per <a href="https://www.rfc-editor.org/rfc/rfc9110#section-11.1">RFC 9110 Section 11.1</a>.</td>
 </tr>
 <tr>
 <td><code>credentials</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional credentials</td>
+<td>Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).</td>
 </tr>
 </tbody>
 </table>
@@ -9170,7 +9164,7 @@
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>data: {&quot;artifactUpdate&quot;: {&quot;taskId&quot;: &quot;task-uuid&quot;, &quot;artifact&quot;: {&quot;parts&quot;: [{&quot;text&quot;: &quot;# Climate Change Report\n\n&quot;}]}}}
 </span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>data: {&quot;statusUpdate&quot;: {&quot;taskId&quot;: &quot;task-uuid&quot;, &quot;status&quot;: {&quot;state&quot;: &quot;completed&quot;}, &quot;final&quot;: true}}
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>data: {&quot;statusUpdate&quot;: {&quot;taskId&quot;: &quot;task-uuid&quot;, &quot;status&quot;: {&quot;state&quot;: &quot;completed&quot;}}}
 </span></code></pre></div>
 <h3 id="63-multi-turn-interaction">6.3. Multi-Turn Interaction<a class="headerlink" href="#63-multi-turn-interaction" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Agent requires additional input to complete a task.</p>
@@ -9445,10 +9439,9 @@
 </span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">,</span>
 </span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="w">      </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-03-15T18:30:00Z&quot;</span>
-</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">    </span><span class="p">},</span>
-</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">    </span><span class="nt">&quot;final&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="p">}</span>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="67-file-exchange-upload-and-download">6.7. File Exchange (Upload and Download)<a class="headerlink" href="#67-file-exchange-upload-and-download" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Client sends an image for analysis, and the agent returns a modified image.</p>

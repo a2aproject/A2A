@@ -445,15 +445,13 @@
       "properties": {
         "credentials": {
           "default": "",
-          "description": "Optional credentials",
+          "description": "Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).",
           "type": "string"
         },
-        "schemes": {
-          "description": "A list of supported authentication schemes (e.g., 'Basic', 'Bearer').",
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
+        "scheme": {
+          "default": "",
+          "description": "HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).\n Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).",
+          "type": "string"
         }
       },
       "title": "Authentication Info",
@@ -1399,7 +1397,7 @@
       "properties": {
         "authentication": {
           "$ref": "a2a.v1.AuthenticationInfo.jsonschema.json",
-          "description": "Information about the authentication to sent with the notification"
+          "description": "Authentication information required to send the notification"
         },
         "id": {
           "default": "",
@@ -1855,11 +1853,6 @@
           "default": "",
           "description": "The id of the context that the task belongs to",
           "type": "string"
-        },
-        "final": {
-          "default": false,
-          "description": "If true, this is the final event in the stream for this interaction.",
-          "type": "boolean"
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",

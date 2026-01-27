@@ -1660,9 +1660,9 @@
 <ul>
 <li>The <code>execute</code> method in <code>CurrencyAgentExecutor</code> is responsible for handling both non-streaming and streaming requests, orchestrated by the <code>DefaultRequestHandler</code>.</li>
 <li>As the LangGraph agent processes the request (which might involve calling tools like <code>get_exchange_rate</code>), the <code>CurrencyAgentExecutor</code> enqueues different types of events onto the <code>EventQueue</code>:<ul>
-<li><code>TaskStatusUpdateEvent</code>: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates.."). The <code>final</code> flag on these events is <code>False</code>.</li>
+<li><code>TaskStatusUpdateEvent</code>: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates..").</li>
 <li><code>TaskArtifactUpdateEvent</code>: When the final answer is ready, it's enqueued as an artifact. The <code>lastChunk</code> flag is <code>True</code>.</li>
-<li>A final <code>TaskStatusUpdateEvent</code> with <code>state=TaskState.completed</code> and <code>final=True</code> is sent to signify the end of the task for streaming.</li>
+<li>A final <code>TaskStatusUpdateEvent</code> with <code>state=TaskState.completed</code> is sent to signify the end of the task, closing the stream.</li>
 </ul>
 </li>
 <li>The <code>test_client.py</code>'s <code>run_streaming_test</code> function will print these individual event chunks as they are received from the server.</li>
@@ -1672,7 +1672,7 @@
 <p><strong>Multi-Turn Conversation (<code>TaskState.input_required</code>)</strong>:</p>
 <ul>
 <li>The <code>CurrencyAgent</code> can ask for clarification if a query is ambiguous (e.g., user asks "how much is 100 USD?").</li>
-<li>When this happens, the <code>CurrencyAgentExecutor</code> will enqueue a <code>TaskStatusUpdateEvent</code> where <code>status.state</code> is <code>TaskState.input_required</code> and <code>status.message</code> contains the agent's question (e.g., "To which currency would you like to convert?"). This event will have <code>final=True</code> for the current interaction stream.</li>
+<li>When this happens, the <code>CurrencyAgentExecutor</code> will enqueue a <code>TaskStatusUpdateEvent</code> where <code>status.state</code> is <code>TaskState.input_required</code> and <code>status.message</code> contains the agent's question (e.g., "To which currency would you like to convert?"). The stream closes after this event.</li>
 <li>The <code>test_client.py</code>'s <code>run_multi_turn_test</code> function demonstrates this:<ul>
 <li>It sends an initial ambiguous query.</li>
 <li>The agent responds (via the <code>DefaultRequestHandler</code> processing the enqueued events) with a <code>Task</code> whose status is <code>input_required</code>.</li>

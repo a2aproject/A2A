@@ -1756,7 +1756,7 @@
 </ul>
 </li>
 <li>
-<p><strong>Stream Termination:</strong> The server signals the end of updates for a cycle by setting <code>final: true</code> in a <code>TaskStatusUpdateEvent</code>. This typically occurs when the task reaches a terminal state. After this, the server usually closes the SSE connection.</p>
+<p><strong>Stream Termination:</strong> When a task reaches a terminal or interrupted state (e.g., <code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELLED</code>, <code>REJECTED</code>, or <code>INPUT_REQUIRED</code>), the server closes the stream and sends no further updates.</p>
 </li>
 <li>
 <p><strong>Resubscription:</strong> If a client's SSE connection breaks prematurely while a task is still active, the client is able to attempt to reconnect to the stream using the <code>tasks/resubscribe</code> RPC method.</p>
@@ -1814,7 +1814,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 <li><strong>Mitigation strategies:</strong> Allowlisting of trusted domains, ownership verification (for example, challenge-response mechanisms), and network controls (e.g., egress firewalls).</li>
 </ul>
 </li>
-<li><strong>Authenticating to the Client's Webhook:</strong> The A2A Server MUST authenticate itself to the client's webhook URL according to the scheme(s) specified in <code>PushNotificationConfig.authentication</code>. Common schemes include Bearer Tokens (OAuth 2.0), API keys, HMAC signatures, or mutual TLS (mTLS).</li>
+<li><strong>Authenticating to the Client's Webhook:</strong> The A2A Server MUST authenticate itself to the client's webhook URL according to the scheme specified in <code>PushNotificationConfig.authentication</code>. Common schemes include Bearer Tokens (OAuth 2.0), API keys, HMAC signatures, or mutual TLS (mTLS).</li>
 </ul>
 <h4 id="client-webhook-receiver-security-when-receiving-notifications-from-a2a-server">Client Webhook Receiver Security (when receiving notifications from A2A server)<a class="headerlink" href="#client-webhook-receiver-security-when-receiving-notifications-from-a2a-server" title="Permanent link">&para;</a></h4>
 <ul>
@@ -1831,7 +1831,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 </ul>
 <h4 id="example-asymmetric-key-flow-jwt-jwks">Example Asymmetric Key Flow (JWT + JWKS)<a class="headerlink" href="#example-asymmetric-key-flow-jwt-jwks" title="Permanent link">&para;</a></h4>
 <ol>
-<li>Client creates a <code>PushNotificationConfig</code> specifying <code>authentication.schemes: ["Bearer"]</code> and possibly an expected <code>issuer</code> or <code>audience</code> for the JWT.</li>
+<li>Client creates a <code>PushNotificationConfig</code> specifying <code>authentication.scheme: "Bearer"</code> and possibly an expected <code>issuer</code> or <code>audience</code> for the JWT.</li>
 <li>A2A Server, when sending a notification:<ul>
 <li>Generates a JWT, signing it with its private key. The JWT includes claims like <code>iss</code> (issuer), <code>aud</code> (audience), <code>iat</code> (issued at), <code>exp</code> (expires), <code>jti</code> (JWT ID), and <code>taskId</code>.</li>
 <li>The JWT header indicates the signing algorithm and key ID (<code>kid</code>).</li>
