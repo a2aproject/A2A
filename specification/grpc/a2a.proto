@@ -390,7 +390,7 @@ message AuthenticationInfo {
 // --8<-- [end:PushNotificationAuthenticationInfo]
 
 // --8<-- [start:AgentInterface]
-// Declares a combination of a target URL and a transport protocol for interacting with the agent.
+// Declares a combination of a target URL, transport and protocol version for interacting with the agent.
 // This allows agents to expose the same functionality over multiple protocol binding mechanisms.
 message AgentInterface {
   // The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
@@ -402,10 +402,10 @@ message AgentInterface {
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
   // Tenant to be set in the request when calling the agent.
   string tenant = 3;
-  // The versions of the A2A protocol this transport supports.
-  // List only the latest supported minor version per major version.
-  // Default: ["0.3", "1.0"]
-  repeated string protocol_versions = 4 [(google.api.field_behavior) = REQUIRED];
+  // The version of the A2A protocol this interface exposes.
+  // Use the latest supported minor version per major version.
+  // Examples: "0.3", "1.0"
+  string protocol_version = 4 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:AgentInterface]
 
@@ -516,10 +516,8 @@ message AgentSkill {
   repeated string input_modes = 6;
   // The set of supported output media types for this skill, overriding the agent's defaults.
   repeated string output_modes = 7;
-  // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
   // Security schemes necessary for this skill.
-  repeated Security security = 8;
-  // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
+  repeated SecurityRequirement security_requirements = 8;
 }
 // --8<-- [end:AgentSkill]
 
