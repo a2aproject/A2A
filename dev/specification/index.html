@@ -1546,10 +1546,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#342-multi-turn-conversation-patterns" class="md-nav__link">
+  <a href="#342-task-identifier-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.4.2. Multi-Turn Conversation Patterns
+        3.4.2. Task Identifier Semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#343-multi-turn-conversation-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4.3. Multi-Turn Conversation Patterns
       
     </span>
   </a>
@@ -4257,10 +4268,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#342-multi-turn-conversation-patterns" class="md-nav__link">
+  <a href="#342-task-identifier-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3.4.2. Multi-Turn Conversation Patterns
+        3.4.2. Task Identifier Semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#343-multi-turn-conversation-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4.3. Multi-Turn Conversation Patterns
       
     </span>
   </a>
@@ -7363,7 +7385,18 @@
 <li>Agents <strong>MAY</strong> use the <code>contextId</code> to maintain internal state, conversational history, or LLM context across multiple interactions</li>
 <li>Agents <strong>MAY</strong> implement context expiration or cleanup policies and <strong>SHOULD</strong> document any such policies</li>
 </ul>
-<h4 id="342-multi-turn-conversation-patterns">3.4.2. Multi-Turn Conversation Patterns<a class="headerlink" href="#342-multi-turn-conversation-patterns" title="Permanent link">&para;</a></h4>
+<h4 id="342-task-identifier-semantics">3.4.2. Task Identifier Semantics<a class="headerlink" href="#342-task-identifier-semantics" title="Permanent link">&para;</a></h4>
+<p>A <code>taskId</code> is a unique identifier for a <a href="#411-task"><code>Task</code></a> object, representing a stateful unit of work with a defined lifecycle.</p>
+<p><strong>Generation and Assignment:</strong></p>
+<ul>
+<li>Task IDs are <strong>server-generated</strong> when a new task is created in response to a <a href="#414-message"><code>Message</code></a></li>
+<li>Agents <strong>MUST</strong> generate a unique <code>taskId</code> for each new task they create</li>
+<li>The generated <code>taskId</code> <strong>MUST</strong> be included in the <a href="#411-task"><code>Task</code></a> object returned to the client</li>
+<li>When a client includes a <code>taskId</code> in a <a href="#414-message"><code>Message</code></a>, it <strong>MUST</strong> reference an existing task</li>
+<li>Agents <strong>MUST</strong> return a <a href="#332-error-handling"><code>TaskNotFoundError</code></a> if the provided <code>taskId</code> does not correspond to an existing task</li>
+<li>Client-provided <code>taskId</code> values for creating new tasks is <strong>NOT</strong> supported</li>
+</ul>
+<h4 id="343-multi-turn-conversation-patterns">3.4.3. Multi-Turn Conversation Patterns<a class="headerlink" href="#343-multi-turn-conversation-patterns" title="Permanent link">&para;</a></h4>
 <p>The A2A protocol supports several patterns for multi-turn interactions:</p>
 <p><strong>Context Continuity:</strong></p>
 <ul>
