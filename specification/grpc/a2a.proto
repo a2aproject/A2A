@@ -2,6 +2,7 @@
 syntax = "proto3";
 package a2a.v1;
 
+import "buf/validate/validate.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
@@ -455,6 +456,8 @@ message AgentCard {
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
   optional string icon_url = 18;
+  // A stable unique identifier (UUID) for an agent, optional.
+  optional string id = 19 [(buf.validate.field).string.uuid = true];
 }
 // --8<-- [end:AgentCard]
 
