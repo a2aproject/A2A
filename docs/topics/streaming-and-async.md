@@ -82,7 +82,7 @@ Security is paramount for push notifications due to their asynchronous and serve
 
 - **Webhook URL Validation:** Servers SHOULD NOT blindly trust and send POST requests to any URL provided by a client. Malicious clients could provide URLs pointing to internal services or unrelated third-party systems, leading to Server-Side Request Forgery (SSRF) attacks or acting as Distributed Denial of Service (DDoS) amplifiers.
     - **Mitigation strategies:** Allowlisting of trusted domains, ownership verification (for example, challenge-response mechanisms), and network controls (e.g., egress firewalls).
-- **Authenticating to the Client's Webhook:** The A2A Server MUST authenticate itself to the client's webhook URL according to the scheme(s) specified in `PushNotificationConfig.authentication`. Common schemes include Bearer Tokens (OAuth 2.0), API keys, HMAC signatures, or mutual TLS (mTLS).
+- **Authenticating to the Client's Webhook:** The A2A Server MUST authenticate itself to the client's webhook URL according to the scheme specified in `PushNotificationConfig.authentication`. Common schemes include Bearer Tokens (OAuth 2.0), API keys, HMAC signatures, or mutual TLS (mTLS).
 
 #### Client Webhook Receiver Security (when receiving notifications from A2A server)
 
@@ -95,7 +95,7 @@ Security is paramount for push notifications due to their asynchronous and serve
 
 #### Example Asymmetric Key Flow (JWT + JWKS)
 
-1. Client creates a `PushNotificationConfig` specifying `authentication.schemes: ["Bearer"]` and possibly an expected `issuer` or `audience` for the JWT.
+1. Client creates a `PushNotificationConfig` specifying `authentication.scheme: "Bearer"` and possibly an expected `issuer` or `audience` for the JWT.
 2. A2A Server, when sending a notification:
     - Generates a JWT, signing it with its private key. The JWT includes claims like `iss` (issuer), `aud` (audience), `iat` (issued at), `exp` (expires), `jti` (JWT ID), and `taskId`.
     - The JWT header indicates the signing algorithm and key ID (`kid`).
