@@ -613,19 +613,6 @@
       "title": "Create Task Push Notification Config Request",
       "type": "object"
     },
-    "Data Part": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "additionalProperties": false,
-      "description": "DataPart represents a structured blob.",
-      "properties": {
-        "data": {
-          "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "A JSON object containing arbitrary data."
-        }
-      },
-      "title": "Data Part",
-      "type": "object"
-    },
     "Delete Task Push Notification Config Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
@@ -694,50 +681,6 @@
         }
       },
       "title": "Device CodeO Auth Flow",
-      "type": "object"
-    },
-    "File Part": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "additionalProperties": false,
-      "description": "FilePart represents the different ways files can be provided. If files are\n small, directly feeding the bytes is supported via file_with_bytes. If the\n file is large, the agent should read the content as appropriate directly\n from the file_with_uri source.",
-      "patternProperties": {
-        "^(file_with_bytes)$": {
-          "description": "The base64-encoded content of the file.",
-          "pattern": "^[A-Za-z0-9+/]*={0,2}$",
-          "type": "string"
-        },
-        "^(file_with_uri)$": {
-          "description": "A URL pointing to the file's content.",
-          "type": "string"
-        },
-        "^(media_type)$": {
-          "default": "",
-          "description": "The media type of the file (e.g., \"application/pdf\").",
-          "type": "string"
-        }
-      },
-      "properties": {
-        "fileWithBytes": {
-          "description": "The base64-encoded content of the file.",
-          "pattern": "^[A-Za-z0-9+/]*={0,2}$",
-          "type": "string"
-        },
-        "fileWithUri": {
-          "description": "A URL pointing to the file's content.",
-          "type": "string"
-        },
-        "mediaType": {
-          "default": "",
-          "description": "The media type of the file (e.g., \"application/pdf\").",
-          "type": "string"
-        },
-        "name": {
-          "default": "",
-          "description": "An optional name for the file (e.g., \"document.pdf\").",
-          "type": "string"
-        }
-      },
-      "title": "File Part",
       "type": "object"
     },
     "Get Extended Agent Card Request": {
@@ -1369,21 +1312,43 @@
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
       "description": "Part represents a container for a section of communication content.\n Parts can be purely textual, some sort of file (image, video, etc) or\n a structured data blob (i.e. JSON).",
+      "patternProperties": {
+        "^(media_type)$": {
+          "default": "",
+          "description": "The media type (MIME type) of the part content (e.g., \"text/plain\", \"application/json\", \"image/png\").\n This field is available for all part types.",
+          "type": "string"
+        }
+      },
       "properties": {
         "data": {
-          "$ref": "a2a.v1.DataPart.jsonschema.json",
-          "description": "The structured data content."
+          "$ref": "google.protobuf.Value.jsonschema.json",
+          "description": "Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null)."
         },
-        "file": {
-          "$ref": "a2a.v1.FilePart.jsonschema.json",
-          "description": "The file content, represented as either a URI or as base64-encoded bytes."
+        "filename": {
+          "default": "",
+          "description": "An optional name for the file (e.g., \"document.pdf\").",
+          "type": "string"
+        },
+        "mediaType": {
+          "default": "",
+          "description": "The media type (MIME type) of the part content (e.g., \"text/plain\", \"application/json\", \"image/png\").\n This field is available for all part types.",
+          "type": "string"
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
           "description": "Optional metadata associated with this part."
         },
+        "raw": {
+          "description": "The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.",
+          "pattern": "^[A-Za-z0-9+/]*={0,2}$",
+          "type": "string"
+        },
         "text": {
           "description": "The string content of the text part.",
+          "type": "string"
+        },
+        "url": {
+          "description": "A URL pointing to the file's content.",
           "type": "string"
         }
       },
@@ -1881,6 +1846,10 @@
       "format": "date-time",
       "title": "Timestamp",
       "type": "string"
+    },
+    "Value": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Value"
     }
   }
 }
