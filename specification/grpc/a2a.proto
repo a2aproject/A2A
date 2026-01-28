@@ -226,45 +226,25 @@ message TaskStatus {
 // Parts can be purely textual, some sort of file (image, video, etc) or
 // a structured data blob (i.e. JSON).
 message Part {
-  oneof part {
+  oneof content {
     // The string content of the text part.
     string text = 1;
-    // The file content, represented as either a URI or as base64-encoded bytes.
-    FilePart file = 2;
-    // The structured data content.
-    DataPart data = 3;
+    // The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.
+    bytes raw = 2;
+    // A URL pointing to the file's content.
+    string url = 3;
+    // Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null).
+    google.protobuf.Value data = 4;
   }
   // Optional metadata associated with this part.
-  google.protobuf.Struct metadata = 4;
+  google.protobuf.Struct metadata = 5;
+  // An optional name for the file (e.g., "document.pdf").
+  string filename = 6;
+  // The media type (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png").
+  // This field is available for all part types.
+  string media_type = 7;
 }
 // --8<-- [end:Part]
-
-// --8<-- [start:FilePart]
-// FilePart represents the different ways files can be provided. If files are
-// small, directly feeding the bytes is supported via file_with_bytes. If the
-// file is large, the agent should read the content as appropriate directly
-// from the file_with_uri source.
-message FilePart {
-  oneof file {
-    // A URL pointing to the file's content.
-    string file_with_uri = 1;
-    // The base64-encoded content of the file.
-    bytes file_with_bytes = 2;
-  }
-  // The media type of the file (e.g., "application/pdf").
-  string media_type = 3;
-  // An optional name for the file (e.g., "document.pdf").
-  string name = 4;
-}
-// --8<-- [end:FilePart]
-
-// --8<-- [start:DataPart]
-// DataPart represents a structured blob.
-message DataPart {
-  //  A JSON object containing arbitrary data.
-  google.protobuf.Struct data = 1 [(google.api.field_behavior) = REQUIRED];
-}
-// --8<-- [end:DataPart]
 
 // --8<-- [start:Role]
 // Defines the sender of a message in A2A protocol communication.
