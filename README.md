@@ -1,9 +1,16 @@
+# Agent2Agent (A2A) Protocol
 
-<div align="right">
+[![PyPI - Version](https://img.shields.io/pypi/v/a2a-sdk)](https://pypi.org/project/a2a-sdk)
+[![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+<a href="https://codewiki.google/github.com/a2aproject/a2a">
+  <img src="https://www.gstatic.com/_/boq-sdlc-agents-ui/_/r/Mvosg4klCA4.svg" alt="Ask Code Wiki" height="20">
+</a>
+
+<div style="text-align: left;">
   <details>
-    <summary >🌐 Language</summary>
+    <summary>🌐 Language</summary>
     <div>
-      <div align="center">
+      <div style="text-align: center;">
         <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=en">English</a>
         | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=zh-CN">简体中文</a>
         | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=zh-TW">繁體中文</a>
@@ -30,14 +37,6 @@
   </details>
 </div>
 
-# Agent2Agent (A2A) Protocol
-
-[![PyPI - Version](https://img.shields.io/pypi/v/a2a-sdk)](https://pypi.org/project/a2a-sdk)
-[![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-<a href="https://codewiki.google/github.com/a2aproject/a2a">
-  <img src="https://www.gstatic.com/_/boq-sdlc-agents-ui/_/r/Mvosg4klCA4.svg" alt="Ask Code Wiki" height="20">
-</a>
-
 <!-- markdownlint-disable MD041 -->
 <div style="text-align: center;">
   <div class="centered-logo-text-group">
@@ -54,7 +53,7 @@ With A2A, agents can:
 
 - Discover each other's capabilities.
 - Negotiate interaction modalities (text, forms, media).
-- Securely collaborate on long running tasks.
+- Securely collaborate on long-running tasks.
 - Operate without exposing their internal state, memory, or tools.
 
 ## Intro to A2A Video
