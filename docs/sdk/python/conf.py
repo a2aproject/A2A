@@ -1,8 +1,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'a2a-sdk'
-copyright = '2025, Google LLC'
-author = 'Google LLC'
+copyright = '2026, The Linux Foundation'
+author = 'The Linux Foundation'
 
 # -- General configuration ---------------------------------------------------
 
