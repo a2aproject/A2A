@@ -148,7 +148,7 @@ message SendMessageConfiguration {
   // value of zero is a request to not include any messages. The server MUST NOT
   // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
-  // If true, the operation waits until the task reaches a terminal state before returning. Default is false.
+  // If true, the operation waits until the task reaches a terminal or interrupted state before returning. Default is false.
   bool blocking = 4;
 }
 // --8<-- [end:SendMessageConfiguration]
@@ -202,8 +202,7 @@ enum TaskState {
   // has determined it can't or won't proceed. This is a terminal state.
   TASK_STATE_REJECTED = 7;
   // Represents the state that some authentication is needed from the upstream
-  // client. Authentication is expected to come out-of-band thus this is not
-  // an interrupted or terminal state.
+  // client. This is an interrupted state. Authentication is expected to come out-of-band.
   TASK_STATE_AUTH_REQUIRED = 8;
 }
 // --8<-- [end:TaskState]

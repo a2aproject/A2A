@@ -7095,7 +7095,7 @@
 <td><code>blocking</code></td>
 <td><code>boolean</code></td>
 <td>No</td>
-<td>If true, the operation waits until the task reaches a terminal state before returning. Default is false.</td>
+<td>If true, the operation waits until the task reaches a terminal or interrupted state before returning. Default is false.</td>
 </tr>
 </tbody>
 </table>
@@ -7103,7 +7103,7 @@
 <p>The <code>blocking</code> field in <a href="#322-sendmessageconfiguration"><code>SendMessageConfiguration</code></a> controls whether the operation waits for task completion:</p>
 <ul>
 <li>
-<p><strong>Blocking (<code>blocking: true</code>)</strong>: The operation MUST wait until the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, <code>rejected</code>) before returning. The response MUST include the final task state with all artifacts and status information.</p>
+<p><strong>Blocking (<code>blocking: true</code>)</strong>: The operation MUST wait until the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, <code>rejected</code>) or an interrupted state (<code>input_required</code>, <code>auth_required</code>) before returning. The response MUST include the current task state with all artifacts and status information.</p>
 </li>
 <li>
 <p><strong>Non-Blocking (<code>blocking: false</code>)</strong>: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., <code>working</code>, <code>input_required</code>). It is the caller's responsibility to poll for updates using <a href="#313-get-task">Get Task</a>, subscribe via <a href="#316-subscribe-to-task">Subscribe to Task</a>, or receive updates via push notifications.</p>
@@ -7591,7 +7591,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>TASK_STATE_AUTH_REQUIRED</code></td>
-<td style="text-align: left;">Represents the state that some authentication is needed from the upstream client. Authentication is expected to come out-of-band thus this is not an interrupted or terminal state.</td>
+<td style="text-align: left;">Represents the state that some authentication is needed from the upstream client. This is an interrupted state. Authentication is expected to come out-of-band.</td>
 </tr>
 </tbody>
 </table>
