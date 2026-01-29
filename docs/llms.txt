@@ -38,15 +38,14 @@ Key features of the A2A protocol include: agent discovery via Agent Cards, stand
 ### 2.2. Key A2A Data Objects
 
 -   **`AgentCard`:** Metadata describing an agent, typically found at `/.well-known/agent-card.json`.
-    -   `protocolVersion`: (string) The version of the A2A protocol supported.
+    -   `protocolVersions`: (string[]) The versions of the A2A protocol supported by the agent.
     -   `name`, `description`, `version`: (string) Agent's identity.
     -   `url`: (string) The preferred endpoint URL for the agent's A2A service.
     -   `provider`: (`AgentProvider`) Organization details.
-    -   `capabilities`: (`AgentCapabilities`) Features supported (streaming, push notifications, extensions).
+    -   `capabilities`: (`AgentCapabilities`) Features supported (streaming, push notifications, state transition history, extended agent card, extensions).
     -   `securitySchemes`, `security`: (object, array) Authentication and authorization requirements, following OpenAPI specifications.
     -   `defaultInputModes`, `defaultOutputModes`: (string[]) Default supported MIME types.
     -   `skills`: (`AgentSkill[]`) List of specific capabilities.
-    -   `supportsExtendedAgentCard`: (boolean) Indicates if a more detailed card is available post-authentication.
     -   `signatures`: (`AgentCardSignature[]`) JWS signatures for verifying the card's integrity.
 -   **`AgentSkill`:** A specific capability of an agent, with `id`, `name`, `description`, `tags`, and `examples`.
 -   **`Task`:** Represents a stateful unit of work.
@@ -96,8 +95,8 @@ Key features of the A2A protocol include: agent discovery via Agent Cards, stand
     - Requests cancellation of a running task.
     - `params`: `TaskIdParams` (includes `id`).
     - `result`: `Task` (updated state, likely 'canceled') or error if not cancelable.
-- **`tasks/pushNotificationConfig/set`:** (Request/Response)
-    - Sets or updates the push notification configuration for a task.
+- **`tasks/pushNotificationConfig/create`:** (Request/Response)
+    - Creates a push notification configuration for a task.
     - `params`: `TaskPushNotificationConfig`.
     - `result`: `TaskPushNotificationConfig` (confirmed configuration).
 - **`tasks/pushNotificationConfig/get`:** (Request/Response)
