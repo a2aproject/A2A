@@ -765,7 +765,7 @@ Tooling libraries and SDKs that implement the A2A protocol SHOULD provide mechan
 
 ### 3.7 Messages and Artifacts
 
-Messages and Artifacts serve distinct purposes within the A2A protocol. The core interaction model defined by A2A is for clients to send messages to initiate a task that produce one or more artifacts.
+Messages and Artifacts serve distinct purposes within the A2A protocol. The core interaction model defined by A2A is for clients to send messages to initiate a task that produces one or more artifacts.
 
 Messages play several key roles:
 
