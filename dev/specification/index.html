@@ -6536,7 +6536,7 @@
 <p><strong>Message-only stream:</strong> If the agent returns a <a href="#414-message"><code>Message</code></a>, the stream MUST contain exactly one <code>Message</code> object and then close immediately. No task tracking or updates are provided.</p>
 </li>
 <li>
-<p><strong>Task lifecycle stream:</strong> If the agent returns a <a href="#411-task"><code>Task</code></a>, the stream MUST begin with the Task object, followed by zero or more <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a> or <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, cancelled, rejected).</p>
+<p><strong>Task lifecycle stream:</strong> If the agent returns a <a href="#411-task"><code>Task</code></a>, the stream MUST begin with the Task object, followed by zero or more <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a> or <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, canceled, rejected).</p>
 </li>
 </ol>
 <p>The agent MAY return a <code>Task</code> for complex processing with status/artifact updates or MAY return a <code>Message</code> for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.</p>
@@ -6774,10 +6774,10 @@
 <ul>
 <li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Streaming is not supported by the agent (see <a href="#334-capability-validation">Capability Validation</a>).</li>
 <li><a href="#332-error-handling"><code>TaskNotFoundError</code></a>: The task ID does not exist or is not accessible.</li>
-<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: The operation is attempted on a task that is in a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, or <code>rejected</code>).</li>
+<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: The operation is attempted on a task that is in a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, or <code>rejected</code>).</li>
 </ul>
 <p><strong>Behavior:</strong></p>
-<p>The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, or <code>rejected</code>).</p>
+<p>The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, or <code>rejected</code>).</p>
 <p>The operation MUST return a <code>Task</code> object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to <code>GetTask</code> and calling <code>SubscribeToTask</code>.</p>
 <h4 id="317-create-push-notification-config">3.1.7. Create Push Notification Config<a class="headerlink" href="#317-create-push-notification-config" title="Permanent link">&para;</a></h4>
 <p><span id="75-taskspushnotificationconfigset"></span>
@@ -7103,7 +7103,7 @@
 <p>The <code>blocking</code> field in <a href="#322-sendmessageconfiguration"><code>SendMessageConfiguration</code></a> controls whether the operation waits for task completion:</p>
 <ul>
 <li>
-<p><strong>Blocking (<code>blocking: true</code>)</strong>: The operation MUST wait until the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, <code>rejected</code>) or an interrupted state (<code>input_required</code>, <code>auth_required</code>) before returning. The response MUST include the current task state with all artifacts and status information.</p>
+<p><strong>Blocking (<code>blocking: true</code>)</strong>: The operation MUST wait until the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, <code>rejected</code>) or an interrupted state (<code>input_required</code>, <code>auth_required</code>) before returning. The response MUST include the current task state with all artifacts and status information.</p>
 </li>
 <li>
 <p><strong>Non-Blocking (<code>blocking: false</code>)</strong>: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., <code>working</code>, <code>input_required</code>). It is the caller's responsibility to poll for updates using <a href="#313-get-task">Get Task</a>, subscribe via <a href="#316-subscribe-to-task">Subscribe to Task</a>, or receive updates via push notifications.</p>
@@ -7578,8 +7578,8 @@
 <td style="text-align: left;">Represents the status a task is done but failed. This is a terminal state.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_CANCELLED</code></td>
-<td style="text-align: left;">Represents the status a task was cancelled before it finished. This is a terminal state.</td>
+<td style="text-align: left;"><code>TASK_STATE_CANCELED</code></td>
+<td style="text-align: left;">Represents the status a task was canceled before it finished. This is a terminal state.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>TASK_STATE_INPUT_REQUIRED</code></td>
@@ -9913,7 +9913,7 @@
 </span><span id="__span-49-8"><a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> SSE stream (same format as <code>SendStreamingMessage</code>)</p>
-<p><strong>Error:</strong> Returns <code>UnsupportedOperationError</code> if the task is in a terminal state (<code>completed</code>, <code>failed</code>, <code>cancelled</code>, or <code>rejected</code>).</p>
+<p><strong>Error:</strong> Returns <code>UnsupportedOperationError</code> if the task is in a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, or <code>rejected</code>).</p>
 <h4 id="947-push-notification-configuration-methods">9.4.7. Push Notification Configuration Methods<a class="headerlink" href="#947-push-notification-configuration-methods" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>CreateTaskPushNotificationConfig</code> - Create push notification configuration</li>
