@@ -71,7 +71,7 @@ service A2AService {
     };
   }
   // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
-  // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
+  // Returns UnsupportedOperationError if task is in terminal state (completed, failed, canceled, rejected).
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       get: "/tasks/{id=*}:subscribe"
@@ -191,9 +191,9 @@ enum TaskState {
   TASK_STATE_COMPLETED = 3;
   // Represents the status a task is done but failed. This is a terminal state.
   TASK_STATE_FAILED = 4;
-  // Represents the status a task was cancelled before it finished.
+  // Represents the status a task was canceled before it finished.
   // This is a terminal state.
-  TASK_STATE_CANCELLED = 5;
+  TASK_STATE_CANCELED = 5;
   // Represents the status that the task requires information to complete.
   // This is an interrupted state.
   TASK_STATE_INPUT_REQUIRED = 6;
