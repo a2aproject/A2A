@@ -188,7 +188,7 @@ The primary operation for initiating agent interactions. Clients send a message 
 **Errors:**
 
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, cancelled, rejected) cannot accept further messages.
+- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
 
 **Behavior:**
 
@@ -212,7 +212,7 @@ Similar to Send Message but with real-time streaming of updates during processin
 **Errors:**
 
 - [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, cancelled, rejected) cannot accept further messages.
+- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
@@ -222,7 +222,7 @@ The operation MUST establish a streaming connection for real-time updates. The s
 
 1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` object and then close immediately. No task tracking or updates are provided.
 
-2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, cancelled, rejected).
+2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, canceled, rejected).
 
 The agent MAY return a `Task` for complex processing with status/artifact updates or MAY return a `Message` for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
 
@@ -290,7 +290,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Errors:**
 
-- [`TaskNotCancellableError`](#332-error-handling): The task is not in a cancellable state (e.g., already completed, failed, or cancelled).
+- [`TaskNotCancelableError`](#332-error-handling): The task is not in a cancelable state (e.g., already completed, failed, or canceled).
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
@@ -317,11 +317,11 @@ Establishes a streaming connection to receive updates for an existing task.
 
 - [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
-- [`UnsupportedOperationError`](#332-error-handling): The operation is attempted on a task that is in a terminal state (`completed`, `failed`, `cancelled`, or `rejected`).
+- [`UnsupportedOperationError`](#332-error-handling): The operation is attempted on a task that is in a terminal state (`completed`, `failed`, `canceled`, or `rejected`).
 
 **Behavior:**
 
-The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (`completed`, `failed`, `cancelled`, or `rejected`).
+The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (`completed`, `failed`, `canceled`, or `rejected`).
 
 The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
@@ -458,7 +458,7 @@ This section defines common parameter objects used across multiple operations.
 
 The `blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation waits for task completion:
 
-- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `cancelled`, `rejected`) or an interrupted state (`input_required`, `auth_required`) before returning. The response MUST include the current task state with all artifacts and status information.
+- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `canceled`, `rejected`) or an interrupted state (`input_required`, `auth_required`) before returning. The response MUST include the current task state with all artifacts and status information.
 
 - **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
@@ -495,10 +495,10 @@ A key-value map for passing horizontally applicable context or parameters with c
 
 **Standard A2A Service Parameters:**
 
-| Name | Description | Example Value |
+| Name             | Description                                                                                                                                             | Example Value                                                                                 |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
-| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
-| `A2A-Version` | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3` |
+| `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
+| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
 
@@ -508,7 +508,7 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 - **Get operations** (Get Task, List Tasks, Get Extended Agent Card) are naturally idempotent
 - **Send Message** operations MAY be idempotent. Agents may utilize the messageId to detect duplicate messages.
-- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if the task has already been cancelled and purged.
+- **Cancel Task** operations are idempotent - multiple cancellation requests have the same effect. A duplicate cancellation request MAY return `TaskNotFoundError` if the task has already been canceled and purged.
 
 #### 3.3.2. Error Handling
 
@@ -565,17 +565,17 @@ Protocol bindings **MUST** map these elements to their native error representati
 
 **A2A-Specific Errors:**
 
-| Error Name                            | Description                                                                                                                                                       |
-| :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
-| `TaskNotCancellableError`             | An attempt was made to cancel a task that is not in a cancellable state(e.g., it has already reached a terminal state like `completed`, `failed`, or `cancelled`).|
-| `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
-| `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                          |
-| `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
-| `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                   |
-| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
-| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
-| `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
+| Error Name                            | Description                                                                                                                                                      |
+| :------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                      |
+| `TaskNotCancelableError`              | An attempt was made to cancel a task that is not in a cancelable state(e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`). |
+| `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).     |
+| `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                         |
+| `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.               |
+| `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                  |
+| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                      |
+| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                  |
+| `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                           |
 
 #### 3.3.3. Asynchronous Processing
 
@@ -1181,7 +1181,7 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  | HTTP Type URI                                                        |
 | :------------------------------------ | :------------ | :-------------------- | :--------------------------- | :------------------------------------------------------------------- |
 | `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              | `https://a2a-protocol.org/errors/task-not-found`                     |
-| `TaskNotCancellableError`             | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancellable`               |
+| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               | `https://a2a-protocol.org/errors/task-not-cancelable`                |
 | `PushNotificationNotSupportedError`   | `-32003`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/push-notification-not-supported`    |
 | `UnsupportedOperationError`           | `-32004`      | `UNIMPLEMENTED`       | `400 Bad Request`            | `https://a2a-protocol.org/errors/unsupported-operation`              |
 | `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `415 Unsupported Media Type` | `https://a2a-protocol.org/errors/content-type-not-supported`         |
@@ -1612,7 +1612,7 @@ Content-Type: application/problem+json
     },
     {
       "field": "status",
-      "message": "Invalid status value 'running'. Must be one of: pending, working, completed, failed, cancelled"
+      "message": "Invalid status value 'running'. Must be one of: pending, working, completed, failed, canceled"
     }
   ]
 }
@@ -2349,7 +2349,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 **Response:** SSE stream (same format as `SendStreamingMessage`)
 
-**Error:** Returns `UnsupportedOperationError` if the task is in a terminal state (`completed`, `failed`, `cancelled`, or `rejected`).
+**Error:** Returns `UnsupportedOperationError` if the task is in a terminal state (`completed`, `failed`, `canceled`, or `rejected`).
 
 #### 9.4.7. Push Notification Configuration Methods
 
