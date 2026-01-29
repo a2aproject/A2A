@@ -1,19 +1,5 @@
 # Agent2Agent (A2A) Protocol Specification (Release Candidate v1.0)
 
-{% macro render_spec_tabs(region_tag) %}
-=== "JSON-RPC"
-
-    ```ts { .no-copy }
-    --8<-- "types/src/types.ts:{{ region_tag }}"
-    ```
-
-=== "gRPC"
-
-    ```proto { .no-copy }
-    --8<-- "specification/a2a.proto:{{ region_tag }}"
-    ```
-{% endmacro %}
-
 ??? note "**Latest Released Version** [`0.3.0`](https://a2a-protocol.org/v0.3.0/specification)"
 
     **Previous Versions**
@@ -856,7 +842,7 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.3.2. AuthenticationInfo
 
-{{ proto_to_table("specification/a2a.proto", "PushNotificationAuthenticationInfo") }}
+{{ proto_to_table("specification/a2a.proto", "AuthenticationInfo") }}
 
 #### 4.3.3. Push Notification Payload
 
@@ -2515,15 +2501,11 @@ Sends a message to an agent.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:SendMessageRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "SendMessageRequest") }}
 
 **Response:**
 
-```proto
---8<-- "specification/a2a.proto:SendMessageResponse"
-```
+{{ proto_to_table("specification/a2a.proto", "SendMessageResponse") }}
 
 #### 10.4.2. SendStreamingMessage
 
@@ -2531,9 +2513,7 @@ Sends a message with streaming updates.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:SendMessageRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "SendMessageRequest") }}
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
@@ -2543,9 +2523,7 @@ Retrieves task status.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:GetTaskRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "GetTaskRequest") }}
 
 **Response:** See [`Task`](#411-task) object definition.
 
@@ -2555,15 +2533,11 @@ Lists tasks with filtering.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:ListTasksRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "ListTasksRequest") }}
 
 **Response:**
 
-```proto
---8<-- "specification/a2a.proto:ListTasksResponse"
-```
+{{ proto_to_table("specification/a2a.proto", "ListTasksResponse") }}
 
 #### 10.4.5. CancelTask
 
@@ -2571,9 +2545,7 @@ Cancels a running task.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:CancelTaskRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "CancelTaskRequest") }}
 
 **Response:** See [`Task`](#411-task) object definition.
 
@@ -2583,9 +2555,7 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:SubscribeToTaskRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "SubscribeToTaskRequest") }}
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
@@ -2595,9 +2565,7 @@ Creates a push notification configuration for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:CreateTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "CreateTaskPushNotificationConfigRequest") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
@@ -2607,9 +2575,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:GetTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "GetTaskPushNotificationConfigRequest") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
@@ -2619,15 +2585,11 @@ Lists all push notification configurations for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:ListTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "ListTaskPushNotificationConfigRequest") }}
 
 **Response:**
 
-```proto
---8<-- "specification/a2a.proto:ListTaskPushNotificationConfigResponse"
-```
+{{ proto_to_table("specification/a2a.proto", "ListTaskPushNotificationConfigResponse") }}
 
 #### 10.4.10. DeleteTaskPushNotificationConfig
 
@@ -2635,9 +2597,7 @@ Removes a push notification configuration for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:DeleteTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "DeleteTaskPushNotificationConfigRequest") }}
 
 **Response:** `google.protobuf.Empty`
 
@@ -2647,9 +2607,7 @@ Retrieves the agent's extended capability card after authentication.
 
 **Request:**
 
-```proto
---8<-- "specification/a2a.proto:GetExtendedAgentCardRequest"
-```
+{{ proto_to_table("specification/a2a.proto", "GetExtendedAgentCardRequest") }}
 
 **Response:** See [`AgentCard`](#441-agentcard) object definition.
 
@@ -2659,9 +2617,7 @@ Retrieves the agent's extended capability card after authentication.
 
 Resource wrapper for push notification configurations. This is a gRPC-specific type used in resource-oriented operations to provide the full resource name along with the configuration data.
 
-```proto
---8<-- "specification/a2a.proto:TaskPushNotificationConfig"
-```
+{{ proto_to_table("specification/a2a.proto", "TaskPushNotificationConfig") }}
 
 **Fields:**
 
@@ -2731,9 +2687,7 @@ status {
 
 gRPC streaming uses server streaming RPCs for real-time updates. The `StreamResponse` message provides a union of possible streaming events:
 
-```proto
---8<-- "specification/a2a.proto:StreamResponse"
-```
+{{ proto_to_table("specification/a2a.proto", "StreamResponse") }}
 
 ## 11. HTTP+JSON/REST Protocol Binding
 
