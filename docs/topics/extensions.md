@@ -8,7 +8,7 @@ base protocol.
 
 Extensions allow for extending the A2A protocol with new data, requirements,
 RPC methods, and state machines. Agents declare their support for specific
-extensions in their Agent Card, and clients can then opt-in to the behavior
+extensions in their Agent Card, and clients can then opt in to the behavior
 offered by an extension as part of requests they make to the agent. Extensions
 are identified by a URI and defined by their own specification. Anyone is able to define, publish, and implement an extension.
 
@@ -30,7 +30,7 @@ However, some foreseeable applications include:
     values (for example, requiring all messages to use `DataParts` adhering to
     a specific schema). This can also include augmenting existing states in the
     task state machine by using metadata. For example, an extension could define
-    a 'generating-image' sub-state when `TaskStatus.state` is 'working' and
+    a 'generating-image' substate when `TaskStatus.state` is 'working' and
     `TaskStatus.message.metadata["generating-image"]` is true.
 - **Method Extensions (Extended Skills)**: Adding entirely new RPC methods
     beyond the core set defined by the protocol. An Extended Skill refers to a
@@ -57,7 +57,7 @@ There are some changes to the protocol that extensions don't allow, primarily
 to prevent breaking core type validations:
 
 - **Changing the Definition of Core Data Structures**: For example, adding new
-    fields or removing required fields to protocol-defined data structures).
+    fields or removing required fields to protocol-defined data structures.
     Extensions should place custom attributes in the `metadata` map present on
     core data structures.
 - **Adding New Values to Enum Types**: Extensions should use existing enum values
@@ -123,7 +123,7 @@ the agent should reject the incoming request with an appropriate error.
 
 The detailed behavior and structure of an extension are defined by its
 **specification**. While the exact format is not mandated, it should contain at
-at least:
+least:
 
 - The specific URI(s) that identify the extension.
 - The schema and meaning of objects specified in the `params` field of the
@@ -149,13 +149,13 @@ experience for extension-unaware clients. Clients and agents perform
 negotiation to determine which extensions are active for a specific request.
 
 1. **Client Request**: A client requests extension activation by including the
-    `X-A2A-Extensions` header in the HTTP request to the agent. The value is a
+    `A2A-Extensions` header in the HTTP request to the agent. The value is a
     comma-separated list of extension URIs the client intends to activate.
 2. **Agent Processing**: Agents are responsible for identifying supported
     extensions in the request and performing the activation. Any requested
     extensions not supported by the agent can be ignored.
 3. **Response**: Once the agent has identified all activated extensions, the
-    response SHOULD include the `X-A2A-Extensions` header, listing all
+    response SHOULD include the `A2A-Extensions` header, listing all
     extensions that were successfully activated for that request.
 
 ![A2A Extension Flow Diagram](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
@@ -166,7 +166,7 @@ negotiation to determine which extensions are active for a specific request.
 POST /agents/eightball HTTP/1.1
 Host: example.com
 Content-Type: application/json
-X-A2A-Extensions: https://example.com/ext/konami-code/v1
+A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 519
 {
   "jsonrpc": "2.0",
@@ -191,7 +191,7 @@ Content-Length: 519
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
-X-A2A-Extensions: https://example.com/ext/konami-code/v1
+A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 338
 {
   "jsonrpc": "2.0",

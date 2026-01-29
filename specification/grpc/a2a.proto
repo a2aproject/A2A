@@ -20,83 +20,115 @@ service A2AService {
   // Send a message to the agent.
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {
     option (google.api.http) = {
-      post: "/v1/message:send"
+      post: "/message:send"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:send"
+        body: "*"
+      }
     };
   }
   // SendStreamingMessage is a streaming version of SendMessage.
   rpc SendStreamingMessage(SendMessageRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      post: "/v1/message:stream"
+      post: "/message:stream"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:stream"
+        body: "*"
+      }
     };
   }
 
   // Get the current state of a task from the agent.
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*}"
+      get: "/{name=tasks/*}"
+      additional_bindings: {
+        get: "/{tenant}/{name=tasks/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
   // List tasks with optional filtering and pagination.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
-      get: "/v1/tasks"
+      get: "/tasks"
+      additional_bindings: {
+        get: "/{tenant}/tasks"
+      }
     };
   }
   // Cancel a task.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
     option (google.api.http) = {
-      post: "/v1/{name=tasks/*}:cancel"
+      post: "/{name=tasks/*}:cancel"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/{name=tasks/*}:cancel"
+        body: "*"
+      }
     };
   }
   // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
-  // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
-  rpc SubscribeToTask(SubscribeToTaskRequest)
-      returns (stream StreamResponse) {
+  // Returns UnsupportedOperationError if task is in terminal state (completed, failed, canceled, rejected).
+  rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*}:subscribe"
+      get: "/{name=tasks/*}:subscribe"
+      additional_bindings: {
+        get: "/{tenant}/{name=tasks/*}:subscribe"
+      }
     };
   }
 
-  // Set a push notification config for a task.
-  rpc SetTaskPushNotificationConfig(SetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
+  // Create a push notification config for a task.
+  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      post: "/v1/{parent=tasks/*/pushNotificationConfigs}"
+      post: "/{parent=tasks/*/pushNotificationConfigs}"
       body: "config"
+      additional_bindings: {
+        post: "/{tenant}/{parent=tasks/*/pushNotificationConfigs}"
+        body: "config"
+      }
     };
     option (google.api.method_signature) = "parent,config";
   }
   // Get a push notification config for a task.
-  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest)
-      returns (TaskPushNotificationConfig) {
+  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      get: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+      get: "/{name=tasks/*/pushNotificationConfigs/*}"
+      additional_bindings: {
+        get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
   // Get a list of push notifications configured for a task.
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest)
-      returns (ListTaskPushNotificationConfigResponse) {
+  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
-      get: "/v1/{parent=tasks/*}/pushNotificationConfigs"
+      get: "/{parent=tasks/*}/pushNotificationConfigs"
+      additional_bindings: {
+        get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"
+      }
     };
     option (google.api.method_signature) = "parent";
   }
   // GetExtendedAgentCard returns the extended agent card for authenticated agents.
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
-      get: "/v1/extendedAgentCard"
+      get: "/extendedAgentCard"
+      additional_bindings: {
+        get: "/{tenant}/extendedAgentCard"
+      }
     };
   }
   // Delete a push notification config for a task.
-  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest)
-      returns (google.protobuf.Empty) {
+  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1/{name=tasks/*/pushNotificationConfigs/*}"
+      delete: "/{name=tasks/*/pushNotificationConfigs/*}"
+      additional_bindings: {
+        delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
@@ -111,9 +143,12 @@ message SendMessageConfiguration {
   repeated string accepted_output_modes = 1;
   // Configuration for the agent to send push notifications for task updates.
   PushNotificationConfig push_notification_config = 2;
-  // The maximum number of messages to include in the history.
+  // The maximum number of most recent messages from the task's history to retrieve in
+  // the response. An unset value means the client does not impose any limit. A
+  // value of zero is a request to not include any messages. The server MUST NOT
+  // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
-  // If true, the operation waits until the task reaches a terminal state before returning. Default is false.
+  // If true, the operation waits until the task reaches a terminal or interrupted state before returning. Default is false.
   bool blocking = 4;
 }
 // --8<-- [end:SendMessageConfiguration]
@@ -156,9 +191,9 @@ enum TaskState {
   TASK_STATE_COMPLETED = 3;
   // Represents the status a task is done but failed. This is a terminal state.
   TASK_STATE_FAILED = 4;
-  // Represents the status a task was cancelled before it finished.
+  // Represents the status a task was canceled before it finished.
   // This is a terminal state.
-  TASK_STATE_CANCELLED = 5;
+  TASK_STATE_CANCELED = 5;
   // Represents the status that the task requires information to complete.
   // This is an interrupted state.
   TASK_STATE_INPUT_REQUIRED = 6;
@@ -167,8 +202,7 @@ enum TaskState {
   // has determined it can't or won't proceed. This is a terminal state.
   TASK_STATE_REJECTED = 7;
   // Represents the state that some authentication is needed from the upstream
-  // client. Authentication is expected to come out-of-band thus this is not
-  // an interrupted or terminal state.
+  // client. This is an interrupted state. Authentication is expected to come out-of-band.
   TASK_STATE_AUTH_REQUIRED = 8;
 }
 // --8<-- [end:TaskState]
@@ -191,45 +225,25 @@ message TaskStatus {
 // Parts can be purely textual, some sort of file (image, video, etc) or
 // a structured data blob (i.e. JSON).
 message Part {
-  oneof part {
+  oneof content {
     // The string content of the text part.
     string text = 1;
-    // The file content, represented as either a URI or as base64-encoded bytes.
-    FilePart file = 2;
-    // The structured data content.
-    DataPart data = 3;
+    // The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.
+    bytes raw = 2;
+    // A URL pointing to the file's content.
+    string url = 3;
+    // Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null).
+    google.protobuf.Value data = 4;
   }
   // Optional metadata associated with this part.
-  google.protobuf.Struct metadata = 4;
+  google.protobuf.Struct metadata = 5;
+  // An optional name for the file (e.g., "document.pdf").
+  string filename = 6;
+  // The media type (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png").
+  // This field is available for all part types.
+  string media_type = 7;
 }
 // --8<-- [end:Part]
-
-// --8<-- [start:FilePart]
-// FilePart represents the different ways files can be provided. If files are
-// small, directly feeding the bytes is supported via file_with_bytes. If the
-// file is large, the agent should read the content as appropriate directly
-// from the file_with_uri source.
-message FilePart {
-  oneof file {
-    // A URL pointing to the file's content.
-    string file_with_uri = 1;
-    // The base64-encoded content of the file.
-    bytes file_with_bytes = 2;
-  }
-  // The media type of the file (e.g., "application/pdf").
-  string media_type = 3;
-  // An optional name for the file (e.g., "document.pdf").
-  string name = 4;
-}
-// --8<-- [end:FilePart]
-
-// --8<-- [start:DataPart]
-// DataPart represents a structured blob.
-message DataPart {
-  //  A JSON object containing arbitrary data.
-  google.protobuf.Struct data = 1 [(google.api.field_behavior) = REQUIRED];
-}
-// --8<-- [end:DataPart]
 
 // --8<-- [start:Role]
 // Defines the sender of a message in A2A protocol communication.
@@ -243,13 +257,12 @@ enum Role {
 // --8<-- [end:Role]
 
 // --8<-- [start:Message]
-// Message is one unit of communication between client and server. It is
-// associated with a context and optionally a task. Since the server is
-// responsible for the context definition, it must always provide a context_id
-// in its messages. The client can optionally provide the context_id if it
-// knows the context to associate the message to. Similarly for task_id,
-// except the server decides if a task is created and whether to include the
-// task_id.
+// Message is one unit of communication between client and server. It can be
+// associated with a context and/or a task. For server messages, context_id must
+// be provided, and task_id only if a task was created. For client messages, both
+// fields are optional, with the caveat that if both are provided, they have to
+// match (the context_id has to be the one that is set on the task). If only
+// task_id is provided, the server will infer context_id from it.
 message Message {
   // The unique identifier (e.g. UUID) of the message. This is required and
   // created by the message creator.
@@ -304,8 +317,7 @@ message TaskStatusUpdateEvent {
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The new status of the task.
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
-  // If true, this is the final event in the stream for this interaction.
-  bool final = 4 [(google.api.field_behavior) = REQUIRED];
+  reserved 4;
   // Optional metadata to associate with the task update.
   google.protobuf.Struct metadata = 5;
 }
@@ -340,7 +352,7 @@ message PushNotificationConfig {
   string url = 2 [(google.api.field_behavior) = REQUIRED];
   // Token unique for this task/session
   string token = 3;
-  // Information about the authentication to sent with the notification
+  // Authentication information required to send the notification
   AuthenticationInfo authentication = 4;
 }
 // --8<-- [end:PushNotificationConfig]
@@ -348,9 +360,10 @@ message PushNotificationConfig {
 // --8<-- [start:PushNotificationAuthenticationInfo]
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
-  // A list of supported authentication schemes (e.g., 'Basic', 'Bearer').
-  repeated string schemes = 1 [(google.api.field_behavior) = REQUIRED];
-  // Optional credentials
+  // HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
+  // Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
+  string scheme = 1 [(google.api.field_behavior) = REQUIRED];
+  // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
   string credentials = 2;
 }
 // --8<-- [end:PushNotificationAuthenticationInfo]
@@ -366,6 +379,8 @@ message AgentInterface {
   // easily extended for other protocol bindings. The core ones officially
   // supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
+  // Tenant to be set in the request when calling the agent.
+  string tenant = 3;
 }
 // --8<-- [end:AgentInterface]
 
@@ -375,9 +390,14 @@ message AgentInterface {
 // communication methods, and security requirements.
 // Next ID: 20
 message AgentCard {
-  // The version of the A2A protocol this agent supports.
-  // Default: "1.0"
-  optional string protocol_version = 16 [(google.api.field_behavior) = REQUIRED];
+  // The versions of the A2A protocol this agent supports.
+  // For stable versions (1.x+), list only the latest supported minor version per major version.
+  // For legacy experimental versions (0.x), explicitly list each supported version.
+  // Default: ["1.0"]
+  repeated string protocol_versions = 16 [(google.api.field_behavior) = REQUIRED];
+  // Reserve these field numbers as they were previously used by removed
+  // fields.
+  reserved 3, 14, 15;
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -386,13 +406,7 @@ message AgentCard {
   // Example: "Agent that helps users with recipes and cooking."
   string description = 2 [(google.api.field_behavior) = REQUIRED];
   // Ordered list of supported interfaces. First entry is preferred.
-  repeated AgentInterface supported_interfaces = 19;
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string url = 3 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  optional string preferred_transport = 14 [deprecated = true];
-  // DEPRECATED: Use 'supported_interfaces' instead.
-  repeated AgentInterface additional_interfaces = 15 [deprecated = true];
+  repeated AgentInterface supported_interfaces = 19 [(google.api.field_behavior) = REQUIRED];
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
@@ -417,8 +431,6 @@ message AgentCard {
   // a descriptive concept but represents a more focused set of behaviors that the
   // agent is likely to succeed at.
   repeated AgentSkill skills = 12 [(google.api.field_behavior) = REQUIRED];
-  // Whether the agent supports providing an extended agent card when authenticated.
-  optional bool supports_authenticated_extended_card = 13;
   // JSON Web Signatures computed for this AgentCard.
   repeated AgentCardSignature signatures = 17;
   // An optional URL to an icon for the agent.
@@ -447,8 +459,10 @@ message AgentCapabilities {
   optional bool push_notifications = 2;
   // A list of protocol extensions supported by the agent.
   repeated AgentExtension extensions = 3;
-  // Indicates if the agent provides a history of state transitions for a task.
-  optional bool state_transition_history = 4;
+  // Field 4 was previously used by state_transition_history capability.
+  reserved 4;
+  // Indicates if the agent supports providing an extended agent card when authenticated.
+  optional bool extended_agent_card = 5;
 }
 // --8<-- [end:AgentCapabilities]
 
@@ -608,15 +622,15 @@ message MutualTlsSecurityScheme {
 // --8<-- [start:OAuthFlows]
 // Defines the configuration for the supported OAuth 2.0 flows.
 message OAuthFlows {
+  // Tags 3 and 4 were previously used by deprecated OAuth flows.
+  reserved 3, 4;
   oneof flow {
     // Configuration for the OAuth Authorization Code flow.
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
-    // Configuration for the OAuth Implicit flow.
-    ImplicitOAuthFlow implicit = 3;
-    // Configuration for the OAuth Resource Owner Password flow.
-    PasswordOAuthFlow password = 4;
+    // Configuration for the OAuth Device Code flow.
+    DeviceCodeOAuthFlow device_code = 5;
   }
 }
 // --8<-- [end:OAuthFlows]
@@ -632,6 +646,9 @@ message AuthorizationCodeOAuthFlow {
   string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
   map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
+  // Indicates if PKCE (RFC 7636) is required for this flow.
+  // PKCE should always be used for public clients and is recommended for all clients.
+  bool pkce_required = 5;
 }
 // --8<-- [end:AuthorizationCodeOAuthFlow]
 
@@ -647,37 +664,30 @@ message ClientCredentialsOAuthFlow {
 }
 // --8<-- [end:ClientCredentialsOAuthFlow]
 
-// --8<-- [start:ImplicitOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Implicit flow.
-message ImplicitOAuthFlow {
-  // The authorization URL to be used for this flow.
-  string authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
-  // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
-  // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
-}
-// --8<-- [end:ImplicitOAuthFlow]
-
-// --8<-- [start:PasswordOAuthFlow]
-// Defines configuration details for the OAuth 2.0 Resource Owner Password flow.
-message PasswordOAuthFlow {
+// --8<-- [start:DeviceCodeOAuthFlow]
+// Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628).
+// This flow is designed for input-constrained devices such as IoT devices,
+// and CLI tools where the user authenticates on a separate device.
+message DeviceCodeOAuthFlow {
+  // The device authorization endpoint URL.
+  string device_authorization_url = 1 [(google.api.field_behavior) = REQUIRED];
   // The token URL to be used for this flow.
-  string token_url = 1 [(google.api.field_behavior) = REQUIRED];
+  string token_url = 2 [(google.api.field_behavior) = REQUIRED];
   // The URL to be used for obtaining refresh tokens.
-  string refresh_url = 2;
+  string refresh_url = 3;
   // The available scopes for the OAuth2 security scheme.
-  map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
+  map<string, string> scopes = 4 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:PasswordOAuthFlow]
+// --8<-- [end:DeviceCodeOAuthFlow]
 
 ///////////// Request Messages ///////////
 // --8<-- [start:SendMessageRequest]
-// Represents a request for the `message/send` method.
+// Represents a request for the `SendMessage` method.
 message SendMessageRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
   // The message to send to the agent.
-  Message request = 1
-      [(google.api.field_behavior) = REQUIRED, json_name = "message"];
+  Message message = 1 [(google.api.field_behavior) = REQUIRED];
   // Configuration for the send request.
   SendMessageConfiguration configuration = 2;
   // A flexible key-value map for passing additional context or parameters.
@@ -686,12 +696,17 @@ message SendMessageRequest {
 // --8<-- [end:SendMessageRequest]
 
 // --8<-- [start:GetTaskRequest]
-// Represents a request for the `tasks/get` method.
+// Represents a request for the `GetTask` method.
 message GetTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 3;
   // The resource name of the task.
   // Format: tasks/{task_id}
   string name = 1 [(google.api.field_behavior) = REQUIRED];
-  // The maximum number of messages to include in the history.
+  // The maximum number of most recent messages from the task's history to retrieve. An
+  // unset value means the client does not impose any limit. A value of zero is
+  // a request to not include any messages. The server MUST NOT return more
+  // messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 2;
 }
 // --8<-- [end:GetTaskRequest]
@@ -699,6 +714,8 @@ message GetTaskRequest {
 // --8<-- [start:ListTasksRequest]
 // Parameters for listing tasks with optional filtering criteria.
 message ListTasksRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 9;
   // Filter tasks by context ID to get tasks from a specific conversation or session.
   string context_id = 1;
   // Filter tasks by their current status state.
@@ -710,9 +727,9 @@ message ListTasksRequest {
   string page_token = 4;
   // The maximum number of messages to include in each task's history.
   optional int32 history_length = 5;
-  // Filter tasks updated after this timestamp (milliseconds since epoch).
-  // Only tasks with a last updated time greater than or equal to this value will be returned.
-  int64 last_updated_after = 6;
+  // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
+  // Only tasks with a status timestamp time greater than or equal to this value will be returned.
+  google.protobuf.Timestamp status_timestamp_after = 6;
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.
   optional bool include_artifacts = 7;
@@ -734,8 +751,10 @@ message ListTasksResponse {
 // --8<-- [end:ListTasksResponse]
 
 // --8<-- [start:CancelTaskRequest]
-// Represents a request for the `tasks/cancel` method.
+// Represents a request for the `CancelTask` method.
 message CancelTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the task to cancel.
   // Format: tasks/{task_id}
   string name = 1;
@@ -744,6 +763,8 @@ message CancelTaskRequest {
 
 // --8<-- [start:GetTaskPushNotificationConfigRequest]
 message GetTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the config to retrieve.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
@@ -751,30 +772,35 @@ message GetTaskPushNotificationConfigRequest {
 // --8<-- [end:GetTaskPushNotificationConfigRequest]
 
 // --8<-- [start:DeleteTaskPushNotificationConfigRequest]
-// Represents a request for the `tasks/pushNotificationConfig/delete` method.
+// Represents a request for the `DeleteTaskPushNotificationConfig` method.
 message DeleteTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the config to delete.
   // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
   string name = 1;
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
-// --8<-- [start:SetTaskPushNotificationConfigRequest]
-// Represents a request for the `tasks/pushNotificationConfig/set` method.
-message SetTaskPushNotificationConfigRequest {
+// --8<-- [start:CreateTaskPushNotificationConfigRequest]
+// Represents a request for the `CreateTaskPushNotificationConfig` method.
+message CreateTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
   // The parent task resource for this config.
   // Format: tasks/{task_id}
   string parent = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID for the new config.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
-  TaskPushNotificationConfig config = 3
-      [(google.api.field_behavior) = REQUIRED];
+  TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
-// --8<-- [end:SetTaskPushNotificationConfigRequest]
+// --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
 // --8<-- [start:SubscribeToTaskRequest]
 message SubscribeToTaskRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 2;
   // The resource name of the task to subscribe to.
   // Format: tasks/{task_id}
   string name = 1;
@@ -783,6 +809,8 @@ message SubscribeToTaskRequest {
 
 // --8<-- [start:ListTaskPushNotificationConfigRequest]
 message ListTaskPushNotificationConfigRequest {
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
   // The parent task resource.
   // Format: tasks/{task_id}
   string parent = 1;
@@ -796,7 +824,8 @@ message ListTaskPushNotificationConfigRequest {
 
 // --8<-- [start:GetExtendedAgentCardRequest]
 message GetExtendedAgentCardRequest {
-  // Empty. Added to fix linter violation.
+  // Optional tenant, provided as a path parameter.
+  string tenant = 1;
 }
 // --8<-- [end:GetExtendedAgentCardRequest]
 
@@ -805,7 +834,7 @@ message GetExtendedAgentCardRequest {
 message SendMessageResponse {
   oneof payload {
     Task task = 1;
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
   }
 }
 // --8<-- [end:SendMessageResponse]
@@ -817,7 +846,7 @@ message StreamResponse {
     // A Task object containing the current state of the task.
     Task task = 1;
     // A Message object containing a message from the agent.
-    Message msg = 2 [json_name = "message"];
+    Message message = 2;
     // An event indicating a task status update.
     TaskStatusUpdateEvent status_update = 3;
     // An event indicating a task artifact update.
@@ -827,7 +856,7 @@ message StreamResponse {
 // --8<-- [end:StreamResponse]
 
 // --8<-- [start:ListTaskPushNotificationConfigResponse]
-// Represents a successful response for the `tasks/pushNotificationConfig/list`
+// Represents a successful response for the `ListTaskPushNotificationConfig`
 // method.
 message ListTaskPushNotificationConfigResponse {
   // The list of push notification configurations.
