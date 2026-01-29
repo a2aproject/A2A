@@ -11,7 +11,7 @@ from a client, it can respond in one of two fundamental ways:
     process it through a defined lifecycle, communicating progress and requiring
     input as needed, until it reaches an interrupted state (e.g.,
     `input-required`, `auth-required`) or a terminal state (e.g., `completed`,
-    `cancelled`, `rejected`, `failed`).
+    `canceled`, `rejected`, `failed`).
 
 ## Group Related Interactions
 
@@ -80,7 +80,7 @@ providing references to the original task using `referenceTaskIds` in the
 
 ## Task Immutability
 
-Once a task reaches a terminal state (completed, cancelled, rejected, or failed),
+Once a task reaches a terminal state (completed, canceled, rejected, or failed),
 it cannot restart. Any subsequent interaction related to that task, such as a
 refinement, must initiate a new task within the same `contextId`. This principle
 offers several benefits:
