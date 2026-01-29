@@ -71,7 +71,7 @@ service A2AService {
     };
   }
   // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
-  // Returns UnsupportedOperationError if task is in terminal state (completed, failed, cancelled, rejected).
+  // Returns UnsupportedOperationError if task is in terminal state (completed, failed, canceled, rejected).
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       get: "/{name=tasks/*}:subscribe"
@@ -149,7 +149,7 @@ message SendMessageConfiguration {
   // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
   // If true, the operation MUST wait until the task reaches a terminal or
-  // interrupted state (`COMPLETED`, `FAILED`, `CANCELLED`, `REJECTED`,
+  // interrupted state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`,
   // `INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. Default is false.
   bool blocking = 4;
 }
@@ -193,9 +193,9 @@ enum TaskState {
   TASK_STATE_COMPLETED = 3;
   // Represents the status a task is done but failed. This is a terminal state.
   TASK_STATE_FAILED = 4;
-  // Represents the status a task was cancelled before it finished.
+  // Represents the status a task was canceled before it finished.
   // This is a terminal state.
-  TASK_STATE_CANCELLED = 5;
+  TASK_STATE_CANCELED = 5;
   // Represents the status that the task requires information to complete.
   // This is an interrupted state.
   TASK_STATE_INPUT_REQUIRED = 6;
@@ -204,8 +204,7 @@ enum TaskState {
   // has determined it can't or won't proceed. This is a terminal state.
   TASK_STATE_REJECTED = 7;
   // Represents the state that some authentication is needed from the upstream
-  // client. Authentication is expected to come out-of-band thus this is not
-  // an interrupted or terminal state.
+  // client. This is an interrupted state. Authentication is expected to come out-of-band.
   TASK_STATE_AUTH_REQUIRED = 8;
 }
 // --8<-- [end:TaskState]
@@ -228,45 +227,25 @@ message TaskStatus {
 // Parts can be purely textual, some sort of file (image, video, etc) or
 // a structured data blob (i.e. JSON).
 message Part {
-  oneof part {
+  oneof content {
     // The string content of the text part.
     string text = 1;
-    // The file content, represented as either a URI or as base64-encoded bytes.
-    FilePart file = 2;
-    // The structured data content.
-    DataPart data = 3;
+    // The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.
+    bytes raw = 2;
+    // A URL pointing to the file's content.
+    string url = 3;
+    // Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null).
+    google.protobuf.Value data = 4;
   }
   // Optional metadata associated with this part.
-  google.protobuf.Struct metadata = 4;
+  google.protobuf.Struct metadata = 5;
+  // An optional name for the file (e.g., "document.pdf").
+  string filename = 6;
+  // The media type (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png").
+  // This field is available for all part types.
+  string media_type = 7;
 }
 // --8<-- [end:Part]
-
-// --8<-- [start:FilePart]
-// FilePart represents the different ways files can be provided. If files are
-// small, directly feeding the bytes is supported via file_with_bytes. If the
-// file is large, the agent should read the content as appropriate directly
-// from the file_with_uri source.
-message FilePart {
-  oneof file {
-    // A URL pointing to the file's content.
-    string file_with_uri = 1;
-    // The base64-encoded content of the file.
-    bytes file_with_bytes = 2;
-  }
-  // The media type of the file (e.g., "application/pdf").
-  string media_type = 3;
-  // An optional name for the file (e.g., "document.pdf").
-  string name = 4;
-}
-// --8<-- [end:FilePart]
-
-// --8<-- [start:DataPart]
-// DataPart represents a structured blob.
-message DataPart {
-  //  A JSON object containing arbitrary data.
-  google.protobuf.Struct data = 1 [(google.api.field_behavior) = REQUIRED];
-}
-// --8<-- [end:DataPart]
 
 // --8<-- [start:Role]
 // Defines the sender of a message in A2A protocol communication.
@@ -340,8 +319,7 @@ message TaskStatusUpdateEvent {
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The new status of the task.
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
-  // If true, this is the final event in the stream for this interaction.
-  bool final = 4 [(google.api.field_behavior) = REQUIRED];
+  reserved 4;
   // Optional metadata to associate with the task update.
   google.protobuf.Struct metadata = 5;
 }
@@ -376,7 +354,7 @@ message PushNotificationConfig {
   string url = 2 [(google.api.field_behavior) = REQUIRED];
   // Token unique for this task/session
   string token = 3;
-  // Information about the authentication to sent with the notification
+  // Authentication information required to send the notification
   AuthenticationInfo authentication = 4;
 }
 // --8<-- [end:PushNotificationConfig]
@@ -384,9 +362,10 @@ message PushNotificationConfig {
 // --8<-- [start:PushNotificationAuthenticationInfo]
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
-  // A list of supported authentication schemes (e.g., 'Basic', 'Bearer').
-  repeated string schemes = 1 [(google.api.field_behavior) = REQUIRED];
-  // Optional credentials
+  // HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
+  // Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
+  string scheme = 1 [(google.api.field_behavior) = REQUIRED];
+  // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
   string credentials = 2;
 }
 // --8<-- [end:PushNotificationAuthenticationInfo]
