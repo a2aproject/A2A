@@ -10,7 +10,7 @@ if [[ -z "$OUTPUT" ]]; then
 fi
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PROTO_DIR="$ROOT_DIR/specification/grpc"
+PROTO_DIR="$ROOT_DIR/specification"
 PROTO_FILE="$PROTO_DIR/a2a.proto"
 GOOGLEAPIS_DIR="${GOOGLEAPIS_DIR:-}"
 
@@ -25,6 +25,19 @@ check_command() {
 check_command "protoc"
 check_command "protoc-gen-jsonschema"
 check_command "jq"
+
+# Verify protoc-gen-jsonschema is the correct implementation (bufbuild/protoschema-plugins)
+# The bufbuild implementation outputs a version string starting with "v" (e.g., "v0.5.2")
+# Other implementations (like chrusty/protoc-gen-jsonschema) typically output "protoc-gen-jsonschema version X.Y.Z"
+PLUGIN_VERSION=$(protoc-gen-jsonschema --version 2>&1 || true)
+if [[ ! "$PLUGIN_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "Error: Incorrect protoc-gen-jsonschema plugin detected." >&2
+  echo "Current version output: '$PLUGIN_VERSION'" >&2
+  echo "This script requires the plugin from github.com/bufbuild/protoschema-plugins" >&2
+  echo "Please install it with:" >&2
+  echo "  go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest" >&2
+  exit 1
+fi
 
 # Create temporary directory for intermediate files
 TEMP_DIR=$(mktemp -d)
@@ -61,12 +74,10 @@ echo "→ Cleaning proto comments..." >&2
 # Define path for the cleaned proto in the temp directory
 CLEAN_PROTO_FILE="$TEMP_DIR/$(basename "$PROTO_FILE")"
 
-# Use sed to remove lines containing specific patterns:
+# Use grep to remove lines containing specific patterns:
 # 1. matches "// --8<--"
 # 2. matches "// protolint:"
-sed -e '/\/\/ --8<--/d' \
-  -e '/\/\/ protolint:/d' \
-  "$PROTO_FILE" >"$CLEAN_PROTO_FILE"
+grep -v -e "// --8<--" -e "// protolint:" "$PROTO_FILE" >"$CLEAN_PROTO_FILE"
 
 # Add the temp dir to the include path so protoc finds the clean file context
 # We prepend it so it takes precedence over the original file
