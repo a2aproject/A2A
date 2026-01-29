@@ -763,6 +763,25 @@ Clients that receive a `VersionNotSupportedError` can choose to retry the reques
 
 Tooling libraries and SDKs that implement the A2A protocol SHOULD provide mechanisms to help clients manage protocol versioning, such as providing configuration options to enable automatic fallback to earlier versions when a `VersionNotSupportedError` is encountered. Client Agents that require the latest features of the protocol should not enable automatic fallback, to avoid silently losing functionality.
 
+### 3.7 Messages and Artifacts
+
+Messages and Artifacts serve distinct purposes within the A2A protocol. The core interaction model defined by A2A is for clients to send messages to initiate a task that produce one or more artifacts.
+
+Messages play several key roles:
+
+- **Task Initiation**: Clients send Messages to agents to initiate new tasks.
+- **Clarification Messages**: Agents may send Messages back to the client to request clarification prior to initiating a task.
+- **Status Messages**: Agents attach Messages to status updates to inform clients about task progress, request additional input, or provide informational updates.
+- **Task Interaction**: Clients send Messages to provide additional input or instructions for ongoing tasks.
+
+Messages SHOULD NOT be used to deliver task outputs. Results SHOULD BE returned using Artifacts associated with a Task. This separation allows for a clear distinction between communication (Messages) and data output (Artifacts).
+
+The Task History field contains Messages exchanged during task execution. However, not all Messages are guaranteed to be persisted in the Task history; for example, transient informational messages may not be stored. Messages exchanged prior to task creation may not be stored in Task history. The agent is responsibile to determine which Messages are persisted in the Task History.
+
+Clients using streaming to retrieve task updates MAY not receive all status update messages if the client is disconnected and then reconnects. Messages MUST NOT be considered a reliable delivery mechanism for critical information.
+
+Agents MAY choose to persist all Messages that contain important information in the Task history to ensure clients can retrieve it later. However, clients MUST NOT rely on this behavior unless negotiated out-of-band.
+
 ## 4. Protocol Data Model
 
 The A2A protocol defines a canonical data model using Protocol Buffers. All protocol bindings **MUST** provide functionally equivalent representations of these data structures.
@@ -1155,7 +1174,6 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 - **Agent Declaration**: Agents **MUST** declare all supported protocols in their AgentCard
 - **Client Choice**: Clients **MAY** choose any protocol declared by the agent
-- **No Dynamic Negotiation**: A2A does not define runtime protocol negotiation
 - **Fallback Behavior**: Clients **SHOULD** implement fallback logic for alternative protocols
 
 ### 5.3. Method Mapping Reference
