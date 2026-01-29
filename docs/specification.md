@@ -771,7 +771,7 @@ Messages play several key roles:
 
 - **Task Initiation**: Clients send Messages to agents to initiate new tasks.
 - **Clarification Messages**: Agents may send Messages back to the client to request clarification prior to initiating a task.
-- **Status Messages**: Agents attach Messages to status updates to inform clients about task progress, request additional input, or provide informational updates.
+- **Status Messages**: Agents attach Messages to status update events to inform clients about task progress, request additional input, or provide informational updates.
 - **Task Interaction**: Clients send Messages to provide additional input or instructions for ongoing tasks.
 
 Messages SHOULD NOT be used to deliver task outputs. Results SHOULD BE returned using Artifacts associated with a Task. This separation allows for a clear distinction between communication (Messages) and data output (Artifacts).
