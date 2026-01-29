@@ -157,7 +157,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#agent2agent-a2a-protocol-specification-draft-v10" class="md-skip">
+        <a href="#agent2agent-a2a-protocol-specification-release-candidate-v10" class="md-skip">
           Skip to content
         </a>
       
@@ -6376,7 +6376,7 @@
   
 
 
-<h1 id="agent2agent-a2a-protocol-specification-draft-v10">Agent2Agent (A2A) Protocol Specification (DRAFT v1.0)<a class="headerlink" href="#agent2agent-a2a-protocol-specification-draft-v10" title="Permanent link">&para;</a></h1>
+<h1 id="agent2agent-a2a-protocol-specification-release-candidate-v10">Agent2Agent (A2A) Protocol Specification (Release Candidate v1.0)<a class="headerlink" href="#agent2agent-a2a-protocol-specification-release-candidate-v10" title="Permanent link">&para;</a></h1>
 <details class="note">
 <summary><strong>Latest Released Version</strong> <a href="https://a2a-protocol.org/v0.3.0/specification"><code>0.3.0</code></a></summary>
 <p><strong>Previous Versions</strong></p>
@@ -6633,7 +6633,7 @@
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><a href="#TaskState"><code>TaskState</code></a></td>
+<td><a href="#taskstate"><code>TaskState</code></a></td>
 <td>No</td>
 <td>Filter tasks by their current status state.</td>
 </tr>
@@ -6684,7 +6684,7 @@
 <tbody>
 <tr>
 <td><code>tasks</code></td>
-<td>array of <a href="#Task"><code>Task</code></a></td>
+<td>array of <a href="#task"><code>Task</code></a></td>
 <td>Yes</td>
 <td>Array of tasks matching the specified criteria.</td>
 </tr>
@@ -6837,7 +6837,7 @@
 </tr>
 <tr>
 <td><code>config</code></td>
-<td><a href="#PushNotificationConfig"><code>PushNotificationConfig</code></a></td>
+<td><a href="#pushnotificationconfig"><code>PushNotificationConfig</code></a></td>
 <td>Yes</td>
 <td>The configuration to create.</td>
 </tr>
@@ -6953,7 +6953,7 @@
 <tbody>
 <tr>
 <td><code>configs</code></td>
-<td>array of <a href="#TaskPushNotificationConfig"><code>TaskPushNotificationConfig</code></a></td>
+<td>array of <a href="#taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a></td>
 <td>No</td>
 <td>The list of push notification configurations.</td>
 </tr>
@@ -7077,13 +7077,13 @@
 </tr>
 <tr>
 <td><code>message</code></td>
-<td><a href="#Message"><code>Message</code></a></td>
+<td><a href="#message"><code>Message</code></a></td>
 <td>Yes</td>
 <td>The message to send to the agent.</td>
 </tr>
 <tr>
 <td><code>configuration</code></td>
-<td><a href="#SendMessageConfiguration"><code>SendMessageConfiguration</code></a></td>
+<td><a href="#sendmessageconfiguration"><code>SendMessageConfiguration</code></a></td>
 <td>No</td>
 <td>Configuration for the send request.</td>
 </tr>
@@ -7115,7 +7115,7 @@
 </tr>
 <tr>
 <td><code>pushNotificationConfig</code></td>
-<td><a href="#PushNotificationConfig"><code>PushNotificationConfig</code></a></td>
+<td><a href="#pushnotificationconfig"><code>PushNotificationConfig</code></a></td>
 <td>No</td>
 <td>Configuration for the agent to send push notifications for task updates.</td>
 </tr>
@@ -7165,25 +7165,25 @@
 <tbody>
 <tr>
 <td><code>task</code></td>
-<td><a href="#Task"><code>Task</code></a></td>
+<td><a href="#task"><code>Task</code></a></td>
 <td>No</td>
 <td>A Task object containing the current state of the task.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
-<td><a href="#Message"><code>Message</code></a></td>
+<td><a href="#message"><code>Message</code></a></td>
 <td>No</td>
 <td>A Message object containing a message from the agent.</td>
 </tr>
 <tr>
 <td><code>statusUpdate</code></td>
-<td><a href="#TaskStatusUpdateEvent"><code>TaskStatusUpdateEvent</code></a></td>
+<td><a href="#taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a></td>
 <td>No</td>
 <td>An event indicating a task status update.</td>
 </tr>
 <tr>
 <td><code>artifactUpdate</code></td>
-<td><a href="#TaskArtifactUpdateEvent"><code>TaskArtifactUpdateEvent</code></a></td>
+<td><a href="#taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a></td>
 <td>No</td>
 <td>An event indicating a task artifact update.</td>
 </tr>
@@ -7536,19 +7536,19 @@
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><a href="#TaskStatus"><code>TaskStatus</code></a></td>
+<td><a href="#taskstatus"><code>TaskStatus</code></a></td>
 <td>Yes</td>
 <td>The current status of a Task, including state and a message.</td>
 </tr>
 <tr>
 <td><code>artifacts</code></td>
-<td>array of <a href="#Artifact"><code>Artifact</code></a></td>
+<td>array of <a href="#artifact"><code>Artifact</code></a></td>
 <td>No</td>
 <td>A set of output artifacts for a Task.</td>
 </tr>
 <tr>
 <td><code>history</code></td>
-<td>array of <a href="#Message"><code>Message</code></a></td>
+<td>array of <a href="#message"><code>Message</code></a></td>
 <td>No</td>
 <td>The history of interactions from a task.</td>
 </tr>
@@ -7575,13 +7575,13 @@
 <tbody>
 <tr>
 <td><code>state</code></td>
-<td><a href="#TaskState"><code>TaskState</code></a></td>
+<td><a href="#taskstate"><code>TaskState</code></a></td>
 <td>Yes</td>
 <td>The current state of this task.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
-<td><a href="#Message"><code>Message</code></a></td>
+<td><a href="#message"><code>Message</code></a></td>
 <td>No</td>
 <td>A message associated with the status.</td>
 </tr>
@@ -7675,13 +7675,13 @@
 </tr>
 <tr>
 <td><code>role</code></td>
-<td><a href="#Role"><code>Role</code></a></td>
+<td><a href="#role"><code>Role</code></a></td>
 <td>Yes</td>
 <td>Identifies the sender of the message.</td>
 </tr>
 <tr>
 <td><code>parts</code></td>
-<td>array of <a href="#Part"><code>Part</code></a></td>
+<td>array of <a href="#part"><code>Part</code></a></td>
 <td>Yes</td>
 <td>Parts is the container of the message content.</td>
 </tr>
@@ -7763,7 +7763,7 @@
 </tr>
 <tr>
 <td><code>data</code></td>
-<td><a href="#google.protobuf.Value"><code>google.protobuf.Value</code></a></td>
+<td><a href="#google.protobuf.value"><code>google.protobuf.Value</code></a></td>
 <td>No</td>
 <td>Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null).</td>
 </tr>
@@ -7821,7 +7821,7 @@
 </tr>
 <tr>
 <td><code>parts</code></td>
-<td>array of <a href="#Part"><code>Part</code></a></td>
+<td>array of <a href="#part"><code>Part</code></a></td>
 <td>Yes</td>
 <td>The content of the artifact. Must contain at least one part.</td>
 </tr>
@@ -7867,7 +7867,7 @@
 </tr>
 <tr>
 <td><code>status</code></td>
-<td><a href="#TaskStatus"><code>TaskStatus</code></a></td>
+<td><a href="#taskstatus"><code>TaskStatus</code></a></td>
 <td>Yes</td>
 <td>The new status of the task.</td>
 </tr>
@@ -7906,7 +7906,7 @@
 </tr>
 <tr>
 <td><code>artifact</code></td>
-<td><a href="#Artifact"><code>Artifact</code></a></td>
+<td><a href="#artifact"><code>Artifact</code></a></td>
 <td>Yes</td>
 <td>The artifact that was generated or updated.</td>
 </tr>
@@ -7964,7 +7964,7 @@
 </tr>
 <tr>
 <td><code>authentication</code></td>
-<td><a href="#AuthenticationInfo"><code>AuthenticationInfo</code></a></td>
+<td><a href="#authenticationinfo"><code>AuthenticationInfo</code></a></td>
 <td>No</td>
 <td>Authentication information required to send the notification</td>
 </tr>
@@ -8065,13 +8065,13 @@
 </tr>
 <tr>
 <td><code>supportedInterfaces</code></td>
-<td>array of <a href="#AgentInterface"><code>AgentInterface</code></a></td>
+<td>array of <a href="#agentinterface"><code>AgentInterface</code></a></td>
 <td>Yes</td>
 <td>Ordered list of supported interfaces. First entry is preferred.</td>
 </tr>
 <tr>
 <td><code>provider</code></td>
-<td><a href="#AgentProvider"><code>AgentProvider</code></a></td>
+<td><a href="#agentprovider"><code>AgentProvider</code></a></td>
 <td>No</td>
 <td>The service provider of the agent.</td>
 </tr>
@@ -8089,19 +8089,19 @@
 </tr>
 <tr>
 <td><code>capabilities</code></td>
-<td><a href="#AgentCapabilities"><code>AgentCapabilities</code></a></td>
+<td><a href="#agentcapabilities"><code>AgentCapabilities</code></a></td>
 <td>Yes</td>
 <td>A2A Capability set supported by the agent.</td>
 </tr>
 <tr>
 <td><code>securitySchemes</code></td>
-<td>map of <a href="#SecurityScheme"><code>SecurityScheme</code></a></td>
+<td>map of <a href="#securityscheme"><code>SecurityScheme</code></a></td>
 <td>No</td>
 <td>The security scheme details used for authenticating with this agent.</td>
 </tr>
 <tr>
 <td><code>securityRequirements</code></td>
-<td>array of <a href="#SecurityRequirement"><code>SecurityRequirement</code></a></td>
+<td>array of <a href="#securityrequirement"><code>SecurityRequirement</code></a></td>
 <td>No</td>
 <td>Security requirements for contacting the agent.</td>
 </tr>
@@ -8119,13 +8119,13 @@
 </tr>
 <tr>
 <td><code>skills</code></td>
-<td>array of <a href="#AgentSkill"><code>AgentSkill</code></a></td>
+<td>array of <a href="#agentskill"><code>AgentSkill</code></a></td>
 <td>Yes</td>
 <td>Skills represent an ability of an agent. It is largely a descriptive concept but represents a more focused set of behaviors that the agent is likely to succeed at.</td>
 </tr>
 <tr>
 <td><code>signatures</code></td>
-<td>array of <a href="#AgentCardSignature"><code>AgentCardSignature</code></a></td>
+<td>array of <a href="#agentcardsignature"><code>AgentCardSignature</code></a></td>
 <td>No</td>
 <td>JSON Web Signatures computed for this AgentCard.</td>
 </tr>
@@ -8191,7 +8191,7 @@
 </tr>
 <tr>
 <td><code>extensions</code></td>
-<td>array of <a href="#AgentExtension"><code>AgentExtension</code></a></td>
+<td>array of <a href="#agentextension"><code>AgentExtension</code></a></td>
 <td>No</td>
 <td>A list of protocol extensions supported by the agent.</td>
 </tr>
@@ -8299,7 +8299,7 @@
 </tr>
 <tr>
 <td><code>securityRequirements</code></td>
-<td>array of <a href="#SecurityRequirement"><code>SecurityRequirement</code></a></td>
+<td>array of <a href="#securityrequirement"><code>SecurityRequirement</code></a></td>
 <td>No</td>
 <td>Security schemes necessary for this skill.</td>
 </tr>
@@ -8394,31 +8394,31 @@
 <tbody>
 <tr>
 <td><code>apiKeySecurityScheme</code></td>
-<td><a href="#APIKeySecurityScheme"><code>APIKeySecurityScheme</code></a></td>
+<td><a href="#apikeysecurityscheme"><code>APIKeySecurityScheme</code></a></td>
 <td>No</td>
 <td>API key-based authentication.</td>
 </tr>
 <tr>
 <td><code>httpAuthSecurityScheme</code></td>
-<td><a href="#HTTPAuthSecurityScheme"><code>HTTPAuthSecurityScheme</code></a></td>
+<td><a href="#httpauthsecurityscheme"><code>HTTPAuthSecurityScheme</code></a></td>
 <td>No</td>
 <td>HTTP authentication (Basic, Bearer, etc.).</td>
 </tr>
 <tr>
 <td><code>oauth2SecurityScheme</code></td>
-<td><a href="#OAuth2SecurityScheme"><code>OAuth2SecurityScheme</code></a></td>
+<td><a href="#oauth2securityscheme"><code>OAuth2SecurityScheme</code></a></td>
 <td>No</td>
 <td>OAuth 2.0 authentication.</td>
 </tr>
 <tr>
 <td><code>openIdConnectSecurityScheme</code></td>
-<td><a href="#OpenIdConnectSecurityScheme"><code>OpenIdConnectSecurityScheme</code></a></td>
+<td><a href="#openidconnectsecurityscheme"><code>OpenIdConnectSecurityScheme</code></a></td>
 <td>No</td>
 <td>OpenID Connect authentication.</td>
 </tr>
 <tr>
 <td><code>mtlsSecurityScheme</code></td>
-<td><a href="#MutualTlsSecurityScheme"><code>MutualTlsSecurityScheme</code></a></td>
+<td><a href="#mutualtlssecurityscheme"><code>MutualTlsSecurityScheme</code></a></td>
 <td>No</td>
 <td>Mutual TLS authentication.</td>
 </tr>
@@ -8512,7 +8512,7 @@
 </tr>
 <tr>
 <td><code>flows</code></td>
-<td><a href="#OAuthFlows"><code>OAuthFlows</code></a></td>
+<td><a href="#oauthflows"><code>OAuthFlows</code></a></td>
 <td>Yes</td>
 <td>An object containing configuration information for the supported OAuth 2.0 flows.</td>
 </tr>
@@ -8553,7 +8553,7 @@
 </table>
 <p><a id="MutualTlsSecurityScheme"></a></p>
 <h4 id="456-mutualtlssecurityscheme">4.5.6. MutualTLSSecurityScheme<a class="headerlink" href="#456-mutualtlssecurityscheme" title="Permanent link">&para;</a></h4>
-<p><strong>Error:</strong> Message 'MutualTlsSecurityScheme' not found in specification/grpc/a2a.proto</p>
+<p><strong>Error:</strong> Message 'MutualTlsSecurityScheme' not found in specification/a2a.proto</p>
 <p><a id="OAuthFlows"></a></p>
 <h4 id="457-oauthflows">4.5.7. OAuthFlows<a class="headerlink" href="#457-oauthflows" title="Permanent link">&para;</a></h4>
 <p>Defines the configuration for the supported OAuth 2.0 flows.</p>
@@ -8569,31 +8569,31 @@
 <tbody>
 <tr>
 <td><code>authorizationCode</code></td>
-<td><a href="#AuthorizationCodeOAuthFlow"><code>AuthorizationCodeOAuthFlow</code></a></td>
+<td><a href="#authorizationcodeoauthflow"><code>AuthorizationCodeOAuthFlow</code></a></td>
 <td>No</td>
 <td>Configuration for the OAuth Authorization Code flow.</td>
 </tr>
 <tr>
 <td><code>clientCredentials</code></td>
-<td><a href="#ClientCredentialsOAuthFlow"><code>ClientCredentialsOAuthFlow</code></a></td>
+<td><a href="#clientcredentialsoauthflow"><code>ClientCredentialsOAuthFlow</code></a></td>
 <td>No</td>
 <td>Configuration for the OAuth Client Credentials flow.</td>
 </tr>
 <tr>
 <td><code>implicit</code></td>
-<td><a href="#ImplicitOAuthFlow"><code>ImplicitOAuthFlow</code></a></td>
+<td><a href="#implicitoauthflow"><code>ImplicitOAuthFlow</code></a></td>
 <td>No</td>
 <td></td>
 </tr>
 <tr>
 <td><code>password</code></td>
-<td><a href="#PasswordOAuthFlow"><code>PasswordOAuthFlow</code></a></td>
+<td><a href="#passwordoauthflow"><code>PasswordOAuthFlow</code></a></td>
 <td>No</td>
 <td></td>
 </tr>
 <tr>
 <td><code>deviceCode</code></td>
-<td><a href="#DeviceCodeOAuthFlow"><code>DeviceCodeOAuthFlow</code></a></td>
+<td><a href="#devicecodeoauthflow"><code>DeviceCodeOAuthFlow</code></a></td>
 <td>No</td>
 <td>Configuration for the OAuth Device Code flow.</td>
 </tr>
@@ -9062,7 +9062,7 @@
 <li>Timestamps <strong>MUST NOT</strong> include timezone offsets other than 'Z' (all times are UTC)</li>
 </ul>
 <h3 id="57-field-presence-and-optionality">5.7. Field Presence and Optionality<a class="headerlink" href="#57-field-presence-and-optionality" title="Permanent link">&para;</a></h3>
-<p>The Protocol Buffer definition in <code>specification/grpc/a2a.proto</code> uses <a href="https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto"><code>google.api.field_behavior</code></a> annotations to indicate whether fields are <code>REQUIRED</code>. These annotations serve as both documentation and validation hints for implementations.</p>
+<p>The Protocol Buffer definition in <code>specification/a2a.proto</code> uses <a href="https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto"><code>google.api.field_behavior</code></a> annotations to indicate whether fields are <code>REQUIRED</code>. These annotations serve as both documentation and validation hints for implementations.</p>
 <p><strong>Required Fields:</strong></p>
 <p>Fields marked with <code>[(google.api.field_behavior) = REQUIRED]</code> indicate that the field <strong>MUST</strong> be present and set in valid messages. Implementations <strong>SHOULD</strong> validate these requirements and reject messages with missing required fields. Arrays marked as required <strong>MUST</strong> contain at least one element.</p>
 <p><strong>Optional Field Presence:</strong></p>
@@ -10073,7 +10073,7 @@
 <h3 id="101-protocol-requirements">10.1. Protocol Requirements<a class="headerlink" href="#101-protocol-requirements" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Protocol:</strong> gRPC over HTTP/2 with TLS</li>
-<li><strong>Definition:</strong> Use the normative Protocol Buffers definition in <code>specification/grpc/a2a.proto</code></li>
+<li><strong>Definition:</strong> Use the normative Protocol Buffers definition in <code>specification/a2a.proto</code></li>
 <li><strong>Serialization:</strong> Protocol Buffers version 3</li>
 <li><strong>Service:</strong> Implement the <code>A2AService</code> gRPC service</li>
 </ul>
@@ -10368,7 +10368,7 @@
 </tr>
 <tr>
 <td><code>pushNotificationConfig</code></td>
-<td><a href="#PushNotificationConfig"><code>PushNotificationConfig</code></a></td>
+<td><a href="#pushnotificationconfig"><code>PushNotificationConfig</code></a></td>
 <td>Yes</td>
 <td>The push notification configuration details.</td>
 </tr>
