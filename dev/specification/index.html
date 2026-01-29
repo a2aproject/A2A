@@ -1683,6 +1683,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#37-messages-and-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Messages and Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4383,6 +4394,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#37-messages-and-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Messages and Artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6561,10 +6583,10 @@
 <td>Optional tenant, provided as a path parameter.</td>
 </tr>
 <tr>
-<td><code>name</code></td>
+<td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource name of the task. Format: tasks/{task_id}</td>
+<td>The resource id of the task.</td>
 </tr>
 <tr>
 <td><code>historyLength</code></td>
@@ -6716,10 +6738,10 @@
 <td>Optional tenant, provided as a path parameter.</td>
 </tr>
 <tr>
-<td><code>name</code></td>
+<td><code>id</code></td>
 <td><code>string</code></td>
-<td>No</td>
-<td>The resource name of the task to cancel. Format: tasks/{task_id}</td>
+<td>Yes</td>
+<td>The resource id of the task to cancel.</td>
 </tr>
 </tbody>
 </table>
@@ -6755,10 +6777,10 @@
 <td>Optional tenant, provided as a path parameter.</td>
 </tr>
 <tr>
-<td><code>name</code></td>
+<td><code>id</code></td>
 <td><code>string</code></td>
-<td>No</td>
-<td>The resource name of the task to subscribe to. Format: tasks/{task_id}</td>
+<td>Yes</td>
+<td>The resource id of the task to subscribe to.</td>
 </tr>
 </tbody>
 </table>
@@ -6802,10 +6824,10 @@
 <td>Optional tenant, provided as a path parameter.</td>
 </tr>
 <tr>
-<td><code>parent</code></td>
+<td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource for this config. Format: tasks/{task_id}</td>
+<td>The parent task resource id.</td>
 </tr>
 <tr>
 <td><code>configId</code></td>
@@ -6815,7 +6837,7 @@
 </tr>
 <tr>
 <td><code>config</code></td>
-<td><a href="#TaskPushNotificationConfig"><code>TaskPushNotificationConfig</code></a></td>
+<td><a href="#PushNotificationConfig"><code>PushNotificationConfig</code></a></td>
 <td>Yes</td>
 <td>The configuration to create.</td>
 </tr>
@@ -6854,10 +6876,16 @@
 <td>Optional tenant, provided as a path parameter.</td>
 </tr>
 <tr>
-<td><code>name</code></td>
+<td><code>taskId</code></td>
 <td><code>string</code></td>
-<td>No</td>
-<td>The resource name of the config to retrieve. Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</td>
+<td>Yes</td>
+<td>The parent task resource id.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource id of the config to retrieve.</td>
 </tr>
 </tbody>
 </table>
@@ -6892,10 +6920,10 @@
 <td>Optional tenant, provided as a path parameter.</td>
 </tr>
 <tr>
-<td><code>parent</code></td>
+<td><code>taskId</code></td>
 <td><code>string</code></td>
-<td>No</td>
-<td>The parent task resource. Format: tasks/{task_id}</td>
+<td>Yes</td>
+<td>The parent task resource id.</td>
 </tr>
 <tr>
 <td><code>pageSize</code></td>
@@ -6965,10 +6993,16 @@
 <td>Optional tenant, provided as a path parameter.</td>
 </tr>
 <tr>
-<td><code>name</code></td>
+<td><code>taskId</code></td>
 <td><code>string</code></td>
-<td>No</td>
-<td>The resource name of the config to delete. Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</td>
+<td>Yes</td>
+<td>The parent task resource id.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource id of the config to delete.</td>
 </tr>
 </tbody>
 </table>
@@ -7459,6 +7493,19 @@
 <p>Clients that receive a <code>VersionNotSupportedError</code> can choose to retry the request with an earlier supported version, or fail the request. This explicit failure handling helps prevent unexpected behavior that could arise if an agent processes a request containing protocol features or fields it does not recognize.</p>
 <h4 id="364-tooling-support">3.6.4 Tooling support<a class="headerlink" href="#364-tooling-support" title="Permanent link">&para;</a></h4>
 <p>Tooling libraries and SDKs that implement the A2A protocol SHOULD provide mechanisms to help clients manage protocol versioning, such as providing configuration options to enable automatic fallback to earlier versions when a <code>VersionNotSupportedError</code> is encountered. Client Agents that require the latest features of the protocol should not enable automatic fallback, to avoid silently losing functionality.</p>
+<h3 id="37-messages-and-artifacts">3.7 Messages and Artifacts<a class="headerlink" href="#37-messages-and-artifacts" title="Permanent link">&para;</a></h3>
+<p>Messages and Artifacts serve distinct purposes within the A2A protocol. The core interaction model defined by A2A is for clients to send messages to initiate a task that produces one or more artifacts.</p>
+<p>Messages play several key roles:</p>
+<ul>
+<li><strong>Task Initiation</strong>: Clients send Messages to agents to initiate new tasks.</li>
+<li><strong>Clarification Messages</strong>: Agents may send Messages back to the client to request clarification prior to initiating a task.</li>
+<li><strong>Status Messages</strong>: Agents attach Messages to status update events to inform clients about task progress, request additional input, or provide informational updates.</li>
+<li><strong>Task Interaction</strong>: Clients send Messages to provide additional input or instructions for ongoing tasks.</li>
+</ul>
+<p>Messages SHOULD NOT be used to deliver task outputs. Results SHOULD BE returned using Artifacts associated with a Task. This separation allows for a clear distinction between communication (Messages) and data output (Artifacts).</p>
+<p>The Task History field contains Messages exchanged during task execution. However, not all Messages are guaranteed to be persisted in the Task history; for example, transient informational messages may not be stored. Messages exchanged prior to task creation may not be stored in Task history. The agent is responsible to determine which Messages are persisted in the Task History.</p>
+<p>Clients using streaming to retrieve task updates MAY not receive all status update messages if the client is disconnected and then reconnects. Messages MUST NOT be considered a reliable delivery mechanism for critical information.</p>
+<p>Agents MAY choose to persist all Messages that contain important information in the Task history to ensure clients can retrieve it later. However, clients MUST NOT rely on this behavior unless negotiated out-of-band.</p>
 <h2 id="4-protocol-data-model">4. Protocol Data Model<a class="headerlink" href="#4-protocol-data-model" title="Permanent link">&para;</a></h2>
 <p>The A2A protocol defines a canonical data model using Protocol Buffers. All protocol bindings <strong>MUST</strong> provide functionally equivalent representations of these data structures.</p>
 <h3 id="41-core-objects">4.1. Core Objects<a class="headerlink" href="#41-core-objects" title="Permanent link">&para;</a></h3>
@@ -8005,12 +8052,6 @@
 </thead>
 <tbody>
 <tr>
-<td><code>protocolVersions</code></td>
-<td>array of <code>string</code></td>
-<td>Yes</td>
-<td>The versions of the A2A protocol this agent supports. For stable versions (1.x+), list only the latest supported minor version per major version. For legacy experimental versions (0.x), explicitly list each supported version. Default: ["1.0"]</td>
-</tr>
-<tr>
 <td><code>name</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
@@ -8059,8 +8100,8 @@
 <td>The security scheme details used for authenticating with this agent.</td>
 </tr>
 <tr>
-<td><code>security</code></td>
-<td>array of <a href="#Security"><code>Security</code></a></td>
+<td><code>securityRequirements</code></td>
+<td>array of <a href="#SecurityRequirement"><code>SecurityRequirement</code></a></td>
 <td>No</td>
 <td>Security requirements for contacting the agent.</td>
 </tr>
@@ -8257,8 +8298,8 @@
 <td>The set of supported output media types for this skill, overriding the agent's defaults.</td>
 </tr>
 <tr>
-<td><code>security</code></td>
-<td>array of <a href="#Security"><code>Security</code></a></td>
+<td><code>securityRequirements</code></td>
+<td>array of <a href="#SecurityRequirement"><code>SecurityRequirement</code></a></td>
 <td>No</td>
 <td>Security schemes necessary for this skill.</td>
 </tr>
@@ -8266,7 +8307,7 @@
 </table>
 <p><a id="AgentInterface"></a></p>
 <h4 id="446-agentinterface">4.4.6. AgentInterface<a class="headerlink" href="#446-agentinterface" title="Permanent link">&para;</a></h4>
-<p>Declares a combination of a target URL and a transport protocol for interacting with the agent. This allows agents to expose the same functionality over multiple protocol binding mechanisms.</p>
+<p>Declares a combination of a target URL, transport and protocol version for interacting with the agent. This allows agents to expose the same functionality over multiple protocol binding mechanisms.</p>
 <table>
 <thead>
 <tr>
@@ -8294,6 +8335,12 @@
 <td><code>string</code></td>
 <td>No</td>
 <td>Tenant to be set in the request when calling the agent.</td>
+</tr>
+<tr>
+<td><code>protocolVersion</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The version of the A2A protocol this interface exposes. Use the latest supported minor version per major version. Examples: "0.3", "1.0"</td>
 </tr>
 </tbody>
 </table>
@@ -8533,6 +8580,18 @@
 <td>Configuration for the OAuth Client Credentials flow.</td>
 </tr>
 <tr>
+<td><code>implicit</code></td>
+<td><a href="#ImplicitOAuthFlow"><code>ImplicitOAuthFlow</code></a></td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><a href="#PasswordOAuthFlow"><code>PasswordOAuthFlow</code></a></td>
+<td>No</td>
+<td></td>
+</tr>
+<tr>
 <td><code>deviceCode</code></td>
 <td><a href="#DeviceCodeOAuthFlow"><code>DeviceCodeOAuthFlow</code></a></td>
 <td>No</td>
@@ -8540,7 +8599,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> A OAuthFlows MUST contain exactly one of the following: <code>authorizationCode</code>, <code>clientCredentials</code>, <code>deviceCode</code></p>
+<p><strong>Note:</strong> A OAuthFlows MUST contain exactly one of the following: <code>authorizationCode</code>, <code>clientCredentials</code>, <code>implicit</code>, <code>password</code>, <code>deviceCode</code></p>
 <p><a id="AuthorizationCodeOAuthFlow"></a></p>
 <h4 id="458-authorizationcodeoauthflow">4.5.8. AuthorizationCodeOAuthFlow<a class="headerlink" href="#458-authorizationcodeoauthflow" title="Permanent link">&para;</a></h4>
 <p>Defines configuration details for the OAuth 2.0 Authorization Code flow.</p>
@@ -8790,7 +8849,6 @@
 <ul>
 <li><strong>Agent Declaration</strong>: Agents <strong>MUST</strong> declare all supported protocols in their AgentCard</li>
 <li><strong>Client Choice</strong>: Clients <strong>MAY</strong> choose any protocol declared by the agent</li>
-<li><strong>No Dynamic Negotiation</strong>: A2A does not define runtime protocol negotiation</li>
 <li><strong>Fallback Behavior</strong>: Clients <strong>SHOULD</strong> implement fallback logic for alternative protocols</li>
 </ul>
 <h3 id="53-method-mapping-reference">5.3. Method Mapping Reference<a class="headerlink" href="#53-method-mapping-reference" title="Permanent link">&para;</a></h3>
@@ -10107,15 +10165,14 @@
 </span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">GetTaskRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="w">  </span><span class="c1">// The resource name of the task.</span>
-</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}</span>
-</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="w">  </span><span class="c1">// The maximum number of most recent messages from the task&#39;s history to retrieve. An</span>
-</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="w">  </span><span class="c1">// unset value means the client does not impose any limit. A value of zero is</span>
-</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a><span class="w">  </span><span class="c1">// a request to not include any messages. The server MUST NOT return more</span>
-</span><span id="__span-58-11"><a id="__codelineno-58-11" name="__codelineno-58-11" href="#__codelineno-58-11"></a><span class="w">  </span><span class="c1">// messages than the provided value, but MAY apply a lower limit.</span>
-</span><span id="__span-58-12"><a id="__codelineno-58-12" name="__codelineno-58-12" href="#__codelineno-58-12"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">history_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-58-13"><a id="__codelineno-58-13" name="__codelineno-58-13" href="#__codelineno-58-13"></a><span class="p">}</span>
+</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="w">  </span><span class="c1">// The resource id of the task.</span>
+</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="w">  </span><span class="c1">// The maximum number of most recent messages from the task&#39;s history to retrieve. An</span>
+</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="w">  </span><span class="c1">// unset value means the client does not impose any limit. A value of zero is</span>
+</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="w">  </span><span class="c1">// a request to not include any messages. The server MUST NOT return more</span>
+</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a><span class="w">  </span><span class="c1">// messages than the provided value, but MAY apply a lower limit.</span>
+</span><span id="__span-58-11"><a id="__codelineno-58-11" name="__codelineno-58-11" href="#__codelineno-58-11"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">history_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</span><span id="__span-58-12"><a id="__codelineno-58-12" name="__codelineno-58-12" href="#__codelineno-58-12"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> See <a href="#411-task"><code>Task</code></a> object definition.</p>
 <h4 id="1044-listtasks">10.4.4. ListTasks<a class="headerlink" href="#1044-listtasks" title="Permanent link">&para;</a></h4>
@@ -10164,10 +10221,9 @@
 </span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">CancelTaskRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a><span class="w">  </span><span class="c1">// The resource name of the task to cancel.</span>
-</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}</span>
-</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-61-8"><a id="__codelineno-61-8" name="__codelineno-61-8" href="#__codelineno-61-8"></a><span class="p">}</span>
+</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a><span class="w">  </span><span class="c1">// The resource id of the task to cancel.</span>
+</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> See <a href="#411-task"><code>Task</code></a> object definition.</p>
 <h4 id="1046-subscribetotask">10.4.6. SubscribeToTask<a class="headerlink" href="#1046-subscribetotask" title="Permanent link">&para;</a></h4>
@@ -10176,10 +10232,9 @@
 <div class="language-proto highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SubscribeToTaskRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-62-2"><a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-62-3"><a id="__codelineno-62-3" name="__codelineno-62-3" href="#__codelineno-62-3"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-62-4"><a id="__codelineno-62-4" name="__codelineno-62-4" href="#__codelineno-62-4"></a><span class="w">  </span><span class="c1">// The resource name of the task to subscribe to.</span>
-</span><span id="__span-62-5"><a id="__codelineno-62-5" name="__codelineno-62-5" href="#__codelineno-62-5"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}</span>
-</span><span id="__span-62-6"><a id="__codelineno-62-6" name="__codelineno-62-6" href="#__codelineno-62-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-62-7"><a id="__codelineno-62-7" name="__codelineno-62-7" href="#__codelineno-62-7"></a><span class="p">}</span>
+</span><span id="__span-62-4"><a id="__codelineno-62-4" name="__codelineno-62-4" href="#__codelineno-62-4"></a><span class="w">  </span><span class="c1">// The resource id of the task to subscribe to.</span>
+</span><span id="__span-62-5"><a id="__codelineno-62-5" name="__codelineno-62-5" href="#__codelineno-62-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-62-6"><a id="__codelineno-62-6" name="__codelineno-62-6" href="#__codelineno-62-6"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> Server streaming <a href="#stream-response"><code>StreamResponse</code></a> objects.</p>
 <h4 id="1047-createtaskpushnotificationconfig">10.4.7. CreateTaskPushNotificationConfig<a class="headerlink" href="#1047-createtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
@@ -10187,15 +10242,15 @@
 <p><strong>Request:</strong></p>
 <div class="language-proto highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="c1">// Represents a request for the `CreateTaskPushNotificationConfig` method.</span>
 </span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">CreateTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-63-3"><a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-63-4"><a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-63-5"><a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a><span class="w">  </span><span class="c1">// The parent task resource for this config.</span>
-</span><span id="__span-63-6"><a id="__codelineno-63-6" name="__codelineno-63-6" href="#__codelineno-63-6"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}</span>
-</span><span id="__span-63-7"><a id="__codelineno-63-7" name="__codelineno-63-7" href="#__codelineno-63-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-63-3"><a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a><span class="w">  </span><span class="k">reserved</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-63-4"><a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
+</span><span id="__span-63-5"><a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+</span><span id="__span-63-6"><a id="__codelineno-63-6" name="__codelineno-63-6" href="#__codelineno-63-6"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
+</span><span id="__span-63-7"><a id="__codelineno-63-7" name="__codelineno-63-7" href="#__codelineno-63-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
 </span><span id="__span-63-8"><a id="__codelineno-63-8" name="__codelineno-63-8" href="#__codelineno-63-8"></a><span class="w">  </span><span class="c1">// The ID for the new config.</span>
 </span><span id="__span-63-9"><a id="__codelineno-63-9" name="__codelineno-63-9" href="#__codelineno-63-9"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">config_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
 </span><span id="__span-63-10"><a id="__codelineno-63-10" name="__codelineno-63-10" href="#__codelineno-63-10"></a><span class="w">  </span><span class="c1">// The configuration to create.</span>
-</span><span id="__span-63-11"><a id="__codelineno-63-11" name="__codelineno-63-11" href="#__codelineno-63-11"></a><span class="w">  </span><span class="n">TaskPushNotificationConfig</span><span class="w"> </span><span class="na">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-63-11"><a id="__codelineno-63-11" name="__codelineno-63-11" href="#__codelineno-63-11"></a><span class="w">  </span><span class="n">PushNotificationConfig</span><span class="w"> </span><span class="na">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
 </span><span id="__span-63-12"><a id="__codelineno-63-12" name="__codelineno-63-12" href="#__codelineno-63-12"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> See <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> object definition.</p>
@@ -10205,10 +10260,11 @@
 <div class="language-proto highlight"><pre><span></span><code><span id="__span-64-1"><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">GetTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-64-3"><a id="__codelineno-64-3" name="__codelineno-64-3" href="#__codelineno-64-3"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-64-4"><a id="__codelineno-64-4" name="__codelineno-64-4" href="#__codelineno-64-4"></a><span class="w">  </span><span class="c1">// The resource name of the config to retrieve.</span>
-</span><span id="__span-64-5"><a id="__codelineno-64-5" name="__codelineno-64-5" href="#__codelineno-64-5"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</span>
-</span><span id="__span-64-6"><a id="__codelineno-64-6" name="__codelineno-64-6" href="#__codelineno-64-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-64-7"><a id="__codelineno-64-7" name="__codelineno-64-7" href="#__codelineno-64-7"></a><span class="p">}</span>
+</span><span id="__span-64-4"><a id="__codelineno-64-4" name="__codelineno-64-4" href="#__codelineno-64-4"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
+</span><span id="__span-64-5"><a id="__codelineno-64-5" name="__codelineno-64-5" href="#__codelineno-64-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-64-6"><a id="__codelineno-64-6" name="__codelineno-64-6" href="#__codelineno-64-6"></a><span class="w">  </span><span class="c1">// The resource id of the config to retrieve.</span>
+</span><span id="__span-64-7"><a id="__codelineno-64-7" name="__codelineno-64-7" href="#__codelineno-64-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-64-8"><a id="__codelineno-64-8" name="__codelineno-64-8" href="#__codelineno-64-8"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> See <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> object definition.</p>
 <h4 id="1049-listtaskpushnotificationconfig">10.4.9. ListTaskPushNotificationConfig<a class="headerlink" href="#1049-listtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
@@ -10217,9 +10273,9 @@
 <div class="language-proto highlight"><pre><span></span><code><span id="__span-65-1"><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">ListTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-65-2"><a id="__codelineno-65-2" name="__codelineno-65-2" href="#__codelineno-65-2"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-65-3"><a id="__codelineno-65-3" name="__codelineno-65-3" href="#__codelineno-65-3"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-65-4"><a id="__codelineno-65-4" name="__codelineno-65-4" href="#__codelineno-65-4"></a><span class="w">  </span><span class="c1">// The parent task resource.</span>
-</span><span id="__span-65-5"><a id="__codelineno-65-5" name="__codelineno-65-5" href="#__codelineno-65-5"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}</span>
-</span><span id="__span-65-6"><a id="__codelineno-65-6" name="__codelineno-65-6" href="#__codelineno-65-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-65-4"><a id="__codelineno-65-4" name="__codelineno-65-4" href="#__codelineno-65-4"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
+</span><span id="__span-65-5"><a id="__codelineno-65-5" name="__codelineno-65-5" href="#__codelineno-65-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-65-6"><a id="__codelineno-65-6" name="__codelineno-65-6" href="#__codelineno-65-6"></a>
 </span><span id="__span-65-7"><a id="__codelineno-65-7" name="__codelineno-65-7" href="#__codelineno-65-7"></a><span class="w">  </span><span class="c1">// The maximum number of configurations to return.</span>
 </span><span id="__span-65-8"><a id="__codelineno-65-8" name="__codelineno-65-8" href="#__codelineno-65-8"></a><span class="w">  </span><span class="kt">int32</span><span class="w"> </span><span class="na">page_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 </span><span id="__span-65-9"><a id="__codelineno-65-9" name="__codelineno-65-9" href="#__codelineno-65-9"></a>
@@ -10245,10 +10301,11 @@
 </span><span id="__span-67-2"><a id="__codelineno-67-2" name="__codelineno-67-2" href="#__codelineno-67-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">DeleteTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-67-3"><a id="__codelineno-67-3" name="__codelineno-67-3" href="#__codelineno-67-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
 </span><span id="__span-67-4"><a id="__codelineno-67-4" name="__codelineno-67-4" href="#__codelineno-67-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-67-5"><a id="__codelineno-67-5" name="__codelineno-67-5" href="#__codelineno-67-5"></a><span class="w">  </span><span class="c1">// The resource name of the config to delete.</span>
-</span><span id="__span-67-6"><a id="__codelineno-67-6" name="__codelineno-67-6" href="#__codelineno-67-6"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</span>
-</span><span id="__span-67-7"><a id="__codelineno-67-7" name="__codelineno-67-7" href="#__codelineno-67-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-67-8"><a id="__codelineno-67-8" name="__codelineno-67-8" href="#__codelineno-67-8"></a><span class="p">}</span>
+</span><span id="__span-67-5"><a id="__codelineno-67-5" name="__codelineno-67-5" href="#__codelineno-67-5"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
+</span><span id="__span-67-6"><a id="__codelineno-67-6" name="__codelineno-67-6" href="#__codelineno-67-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-67-7"><a id="__codelineno-67-7" name="__codelineno-67-7" href="#__codelineno-67-7"></a><span class="w">  </span><span class="c1">// The resource id of the config to delete.</span>
+</span><span id="__span-67-8"><a id="__codelineno-67-8" name="__codelineno-67-8" href="#__codelineno-67-8"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-67-9"><a id="__codelineno-67-9" name="__codelineno-67-9" href="#__codelineno-67-9"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> <code>google.protobuf.Empty</code></p>
 <h4 id="10411-getextendedagentcard">10.4.11. GetExtendedAgentCard<a class="headerlink" href="#10411-getextendedagentcard" title="Permanent link">&para;</a></h4>
@@ -10266,12 +10323,18 @@
 <div class="language-proto highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a><span class="c1">// A container associating a push notification configuration with a specific</span>
 </span><span id="__span-69-2"><a id="__codelineno-69-2" name="__codelineno-69-2" href="#__codelineno-69-2"></a><span class="c1">// task.</span>
 </span><span id="__span-69-3"><a id="__codelineno-69-3" name="__codelineno-69-3" href="#__codelineno-69-3"></a><span class="kd">message</span><span class="w"> </span><span class="nc">TaskPushNotificationConfig</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-69-4"><a id="__codelineno-69-4" name="__codelineno-69-4" href="#__codelineno-69-4"></a><span class="w">  </span><span class="c1">// The resource name of the config.</span>
-</span><span id="__span-69-5"><a id="__codelineno-69-5" name="__codelineno-69-5" href="#__codelineno-69-5"></a><span class="w">  </span><span class="c1">// Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</span>
-</span><span id="__span-69-6"><a id="__codelineno-69-6" name="__codelineno-69-6" href="#__codelineno-69-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-69-7"><a id="__codelineno-69-7" name="__codelineno-69-7" href="#__codelineno-69-7"></a><span class="w">  </span><span class="c1">// The push notification configuration details.</span>
-</span><span id="__span-69-8"><a id="__codelineno-69-8" name="__codelineno-69-8" href="#__codelineno-69-8"></a><span class="w">  </span><span class="n">PushNotificationConfig</span><span class="w"> </span><span class="na">push_notification_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-69-9"><a id="__codelineno-69-9" name="__codelineno-69-9" href="#__codelineno-69-9"></a><span class="p">}</span>
+</span><span id="__span-69-4"><a id="__codelineno-69-4" name="__codelineno-69-4" href="#__codelineno-69-4"></a><span class="w">  </span><span class="c1">// Optional tenant</span>
+</span><span id="__span-69-5"><a id="__codelineno-69-5" name="__codelineno-69-5" href="#__codelineno-69-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+</span><span id="__span-69-6"><a id="__codelineno-69-6" name="__codelineno-69-6" href="#__codelineno-69-6"></a>
+</span><span id="__span-69-7"><a id="__codelineno-69-7" name="__codelineno-69-7" href="#__codelineno-69-7"></a><span class="w">  </span><span class="c1">// The id of the config.</span>
+</span><span id="__span-69-8"><a id="__codelineno-69-8" name="__codelineno-69-8" href="#__codelineno-69-8"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-69-9"><a id="__codelineno-69-9" name="__codelineno-69-9" href="#__codelineno-69-9"></a>
+</span><span id="__span-69-10"><a id="__codelineno-69-10" name="__codelineno-69-10" href="#__codelineno-69-10"></a><span class="w">  </span><span class="c1">// The id of the task this config is associated with.</span>
+</span><span id="__span-69-11"><a id="__codelineno-69-11" name="__codelineno-69-11" href="#__codelineno-69-11"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-69-12"><a id="__codelineno-69-12" name="__codelineno-69-12" href="#__codelineno-69-12"></a>
+</span><span id="__span-69-13"><a id="__codelineno-69-13" name="__codelineno-69-13" href="#__codelineno-69-13"></a><span class="w">  </span><span class="c1">// The push notification configuration details.</span>
+</span><span id="__span-69-14"><a id="__codelineno-69-14" name="__codelineno-69-14" href="#__codelineno-69-14"></a><span class="w">  </span><span class="n">PushNotificationConfig</span><span class="w"> </span><span class="na">push_notification_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
+</span><span id="__span-69-15"><a id="__codelineno-69-15" name="__codelineno-69-15" href="#__codelineno-69-15"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Fields:</strong></p>
 <p>A container associating a push notification configuration with a specific task.</p>
@@ -10286,10 +10349,22 @@
 </thead>
 <tbody>
 <tr>
-<td><code>name</code></td>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant</td>
+</tr>
+<tr>
+<td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource name of the config. Format: tasks/{task_id}/pushNotificationConfigs/{config_id}</td>
+<td>The id of the config.</td>
+</tr>
+<tr>
+<td><code>taskId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The id of the task this config is associated with.</td>
 </tr>
 <tr>
 <td><code>pushNotificationConfig</code></td>

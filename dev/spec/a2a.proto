@@ -43,12 +43,12 @@ service A2AService {
   // Get the current state of a task from the agent.
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
-      get: "/{name=tasks/*}"
+      get: "/tasks/{id=*}"
       additional_bindings: {
-        get: "/{tenant}/{name=tasks/*}"
+        get: "/{tenant}/tasks/{id=*}"
       }
     };
-    option (google.api.method_signature) = "name";
+    option (google.api.method_signature) = "id";
   }
   // List tasks with optional filtering and pagination.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
@@ -62,10 +62,10 @@ service A2AService {
   // Cancel a task.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
     option (google.api.http) = {
-      post: "/{name=tasks/*}:cancel"
+      post: "/tasks/{id=*}:cancel"
       body: "*"
       additional_bindings: {
-        post: "/{tenant}/{name=tasks/*}:cancel"
+        post: "/{tenant}/tasks/{id=*}:cancel"
         body: "*"
       }
     };
@@ -74,9 +74,9 @@ service A2AService {
   // Returns UnsupportedOperationError if task is in terminal state (completed, failed, canceled, rejected).
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      get: "/{name=tasks/*}:subscribe"
+      get: "/tasks/{id=*}:subscribe"
       additional_bindings: {
-        get: "/{tenant}/{name=tasks/*}:subscribe"
+        get: "/{tenant}/tasks/{id=*}:subscribe"
       }
     };
   }
@@ -84,34 +84,34 @@ service A2AService {
   // Create a push notification config for a task.
   rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      post: "/{parent=tasks/*/pushNotificationConfigs}"
+      post: "/tasks/{task_id=*}/pushNotificationConfigs"
       body: "config"
       additional_bindings: {
-        post: "/{tenant}/{parent=tasks/*/pushNotificationConfigs}"
+        post: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs"
         body: "config"
       }
     };
-    option (google.api.method_signature) = "parent,config";
+    option (google.api.method_signature) = "task_id,config";
   }
   // Get a push notification config for a task.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
-      get: "/{name=tasks/*/pushNotificationConfigs/*}"
+      get: "/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
       additional_bindings: {
-        get: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+        get: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
       }
     };
-    option (google.api.method_signature) = "name";
+    option (google.api.method_signature) = "task_id,id";
   }
   // Get a list of push notifications configured for a task.
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
-      get: "/{parent=tasks/*}/pushNotificationConfigs"
+      get: "/tasks/{task_id=*}/pushNotificationConfigs"
       additional_bindings: {
-        get: "/{tenant}/{parent=tasks/*}/pushNotificationConfigs"
+        get: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs"
       }
     };
-    option (google.api.method_signature) = "parent";
+    option (google.api.method_signature) = "task_id";
   }
   // GetExtendedAgentCard returns the extended agent card for authenticated agents.
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
@@ -125,12 +125,12 @@ service A2AService {
   // Delete a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/{name=tasks/*/pushNotificationConfigs/*}"
+      delete: "/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
       additional_bindings: {
-        delete: "/{tenant}/{name=tasks/*/pushNotificationConfigs/*}"
+        delete: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
       }
     };
-    option (google.api.method_signature) = "name";
+    option (google.api.method_signature) = "task_id,id";
   }
 }
 
@@ -369,7 +369,7 @@ message AuthenticationInfo {
 // --8<-- [end:PushNotificationAuthenticationInfo]
 
 // --8<-- [start:AgentInterface]
-// Declares a combination of a target URL and a transport protocol for interacting with the agent.
+// Declares a combination of a target URL, transport and protocol version for interacting with the agent.
 // This allows agents to expose the same functionality over multiple protocol binding mechanisms.
 message AgentInterface {
   // The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
@@ -381,6 +381,10 @@ message AgentInterface {
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
   // Tenant to be set in the request when calling the agent.
   string tenant = 3;
+  // The version of the A2A protocol this interface exposes.
+  // Use the latest supported minor version per major version.
+  // Examples: "0.3", "1.0"
+  string protocol_version = 4 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:AgentInterface]
 
@@ -390,14 +394,9 @@ message AgentInterface {
 // communication methods, and security requirements.
 // Next ID: 20
 message AgentCard {
-  // The versions of the A2A protocol this agent supports.
-  // For stable versions (1.x+), list only the latest supported minor version per major version.
-  // For legacy experimental versions (0.x), explicitly list each supported version.
-  // Default: ["1.0"]
-  repeated string protocol_versions = 16 [(google.api.field_behavior) = REQUIRED];
   // Reserve these field numbers as they were previously used by removed
   // fields.
-  reserved 3, 14, 15;
+  reserved 3, 9, 14, 15, 16;
   // A human readable name for the agent.
   // Example: "Recipe Agent"
   string name = 1 [(google.api.field_behavior) = REQUIRED];
@@ -418,9 +417,8 @@ message AgentCard {
   AgentCapabilities capabilities = 7 [(google.api.field_behavior) = REQUIRED];
   // The security scheme details used for authenticating with this agent.
   map<string, SecurityScheme> security_schemes = 8;
-  // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
   // Security requirements for contacting the agent.
-  repeated Security security = 9;
+  repeated SecurityRequirement security_requirements = 19;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // The set of interaction modes that the agent supports across all skills.
   // This can be overridden per skill. Defined as media types.
@@ -497,10 +495,8 @@ message AgentSkill {
   repeated string input_modes = 6;
   // The set of supported output media types for this skill, overriding the agent's defaults.
   repeated string output_modes = 7;
-  // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
   // Security schemes necessary for this skill.
-  repeated Security security = 8;
-  // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
+  repeated SecurityRequirement security_requirements = 8;
 }
 // --8<-- [end:AgentSkill]
 
@@ -522,9 +518,15 @@ message AgentCardSignature {
 // A container associating a push notification configuration with a specific
 // task.
 message TaskPushNotificationConfig {
-  // The resource name of the config.
-  // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
-  string name = 1 [(google.api.field_behavior) = REQUIRED];
+  // Optional tenant
+  string tenant = 4;
+
+  // The id of the config.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The id of the task this config is associated with.
+  string task_id = 3 [(google.api.field_behavior) = REQUIRED];
+
   // The push notification configuration details.
   PushNotificationConfig push_notification_config = 2 [(google.api.field_behavior) = REQUIRED];
 }
@@ -536,7 +538,7 @@ message StringList {
 }
 // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 
-message Security {
+message SecurityRequirement {
   map<string, StringList> schemes = 1;
 }
 
@@ -622,13 +624,13 @@ message MutualTlsSecurityScheme {
 // --8<-- [start:OAuthFlows]
 // Defines the configuration for the supported OAuth 2.0 flows.
 message OAuthFlows {
-  // Tags 3 and 4 were previously used by deprecated OAuth flows.
-  reserved 3, 4;
   oneof flow {
     // Configuration for the OAuth Authorization Code flow.
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
+    ImplicitOAuthFlow implicit = 3 [deprecated = true];
+    PasswordOAuthFlow password = 4 [deprecated = true];
     // Configuration for the OAuth Device Code flow.
     DeviceCodeOAuthFlow device_code = 5;
   }
@@ -663,6 +665,32 @@ message ClientCredentialsOAuthFlow {
   map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:ClientCredentialsOAuthFlow]
+
+// DEPRECATED
+message ImplicitOAuthFlow {
+  // The authorization URL to be used for this flow. This MUST be in the
+  // form of a URL. The OAuth2 standard requires the use of TLS
+  string authorization_url = 1;
+  // The URL to be used for obtaining refresh tokens. This MUST be in the
+  // form of a URL. The OAuth2 standard requires the use of TLS.
+  string refresh_url = 2;
+  // The available scopes for the OAuth2 security scheme. A map between the
+  // scope name and a short description for it. The map MAY be empty.
+  map<string, string> scopes = 3;
+}
+
+// DEPRECATED
+message PasswordOAuthFlow {
+  // The token URL to be used for this flow. This MUST be in the form of a URL.
+  // The OAuth2 standard requires the use of TLS.
+  string token_url = 1;
+  // The URL to be used for obtaining refresh tokens. This MUST be in the
+  // form of a URL. The OAuth2 standard requires the use of TLS.
+  string refresh_url = 2;
+  // The available scopes for the OAuth2 security scheme. A map between the
+  // scope name and a short description for it. The map MAY be empty.
+  map<string, string> scopes = 3;
+}
 
 // --8<-- [start:DeviceCodeOAuthFlow]
 // Defines configuration details for the OAuth 2.0 Device Code flow (RFC 8628).
@@ -700,9 +728,8 @@ message SendMessageRequest {
 message GetTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 3;
-  // The resource name of the task.
-  // Format: tasks/{task_id}
-  string name = 1 [(google.api.field_behavior) = REQUIRED];
+  // The resource id of the task.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
   // The maximum number of most recent messages from the task's history to retrieve. An
   // unset value means the client does not impose any limit. A value of zero is
   // a request to not include any messages. The server MUST NOT return more
@@ -755,9 +782,8 @@ message ListTasksResponse {
 message CancelTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // The resource name of the task to cancel.
-  // Format: tasks/{task_id}
-  string name = 1;
+  // The resource id of the task to cancel.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:CancelTaskRequest]
 
@@ -765,9 +791,10 @@ message CancelTaskRequest {
 message GetTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // The resource name of the config to retrieve.
-  // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
-  string name = 1;
+  // The parent task resource id.
+  string task_id = 3 [(google.api.field_behavior) = REQUIRED];
+  // The resource id of the config to retrieve.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:GetTaskPushNotificationConfigRequest]
 
@@ -776,24 +803,25 @@ message GetTaskPushNotificationConfigRequest {
 message DeleteTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // The resource name of the config to delete.
-  // Format: tasks/{task_id}/pushNotificationConfigs/{config_id}
-  string name = 1;
+  // The parent task resource id.
+  string task_id = 3 [(google.api.field_behavior) = REQUIRED];
+  // The resource id of the config to delete.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:DeleteTaskPushNotificationConfigRequest]
 
 // --8<-- [start:CreateTaskPushNotificationConfigRequest]
 // Represents a request for the `CreateTaskPushNotificationConfig` method.
 message CreateTaskPushNotificationConfigRequest {
+  reserved 3;
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
-  // The parent task resource for this config.
-  // Format: tasks/{task_id}
-  string parent = 1 [(google.api.field_behavior) = REQUIRED];
+  // The parent task resource id.
+  string task_id = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID for the new config.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
-  TaskPushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
+  PushNotificationConfig config = 5 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:CreateTaskPushNotificationConfigRequest]
 
@@ -801,9 +829,8 @@ message CreateTaskPushNotificationConfigRequest {
 message SubscribeToTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
-  // The resource name of the task to subscribe to.
-  // Format: tasks/{task_id}
-  string name = 1;
+  // The resource id of the task to subscribe to.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 // --8<-- [end:SubscribeToTaskRequest]
 
@@ -811,9 +838,9 @@ message SubscribeToTaskRequest {
 message ListTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
-  // The parent task resource.
-  // Format: tasks/{task_id}
-  string parent = 1;
+  // The parent task resource id.
+  string task_id = 1 [(google.api.field_behavior) = REQUIRED];
+
   // The maximum number of configurations to return.
   int32 page_size = 2;
 
