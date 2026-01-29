@@ -10,6 +10,8 @@ on:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'a2aproject'
+
     steps:
       - name: Dispatch repository_dispatch to a2a-python
         uses: peter-evans/repository-dispatch@v4

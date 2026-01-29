@@ -5,6 +5,7 @@ if available) who are part of the A2A community and are helping build, codify,
 and adopt A2A as the standard protocol for AI agents to communicate and
 collaborate effectively with each other and with users.
 
+- [A2A Net](https://a2anet.com)
 - [Accelirate Inc](https://www.accelirate.com)
 - [Accenture](https://www.accenture.com)
 - [Activeloop](https://www.activeloop.ai/)
@@ -13,8 +14,9 @@ collaborate effectively with each other and with users.
 - [AI21 Labs](https://www.ai21.com/)
 - [AI71](https://ai71.ai/)
 - [Aisera](https://aisera.com/)
-- [Almawave.it](https://www.almawave.com/it/)
 - [AliCloud](http://www.alibabacloud.com)
+- [Almawave.it](https://www.almawave.com/it/)
+- [AmikoNet](https://amikonet.ai)
 - [ArcBlock](http://www.arcblock.io)
 - [Arize](https://arize.com/blog/arize-ai-and-future-of-agent-interoperability-embracing-googles-a2a-protocol/)
 - [Articul8](https://www.articul8.ai/blog/unleashing-the-next-frontier-of-enterprise-ai-introducing-model-mesh-dock-and-inter-lock-and-our-a2-a-partnership-with-google)
@@ -94,6 +96,7 @@ collaborate effectively with each other and with users.
 - [Lumeris](https://www.lumeris.com/)
 - [Lyzr.ai](https://lyzr.ai)
 - [Magyar Telekom](https://www.telekom.hu/)
+- [MasOrange](https://masorange.es/en/)
 - [Microsoft](https://www.microsoft.com/en-us/microsoft-cloud/blog/2025/05/07/empowering-multi-agent-apps-with-the-open-agent2agent-a2a-protocol/)
 - [MindsDB](https://mindsdb.com/blog/mindsdb-now-supports-the-agent2agent-(a2a)-protocol)
 - [McKinsey](https://www.mckinsey.com)
@@ -103,6 +106,7 @@ collaborate effectively with each other and with users.
 - [New Relic](https://newrelic.com)
 - [Nisum](http://www.nisum.com)
 - [Noorle Inc](http://www.noorle.com)
+- [NTT DATA](https://www.nttdata.com)
 - [Optimizely Inc](https://www.optimizely.com/)
 - [Oracle / NetSuite](https://www.oracle.com/netsuite)
 - [Palo Alto Networks](https://www.paloaltonetworks.com/)

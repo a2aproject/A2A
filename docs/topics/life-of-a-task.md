@@ -147,10 +147,9 @@ The following example illustrates a typical task flow with a follow-up:
           "role": "user",
           "parts": [
             {
-              "kind": "text",
               "text": "Generate an image of a sailboat on the ocean."
             }
-          ]
+          ],
           "messageId": "msg-user-001"
         }
       }
@@ -176,17 +175,15 @@ The following example illustrates a typical task flow with a follow-up:
             "description": "A generated image of a sailboat on the ocean.",
             "parts": [
               {
-                "kind": "file",
                 "file": {
                   "name": "sailboat_image.png",
-                  "mimeType": "image/png",
-                  "bytes": "base64_encoded_png_data_of_a_sailboat"
+                  "mediaType": "image/png",
+                  "fileWithBytes": "base64_encoded_png_data_of_a_sailboat"
                 }
               }
             ]
           }
-        ],
-        "kind": "task"
+        ]
       }
     }
     ```
@@ -209,7 +206,6 @@ The following example illustrates a typical task flow with a follow-up:
           ],
           "parts": [
             {
-              "kind": "text",
               "text": "Please modify the sailboat to be red."
             }
           ]
@@ -218,7 +214,7 @@ The following example illustrates a typical task flow with a follow-up:
     }
     ```
 
-4. Agent responds with a new image artifact (new task, same context, updated
+4. Agent responds with a new image artifact (new task, same context, same
     artifact name): The agent creates a new task within the same `contextId`. The
     new boat image artifact retains the same name but has a new `artifactId`.
 
@@ -239,17 +235,15 @@ The following example illustrates a typical task flow with a follow-up:
             "description": "A generated image of a red sailboat on the ocean.",
             "parts": [
               {
-                "kind": "file",
                 "file": {
                   "name": "sailboat_image.png",
-                  "mimeType": "image/png",
-                  "bytes": "base64_encoded_png_data_of_a_RED_sailboat"
+                  "mediaType": "image/png",
+                  "fileWithBytes": "base64_encoded_png_data_of_a_RED_sailboat"
                 }
               }
             ]
           }
-        ],
-        "kind": "task"
+        ]
       }
     }
     ```

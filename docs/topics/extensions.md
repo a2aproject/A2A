@@ -149,13 +149,13 @@ experience for extension-unaware clients. Clients and agents perform
 negotiation to determine which extensions are active for a specific request.
 
 1. **Client Request**: A client requests extension activation by including the
-    `X-A2A-Extensions` header in the HTTP request to the agent. The value is a
+    `A2A-Extensions` header in the HTTP request to the agent. The value is a
     comma-separated list of extension URIs the client intends to activate.
 2. **Agent Processing**: Agents are responsible for identifying supported
     extensions in the request and performing the activation. Any requested
     extensions not supported by the agent can be ignored.
 3. **Response**: Once the agent has identified all activated extensions, the
-    response SHOULD include the `X-A2A-Extensions` header, listing all
+    response SHOULD include the `A2A-Extensions` header, listing all
     extensions that were successfully activated for that request.
 
 ![A2A Extension Flow Diagram](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
@@ -166,7 +166,7 @@ negotiation to determine which extensions are active for a specific request.
 POST /agents/eightball HTTP/1.1
 Host: example.com
 Content-Type: application/json
-X-A2A-Extensions: https://example.com/ext/konami-code/v1
+A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 519
 {
   "jsonrpc": "2.0",
@@ -191,7 +191,7 @@ Content-Length: 519
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
-X-A2A-Extensions: https://example.com/ext/konami-code/v1
+A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 338
 {
   "jsonrpc": "2.0",
