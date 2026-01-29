@@ -1,4 +1,4 @@
-# Agent2Agent (A2A) Protocol Specification (DRAFT v1.0)
+# Agent2Agent (A2A) Protocol Specification (Release Candidate v1.0)
 
 {% macro render_spec_tabs(region_tag) %}
 === "JSON-RPC"
