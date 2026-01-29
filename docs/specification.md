@@ -565,17 +565,17 @@ Protocol bindings **MUST** map these elements to their native error representati
 
 **A2A-Specific Errors:**
 
-| Error Name                            | Description                                                                                                                                                      |
-| :------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                      |
+| Error Name                            | Description                                                                                                                                                       |
+| :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
 | `TaskNotCancelableError`              | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`). |
-| `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).     |
-| `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                         |
-| `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.               |
-| `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                  |
-| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                      |
-| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                  |
-| `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                           |
+| `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
+| `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                          |
+| `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
+| `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                   |
+| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
+| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
+| `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
 
 #### 3.3.3. Asynchronous Processing
 
