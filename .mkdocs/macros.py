@@ -150,27 +150,34 @@ def _find_enum(elements: List[Any], name: str) -> Optional[Enum]:
 # Main Macros
 # -----------------------------------------------------------------------------
 
+def _parse_proto(env: Any, proto_file: str):
+    """Parses a .proto file and returns the AST with comments attached."""
+    project_root = Path(env.conf['docs_dir']).parent
+    proto_path = project_root / proto_file
+
+    if not proto_path.exists():
+        raise FileNotFoundError(f"Proto file not found: {proto_file}")
+
+    parser = Parser()
+    with open(proto_path, 'r', encoding='utf-8') as f:
+        file_ast = parser.parse(f.read())
+
+    # Associate comments with elements
+    _attach_comments(file_ast.file_elements)
+    return file_ast
+
 def define_env(env):
     """Define custom macros for MkDocs."""
 
     @env.macro
-    def proto_to_table(proto_file: str, message_name: str) -> str:
+    def proto_to_table(message_name: str, proto_file: str = "specification/a2a.proto") -> str:
         """
-        Parses a .proto file using proto-schema-parser and renders a message table.
+        Parses a .proto file and renders a message table.
         """
-        project_root = Path(env.conf['docs_dir']).parent
-        proto_path = project_root / proto_file
-
-        if not proto_path.exists():
-            return f"**Error:** Proto file not found: {proto_file}"
-
-        # Parse AST
-        parser = Parser()
-        with open(proto_path, 'r', encoding='utf-8') as f:
-            file_ast = parser.parse(f.read())
-
-        # Associate comments with elements
-        _attach_comments(file_ast.file_elements)
+        try:
+            file_ast = _parse_proto(env, proto_file)
+        except FileNotFoundError as e:
+            return f"**Error:** {e}"
 
         # Find the specific message object
         target_message = _find_message(file_ast.file_elements, message_name)
@@ -234,22 +241,14 @@ def define_env(env):
         return '\n'.join(output)
 
     @env.macro
-    def proto_enum_to_table(proto_file: str, enum_name: str) -> str:
+    def proto_enum_to_table(enum_name: str, proto_file: str = "specification/a2a.proto") -> str:
         """
         Parses a .proto file and renders an Enum table.
         """
-        project_root = Path(env.conf['docs_dir']).parent
-        proto_path = project_root / proto_file
-
-        if not proto_path.exists():
-            return f"**Error:** Proto file not found: {proto_file}"
-
-        parser = Parser()
-        with open(proto_path, 'r', encoding='utf-8') as f:
-            file_ast = parser.parse(f.read())
-
-        # Associate comments with elements
-        _attach_comments(file_ast.file_elements)
+        try:
+            file_ast = _parse_proto(env, proto_file)
+        except FileNotFoundError as e:
+            return f"**Error:** {e}"
 
         target_enum = _find_enum(file_ast.file_elements, enum_name)
 

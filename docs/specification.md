@@ -218,7 +218,7 @@ Retrieves the current state (including status, artifacts, and optionally history
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "GetTaskRequest") }}
+{{ proto_to_table("GetTaskRequest") }}
 
 See [History Length Semantics](#324-history-length-semantics) for details about `historyLength`.
 
@@ -236,13 +236,13 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTasksRequest") }}
+{{ proto_to_table("ListTasksRequest") }}
 
 When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTasksResponse") }}
+{{ proto_to_table("ListTasksResponse") }}
 
 Note on `nextPageToken`: The `nextPageToken` field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.
 
@@ -268,7 +268,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "CancelTaskRequest") }}
+{{ proto_to_table("CancelTaskRequest") }}
 
 **Outputs:**
 
@@ -291,7 +291,7 @@ Establishes a streaming connection to receive updates for an existing task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "SubscribeToTaskRequest") }}
+{{ proto_to_table("SubscribeToTaskRequest") }}
 
 **Outputs:**
 
@@ -320,7 +320,7 @@ Creates a push notification configuration for a task to receive asynchronous upd
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "CreateTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -345,7 +345,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "GetTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -366,11 +366,11 @@ Retrieves all push notification configurations for a task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("ListTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTaskPushNotificationConfigResponse") }}
+{{ proto_to_table("ListTaskPushNotificationConfigResponse") }}
 
 **Errors:**
 
@@ -387,7 +387,7 @@ Removes a push notification configuration for a task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "DeleteTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("DeleteTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -408,7 +408,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 **Inputs:**
 
-{{ proto_to_table("specification/a2a.proto", "GetExtendedAgentCardRequest") }}
+{{ proto_to_table("GetExtendedAgentCardRequest") }}
 
 **Outputs:**
 
@@ -434,11 +434,11 @@ This section defines common parameter objects used across multiple operations.
 
 #### 3.2.1. SendMessageRequest
 
-{{ proto_to_table("specification/a2a.proto", "SendMessageRequest") }}
+{{ proto_to_table("SendMessageRequest") }}
 
 #### 3.2.2. SendMessageConfiguration
 
-{{ proto_to_table("specification/a2a.proto", "SendMessageConfiguration") }}
+{{ proto_to_table("SendMessageConfiguration") }}
 
 **Blocking vs Non-Blocking Execution:**
 
@@ -459,7 +459,7 @@ The `blocking` field has no effect:
 <span id="323-stream-response"></span>
 <span id="72-messagestream"></span>
 
-{{ proto_to_table("specification/a2a.proto", "StreamResponse") }}
+{{ proto_to_table("StreamResponse") }}
 
 This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.
 
@@ -778,43 +778,43 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.1.1. Task
 
-{{ proto_to_table("specification/a2a.proto", "Task") }}
+{{ proto_to_table("Task") }}
 
 <a id="TaskStatus"></a>
 
 #### 4.1.2. TaskStatus
 
-{{ proto_to_table("specification/a2a.proto", "TaskStatus") }}
+{{ proto_to_table("TaskStatus") }}
 
 <a id="TaskState"></a>
 
 #### 4.1.3. TaskState
 
-{{ proto_enum_to_table("specification/a2a.proto", "TaskState") }}
+{{ proto_enum_to_table("TaskState") }}
 
 <a id="Message"></a>
 
 #### 4.1.4. Message
 
-{{ proto_to_table("specification/a2a.proto", "Message") }}
+{{ proto_to_table("Message") }}
 
 <a id="Role"></a>
 
 #### 4.1.5. Role
 
-{{ proto_enum_to_table("specification/a2a.proto", "Role") }}
+{{ proto_enum_to_table("Role") }}
 
 <a id="Part"></a>
 
 #### 4.1.6. Part
 
-{{ proto_to_table("specification/a2a.proto", "Part") }}
+{{ proto_to_table("Part") }}
 
 <a id="Artifact"></a>
 
 #### 4.1.7. Artifact
 
-{{ proto_to_table("specification/a2a.proto", "Artifact") }}
+{{ proto_to_table("Artifact") }}
 
 ### 4.2. Streaming Events
 
@@ -822,13 +822,13 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.2.1. TaskStatusUpdateEvent
 
-{{ proto_to_table("specification/a2a.proto", "TaskStatusUpdateEvent") }}
+{{ proto_to_table("TaskStatusUpdateEvent") }}
 
 <a id="TaskArtifactUpdateEvent"></a>
 
 #### 4.2.2. TaskArtifactUpdateEvent
 
-{{ proto_to_table("specification/a2a.proto", "TaskArtifactUpdateEvent") }}
+{{ proto_to_table("TaskArtifactUpdateEvent") }}
 
 ### 4.3. Push Notification Objects
 
@@ -836,13 +836,13 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.3.1. PushNotificationConfig
 
-{{ proto_to_table("specification/a2a.proto", "PushNotificationConfig") }}
+{{ proto_to_table("PushNotificationConfig") }}
 
 <a id="PushNotificationAuthenticationInfo"></a>
 
 #### 4.3.2. AuthenticationInfo
 
-{{ proto_to_table("specification/a2a.proto", "AuthenticationInfo") }}
+{{ proto_to_table("AuthenticationInfo") }}
 
 #### 4.3.3. Push Notification Payload
 
@@ -899,43 +899,43 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 #### 4.4.1. AgentCard
 
-{{ proto_to_table("specification/a2a.proto", "AgentCard") }}
+{{ proto_to_table("AgentCard") }}
 
 <a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
 
-{{ proto_to_table("specification/a2a.proto", "AgentProvider") }}
+{{ proto_to_table("AgentProvider") }}
 
 <a id="AgentCapabilities"></a>
 
 #### 4.4.3. AgentCapabilities
 
-{{ proto_to_table("specification/a2a.proto", "AgentCapabilities") }}
+{{ proto_to_table("AgentCapabilities") }}
 
 <a id="AgentExtension"></a>
 
 #### 4.4.4. AgentExtension
 
-{{ proto_to_table("specification/a2a.proto", "AgentExtension") }}
+{{ proto_to_table("AgentExtension") }}
 
 <a id="AgentSkill"></a>
 
 #### 4.4.5. AgentSkill
 
-{{ proto_to_table("specification/a2a.proto", "AgentSkill") }}
+{{ proto_to_table("AgentSkill") }}
 
 <a id="AgentInterface"></a>
 
 #### 4.4.6. AgentInterface
 
-{{ proto_to_table("specification/a2a.proto", "AgentInterface") }}
+{{ proto_to_table("AgentInterface") }}
 
 <a id="AgentCardSignature"></a>
 
 #### 4.4.7. AgentCardSignature
 
-{{ proto_to_table("specification/a2a.proto", "AgentCardSignature") }}
+{{ proto_to_table("AgentCardSignature") }}
 
 ### 4.5. Security Objects
 
@@ -944,61 +944,61 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 #### 4.5.1. SecurityScheme
 
-{{ proto_to_table("specification/a2a.proto", "SecurityScheme") }}
+{{ proto_to_table("SecurityScheme") }}
 
 <a id="APIKeySecurityScheme"></a>
 
 #### 4.5.2. APIKeySecurityScheme
 
-{{ proto_to_table("specification/a2a.proto", "APIKeySecurityScheme") }}
+{{ proto_to_table("APIKeySecurityScheme") }}
 
 <a id="HTTPAuthSecurityScheme"></a>
 
 #### 4.5.3. HTTPAuthSecurityScheme
 
-{{ proto_to_table("specification/a2a.proto", "HTTPAuthSecurityScheme") }}
+{{ proto_to_table("HTTPAuthSecurityScheme") }}
 
 <a id="OAuth2SecurityScheme"></a>
 
 #### 4.5.4. OAuth2SecurityScheme
 
-{{ proto_to_table("specification/a2a.proto", "OAuth2SecurityScheme") }}
+{{ proto_to_table("OAuth2SecurityScheme") }}
 
 <a id="OpenIdConnectSecurityScheme"></a>
 
 #### 4.5.5. OpenIdConnectSecurityScheme
 
-{{ proto_to_table("specification/a2a.proto", "OpenIdConnectSecurityScheme") }}
+{{ proto_to_table("OpenIdConnectSecurityScheme") }}
 
 <a id="MutualTlsSecurityScheme"></a>
 
 #### 4.5.6. MutualTLSSecurityScheme
 
-{{ proto_to_table("specification/a2a.proto", "MutualTlsSecurityScheme") }}
+{{ proto_to_table("MutualTlsSecurityScheme") }}
 
 <a id="OAuthFlows"></a>
 
 #### 4.5.7. OAuthFlows
 
-{{ proto_to_table("specification/a2a.proto", "OAuthFlows") }}
+{{ proto_to_table("OAuthFlows") }}
 
 <a id="AuthorizationCodeOAuthFlow"></a>
 
 #### 4.5.8. AuthorizationCodeOAuthFlow
 
-{{ proto_to_table("specification/a2a.proto", "AuthorizationCodeOAuthFlow") }}
+{{ proto_to_table("AuthorizationCodeOAuthFlow") }}
 
 <a id="ClientCredentialsOAuthFlow"></a>
 
 #### 4.5.9. ClientCredentialsOAuthFlow
 
-{{ proto_to_table("specification/a2a.proto", "ClientCredentialsOAuthFlow") }}
+{{ proto_to_table("ClientCredentialsOAuthFlow") }}
 
 <a id="DeviceCodeOAuthFlow"></a>
 
 #### 4.5.10. DeviceCodeOAuthFlow
 
-{{ proto_to_table("specification/a2a.proto", "DeviceCodeOAuthFlow") }}
+{{ proto_to_table("DeviceCodeOAuthFlow") }}
 
 ### 4.6. Extensions
 
@@ -2501,11 +2501,11 @@ Sends a message to an agent.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "SendMessageRequest") }}
+{{ proto_to_table("SendMessageRequest") }}
 
 **Response:**
 
-{{ proto_to_table("specification/a2a.proto", "SendMessageResponse") }}
+{{ proto_to_table("SendMessageResponse") }}
 
 #### 10.4.2. SendStreamingMessage
 
@@ -2513,7 +2513,7 @@ Sends a message with streaming updates.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "SendMessageRequest") }}
+{{ proto_to_table("SendMessageRequest") }}
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
@@ -2523,7 +2523,7 @@ Retrieves task status.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "GetTaskRequest") }}
+{{ proto_to_table("GetTaskRequest") }}
 
 **Response:** See [`Task`](#411-task) object definition.
 
@@ -2533,11 +2533,11 @@ Lists tasks with filtering.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTasksRequest") }}
+{{ proto_to_table("ListTasksRequest") }}
 
 **Response:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTasksResponse") }}
+{{ proto_to_table("ListTasksResponse") }}
 
 #### 10.4.5. CancelTask
 
@@ -2545,7 +2545,7 @@ Cancels a running task.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "CancelTaskRequest") }}
+{{ proto_to_table("CancelTaskRequest") }}
 
 **Response:** See [`Task`](#411-task) object definition.
 
@@ -2555,7 +2555,7 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "SubscribeToTaskRequest") }}
+{{ proto_to_table("SubscribeToTaskRequest") }}
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
@@ -2565,7 +2565,7 @@ Creates a push notification configuration for a task.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "CreateTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
@@ -2575,7 +2575,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "GetTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
@@ -2585,11 +2585,11 @@ Lists all push notification configurations for a task.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("ListTaskPushNotificationConfigRequest") }}
 
 **Response:**
 
-{{ proto_to_table("specification/a2a.proto", "ListTaskPushNotificationConfigResponse") }}
+{{ proto_to_table("ListTaskPushNotificationConfigResponse") }}
 
 #### 10.4.10. DeleteTaskPushNotificationConfig
 
@@ -2597,7 +2597,7 @@ Removes a push notification configuration for a task.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "DeleteTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("DeleteTaskPushNotificationConfigRequest") }}
 
 **Response:** `google.protobuf.Empty`
 
@@ -2607,7 +2607,7 @@ Retrieves the agent's extended capability card after authentication.
 
 **Request:**
 
-{{ proto_to_table("specification/a2a.proto", "GetExtendedAgentCardRequest") }}
+{{ proto_to_table("GetExtendedAgentCardRequest") }}
 
 **Response:** See [`AgentCard`](#441-agentcard) object definition.
 
@@ -2617,11 +2617,11 @@ Retrieves the agent's extended capability card after authentication.
 
 Resource wrapper for push notification configurations. This is a gRPC-specific type used in resource-oriented operations to provide the full resource name along with the configuration data.
 
-{{ proto_to_table("specification/a2a.proto", "TaskPushNotificationConfig") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 **Fields:**
 
-{{ proto_to_table("specification/a2a.proto", "TaskPushNotificationConfig") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 ### 10.6. Error Handling
 
@@ -2687,7 +2687,7 @@ status {
 
 gRPC streaming uses server streaming RPCs for real-time updates. The `StreamResponse` message provides a union of possible streaming events:
 
-{{ proto_to_table("specification/a2a.proto", "StreamResponse") }}
+{{ proto_to_table("StreamResponse") }}
 
 ## 11. HTTP+JSON/REST Protocol Binding
 
