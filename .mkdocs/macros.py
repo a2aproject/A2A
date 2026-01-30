@@ -88,14 +88,14 @@ def _extract_comments(element: Any) -> str:
         cleaned = []
         for c in element.comments:
             # strip // and whitespace
-            c = c.strip()
-            if c.startswith('//'):
-                c = c[2:]
-            elif c.startswith('/*'):
-                c = c[2:]
-                if c.endswith('*/'):
-                    c = c[:-2]
-            c = c.strip()
+            text = c.strip()
+            if text.startswith('//'):
+                text = text[2:]
+            elif text.startswith('/*'):
+                text = text[2:]
+                if text.endswith('*/'):
+                    text = text[:-2]
+            c = ' '.join(l.strip().lstrip('*').strip() for l in text.strip().split('\n') if l.strip())
 
             if not c.startswith(('protolint:', '--8<--', 'Next ID:')) and c:
                 cleaned.append(c)
