@@ -973,20 +973,20 @@ if (!supportedVersions.includes(requestedVersion)) {
 
 ### Migration Strategy Recommendations
 
-#### Phase 1: Compatibility Layer (Immediate)
+#### Phase 1: Compatibility Layer
 
 1. Add support for parsing both old and new discriminator patterns
 2. Implement version detection based on protocol version
 3. Support both Agent Card structures during transition
 
-#### Phase 2: Dual Support (1-3 months)
+#### Phase 2: Dual Support
 
 1. Update all APIs to emit v1.0 format
 2. Maintain backward compatibility readers for v0.3.0
 3. Add A2A-Version header handling
 4. Implement cursor-based pagination alongside legacy page-based
 
-#### Phase 3: v1.0 Only (3-6 months)
+#### Phase 3: v1.0 Only
 
 1. Deprecate v0.3.0 compatibility code
 2. Remove legacy discriminator parsing
