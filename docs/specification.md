@@ -1369,7 +1369,7 @@ data: {"task": {"id": "task-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
 data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}, "final": true}}
+data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
