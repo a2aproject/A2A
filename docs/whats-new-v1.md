@@ -17,7 +17,7 @@ The v1.0 release focuses on four major themes:
 
 - Removal of discriminator `kind` fields in favor of JSON member-based polymorphism
 - **Breaking:** Enum values changed from `PascalCase` to `SCREAMING_SNAKE_CASE` for consistency
-- Stricter field naming conventions (camelCase for JSON)
+- Stricter field naming conventions (`camelCase` for JSON)
 - More precise timestamp specifications (ISO 8601 with millisecond precision)
 - Better-defined data types with clearer Optional vs Required semantics
 
@@ -44,13 +44,13 @@ The v1.0 release focuses on four major themes:
 
 ## Behavioral Changes for Core Operations
 
-### Send Message (`message/send` → **SendMessage**)
+### Send Message (`message/send` → **`SendMessage`**)
 
 **v0.3.0 Behavior:**
 
 - Operation named `message/send`
 - Blocking behavior not explicitly controllable
-- Less formal specification of when Task vs Message is returned
+- Less formal specification of when `Task` vs `Message` is returned
 
 **v1.0 Changes:**
 
@@ -75,9 +75,9 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ RENAMED:** Operation now **SendStreamingMessage**
+- **✅ RENAMED:** Operation now **`SendStreamingMessage`**
 - **✅ BREAKING:** Stream events no longer have `kind` field
-    - Use JSON member names to discriminate between TaskStatusUpdateEvent and TaskArtifactUpdateEvent
+    - Use JSON member names to discriminate between `TaskStatusUpdateEvent` and `TaskArtifactUpdateEvent`
 - **✅ NEW:** Formal gRPC streaming semantics defined
 - **✅ REMOVED:** `final` boolean field removed from TaskStatusUpdateEvent. Leverage protocol binding specific stream closure mechanism instead.
 - **✅ CLARIFIED:** Multiple concurrent streams allowed; all receive same ordered events
