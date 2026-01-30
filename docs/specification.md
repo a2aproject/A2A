@@ -747,7 +747,7 @@ Accept: application/json
 
 #### 3.6.2 Server Responsibilities
 
-Agents MUST process requests using the semantics of the requested `A2A-Version` (matching `Major.Minor`), both in header as well as in the request parameter. If the version is not supported by the interface, agents MUST return a [`VersionNotSupportedError`](#332-error-handling).
+Agents MUST process requests using the semantics of the requested `A2A-Version` (matching `Major.Minor`). If the version is not supported by the interface, agents MUST return a [`VersionNotSupportedError`](#332-error-handling).
 
 Agents MUST interpret empty value as 0.3 version.
 
