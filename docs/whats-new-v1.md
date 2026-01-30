@@ -823,10 +823,10 @@ if (event.kind === "taskStatusUpdate") {
 **After (v1.0):**
 
 ```typescript
-if ("statusUpdate" in event) {
-  handleStatusUpdate(event.statusUpdate);
-} else if ("artifactUpdate" in event) {
-  handleArtifactUpdate(event.artifactUpdate);
+if ("taskStatusUpdate" in event) {
+  handleStatusUpdate(event.taskStatusUpdate);
+} else if ("taskArtifactUpdate" in event) {
+  handleArtifactUpdate(event.taskArtifactUpdate);
 }
 ```
 
@@ -911,17 +911,9 @@ const message = { role: "ROLE_USER", parts: [...] };
 - `"user"` → `"ROLE_USER"`
 - `"agent"` → `"ROLE_AGENT"`
 
-#### 6. Operation Names (LOW IMPACT)
+#### 6. Field Name Changes (LOW IMPACT)
 
-TaskStatus state values changed:
-
-- `input-required` → `input_required`
-- `auth-required` → `auth_required`
-- `submitted` → `pending` (semantic clarification)
-
-#### 7. Field Name Changes (LOW IMPACT)
-
-- `file.mimeType` → `file.mediaType`
+- `file.mimeType` → `mediaType`
 - Operation names (aliases provided during transition)
 
 ### New Capabilities to Leverage
