@@ -136,7 +136,7 @@ def _format_type_for_docs(
     proto_type: str,
     is_repeated: bool = False,
     is_map: bool = False,
-    map_key: str = None,
+    map_key: str | None = None,
 ) -> str:
     """Formats the type string with Markdown links."""
 
