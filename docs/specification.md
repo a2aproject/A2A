@@ -751,7 +751,7 @@ Agents MUST process requests using the semantics of the requested `A2A-Version` 
 
 Agents MUST interpret empty value as 0.3 version.
 
-Agents MUST declare their supported protocol versions in each `supportedInterface` field value of their Agent Card. Backward compatibility within a major version is required. Agents CAN expose multiple interfaces for the same transport with different versions under the same or different urls.
+Agents CAN expose multiple interfaces for the same transport with different versions under the same or different URLs.
 
 #### 3.6.3 Tooling support
 
