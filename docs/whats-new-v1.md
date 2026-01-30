@@ -211,8 +211,8 @@ The v1.0 release focuses on four major themes:
 
 **Modified Fields:**
 
-- ✅ `state`: **BREAKING** - Enum values changed from lowercase/kebab-case to `SCREAMING_SNAKE_CASE` with `TASK_STATE_` prefix
-    - v0.3.0: `"submitted"`, `"working"`, `"completed"`, `"failed"`, `"cancelled"`, `"rejected"`, `"input-required"`, `"auth-required"`
+- ✅ `state`: **BREAKING** - Enum values changed from lowercase to `SCREAMING_SNAKE_CASE` with `TASK_STATE_` prefix
+    - v0.3.0: `"submitted"`, `"working"`, `"completed"`, `"failed"`, `"canceled"`, `"rejected"`, `"input-required"`, `"auth-required"`
     - v1.0: `"TASK_STATE_SUBMITTED"`, `"TASK_STATE_WORKING"`, `"TASK_STATE_COMPLETED"`, `"TASK_STATE_FAILED"`, `"TASK_STATE_CANCELED"`, `"TASK_STATE_REJECTED"`, `"TASK_STATE_INPUT_REQUIRED"`, `"TASK_STATE_AUTH_REQUIRED"`
 - ✅ `timestamp`: Now explicitly ISO 8601 UTC with millisecond precision (YYYY-MM-DDTHH:mm:ss.sssZ)
 - ✅ `message`: Optional Message with enhanced extension support
@@ -588,33 +588,33 @@ v1.0 introduces several new formal dependencies on industry-standard specificati
 
 ### Added Specifications
 
-**✅ RFC 9457 - Problem Details for HTTP APIs**
+#### ✅ RFC 9457 - Problem Details for HTTP APIs
 
 - **Purpose:** Standardized error response format
 - **Usage:** HTTP+JSON binding error responses
 - **Impact:** More consistent, machine-readable error handling in REST APIs
 
-**✅ RFC 8785 - JSON Canonicalization Scheme (JCS)**
+#### ✅ RFC 8785 - JSON Canonicalization Scheme (JCS)
 
 - **Purpose:** Deterministic JSON serialization for signing
 - **Usage:** Agent Card signature verification
 - **Impact:** Enables cryptographic verification of Agent Card integrity
 - **Details:** Canonical form used before JWS signing (excludes `signatures` field)
 
-**✅ RFC 7515 - JSON Web Signature (JWS)**
+#### ✅ RFC 7515 - JSON Web Signature (JWS)
 
 - **Purpose:** Cryptographic signing standard
 - **Usage:** Agent Card signatures field
 - **Impact:** Industry-standard signature format for trust verification
 - **Details:** Supports detached signatures with public key retrieval via `jku` or trusted keystores
 
-**✅ Google API Design Guidelines**
+#### ✅ Google API Design Guidelines
 
 - **Purpose:** gRPC best practices and conventions
 - **Usage:** gRPC binding design patterns
 - **Impact:** Better alignment with gRPC ecosystem expectations
 
-**✅ ISO 8601**
+#### ✅ ISO 8601
 
 - **Purpose:** Timestamp format standard
 - **Usage:** All timestamp fields (createdAt, lastModified, timestamp)
@@ -644,7 +644,7 @@ v1.0 introduces several new formal dependencies on industry-standard specificati
 
 ### Breaking Changes Requiring Code Updates
 
-**1. Part Type Unification (CRITICAL IMPACT)**
+#### 1. Part Type Unification (CRITICAL IMPACT)
 
 The most significant breaking change: TextPart, FilePart, and DataPart types have been removed and replaced with a single unified Part structure.
 
@@ -680,7 +680,7 @@ if ("text" in part) {
 }
 ```
 
-**2. Stream Event Discriminator Pattern (HIGH IMPACT)**
+#### 2. Stream Event Discriminator Pattern (HIGH IMPACT)
 
 Stream events changed from kind-based to wrapper-based discrimination:
 
@@ -704,7 +704,7 @@ if ("statusUpdate" in event) {
 }
 ```
 
-**3. Agent Card Structure (HIGH IMPACT)**
+#### 3. Agent Card Structure (HIGH IMPACT)
 
 Agent discovery and capability checking requires updates:
 
@@ -725,7 +725,7 @@ const transport = primaryInterface.protocolBinding;
 const supportsExtended = agentCard.capabilities.extendedAgentCard;
 ```
 
-**3. Pagination (MEDIUM IMPACT)**
+#### 4. Pagination (MEDIUM IMPACT)
 
 List Tasks implementation must switch from page-based to cursor-based:
 
@@ -746,7 +746,7 @@ do {
 } while (cursor);
 ```
 
-**4. Enum Value Changes (HIGH IMPACT)**
+#### 5. Enum Value Changes (HIGH IMPACT)
 
 All enum values now use SCREAMING_SNAKE_CASE with type prefixes:
 
@@ -768,23 +768,24 @@ if (task.status.state === "TASK_STATE_INPUT_REQUIRED") { ... }
 // v0.3.0
 const message = { role: "user", parts: [...] };
 
-// v1.0  
+// v1.0
 const message = { role: "ROLE_USER", parts: [...] };
 ```
 
 **Complete Mapping:**
+
 - `"submitted"` → `"TASK_STATE_SUBMITTED"`
 - `"working"` → `"TASK_STATE_WORKING"`
 - `"completed"` → `"TASK_STATE_COMPLETED"`
 - `"failed"` → `"TASK_STATE_FAILED"`
-- `"cancelled"` → `"TASK_STATE_CANCELED"` (note spelling change)
+- `"canceled"` → `"TASK_STATE_CANCELED"`
 - `"rejected"` → `"TASK_STATE_REJECTED"`
 - `"input-required"` → `"TASK_STATE_INPUT_REQUIRED"`
 - `"auth-required"` → `"TASK_STATE_AUTH_REQUIRED"`
 - `"user"` → `"ROLE_USER"`
 - `"agent"` → `"ROLE_AGENT"`
 
-**5. Operation Names (LOW IMPACT)**
+#### 6. Operation Names (LOW IMPACT)
 
 TaskStatus state values changed:
 
@@ -792,14 +793,14 @@ TaskStatus state values changed:
 - `auth-required` → `auth_required`
 - `submitted` → `pending` (semantic clarification)
 
-**5. Field Name Changes (LOW IMPACT)**
+#### 7. Field Name Changes (LOW IMPACT)
 
 - `file.mimeType` → `file.mediaType`
 - Operation names (aliases provided during transition)
 
 ### New Capabilities to Leverage
 
-**1. Blocking Parameter Control**
+#### 1. Blocking Parameter Control
 
 ```typescript
 // Wait for task completion
@@ -809,7 +810,7 @@ const result = await sendMessage(message, { blocking: true });
 const task = await sendMessage(message, { blocking: false });
 ```
 
-**2. Agent Card Signature Verification**
+#### 2. Agent Card Signature Verification
 
 ```typescript
 if (agentCard.signatures && agentCard.signatures.length > 0) {
@@ -820,7 +821,7 @@ if (agentCard.signatures && agentCard.signatures.length > 0) {
 }
 ```
 
-**3. Extension Requirements**
+#### 3. Extension Requirements
 
 ```typescript
 const requiredExtensions = agentCard.extensions
@@ -833,14 +834,14 @@ if (!clientSupportsAll(requiredExtensions)) {
 }
 ```
 
-**4. Enhanced Timestamp Tracking**
+#### 4. Enhanced Timestamp Tracking
 
 ```typescript
 const taskAge = Date.now() - new Date(task.createdAt).getTime();
 const timeSinceUpdate = Date.now() - new Date(task.lastModified).getTime();
 ```
 
-**5. Versioning Negotiation**
+#### 5. Versioning Negotiation
 
 ```typescript
 // Client sends A2A-Version header
@@ -854,27 +855,27 @@ if (!supportedVersions.includes(requestedVersion)) {
 
 ### Migration Strategy Recommendations
 
-**Phase 1: Compatibility Layer (Immediate)**
+#### Phase 1: Compatibility Layer (Immediate)
 
 1. Add support for parsing both old and new discriminator patterns
 2. Implement version detection based on protocol version
 3. Support both Agent Card structures during transition
 
-**Phase 2: Dual Support (1-3 months)**
+#### Phase 2: Dual Support (1-3 months)
 
 1. Update all APIs to emit v1.0 format
 2. Maintain backward compatibility readers for v0.3.0
 3. Add A2A-Version header handling
 4. Implement cursor-based pagination alongside legacy page-based
 
-**Phase 3: v1.0 Only (3-6 months)**
+#### Phase 3: v1.0 Only (3-6 months)
 
 1. Deprecate v0.3.0 compatibility code
 2. Remove legacy discriminator parsing
 3. Remove page-based pagination
 4. Clean up dual-format support code
 
-**Testing Considerations:**
+#### Testing Considerations
 
 - Test with both v0.3.0 and v1.0 formatted data
 - Validate Agent Card signature verification
@@ -884,26 +885,26 @@ if (!supportedVersions.includes(requestedVersion)) {
 
 ### Recommended Priority
 
-**Critical (Do Immediately):**
+#### Critical (Do Immediately)
 
 - Update Part and streaming event parsing (discriminator pattern)
 - Update Agent Card parsing (structure changes)
 - Add A2A-Version header to all requests
 
-**High (Within 1 Month):**
+#### High (Within 1 Month)
 
 - Implement cursor-based pagination
 - Update enum value handling (state field)
 - Add blocking parameter support
 
-**Medium (Within 3 Months):**
+#### Medium (Within 3 Months)
 
 - Implement Agent Card signature verification
 - Add extension requirement checking
 - Update timestamp handling to ISO 8601 format
 - Implement new error types
 
-**Low (Nice to Have):**
+#### Low (Nice to Have)
 
 - Add createdAt/lastModified timestamp tracking
 - Leverage enhanced metadata capabilities
