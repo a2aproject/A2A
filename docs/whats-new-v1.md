@@ -27,12 +27,17 @@ The v1.0 release focuses on four major themes:
 - Reorganized Agent Card structure for better logical grouping
 - Enhanced extension mechanism with versioning and requirement declarations
 - More explicit service parameter handling (A2A-Version, A2A-Extensions headers)
+- **Simplified ID format** - Removed complex compound IDs (e.g., `tasks/{id}`) in favor of simple UUIDs
+- **Protocol versioning per interface** - Each AgentInterface specifies its own protocol version for better backward compatibility
+- **Multi-tenancy support** - Native tenant scoping in gRPC requests
 
 ### 4. **Enterprise-Ready Features**
 
 - Agent Card signature verification using JWS and JSON Canonicalization
 - Formal specification of all three protocol bindings with equivalence guarantees
 - Enhanced security scheme declarations with mutual TLS support
+- **Modern OAuth 2.0 flows** - Added Device Code flow (RFC 8628), removed deprecated implicit/password flows
+- **PKCE support** - Added `pkce_required` field to Authorization Code flow for enhanced security
 - Cursor-based pagination for scalable task listing
 
 ---
@@ -178,6 +183,60 @@ The v1.0 release focuses on four major themes:
 - **✅ NEW:** `configId` field added for unique identification
 - **✅ CLARIFIED:** Push notification payloads now use StreamResponse format
 - **✅ NEW:** Explicit `PushNotificationNotSupportedError` when capability not available
+
+### NEW: Multi-Tenancy Support
+
+**v0.3.0:**
+
+- No native multi-tenancy support in protocol
+- Tenants handled implicitly via authentication or URL paths
+
+**v1.0 Changes:**
+
+- **✅ NEW:** `tenant` field added to all gRPC request messages
+- **✅ NEW:** `tenant` field added to `AgentInterface` to specify default tenant
+- **✅ CLARIFIED:** Tenant can be provided per-request or inherited from AgentInterface
+- **✅ USE CASE:** Enables agents to serve multiple organizations from single endpoint
+
+**Example:**
+
+```protobuf
+message SendMessageRequest {
+  string tenant = 1;  // Optional tenant identifier
+  Message message = 2;
+  SendMessageConfiguration configuration = 3;
+}
+```
+
+### Protocol Simplifications
+
+#### ID Format Simplification (#1389)
+
+**v0.3.0:**
+
+- Some operations used complex compound IDs like `tasks/{taskId}`
+- Required clients/servers to construct/deconstruct resource names
+
+**v1.0 Changes:**
+
+- **✅ BREAKING:** All IDs are now simple literals
+- **✅ BREAKING:** Operations that previously used compound IDs now separate parent and resource ID
+    - Example: `tasks/{taskId}/pushNotificationConfigs/{configId}` → separate `task_id` and `config_id` fields
+- **✅ BENEFIT:** Simpler to implement - IDs map directly to database keys
+
+#### HTTP URL Path Simplification (#1269)
+
+**v0.3.0:**
+
+- HTTP+JSON binding used `/v1/` prefix in URLs
+- Example: `POST /v1/message:send`
+
+**v1.0 Changes:**
+
+- **✅ BREAKING:** Removed `/v1` prefix from HTTP+JSON URL paths
+- **✅ NEW:** Examples: `POST /message:send`, `GET /tasks/{id}`
+- **✅ RATIONALE:** Version specified in `AgentInterface.protocolVersion` field instead
+- **✅ BENEFIT:** Cleaner URLs, version management at interface level
 
 ---
 
@@ -481,6 +540,28 @@ if ("text" in part) { ... }         // v1.0
 - ✅ **SIMPLIFIED:** Description remains, but structure dramatically simplified
 - ✅ **PATTERN:** Extension versioning now embedded in URI (e.g., `/v1`, `/v2`)
 
+### AgentCapabilities Object
+
+**Removed Fields:**
+
+- ⛔ `stateTransitionHistory` (#1396) - Removed as no API implementation existed for this feature
+
+**Rationale:**
+
+The `stateTransitionHistory` capability flag was misleading as v1.0 has no corresponding API to:
+
+- Store status history in Task objects
+- Retrieve status history via Get/List operations
+- Query historical state transitions
+
+This capability may be reintroduced in a future version with proper implementation.
+
+**Modified Fields:**
+
+- ✅ `extendedAgentCard`: Moved from top-level `supportsAuthenticatedExtendedCard` field
+- ✅ `pushNotifications`: More formally specified with enhanced configuration options
+- ✅ `streaming`: Enhanced with clearer semantics for SSE support
+
 ### SecurityScheme Objects
 
 **Added:**
@@ -579,6 +660,51 @@ if ("text" in part) { ... }         // v1.0
 - ⛔ **REMOVED:** `kind` discriminator
 - ✅ **NEW PATTERN:** Wrapped in `taskArtifactUpdate` object
 - ✅ **NEW:** `index` field indicates artifact position in task's artifacts array
+
+### OAuth 2.0 Security Updates (#1303)
+
+v1.0 modernizes OAuth 2.0 support in alignment with OAuth 2.0 Security Best Current Practice (BCP).
+
+**Removed Flows (Deprecated by OAuth BCP):**
+
+- ⛔ `ImplicitOAuthFlow` - Deprecated due to token leakage risks in browser history/logs
+- ⛔ `PasswordOAuthFlow` - Deprecated due to credential exposure risks
+
+**Added Flows:**
+
+- ✅ `DeviceCodeOAuthFlow` (RFC 8628) - For CLI tools, IoT devices, and input-constrained scenarios
+    - Provides `device_authorization_url` endpoint
+    - Supports `verification_uri`, `user_code` pattern
+    - Ideal for headless environments
+
+**Enhanced Security:**
+
+- ✅ `pkce_required` field added to `AuthorizationCodeOAuthFlow` (RFC 7636)
+    - Indicates whether PKCE (Proof Key for Code Exchange) is mandatory
+    - Protects against authorization code interception attacks
+    - Recommended for all OAuth clients, required for public clients
+
+**Migration Guide:**
+
+```typescript
+// v0.3.0 - Implicit Flow (now removed)
+{
+  "implicitFlow": {
+    "authorizationUrl": "https://auth.example.com/authorize",
+    "scopes": {"read": "Read access"}
+  }
+}
+
+// v1.0 - Use Authorization Code + PKCE instead
+{
+  "authorizationCodeFlow": {
+    "authorizationUrl": "https://auth.example.com/authorize",
+    "tokenUrl": "https://auth.example.com/token",
+    "pkceRequired": true,
+    "scopes": {"read": "Read access"}
+  }
+}
+```
 
 ---
 
@@ -875,7 +1001,47 @@ if (!supportedVersions.includes(requestedVersion)) {
 3. Remove page-based pagination
 4. Clean up dual-format support code
 
-#### Testing Considerations
+#### Backward Compatibility Strategy (#1401)
+
+v1.0 introduces a formal approach to protocol versioning that enables SDK backward compatibility.
+
+**Protocol Version Per Interface:**
+
+- Each `AgentInterface` now specifies its own `protocolVersion` field
+- Agents can support multiple protocol versions simultaneously by exposing multiple interfaces
+- Clients negotiate version by selecting appropriate interface from Agent Card
+
+**SDK Implementation Pattern:**
+
+```typescript
+// SDK can support multiple protocol versions
+class A2AClient {
+  async connect(agentCardUrl: string) {
+    const card = await this.getAgentCard(agentCardUrl);
+
+    // Find best matching interface
+    const interface = card.supportedInterfaces.find(i =>
+      this.supportedVersions.includes(i.protocolVersion)
+    );
+
+    if (!interface) {
+      throw new Error('No compatible protocol version');
+    }
+
+    // Use version-specific adapter
+    return this.createAdapter(interface.protocolVersion, interface);
+  }
+}
+```
+
+**Benefits:**
+
+- SDKs can maintain support for multiple protocol versions
+- Agents can gradually migrate by supporting both old and new versions
+- Clients automatically select best compatible version
+- Enables graceful deprecation of old protocol versions
+
+### Testing Considerations
 
 - Test with both v0.3.0 and v1.0 formatted data
 - Validate Agent Card signature verification
