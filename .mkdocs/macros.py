@@ -82,7 +82,7 @@ def _snake_to_camel_case(snake_str: str) -> str:
     return components[0] + ''.join(x.title() for x in components[1:])
 
 
-def _extract_comments(element) -> str:
+def _extract_comments(element: Any) -> str:
     """Clean and combine comments from an AST element."""
     if hasattr(element, 'comments') and element.comments:
         cleaned = []
