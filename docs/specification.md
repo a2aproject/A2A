@@ -1025,7 +1025,7 @@ Agents declare their supported extensions in the [`AgentCard`](#441-agentcard) u
   "supportedInterfaces": [
     {
       "url": "https://research-agent.example.com/a2a/v1",
-      "protocolBinding": "HTTP+JSON"
+      "protocolBinding": "HTTP+JSON",
       "protocolVersion": "0.3",
     }
   ],
