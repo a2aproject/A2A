@@ -95,7 +95,11 @@ def _extract_comments(element: Any) -> str:
                 text = text[2:]
                 if text.endswith('*/'):
                     text = text[:-2]
-            c = ' '.join(l.strip().lstrip('*').strip() for l in text.strip().split('\n') if l.strip())
+            c = ' '.join(
+                l.strip().lstrip('*').strip()
+                for l in text.strip().split('\n')
+                if l.strip()
+            )
 
             if not c.startswith(('protolint:', '--8<--', 'Next ID:')) and c:
                 cleaned.append(c)
