@@ -755,7 +755,7 @@ Agents CAN expose multiple interfaces for the same transport with different vers
 
 #### 3.6.3 Tooling support
 
-Tooling libraries and SDKs that implement the A2A protocol MUST provide mechanisms to help clients manage protocol versioning, such as negotiation of the transport and protocol version used. Client Agents that require the latest features of the protocol should not have the older versions configured, to avoid silently losing functionality.
+Tooling libraries and SDKs that implement the A2A protocol MUST provide mechanisms to help clients manage protocol versioning, such as negotiation of the transport and protocol version used. Client Agents that require the latest features of the protocol should be configured to request specific versions and avoid automatic fallback to older versions, to prevent silently losing functionality.
 
 ### 3.7 Messages and Artifacts
 
