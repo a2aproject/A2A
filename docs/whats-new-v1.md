@@ -54,7 +54,7 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ NEW:** Operation formally named **SendMessage** (with legacy alias support)
+- **✅ NEW:** Operation formally named **`SendMessage`** (with legacy alias support)
 - **✅ NEW:** `SendMessageConfiguration.blocking` parameter explicitly controls wait behavior
     - `blocking: true` - Server waits until task reaches terminal or interrupted state
     - `blocking: false` - Server returns immediately; client polls/streams for updates
