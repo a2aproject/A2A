@@ -8,7 +8,7 @@ The v1.0 release focuses on four major themes:
 
 ### 1. **Protocol Maturity and Standardization**
 
-- Migration to formal specification standards (RFC 9457, RFC 8785, RFC 7515)
+- Leverage formal specification standards (RFC 9457, RFC 8785, RFC 7515) where possible
 - Stricter adherence to industry-standard patterns for REST, gRPC, and JSON-RPC bindings
 - Enhanced versioning strategy with explicit backward compatibility rules
 - Comprehensive error taxonomy with protocol-specific mappings
