@@ -164,7 +164,7 @@ The v1.0 release focuses on four major themes:
 - **✅ CLARIFIED:** Formal specification of streaming subscription lifecycle
 - **✅ CLARIFIED:** Stream closure behavior when task reaches terminal state
 - **✅ CLARIFIED:** Multiple concurrent subscriptions supported per task
-- **✅ BEHAVIOURCHANGE:** Can subscribe to tasks not originally created via streaming
+- **✅ BEHAVIOR CHANGE:** Can subscribe to tasks not originally created via streaming
 
 ### Push Notification Operations
 
