@@ -195,7 +195,7 @@ def define_env(env):
 def _extract_comments(element: Any) -> str:
     """Clean and combine comments from an AST element."""
     cleaned_parts = []
-    raw_comments = getattr(element, 'comments', []) or []
+    raw_comments = getattr(element, 'comments', [])
 
     for comment in raw_comments:
         text = (
