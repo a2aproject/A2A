@@ -87,7 +87,9 @@ def define_env(env):
                         row = _process_field(oneof_el, is_oneof=True)
                         rows.append(row)
                         # Add display name to group tracker
-                        oneof_groups.setdefault(el.name, []).append(row[0])
+                        oneof_groups[el.name].append(
+                            row[0].strip('`')  # Remove code ticks for the note
+                        )
 
         if not rows:
             return 'None'
@@ -124,16 +126,16 @@ def define_env(env):
         """Parses a .proto file and renders an Enum table."""
         try:
             elements = _parse_proto(proto_file)
-            enm = _find_type(elements, enum_name, Enum)
-            if not enm:
+            el = _find_type(elements, enum_name, Enum)
+            if not el:
                 return f'**Error:** Enum `{enum_name}` not found.'
 
             rows = [
                 [f'`{e.name}`', _extract_comments(e)]
-                for e in enm.elements
+                for e in el.elements
                 if isinstance(e, EnumValue)
             ]
-            return f'{_extract_comments(enm)}\n\n' + tabulate(
+            return f'{_extract_comments(el)}\n\n' + tabulate(
                 rows, ['Value', 'Description'], tablefmt='github'
             )
         except Exception as e:
