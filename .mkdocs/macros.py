@@ -14,7 +14,9 @@ from proto_schema_parser.ast import (
     Field,
     MapField,
     Message,
+    Method,
     OneOf,
+    Service,
 )
 from proto_schema_parser.parser import Parser
 from tabulate import tabulate
@@ -87,7 +89,7 @@ def define_env(env):
                         row = _process_field(oneof_el, is_oneof=True)
                         rows.append(row)
                         # Add display name to group tracker
-                        oneof_groups[el.name].append(
+                        oneof_groups.setdefault(el.name, []).append(
                             row[0].strip('`')  # Remove code ticks for the note
                         )
 
@@ -138,6 +140,49 @@ def define_env(env):
             return f'{_extract_comments(el)}\n\n' + tabulate(
                 rows, ['Value', 'Description'], tablefmt='github'
             )
+        except Exception as e:
+            return f'**Error:** {e}'
+
+    @env.macro
+    def proto_service_to_table(
+        service_name: str, proto_file: str = 'specification/a2a.proto'
+    ) -> str:
+        """Parses a .proto file and renders a Service table."""
+        try:
+            elements = _parse_proto(proto_file)
+            service = _find_type(elements, service_name, Service)
+            if not service:
+                return f'**Error:** Service `{service_name}` not found.'
+
+            rows = []
+            for el in service.elements:
+                if isinstance(el, Method):
+                    # Request Type
+                    # input_type is a MessageType(type='...', stream=True/False)
+                    req_str = _format_type_for_docs(el.input_type.type)
+                    if el.input_type.stream:
+                        req_str = f'stream {req_str}'
+
+                    # Response Type
+                    res_str = _format_type_for_docs(el.output_type.type)
+                    if el.output_type.stream:
+                        res_str = f'stream {res_str}'
+
+                    rows.append(
+                        [
+                            f'`{el.name}`',
+                            req_str,
+                            res_str,
+                            _extract_comments(el),
+                        ]
+                    )
+
+            if not rows:
+                return 'None'
+
+            headers = ['Method', 'Request', 'Response', 'Description']
+            return tabulate(rows, headers, tablefmt='github')
+
         except Exception as e:
             return f'**Error:** {e}'
 

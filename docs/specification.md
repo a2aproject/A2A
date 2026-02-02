@@ -2477,21 +2477,8 @@ response, err := client.SendMessage(ctx, request)
 
 ### 10.3. Service Definition
 
-```proto
-service A2AService {
-  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
-  rpc SendStreamingMessage(SendMessageRequest) returns (stream StreamResponse);
-  rpc GetTask(GetTaskRequest) returns (Task);
-  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
-  rpc CancelTask(CancelTaskRequest) returns (Task);
-  rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse);
-  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
-  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse);
-  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty);
-  rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard);
-}
-```
+{{ proto_service_to_table("A2AService") }}
+
 
 ### 10.4. Core Methods
 
