@@ -84,27 +84,27 @@ def _snake_to_camel_case(snake_str: str) -> str:
 
 def _extract_comments(element: Any) -> str:
     """Clean and combine comments from an AST element."""
-    if hasattr(element, 'comments') and element.comments:
-        cleaned = []
-        for c in element.comments:
-            # strip // and whitespace
-            text = c.strip()
-            if text.startswith('//'):
-                text = text[2:]
-            elif text.startswith('/*'):
-                text = text[2:]
-                if text.endswith('*/'):
-                    text = text[:-2]
-            c = ' '.join(
-                l.strip().lstrip('*').strip()
-                for l in text.strip().split('\n')
-                if l.strip()
-            )
+    cleaned_parts = []
+    raw_comments = getattr(element, 'comments', []) or []
 
-            if not c.startswith(('protolint:', '--8<--', 'Next ID:')) and c:
-                cleaned.append(c)
-        return ' '.join(cleaned)
-    return ''
+    for comment in raw_comments:
+        text = (
+            comment.strip()
+            .removeprefix('//')
+            .removeprefix('/*')
+            .removesuffix('*/')
+        )
+        lines = (
+            line.strip().removeprefix('*').strip() for line in text.splitlines()
+        )
+        combined = ' '.join(filter(None, lines))
+
+        if combined and not combined.startswith(
+            ('protolint:', '--8<--', 'Next ID:')
+        ):
+            cleaned_parts.append(combined)
+
+    return ' '.join(cleaned_parts)
 
 
 def _attach_comments(elements: list[Any]) -> None:
