@@ -39,95 +39,6 @@ TYPE_MAP = {
 }
 
 # -----------------------------------------------------------------------------
-# Helper Functions
-# -----------------------------------------------------------------------------
-
-
-def _snake_to_camel_case(snake_str: str) -> str:
-    """Convert snake_case to camelCase."""
-    components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
-
-
-def _extract_comments(element: Any) -> str:
-    """Clean and combine comments from an AST element."""
-    cleaned_parts = []
-    raw_comments = getattr(element, 'comments', []) or []
-
-    for comment in raw_comments:
-        text = (
-            comment.strip()
-            .removeprefix('//')
-            .removeprefix('/*')
-            .removesuffix('*/')
-        )
-        lines = (
-            line.strip().removeprefix('*').strip() for line in text.splitlines()
-        )
-        combined = ' '.join(filter(None, lines))
-
-        if combined and not combined.startswith(
-            ('protolint:', '--8<--', 'Next ID:')
-        ):
-            cleaned_parts.append(combined)
-
-    return ' '.join(cleaned_parts)
-
-
-def _attach_comments(elements: list[Any]) -> None:
-    """Recursively attach preceding comments to each non-comment element."""
-    buffer = []
-    for el in elements:
-        if isinstance(el, Comment):
-            buffer.append(el.text)
-        else:
-            # Attach collected comments to this element
-            el.comments = buffer
-            buffer = []
-            # Recursively handle nested elements (e.g. inside Message or OneOf)
-            if hasattr(el, 'elements'):
-                _attach_comments(el.elements)
-
-
-def _format_type_for_docs(
-    proto_type: str, is_repeated: bool = False, map_key: str | None = None
-) -> str:
-    """Formats the type name with Markdown links for non-primitive types."""
-    # Handle fully qualified names by taking only the last part for the link label,
-    # but keep it if it's a known google.protobuf type we mapped.
-    display_name = TYPE_MAP.get(proto_type, proto_type.split('.')[-1])
-    is_primitive = proto_type in TYPE_MAP or proto_type.startswith(
-        'google.protobuf'
-    )
-
-    # Create a slug for the link. Messages are usually CamelCase, so lowercase it.
-    label = f'`{display_name}`'
-    if not is_primitive:
-        label = f'[{label}](#{display_name.lower()})'
-
-    if map_key:
-        key_label = TYPE_MAP.get(map_key, map_key)
-        return f'map of {key_label} to {label}'
-
-    if is_repeated:
-        return f'array of {label}'
-
-    return label
-
-
-def _find_type(elements: list[Any], name: str, target_cls: type) -> Any | None:
-    """Recursively searches for a Message or Enum by name."""
-    for el in elements:
-        if getattr(el, 'name', None) == name and isinstance(el, target_cls):
-            return el
-        if isinstance(el, Message):
-            found = _find_type(el.elements, name, target_cls)
-            if found:
-                return found
-    return None
-
-
-# -----------------------------------------------------------------------------
 # Main Macros
 # -----------------------------------------------------------------------------
 
@@ -229,6 +140,89 @@ def define_env(env):
             return f'**Error:** {e}'
 
 
+# -----------------------------------------------------------------------------
+# Helper Functions
+# -----------------------------------------------------------------------------
+
+
+def _extract_comments(element: Any) -> str:
+    """Clean and combine comments from an AST element."""
+    cleaned_parts = []
+    raw_comments = getattr(element, 'comments', []) or []
+
+    for comment in raw_comments:
+        text = (
+            comment.strip()
+            .removeprefix('//')
+            .removeprefix('/*')
+            .removesuffix('*/')
+        )
+        lines = (
+            line.strip().removeprefix('*').strip() for line in text.splitlines()
+        )
+        combined = ' '.join(filter(None, lines))
+
+        if combined and not combined.startswith(
+            ('protolint:', '--8<--', 'Next ID:')
+        ):
+            cleaned_parts.append(combined)
+
+    return ' '.join(cleaned_parts)
+
+
+def _attach_comments(elements: list[Any]) -> None:
+    """Recursively attach preceding comments to each non-comment element."""
+    buffer = []
+    for el in elements:
+        if isinstance(el, Comment):
+            buffer.append(el.text)
+        else:
+            # Attach collected comments to this element
+            el.comments = buffer
+            buffer = []
+            # Recursively handle nested elements (e.g. inside Message or OneOf)
+            if hasattr(el, 'elements'):
+                _attach_comments(el.elements)
+
+
+def _format_type_for_docs(
+    proto_type: str, is_repeated: bool = False, map_key: str | None = None
+) -> str:
+    """Formats the type name with Markdown links for non-primitive types."""
+    # Handle fully qualified names by taking only the last part for the link label,
+    # but keep it if it's a known google.protobuf type we mapped.
+    display_name = TYPE_MAP.get(proto_type, proto_type.split('.')[-1])
+    is_primitive = proto_type in TYPE_MAP or proto_type.startswith(
+        'google.protobuf'
+    )
+
+    # Create a slug for the link. Messages are usually CamelCase, so lowercase it.
+    label = f'`{display_name}`'
+    if not is_primitive:
+        label = f'[{label}](#{display_name.lower()})'
+
+    if map_key:
+        key_label = TYPE_MAP.get(map_key, map_key)
+        return f'map of {key_label} to {label}'
+
+    if is_repeated:
+        return f'array of {label}'
+
+    return label
+
+
+def _find_type(elements: list[Any], name: str, target_cls: type) -> Any | None:
+    """Recursively searches for a Message or Enum by name."""
+    for el in elements:
+        if getattr(el, 'name', None) == name and isinstance(el, target_cls):
+            return el
+        if isinstance(el, Message):
+            found = _find_type(el.elements, name, target_cls)
+            if found:
+                return found
+    return None
+
+
 def _process_field(field: Field, is_oneof: bool = False) -> list[str]:
     """Converts a Field or MapField object into a table row."""
     options = getattr(field, 'options', [])
@@ -269,3 +263,9 @@ def _process_field(field: Field, is_oneof: bool = False) -> list[str]:
     desc = _extract_comments(field)
 
     return [f'`{display_name}`', type_str, req_val, desc]
+
+
+def _snake_to_camel_case(snake_str: str) -> str:
+    """Convert snake_case to camelCase."""
+    components = snake_str.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
