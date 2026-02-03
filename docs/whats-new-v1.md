@@ -428,7 +428,7 @@ const dataPart = { data: { key: "value" }, mediaType: "application/json" };
 
 // Discrimination changed from kind field to member presence
 if (part.kind === "text") { ... }  // v0.3.0
-if ("text" in part) { ... }         // v1.0
+if ("text" in part) { ... }        // v1.0
 ```
 
 ### Artifact Object
