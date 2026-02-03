@@ -765,6 +765,8 @@ Tooling libraries and SDKs that implement the A2A protocol SHOULD provide mechan
 
 #### 3.6.5 Specification Versioning
 
+<span id="365-specification-versioning"></span>
+
 This section documents versioning guidelines for the A2A specification repository itself, governing when specification maintainers should increment version numbers.
 
 The A2A specification follows [Semantic Versioning](https://semver.org/) principles with the following rules:
@@ -817,6 +819,7 @@ Contributors should apply the following decision process when submitting changes
    - NO → Requires at least a minor release
 
 **Note:** When uncertain about the appropriate version increment, contributors should note this in their pull request description for maintainer guidance.
+
 ### 3.7 Messages and Artifacts
 
 Messages and Artifacts serve distinct purposes within the A2A protocol. The core interaction model defined by A2A is for clients to send messages to initiate a task that produces one or more artifacts.
