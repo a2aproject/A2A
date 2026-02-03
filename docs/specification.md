@@ -2479,7 +2479,6 @@ response, err := client.SendMessage(ctx, request)
 
 {{ proto_service_to_table("A2AService") }}
 
-
 ### 10.4. Core Methods
 
 #### 10.4.1. SendMessage
