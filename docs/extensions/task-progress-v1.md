@@ -1,7 +1,7 @@
 # Task Progress Metadata Extension v1
 
 **Status:** Draft (v1)  
-**Owner:** Bittr.ai team  
+**Owner:** bittr.ai team  
 **Date:** 2026-02-04  
 **Extension URI (canonical key):** `https://a2aproject.github.io/extensions/task-progress/v1`
 
