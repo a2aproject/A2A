@@ -1,7 +1,7 @@
 # Task Progress Metadata Extension v1
 
 **Status:** Draft (v1)  
-**Owner:** Bittr / AgentState team  
+**Owner:** Bittr.ai team  
 **Date:** 2026-02-04  
 **Extension URI (canonical key):** `https://a2aproject.github.io/extensions/task-progress/v1`
 
@@ -230,4 +230,3 @@ Implementations MAY further restrict `maxItems` to the declared `maxTrackers`.
 3) **Invalid / progress > total**: reject as schema violation.
 4) **Invalid / status invalid**: reject as schema violation.
 5) **Advisory**: aggregate present but inconsistent with trackers; clients MUST not treat as an error.
-
