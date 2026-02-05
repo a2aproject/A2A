@@ -9,9 +9,16 @@ import hashlib
 import json
 import time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
-from enum import Enum
+
+# Try to use real cryptography, fall back to simulation for environments without it
+try:
+    from cryptography.hazmat.primitives.asymmetric import ed25519
+    from cryptography.exceptions import InvalidSignature
+    _HAS_CRYPTO = True
+except ImportError:
+    _HAS_CRYPTO = False
 
 
 class TrustVerificationError(Exception):
@@ -48,30 +55,54 @@ class CMVKSignature:
 
 @dataclass
 class CMVKIdentity:
-    """Cryptographic identity for an agent using CMVK scheme."""
+    """Cryptographic identity for an agent using CMVK scheme.
+    
+    Uses Ed25519 for real cryptographic signing when the `cryptography`
+    library is available. Falls back to simulation for demo/testing.
+    """
     
     did: str  # Decentralized Identifier
     agent_name: str
-    public_key: str
-    private_key: Optional[str] = None  # Only available to owner
+    public_key: str  # Base64-encoded public key
+    private_key: Optional[str] = None  # Base64-encoded private key (only available to owner)
     capabilities: List[str] = field(default_factory=list)
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     @classmethod
     def generate(cls, agent_name: str, capabilities: Optional[List[str]] = None) -> "CMVKIdentity":
-        """Generate a new CMVK identity.
+        """Generate a new CMVK identity with Ed25519 key pair.
         
-        In production, this would use proper cryptographic key generation.
-        This is a simplified implementation for demonstration.
+        Args:
+            agent_name: Name of the agent.
+            capabilities: List of capabilities this agent has.
+            
+        Returns:
+            New CMVKIdentity with generated keys.
         """
         # Generate deterministic DID from agent name and timestamp
         seed = f"{agent_name}:{time.time_ns()}"
         did_hash = hashlib.sha256(seed.encode()).hexdigest()[:32]
         did = f"did:cmvk:{did_hash}"
         
-        # Simulated key pair (in production, use proper crypto)
-        public_key = base64.b64encode(hashlib.sha256(f"pub:{seed}".encode()).digest()).decode()
-        private_key = base64.b64encode(hashlib.sha256(f"priv:{seed}".encode()).digest()).decode()
+        if _HAS_CRYPTO:
+            # Real Ed25519 key generation
+            private_key_obj = ed25519.Ed25519PrivateKey.generate()
+            public_key_obj = private_key_obj.public_key()
+            
+            private_key = base64.b64encode(
+                private_key_obj.private_bytes_raw()
+            ).decode('ascii')
+            public_key = base64.b64encode(
+                public_key_obj.public_bytes_raw()
+            ).decode('ascii')
+        else:
+            # Simulated keys for demo (not cryptographically secure)
+            public_key = base64.b64encode(
+                hashlib.sha256(f"pub:{seed}".encode()).digest()
+            ).decode()
+            private_key = base64.b64encode(
+                hashlib.sha256(f"priv:{seed}".encode()).digest()
+            ).decode()
         
         return cls(
             did=did,
@@ -82,13 +113,32 @@ class CMVKIdentity:
         )
     
     def sign(self, data: str) -> CMVKSignature:
-        """Sign data with this identity's private key."""
+        """Sign data with this identity's private key.
+        
+        Args:
+            data: String data to sign.
+            
+        Returns:
+            CMVKSignature containing the signature.
+            
+        Raises:
+            ValueError: If private key is not available.
+        """
         if not self.private_key:
             raise ValueError("Cannot sign without private key")
         
-        # Simulated signing (in production, use proper crypto)
-        message = f"{data}:{self.private_key}"
-        signature = base64.b64encode(hashlib.sha256(message.encode()).digest()).decode()
+        if _HAS_CRYPTO:
+            # Real Ed25519 signing
+            private_key_bytes = base64.b64decode(self.private_key)
+            private_key_obj = ed25519.Ed25519PrivateKey.from_private_bytes(private_key_bytes)
+            signature_bytes = private_key_obj.sign(data.encode('utf-8'))
+            signature = base64.b64encode(signature_bytes).decode('ascii')
+        else:
+            # Simulated signing for demo
+            message = f"{data}:{self.private_key}"
+            signature = base64.b64encode(
+                hashlib.sha256(message.encode()).digest()
+            ).decode()
         
         return CMVKSignature(
             public_key=self.public_key,
@@ -96,10 +146,31 @@ class CMVKIdentity:
         )
     
     def verify_signature(self, data: str, signature: CMVKSignature) -> bool:
-        """Verify a signature against this identity's public key."""
-        # In production, this would use proper signature verification
-        # For now, we verify the public key matches
-        return signature.public_key == self.public_key
+        """Verify a signature against this identity's public key.
+        
+        Args:
+            data: Original string data that was signed.
+            signature: The signature to verify.
+            
+        Returns:
+            True if signature is valid, False otherwise.
+        """
+        if signature.public_key != self.public_key:
+            return False
+        
+        if _HAS_CRYPTO:
+            # Real Ed25519 verification
+            try:
+                public_key_bytes = base64.b64decode(self.public_key)
+                public_key_obj = ed25519.Ed25519PublicKey.from_public_bytes(public_key_bytes)
+                signature_bytes = base64.b64decode(signature.signature)
+                public_key_obj.verify(signature_bytes, data.encode('utf-8'))
+                return True
+            except (InvalidSignature, ValueError):
+                return False
+        else:
+            # Simulated verification (public key match only for demo)
+            return True
     
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -447,7 +518,6 @@ class DelegationChain:
         delegation_data = f"{delegator_did}:{delegatee_did}:{','.join(capabilities)}"
         signature = self.root_identity.sign(delegation_data)
         
-        from datetime import timedelta
         delegation = Delegation(
             delegator_did=delegator_did,
             delegatee_did=delegatee_did,

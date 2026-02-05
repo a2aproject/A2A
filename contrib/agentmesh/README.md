@@ -61,7 +61,10 @@ card_json = agent_card.to_a2a_json()
 ### Verifying a Peer Before Task Delegation
 
 ```python
-from agentmesh.a2a import TrustHandshake, TrustedAgentCard
+from agentmesh.a2a import TrustHandshake, TrustedAgentCard, CMVKIdentity
+
+# Generate your identity (or load existing)
+my_identity = CMVKIdentity.generate("my-agent", capabilities=["coordination"])
 
 # Load peer's agent card (from A2A discovery)
 peer_card = TrustedAgentCard.from_a2a_json(peer_card_json)
@@ -72,8 +75,7 @@ result = await handshake.verify_peer(peer_card)
 
 if result.trusted:
     print(f"Peer verified! Trust score: {result.trust_score}")
-    # Safe to delegate task
-    task = await a2a_client.create_task(peer_card.url, task_spec)
+    # Safe to delegate task via your A2A client
 else:
     print(f"Verification failed: {result.reason}")
     # Don't delegate to untrusted agent
@@ -82,7 +84,10 @@ else:
 ### Trust-Gated Task Creation
 
 ```python
-from agentmesh.a2a import TrustGatedA2AClient
+from agentmesh.a2a import TrustGatedA2AClient, CMVKIdentity
+
+# Generate your identity
+my_identity = CMVKIdentity.generate("coordinator", capabilities=["task-delegation"])
 
 # Create client with trust requirements
 client = TrustGatedA2AClient(
@@ -91,10 +96,12 @@ client = TrustGatedA2AClient(
     require_capability_proof=True,
 )
 
-# Task creation automatically verifies peer
+# Task creation requires a TrustedAgentCard (obtained from discovery)
+peer_card = TrustedAgentCard.from_a2a_json(discovered_agent_json)
+
 try:
     task = await client.create_task(
-        agent_url="https://agents.example.com/writer",
+        peer_card=peer_card,
         task_spec={
             "description": "Write a report on AI safety",
             "required_capabilities": ["writing", "research"],
@@ -102,6 +109,7 @@ try:
     )
 except TrustVerificationError as e:
     print(f"Agent not trusted: {e}")
+```
 ```
 
 ## CMVK-Enhanced Agent Card Schema
