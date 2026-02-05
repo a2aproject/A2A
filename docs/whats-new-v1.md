@@ -1017,7 +1017,7 @@ class A2AClient {
     );
 
     if (!interface) {
-      throw new Error('No compatible protocol version');
+      throw new Error("No compatible protocol version");
     }
 
     // Use version-specific adapter
