@@ -63,13 +63,13 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
 ### TSC Voting
 
-While the Project aims to operate as a consensus-based community, if any TSC decision requires a vote to move the Project forward, the voting members of the TSC will vote on a one vote per voting member basis.
+While the Project aims to operate as a consensus-based community, if any TSC decision requires a vote to move the Project forward, the voting members of the TSC will vote on a one vote per voting member basis. 
 
 Quorum for TSC meetings requires at least fifty percent of all voting members of the TSC to be present. The TSC may continue to meet if quorum is not met but will be prevented from making any decisions at the meeting. Except as provided in Section 7.c. and 8.a, decisions by vote at a meeting require a majority vote of those in attendance, provided quorum is met. Decisions made by electronic vote without a meeting require a majority vote of all voting members of the TSC.
 
 ### TSC Meetings
-
-Our hope is that the first TSC meeting will be held in August 2025. Once the TSC representatives are finalized, scheduling will begin. In the interim we have drafted a [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view).
+TSC Meetings are held on the Linux Foundation's meeting platform. [https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent) has meeting details and recordings of past meetings. 
+Our [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view) is in Google Docs.
 
 ## Project Communications
 
