@@ -1,0 +1,3171 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The official documentation for the Agent2Agent (A2A) protocol. The A2A protocol is an open standard that allows different AI agents to securely communicate, collaborate, and solve complex problems together.">
+      
+      
+        <meta name="author" content="The Linux Foundation">
+      
+      
+        <link rel="canonical" href="https://a2a-protocol.org/latest/whats-new-v1/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/a2a-logo-black.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>What's New in A2A Protocol v1.0 - A2A Protocol</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+  
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+    
+      
+      
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M64%20480c-35.3%200-64-28.7-64-64V96c0-35.3%2028.7-64%2064-64h320c35.3%200%2064%2028.7%2064%2064v213.5c0%2017-6.7%2033.3-18.7%2045.3L322.7%20461.3c-12%2012-28.3%2018.7-45.3%2018.7zm325.5-176H296c-13.3%200-24%2010.7-24%2024v93.5z%22/%3E%3C/svg%3E');--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M384%20512H96c-53%200-96-43-96-96V96C0%2043%2043%200%2096%200h304c26.5%200%2048%2021.5%2048%2048v288c0%2020.9-13.4%2038.7-32%2045.3V448c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032zM96%20384c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032h256v-64zm32-232c0%2013.3%2010.7%2024%2024%2024h176c13.3%200%2024-10.7%2024-24s-10.7-24-24-24H152c-13.3%200-24%2010.7-24%2024m24%2072c-13.3%200-24%2010.7-24%2024s10.7%2024%2024%2024h176c13.3%200%2024-10.7%2024-24s-10.7-24-24-24z%22/%3E%3C/svg%3E');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M256%20512a256%20256%200%201%200%200-512%20256%20256%200%201%200%200%20512m-32-352a32%2032%200%201%201%2064%200%2032%2032%200%201%201-64%200m-8%2064h48c13.3%200%2024%2010.7%2024%2024v88h8c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-80c-13.3%200-24-10.7-24-24s10.7-24%2024-24h24v-64h-24c-13.3%200-24-10.7-24-24s10.7-24%2024-24%22/%3E%3C/svg%3E');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M461.2%2018.9C472.7%2024%20480%2035.4%20480%2048v416c0%2012.6-7.3%2024-18.8%2029.1s-24.8%203.2-34.3-5.1l-46.6-40.7c-43.6-38.1-98.7-60.3-156.4-63V480c0%2017.7-14.3%2032-32%2032h-32c-17.7%200-32-14.3-32-32v-96C57.3%20384%200%20326.7%200%20256s57.3-128%20128-128h84.5c61.8-.2%20121.4-22.7%20167.9-63.3L427%2024c9.4-8.3%2022.9-10.2%2034.3-5.1zM224%20320v.2c70.3%202.7%20137.8%2028.5%20192%2073.4V118.3c-54.2%2044.9-121.7%2070.7-192%2073.4z%22/%3E%3C/svg%3E');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M434.8%2070.1c14.3%2010.4%2017.5%2030.4%207.1%2044.7l-256%20352c-5.5%207.6-14%2012.3-23.4%2013.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8%200-45.3s32.8-12.5%2045.3%200l101.5%20101.5%20234-321.7c10.4-14.3%2030.4-17.5%2044.7-7.1z%22/%3E%3C/svg%3E');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M256%20512a256%20256%200%201%200%200-512%20256%20256%200%201%200%200%20512m0-336c-17.7%200-32%2014.3-32%2032%200%2013.3-10.7%2024-24%2024s-24-10.7-24-24c0-44.2%2035.8-80%2080-80s80%2035.8%2080%2080c0%2047.2-36%2067.2-56%2074.5v3.8c0%2013.3-10.7%2024-24%2024s-24-10.7-24-24v-8.1c0-20.5%2014.8-35.2%2030.1-40.2%206.4-2.1%2013.2-5.5%2018.2-10.3%204.3-4.2%207.7-10%207.7-19.6%200-17.7-14.3-32-32-32zm-32%20192a32%2032%200%201%201%2064%200%2032%2032%200%201%201-64%200%22/%3E%3C/svg%3E');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M256%200c14.7%200%2028.2%208.1%2035.2%2021l216%20400c6.7%2012.4%206.4%2027.4-.8%2039.5S486.1%20480%20472%20480H40c-14.1%200-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9%2020.5-21%2035.2-21m0%20352a32%2032%200%201%200%200%2064%2032%2032%200%201%200%200-64m0-192c-18.2%200-32.7%2015.5-31.4%2033.7l7.4%20104c.9%2012.5%2011.4%2022.3%2023.9%2022.3%2012.6%200%2023-9.7%2023.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z%22/%3E%3C/svg%3E');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20576%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M480-16c6.9%200%2013%204.4%2015.2%2010.9l13.5%2040.4%2040.4%2013.5C555.6%2051%20560%2057.1%20560%2064s-4.4%2013-10.9%2015.2l-40.4%2013.5-13.5%2040.4c-2.2%206.5-8.3%2010.9-15.2%2010.9s-13-4.4-15.2-10.9l-13.5-40.4-40.4-13.5C404.4%2077%20400%2070.9%20400%2064s4.4-13%2010.9-15.2l40.4-13.5%2013.5-40.4C467-11.6%20473.1-16%20480-16M321.4%2097.4c12.5-12.5%2032.8-12.5%2045.3%200l80%2080c12.5%2012.5%2012.5%2032.8%200%2045.3l-10.9%2010.9c7.9%2022%2012.2%2045.7%2012.2%2070.5%200%20114.9-93.1%20208-208%20208S32%20418.9%2032%20304%20125.1%2096%20240%2096c24.7%200%2048.5%204.3%2070.5%2012.3zM144%20304c0-53%2043-96%2096-96%2013.3%200%2024-10.7%2024-24s-10.7-24-24-24c-79.5%200-144%2064.5-144%20144%200%2013.3%2010.7%2024%2024%2024s24-10.7%2024-24%22/%3E%3C/svg%3E');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M416%20427.4c58.5-44%2096-111.6%2096-187.4C512%20107.5%20397.4%200%20256%200S0%20107.5%200%20240c0%2075.8%2037.5%20143.4%2096%20187.4V464c0%2026.5%2021.5%2048%2048%2048h32v-40c0-13.3%2010.7-24%2024-24s24%2010.7%2024%2024v40h64v-40c0-13.3%2010.7-24%2024-24s24%2010.7%2024%2024v40h32c26.5%200%2048-21.5%2048-48zM96%20256a64%2064%200%201%201%20128%200%2064%2064%200%201%201-128%200m256-64a64%2064%200%201%201%200%20128%2064%2064%200%201%201%200-128%22/%3E%3C/svg%3E');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20640%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M352%200c0-17.7-14.3-32-32-32s-32%2014.3-32%2032v64h-96c-53%200-96%2043-96%2096v224c0%2053%2043%2096%2096%2096h256c53%200%2096-43%2096-96V160c0-53-43-96-96-96h-96zM160%20368c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24m120%200c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24m120%200c0-13.3%2010.7-24%2024-24h32c13.3%200%2024%2010.7%2024%2024s-10.7%2024-24%2024h-32c-13.3%200-24-10.7-24-24M224%20176a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96m144%2048a48%2048%200%201%201%2096%200%2048%2048%200%201%201-96%200m-304%200c0-17.7-14.3-32-32-32S0%20206.3%200%20224v96c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32zm544-32c-17.7%200-32%2014.3-32%2032v96c0%2017.7%2014.3%2032%2032%2032s32-14.3%2032-32v-96c0-17.7-14.3-32-32-32%22/%3E%3C/svg%3E');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M288%200H128c-17.7%200-32%2014.3-32%2032s14.3%2032%2032%2032v151.5L7.5%20426.3C2.6%20435%200%20444.7%200%20454.7%200%20486.4%2025.6%20512%2057.3%20512h333.4c31.6%200%2057.3-25.6%2057.3-57.3%200-10-2.6-19.8-7.5-28.4L320%20215.5V64c17.7%200%2032-14.3%2032-32S337.7%200%20320%200zm-96%20215.5V64h64v151.5c0%2011.1%202.9%2022.1%208.4%2031.8L306%20320H142l41.6-72.7c5.5-9.7%208.4-20.6%208.4-31.8%22/%3E%3C/svg%3E');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20448%20512%22%3E%3C%21--%21%20Font%20Awesome%20Free%207.1.0%20by%20%40fontawesome%20-%20https%3A//fontawesome.com%20License%20-%20https%3A//fontawesome.com/license/free%20%28Icons%3A%20CC%20BY%204.0%2C%20Fonts%3A%20SIL%20OFL%201.1%2C%20Code%3A%20MIT%20License%29%20Copyright%202025%20Fonticons%2C%20Inc.--%3E%3Cpath%20d%3D%22M0%20216C0%20149.7%2053.7%2096%20120%2096h8c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032h-8c-30.9%200-56%2025.1-56%2056v8h64c35.3%200%2064%2028.7%2064%2064v64c0%2035.3-28.7%2064-64%2064H64c-35.3%200-64-28.7-64-64zm256%200c0-66.3%2053.7-120%20120-120h8c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032h-8c-30.9%200-56%2025.1-56%2056v8h64c35.3%200%2064%2028.7%2064%2064v64c0%2035.3-28.7%2064-64%2064h-64c-35.3%200-64-28.7-64-64z%22/%3E%3C/svg%3E');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Google Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/custom.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-RB39M83WHB"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-RB39M83WHB",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-RB39M83WHB",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#whats-new-in-a2a-protocol-v10" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="A2A Protocol" class="md-header__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+      
+  <img src="../assets/a2a-logo-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            A2A Protocol
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              What's New in A2A Protocol v1.0
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="white"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/a2aproject/A2A" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    a2aproject/A2A
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="A2A Protocol" class="md-nav__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+      
+  <img src="../assets/a2a-logo-white.svg" alt="logo">
+
+    </a>
+    A2A Protocol
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/a2aproject/A2A" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    a2aproject/A2A
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/what-is-a2a/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What is A2A?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/key-concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/agent-discovery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Discovery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/enterprise-ready/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enterprise Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/life-of-a-task/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Life of a Task
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/streaming-and-async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming & Asynchronous Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/a2a-and-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    A2A and MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../tutorials/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials and Samples
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials and Samples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart (Python)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quickstart (Python)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/2-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/3-agent-skills-and-card/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Skills & Agent Card
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/4-agent-executor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Executor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/5-start-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/6-interact-with-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interact with Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/7-streaming-and-multiturn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Streaming & Multiturn
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/python/8-next-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Next Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specification
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Specification
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../definitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protocol Definition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../sdk/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SDK Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    SDK Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sdk/python/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../community/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Community
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../partners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Partners
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview-of-major-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview of Major Themes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview of Major Themes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-protocol-maturity-and-standardization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Protocol Maturity and Standardization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-enhanced-type-safety-and-clarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enhanced Type Safety and Clarity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-improved-developer-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Improved Developer Experience
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-enterprise-ready-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Enterprise-Ready Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#behavioral-changes-for-core-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behavioral Changes for Core Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Behavioral Changes for Core Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#send-message-messagesend-sendmessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Send Message (message/send → SendMessage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#send-streaming-message-messagestream-sendstreamingmessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Send Streaming Message (message/stream → SendStreamingMessage)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-task-tasksget-gettask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get Task (tasks/get → GetTask)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list-tasks-taskslist-listtasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        List Tasks (tasks/list → ListTasks)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cancel-task-taskscancel-canceltask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cancel Task (tasks/cancel → CancelTask)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-agent-card-well-known-uri-and-getextendedagentcard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Get Agent Card (Well-known URI and GetExtendedAgentCard)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-subscribe-to-task-subscribetotask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NEW: Subscribe to Task (SubscribeToTask)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#push-notification-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Push Notification Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-multi-tenancy-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NEW: Multi-Tenancy Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protocol-simplifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protocol Simplifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Protocol Simplifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#id-format-simplification-1389" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ID Format Simplification (#1389)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http-url-path-simplification-1269" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP URL Path Simplification (#1269)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#structural-changes-in-core-model-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structural Changes in Core Model Objects
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Structural Changes in Core Model Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Task Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#taskstatus-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TaskStatus Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#message-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Message Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#artifact-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Artifact Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agentcard-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AgentCard Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agentextension-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AgentExtension Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agentcapabilities-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AgentCapabilities Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#securityscheme-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SecurityScheme Objects
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pushnotificationconfig-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PushNotificationConfig Object
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stream-event-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stream Event Objects
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oauth-20-security-updates-1303" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OAuth 2.0 Security Updates (#1303)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-dependencies-on-other-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Dependencies on Other Specifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New Dependencies on Other Specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#added-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Added Specifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Added Specifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rfc-9457-problem-details-for-http-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ RFC 9457 - Problem Details for HTTP APIs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rfc-8785-json-canonicalization-scheme-jcs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ RFC 8785 - JSON Canonicalization Scheme (JCS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rfc-7515-json-web-signature-jws" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ RFC 7515 - JSON Web Signature (JWS)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#google-api-design-guidelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ Google API Design Guidelines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iso-8601" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ ISO 8601
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#existing-dependencies-retained-from-v030" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Existing Dependencies (Retained from v0.3.0)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#complementary-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complementary Protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#impact-on-developers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Impact on Developers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Impact on Developers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#breaking-changes-requiring-code-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Breaking Changes Requiring Code Updates
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Breaking Changes Requiring Code Updates">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-part-type-unification-critical-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Part Type Unification (CRITICAL IMPACT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-stream-event-discriminator-pattern-high-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Stream Event Discriminator Pattern (HIGH IMPACT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-agent-card-structure-high-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Agent Card Structure (HIGH IMPACT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-pagination-medium-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Pagination (MEDIUM IMPACT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-enum-value-changes-high-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Enum Value Changes (HIGH IMPACT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-field-name-changes-low-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Field Name Changes (LOW IMPACT)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#new-capabilities-to-leverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        New Capabilities to Leverage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New Capabilities to Leverage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-blocking-parameter-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Blocking Parameter Control
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-agent-card-signature-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Agent Card Signature Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-extension-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Extension Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-enhanced-timestamp-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Enhanced Timestamp Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-versioning-negotiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Versioning Negotiation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration-strategy-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Strategy Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Strategy Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-compatibility-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Compatibility Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-dual-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Dual Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-v10-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: v1.0 Only
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backward-compatibility-strategy-1401" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backward Compatibility Strategy (#1401)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommended-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Priority
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommended Priority">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#critical-do-immediately" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Critical (Do Immediately)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#high-within-1-month" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High (Within 1 Month)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-within-3-months" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium (Within 3 Months)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#low-nice-to-have" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Low (Nice to Have)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+    
+      
+    
+    <a href="https://github.com/a2aproject/A2A/raw/main/docs/whats-new-v1.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.22 2H7.78C6.8 2 6 2.8 6 3.78v12.44C6 17.2 6.8 18 7.78 18h12.44c.98 0 1.78-.79 1.78-1.78V3.78C22 2.8 21.2 2 20.22 2m-9.16 13H9v-2.06l6.06-6.06 2.06 2.06zm7.64-7.65-1 1-2.05-2.05 1-1c.21-.22.56-.22.77 0l1.28 1.28c.22.21.22.56 0 .77M4 6H2v14a2 2 0 0 0 2 2h14v-2H4z"/></svg>
+    </a>
+  
+
+
+<h1 id="whats-new-in-a2a-protocol-v10">What's New in A2A Protocol v1.0<a class="headerlink" href="#whats-new-in-a2a-protocol-v10" title="Permanent link">&para;</a></h1>
+<p>This document provides a comprehensive overview of changes from A2A Protocol v0.3.0 to v1.0. The v1.0 release represents a significant maturation of the protocol with enhanced clarity, stronger specifications, and important structural improvements.</p>
+<h2 id="overview-of-major-themes">Overview of Major Themes<a class="headerlink" href="#overview-of-major-themes" title="Permanent link">&para;</a></h2>
+<p>The v1.0 release focuses on four major themes:</p>
+<h3 id="1-protocol-maturity-and-standardization">1. <strong>Protocol Maturity and Standardization</strong><a class="headerlink" href="#1-protocol-maturity-and-standardization" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Leverage formal specification standards (RFC 9457, RFC 8785, RFC 7515) where possible</li>
+<li>Stricter adherence to industry-standard patterns for REST, gRPC, and JSON-RPC bindings</li>
+<li>Enhanced versioning strategy with explicit backward compatibility rules</li>
+<li>Comprehensive error taxonomy with protocol-specific mappings</li>
+</ul>
+<h3 id="2-enhanced-type-safety-and-clarity">2. <strong>Enhanced Type Safety and Clarity</strong><a class="headerlink" href="#2-enhanced-type-safety-and-clarity" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Removal of discriminator <code>kind</code> fields in favor of JSON member-based polymorphism</li>
+<li><strong>Breaking:</strong> Enum values changed from <code>kebab-case</code> to <code>SCREAMING_SNAKE_CASE</code> for compliance with the ProtoJSON specification</li>
+<li>Stricter field naming conventions (<code>camelCase</code> for JSON)</li>
+<li>More precise timestamp specifications (ISO 8601 with millisecond precision)</li>
+<li>Better-defined data types with clearer Optional vs Required semantics</li>
+</ul>
+<h3 id="3-improved-developer-experience">3. <strong>Improved Developer Experience</strong><a class="headerlink" href="#3-improved-developer-experience" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Renamed operations for consistency and clarity</li>
+<li>Reorganized Agent Card structure for better logical grouping</li>
+<li>Enhanced extension mechanism with versioning and requirement declarations</li>
+<li>More explicit service parameter handling (A2A-Version, A2A-Extensions headers)</li>
+<li><strong>Simplified ID format</strong> - Removed complex compound IDs (e.g., <code>tasks/{id}</code>) in favor of simple UUIDs</li>
+<li><strong>Protocol versioning per interface</strong> - Each AgentInterface specifies its own protocol version for better backward compatibility</li>
+<li><strong>Multi-tenancy support</strong> - Native tenant scoping in gRPC requests</li>
+</ul>
+<h3 id="4-enterprise-ready-features">4. <strong>Enterprise-Ready Features</strong><a class="headerlink" href="#4-enterprise-ready-features" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Agent Card signature verification using JWS and JSON Canonicalization</li>
+<li>Formal specification of all three protocol bindings with equivalence guarantees</li>
+<li>Enhanced security scheme declarations with mutual TLS support</li>
+<li><strong>Modern OAuth 2.0 flows</strong> - Added Device Code flow (RFC 8628), removed deprecated implicit/password flows</li>
+<li><strong>PKCE support</strong> - Added <code>pkce_required</code> field to Authorization Code flow for enhanced security</li>
+<li>Cursor-based pagination for scalable task listing</li>
+</ul>
+<hr />
+<h2 id="behavioral-changes-for-core-operations">Behavioral Changes for Core Operations<a class="headerlink" href="#behavioral-changes-for-core-operations" title="Permanent link">&para;</a></h2>
+<h3 id="send-message-messagesend-sendmessage">Send Message (<code>message/send</code> → <strong><code>SendMessage</code></strong>)<a class="headerlink" href="#send-message-messagesend-sendmessage" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Behavior:</strong></p>
+<ul>
+<li>Operation named <code>message/send</code></li>
+<li>Blocking behavior not explicitly controllable</li>
+<li>Less formal specification of when <code>Task</code> vs <code>Message</code> is returned</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ NEW:</strong> Operation formally named <strong><code>SendMessage</code></strong> (with legacy alias support)</li>
+<li><strong>✅ NEW:</strong> <code>SendMessageConfiguration.blocking</code> parameter explicitly controls wait behavior<ul>
+<li><code>blocking: true</code> - Server waits until task reaches terminal or interrupted state</li>
+<li><code>blocking: false</code> - Server returns immediately; client polls/streams for updates</li>
+</ul>
+</li>
+<li><strong>✅ CLARIFIED:</strong> More precise specification of Task vs Message return semantics<ul>
+<li>Simple queries MAY return Message directly without creating a Task</li>
+<li>Complex operations MUST return Task for asynchronous handling</li>
+</ul>
+</li>
+<li><strong>✅ NEW:</strong> Service parameters transmitted as headers/metadata:<ul>
+<li><code>A2A-Version</code>: Protocol version (Major.Minor format)</li>
+<li><code>A2A-Extensions</code>: Comma-separated extension URIs</li>
+</ul>
+</li>
+</ul>
+<h3 id="send-streaming-message-messagestream-sendstreamingmessage">Send Streaming Message (<code>message/stream</code> → <strong>SendStreamingMessage</strong>)<a class="headerlink" href="#send-streaming-message-messagestream-sendstreamingmessage" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Behavior:</strong></p>
+<ul>
+<li>Operation named <code>message/stream</code></li>
+<li>SSE-based streaming for JSON-RPC, unspecified for gRPC</li>
+<li>Stream events had <code>kind</code> discriminator field</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ RENAMED:</strong> Operation now <strong><code>SendStreamingMessage</code></strong></li>
+<li><strong>✅ BREAKING:</strong> Stream events no longer have <code>kind</code> field<ul>
+<li>Use JSON member names to discriminate between <code>TaskStatusUpdateEvent</code> and <code>TaskArtifactUpdateEvent</code></li>
+</ul>
+</li>
+<li><strong>✅ NEW:</strong> Formal gRPC streaming semantics defined</li>
+<li><strong>✅ REMOVED:</strong> <code>final</code> boolean field removed from TaskStatusUpdateEvent. Leverage protocol binding specific stream closure mechanism instead.</li>
+<li><strong>✅ CLARIFIED:</strong> Multiple concurrent streams allowed; all receive same ordered events</li>
+<li><strong>✅ NEW:</strong> Blocking parameter applies but streaming always provides real-time updates</li>
+</ul>
+<h3 id="get-task-tasksget-gettask">Get Task (<code>tasks/get</code> → <strong>GetTask</strong>)<a class="headerlink" href="#get-task-tasksget-gettask" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Behavior:</strong></p>
+<ul>
+<li>Operation named <code>tasks/get</code></li>
+<li>Returns task with status, artifacts, and optionally history</li>
+<li>Less formal specification of what "include history" means</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ RENAMED:</strong> Operation now <strong>GetTask</strong></li>
+<li><strong>✅ NEW:</strong> <code>createdAt</code> and <code>lastModified</code> timestamp fields added to Task object</li>
+<li><strong>✅ CLARIFIED:</strong> More precise specification of history inclusion behavior</li>
+<li><strong>✅ NEW:</strong> Task object now includes <code>extensions[]</code> array in messages and artifacts</li>
+<li><strong>✅ CLARIFIED:</strong> Authentication/authorization scoping - servers MUST only return tasks visible to caller</li>
+</ul>
+<h3 id="list-tasks-taskslist-listtasks">List Tasks (<code>tasks/list</code> → <strong>ListTasks</strong>)<a class="headerlink" href="#list-tasks-taskslist-listtasks" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Behavior:</strong></p>
+<ul>
+<li>Operation named <code>tasks/list</code></li>
+<li>Available in gRPC and REST only</li>
+<li>Basic pagination with page numbers</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ RENAMED:</strong> Operation now <strong>ListTasks</strong></li>
+<li><strong>✅ BREAKING:</strong> Changed to cursor-based pagination for scalability<ul>
+<li>Request: <code>cursor</code> (opaque token from previous response), <code>limit</code> (max results)</li>
+<li>Response: <code>tasks[]</code>, <code>nextCursor</code> (for next page)</li>
+</ul>
+</li>
+<li><strong>✅ NEW:</strong> Enhanced filtering capabilities with more explicit specifications</li>
+<li><strong>✅ CLARIFIED:</strong> Task visibility scoped to authenticated caller</li>
+</ul>
+<h3 id="cancel-task-taskscancel-canceltask">Cancel Task (<code>tasks/cancel</code> → <strong>CancelTask</strong>)<a class="headerlink" href="#cancel-task-taskscancel-canceltask" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Behavior:</strong></p>
+<ul>
+<li>Operation named <code>tasks/cancel</code></li>
+<li>Request with taskId, returns Task</li>
+<li>Error if task not cancelable (implicit)</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ RENAMED:</strong> Operation now <strong>CancelTask</strong></li>
+<li><strong>✅ NEW:</strong> Explicit <code>TaskNotCancelableError</code> for terminal/non-cancelable tasks</li>
+<li><strong>✅ CLARIFIED:</strong> More precise specification of when cancellation is allowed</li>
+<li><strong>✅ CLARIFIED:</strong> Task state transitions for cancellation scenarios</li>
+</ul>
+<h3 id="get-agent-card-well-known-uri-and-getextendedagentcard">Get Agent Card (Well-known URI and <strong>GetExtendedAgentCard</strong>)<a class="headerlink" href="#get-agent-card-well-known-uri-and-getextendedagentcard" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Behavior:</strong></p>
+<ul>
+<li>Discovery via <code>/.well-known/agent-card.json</code></li>
+<li>Extended card via <code>agent/getAuthenticatedExtendedCard</code></li>
+<li><code>supportsAuthenticatedExtendedCard</code> boolean at top level</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ RENAMED:</strong> <code>agent/getAuthenticatedExtendedCard</code> → <strong>GetExtendedAgentCard</strong></li>
+<li><strong>✅ BREAKING:</strong> <code>supportsAuthenticatedExtendedCard</code> moved to <code>capabilities.extendedAgentCard</code></li>
+<li><strong>✅ NEW:</strong> Agent Card signature support with JWS (RFC 7515) and canonicalization (RFC 8785)</li>
+<li><strong>✅ NEW:</strong> <code>agentId</code> field added to identify agent instances</li>
+<li><strong>✅ BREAKING:</strong> <code>protocolVersion</code> moved from AgentCard to individual AgentInterface objects</li>
+<li><strong>✅ BREAKING:</strong> <code>preferredTransport</code> and <code>additionalInterfaces</code> consolidated into <code>supportedInterfaces[]</code><ul>
+<li>Each interface has <code>url</code>, <code>protocolBinding</code>, and <code>protocolVersion</code></li>
+</ul>
+</li>
+<li><strong>✅ NEW:</strong> Extension declarations now include <code>uri</code>, <code>description</code>, and <code>required</code> flag</li>
+<li><strong>✅ NEW:</strong> Mutual TLS security scheme support added</li>
+</ul>
+<h3 id="new-subscribe-to-task-subscribetotask">NEW: Subscribe to Task (<strong>SubscribeToTask</strong>)<a class="headerlink" href="#new-subscribe-to-task-subscribetotask" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Behavior:</strong></p>
+<ul>
+<li>Used <code>tasks/resubscribe</code> to reconnect interrupted SSE streams</li>
+<li>Backfill behavior implementation-dependent</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ NEW OPERATION:</strong> <strong>SubscribeToTask</strong> replaces informal resubscription</li>
+<li><strong>✅ CLARIFIED:</strong> Formal specification of streaming subscription lifecycle</li>
+<li><strong>✅ CLARIFIED:</strong> Stream closure behavior when task reaches terminal state</li>
+<li><strong>✅ CLARIFIED:</strong> Multiple concurrent subscriptions supported per task</li>
+<li><strong>✅ BEHAVIOR CHANGE:</strong> Can subscribe to tasks not originally created via streaming</li>
+</ul>
+<h3 id="push-notification-operations">Push Notification Operations<a class="headerlink" href="#push-notification-operations" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Operations:</strong></p>
+<ul>
+<li><code>tasks/pushNotificationConfig/set</code></li>
+<li><code>tasks/pushNotificationConfig/get</code></li>
+<li><code>tasks/pushNotificationConfig/list</code></li>
+<li><code>tasks/pushNotificationConfig/delete</code></li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ RENAMED:</strong> Operations now <strong>CreatePushNotificationConfig</strong>, <strong>GetPushNotificationConfig</strong>, <strong>ListPushNotificationConfigs</strong>, <strong>DeletePushNotificationConfig</strong></li>
+<li><strong>✅ NEW:</strong> <code>createdAt</code> timestamp field added to PushNotificationConfig</li>
+<li><strong>✅ BREAKING:</strong> <code>token</code> field removed from PushNotificationConfig (authentication handled via schemes)</li>
+<li><strong>✅ NEW:</strong> <code>configId</code> field added for unique identification</li>
+<li><strong>✅ CLARIFIED:</strong> Push notification payloads now use StreamResponse format</li>
+<li><strong>✅ NEW:</strong> Explicit <code>PushNotificationNotSupportedError</code> when capability not available</li>
+</ul>
+<h3 id="new-multi-tenancy-support">NEW: Multi-Tenancy Support<a class="headerlink" href="#new-multi-tenancy-support" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0:</strong></p>
+<ul>
+<li>No native multi-tenancy support in protocol</li>
+<li>Tenants handled implicitly via authentication or URL paths</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ NEW:</strong> <code>tenant</code> field added to all gRPC request messages</li>
+<li><strong>✅ NEW:</strong> <code>tenant</code> field added to <code>AgentInterface</code> to specify default tenant</li>
+<li><strong>✅ CLARIFIED:</strong> Tenant can be provided per-request or inherited from AgentInterface</li>
+<li><strong>✅ USE CASE:</strong> Enables agents to serve multiple organizations from single endpoint</li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="language-protobuf highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SendMessageRequest</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c1">// Optional tenant identifier</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="n">Message</span><span class="w"> </span><span class="kd">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="n">SendMessageConfiguration</span><span class="w"> </span><span class="na">configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="protocol-simplifications">Protocol Simplifications<a class="headerlink" href="#protocol-simplifications" title="Permanent link">&para;</a></h3>
+<h4 id="id-format-simplification-1389">ID Format Simplification (#1389)<a class="headerlink" href="#id-format-simplification-1389" title="Permanent link">&para;</a></h4>
+<p><strong>v0.3.0:</strong></p>
+<ul>
+<li>Some operations used complex compound IDs like <code>tasks/{taskId}</code></li>
+<li>Required clients/servers to construct/deconstruct resource names</li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ BREAKING:</strong> All IDs are now simple literals</li>
+<li><strong>✅ BREAKING:</strong> Operations that previously used compound IDs now separate parent and resource ID<ul>
+<li>Example: <code>tasks/{taskId}/pushNotificationConfigs/{configId}</code> → separate <code>task_id</code> and <code>config_id</code> fields</li>
+</ul>
+</li>
+<li><strong>✅ BENEFIT:</strong> Simpler to implement - IDs map directly to database keys</li>
+</ul>
+<h4 id="http-url-path-simplification-1269">HTTP URL Path Simplification (#1269)<a class="headerlink" href="#http-url-path-simplification-1269" title="Permanent link">&para;</a></h4>
+<p><strong>v0.3.0:</strong></p>
+<ul>
+<li>HTTP+JSON binding used <code>/v1/</code> prefix in URLs</li>
+<li>Example: <code>POST /v1/message:send</code></li>
+</ul>
+<p><strong>v1.0 Changes:</strong></p>
+<ul>
+<li><strong>✅ BREAKING:</strong> Removed <code>/v1</code> prefix from HTTP+JSON URL paths</li>
+<li><strong>✅ NEW:</strong> Examples: <code>POST /message:send</code>, <code>GET /tasks/{id}</code></li>
+<li><strong>✅ RATIONALE:</strong> Version specified in <code>AgentInterface.protocolVersion</code> field instead</li>
+<li><strong>✅ BENEFIT:</strong> Cleaner URLs, version management at interface level</li>
+</ul>
+<hr />
+<h2 id="structural-changes-in-core-model-objects">Structural Changes in Core Model Objects<a class="headerlink" href="#structural-changes-in-core-model-objects" title="Permanent link">&para;</a></h2>
+<h3 id="task-object">Task Object<a class="headerlink" href="#task-object" title="Permanent link">&para;</a></h3>
+<p><strong>Added Fields:</strong></p>
+<ul>
+<li>✅ <code>createdAt</code>: Timestamp (ISO 8601) - Task creation time</li>
+<li>✅ <code>lastModified</code>: Timestamp (ISO 8601) - Last state change time</li>
+</ul>
+<p><strong>Modified Fields:</strong></p>
+<ul>
+<li>✅ <code>status</code>: TaskStatus object now includes more precise timestamp semantics</li>
+</ul>
+<p><strong>Removed Fields:</strong></p>
+<ul>
+<li>⛔ <code>kind</code>: Discriminator field removed (was always "task")</li>
+</ul>
+<p><strong>Behavior Changes:</strong></p>
+<ul>
+<li>Messages in <code>history[]</code> now include <code>extensions[]</code> array</li>
+<li>Artifacts now include <code>extensions[]</code> array and <code>metadata</code> map</li>
+</ul>
+<h3 id="taskstatus-object">TaskStatus Object<a class="headerlink" href="#taskstatus-object" title="Permanent link">&para;</a></h3>
+<p><strong>Added Fields:</strong></p>
+<ul>
+<li>No new top-level fields</li>
+</ul>
+<p><strong>Modified Fields:</strong></p>
+<ul>
+<li>✅ <code>state</code>: <strong>BREAKING</strong> - Enum values changed from lowercase to <code>SCREAMING_SNAKE_CASE</code> with <code>TASK_STATE_</code> prefix<ul>
+<li>v0.3.0: <code>"submitted"</code>, <code>"working"</code>, <code>"completed"</code>, <code>"failed"</code>, <code>"canceled"</code>, <code>"rejected"</code>, <code>"input-required"</code>, <code>"auth-required"</code></li>
+<li>v1.0: <code>"TASK_STATE_SUBMITTED"</code>, <code>"TASK_STATE_WORKING"</code>, <code>"TASK_STATE_COMPLETED"</code>, <code>"TASK_STATE_FAILED"</code>, <code>"TASK_STATE_CANCELED"</code>, <code>"TASK_STATE_REJECTED"</code>, <code>"TASK_STATE_INPUT_REQUIRED"</code>, <code>"TASK_STATE_AUTH_REQUIRED"</code></li>
+</ul>
+</li>
+<li>✅ <code>timestamp</code>: Now explicitly ISO 8601 UTC with millisecond precision (YYYY-MM-DDTHH<img alt="🇲🇲" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f1f2-1f1f2.svg" title=":mm:" />ss.sssZ)</li>
+<li>✅ <code>message</code>: Optional Message with enhanced extension support</li>
+</ul>
+<p><strong>Removed Fields:</strong></p>
+<ul>
+<li>None</li>
+</ul>
+<p><strong>Example Migration:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// v0.3.0</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">{</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-03-15T10:15:00Z&quot;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1">// v1.0</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">{</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TASK_STATE_COMPLETED&quot;</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-03-15T10:15:00.000Z&quot;</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="message-object">Message Object<a class="headerlink" href="#message-object" title="Permanent link">&para;</a></h3>
+<p><strong>Added Fields:</strong></p>
+<ul>
+<li>✅ <code>timestamp</code>: ISO 8601 timestamp - Message creation time</li>
+<li>✅ <code>extensions[]</code>: Array of extension URIs applicable to this message</li>
+</ul>
+<p><strong>Modified Fields:</strong></p>
+<ul>
+<li>✅ <code>role</code>: <strong>BREAKING</strong> - Enum values changed from lowercase to <code>SCREAMING_SNAKE_CASE</code> with <code>ROLE_</code> prefix<ul>
+<li>v0.3.0: <code>"user"</code>, <code>"agent"</code></li>
+<li>v1.0: <code>"ROLE_USER"</code>, <code>"ROLE_AGENT"</code></li>
+</ul>
+</li>
+<li>✅ <code>metadata</code>: Remains optional key-value map but with stricter typing</li>
+</ul>
+<p><strong>Removed Fields:</strong></p>
+<ul>
+<li>None</li>
+</ul>
+<p><strong>Example Migration:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// v0.3.0</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="p">}]</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">// v1.0</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">{</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ROLE_USER&quot;</span><span class="p">,</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="p">}],</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-03-15T10:15:00.000Z&quot;</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Behavior Changes:</strong></p>
+<ul>
+<li>Parts array now uses member-based discrimination instead of <code>kind</code> field</li>
+</ul>
+<h3 id="part-object">Part Object<a class="headerlink" href="#part-object" title="Permanent link">&para;</a></h3>
+<p><strong>BREAKING CHANGE - Complete Redesign:</strong></p>
+<p>The Part structure has been completely redesigned in v1.0. Instead of separate TextPart, FilePart, and DataPart message types, there is now a single unified <code>Part</code> message.</p>
+<p><strong>v0.3.0 Structure (Separate Types):</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// Text example</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">{</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello world&quot;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">}</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// File example</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">{</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="nt">&quot;fileWithUri&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/doc.pdf&quot;</span><span class="p">,</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;application/pdf&quot;</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="p">}</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1">// Data example</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="p">{</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">,</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">}</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>v1.0 Structure (Unified Part):</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// Text example</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="p">{</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello world&quot;</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">// File with URL example</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">{</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">  </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/doc.pdf&quot;</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;doc.pdf&quot;</span><span class="p">,</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;application/pdf&quot;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="p">}</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1">// File with raw bytes example</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="p">{</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="nt">&quot;raw&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base64encodedcontent==&quot;</span><span class="p">,</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image.png&quot;</span><span class="p">,</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="p">}</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="c1">// Data example</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="p">{</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">},</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">  </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Changes:</strong></p>
+<ul>
+<li>⛔ <strong>REMOVED:</strong> Separate <code>TextPart</code>, <code>FilePart</code>, and <code>DataPart</code> types</li>
+<li>⛔ <strong>REMOVED:</strong> <code>kind</code> discriminator field</li>
+<li>⛔ <strong>REMOVED:</strong> Nested <code>file</code> object structure</li>
+<li>✅ <strong>NEW:</strong> Single unified <code>Part</code> message with <code>oneof content</code> field</li>
+<li>✅ <strong>NEW:</strong> Content type determined by which field is present: <code>text</code>, <code>raw</code>, <code>url</code>, or <code>data</code></li>
+<li>✅ <strong>NEW:</strong> <code>mediaType</code> field (replaces <code>mimeType</code>) - available for all part types</li>
+<li>✅ <strong>NEW:</strong> <code>filename</code> field - available for all part types (not just files)</li>
+<li>✅ <strong>NEW:</strong> <code>raw</code> field for inline binary content (base64 in JSON)</li>
+<li>✅ <strong>NEW:</strong> <code>url</code> field for file references (replaces <code>file.fileWithUri</code>)</li>
+<li>✅ <strong>RETAINED:</strong> <code>metadata</code> optional map</li>
+</ul>
+<p><strong>Migration Examples:</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// v0.3.0</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">textPart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kd">const</span><span class="w"> </span><span class="nx">filePart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;file&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">file</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">fileWithUri</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">mimeType</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="kd">const</span><span class="w"> </span><span class="nx">dataPart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">kind</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1">// v1.0</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="kd">const</span><span class="w"> </span><span class="nx">textPart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">text</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">mediaType</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="kd">const</span><span class="w"> </span><span class="nx">filePart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">mediaType</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">filename</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;image.png&quot;</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="kd">const</span><span class="w"> </span><span class="nx">dataPart</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">key</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="nx">mediaType</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1">// Discrimination changed from kind field to member presence</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// v0.3.0</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">part</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">        </span><span class="c1">// v1.0</span>
+</span></code></pre></div>
+<h3 id="artifact-object">Artifact Object<a class="headerlink" href="#artifact-object" title="Permanent link">&para;</a></h3>
+<p><strong>Added Fields:</strong></p>
+<ul>
+<li>✅ <code>createdAt</code>: Timestamp - Artifact creation time</li>
+<li>✅ <code>extensions[]</code>: Array of extension URIs</li>
+</ul>
+<p><strong>Modified Fields:</strong></p>
+<ul>
+<li>✅ <code>parts[]</code>: Now uses member-based Part discrimination (see Part changes above)</li>
+</ul>
+<p><strong>Removed Fields:</strong></p>
+<ul>
+<li>None</li>
+</ul>
+<p><strong>Behavior Changes:</strong></p>
+<ul>
+<li>Metadata now more formally specified with extension integration</li>
+</ul>
+<h3 id="agentcard-object">AgentCard Object<a class="headerlink" href="#agentcard-object" title="Permanent link">&para;</a></h3>
+<p><strong>Added Fields:</strong></p>
+<ul>
+<li>✅ <code>agentId</code>: Unique identifier for the agent instance</li>
+<li>✅ <code>supportedInterfaces[]</code>: Array of AgentInterface objects (each with url, protocolBinding, and protocolVersion)</li>
+<li>✅ <code>signatures[]</code>: Array of JWS signatures for card verification</li>
+</ul>
+<p><strong>Modified Fields:</strong></p>
+<ul>
+<li>✅ <code>capabilities.extendedAgentCard</code>: Moved from top-level <code>supportsAuthenticatedExtendedCard</code></li>
+<li>✅ <code>extensions[]</code>: Enhanced with <code>uri</code>, <code>description</code>, and <code>required</code> fields (previously simpler Extension type)</li>
+<li>✅ <code>securitySchemes</code>: Enhanced with mutual TLS support</li>
+</ul>
+<p><strong>Removed Fields:</strong></p>
+<ul>
+<li>⛔ <code>protocolVersion</code>: Removed from AgentCard (now in each AgentInterface)</li>
+<li>⛔ <code>preferredTransport</code>: Consolidated into <code>supportedInterfaces</code></li>
+<li>⛔ <code>additionalInterfaces</code>: Consolidated into <code>supportedInterfaces</code></li>
+<li>⛔ <code>supportsAuthenticatedExtendedCard</code>: Moved to <code>capabilities.extendedAgentCard</code></li>
+<li>⛔ <code>url</code>: Primary endpoint now in <code>supportedInterfaces[0].url</code></li>
+</ul>
+<p><strong>Structure Example:</strong></p>
+<p><strong>v0.3.0:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">&quot;protocolVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.3&quot;</span><span class="p">,</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://agent.example.com/a2a&quot;</span><span class="p">,</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">&quot;preferredTransport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;JSONRPC&quot;</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="nt">&quot;supportsAuthenticatedExtendedCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">  </span><span class="nt">&quot;additionalInterfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>v1.0:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;agentId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;agent-abc-123&quot;</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">&quot;supportedInterfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://agent.example.com/a2a&quot;</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">      </span><span class="nt">&quot;protocolBinding&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;JSONRPC&quot;</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="nt">&quot;protocolVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nt">&quot;extendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span><span class="nt">&quot;signatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="agentextension-object">AgentExtension Object<a class="headerlink" href="#agentextension-object" title="Permanent link">&para;</a></h3>
+<p><strong>v0.3.0 Structure:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extension-id&quot;</span><span class="p">,</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Extension Name&quot;</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nt">&quot;documentation&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://...&quot;</span><span class="p">,</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>v1.0 Structure:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">&quot;uri&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/extensions/custom-ext/v1&quot;</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Description&quot;</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Changes:</strong></p>
+<ul>
+<li>⛔ <strong>REMOVED:</strong> <code>id</code>, <code>name</code>, <code>version</code> fields</li>
+<li>⛔ <strong>REMOVED:</strong> <code>documentation</code> field</li>
+<li>⛔ <strong>REMOVED:</strong> <code>metadata</code> field</li>
+<li>✅ <strong>NEW:</strong> <code>uri</code> field - Versioned URI identifying the extension</li>
+<li>✅ <strong>NEW:</strong> <code>required</code> boolean - Indicates if client must support this extension</li>
+<li>✅ <strong>SIMPLIFIED:</strong> Description remains, but structure dramatically simplified</li>
+<li>✅ <strong>PATTERN:</strong> Extension versioning now embedded in URI (e.g., <code>/v1</code>, <code>/v2</code>)</li>
+</ul>
+<h3 id="agentcapabilities-object">AgentCapabilities Object<a class="headerlink" href="#agentcapabilities-object" title="Permanent link">&para;</a></h3>
+<p><strong>Removed Fields:</strong></p>
+<ul>
+<li>⛔ <code>stateTransitionHistory</code> (#1396) - Removed as no API implementation existed for this feature</li>
+</ul>
+<p><strong>Rationale:</strong></p>
+<p>The <code>stateTransitionHistory</code> capability flag was misleading as v1.0 has no corresponding API to:</p>
+<ul>
+<li>Store status history in Task objects</li>
+<li>Retrieve status history via Get/List operations</li>
+<li>Query historical state transitions</li>
+</ul>
+<p>This capability may be reintroduced in a future version with proper implementation.</p>
+<p><strong>Modified Fields:</strong></p>
+<ul>
+<li>✅ <code>extendedAgentCard</code>: Moved from top-level <code>supportsAuthenticatedExtendedCard</code> field</li>
+<li>✅ <code>pushNotifications</code>: More formally specified with enhanced configuration options</li>
+<li>✅ <code>streaming</code>: Enhanced with clearer semantics for SSE support</li>
+</ul>
+<h3 id="securityscheme-objects">SecurityScheme Objects<a class="headerlink" href="#securityscheme-objects" title="Permanent link">&para;</a></h3>
+<p><strong>Added:</strong></p>
+<ul>
+<li>✅ <code>MutualTLSSecurityScheme</code>: Support for mutual TLS authentication</li>
+</ul>
+<p><strong>Enhanced:</strong></p>
+<ul>
+<li>✅ More formal alignment with OpenAPI security scheme patterns</li>
+<li>✅ Better documentation of OAuth2 flows and scopes</li>
+<li>✅ Clearer distinction between security scheme definitions and requirements</li>
+</ul>
+<h3 id="pushnotificationconfig-object">PushNotificationConfig Object<a class="headerlink" href="#pushnotificationconfig-object" title="Permanent link">&para;</a></h3>
+<p><strong>Added Fields:</strong></p>
+<ul>
+<li>✅ <code>configId</code>: Unique identifier for the configuration</li>
+<li>✅ <code>createdAt</code>: Timestamp - Configuration creation time</li>
+</ul>
+<p><strong>Modified Fields:</strong></p>
+<ul>
+<li>✅ <code>authentication</code>: Enhanced PushNotificationAuthenticationInfo structure</li>
+</ul>
+<p><strong>Removed Fields:</strong></p>
+<ul>
+<li>⛔ <code>token</code>: Client-provided token removed (auth handled via schemes)</li>
+</ul>
+<p><strong>Behavior Changes:</strong></p>
+<ul>
+<li>Configuration now identified by <code>configId</code> instead of implicit task association</li>
+<li>Authentication schemes formalized with proper standards alignment</li>
+</ul>
+<h3 id="stream-event-objects">Stream Event Objects<a class="headerlink" href="#stream-event-objects" title="Permanent link">&para;</a></h3>
+<p><strong>TaskStatusUpdateEvent:</strong></p>
+<p><strong>v0.3.0:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">{</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;taskStatusUpdate&quot;</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="nt">&quot;final&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>v1.0:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">&quot;taskStatusUpdate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Changes:</strong></p>
+<ul>
+<li>⛔ <strong>REMOVED:</strong> <code>kind</code> discriminator</li>
+<li>⛔ <strong>REMOVED:</strong> <code>final</code> boolean field (stream closure indicates completion instead)</li>
+<li>✅ <strong>NEW PATTERN:</strong> Event type determined by JSON member name (<code>taskStatusUpdate</code> or <code>taskArtifactUpdate</code>)</li>
+<li>✅ <strong>CLARIFIED:</strong> Terminal state indicated by protocol-specific stream closure mechanism</li>
+</ul>
+<p><strong>TaskArtifactUpdateEvent:</strong></p>
+<p><strong>v0.3.0:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">{</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;taskArtifactUpdate&quot;</span><span class="p">,</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nt">&quot;artifact&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>v1.0:</strong></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">&quot;taskArtifactUpdate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nt">&quot;artifact&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Changes:</strong></p>
+<ul>
+<li>⛔ <strong>REMOVED:</strong> <code>kind</code> discriminator</li>
+<li>✅ <strong>NEW PATTERN:</strong> Wrapped in <code>taskArtifactUpdate</code> object</li>
+<li>✅ <strong>NEW:</strong> <code>index</code> field indicates artifact position in task's artifacts array</li>
+</ul>
+<h3 id="oauth-20-security-updates-1303">OAuth 2.0 Security Updates (#1303)<a class="headerlink" href="#oauth-20-security-updates-1303" title="Permanent link">&para;</a></h3>
+<p>v1.0 modernizes OAuth 2.0 support in alignment with OAuth 2.0 Security Best Current Practice (BCP).</p>
+<p><strong>Removed Flows (Deprecated by OAuth BCP):</strong></p>
+<ul>
+<li>⛔ <code>ImplicitOAuthFlow</code> - Deprecated due to token leakage risks in browser history/logs</li>
+<li>⛔ <code>PasswordOAuthFlow</code> - Deprecated due to credential exposure risks</li>
+</ul>
+<p><strong>Added Flows:</strong></p>
+<ul>
+<li>✅ <code>DeviceCodeOAuthFlow</code> (RFC 8628) - For CLI tools, IoT devices, and input-constrained scenarios<ul>
+<li>Provides <code>device_authorization_url</code> endpoint</li>
+<li>Supports <code>verification_uri</code>, <code>user_code</code> pattern</li>
+<li>Ideal for headless environments</li>
+</ul>
+</li>
+</ul>
+<p><strong>Enhanced Security:</strong></p>
+<ul>
+<li>✅ <code>pkce_required</code> field added to <code>AuthorizationCodeOAuthFlow</code> (RFC 7636)<ul>
+<li>Indicates whether PKCE (Proof Key for Code Exchange) is mandatory</li>
+<li>Protects against authorization code interception attacks</li>
+<li>Recommended for all OAuth clients, required for public clients</li>
+</ul>
+</li>
+</ul>
+<p><strong>Migration Guide:</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// v0.3.0 - Implicit Flow (now removed)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="p">{</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="s2">&quot;implicitFlow&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="s2">&quot;authorizationUrl&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://auth.example.com/authorize&quot;</span><span class="p">,</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="s2">&quot;scopes&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;read&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Read access&quot;</span><span class="p">}</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="p">}</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1">// v1.0 - Use Authorization Code + PKCE instead</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="p">{</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">  </span><span class="s2">&quot;authorizationCodeFlow&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">    </span><span class="s2">&quot;authorizationUrl&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://auth.example.com/authorize&quot;</span><span class="p">,</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">    </span><span class="s2">&quot;tokenUrl&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://auth.example.com/token&quot;</span><span class="p">,</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">    </span><span class="s2">&quot;pkceRequired&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="s2">&quot;scopes&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;read&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Read access&quot;</span><span class="p">}</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="p">}</span>
+</span></code></pre></div>
+<hr />
+<h2 id="new-dependencies-on-other-specifications">New Dependencies on Other Specifications<a class="headerlink" href="#new-dependencies-on-other-specifications" title="Permanent link">&para;</a></h2>
+<p>v1.0 introduces several new formal dependencies on industry-standard specifications:</p>
+<h3 id="added-specifications">Added Specifications<a class="headerlink" href="#added-specifications" title="Permanent link">&para;</a></h3>
+<h4 id="rfc-9457-problem-details-for-http-apis">✅ RFC 9457 - Problem Details for HTTP APIs<a class="headerlink" href="#rfc-9457-problem-details-for-http-apis" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Purpose:</strong> Standardized error response format</li>
+<li><strong>Usage:</strong> HTTP+JSON binding error responses</li>
+<li><strong>Impact:</strong> More consistent, machine-readable error handling in REST APIs</li>
+</ul>
+<h4 id="rfc-8785-json-canonicalization-scheme-jcs">✅ RFC 8785 - JSON Canonicalization Scheme (JCS)<a class="headerlink" href="#rfc-8785-json-canonicalization-scheme-jcs" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Purpose:</strong> Deterministic JSON serialization for signing</li>
+<li><strong>Usage:</strong> Agent Card signature verification</li>
+<li><strong>Impact:</strong> Enables cryptographic verification of Agent Card integrity</li>
+<li><strong>Details:</strong> Canonical form used before JWS signing (excludes <code>signatures</code> field)</li>
+</ul>
+<h4 id="rfc-7515-json-web-signature-jws">✅ RFC 7515 - JSON Web Signature (JWS)<a class="headerlink" href="#rfc-7515-json-web-signature-jws" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Purpose:</strong> Cryptographic signing standard</li>
+<li><strong>Usage:</strong> Agent Card signatures field</li>
+<li><strong>Impact:</strong> Industry-standard signature format for trust verification</li>
+<li><strong>Details:</strong> Supports detached signatures with public key retrieval via <code>jku</code> or trusted keystores</li>
+</ul>
+<h4 id="google-api-design-guidelines">✅ Google API Design Guidelines<a class="headerlink" href="#google-api-design-guidelines" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Purpose:</strong> gRPC best practices and conventions</li>
+<li><strong>Usage:</strong> gRPC binding design patterns</li>
+<li><strong>Impact:</strong> Better alignment with gRPC ecosystem expectations</li>
+</ul>
+<h4 id="iso-8601">✅ ISO 8601<a class="headerlink" href="#iso-8601" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Purpose:</strong> Timestamp format standard</li>
+<li><strong>Usage:</strong> All timestamp fields (createdAt, lastModified, timestamp)</li>
+<li><strong>Impact:</strong> Explicit format requirement: UTC with millisecond precision (YYYY-MM-DDTHH<img alt="🇲🇲" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f1f2-1f1f2.svg" title=":mm:" />ss.sssZ)</li>
+</ul>
+<h3 id="existing-dependencies-retained-from-v030">Existing Dependencies (Retained from v0.3.0)<a class="headerlink" href="#existing-dependencies-retained-from-v030" title="Permanent link">&para;</a></h3>
+<ul>
+<li>JSON-RPC 2.0</li>
+<li>gRPC / Protocol Buffers 3</li>
+<li>HTTP/HTTPS (various RFCs)</li>
+<li>Server-Sent Events (SSE) - W3C specification</li>
+<li>RFC 8615 - Well-known URIs</li>
+<li>OAuth 2.0, OpenID Connect (for authentication)</li>
+<li>TLS (RFC 8446 recommended)</li>
+</ul>
+<h3 id="complementary-protocol">Complementary Protocol<a class="headerlink" href="#complementary-protocol" title="Permanent link">&para;</a></h3>
+<p><strong>Model Context Protocol (MCP):</strong></p>
+<ul>
+<li>Relationship clarified: MCP handles tool/resource integration, A2A handles agent-to-agent coordination</li>
+<li>Protocols are complementary, not competing</li>
+<li>Agents may support both protocols for different use cases</li>
+</ul>
+<hr />
+<h2 id="impact-on-developers">Impact on Developers<a class="headerlink" href="#impact-on-developers" title="Permanent link">&para;</a></h2>
+<h3 id="breaking-changes-requiring-code-updates">Breaking Changes Requiring Code Updates<a class="headerlink" href="#breaking-changes-requiring-code-updates" title="Permanent link">&para;</a></h3>
+<h4 id="1-part-type-unification-critical-impact">1. Part Type Unification (CRITICAL IMPACT)<a class="headerlink" href="#1-part-type-unification-critical-impact" title="Permanent link">&para;</a></h4>
+<p>The most significant breaking change: TextPart, FilePart, and DataPart types have been removed and replaced with a single unified Part structure.</p>
+<p><strong>Before (v0.3.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// Separate types with kind discriminator</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">part</span><span class="p">.</span><span class="nx">text</span><span class="p">;</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;file&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">fileWithUri</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">fetchFile</span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">fileWithUri</span><span class="p">);</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">part</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">fileWithBytes</span><span class="p">;</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">part</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>After (v1.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">// Unified Part with oneof content</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">part</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">part</span><span class="p">.</span><span class="nx">text</span><span class="p">;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">part</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">fetchFile</span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;raw&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">part</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">decodeBase64</span><span class="p">(</span><span class="nx">part</span><span class="p">.</span><span class="nx">raw</span><span class="p">);</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">part</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">part</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="2-stream-event-discriminator-pattern-high-impact">2. Stream Event Discriminator Pattern (HIGH IMPACT)<a class="headerlink" href="#2-stream-event-discriminator-pattern-high-impact" title="Permanent link">&para;</a></h4>
+<p>Stream events changed from kind-based to wrapper-based discrimination:</p>
+<p><strong>Before (v0.3.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;taskStatusUpdate&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="nx">handleStatusUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;taskArtifactUpdate&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span><span class="nx">handleArtifactUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>After (v1.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;taskStatusUpdate&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="nx">handleStatusUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">taskStatusUpdate</span><span class="p">);</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;taskArtifactUpdate&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="nx">handleArtifactUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">taskArtifactUpdate</span><span class="p">);</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="3-agent-card-structure-high-impact">3. Agent Card Structure (HIGH IMPACT)<a class="headerlink" href="#3-agent-card-structure-high-impact" title="Permanent link">&para;</a></h4>
+<p>Agent discovery and capability checking requires updates:</p>
+<p><strong>Before (v0.3.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">url</span><span class="p">;</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">transport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">preferredTransport</span><span class="p">;</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="kd">const</span><span class="w"> </span><span class="nx">supportsExtended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">supportsAuthenticatedExtendedCard</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>After (v1.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">primaryInterface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">supportedInterfaces</span><span class="p">[</span><span class="mf">0</span><span class="p">];</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">endpoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">primaryInterface</span><span class="p">.</span><span class="nx">url</span><span class="p">;</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="kd">const</span><span class="w"> </span><span class="nx">transport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">primaryInterface</span><span class="p">.</span><span class="nx">protocolBinding</span><span class="p">;</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="kd">const</span><span class="w"> </span><span class="nx">supportsExtended</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">capabilities</span><span class="p">.</span><span class="nx">extendedAgentCard</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="4-pagination-medium-impact">4. Pagination (MEDIUM IMPACT)<a class="headerlink" href="#4-pagination-medium-impact" title="Permanent link">&para;</a></h4>
+<p>List Tasks implementation must switch from page-based to cursor-based:</p>
+<p><strong>Before (v0.3.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">listTasks</span><span class="p">({</span><span class="w"> </span><span class="nx">page</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">perPage</span><span class="o">:</span><span class="w"> </span><span class="kt">50</span><span class="w"> </span><span class="p">});</span>
+</span></code></pre></div>
+<p><strong>After (v1.0):</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kd">let</span><span class="w"> </span><span class="nx">cursor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">undefined</span><span class="p">;</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">do</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">listTasks</span><span class="p">({</span><span class="w"> </span><span class="nx">cursor</span><span class="p">,</span><span class="w"> </span><span class="nx">limit</span><span class="o">:</span><span class="w"> </span><span class="kt">50</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span><span class="c1">// process response.tasks</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">  </span><span class="nx">cursor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">nextCursor</span><span class="p">;</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="p">}</span><span class="w"> </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nx">cursor</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="5-enum-value-changes-high-impact">5. Enum Value Changes (HIGH IMPACT)<a class="headerlink" href="#5-enum-value-changes-high-impact" title="Permanent link">&para;</a></h4>
+<p>All enum values now use SCREAMING_SNAKE_CASE with type prefixes:</p>
+<p><strong>TaskState:</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// v0.3.0</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">status</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">status</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;input-required&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1">// v1.0</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">status</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;TASK_STATE_COMPLETED&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">status</span><span class="p">.</span><span class="nx">state</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;TASK_STATE_INPUT_REQUIRED&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>MessageRole:</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1">// v0.3.0</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">parts</span><span class="o">:</span><span class="w"> </span><span class="p">[...]</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1">// v1.0</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;ROLE_USER&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">parts</span><span class="o">:</span><span class="w"> </span><span class="p">[...]</span><span class="w"> </span><span class="p">};</span>
+</span></code></pre></div>
+<p><strong>Complete Mapping:</strong></p>
+<ul>
+<li><code>"submitted"</code> → <code>"TASK_STATE_SUBMITTED"</code></li>
+<li><code>"working"</code> → <code>"TASK_STATE_WORKING"</code></li>
+<li><code>"completed"</code> → <code>"TASK_STATE_COMPLETED"</code></li>
+<li><code>"failed"</code> → <code>"TASK_STATE_FAILED"</code></li>
+<li><code>"canceled"</code> → <code>"TASK_STATE_CANCELED"</code></li>
+<li><code>"rejected"</code> → <code>"TASK_STATE_REJECTED"</code></li>
+<li><code>"input-required"</code> → <code>"TASK_STATE_INPUT_REQUIRED"</code></li>
+<li><code>"auth-required"</code> → <code>"TASK_STATE_AUTH_REQUIRED"</code></li>
+<li><code>"user"</code> → <code>"ROLE_USER"</code></li>
+<li><code>"agent"</code> → <code>"ROLE_AGENT"</code></li>
+</ul>
+<h4 id="6-field-name-changes-low-impact">6. Field Name Changes (LOW IMPACT)<a class="headerlink" href="#6-field-name-changes-low-impact" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>file.mimeType</code> → <code>mediaType</code></li>
+<li>Operation names (aliases provided during transition)</li>
+</ul>
+<h3 id="new-capabilities-to-leverage">New Capabilities to Leverage<a class="headerlink" href="#new-capabilities-to-leverage" title="Permanent link">&para;</a></h3>
+<h4 id="1-blocking-parameter-control">1. Blocking Parameter Control<a class="headerlink" href="#1-blocking-parameter-control" title="Permanent link">&para;</a></h4>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1">// Wait for task completion</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">blocking</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1">// Return immediately, poll later</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">blocking</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">});</span>
+</span></code></pre></div>
+<h4 id="2-agent-card-signature-verification">2. Agent Card Signature Verification<a class="headerlink" href="#2-agent-card-signature-verification" title="Permanent link">&para;</a></h4>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">signatures</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">signatures</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">verified</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">verifyAgentCardSignature</span><span class="p">(</span><span class="nx">agentCard</span><span class="p">);</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">verified</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Agent Card signature verification failed&quot;</span><span class="p">);</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="3-extension-requirements">3. Extension Requirements<a class="headerlink" href="#3-extension-requirements" title="Permanent link">&para;</a></h4>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">requiredExtensions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">extensions</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">  </span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span><span class="nx">ext</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ext</span><span class="p">.</span><span class="nx">required</span><span class="p">)</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">ext</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ext</span><span class="p">.</span><span class="nx">uri</span><span class="p">);</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="c1">// Check if client supports required extensions</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">clientSupportsAll</span><span class="p">(</span><span class="nx">requiredExtensions</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">  </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Missing required extension support&quot;</span><span class="p">);</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="4-enhanced-timestamp-tracking">4. Enhanced Timestamp Tracking<a class="headerlink" href="#4-enhanced-timestamp-tracking" title="Permanent link">&para;</a></h4>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">taskAge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">createdAt</span><span class="p">).</span><span class="nx">getTime</span><span class="p">();</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">timeSinceUpdate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">lastModified</span><span class="p">).</span><span class="nx">getTime</span><span class="p">();</span>
+</span></code></pre></div>
+<h4 id="5-versioning-negotiation">5. Versioning Negotiation<a class="headerlink" href="#5-versioning-negotiation" title="Permanent link">&para;</a></h4>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1">// Client sends A2A-Version header</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;A2A-Version&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span><span class="p">;</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="c1">// Server validates and rejects if unsupported</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">supportedVersions</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">requestedVersion</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">  </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VersionNotSupportedError</span><span class="p">();</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="migration-strategy-recommendations">Migration Strategy Recommendations<a class="headerlink" href="#migration-strategy-recommendations" title="Permanent link">&para;</a></h3>
+<h4 id="phase-1-compatibility-layer">Phase 1: Compatibility Layer<a class="headerlink" href="#phase-1-compatibility-layer" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Add support for parsing both old and new discriminator patterns</li>
+<li>Implement version detection based on protocol version</li>
+<li>Support both Agent Card structures during transition</li>
+</ol>
+<h4 id="phase-2-dual-support">Phase 2: Dual Support<a class="headerlink" href="#phase-2-dual-support" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Update all APIs to emit v1.0 format</li>
+<li>Maintain backward compatibility readers for v0.3.0</li>
+<li>Add A2A-Version header handling</li>
+<li>Implement cursor-based pagination alongside legacy page-based</li>
+</ol>
+<h4 id="phase-3-v10-only">Phase 3: v1.0 Only<a class="headerlink" href="#phase-3-v10-only" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Deprecate v0.3.0 compatibility code</li>
+<li>Remove legacy discriminator parsing</li>
+<li>Remove page-based pagination</li>
+<li>Clean up dual-format support code</li>
+</ol>
+<h4 id="backward-compatibility-strategy-1401">Backward Compatibility Strategy (#1401)<a class="headerlink" href="#backward-compatibility-strategy-1401" title="Permanent link">&para;</a></h4>
+<p>v1.0 introduces a formal approach to protocol versioning that enables SDK backward compatibility.</p>
+<p><strong>Protocol Version Per Interface:</strong></p>
+<ul>
+<li>Each <code>AgentInterface</code> now specifies its own <code>protocolVersion</code> field</li>
+<li>Agents can support multiple protocol versions simultaneously by exposing multiple interfaces</li>
+<li>Clients negotiate version by selecting appropriate interface from Agent Card</li>
+</ul>
+<p><strong>SDK Implementation Pattern:</strong></p>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1">// SDK can support multiple protocol versions</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="kd">class</span><span class="w"> </span><span class="nx">A2AClient</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">connect</span><span class="p">(</span><span class="nx">agentCardUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">card</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">getAgentCard</span><span class="p">(</span><span class="nx">agentCardUrl</span><span class="p">);</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="w">    </span><span class="c1">// Find best matching interface</span>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">card</span><span class="p">.</span><span class="nx">supportedInterfaces</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span>
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">supportedVersions</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">i</span><span class="p">.</span><span class="nx">protocolVersion</span><span class="p">)</span>
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="w">    </span><span class="p">);</span>
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>
+</span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kd">interface</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;No compatible protocol version&quot;</span><span class="p">);</span>
+</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-30-14"><a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a>
+</span><span id="__span-30-15"><a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a><span class="w">    </span><span class="c1">// Use version-specific adapter</span>
+</span><span id="__span-30-16"><a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">createAdapter</span><span class="p">(</span><span class="kd">interface</span><span class="p">.</span><span class="nx">protocolVersion</span><span class="p">,</span><span class="w"> </span><span class="kd">interface</span><span class="p">);</span>
+</span><span id="__span-30-17"><a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-30-18"><a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>SDKs can maintain support for multiple protocol versions</li>
+<li>Agents can gradually migrate by supporting both old and new versions</li>
+<li>Clients automatically select best compatible version</li>
+<li>Enables graceful deprecation of old protocol versions</li>
+</ul>
+<h3 id="testing-considerations">Testing Considerations<a class="headerlink" href="#testing-considerations" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Test with both v0.3.0 and v1.0 formatted data</li>
+<li>Validate Agent Card signature verification</li>
+<li>Test cursor-based pagination edge cases (empty results, single page, etc.)</li>
+<li>Verify proper handling of new error types</li>
+<li>Test extension requirement validation</li>
+</ul>
+<h3 id="recommended-priority">Recommended Priority<a class="headerlink" href="#recommended-priority" title="Permanent link">&para;</a></h3>
+<h4 id="critical-do-immediately">Critical (Do Immediately)<a class="headerlink" href="#critical-do-immediately" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Update Part and streaming event parsing (discriminator pattern)</li>
+<li>Update Agent Card parsing (structure changes)</li>
+<li>Add A2A-Version header to all requests</li>
+</ul>
+<h4 id="high-within-1-month">High (Within 1 Month)<a class="headerlink" href="#high-within-1-month" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Implement cursor-based pagination</li>
+<li>Update enum value handling (state field)</li>
+<li>Add blocking parameter support</li>
+</ul>
+<h4 id="medium-within-3-months">Medium (Within 3 Months)<a class="headerlink" href="#medium-within-3-months" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Implement Agent Card signature verification</li>
+<li>Add extension requirement checking</li>
+<li>Update timestamp handling to ISO 8601 format</li>
+<li>Implement new error types</li>
+</ul>
+<h4 id="low-nice-to-have">Low (Nice to Have)<a class="headerlink" href="#low-nice-to-have" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Add createdAt/lastModified timestamp tracking</li>
+<li>Leverage enhanced metadata capabilities</li>
+<li>Implement mutual TLS authentication support</li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>A2A Protocol v1.0 represents a significant step forward in protocol maturity while maintaining the core architectural principles of v0.3.0. The changes focus on standardization, type safety, and enterprise readiness, requiring developers to update their implementations but providing clearer specifications and better developer experience in return.</p>
+<p>The breaking changes, while requiring code updates, are straightforward to implement and improve code clarity. The new capabilities around versioning, signatures, and enhanced extensions provide a solid foundation for future protocol evolution within the v1.x line.</p>
+<p>Developers should plan for a phased migration approach, prioritizing the critical breaking changes while gradually adopting new capabilities over time.</p>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright 2026 The Linux Foundation. Licensed under the Apache License, Version 2.0.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["announce.dismiss", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
