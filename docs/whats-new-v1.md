@@ -16,7 +16,7 @@ The v1.0 release focuses on four major themes:
 ### 2. **Enhanced Type Safety and Clarity**
 
 - Removal of discriminator `kind` fields in favor of JSON member-based polymorphism
-- **Breaking:** Enum values changed from `PascalCase` to `SCREAMING_SNAKE_CASE` for consistency
+- **Breaking:** Enum values changed from `kebab-case` to `SCREAMING_SNAKE_CASE` for compliance with the ProtoJSON specification
 - Stricter field naming conventions (`camelCase` for JSON)
 - More precise timestamp specifications (ISO 8601 with millisecond precision)
 - Better-defined data types with clearer Optional vs Required semantics
