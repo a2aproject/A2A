@@ -893,3 +893,118 @@ message ListTaskPushNotificationConfigResponse {
   string next_page_token = 2;
 }
 // --8<-- [end:ListTaskPushNotificationConfigResponse]
+
+// --8<-- [start:ApiCatalog]
+// Represents an API Catalog document as defined in RFC 9727.
+// See: https://www.rfc-editor.org/rfc/rfc9727
+message ApiCatalog {
+  // An array of Link Context Objects.
+  // Each object represents a link context (for example, an Agent Card endpoint) and the link
+  // relations associated with it (such as `describedby`).
+  repeated LinkContext linkset = 1; // protolint:disable:this REPEATED_FIELD_NAMES_PLURALIZED
+}
+// --8<-- [end:ApiCatalog]
+
+// --8<-- [start:LinkContext]
+// Represents a Link Context Object as defined in RFC 9264, Section 4.2.2.
+// See: https://www.rfc-editor.org/rfc/rfc9264#section-4.2.2
+message LinkContext {
+  // The `anchor` member.
+  // Optional. When present, the value MUST be a URI reference as defined in RFC 3986. Relative
+  // references are allowed by the specification but discouraged in practice.
+  optional string anchor = 1;
+  // Link relations associated with this link context.
+  // The map key is the relation type:
+  // - a registered relation type name, as defined in RFC 8288, Section 2.1.1, or
+  // - a URI identifying an extension relation type, as defined in RFC 8288, Section 2.1.2.
+  // The map value contains one or more Link Target Objects.
+  map<string, LinkTargetList> relations = 2;
+}
+// --8<-- [end:LinkContext]
+
+// --8<-- [start:LinkTargetList]
+// Represents an array of Link Target Objects for a given relation type.
+message LinkTargetList {
+  // One or more Link Target Objects.
+  // Even if there is only one link target, it MUST be represented as an array.
+  repeated LinkTarget targets = 1;
+}
+// --8<-- [end:LinkTargetList]
+
+// --8<-- [start:LinkTarget]
+// Represents a Link Target Object as defined in RFC 9264, Section 4.2.3.
+// See: https://www.rfc-editor.org/rfc/rfc9264#section-4.2.3
+// See: https://www.rfc-editor.org/rfc/rfc8288
+message LinkTarget {
+  // The target URI of the link.
+  // Required and not repeatable. The value MUST be a valid URI reference as defined in RFC 3986.
+  // Relative references are allowed by the specification but discouraged in practice.
+  string href = 1;
+  // The `hreflang` target attribute as defined in RFC 8288.
+  // Optional and repeatable. Each value MUST be a language tag that follows the syntax defined
+  // in RFC 8288.
+  repeated string hreflang = 2; // protolint:disable:this REPEATED_FIELD_NAMES_PLURALIZED
+  // The `media` target attribute as defined in RFC 8288.
+  // Optional and not repeatable. The value MUST follow the media query syntax defined in RFC 8288.
+  optional string media = 3;
+  // The `title` target attribute as defined in RFC 8288.
+  // Optional and not repeatable. The value MUST be a JSON string.
+  optional string title = 4;
+  // The `title*` target attribute as defined in RFC 8288.
+  // Optional and not repeatable. The value follows the encoding and language model defined in RFC 8187.
+  repeated InternationalizedTargetAttribute title_star = 5; // protolint:disable:this REPEATED_FIELD_NAMES_PLURALIZED
+  // The `type` target attribute as defined in RFC 8288.
+  // Optional and not repeatable. The value follows the media type syntax defined in RFC 8288.
+  optional string type = 6;
+  // Extension target attributes as defined in RFC 9264, Section 4.2.4.3.
+  // Optional and repeatable.
+  repeated ExtensionTargetAttributeEntry extensions = 100;
+}
+// --8<-- [end:LinkTarget]
+
+// --8<-- [start:InternationalizedTargetAttribute]
+// Represents an Internationalized Target Attribute as defined in RFC 9264, Section 4.2.4.2.
+// See: https://www.rfc-editor.org/rfc/rfc9264#section-4.2.4.2
+// See: https://www.rfc-editor.org/rfc/rfc8187
+message InternationalizedTargetAttribute {
+  // The `value` member as defined in RFC 9264.
+  // Required and not repeatable. The value is and actual content (in its unescaped version) of the
+  // internationalized target attribute.
+  string value = 1;
+  // The `language` member as defined in RFC 9264.
+  // Required and not repeatable. The value is a language tag, as defined in RFC 5646, for the language
+  // in which the attribute content is conveyed.
+  string language = 2;
+}
+// --8<-- [end:InternationalizedTargetAttribute]
+
+// --8<-- [start:ExtensionTargetAttributeEntry]
+// Represents an Extension Target Attribute entry as defined in RFC 9264, Section 4.2.4.3.
+// See: https://www.rfc-editor.org/rfc/rfc9264#section-4.2.4.3
+// See: https://www.rfc-editor.org/rfc/rfc8288#section-3.4.1
+message ExtensionTargetAttributeEntry {
+  // The attribute name.
+  // Required and not repeatable. The value includes the trailing `*` if applicable.
+  string name = 1;
+  // The attribute values.
+  // Optional and repeatable. The value type depends on whether the attribute name ends with `*`.
+  repeated ExtensionTargetAttribute values = 2;
+}
+// --8<-- [end:ExtensionTargetAttributeEntry]
+
+// --8<-- [start:ExtensionTargetAttribute]
+// Represents one value of an Extension Target Attribute as defined in RFC 9264, Section 4.2.4.3.
+// See: https://www.rfc-editor.org/rfc/rfc9264#section-4.2.4.3
+// See: https://www.rfc-editor.org/rfc/rfc8288#section-3.4.1
+// See: https://www.rfc-editor.org/rfc/rfc8187
+message ExtensionTargetAttribute {
+  oneof kind {
+    // The string value for non-internationalized extension attributes.
+    // Used when the attribute name does NOT end with `*`.
+    string value = 1;
+    // The internationalized value following the RFC 8187 model.
+    // Used when the attribute name ends with `*`.
+    InternationalizedTargetAttribute i18n_value = 2;
+  }
+}
+// --8<-- [end:ExtensionTargetAttribute]

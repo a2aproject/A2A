@@ -2180,6 +2180,66 @@ Clients verifying Agent Card signatures **MUST**:
 }
 ```
 
+## 8A. Agent Discovery Supplement: The Agent Catalog
+
+### 8A.1. Purpose
+
+The Agent Catalog extends the agent discovery mechanism to support **open discovery of multiple agents served under a shared origin**.
+
+In the core specification ([Section 8](#5-agent-discovery-the-agent-card)), open discovery is typically performed using a well-known location—`/.well-known/agent-card.json`—which is the recommended way to expose an individual agent's Agent Card. This approach implicitly assumes a **one-agent-per-host** model, where each agent has its own dedicated and discoverable entry point.
+
+However, in real-world deployments, it is common for a single host or gateway to serve **multiple agents**, each accessible via distinct subpaths (e.g., `/a2a/v1/agent1`, `/a2a/v1/agent2`). The `/.well-known/agent-card.json` mechanism does not support enumerating such multi-agent deployments.
+
+To address this limitation, the Agent Catalog adopts the [API Catalog format (RFC 9727)](https://datatracker.ietf.org/doc/rfc9727/) as standardized by the IETF.
+
+### 8A.2. Discovery Mechanisms
+
+Clients can discover Agent endpoints and Agent Cards through the following mechanism:
+
+- **Well-Known URI:** The Agent Catalog is exposed at a standard location such as `/.well-known/api-catalog` on the shared origin. This location is defined as a well-known URI in [RFC 9727](https://datatracker.ietf.org/doc/rfc9727/), enabling clients to locate catalogs in a consistent and interoperable manner.
+
+The Agent Catalog follows the [API Catalog format](https://datatracker.ietf.org/doc/rfc9727/), which is based on the [Linkset](https://datatracker.ietf.org/doc/rfc9264/) specification. This format allows a server to expose a collection of agent endpoints in a standardized structure, where each entry may include:
+
+- **An `anchor` (optional):** The base URI for an individual agent (e.g., `https://example.org/a2a/v1/agent1`), if applicable.
+- **Link relations to the agent's description:** Typical examples include `describedby`, `service-desc`, or `service-meta`. Implementations may also use a URI pointing to the relevant section of the Agent Card specification (e.g., `https://a2a-protocol.org/latest/specification/#5-agent-discovery-the-agent-card`) as the link relation.
+
+This mechanism enables clients to enumerate all available agents under a shared origin and fetch their respective Agent Cards dynamically. It makes agent discovery interoperable, extensible, and well-suited for federated or platform-hosted environments.
+
+### 8A.3. Security of Agent Catalogs
+
+Agent Catalogs may expose sensitive metadata depending on deployment context.
+
+For further considerations and best practices regarding the publication and protection of API Catalogs, refer to the [Security Considerations](https://datatracker.ietf.org/doc/rfc9727/) section of the RFC.
+
+### 8A.4. Sample Agent Catalog
+
+```json
+{
+  "linkset": [
+    {
+      "anchor": "https://georoute-agent.example.com/a2a/v1/route_planner",
+      "describedby": [
+        {
+          "href": "https://georoute-agent.example.com/a2a/v1/route_planner/agent-card.json",
+          "type": "application/json",
+          "title": "GeoSpatial Route Planner Agent Card"
+        }
+      ]
+    },
+    {
+      "anchor": "https://georoute-agent.example.com/a2a/v1/poi_finder",
+      "https://a2a-protocol.org/latest/specification/#5-agent-discovery-the-agent-card": [
+        {
+          "href": "https://georoute-agent.example.com/a2a/v1/poi_finder/agent.json",
+          "type": "application/json",
+          "title": "GeoSpatial POI Finder Agent Card"
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## 9. JSON-RPC Protocol Binding
 
 The JSON-RPC protocol binding provides a simple, HTTP-based interface using JSON-RPC 2.0 for method calls and Server-Sent Events for streaming.
