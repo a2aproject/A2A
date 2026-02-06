@@ -264,4 +264,3 @@ is_valid = await chain.verify()
 
 - [Agent-Mesh GitHub](https://github.com/imran-siddique/agent-mesh)
 - [A2A Protocol Specification](https://github.com/a2aproject/A2A)
-- [CMVK Identity Spec](https://github.com/imran-siddique/agent-mesh/blob/main/docs/cmvk.md)
