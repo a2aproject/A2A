@@ -176,13 +176,13 @@ async def filter_trusted_agents(discovered_cards, min_trust=0.8):
     trusted = []
     for card_json in discovered_cards:
         card = TrustedAgentCard.from_a2a_json(card_json)
-        result = await handshake.verify_peer(card, min_trust_score=min_trust)
+        result = handshake.verify_peer(card, min_trust_score=min_trust)
         if result.trusted:
             trusted.append(card)
     return trusted
 
 # Discover agents with trust filtering
-trusted_agents = await filter_trusted_agents(
+trusted_agents = filter_trusted_agents(
     discovered_cards,
     min_trust=0.8,
 )
