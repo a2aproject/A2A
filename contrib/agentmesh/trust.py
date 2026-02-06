@@ -475,6 +475,13 @@ class TrustHandshake:
         
         # Check delegation chain validity
         if peer_card.delegation_chain:
+            # TODO: Implement full cryptographic verification of the delegation chain.
+            # This should verify the signature of each delegation and the integrity of
+            # the entire chain from a trusted root. The current expiration check alone
+            # is insufficient for production use.
+            warnings.append(
+                "Delegation chain present but full cryptographic verification not yet implemented"
+            )
             for delegation in peer_card.delegation_chain:
                 if delegation.expires_at and delegation.expires_at < datetime.now(timezone.utc):
                     warnings.append(f"Delegation from {delegation.delegator} has expired")
