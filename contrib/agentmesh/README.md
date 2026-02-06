@@ -103,7 +103,7 @@ client = TrustGatedA2AClient(
 peer_card = TrustedAgentCard.from_a2a_json(discovered_agent_json)
 
 try:
-    task = await client.create_task(
+    task = client.create_task(
         peer_card=peer_card,
         task_spec={
             "description": "Write a report on AI safety",
