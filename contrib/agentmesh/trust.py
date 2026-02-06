@@ -45,11 +45,12 @@ class CMVKSignature:
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CMVKSignature":
+        timestamp_str = data.get("timestamp")
         return cls(
             algorithm=data.get("algorithm", "CMVK-Ed25519"),
             public_key=data.get("public_key", ""),
             signature=data.get("signature", ""),
-            timestamp=datetime.fromisoformat(data["timestamp"]) if "timestamp" in data else datetime.now(timezone.utc),
+            timestamp=datetime.fromisoformat(timestamp_str) if timestamp_str else datetime.now(timezone.utc),
         )
 
 
@@ -79,7 +80,7 @@ class CMVKIdentity:
         Returns:
             New CMVKIdentity with generated keys.
         """
-        # Generate deterministic DID from agent name and timestamp
+        # Generate a unique DID from agent name and timestamp
         seed = f"{agent_name}:{time.time_ns()}"
         did_hash = hashlib.sha256(seed.encode()).hexdigest()[:32]
         did = f"did:cmvk:{did_hash}"
@@ -247,11 +248,41 @@ class TrustedAgentCard:
     delegation_chain: List[Delegation] = field(default_factory=list)
     issued_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     expires_at: Optional[datetime] = None
+    card_signature: Optional[CMVKSignature] = None  # Signature over card content
+    
+    def _get_signable_content(self) -> str:
+        """Get the content to be signed (deterministic serialization)."""
+        content = {
+            "name": self.name,
+            "description": self.description,
+            "url": self.url,
+            "capabilities": sorted(self.capabilities),
+            "issued_at": self.issued_at.isoformat(),
+        }
+        if self.expires_at:
+            content["expires_at"] = self.expires_at.isoformat()
+        return json.dumps(content, sort_keys=True)
     
     def sign(self, identity: CMVKIdentity) -> None:
-        """Sign this agent card with the given identity."""
+        """Sign this agent card with the given identity.
+        
+        This cryptographically signs the card content, proving the identity
+        owner created this card.
+        """
         self.identity = identity
-        # Card is now signed by having the identity attached
+        signable = self._get_signable_content()
+        self.card_signature = identity.sign(signable)
+    
+    def verify_signature(self) -> bool:
+        """Verify the card's signature is valid.
+        
+        Returns:
+            True if signature is valid and matches the identity.
+        """
+        if not self.identity or not self.card_signature:
+            return False
+        signable = self._get_signable_content()
+        return self.identity.verify_signature(signable, self.card_signature)
     
     def to_a2a_json(self) -> str:
         """Export as A2A-compatible JSON with trust extensions."""
@@ -265,7 +296,7 @@ class TrustedAgentCard:
         }
         
         if self.identity:
-            card["_agentmesh"] = {
+            mesh_data: Dict[str, Any] = {
                 "version": "1.0",
                 "identity": {
                     "did": self.identity.did,
@@ -279,7 +310,10 @@ class TrustedAgentCard:
                 "issued_at": self.issued_at.isoformat(),
             }
             if self.expires_at:
-                card["_agentmesh"]["expires_at"] = self.expires_at.isoformat()
+                mesh_data["expires_at"] = self.expires_at.isoformat()
+            if self.card_signature:
+                mesh_data["card_signature"] = self.card_signature.to_dict()
+            card["_agentmesh"] = mesh_data
         
         return json.dumps(card, indent=2)
     
@@ -310,6 +344,8 @@ class TrustedAgentCard:
                 card.issued_at = datetime.fromisoformat(mesh["issued_at"])
             if "expires_at" in mesh:
                 card.expires_at = datetime.fromisoformat(mesh["expires_at"])
+            if "card_signature" in mesh:
+                card.card_signature = CMVKSignature.from_dict(mesh["card_signature"])
         
         return card
 
@@ -360,12 +396,27 @@ class TrustHandshake:
                 reason="Peer has no cryptographic identity",
             )
         
-        # Verify identity is valid (in production, verify signature)
+        # Verify DID format
         if not peer_card.identity.did.startswith("did:cmvk:"):
             return TrustVerificationResult(
                 trusted=False,
                 trust_score=0.0,
                 reason="Invalid DID format",
+            )
+        
+        # Verify card signature cryptographically
+        if not peer_card.card_signature:
+            return TrustVerificationResult(
+                trusted=False,
+                trust_score=0.0,
+                reason="Agent card has no signature",
+            )
+        
+        if not peer_card.verify_signature():
+            return TrustVerificationResult(
+                trusted=False,
+                trust_score=0.0,
+                reason="Agent card signature verification failed",
             )
         
         # Check expiration
@@ -401,7 +452,6 @@ class TrustHandshake:
         
         # Check delegation chain validity
         if peer_card.delegation_chain:
-            # In production, verify each delegation signature
             for delegation in peer_card.delegation_chain:
                 if delegation.expires_at and delegation.expires_at < datetime.now(timezone.utc):
                     warnings.append(f"Delegation from {delegation.delegator_did} has expired")
@@ -489,12 +539,20 @@ class DelegationChain:
         """Initialize with the root delegator's identity."""
         self.root_identity = root_identity
         self.delegations: List[Delegation] = []
+        self._known_identities: Dict[str, CMVKIdentity] = {
+            root_identity.did: root_identity
+        }
+    
+    def register_identity(self, identity: CMVKIdentity) -> None:
+        """Register an identity for signature verification."""
+        self._known_identities[identity.did] = identity
     
     def add_delegation(
         self,
         delegatee: TrustedAgentCard,
         capabilities: List[str],
         delegator: Optional[TrustedAgentCard] = None,
+        delegator_identity: Optional[CMVKIdentity] = None,
         expires_in_hours: int = 24,
     ) -> Delegation:
         """Add a delegation to the chain.
@@ -502,21 +560,40 @@ class DelegationChain:
         Args:
             delegatee: The agent receiving delegation.
             capabilities: Capabilities being delegated.
-            delegator: The delegating agent (default: root).
+            delegator: The delegating agent card (default: root).
+            delegator_identity: The identity to sign with. Required for
+                non-root delegations. Must have private key.
             expires_in_hours: How long the delegation is valid.
             
         Returns:
             The created Delegation.
+            
+        Raises:
+            ValueError: If delegator_identity is required but not provided.
         """
-        delegator_did = (
-            delegator.identity.did if delegator and delegator.identity
-            else self.root_identity.did
-        )
+        # Determine delegator DID
+        if delegator and delegator.identity:
+            delegator_did = delegator.identity.did
+        else:
+            delegator_did = self.root_identity.did
+        
         delegatee_did = delegatee.identity.did if delegatee.identity else ""
         
+        # Determine signing identity
+        if delegator_did == self.root_identity.did:
+            signing_identity = self.root_identity
+        elif delegator_identity:
+            signing_identity = delegator_identity
+            # Register for later verification
+            self._known_identities[signing_identity.did] = signing_identity
+        else:
+            raise ValueError(
+                "delegator_identity required for non-root delegations"
+            )
+        
         # Create and sign delegation
-        delegation_data = f"{delegator_did}:{delegatee_did}:{','.join(capabilities)}"
-        signature = self.root_identity.sign(delegation_data)
+        delegation_data = f"{delegator_did}:{delegatee_did}:{','.join(sorted(capabilities))}"
+        signature = signing_identity.sign(delegation_data)
         
         delegation = Delegation(
             delegator_did=delegator_did,
@@ -529,8 +606,27 @@ class DelegationChain:
         self.delegations.append(delegation)
         return delegation
     
+    def _verify_delegation_signature(self, delegation: Delegation) -> bool:
+        """Verify a single delegation's signature."""
+        identity = self._known_identities.get(delegation.delegator_did)
+        if not identity:
+            return False  # Unknown delegator
+        
+        delegation_data = f"{delegation.delegator_did}:{delegation.delegatee_did}:{','.join(sorted(delegation.capabilities))}"
+        sig = CMVKSignature(
+            public_key=identity.public_key,
+            signature=delegation.signature,
+        )
+        return identity.verify_signature(delegation_data, sig)
+    
     async def verify(self) -> bool:
         """Verify the entire delegation chain.
+        
+        Checks:
+        - Chain starts from root identity
+        - Each delegation is properly linked
+        - No delegations are expired
+        - All signatures are cryptographically valid
         
         Returns:
             True if the chain is valid, False otherwise.
@@ -553,6 +649,10 @@ class DelegationChain:
                 prev = self.delegations[i - 1]
                 if delegation.delegator_did != prev.delegatee_did:
                     return False
+            
+            # Verify cryptographic signature
+            if not self._verify_delegation_signature(delegation):
+                return False
         
         return True
     

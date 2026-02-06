@@ -110,7 +110,6 @@ try:
 except TrustVerificationError as e:
     print(f"Agent not trusted: {e}")
 ```
-```
 
 ## CMVK-Enhanced Agent Card Schema
 
@@ -156,56 +155,98 @@ Standard A2A Agent Card extended with trust fields:
 ### 1. Agent Discovery with Trust
 
 ```python
-from agentmesh.a2a import TrustedAgentRegistry
+from agentmesh.a2a import TrustHandshake, TrustedAgentCard, CMVKIdentity
 
-# Register agent with trust metadata
-registry = TrustedAgentRegistry()
-await registry.register(agent_card)
+# Your identity
+my_identity = CMVKIdentity.generate("coordinator", capabilities=["discovery"])
+
+# When you receive agent cards from A2A discovery, verify them
+handshake = TrustHandshake(my_identity)
+
+# Filter discovered agents by trust
+async def filter_trusted_agents(discovered_cards, min_trust=0.8):
+    trusted = []
+    for card_json in discovered_cards:
+        card = TrustedAgentCard.from_a2a_json(card_json)
+        result = await handshake.verify_peer(card, min_trust_score=min_trust)
+        if result.trusted:
+            trusted.append(card)
+    return trusted
 
 # Discover agents with trust filtering
-trusted_agents = await registry.discover(
-    capabilities=["summarization"],
-    min_trust_score=0.8,
+trusted_agents = await filter_trusted_agents(
+    discovered_cards,
+    min_trust=0.8,
 )
 ```
 
 ### 2. Task Delegation with Verification
 
 ```python
-from agentmesh.a2a import TrustedTaskDelegation
+from agentmesh.a2a import TrustGatedA2AClient, CMVKIdentity, TrustedAgentCard
 
-delegation = TrustedTaskDelegation(my_identity)
+# Your identity
+my_identity = CMVKIdentity.generate("delegator", capabilities=["coordination"])
+
+# Create trust-gated client
+client = TrustGatedA2AClient(
+    identity=my_identity,
+    min_trust_score=0.7,
+)
+
+# Load peer's card (from discovery)
+writer_card = TrustedAgentCard.from_a2a_json(writer_agent_json)
 
 # Delegate with automatic trust verification
-result = await delegation.delegate(
-    peer_card=writer_agent_card,
-    task={
+result = await client.create_task(
+    peer_card=writer_card,
+    task_spec={
         "description": "Write summary",
         "input": document,
     },
-    require_trust_score=0.7,
 )
 ```
 
 ### 3. Multi-Hop Delegation
 
 ```python
-from agentmesh.a2a import DelegationChain
+from agentmesh.a2a import DelegationChain, CMVKIdentity, TrustedAgentCard
+
+# Identities for each agent in the chain
+my_identity = CMVKIdentity.generate("coordinator")
+research_identity = CMVKIdentity.generate("researcher")
+
+# Agent cards (with identities)
+research_agent_card = TrustedAgentCard(
+    name="Research Agent",
+    description="Performs research",
+    url="https://example.com/research",
+    capabilities=["research"],
+)
+research_agent_card.sign(research_identity)
+
+writer_agent_card = TrustedAgentCard(
+    name="Writer Agent",
+    description="Writes content",
+    url="https://example.com/writer",
+    capabilities=["writing"],
+)
 
 # Create delegation chain: Me -> Research Agent -> Writer Agent
 chain = DelegationChain(my_identity)
 
-# Add delegation
+# Root delegates to research agent
 chain.add_delegation(
     delegatee=research_agent_card,
     capabilities=["research", "delegate_writing"],
 )
 
-# Research agent can now delegate to writer
+# Research agent delegates to writer (requires research agent's identity)
 chain.add_delegation(
     delegator=research_agent_card,
     delegatee=writer_agent_card,
     capabilities=["writing"],
+    delegator_identity=research_identity,  # Sign with delegator's key
 )
 
 # Verify entire chain
