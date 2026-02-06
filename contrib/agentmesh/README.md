@@ -54,6 +54,9 @@ agent_card = TrustedAgentCard(
     output_modes=["text", "file"],
 )
 
+# Sign the card to make it verifiable
+agent_card.sign(identity)
+
 # Export for A2A discovery
 card_json = agent_card.to_a2a_json()
 ```
