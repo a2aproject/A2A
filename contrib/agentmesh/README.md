@@ -74,7 +74,7 @@ peer_card = TrustedAgentCard.from_a2a_json(peer_card_json)
 
 # Verify before delegating task
 handshake = TrustHandshake(my_identity)
-result = await handshake.verify_peer(peer_card)
+result = handshake.verify_peer(peer_card)
 
 if result.trusted:
     print(f"Peer verified! Trust score: {result.trust_score}")
