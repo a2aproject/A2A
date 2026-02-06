@@ -2275,13 +2275,21 @@ Sends a message and subscribes to real-time updates via Server-Sent Events.
 
 **Response:** HTTP 200 with `Content-Type: text/event-stream`
 
-```text
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
-
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    /* StreamResponse object, contains one of:
+     * "task": { Task object }
+     * "message": { Message object }
+     * "statusUpdate": { TaskStatusUpdateEvent object }
+     * "artifactUpdate": { TaskArtifactUpdateEvent object }
+    */
+  }
 ```
 
-Referenced Objects: [`Task`](#411-task), [`Message`](#414-message), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)
+Referenced Objects: [`Task`](#411-task), [`Message`](#414-message), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)
 
 #### 9.4.3. `GetTask`
 
