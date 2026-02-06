@@ -577,7 +577,9 @@ class DelegationChain:
         else:
             delegator_did = self.root_identity.did
         
-        delegatee_did = delegatee.identity.did if delegatee.identity else ""
+        if not delegatee.identity:
+            raise ValueError("Delegatee must have a CMVKIdentity to be part of a delegation")
+        delegatee_did = delegatee.identity.did
         
         # Determine signing identity
         if delegator_did == self.root_identity.did:
