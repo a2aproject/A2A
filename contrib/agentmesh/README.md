@@ -258,7 +258,7 @@ chain.add_delegation(
 )
 
 # Verify entire chain
-is_valid = await chain.verify()
+is_valid = chain.verify()
 ```
 
 ## Security Considerations
