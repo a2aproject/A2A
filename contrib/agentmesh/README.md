@@ -206,7 +206,7 @@ client = TrustGatedA2AClient(
 writer_card = TrustedAgentCard.from_a2a_json(writer_agent_json)
 
 # Delegate with automatic trust verification
-result = await client.create_task(
+result = client.create_task(
     peer_card=writer_card,
     task_spec={
         "description": "Write summary",
