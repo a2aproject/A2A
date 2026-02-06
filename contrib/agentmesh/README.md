@@ -131,7 +131,13 @@ Standard A2A Agent Card extended with trust fields:
         "version": "1.0",
         "identity": {
             "did": "did:cmvk:abc123...",
-            "public_key": "-----BEGIN PUBLIC KEY-----..."
+            "public_key": "base64-encoded-public-key"
+        },
+        "card_signature": {
+            "algorithm": "CMVK-Ed25519",
+            "public_key": "base64-encoded-public-key",
+            "signature": "base64-encoded-signature",
+            "timestamp": "2026-02-05T23:00:00Z"
         },
         "trust_score": 0.95,
         "capability_proofs": {

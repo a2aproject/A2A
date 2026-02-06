@@ -209,8 +209,8 @@ class CapabilityProof:
 class Delegation:
     """A delegation of capabilities from one agent to another."""
     
-    delegator_did: str
-    delegatee_did: str
+    delegator: str  # DID of the delegating agent
+    delegatee: str  # DID of the agent receiving delegation
     capabilities: List[str]
     signature: str
     issued_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
@@ -218,8 +218,8 @@ class Delegation:
     
     def to_dict(self) -> Dict[str, Any]:
         result = {
-            "delegator": self.delegator_did,
-            "delegatee": self.delegatee_did,
+            "delegator": self.delegator,
+            "delegatee": self.delegatee,
             "capabilities": self.capabilities,
             "signature": self.signature,
             "issued_at": self.issued_at.isoformat(),
@@ -364,13 +364,36 @@ class TrustVerificationResult:
 class TrustHandshake:
     """Performs trust verification handshake between agents."""
     
-    def __init__(self, identity: CMVKIdentity):
-        """Initialize with the local agent's identity."""
+    def __init__(self, identity: CMVKIdentity, cache_ttl: int = 900):
+        """Initialize with the local agent's identity.
+        
+        Args:
+            identity: The local agent's CMVK identity.
+            cache_ttl: Cache TTL in seconds (default 15 minutes).
+        """
         self.identity = identity
-        self._verified_peers: Dict[str, TrustVerificationResult] = {}
-        self._cache_ttl = 900  # 15 minutes
+        self._verified_peers: Dict[str, tuple[TrustVerificationResult, datetime]] = {}
+        self._cache_ttl = cache_ttl
     
-    async def verify_peer(
+    def _get_cached_result(self, did: str) -> Optional[TrustVerificationResult]:
+        """Get cached verification result if not expired."""
+        if did not in self._verified_peers:
+            return None
+        result, cached_at = self._verified_peers[did]
+        if datetime.now(timezone.utc) - cached_at > timedelta(seconds=self._cache_ttl):
+            del self._verified_peers[did]
+            return None
+        return result
+    
+    def _cache_result(self, did: str, result: TrustVerificationResult) -> None:
+        """Cache a verification result with timestamp."""
+        self._verified_peers[did] = (result, datetime.now(timezone.utc))
+    
+    def clear_cache(self) -> None:
+        """Clear all cached verification results."""
+        self._verified_peers.clear()
+    
+    def verify_peer(
         self,
         peer_card: TrustedAgentCard,
         required_capabilities: Optional[List[str]] = None,
@@ -454,9 +477,9 @@ class TrustHandshake:
         if peer_card.delegation_chain:
             for delegation in peer_card.delegation_chain:
                 if delegation.expires_at and delegation.expires_at < datetime.now(timezone.utc):
-                    warnings.append(f"Delegation from {delegation.delegator_did} has expired")
+                    warnings.append(f"Delegation from {delegation.delegator} has expired")
         
-        # Cache result
+        # Cache result with timestamp
         result = TrustVerificationResult(
             trusted=True,
             trust_score=peer_card.trust_score,
@@ -464,7 +487,7 @@ class TrustHandshake:
             verified_capabilities=verified_caps,
             warnings=warnings,
         )
-        self._verified_peers[peer_card.identity.did] = result
+        self._cache_result(peer_card.identity.did, result)
         
         return result
     
@@ -494,7 +517,7 @@ class TrustGatedA2AClient:
         self.require_capability_proof = require_capability_proof
         self.handshake = TrustHandshake(identity)
     
-    async def create_task(
+    def create_task(
         self,
         peer_card: TrustedAgentCard,
         task_spec: Dict[str, Any],
@@ -513,7 +536,7 @@ class TrustGatedA2AClient:
         """
         # Verify peer first
         required_caps = task_spec.get("required_capabilities", [])
-        result = await self.handshake.verify_peer(
+        result = self.handshake.verify_peer(
             peer_card,
             required_capabilities=required_caps,
             min_trust_score=self.min_trust_score,
@@ -598,8 +621,8 @@ class DelegationChain:
         signature = signing_identity.sign(delegation_data)
         
         delegation = Delegation(
-            delegator_did=delegator_did,
-            delegatee_did=delegatee_did,
+            delegator=delegator_did,
+            delegatee=delegatee_did,
             capabilities=capabilities,
             signature=signature.signature,
             expires_at=datetime.now(timezone.utc) + timedelta(hours=expires_in_hours),
@@ -610,18 +633,18 @@ class DelegationChain:
     
     def _verify_delegation_signature(self, delegation: Delegation) -> bool:
         """Verify a single delegation's signature."""
-        identity = self._known_identities.get(delegation.delegator_did)
+        identity = self._known_identities.get(delegation.delegator)
         if not identity:
             return False  # Unknown delegator
         
-        delegation_data = f"{delegation.delegator_did}:{delegation.delegatee_did}:{','.join(sorted(delegation.capabilities))}"
+        delegation_data = f"{delegation.delegator}:{delegation.delegatee}:{','.join(sorted(delegation.capabilities))}"
         sig = CMVKSignature(
             public_key=identity.public_key,
             signature=delegation.signature,
         )
         return identity.verify_signature(delegation_data, sig)
     
-    async def verify(self) -> bool:
+    def verify(self) -> bool:
         """Verify the entire delegation chain.
         
         Checks:
@@ -637,7 +660,7 @@ class DelegationChain:
             return True
         
         # Verify chain starts from root
-        if self.delegations[0].delegator_did != self.root_identity.did:
+        if self.delegations[0].delegator != self.root_identity.did:
             return False
         
         # Verify each link in the chain
@@ -649,7 +672,7 @@ class DelegationChain:
             # Verify delegator of this link matches delegatee of previous
             if i > 0:
                 prev = self.delegations[i - 1]
-                if delegation.delegator_did != prev.delegatee_did:
+                if delegation.delegator != prev.delegatee:
                     return False
             
             # Verify cryptographic signature
@@ -660,4 +683,4 @@ class DelegationChain:
     
     def get_delegations_for(self, did: str) -> List[Delegation]:
         """Get all delegations where the given DID is the delegatee."""
-        return [d for d in self.delegations if d.delegatee_did == did]
+        return [d for d in self.delegations if d.delegatee == did]
