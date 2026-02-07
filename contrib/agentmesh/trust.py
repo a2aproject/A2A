@@ -8,6 +8,7 @@ import base64
 import hashlib
 import json
 import time
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
@@ -80,8 +81,9 @@ class CMVKIdentity:
         Returns:
             New CMVKIdentity with generated keys.
         """
-        # Generate a unique DID from agent name and timestamp
-        seed = f"{agent_name}:{time.time_ns()}"
+        # Generate a unique DID using UUID4 for guaranteed uniqueness
+        unique_id = str(uuid.uuid4())
+        seed = f"{agent_name}:{unique_id}"
         did_hash = hashlib.sha256(seed.encode()).hexdigest()[:32]
         did = f"did:cmvk:{did_hash}"
         
@@ -346,6 +348,19 @@ class TrustedAgentCard:
                 card.expires_at = datetime.fromisoformat(mesh["expires_at"])
             if "card_signature" in mesh:
                 card.card_signature = CMVKSignature.from_dict(mesh["card_signature"])
+            # Parse delegation chain
+            if "delegation_chain" in mesh:
+                card.delegation_chain = [
+                    Delegation(
+                        delegator=d["delegator"],
+                        delegatee=d["delegatee"],
+                        capabilities=d["capabilities"],
+                        signature=d["signature"],
+                        issued_at=datetime.fromisoformat(d["issued_at"]) if "issued_at" in d else datetime.now(timezone.utc),
+                        expires_at=datetime.fromisoformat(d["expires_at"]) if d.get("expires_at") else None,
+                    )
+                    for d in mesh["delegation_chain"]
+                ]
         
         return card
 
@@ -409,9 +424,25 @@ class TrustHandshake:
         Returns:
             TrustVerificationResult with verification details.
         """
+        # Check cache first
+        if peer_card.identity:
+            cached = self._get_cached_result(peer_card.identity.did)
+            if cached is not None:
+                # Re-validate capabilities even for cached results
+                if required_capabilities:
+                    for cap in required_capabilities:
+                        if cap not in peer_card.capabilities:
+                            return TrustVerificationResult(
+                                trusted=False,
+                                trust_score=peer_card.trust_score,
+                                reason=f"Missing required capability: {cap}",
+                            )
+                return cached
+        
         warnings = []
         
         # Check if peer has identity
+        if not peer_card.identity:
         if not peer_card.identity:
             return TrustVerificationResult(
                 trusted=False,

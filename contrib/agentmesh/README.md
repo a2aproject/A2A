@@ -182,7 +182,7 @@ async def filter_trusted_agents(discovered_cards, min_trust=0.8):
     return trusted
 
 # Discover agents with trust filtering
-trusted_agents = filter_trusted_agents(
+trusted_agents = await filter_trusted_agents(
     discovered_cards,
     min_trust=0.8,
 )
