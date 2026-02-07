@@ -102,10 +102,10 @@ class CMVKIdentity:
             # Simulated keys for demo (not cryptographically secure)
             public_key = base64.b64encode(
                 hashlib.sha256(f"pub:{seed}".encode()).digest()
-            ).decode()
+            ).decode('ascii')
             private_key = base64.b64encode(
                 hashlib.sha256(f"priv:{seed}".encode()).digest()
-            ).decode()
+            ).decode('ascii')
         
         return cls(
             did=did,
