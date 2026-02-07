@@ -223,6 +223,7 @@ from agentmesh.a2a import DelegationChain, CMVKIdentity, TrustedAgentCard
 # Identities for each agent in the chain
 my_identity = CMVKIdentity.generate("coordinator")
 research_identity = CMVKIdentity.generate("researcher")
+writer_identity = CMVKIdentity.generate("writer")
 
 # Agent cards (with identities)
 research_agent_card = TrustedAgentCard(
@@ -239,6 +240,7 @@ writer_agent_card = TrustedAgentCard(
     url="https://example.com/writer",
     capabilities=["writing"],
 )
+writer_agent_card.sign(writer_identity)
 
 # Create delegation chain: Me -> Research Agent -> Writer Agent
 chain = DelegationChain(my_identity)
