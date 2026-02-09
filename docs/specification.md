@@ -982,7 +982,7 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 #### 4.5.6. MutualTLSSecurityScheme
 
-{{ proto_to_table("specification/a2a.proto", "MutualTlsSecurityScheme") }}
+{{ proto_to_table("specification/a2a.proto", "MutualTLSSecurityScheme") }}
 
 <a id="OAuthFlows"></a>
 
