@@ -443,7 +443,6 @@ class TrustHandshake:
         
         # Check if peer has identity
         if not peer_card.identity:
-        if not peer_card.identity:
             return TrustVerificationResult(
                 trusted=False,
                 trust_score=0.0,
@@ -506,12 +505,15 @@ class TrustHandshake:
         
         # Check delegation chain validity
         if peer_card.delegation_chain:
-            # TODO: A full cryptographic verification of the delegation chain is needed.
-            # This should verify the signature of each delegation and the integrity of the
-            # entire chain. The current check for expiration is insufficient.
-            warnings.append(
-                "Delegation chain is present but its cryptographic validity is not verified."
-            )
+            # Build a temporary chain for verification
+            chain = DelegationChain(peer_card.identity)
+            chain.delegations = peer_card.delegation_chain
+            if not chain.verify():
+                return TrustVerificationResult(
+                    trusted=False,
+                    trust_score=peer_card.trust_score,
+                    reason="Delegation chain verification failed",
+                )
         
         # Cache result with timestamp
         result = TrustVerificationResult(
