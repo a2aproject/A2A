@@ -9882,11 +9882,11 @@
 <p>Sends a message and subscribes to real-time updates via Server-Sent Events.</p>
 <p><strong>Request:</strong> Same as <code>SendMessage</code></p>
 <p><strong>Response:</strong> HTTP 200 with <code>Content-Type: text/event-stream</code></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>data: {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;id&quot;: 1, &quot;result&quot;: { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+<div class="language-text highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>data: {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;id&quot;: 1, &quot;result&quot;: { /* StreamResponse object */ }}
 </span><span id="__span-45-2"><a id="__codelineno-45-2" name="__codelineno-45-2" href="#__codelineno-45-2"></a>
-</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>data: {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;id&quot;: 1, &quot;result&quot;: { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+</span><span id="__span-45-3"><a id="__codelineno-45-3" name="__codelineno-45-3" href="#__codelineno-45-3"></a>data: {&quot;jsonrpc&quot;: &quot;2.0&quot;, &quot;id&quot;: 1, &quot;result&quot;: { /* StreamResponse object */ }}
 </span></code></pre></div>
-<p>Referenced Objects: <a href="#411-task"><code>Task</code></a>, <a href="#414-message"><code>Message</code></a>, <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a>, <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a></p>
+<p><strong>Referenced Objects:</strong> <a href="#323-stream-response"><code>StreamResponse</code></a></p>
 <h4 id="943-gettask">9.4.3. <code>GetTask</code><a class="headerlink" href="#943-gettask" title="Permanent link">&para;</a></h4>
 <p>Retrieves the current state of a task.</p>
 <p><strong>Request:</strong></p>
@@ -10592,14 +10592,11 @@
 <div class="language-http highlight"><pre><span></span><code><span id="__span-80-1"><a id="__codelineno-80-1" name="__codelineno-80-1" href="#__codelineno-80-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 </span><span id="__span-80-2"><a id="__codelineno-80-2" name="__codelineno-80-2" href="#__codelineno-80-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/event-stream</span>
 </span><span id="__span-80-3"><a id="__codelineno-80-3" name="__codelineno-80-3" href="#__codelineno-80-3"></a>
-</span><span id="__span-80-4"><a id="__codelineno-80-4" name="__codelineno-80-4" href="#__codelineno-80-4"></a>data: {&quot;task&quot;: { /* Task object */ }}
+</span><span id="__span-80-4"><a id="__codelineno-80-4" name="__codelineno-80-4" href="#__codelineno-80-4"></a>data: { /* StreamResponse object */ }
 </span><span id="__span-80-5"><a id="__codelineno-80-5" name="__codelineno-80-5" href="#__codelineno-80-5"></a>
-</span><span id="__span-80-6"><a id="__codelineno-80-6" name="__codelineno-80-6" href="#__codelineno-80-6"></a>data: {&quot;artifactUpdate&quot;: { /* TaskArtifactUpdateEvent */ }}
-</span><span id="__span-80-7"><a id="__codelineno-80-7" name="__codelineno-80-7" href="#__codelineno-80-7"></a>
-</span><span id="__span-80-8"><a id="__codelineno-80-8" name="__codelineno-80-8" href="#__codelineno-80-8"></a>data: {&quot;statusUpdate&quot;: { /* TaskStatusUpdateEvent */ }}
+</span><span id="__span-80-6"><a id="__codelineno-80-6" name="__codelineno-80-6" href="#__codelineno-80-6"></a>data: { /* StreamResponse object */ }
 </span></code></pre></div>
-<p><strong>Referenced Objects:</strong> <a href="#411-task"><code>Task</code></a>, <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a>, <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a>
-<span id="4192-taskstatusupdateevent"></span><span id="4193-taskartifactupdateevent"></span>
+<p><strong>Referenced Objects:</strong> <a href="#323-stream-response"><code>StreamResponse</code></a>
 Streaming responses are simple, linearly ordered sequences: first a <code>Task</code> (or single <code>Message</code>), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final <code>Task</code> snapshot before closing.</p>
 <h2 id="12-custom-binding-guidelines">12. Custom Binding Guidelines<a class="headerlink" href="#12-custom-binding-guidelines" title="Permanent link">&para;</a></h2>
 <p>While the A2A protocol provides three standard bindings (JSON-RPC, gRPC, and HTTP+JSON/REST), implementers <strong>MAY</strong> create custom protocol bindings to support additional transport mechanisms or communication patterns. Custom bindings <strong>MUST</strong> comply with all requirements defined in <a href="#5-protocol-binding-requirements-and-interoperability">Section 5 (Protocol Binding Requirements and Interoperability)</a>. This section provides additional guidelines specific to developing custom bindings.</p>
