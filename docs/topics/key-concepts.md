@@ -67,13 +67,18 @@ agent. It includes a role ("user" or "agent") and a unique `messageId`. It
 contains one or more Part objects, which are granular containers for the actual
 content. This design allows A2A to be modality independent.
 
-The primary part kinds are:
+The `Part` object is a flexible container that can hold different types of content using a `oneof` field structure. A Part must contain exactly one of the following content fields:
 
-- `TextPart`: Contains plain textual content.
-- `FilePart`: Represents a file. It can be transmitted either inline (Base64
-   encoded) or through a URI. It includes metadata like "name" and "mimeType".
-- `DataPart`: Carries structured JSON data. This is useful for forms,
-   parameters, or any machine-readable information.
+- `text`: A string containing plain textual content.
+- `raw`: A byte array containing binary file data (inline).
+- `url`: A string URI referencing external file content.
+- `data`: A structured JSON value (e.g., object, array) for machine-readable data.
+
+Additionally, every `Part` can include:
+
+- `mediaType`: The MIME type of the content (e.g., `"text/plain"`, `"image/png"`, `"application/json"`).
+- `filename`: An optional name for the file or content.
+- `metadata`: A key-value map for additional context.
 
 ## Artifacts
 
