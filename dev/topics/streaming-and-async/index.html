@@ -1742,7 +1742,7 @@
 <p><strong>Server Capability:</strong> The A2A Server must indicate its support for streaming by setting <code>capabilities.streaming: true</code> in its Agent Card.</p>
 </li>
 <li>
-<p><strong>Initiating a Stream:</strong> The client uses the <code>message/stream</code> RPC method to send an initial message (for example, a prompt or command) and simultaneously subscribe to updates for that task.</p>
+<p><strong>Initiating a Stream:</strong> The client uses the <code>SendStreamingMessage</code> RPC method to send an initial message (for example, a prompt or command) and simultaneously subscribe to updates for that task.</p>
 </li>
 <li>
 <p><strong>Server Response and Connection:</strong> If the subscription is successful, the server responds with an HTTP 200 OK status and a <code>Content-Type: text/event-stream</code>. This HTTP connection remains open for the server to push events to the client.</p>
@@ -1759,7 +1759,7 @@
 <p><strong>Stream Termination:</strong> When a task reaches a terminal or interrupted state (e.g., <code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>REJECTED</code>, or <code>INPUT_REQUIRED</code>), the server closes the stream and sends no further updates.</p>
 </li>
 <li>
-<p><strong>Resubscription:</strong> If a client's SSE connection breaks prematurely while a task is still active, the client is able to attempt to reconnect to the stream using the <code>tasks/resubscribe</code> RPC method.</p>
+<p><strong>Resubscription:</strong> If a client's SSE connection breaks prematurely while a task is still active, the client is able to attempt to reconnect to the stream using the <code>SubscribeToTask</code> RPC method.</p>
 </li>
 </ul>
 <h3 id="when-to-use-streaming">When to Use Streaming<a class="headerlink" href="#when-to-use-streaming" title="Permanent link">&para;</a></h3>
@@ -1773,8 +1773,8 @@
 <h3 id="protocol-specification-references">Protocol Specification References<a class="headerlink" href="#protocol-specification-references" title="Permanent link">&para;</a></h3>
 <p>Refer to the Protocol Specification for detailed structures:</p>
 <ul>
-<li><a href="../../specification/#72-messagestream"><code>message/stream</code></a></li>
-<li><a href="../../specification/#79-taskssubscribe"><code>tasks/subscribe</code></a></li>
+<li><a href="../../specification/#72-messagestream"><code>SendStreamingMessage</code></a></li>
+<li><a href="../../specification/#79-taskssubscribe"><code>SubscribeToTask</code></a></li>
 </ul>
 <h2 id="push-notifications-for-disconnected-scenarios">Push Notifications for Disconnected Scenarios<a class="headerlink" href="#push-notifications-for-disconnected-scenarios" title="Permanent link">&para;</a></h2>
 <p>For very long-running tasks (for example, lasting minutes, hours, or even days) or when clients are unable to or prefer not to maintain persistent connections (like mobile clients or serverless functions), A2A supports asynchronous updates using push notifications. This allows the A2A Server to actively notify a client-provided webhook when a significant task update occurs.</p>
@@ -1782,14 +1782,14 @@
 <ul>
 <li><strong>Server Capability:</strong> The A2A Server must indicate its support for this feature by setting <code>capabilities.pushNotifications: true</code> in its Agent Card.</li>
 <li><strong>Configuration:</strong> The client provides a <a href="../../specification/#pushnotificationconfig"><code>PushNotificationConfig</code></a> to the server. This configuration is supplied:<ul>
-<li>Within the initial <code>message/send</code> or <code>message/stream</code> request, or</li>
-<li>Separately, using the <code>tasks/pushNotificationConfig/set</code> RPC method for an existing task.
+<li>Within the initial <code>SendMessage</code> or <code>SendStreamingMessage</code> request, or</li>
+<li>Separately, using the <code>CreateTaskPushNotificationConfig</code> RPC method for an existing task.
 The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS webhook URL), an optional <code>token</code> (for client-side validation), and optional <code>authentication</code> details (for the A2A Server to authenticate to the webhook).</li>
 </ul>
 </li>
 <li><strong>Notification Trigger:</strong> The A2A Server decides when to send a push notification, typically when a task reaches a significant state change (for example, terminal state, <code>input-required</code>, or <code>auth-required</code>).</li>
 <li><strong>Notification Payload:</strong> The A2A protocol defines the HTTP body payload as a <a href="../../specification/#323-stream-response"><code>StreamResponse</code></a> object, matching the format used in streaming operations. The payload contains one of: <code>task</code>, <code>message</code>, <code>statusUpdate</code>, or <code>artifactUpdate</code>. See <a href="../../specification/#pushnotificationpayload">Push Notification Payload</a> for detailed structure.</li>
-<li><strong>Client Action:</strong> Upon receiving a push notification (and successfully verifying its authenticity), the client typically uses the <code>tasks/get</code> RPC method with the <code>taskId</code> from the notification to retrieve the complete, updated <code>Task</code> object, including any new artifacts.</li>
+<li><strong>Client Action:</strong> Upon receiving a push notification (and successfully verifying its authenticity), the client typically uses the <code>GetTask</code> RPC method with the <code>taskId</code> from the notification to retrieve the complete, updated <code>Task</code> object, including any new artifacts.</li>
 </ul>
 <h3 id="when-to-use-push-notifications">When to Use Push Notifications<a class="headerlink" href="#when-to-use-push-notifications" title="Permanent link">&para;</a></h3>
 <p>Push notifications are ideal for:</p>
@@ -1801,8 +1801,8 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 <h3 id="protocol-specification-references_1">Protocol Specification References<a class="headerlink" href="#protocol-specification-references_1" title="Permanent link">&para;</a></h3>
 <p>Refer to the Protocol Specification for detailed structures:</p>
 <ul>
-<li><a href="../../specification/#317-create-push-notification-config"><code>tasks/pushNotificationConfig/create</code></a></li>
-<li><a href="../../specification/#76-taskspushnotificationconfigget"><code>tasks/get</code></a></li>
+<li><a href="../../specification/#317-create-push-notification-config"><code>CreateTaskPushNotificationConfig</code></a></li>
+<li><a href="../../specification/#76-taskspushnotificationconfigget"><code>GetTask</code></a></li>
 </ul>
 <h3 id="client-side-push-notification-service">Client-Side Push Notification Service<a class="headerlink" href="#client-side-push-notification-service" title="Permanent link">&para;</a></h3>
 <p>The <code>url</code> specified in <code>PushNotificationConfig.url</code> points to a client-side Push Notification Service. This service is responsible for receiving the HTTP POST notification from the A2A Server. Its responsibilities include authenticating the incoming notification, validating its relevance, and relaying the notification or its content to the appropriate client application logic or system.</p>

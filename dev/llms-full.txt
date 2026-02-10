@@ -3152,11 +3152,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "file": {
-          "name": "input_image.png",
-          "mediaType": "image/png",
-          "fileWithBytes": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-        }
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
+        "filename": "input_image.png",
+        "mediaType": "image/png"
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
@@ -3184,11 +3182,9 @@ Content-Type: application/a2a+json
         "name": "processed_image_with_faces.png",
         "parts": [
           {
-            "file": {
-              "name": "output.png",
-              "mediaType": "image/png",
-              "fileWithUri": "https://storage.example.com/processed/task-bbb/output.png?token=xyz"
-            }
+            "url": "https://storage.example.com/processed/task-bbb/output.png?token=xyz",
+            "filename": "output.png",
+            "mediaType": "image/png"
           }
         ]
       }
@@ -4868,11 +4864,9 @@ Objects now use the **JSON member name** itself to identify the type. The member
 
 ```json
 {
-  "file": {
-    "mediaType": "image/png",
-    "name": "diagram.png",
-    "fileWithBytes": "iVBORw0KGgo..."
-  }
+  "raw": "iVBORw0KGgo...",
+  "filename": "diagram.png",
+  "mediaType": "image/png"
 }
 ```
 
@@ -4884,7 +4878,7 @@ Objects now use the **JSON member name** itself to identify the type. The member
      - **Current:** `{ "text": "..." }` (direct string value)
    - **FilePart**:
      - **Legacy:** `{ "kind": "FilePart", "mimeType": "...", "name": "...", "fileWithBytes": "..." }`
-     - **Current:** `{ "file": { "mediaType": "...", "name": "...", "fileWithBytes": "..." } }`
+     - **Current:** `{ "raw": "...", "filename": "...", "mediaType": "..." }` (or `url` instead of `raw`)
    - **DataPart**:
      - **Legacy:** `{ "kind": "DataPart", "data": {...} }`
      - **Current:** `{ "data": { "data": {...} } }`
@@ -5230,7 +5224,7 @@ Agent Cards include sensitive information, such as:
 
 To mitigate risks, the following protection mechanisms should be considered:
 
-- **Authenticated Agent Cards:** We recommend the use of [authenticated extended agent cards](../specification.md#getextendedagentcard) for sensitive information or for serving a more detailed version of the card.
+- **Authenticated Agent Cards:** We recommend the use of [authenticated extended agent cards](../specification.md#3111-get-extended-agent-card) for sensitive information or for serving a more detailed version of the card.
 - **Secure Endpoints:** Implement access controls on the HTTP endpoint serving the Agent Card (e.g., `/.well-known/agent-card.json` or registry API). The methods include:
     - Mutual TLS (mTLS)
     - Network restrictions (e.g., IP ranges)
@@ -5564,14 +5558,13 @@ A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 519
 {
   "jsonrpc": "2.0",
-  "method": "message/send",
+  "method": "SendMessage",
   "id": "1",
   "params": {
     "message": {
-      "kind": "message",
       "messageId": "1",
-      "role": "user",
-      "parts": [{"kind": "text", "text": "Oh magic 8-ball, will it rain today?"}]
+      "role": "ROLE_USER",
+      "parts": [{"text": "Oh magic 8-ball, will it rain today?"}]
     },
     "metadata": {
       "https://example.com/ext/konami-code/v1/code": "motherlode"
@@ -5591,10 +5584,11 @@ Content-Length: 338
   "jsonrpc": "2.0",
   "id": "1",
   "result": {
-    "kind": "message",
-    "messageId": "2",
-    "role": "agent",
-    "parts": [{"kind": "text", "text": "That's a bingo!"}]
+    "message": {
+      "messageId": "2",
+      "role": "ROLE_AGENT",
+      "parts": [{"text": "That's a bingo!"}]
+    }
   }
 }
 ```
@@ -5735,13 +5729,18 @@ agent. It includes a role ("user" or "agent") and a unique `messageId`. It
 contains one or more Part objects, which are granular containers for the actual
 content. This design allows A2A to be modality independent.
 
-The primary part kinds are:
+The `Part` object is a flexible container that can hold different types of content using a `oneof` field structure. A Part must contain exactly one of the following content fields:
 
-- `TextPart`: Contains plain textual content.
-- `FilePart`: Represents a file. It can be transmitted either inline (Base64
-   encoded) or through a URI. It includes metadata like "name" and "mimeType".
-- `DataPart`: Carries structured JSON data. This is useful for forms,
-   parameters, or any machine-readable information.
+- `text`: A string containing plain textual content.
+- `raw`: A byte array containing binary file data (inline).
+- `url`: A string URI referencing external file content.
+- `data`: A structured JSON value (e.g., object, array) for machine-readable data.
+
+Additionally, every `Part` can include:
+
+- `mediaType`: The MIME type of the content (e.g., `"text/plain"`, `"image/png"`, `"application/json"`).
+- `filename`: An optional name for the file or content.
+- `metadata`: A key-value map for additional context.
 
 ## Artifacts
 
@@ -5938,7 +5937,7 @@ The following example illustrates a typical task flow with a follow-up:
         "id": "task-boat-gen-123",
         "contextId": "ctx-conversation-abc",
         "status": {
-          "state": "completed"
+          "state": "TASK_STATE_COMPLETED"
         },
         "artifacts": [
           {
@@ -5947,11 +5946,9 @@ The following example illustrates a typical task flow with a follow-up:
             "description": "A generated image of a sailboat on the ocean.",
             "parts": [
               {
-                "file": {
-                  "name": "sailboat_image.png",
-                  "mediaType": "image/png",
-                  "fileWithBytes": "base64_encoded_png_data_of_a_sailboat"
-                }
+                "filename": "sailboat_image.png",
+                "mediaType": "image/png",
+                "raw": "base64_encoded_png_data_of_a_sailboat"
               }
             ]
           }
@@ -5967,7 +5964,7 @@ The following example illustrates a typical task flow with a follow-up:
     {
       "jsonrpc": "2.0",
       "id": "req-002",
-      "method": "message.send",
+      "method": "SendMessage",
       "params": {
         "message": {
           "role": "user",
@@ -5998,7 +5995,7 @@ The following example illustrates a typical task flow with a follow-up:
         "id": "task-boat-color-456",
         "contextId": "ctx-conversation-abc",
         "status": {
-          "state": "completed"
+          "state": "TASK_STATE_COMPLETED"
         },
         "artifacts": [
           {
@@ -6007,11 +6004,9 @@ The following example illustrates a typical task flow with a follow-up:
             "description": "A generated image of a red sailboat on the ocean.",
             "parts": [
               {
-                "file": {
-                  "name": "sailboat_image.png",
-                  "mediaType": "image/png",
-                  "fileWithBytes": "base64_encoded_png_data_of_a_RED_sailboat"
-                }
+                "filename": "sailboat_image.png",
+                "mediaType": "image/png",
+                "raw": "base64_encoded_png_data_of_a_RED_sailboat"
               }
             ]
           }
@@ -6036,7 +6031,7 @@ The following key features detail how SSE streaming is implemented and managed w
 
 - **Server Capability:** The A2A Server must indicate its support for streaming by setting `capabilities.streaming: true` in its Agent Card.
 
-- **Initiating a Stream:** The client uses the `message/stream` RPC method to send an initial message (for example, a prompt or command) and simultaneously subscribe to updates for that task.
+- **Initiating a Stream:** The client uses the `SendStreamingMessage` RPC method to send an initial message (for example, a prompt or command) and simultaneously subscribe to updates for that task.
 
 - **Server Response and Connection:** If the subscription is successful, the server responds with an HTTP 200 OK status and a `Content-Type: text/event-stream`. This HTTP connection remains open for the server to push events to the client.
 
@@ -6048,7 +6043,7 @@ The following key features detail how SSE streaming is implemented and managed w
 
 - **Stream Termination:** When a task reaches a terminal or interrupted state (e.g., `COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`, or `INPUT_REQUIRED`), the server closes the stream and sends no further updates.
 
-- **Resubscription:** If a client's SSE connection breaks prematurely while a task is still active, the client is able to attempt to reconnect to the stream using the `tasks/resubscribe` RPC method.
+- **Resubscription:** If a client's SSE connection breaks prematurely while a task is still active, the client is able to attempt to reconnect to the stream using the `SubscribeToTask` RPC method.
 
 ### When to Use Streaming
 
@@ -6063,8 +6058,8 @@ Streaming with SSE is best suited for:
 
 Refer to the Protocol Specification for detailed structures:
 
-- [`message/stream`](../specification.md#72-messagestream)
-- [`tasks/subscribe`](../specification.md#79-taskssubscribe)
+- [`SendStreamingMessage`](../specification.md#72-messagestream)
+- [`SubscribeToTask`](../specification.md#79-taskssubscribe)
 
 ## Push Notifications for Disconnected Scenarios
 
@@ -6074,12 +6069,12 @@ The following key features detail how push notifications are implemented and man
 
 - **Server Capability:** The A2A Server must indicate its support for this feature by setting `capabilities.pushNotifications: true` in its Agent Card.
 - **Configuration:** The client provides a [`PushNotificationConfig`](../specification.md#pushnotificationconfig) to the server. This configuration is supplied:
-    - Within the initial `message/send` or `message/stream` request, or
-    - Separately, using the `tasks/pushNotificationConfig/set` RPC method for an existing task.
+    - Within the initial `SendMessage` or `SendStreamingMessage` request, or
+    - Separately, using the `CreateTaskPushNotificationConfig` RPC method for an existing task.
     The `PushNotificationConfig` includes a `url` (the HTTPS webhook URL), an optional `token` (for client-side validation), and optional `authentication` details (for the A2A Server to authenticate to the webhook).
 - **Notification Trigger:** The A2A Server decides when to send a push notification, typically when a task reaches a significant state change (for example, terminal state, `input-required`, or `auth-required`).
 - **Notification Payload:** The A2A protocol defines the HTTP body payload as a [`StreamResponse`](../specification.md#323-stream-response) object, matching the format used in streaming operations. The payload contains one of: `task`, `message`, `statusUpdate`, or `artifactUpdate`. See [Push Notification Payload](../specification.md#pushnotificationpayload) for detailed structure.
-- **Client Action:** Upon receiving a push notification (and successfully verifying its authenticity), the client typically uses the `tasks/get` RPC method with the `taskId` from the notification to retrieve the complete, updated `Task` object, including any new artifacts.
+- **Client Action:** Upon receiving a push notification (and successfully verifying its authenticity), the client typically uses the `GetTask` RPC method with the `taskId` from the notification to retrieve the complete, updated `Task` object, including any new artifacts.
 
 ### When to Use Push Notifications
 
@@ -6093,8 +6088,8 @@ Push notifications are ideal for:
 
 Refer to the Protocol Specification for detailed structures:
 
-- [`tasks/pushNotificationConfig/create`](../specification.md#317-create-push-notification-config)
-- [`tasks/get`](../specification.md#76-taskspushnotificationconfigget)
+- [`CreateTaskPushNotificationConfig`](../specification.md#317-create-push-notification-config)
+- [`GetTask`](../specification.md#76-taskspushnotificationconfigget)
 
 ### Client-Side Push Notification Service
 
@@ -6760,9 +6755,9 @@ The `id` fields in the output will vary with each run.
 
 ```console { .no-copy }
 // Non-streaming response
-{"jsonrpc":"2.0","id":"xxxxxxxx","result":{"type":"message","role":"agent","parts":[{"type":"text","text":"Hello World"}],"messageId":"yyyyyyyy"}}
+{"jsonrpc":"2.0","id":"xxxxxxxx","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"yyyyyyyy"}}}
 // Streaming response (one chunk)
-{"jsonrpc":"2.0","id":"zzzzzzzz","result":{"type":"message","role":"agent","parts":[{"type":"text","text":"Hello World"}],"messageId":"wwwwwwww"}}
+{"jsonrpc":"2.0","id":"zzzzzzzz","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"wwwwwwww"}}}
 ```
 
 _(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww` will be different UUIDs/request IDs)_
