@@ -6569,7 +6569,7 @@
 <tr>
 <td><code>historyLength</code></td>
 <td><code>integer</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>The maximum number of most recent messages from the task's history to retrieve. An unset value means the client does not impose any limit. A value of zero is a request to not include any messages. The server MUST NOT return more messages than the provided value, but MAY apply a lower limit.</td>
 </tr>
 </tbody>
@@ -6618,7 +6618,7 @@
 <tr>
 <td><code>pageSize</code></td>
 <td><code>integer</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified.</td>
 </tr>
 <tr>
@@ -6630,7 +6630,7 @@
 <tr>
 <td><code>historyLength</code></td>
 <td><code>integer</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>The maximum number of messages to include in each task's history.</td>
 </tr>
 <tr>
@@ -6642,14 +6642,14 @@
 <tr>
 <td><code>includeArtifacts</code></td>
 <td><code>boolean</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>Whether to include artifacts in the returned tasks. Defaults to false to reduce payload size.</td>
 </tr>
 </tbody>
 </table>
 <p>When <code>includeArtifacts</code> is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When <code>includeArtifacts</code> is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).</p>
 <p><strong>Outputs:</strong></p>
-<p>Result object for tasks/list method containing an array of tasks and pagination information.</p>
+<p>Result object for <code>ListTasks</code> method containing an array of tasks and pagination information.</p>
 <table>
 <thead>
 <tr>
@@ -6913,7 +6913,7 @@
 <td><code>pageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A page token received from a previous ListTaskPushNotificationConfigRequest call.</td>
+<td>A page token received from a previous <code>ListTaskPushNotificationConfigRequest</code> call.</td>
 </tr>
 </tbody>
 </table>
@@ -7100,7 +7100,7 @@
 <tr>
 <td><code>historyLength</code></td>
 <td><code>integer</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>The maximum number of most recent messages from the task's history to retrieve in the response. An unset value means the client does not impose any limit. A value of zero is a request to not include any messages. The server MUST NOT return more messages than the provided value, but MAY apply a lower limit.</td>
 </tr>
 <tr>
@@ -7144,30 +7144,30 @@
 <tr>
 <td><code>task</code></td>
 <td><a href="#task"><code>Task</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>A Task object containing the current state of the task.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
 <td><a href="#message"><code>Message</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>A Message object containing a message from the agent.</td>
 </tr>
 <tr>
 <td><code>statusUpdate</code></td>
 <td><a href="#taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>An event indicating a task status update.</td>
 </tr>
 <tr>
 <td><code>artifactUpdate</code></td>
 <td><a href="#taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>An event indicating a task artifact update.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> A StreamResponse MUST contain exactly one of the following: <code>task</code>, <code>message</code>, <code>statusUpdate</code>, <code>artifactUpdate</code></p>
+<p><strong>Note:</strong> A <code>StreamResponse</code> MUST contain exactly one of the following: <code>task</code>, <code>message</code>, <code>statusUpdate</code>, <code>artifactUpdate</code></p>
 <p>This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.</p>
 <h4 id="324-history-length-semantics">3.2.4. History Length Semantics<a class="headerlink" href="#324-history-length-semantics" title="Permanent link">&para;</a></h4>
 <p>The <code>historyLength</code> parameter appears in multiple operations and controls how much task history is returned in responses. This parameter follows consistent semantics across all operations:</p>
@@ -7567,56 +7567,56 @@
 </table>
 <p><a id="TaskState"></a></p>
 <h4 id="413-taskstate">4.1.3. TaskState<a class="headerlink" href="#413-taskstate" title="Permanent link">&para;</a></h4>
-<p>Defines the possible lifecycle states of a Task.</p>
+<p>Defines the possible lifecycle states of a <code>Task</code>.</p>
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Value</th>
-<th style="text-align: left;">Description</th>
+<th>Value</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_UNSPECIFIED</code></td>
-<td style="text-align: left;">The task is in an unknown or indeterminate state.</td>
+<td><code>TASK_STATE_UNSPECIFIED</code></td>
+<td>The task is in an unknown or indeterminate state.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_SUBMITTED</code></td>
-<td style="text-align: left;">Represents the status that acknowledges a task is created.</td>
+<td><code>TASK_STATE_SUBMITTED</code></td>
+<td>Represents the status that acknowledges a task is created.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_WORKING</code></td>
-<td style="text-align: left;">Represents the status that a task is actively being processed.</td>
+<td><code>TASK_STATE_WORKING</code></td>
+<td>Represents the status that a task is actively being processed.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_COMPLETED</code></td>
-<td style="text-align: left;">Represents the status a task is finished. This is a terminal state.</td>
+<td><code>TASK_STATE_COMPLETED</code></td>
+<td>Represents the status a task is finished. This is a terminal state.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_FAILED</code></td>
-<td style="text-align: left;">Represents the status a task is done but failed. This is a terminal state.</td>
+<td><code>TASK_STATE_FAILED</code></td>
+<td>Represents the status a task is done but failed. This is a terminal state.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_CANCELED</code></td>
-<td style="text-align: left;">Represents the status a task was canceled before it finished. This is a terminal state.</td>
+<td><code>TASK_STATE_CANCELED</code></td>
+<td>Represents the status a task was canceled before it finished. This is a terminal state.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_INPUT_REQUIRED</code></td>
-<td style="text-align: left;">Represents the status that the task requires information to complete. This is an interrupted state.</td>
+<td><code>TASK_STATE_INPUT_REQUIRED</code></td>
+<td>Represents the status that the task requires information to complete. This is an interrupted state.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_REJECTED</code></td>
-<td style="text-align: left;">Represents the status that the agent has decided to not perform the task. This may be done during initial task creation or later once an agent has determined it can't or won't proceed. This is a terminal state.</td>
+<td><code>TASK_STATE_REJECTED</code></td>
+<td>Represents the status that the agent has decided to not perform the task. This may be done during initial task creation or later once an agent has determined it can't or won't proceed. This is a terminal state.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>TASK_STATE_AUTH_REQUIRED</code></td>
-<td style="text-align: left;">Represents the state that some authentication is needed from the upstream client. This is an interrupted state. Authentication is expected to come out-of-band.</td>
+<td><code>TASK_STATE_AUTH_REQUIRED</code></td>
+<td>Represents the state that some authentication is needed from the upstream client. This is an interrupted state. Authentication is expected to come out-of-band.</td>
 </tr>
 </tbody>
 </table>
 <p><a id="Message"></a></p>
 <h4 id="414-message">4.1.4. Message<a class="headerlink" href="#414-message" title="Permanent link">&para;</a></h4>
-<p>Message is one unit of communication between client and server. It can be associated with a context and/or a task. For server messages, context_id must be provided, and task_id only if a task was created. For client messages, both fields are optional, with the caveat that if both are provided, they have to match (the context_id has to be the one that is set on the task). If only task_id is provided, the server will infer context_id from it.</p>
+<p>Message is one unit of communication between client and server. It can be associated with a context and/or a task. For server messages, <code>context_id</code> must be provided, and <code>task_id</code> only if a task was created. For client messages, both fields are optional, with the caveat that if both are provided, they have to match (the <code>context_id</code> has to be the one that is set on the task). If only <code>task_id</code> is provided, the server will infer <code>context_id</code> from it.</p>
 <table>
 <thead>
 <tr>
@@ -7683,22 +7683,22 @@
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Value</th>
-<th style="text-align: left;">Description</th>
+<th>Value</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><code>ROLE_UNSPECIFIED</code></td>
-<td style="text-align: left;"></td>
+<td><code>ROLE_UNSPECIFIED</code></td>
+<td></td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>ROLE_USER</code></td>
-<td style="text-align: left;">USER role refers to communication from the client to the server.</td>
+<td><code>ROLE_USER</code></td>
+<td>USER role refers to communication from the client to the server.</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>ROLE_AGENT</code></td>
-<td style="text-align: left;">AGENT role refers to communication from the server to the client.</td>
+<td><code>ROLE_AGENT</code></td>
+<td>AGENT role refers to communication from the server to the client.</td>
 </tr>
 </tbody>
 </table>
@@ -7718,25 +7718,25 @@
 <tr>
 <td><code>text</code></td>
 <td><code>string</code></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>The string content of the text part.</td>
 </tr>
 <tr>
 <td><code>raw</code></td>
 <td><code>bytes</code></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.</td>
 </tr>
 <tr>
 <td><code>url</code></td>
 <td><code>string</code></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>A URL pointing to the file's content.</td>
 </tr>
 <tr>
 <td><code>data</code></td>
-<td><a href="#google.protobuf.value"><code>google.protobuf.Value</code></a></td>
-<td>No</td>
+<td><code>any</code></td>
+<td>Optional (OneOf)</td>
 <td>Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null).</td>
 </tr>
 <tr>
@@ -7759,7 +7759,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> A Part MUST contain exactly one of the following: <code>text</code>, <code>raw</code>, <code>url</code>, <code>data</code></p>
+<p><strong>Note:</strong> A <code>Part</code> MUST contain exactly one of the following: <code>text</code>, <code>raw</code>, <code>url</code>, <code>data</code></p>
 <p><a id="Artifact"></a></p>
 <h4 id="417-artifact">4.1.7. Artifact<a class="headerlink" href="#417-artifact" title="Permanent link">&para;</a></h4>
 <p>Artifacts represent task outputs.</p>
@@ -7853,7 +7853,7 @@
 </table>
 <p><a id="TaskArtifactUpdateEvent"></a></p>
 <h4 id="422-taskartifactupdateevent">4.2.2. TaskArtifactUpdateEvent<a class="headerlink" href="#422-taskartifactupdateevent" title="Permanent link">&para;</a></h4>
-<p>TaskArtifactUpdateEvent represents a task delta where an artifact has been generated.</p>
+<p>A task delta where an artifact has been generated.</p>
 <table>
 <thead>
 <tr>
@@ -8012,7 +8012,7 @@
 <h3 id="44-agent-discovery-objects">4.4. Agent Discovery Objects<a class="headerlink" href="#44-agent-discovery-objects" title="Permanent link">&para;</a></h3>
 <p><a id="AgentCard"></a></p>
 <h4 id="441-agentcard">4.4.1. AgentCard<a class="headerlink" href="#441-agentcard" title="Permanent link">&para;</a></h4>
-<p>AgentCard is a self-describing manifest for an agent. It provides essential metadata including the agent's identity, capabilities, skills, supported communication methods, and security requirements.</p>
+<p>A self-describing manifest for an agent. It provides essential metadata including the agent's identity, capabilities, skills, supported communication methods, and security requirements.</p>
 <table>
 <thead>
 <tr>
@@ -8056,7 +8056,7 @@
 <tr>
 <td><code>documentationUrl</code></td>
 <td><code>string</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>A url to provide additional documentation about the agent.</td>
 </tr>
 <tr>
@@ -8067,7 +8067,7 @@
 </tr>
 <tr>
 <td><code>securitySchemes</code></td>
-<td>map of <a href="#securityscheme"><code>SecurityScheme</code></a></td>
+<td>map of string to <a href="#securityscheme"><code>SecurityScheme</code></a></td>
 <td>No</td>
 <td>The security scheme details used for authenticating with this agent.</td>
 </tr>
@@ -8104,7 +8104,7 @@
 <tr>
 <td><code>iconUrl</code></td>
 <td><code>string</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>An optional URL to an icon for the agent.</td>
 </tr>
 </tbody>
@@ -8152,13 +8152,13 @@
 <tr>
 <td><code>streaming</code></td>
 <td><code>boolean</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>Indicates if the agent supports streaming responses.</td>
 </tr>
 <tr>
 <td><code>pushNotifications</code></td>
 <td><code>boolean</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>Indicates if the agent supports sending push notifications for asynchronous task updates.</td>
 </tr>
 <tr>
@@ -8170,7 +8170,7 @@
 <tr>
 <td><code>extendedAgentCard</code></td>
 <td><code>boolean</code></td>
-<td>Optional</td>
+<td>No</td>
 <td>Indicates if the agent supports providing an extended agent card when authenticated.</td>
 </tr>
 </tbody>
@@ -8367,36 +8367,36 @@
 <tr>
 <td><code>apiKeySecurityScheme</code></td>
 <td><a href="#apikeysecurityscheme"><code>APIKeySecurityScheme</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>API key-based authentication.</td>
 </tr>
 <tr>
 <td><code>httpAuthSecurityScheme</code></td>
 <td><a href="#httpauthsecurityscheme"><code>HTTPAuthSecurityScheme</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>HTTP authentication (Basic, Bearer, etc.).</td>
 </tr>
 <tr>
 <td><code>oauth2SecurityScheme</code></td>
 <td><a href="#oauth2securityscheme"><code>OAuth2SecurityScheme</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>OAuth 2.0 authentication.</td>
 </tr>
 <tr>
 <td><code>openIdConnectSecurityScheme</code></td>
 <td><a href="#openidconnectsecurityscheme"><code>OpenIdConnectSecurityScheme</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>OpenID Connect authentication.</td>
 </tr>
 <tr>
 <td><code>mtlsSecurityScheme</code></td>
 <td><a href="#mutualtlssecurityscheme"><code>MutualTlsSecurityScheme</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>Mutual TLS authentication.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> A SecurityScheme MUST contain exactly one of the following: <code>apiKeySecurityScheme</code>, <code>httpAuthSecurityScheme</code>, <code>oauth2SecurityScheme</code>, <code>openIdConnectSecurityScheme</code>, <code>mtlsSecurityScheme</code></p>
+<p><strong>Note:</strong> A <code>SecurityScheme</code> MUST contain exactly one of the following: <code>apiKeySecurityScheme</code>, <code>httpAuthSecurityScheme</code>, <code>oauth2SecurityScheme</code>, <code>openIdConnectSecurityScheme</code>, <code>mtlsSecurityScheme</code></p>
 <p><a id="APIKeySecurityScheme"></a></p>
 <h4 id="452-apikeysecurityscheme">4.5.2. APIKeySecurityScheme<a class="headerlink" href="#452-apikeysecurityscheme" title="Permanent link">&para;</a></h4>
 <p>Defines a security scheme using an API key.</p>
@@ -8560,36 +8560,36 @@
 <tr>
 <td><code>authorizationCode</code></td>
 <td><a href="#authorizationcodeoauthflow"><code>AuthorizationCodeOAuthFlow</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>Configuration for the OAuth Authorization Code flow.</td>
 </tr>
 <tr>
 <td><code>clientCredentials</code></td>
 <td><a href="#clientcredentialsoauthflow"><code>ClientCredentialsOAuthFlow</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>Configuration for the OAuth Client Credentials flow.</td>
 </tr>
 <tr>
 <td><code>implicit</code></td>
 <td><a href="#implicitoauthflow"><code>ImplicitOAuthFlow</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td></td>
 </tr>
 <tr>
 <td><code>password</code></td>
 <td><a href="#passwordoauthflow"><code>PasswordOAuthFlow</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td></td>
 </tr>
 <tr>
 <td><code>deviceCode</code></td>
 <td><a href="#devicecodeoauthflow"><code>DeviceCodeOAuthFlow</code></a></td>
-<td>No</td>
+<td>Optional (OneOf)</td>
 <td>Configuration for the OAuth Device Code flow.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Note:</strong> A OAuthFlows MUST contain exactly one of the following: <code>authorizationCode</code>, <code>clientCredentials</code>, <code>implicit</code>, <code>password</code>, <code>deviceCode</code></p>
+<p><strong>Note:</strong> A <code>OAuthFlows</code> MUST contain exactly one of the following: <code>authorizationCode</code>, <code>clientCredentials</code>, <code>implicit</code>, <code>password</code>, <code>deviceCode</code></p>
 <p><a id="AuthorizationCodeOAuthFlow"></a></p>
 <h4 id="458-authorizationcodeoauthflow">4.5.8. AuthorizationCodeOAuthFlow<a class="headerlink" href="#458-authorizationcodeoauthflow" title="Permanent link">&para;</a></h4>
 <p>Defines configuration details for the OAuth 2.0 Authorization Code flow.</p>
@@ -8623,7 +8623,7 @@
 </tr>
 <tr>
 <td><code>scopes</code></td>
-<td>map of <code>string</code></td>
+<td>map of string to <code>string</code></td>
 <td>Yes</td>
 <td>The available scopes for the OAuth2 security scheme.</td>
 </tr>
@@ -8662,7 +8662,7 @@
 </tr>
 <tr>
 <td><code>scopes</code></td>
-<td>map of <code>string</code></td>
+<td>map of string to <code>string</code></td>
 <td>Yes</td>
 <td>The available scopes for the OAuth2 security scheme.</td>
 </tr>
@@ -8701,7 +8701,7 @@
 </tr>
 <tr>
 <td><code>scopes</code></td>
-<td>map of <code>string</code></td>
+<td>map of string to <code>string</code></td>
 <td>Yes</td>
 <td>The available scopes for the OAuth2 security scheme.</td>
 </tr>
@@ -10088,238 +10088,623 @@
 <li>Service parameter keys in metadata are normalized to lowercase per gRPC conventions</li>
 </ul>
 <h3 id="103-service-definition">10.3. Service Definition<a class="headerlink" href="#103-service-definition" title="Permanent link">&para;</a></h3>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="kd">service</span><span class="w"> </span><span class="n">A2AService</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">SendMessage</span><span class="p">(</span><span class="n">SendMessageRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">SendMessageResponse</span><span class="p">);</span>
-</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">SendStreamingMessage</span><span class="p">(</span><span class="n">SendMessageRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">stream</span><span class="w"> </span><span class="n">StreamResponse</span><span class="p">);</span>
-</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">GetTask</span><span class="p">(</span><span class="n">GetTaskRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">Task</span><span class="p">);</span>
-</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">ListTasks</span><span class="p">(</span><span class="n">ListTasksRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">ListTasksResponse</span><span class="p">);</span>
-</span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">CancelTask</span><span class="p">(</span><span class="n">CancelTaskRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">Task</span><span class="p">);</span>
-</span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">SubscribeToTask</span><span class="p">(</span><span class="n">SubscribeToTaskRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">stream</span><span class="w"> </span><span class="n">StreamResponse</span><span class="p">);</span>
-</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">CreateTaskPushNotificationConfig</span><span class="p">(</span><span class="n">CreateTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">TaskPushNotificationConfig</span><span class="p">);</span>
-</span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">GetTaskPushNotificationConfig</span><span class="p">(</span><span class="n">GetTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">TaskPushNotificationConfig</span><span class="p">);</span>
-</span><span id="__span-54-10"><a id="__codelineno-54-10" name="__codelineno-54-10" href="#__codelineno-54-10"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">ListTaskPushNotificationConfig</span><span class="p">(</span><span class="n">ListTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">ListTaskPushNotificationConfigResponse</span><span class="p">);</span>
-</span><span id="__span-54-11"><a id="__codelineno-54-11" name="__codelineno-54-11" href="#__codelineno-54-11"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">DeleteTaskPushNotificationConfig</span><span class="p">(</span><span class="n">DeleteTaskPushNotificationConfigRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">google.protobuf.Empty</span><span class="p">);</span>
-</span><span id="__span-54-12"><a id="__codelineno-54-12" name="__codelineno-54-12" href="#__codelineno-54-12"></a><span class="w">  </span><span class="k">rpc</span><span class="w"> </span><span class="n">GetExtendedAgentCard</span><span class="p">(</span><span class="n">GetExtendedAgentCardRequest</span><span class="p">)</span><span class="w"> </span><span class="k">returns</span><span class="w"> </span><span class="p">(</span><span class="n">AgentCard</span><span class="p">);</span>
-</span><span id="__span-54-13"><a id="__codelineno-54-13" name="__codelineno-54-13" href="#__codelineno-54-13"></a><span class="p">}</span>
-</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Request</th>
+<th>Response</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SendMessage</code></td>
+<td><a href="#sendmessagerequest"><code>SendMessageRequest</code></a></td>
+<td><a href="#sendmessageresponse"><code>SendMessageResponse</code></a></td>
+<td>Send a message to the agent.</td>
+</tr>
+<tr>
+<td><code>SendStreamingMessage</code></td>
+<td><a href="#sendmessagerequest"><code>SendMessageRequest</code></a></td>
+<td>stream <a href="#streamresponse"><code>StreamResponse</code></a></td>
+<td>SendStreamingMessage is a streaming version of SendMessage.</td>
+</tr>
+<tr>
+<td><code>GetTask</code></td>
+<td><a href="#gettaskrequest"><code>GetTaskRequest</code></a></td>
+<td><a href="#task"><code>Task</code></a></td>
+<td>Get the current state of a task from the agent.</td>
+</tr>
+<tr>
+<td><code>ListTasks</code></td>
+<td><a href="#listtasksrequest"><code>ListTasksRequest</code></a></td>
+<td><a href="#listtasksresponse"><code>ListTasksResponse</code></a></td>
+<td>List tasks with optional filtering and pagination.</td>
+</tr>
+<tr>
+<td><code>CancelTask</code></td>
+<td><a href="#canceltaskrequest"><code>CancelTaskRequest</code></a></td>
+<td><a href="#task"><code>Task</code></a></td>
+<td>Cancel a task.</td>
+</tr>
+<tr>
+<td><code>SubscribeToTask</code></td>
+<td><a href="#subscribetotaskrequest"><code>SubscribeToTaskRequest</code></a></td>
+<td>stream <a href="#streamresponse"><code>StreamResponse</code></a></td>
+<td>SubscribeToTask allows subscribing to task updates for tasks not in terminal state. Returns UnsupportedOperationError if task is in terminal state (completed, failed, canceled, rejected).</td>
+</tr>
+<tr>
+<td><code>CreateTaskPushNotificationConfig</code></td>
+<td><a href="#createtaskpushnotificationconfigrequest"><code>CreateTaskPushNotificationConfigRequest</code></a></td>
+<td><a href="#taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a></td>
+<td>Create a push notification config for a task.</td>
+</tr>
+<tr>
+<td><code>GetTaskPushNotificationConfig</code></td>
+<td><a href="#gettaskpushnotificationconfigrequest"><code>GetTaskPushNotificationConfigRequest</code></a></td>
+<td><a href="#taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a></td>
+<td>Get a push notification config for a task.</td>
+</tr>
+<tr>
+<td><code>ListTaskPushNotificationConfig</code></td>
+<td><a href="#listtaskpushnotificationconfigrequest"><code>ListTaskPushNotificationConfigRequest</code></a></td>
+<td><a href="#listtaskpushnotificationconfigresponse"><code>ListTaskPushNotificationConfigResponse</code></a></td>
+<td>Get a list of push notifications configured for a task.</td>
+</tr>
+<tr>
+<td><code>GetExtendedAgentCard</code></td>
+<td><a href="#getextendedagentcardrequest"><code>GetExtendedAgentCardRequest</code></a></td>
+<td><a href="#agentcard"><code>AgentCard</code></a></td>
+<td>GetExtendedAgentCard returns the extended agent card for authenticated agents.</td>
+</tr>
+<tr>
+<td><code>DeleteTaskPushNotificationConfig</code></td>
+<td><a href="#deletetaskpushnotificationconfigrequest"><code>DeleteTaskPushNotificationConfigRequest</code></a></td>
+<td><code>empty</code></td>
+<td>Delete a push notification config for a task.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="104-core-methods">10.4. Core Methods<a class="headerlink" href="#104-core-methods" title="Permanent link">&para;</a></h3>
 <h4 id="1041-sendmessage">10.4.1. SendMessage<a class="headerlink" href="#1041-sendmessage" title="Permanent link">&para;</a></h4>
 <p>Sends a message to an agent.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="c1">// Represents a request for the `SendMessage` method.</span>
-</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SendMessageRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-55-5"><a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a><span class="w">  </span><span class="c1">// The message to send to the agent.</span>
-</span><span id="__span-55-6"><a id="__codelineno-55-6" name="__codelineno-55-6" href="#__codelineno-55-6"></a><span class="w">  </span><span class="n">Message</span><span class="w"> </span><span class="kd">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-55-7"><a id="__codelineno-55-7" name="__codelineno-55-7" href="#__codelineno-55-7"></a><span class="w">  </span><span class="c1">// Configuration for the send request.</span>
-</span><span id="__span-55-8"><a id="__codelineno-55-8" name="__codelineno-55-8" href="#__codelineno-55-8"></a><span class="w">  </span><span class="n">SendMessageConfiguration</span><span class="w"> </span><span class="na">configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-55-9"><a id="__codelineno-55-9" name="__codelineno-55-9" href="#__codelineno-55-9"></a><span class="w">  </span><span class="c1">// A flexible key-value map for passing additional context or parameters.</span>
-</span><span id="__span-55-10"><a id="__codelineno-55-10" name="__codelineno-55-10" href="#__codelineno-55-10"></a><span class="w">  </span><span class="n">google.protobuf.Struct</span><span class="w"> </span><span class="na">metadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-55-11"><a id="__codelineno-55-11" name="__codelineno-55-11" href="#__codelineno-55-11"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Represents a request for the <code>SendMessage</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><a href="#message"><code>Message</code></a></td>
+<td>Yes</td>
+<td>The message to send to the agent.</td>
+</tr>
+<tr>
+<td><code>configuration</code></td>
+<td><a href="#sendmessageconfiguration"><code>SendMessageConfiguration</code></a></td>
+<td>No</td>
+<td>Configuration for the send request.</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>object</code></td>
+<td>No</td>
+<td>A flexible key-value map for passing additional context or parameters.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SendMessageResponse</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a><span class="w">  </span><span class="k">oneof</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="na">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a><span class="w">    </span><span class="n">Message</span><span class="w"> </span><span class="kd">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-56-6"><a id="__codelineno-56-6" name="__codelineno-56-6" href="#__codelineno-56-6"></a><span class="p">}</span>
-</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>task</code></td>
+<td><a href="#task"><code>Task</code></a></td>
+<td>Optional (OneOf)</td>
+<td></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><a href="#message"><code>Message</code></a></td>
+<td>Optional (OneOf)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> A <code>SendMessageResponse</code> MUST contain exactly one of the following: <code>task</code>, <code>message</code></p>
 <h4 id="1042-sendstreamingmessage">10.4.2. SendStreamingMessage<a class="headerlink" href="#1042-sendstreamingmessage" title="Permanent link">&para;</a></h4>
 <p>Sends a message with streaming updates.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="c1">// Represents a request for the `SendMessage` method.</span>
-</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SendMessageRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-57-5"><a id="__codelineno-57-5" name="__codelineno-57-5" href="#__codelineno-57-5"></a><span class="w">  </span><span class="c1">// The message to send to the agent.</span>
-</span><span id="__span-57-6"><a id="__codelineno-57-6" name="__codelineno-57-6" href="#__codelineno-57-6"></a><span class="w">  </span><span class="n">Message</span><span class="w"> </span><span class="kd">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-57-7"><a id="__codelineno-57-7" name="__codelineno-57-7" href="#__codelineno-57-7"></a><span class="w">  </span><span class="c1">// Configuration for the send request.</span>
-</span><span id="__span-57-8"><a id="__codelineno-57-8" name="__codelineno-57-8" href="#__codelineno-57-8"></a><span class="w">  </span><span class="n">SendMessageConfiguration</span><span class="w"> </span><span class="na">configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-57-9"><a id="__codelineno-57-9" name="__codelineno-57-9" href="#__codelineno-57-9"></a><span class="w">  </span><span class="c1">// A flexible key-value map for passing additional context or parameters.</span>
-</span><span id="__span-57-10"><a id="__codelineno-57-10" name="__codelineno-57-10" href="#__codelineno-57-10"></a><span class="w">  </span><span class="n">google.protobuf.Struct</span><span class="w"> </span><span class="na">metadata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-57-11"><a id="__codelineno-57-11" name="__codelineno-57-11" href="#__codelineno-57-11"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Represents a request for the <code>SendMessage</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><a href="#message"><code>Message</code></a></td>
+<td>Yes</td>
+<td>The message to send to the agent.</td>
+</tr>
+<tr>
+<td><code>configuration</code></td>
+<td><a href="#sendmessageconfiguration"><code>SendMessageConfiguration</code></a></td>
+<td>No</td>
+<td>Configuration for the send request.</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>object</code></td>
+<td>No</td>
+<td>A flexible key-value map for passing additional context or parameters.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> Server streaming <a href="#stream-response"><code>StreamResponse</code></a> objects.</p>
 <h4 id="1043-gettask">10.4.3. GetTask<a class="headerlink" href="#1043-gettask" title="Permanent link">&para;</a></h4>
 <p>Retrieves task status.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="c1">// Represents a request for the `GetTask` method.</span>
-</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">GetTaskRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="w">  </span><span class="c1">// The resource id of the task.</span>
-</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="w">  </span><span class="c1">// The maximum number of most recent messages from the task&#39;s history to retrieve. An</span>
-</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="w">  </span><span class="c1">// unset value means the client does not impose any limit. A value of zero is</span>
-</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="w">  </span><span class="c1">// a request to not include any messages. The server MUST NOT return more</span>
-</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a><span class="w">  </span><span class="c1">// messages than the provided value, but MAY apply a lower limit.</span>
-</span><span id="__span-58-11"><a id="__codelineno-58-11" name="__codelineno-58-11" href="#__codelineno-58-11"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">history_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-58-12"><a id="__codelineno-58-12" name="__codelineno-58-12" href="#__codelineno-58-12"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Represents a request for the <code>GetTask</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource id of the task.</td>
+</tr>
+<tr>
+<td><code>historyLength</code></td>
+<td><code>integer</code></td>
+<td>No</td>
+<td>The maximum number of most recent messages from the task's history to retrieve. An unset value means the client does not impose any limit. A value of zero is a request to not include any messages. The server MUST NOT return more messages than the provided value, but MAY apply a lower limit.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> See <a href="#411-task"><code>Task</code></a> object definition.</p>
 <h4 id="1044-listtasks">10.4.4. ListTasks<a class="headerlink" href="#1044-listtasks" title="Permanent link">&para;</a></h4>
 <p>Lists tasks with filtering.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="c1">// Parameters for listing tasks with optional filtering criteria.</span>
-</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">ListTasksRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-59-3"><a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-59-4"><a id="__codelineno-59-4" name="__codelineno-59-4" href="#__codelineno-59-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span>
-</span><span id="__span-59-5"><a id="__codelineno-59-5" name="__codelineno-59-5" href="#__codelineno-59-5"></a><span class="w">  </span><span class="c1">// Filter tasks by context ID to get tasks from a specific conversation or session.</span>
-</span><span id="__span-59-6"><a id="__codelineno-59-6" name="__codelineno-59-6" href="#__codelineno-59-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">context_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-59-7"><a id="__codelineno-59-7" name="__codelineno-59-7" href="#__codelineno-59-7"></a><span class="w">  </span><span class="c1">// Filter tasks by their current status state.</span>
-</span><span id="__span-59-8"><a id="__codelineno-59-8" name="__codelineno-59-8" href="#__codelineno-59-8"></a><span class="w">  </span><span class="n">TaskState</span><span class="w"> </span><span class="na">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-59-9"><a id="__codelineno-59-9" name="__codelineno-59-9" href="#__codelineno-59-9"></a><span class="w">  </span><span class="c1">// Maximum number of tasks to return. Must be between 1 and 100.</span>
-</span><span id="__span-59-10"><a id="__codelineno-59-10" name="__codelineno-59-10" href="#__codelineno-59-10"></a><span class="w">  </span><span class="c1">// Defaults to 50 if not specified.</span>
-</span><span id="__span-59-11"><a id="__codelineno-59-11" name="__codelineno-59-11" href="#__codelineno-59-11"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">page_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-59-12"><a id="__codelineno-59-12" name="__codelineno-59-12" href="#__codelineno-59-12"></a><span class="w">  </span><span class="c1">// Token for pagination. Use the next_page_token from a previous ListTasksResponse.</span>
-</span><span id="__span-59-13"><a id="__codelineno-59-13" name="__codelineno-59-13" href="#__codelineno-59-13"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">page_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-59-14"><a id="__codelineno-59-14" name="__codelineno-59-14" href="#__codelineno-59-14"></a><span class="w">  </span><span class="c1">// The maximum number of messages to include in each task&#39;s history.</span>
-</span><span id="__span-59-15"><a id="__codelineno-59-15" name="__codelineno-59-15" href="#__codelineno-59-15"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">int32</span><span class="w"> </span><span class="na">history_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
-</span><span id="__span-59-16"><a id="__codelineno-59-16" name="__codelineno-59-16" href="#__codelineno-59-16"></a><span class="w">  </span><span class="c1">// Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., &quot;2023-10-27T10:00:00Z&quot;).</span>
-</span><span id="__span-59-17"><a id="__codelineno-59-17" name="__codelineno-59-17" href="#__codelineno-59-17"></a><span class="w">  </span><span class="c1">// Only tasks with a status timestamp time greater than or equal to this value will be returned.</span>
-</span><span id="__span-59-18"><a id="__codelineno-59-18" name="__codelineno-59-18" href="#__codelineno-59-18"></a><span class="w">  </span><span class="n">google.protobuf.Timestamp</span><span class="w"> </span><span class="na">status_timestamp_after</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span>
-</span><span id="__span-59-19"><a id="__codelineno-59-19" name="__codelineno-59-19" href="#__codelineno-59-19"></a><span class="w">  </span><span class="c1">// Whether to include artifacts in the returned tasks.</span>
-</span><span id="__span-59-20"><a id="__codelineno-59-20" name="__codelineno-59-20" href="#__codelineno-59-20"></a><span class="w">  </span><span class="c1">// Defaults to false to reduce payload size.</span>
-</span><span id="__span-59-21"><a id="__codelineno-59-21" name="__codelineno-59-21" href="#__codelineno-59-21"></a><span class="w">  </span><span class="k">optional</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="na">include_artifacts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">7</span><span class="p">;</span>
-</span><span id="__span-59-22"><a id="__codelineno-59-22" name="__codelineno-59-22" href="#__codelineno-59-22"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Parameters for listing tasks with optional filtering criteria.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>contextId</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Filter tasks by context ID to get tasks from a specific conversation or session.</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><a href="#taskstate"><code>TaskState</code></a></td>
+<td>No</td>
+<td>Filter tasks by their current status state.</td>
+</tr>
+<tr>
+<td><code>pageSize</code></td>
+<td><code>integer</code></td>
+<td>No</td>
+<td>Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified.</td>
+</tr>
+<tr>
+<td><code>pageToken</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Token for pagination. Use the next_page_token from a previous ListTasksResponse.</td>
+</tr>
+<tr>
+<td><code>historyLength</code></td>
+<td><code>integer</code></td>
+<td>No</td>
+<td>The maximum number of messages to include in each task's history.</td>
+</tr>
+<tr>
+<td><code>statusTimestampAfter</code></td>
+<td><code>timestamp</code></td>
+<td>No</td>
+<td>Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z"). Only tasks with a status timestamp time greater than or equal to this value will be returned.</td>
+</tr>
+<tr>
+<td><code>includeArtifacts</code></td>
+<td><code>boolean</code></td>
+<td>No</td>
+<td>Whether to include artifacts in the returned tasks. Defaults to false to reduce payload size.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="c1">// Result object for tasks/list method containing an array of tasks and pagination information.</span>
-</span><span id="__span-60-2"><a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">ListTasksResponse</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-60-3"><a id="__codelineno-60-3" name="__codelineno-60-3" href="#__codelineno-60-3"></a><span class="w">  </span><span class="c1">// Array of tasks matching the specified criteria.</span>
-</span><span id="__span-60-4"><a id="__codelineno-60-4" name="__codelineno-60-4" href="#__codelineno-60-4"></a><span class="w">  </span><span class="k">repeated</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="na">tasks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-60-5"><a id="__codelineno-60-5" name="__codelineno-60-5" href="#__codelineno-60-5"></a><span class="w">  </span><span class="c1">// Token for retrieving the next page. Empty string if no more results.</span>
-</span><span id="__span-60-6"><a id="__codelineno-60-6" name="__codelineno-60-6" href="#__codelineno-60-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">next_page_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-60-7"><a id="__codelineno-60-7" name="__codelineno-60-7" href="#__codelineno-60-7"></a><span class="w">  </span><span class="c1">// The size of page requested.</span>
-</span><span id="__span-60-8"><a id="__codelineno-60-8" name="__codelineno-60-8" href="#__codelineno-60-8"></a><span class="w">  </span><span class="kt">int32</span><span class="w"> </span><span class="na">page_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-60-9"><a id="__codelineno-60-9" name="__codelineno-60-9" href="#__codelineno-60-9"></a><span class="w">  </span><span class="c1">// Total number of tasks available (before pagination).</span>
-</span><span id="__span-60-10"><a id="__codelineno-60-10" name="__codelineno-60-10" href="#__codelineno-60-10"></a><span class="w">  </span><span class="kt">int32</span><span class="w"> </span><span class="na">total_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-60-11"><a id="__codelineno-60-11" name="__codelineno-60-11" href="#__codelineno-60-11"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Result object for <code>ListTasks</code> method containing an array of tasks and pagination information.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tasks</code></td>
+<td>array of <a href="#task"><code>Task</code></a></td>
+<td>Yes</td>
+<td>Array of tasks matching the specified criteria.</td>
+</tr>
+<tr>
+<td><code>nextPageToken</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>Token for retrieving the next page. Empty string if no more results.</td>
+</tr>
+<tr>
+<td><code>pageSize</code></td>
+<td><code>integer</code></td>
+<td>Yes</td>
+<td>The size of page requested.</td>
+</tr>
+<tr>
+<td><code>totalSize</code></td>
+<td><code>integer</code></td>
+<td>Yes</td>
+<td>Total number of tasks available (before pagination).</td>
+</tr>
+</tbody>
+</table>
 <h4 id="1045-canceltask">10.4.5. CancelTask<a class="headerlink" href="#1045-canceltask" title="Permanent link">&para;</a></h4>
 <p>Cancels a running task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="c1">// Represents a request for the `CancelTask` method.</span>
-</span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">CancelTaskRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a><span class="w">  </span><span class="c1">// The resource id of the task to cancel.</span>
-</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Represents a request for the <code>CancelTask</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource id of the task to cancel.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> See <a href="#411-task"><code>Task</code></a> object definition.</p>
 <h4 id="1046-subscribetotask">10.4.6. SubscribeToTask<a class="headerlink" href="#1046-subscribetotask" title="Permanent link">&para;</a></h4>
 <p>Subscribe to task updates via streaming. Returns <code>UnsupportedOperationError</code> if the task is in a terminal state.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">SubscribeToTaskRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-62-2"><a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-62-3"><a id="__codelineno-62-3" name="__codelineno-62-3" href="#__codelineno-62-3"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-62-4"><a id="__codelineno-62-4" name="__codelineno-62-4" href="#__codelineno-62-4"></a><span class="w">  </span><span class="c1">// The resource id of the task to subscribe to.</span>
-</span><span id="__span-62-5"><a id="__codelineno-62-5" name="__codelineno-62-5" href="#__codelineno-62-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-62-6"><a id="__codelineno-62-6" name="__codelineno-62-6" href="#__codelineno-62-6"></a><span class="p">}</span>
-</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource id of the task to subscribe to.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> Server streaming <a href="#stream-response"><code>StreamResponse</code></a> objects.</p>
 <h4 id="1047-createtaskpushnotificationconfig">10.4.7. CreateTaskPushNotificationConfig<a class="headerlink" href="#1047-createtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Creates a push notification configuration for a task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="c1">// Represents a request for the `CreateTaskPushNotificationConfig` method.</span>
-</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">CreateTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-63-3"><a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a><span class="w">  </span><span class="k">reserved</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-63-4"><a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-63-5"><a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-63-6"><a id="__codelineno-63-6" name="__codelineno-63-6" href="#__codelineno-63-6"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
-</span><span id="__span-63-7"><a id="__codelineno-63-7" name="__codelineno-63-7" href="#__codelineno-63-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-63-8"><a id="__codelineno-63-8" name="__codelineno-63-8" href="#__codelineno-63-8"></a><span class="w">  </span><span class="c1">// The ID for the new config.</span>
-</span><span id="__span-63-9"><a id="__codelineno-63-9" name="__codelineno-63-9" href="#__codelineno-63-9"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">config_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-63-10"><a id="__codelineno-63-10" name="__codelineno-63-10" href="#__codelineno-63-10"></a><span class="w">  </span><span class="c1">// The configuration to create.</span>
-</span><span id="__span-63-11"><a id="__codelineno-63-11" name="__codelineno-63-11" href="#__codelineno-63-11"></a><span class="w">  </span><span class="n">PushNotificationConfig</span><span class="w"> </span><span class="na">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-63-12"><a id="__codelineno-63-12" name="__codelineno-63-12" href="#__codelineno-63-12"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Represents a request for the <code>CreateTaskPushNotificationConfig</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>taskId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The parent task resource id.</td>
+</tr>
+<tr>
+<td><code>configId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The ID for the new config.</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td><a href="#pushnotificationconfig"><code>PushNotificationConfig</code></a></td>
+<td>Yes</td>
+<td>The configuration to create.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> See <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> object definition.</p>
 <h4 id="1048-gettaskpushnotificationconfig">10.4.8. GetTaskPushNotificationConfig<a class="headerlink" href="#1048-gettaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Retrieves an existing push notification configuration for a task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-64-1"><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">GetTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-64-3"><a id="__codelineno-64-3" name="__codelineno-64-3" href="#__codelineno-64-3"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-64-4"><a id="__codelineno-64-4" name="__codelineno-64-4" href="#__codelineno-64-4"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
-</span><span id="__span-64-5"><a id="__codelineno-64-5" name="__codelineno-64-5" href="#__codelineno-64-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-64-6"><a id="__codelineno-64-6" name="__codelineno-64-6" href="#__codelineno-64-6"></a><span class="w">  </span><span class="c1">// The resource id of the config to retrieve.</span>
-</span><span id="__span-64-7"><a id="__codelineno-64-7" name="__codelineno-64-7" href="#__codelineno-64-7"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-64-8"><a id="__codelineno-64-8" name="__codelineno-64-8" href="#__codelineno-64-8"></a><span class="p">}</span>
-</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>taskId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The parent task resource id.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource id of the config to retrieve.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> See <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> object definition.</p>
 <h4 id="1049-listtaskpushnotificationconfig">10.4.9. ListTaskPushNotificationConfig<a class="headerlink" href="#1049-listtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Lists all push notification configurations for a task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-65-1"><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">ListTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-65-2"><a id="__codelineno-65-2" name="__codelineno-65-2" href="#__codelineno-65-2"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-65-3"><a id="__codelineno-65-3" name="__codelineno-65-3" href="#__codelineno-65-3"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-65-4"><a id="__codelineno-65-4" name="__codelineno-65-4" href="#__codelineno-65-4"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
-</span><span id="__span-65-5"><a id="__codelineno-65-5" name="__codelineno-65-5" href="#__codelineno-65-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-65-6"><a id="__codelineno-65-6" name="__codelineno-65-6" href="#__codelineno-65-6"></a>
-</span><span id="__span-65-7"><a id="__codelineno-65-7" name="__codelineno-65-7" href="#__codelineno-65-7"></a><span class="w">  </span><span class="c1">// The maximum number of configurations to return.</span>
-</span><span id="__span-65-8"><a id="__codelineno-65-8" name="__codelineno-65-8" href="#__codelineno-65-8"></a><span class="w">  </span><span class="kt">int32</span><span class="w"> </span><span class="na">page_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-65-9"><a id="__codelineno-65-9" name="__codelineno-65-9" href="#__codelineno-65-9"></a>
-</span><span id="__span-65-10"><a id="__codelineno-65-10" name="__codelineno-65-10" href="#__codelineno-65-10"></a><span class="w">  </span><span class="c1">// A page token received from a previous ListTaskPushNotificationConfigRequest call.</span>
-</span><span id="__span-65-11"><a id="__codelineno-65-11" name="__codelineno-65-11" href="#__codelineno-65-11"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">page_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-65-12"><a id="__codelineno-65-12" name="__codelineno-65-12" href="#__codelineno-65-12"></a><span class="p">}</span>
-</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>taskId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The parent task resource id.</td>
+</tr>
+<tr>
+<td><code>pageSize</code></td>
+<td><code>integer</code></td>
+<td>No</td>
+<td>The maximum number of configurations to return.</td>
+</tr>
+<tr>
+<td><code>pageToken</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>A page token received from a previous <code>ListTaskPushNotificationConfigRequest</code> call.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-66-1"><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a><span class="c1">// Represents a successful response for the `ListTaskPushNotificationConfig`</span>
-</span><span id="__span-66-2"><a id="__codelineno-66-2" name="__codelineno-66-2" href="#__codelineno-66-2"></a><span class="c1">// method.</span>
-</span><span id="__span-66-3"><a id="__codelineno-66-3" name="__codelineno-66-3" href="#__codelineno-66-3"></a><span class="kd">message</span><span class="w"> </span><span class="nc">ListTaskPushNotificationConfigResponse</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-66-4"><a id="__codelineno-66-4" name="__codelineno-66-4" href="#__codelineno-66-4"></a><span class="w">  </span><span class="c1">// The list of push notification configurations.</span>
-</span><span id="__span-66-5"><a id="__codelineno-66-5" name="__codelineno-66-5" href="#__codelineno-66-5"></a><span class="w">  </span><span class="k">repeated</span><span class="w"> </span><span class="n">TaskPushNotificationConfig</span><span class="w"> </span><span class="na">configs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-66-6"><a id="__codelineno-66-6" name="__codelineno-66-6" href="#__codelineno-66-6"></a><span class="w">  </span><span class="c1">// A token, which can be sent as `page_token` to retrieve the next page.</span>
-</span><span id="__span-66-7"><a id="__codelineno-66-7" name="__codelineno-66-7" href="#__codelineno-66-7"></a><span class="w">  </span><span class="c1">// If this field is omitted, there are no subsequent pages.</span>
-</span><span id="__span-66-8"><a id="__codelineno-66-8" name="__codelineno-66-8" href="#__codelineno-66-8"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">next_page_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-66-9"><a id="__codelineno-66-9" name="__codelineno-66-9" href="#__codelineno-66-9"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Represents a successful response for the <code>ListTaskPushNotificationConfig</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>configs</code></td>
+<td>array of <a href="#taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a></td>
+<td>No</td>
+<td>The list of push notification configurations.</td>
+</tr>
+<tr>
+<td><code>nextPageToken</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>A token, which can be sent as <code>page_token</code> to retrieve the next page. If this field is omitted, there are no subsequent pages.</td>
+</tr>
+</tbody>
+</table>
 <h4 id="10410-deletetaskpushnotificationconfig">10.4.10. DeleteTaskPushNotificationConfig<a class="headerlink" href="#10410-deletetaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Removes a push notification configuration for a task.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-67-1"><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a><span class="c1">// Represents a request for the `DeleteTaskPushNotificationConfig` method.</span>
-</span><span id="__span-67-2"><a id="__codelineno-67-2" name="__codelineno-67-2" href="#__codelineno-67-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">DeleteTaskPushNotificationConfigRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-67-3"><a id="__codelineno-67-3" name="__codelineno-67-3" href="#__codelineno-67-3"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-67-4"><a id="__codelineno-67-4" name="__codelineno-67-4" href="#__codelineno-67-4"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-67-5"><a id="__codelineno-67-5" name="__codelineno-67-5" href="#__codelineno-67-5"></a><span class="w">  </span><span class="c1">// The parent task resource id.</span>
-</span><span id="__span-67-6"><a id="__codelineno-67-6" name="__codelineno-67-6" href="#__codelineno-67-6"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-67-7"><a id="__codelineno-67-7" name="__codelineno-67-7" href="#__codelineno-67-7"></a><span class="w">  </span><span class="c1">// The resource id of the config to delete.</span>
-</span><span id="__span-67-8"><a id="__codelineno-67-8" name="__codelineno-67-8" href="#__codelineno-67-8"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-67-9"><a id="__codelineno-67-9" name="__codelineno-67-9" href="#__codelineno-67-9"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>Represents a request for the <code>DeleteTaskPushNotificationConfig</code> method.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+<tr>
+<td><code>taskId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The parent task resource id.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The resource id of the config to delete.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> <code>google.protobuf.Empty</code></p>
 <h4 id="10411-getextendedagentcard">10.4.11. GetExtendedAgentCard<a class="headerlink" href="#10411-getextendedagentcard" title="Permanent link">&para;</a></h4>
 <p>Retrieves the agent's extended capability card after authentication.</p>
 <p><strong>Request:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-68-1"><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a><span class="kd">message</span><span class="w"> </span><span class="nc">GetExtendedAgentCardRequest</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-68-2"><a id="__codelineno-68-2" name="__codelineno-68-2" href="#__codelineno-68-2"></a><span class="w">  </span><span class="c1">// Optional tenant, provided as a path parameter.</span>
-</span><span id="__span-68-3"><a id="__codelineno-68-3" name="__codelineno-68-3" href="#__codelineno-68-3"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-68-4"><a id="__codelineno-68-4" name="__codelineno-68-4" href="#__codelineno-68-4"></a><span class="p">}</span>
-</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant, provided as a path parameter.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Response:</strong> See <a href="#441-agentcard"><code>AgentCard</code></a> object definition.</p>
 <h3 id="105-grpc-specific-data-types">10.5. gRPC-Specific Data Types<a class="headerlink" href="#105-grpc-specific-data-types" title="Permanent link">&para;</a></h3>
 <h4 id="1051-taskpushnotificationconfig">10.5.1. TaskPushNotificationConfig<a class="headerlink" href="#1051-taskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Resource wrapper for push notification configurations. This is a gRPC-specific type used in resource-oriented operations to provide the full resource name along with the configuration data.</p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a><span class="c1">// A container associating a push notification configuration with a specific</span>
-</span><span id="__span-69-2"><a id="__codelineno-69-2" name="__codelineno-69-2" href="#__codelineno-69-2"></a><span class="c1">// task.</span>
-</span><span id="__span-69-3"><a id="__codelineno-69-3" name="__codelineno-69-3" href="#__codelineno-69-3"></a><span class="kd">message</span><span class="w"> </span><span class="nc">TaskPushNotificationConfig</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-69-4"><a id="__codelineno-69-4" name="__codelineno-69-4" href="#__codelineno-69-4"></a><span class="w">  </span><span class="c1">// Optional tenant</span>
-</span><span id="__span-69-5"><a id="__codelineno-69-5" name="__codelineno-69-5" href="#__codelineno-69-5"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">tenant</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-69-6"><a id="__codelineno-69-6" name="__codelineno-69-6" href="#__codelineno-69-6"></a>
-</span><span id="__span-69-7"><a id="__codelineno-69-7" name="__codelineno-69-7" href="#__codelineno-69-7"></a><span class="w">  </span><span class="c1">// The id of the config.</span>
-</span><span id="__span-69-8"><a id="__codelineno-69-8" name="__codelineno-69-8" href="#__codelineno-69-8"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-69-9"><a id="__codelineno-69-9" name="__codelineno-69-9" href="#__codelineno-69-9"></a>
-</span><span id="__span-69-10"><a id="__codelineno-69-10" name="__codelineno-69-10" href="#__codelineno-69-10"></a><span class="w">  </span><span class="c1">// The id of the task this config is associated with.</span>
-</span><span id="__span-69-11"><a id="__codelineno-69-11" name="__codelineno-69-11" href="#__codelineno-69-11"></a><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="na">task_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-69-12"><a id="__codelineno-69-12" name="__codelineno-69-12" href="#__codelineno-69-12"></a>
-</span><span id="__span-69-13"><a id="__codelineno-69-13" name="__codelineno-69-13" href="#__codelineno-69-13"></a><span class="w">  </span><span class="c1">// The push notification configuration details.</span>
-</span><span id="__span-69-14"><a id="__codelineno-69-14" name="__codelineno-69-14" href="#__codelineno-69-14"></a><span class="w">  </span><span class="n">PushNotificationConfig</span><span class="w"> </span><span class="na">push_notification_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">[(</span><span class="n">google.api.field_behavior</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REQUIRED</span><span class="p">];</span>
-</span><span id="__span-69-15"><a id="__codelineno-69-15" name="__codelineno-69-15" href="#__codelineno-69-15"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>A container associating a push notification configuration with a specific task.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional tenant</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The id of the config.</td>
+</tr>
+<tr>
+<td><code>taskId</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The id of the task this config is associated with.</td>
+</tr>
+<tr>
+<td><code>pushNotificationConfig</code></td>
+<td><a href="#pushnotificationconfig"><code>PushNotificationConfig</code></a></td>
+<td>Yes</td>
+<td>The push notification configuration details.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Fields:</strong></p>
 <p>A container associating a push notification configuration with a specific task.</p>
 <table>
@@ -10374,57 +10759,81 @@
 </ul>
 <p>For the complete mapping of A2A error types to gRPC status codes, see <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>.</p>
 <p><strong>Error Response Example:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-70-1"><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a><span class="c1">// Standard gRPC invalid argument error</span>
-</span><span id="__span-70-2"><a id="__codelineno-70-2" name="__codelineno-70-2" href="#__codelineno-70-2"></a><span class="n">status</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-70-3"><a id="__codelineno-70-3" name="__codelineno-70-3" href="#__codelineno-70-3"></a><span class="w">  </span><span class="n">code</span><span class="o">:</span><span class="w"> </span><span class="n">INVALID_ARGUMENT</span>
-</span><span id="__span-70-4"><a id="__codelineno-70-4" name="__codelineno-70-4" href="#__codelineno-70-4"></a><span class="w">  </span><span class="n">message</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Invalid request parameters&quot;</span>
-</span><span id="__span-70-5"><a id="__codelineno-70-5" name="__codelineno-70-5" href="#__codelineno-70-5"></a><span class="w">  </span><span class="n">details</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-70-6"><a id="__codelineno-70-6" name="__codelineno-70-6" href="#__codelineno-70-6"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-70-7"><a id="__codelineno-70-7" name="__codelineno-70-7" href="#__codelineno-70-7"></a><span class="w">      </span><span class="n">type</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;type.googleapis.com/google.rpc.BadRequest&quot;</span>
-</span><span id="__span-70-8"><a id="__codelineno-70-8" name="__codelineno-70-8" href="#__codelineno-70-8"></a><span class="w">      </span><span class="n">field_violations</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-70-9"><a id="__codelineno-70-9" name="__codelineno-70-9" href="#__codelineno-70-9"></a><span class="w">        </span><span class="p">{</span>
-</span><span id="__span-70-10"><a id="__codelineno-70-10" name="__codelineno-70-10" href="#__codelineno-70-10"></a><span class="w">          </span><span class="n">field</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;message.parts&quot;</span>
-</span><span id="__span-70-11"><a id="__codelineno-70-11" name="__codelineno-70-11" href="#__codelineno-70-11"></a><span class="w">          </span><span class="n">description</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;At least one part is required&quot;</span>
-</span><span id="__span-70-12"><a id="__codelineno-70-12" name="__codelineno-70-12" href="#__codelineno-70-12"></a><span class="w">        </span><span class="p">}</span>
-</span><span id="__span-70-13"><a id="__codelineno-70-13" name="__codelineno-70-13" href="#__codelineno-70-13"></a><span class="w">      </span><span class="p">]</span>
-</span><span id="__span-70-14"><a id="__codelineno-70-14" name="__codelineno-70-14" href="#__codelineno-70-14"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-70-15"><a id="__codelineno-70-15" name="__codelineno-70-15" href="#__codelineno-70-15"></a><span class="w">  </span><span class="p">]</span>
-</span><span id="__span-70-16"><a id="__codelineno-70-16" name="__codelineno-70-16" href="#__codelineno-70-16"></a><span class="p">}</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="c1">// Standard gRPC invalid argument error</span>
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a><span class="n">status</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a><span class="w">  </span><span class="n">code</span><span class="o">:</span><span class="w"> </span><span class="n">INVALID_ARGUMENT</span>
+</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a><span class="w">  </span><span class="n">message</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Invalid request parameters&quot;</span>
+</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a><span class="w">  </span><span class="n">details</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a><span class="w">      </span><span class="n">type</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;type.googleapis.com/google.rpc.BadRequest&quot;</span>
+</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a><span class="w">      </span><span class="n">field_violations</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a><span class="w">        </span><span class="p">{</span>
+</span><span id="__span-54-10"><a id="__codelineno-54-10" name="__codelineno-54-10" href="#__codelineno-54-10"></a><span class="w">          </span><span class="n">field</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;message.parts&quot;</span>
+</span><span id="__span-54-11"><a id="__codelineno-54-11" name="__codelineno-54-11" href="#__codelineno-54-11"></a><span class="w">          </span><span class="n">description</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;At least one part is required&quot;</span>
+</span><span id="__span-54-12"><a id="__codelineno-54-12" name="__codelineno-54-12" href="#__codelineno-54-12"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-54-13"><a id="__codelineno-54-13" name="__codelineno-54-13" href="#__codelineno-54-13"></a><span class="w">      </span><span class="p">]</span>
+</span><span id="__span-54-14"><a id="__codelineno-54-14" name="__codelineno-54-14" href="#__codelineno-54-14"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-54-15"><a id="__codelineno-54-15" name="__codelineno-54-15" href="#__codelineno-54-15"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-54-16"><a id="__codelineno-54-16" name="__codelineno-54-16" href="#__codelineno-54-16"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Example A2A-Specific Error Response:</strong></p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-71-1"><a id="__codelineno-71-1" name="__codelineno-71-1" href="#__codelineno-71-1"></a><span class="c1">// A2A-specific task not found error</span>
-</span><span id="__span-71-2"><a id="__codelineno-71-2" name="__codelineno-71-2" href="#__codelineno-71-2"></a><span class="n">status</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-71-3"><a id="__codelineno-71-3" name="__codelineno-71-3" href="#__codelineno-71-3"></a><span class="w">  </span><span class="n">code</span><span class="o">:</span><span class="w"> </span><span class="n">NOT_FOUND</span>
-</span><span id="__span-71-4"><a id="__codelineno-71-4" name="__codelineno-71-4" href="#__codelineno-71-4"></a><span class="w">  </span><span class="n">message</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Task with ID &#39;task-123&#39; not found&quot;</span>
-</span><span id="__span-71-5"><a id="__codelineno-71-5" name="__codelineno-71-5" href="#__codelineno-71-5"></a><span class="w">  </span><span class="n">details</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-71-6"><a id="__codelineno-71-6" name="__codelineno-71-6" href="#__codelineno-71-6"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-71-7"><a id="__codelineno-71-7" name="__codelineno-71-7" href="#__codelineno-71-7"></a><span class="w">      </span><span class="n">type</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;type.googleapis.com/google.rpc.ErrorInfo&quot;</span>
-</span><span id="__span-71-8"><a id="__codelineno-71-8" name="__codelineno-71-8" href="#__codelineno-71-8"></a><span class="w">      </span><span class="n">reason</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;TASK_NOT_FOUND&quot;</span>
-</span><span id="__span-71-9"><a id="__codelineno-71-9" name="__codelineno-71-9" href="#__codelineno-71-9"></a><span class="w">      </span><span class="n">domain</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;a2a-protocol.org&quot;</span>
-</span><span id="__span-71-10"><a id="__codelineno-71-10" name="__codelineno-71-10" href="#__codelineno-71-10"></a><span class="w">      </span><span class="n">metadata</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-71-11"><a id="__codelineno-71-11" name="__codelineno-71-11" href="#__codelineno-71-11"></a><span class="w">        </span><span class="n">task_id</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;task-123&quot;</span>
-</span><span id="__span-71-12"><a id="__codelineno-71-12" name="__codelineno-71-12" href="#__codelineno-71-12"></a><span class="w">        </span><span class="n">timestamp</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;2025-11-09T10:30:00Z&quot;</span>
-</span><span id="__span-71-13"><a id="__codelineno-71-13" name="__codelineno-71-13" href="#__codelineno-71-13"></a><span class="w">      </span><span class="p">}</span>
-</span><span id="__span-71-14"><a id="__codelineno-71-14" name="__codelineno-71-14" href="#__codelineno-71-14"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-71-15"><a id="__codelineno-71-15" name="__codelineno-71-15" href="#__codelineno-71-15"></a><span class="w">  </span><span class="p">]</span>
-</span><span id="__span-71-16"><a id="__codelineno-71-16" name="__codelineno-71-16" href="#__codelineno-71-16"></a><span class="p">}</span>
+<div class="language-proto highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="c1">// A2A-specific task not found error</span>
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a><span class="n">status</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a><span class="w">  </span><span class="n">code</span><span class="o">:</span><span class="w"> </span><span class="n">NOT_FOUND</span>
+</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="w">  </span><span class="n">message</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Task with ID &#39;task-123&#39; not found&quot;</span>
+</span><span id="__span-55-5"><a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a><span class="w">  </span><span class="n">details</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-55-6"><a id="__codelineno-55-6" name="__codelineno-55-6" href="#__codelineno-55-6"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-55-7"><a id="__codelineno-55-7" name="__codelineno-55-7" href="#__codelineno-55-7"></a><span class="w">      </span><span class="n">type</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;type.googleapis.com/google.rpc.ErrorInfo&quot;</span>
+</span><span id="__span-55-8"><a id="__codelineno-55-8" name="__codelineno-55-8" href="#__codelineno-55-8"></a><span class="w">      </span><span class="n">reason</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;TASK_NOT_FOUND&quot;</span>
+</span><span id="__span-55-9"><a id="__codelineno-55-9" name="__codelineno-55-9" href="#__codelineno-55-9"></a><span class="w">      </span><span class="n">domain</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;a2a-protocol.org&quot;</span>
+</span><span id="__span-55-10"><a id="__codelineno-55-10" name="__codelineno-55-10" href="#__codelineno-55-10"></a><span class="w">      </span><span class="n">metadata</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-55-11"><a id="__codelineno-55-11" name="__codelineno-55-11" href="#__codelineno-55-11"></a><span class="w">        </span><span class="n">task_id</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;task-123&quot;</span>
+</span><span id="__span-55-12"><a id="__codelineno-55-12" name="__codelineno-55-12" href="#__codelineno-55-12"></a><span class="w">        </span><span class="n">timestamp</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;2025-11-09T10:30:00Z&quot;</span>
+</span><span id="__span-55-13"><a id="__codelineno-55-13" name="__codelineno-55-13" href="#__codelineno-55-13"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-55-14"><a id="__codelineno-55-14" name="__codelineno-55-14" href="#__codelineno-55-14"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-55-15"><a id="__codelineno-55-15" name="__codelineno-55-15" href="#__codelineno-55-15"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-55-16"><a id="__codelineno-55-16" name="__codelineno-55-16" href="#__codelineno-55-16"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="107-streaming">10.7. Streaming<a class="headerlink" href="#107-streaming" title="Permanent link">&para;</a></h3>
 <p>gRPC streaming uses server streaming RPCs for real-time updates. The <code>StreamResponse</code> message provides a union of possible streaming events:</p>
-<div class="language-proto highlight"><pre><span></span><code><span id="__span-72-1"><a id="__codelineno-72-1" name="__codelineno-72-1" href="#__codelineno-72-1"></a><span class="c1">// A wrapper object used in streaming operations to encapsulate different types of response data.</span>
-</span><span id="__span-72-2"><a id="__codelineno-72-2" name="__codelineno-72-2" href="#__codelineno-72-2"></a><span class="kd">message</span><span class="w"> </span><span class="nc">StreamResponse</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-72-3"><a id="__codelineno-72-3" name="__codelineno-72-3" href="#__codelineno-72-3"></a><span class="w">  </span><span class="k">oneof</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-72-4"><a id="__codelineno-72-4" name="__codelineno-72-4" href="#__codelineno-72-4"></a><span class="w">    </span><span class="c1">// A Task object containing the current state of the task.</span>
-</span><span id="__span-72-5"><a id="__codelineno-72-5" name="__codelineno-72-5" href="#__codelineno-72-5"></a><span class="w">    </span><span class="n">Task</span><span class="w"> </span><span class="na">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-</span><span id="__span-72-6"><a id="__codelineno-72-6" name="__codelineno-72-6" href="#__codelineno-72-6"></a><span class="w">    </span><span class="c1">// A Message object containing a message from the agent.</span>
-</span><span id="__span-72-7"><a id="__codelineno-72-7" name="__codelineno-72-7" href="#__codelineno-72-7"></a><span class="w">    </span><span class="n">Message</span><span class="w"> </span><span class="kd">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
-</span><span id="__span-72-8"><a id="__codelineno-72-8" name="__codelineno-72-8" href="#__codelineno-72-8"></a><span class="w">    </span><span class="c1">// An event indicating a task status update.</span>
-</span><span id="__span-72-9"><a id="__codelineno-72-9" name="__codelineno-72-9" href="#__codelineno-72-9"></a><span class="w">    </span><span class="n">TaskStatusUpdateEvent</span><span class="w"> </span><span class="na">status_update</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
-</span><span id="__span-72-10"><a id="__codelineno-72-10" name="__codelineno-72-10" href="#__codelineno-72-10"></a><span class="w">    </span><span class="c1">// An event indicating a task artifact update.</span>
-</span><span id="__span-72-11"><a id="__codelineno-72-11" name="__codelineno-72-11" href="#__codelineno-72-11"></a><span class="w">    </span><span class="n">TaskArtifactUpdateEvent</span><span class="w"> </span><span class="na">artifact_update</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
-</span><span id="__span-72-12"><a id="__codelineno-72-12" name="__codelineno-72-12" href="#__codelineno-72-12"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-72-13"><a id="__codelineno-72-13" name="__codelineno-72-13" href="#__codelineno-72-13"></a><span class="p">}</span>
-</span></code></pre></div>
+<p>A wrapper object used in streaming operations to encapsulate different types of response data.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>task</code></td>
+<td><a href="#task"><code>Task</code></a></td>
+<td>Optional (OneOf)</td>
+<td>A Task object containing the current state of the task.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><a href="#message"><code>Message</code></a></td>
+<td>Optional (OneOf)</td>
+<td>A Message object containing a message from the agent.</td>
+</tr>
+<tr>
+<td><code>statusUpdate</code></td>
+<td><a href="#taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a></td>
+<td>Optional (OneOf)</td>
+<td>An event indicating a task status update.</td>
+</tr>
+<tr>
+<td><code>artifactUpdate</code></td>
+<td><a href="#taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a></td>
+<td>Optional (OneOf)</td>
+<td>An event indicating a task artifact update.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> A <code>StreamResponse</code> MUST contain exactly one of the following: <code>task</code>, <code>message</code>, <code>statusUpdate</code>, <code>artifactUpdate</code></p>
 <h2 id="11-httpjsonrest-protocol-binding">11. HTTP+JSON/REST Protocol Binding<a class="headerlink" href="#11-httpjsonrest-protocol-binding" title="Permanent link">&para;</a></h2>
 <p>The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP methods and JSON payloads.</p>
 <h3 id="111-protocol-requirements">11.1. Protocol Requirements<a class="headerlink" href="#111-protocol-requirements" title="Permanent link">&para;</a></h3>
@@ -10444,19 +10853,19 @@
 <li>Multiple values for the same service parameter (e.g., <code>A2A-Extensions</code>) <strong>SHOULD</strong> be comma-separated in a single header field</li>
 </ul>
 <p><strong>Example Request with A2A Service Parameters:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-73-1"><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-</span><span id="__span-73-2"><a id="__codelineno-73-2" name="__codelineno-73-2" href="#__codelineno-73-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
-</span><span id="__span-73-3"><a id="__codelineno-73-3" name="__codelineno-73-3" href="#__codelineno-73-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-</span><span id="__span-73-4"><a id="__codelineno-73-4" name="__codelineno-73-4" href="#__codelineno-73-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
-</span><span id="__span-73-5"><a id="__codelineno-73-5" name="__codelineno-73-5" href="#__codelineno-73-5"></a><span class="na">A2A-Version</span><span class="o">:</span> <span class="l">0.3</span>
-</span><span id="__span-73-6"><a id="__codelineno-73-6" name="__codelineno-73-6" href="#__codelineno-73-6"></a><span class="na">A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1</span>
-</span><span id="__span-73-7"><a id="__codelineno-73-7" name="__codelineno-73-7" href="#__codelineno-73-7"></a>
-</span><span id="__span-73-8"><a id="__codelineno-73-8" name="__codelineno-73-8" href="#__codelineno-73-8"></a><span class="p">{</span>
-</span><span id="__span-73-9"><a id="__codelineno-73-9" name="__codelineno-73-9" href="#__codelineno-73-9"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-73-10"><a id="__codelineno-73-10" name="__codelineno-73-10" href="#__codelineno-73-10"></a><span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ROLE_USER&quot;</span><span class="p">,</span>
-</span><span id="__span-73-11"><a id="__codelineno-73-11" name="__codelineno-73-11" href="#__codelineno-73-11"></a><span class="w">    </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Find restaurants near me&quot;</span><span class="p">}]</span>
-</span><span id="__span-73-12"><a id="__codelineno-73-12" name="__codelineno-73-12" href="#__codelineno-73-12"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-73-13"><a id="__codelineno-73-13" name="__codelineno-73-13" href="#__codelineno-73-13"></a><span class="p">}</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
+</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a><span class="na">A2A-Version</span><span class="o">:</span> <span class="l">0.3</span>
+</span><span id="__span-56-6"><a id="__codelineno-56-6" name="__codelineno-56-6" href="#__codelineno-56-6"></a><span class="na">A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1</span>
+</span><span id="__span-56-7"><a id="__codelineno-56-7" name="__codelineno-56-7" href="#__codelineno-56-7"></a>
+</span><span id="__span-56-8"><a id="__codelineno-56-8" name="__codelineno-56-8" href="#__codelineno-56-8"></a><span class="p">{</span>
+</span><span id="__span-56-9"><a id="__codelineno-56-9" name="__codelineno-56-9" href="#__codelineno-56-9"></a><span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-56-10"><a id="__codelineno-56-10" name="__codelineno-56-10" href="#__codelineno-56-10"></a><span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ROLE_USER&quot;</span><span class="p">,</span>
+</span><span id="__span-56-11"><a id="__codelineno-56-11" name="__codelineno-56-11" href="#__codelineno-56-11"></a><span class="w">    </span><span class="nt">&quot;parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Find restaurants near me&quot;</span><span class="p">}]</span>
+</span><span id="__span-56-12"><a id="__codelineno-56-12" name="__codelineno-56-12" href="#__codelineno-56-12"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-56-13"><a id="__codelineno-56-13" name="__codelineno-56-13" href="#__codelineno-56-13"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="113-url-patterns-and-http-methods">11.3. URL Patterns and HTTP Methods<a class="headerlink" href="#113-url-patterns-and-http-methods" title="Permanent link">&para;</a></h3>
 <h4 id="1131-message-operations">11.3.1. Message Operations<a class="headerlink" href="#1131-message-operations" title="Permanent link">&para;</a></h4>
@@ -10485,34 +10894,34 @@
 <h3 id="114-requestresponse-format">11.4. Request/Response Format<a class="headerlink" href="#114-requestresponse-format" title="Permanent link">&para;</a></h3>
 <p>All requests and responses use JSON objects structurally equivalent to the Protocol Buffer definitions.</p>
 <p><strong>Example Send Message:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-74-1"><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a><span class="err">POST /message:send</span>
-</span><span id="__span-74-2"><a id="__codelineno-74-2" name="__codelineno-74-2" href="#__codelineno-74-2"></a><span class="err">Content-Type: application/json</span>
-</span><span id="__span-74-3"><a id="__codelineno-74-3" name="__codelineno-74-3" href="#__codelineno-74-3"></a>
-</span><span id="__span-74-4"><a id="__codelineno-74-4" name="__codelineno-74-4" href="#__codelineno-74-4"></a><span class="err">{</span>
-</span><span id="__span-74-5"><a id="__codelineno-74-5" name="__codelineno-74-5" href="#__codelineno-74-5"></a><span class="err">  &quot;message&quot;: {</span>
-</span><span id="__span-74-6"><a id="__codelineno-74-6" name="__codelineno-74-6" href="#__codelineno-74-6"></a><span class="err">    &quot;messageId&quot;: &quot;uuid&quot;,</span>
-</span><span id="__span-74-7"><a id="__codelineno-74-7" name="__codelineno-74-7" href="#__codelineno-74-7"></a><span class="err">    &quot;role&quot;: &quot;ROLE_USER&quot;,</span>
-</span><span id="__span-74-8"><a id="__codelineno-74-8" name="__codelineno-74-8" href="#__codelineno-74-8"></a><span class="err">    &quot;parts&quot;: [{&quot;text&quot;: &quot;Hello&quot;}]</span>
-</span><span id="__span-74-9"><a id="__codelineno-74-9" name="__codelineno-74-9" href="#__codelineno-74-9"></a><span class="err">  },</span>
-</span><span id="__span-74-10"><a id="__codelineno-74-10" name="__codelineno-74-10" href="#__codelineno-74-10"></a><span class="err">  &quot;configuration&quot;: {</span>
-</span><span id="__span-74-11"><a id="__codelineno-74-11" name="__codelineno-74-11" href="#__codelineno-74-11"></a><span class="err">    &quot;acceptedOutputModes&quot;: [&quot;text/plain&quot;]</span>
-</span><span id="__span-74-12"><a id="__codelineno-74-12" name="__codelineno-74-12" href="#__codelineno-74-12"></a><span class="err">  }</span>
-</span><span id="__span-74-13"><a id="__codelineno-74-13" name="__codelineno-74-13" href="#__codelineno-74-13"></a><span class="err">}</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a><span class="err">POST /message:send</span>
+</span><span id="__span-57-2"><a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="err">Content-Type: application/json</span>
+</span><span id="__span-57-3"><a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a>
+</span><span id="__span-57-4"><a id="__codelineno-57-4" name="__codelineno-57-4" href="#__codelineno-57-4"></a><span class="err">{</span>
+</span><span id="__span-57-5"><a id="__codelineno-57-5" name="__codelineno-57-5" href="#__codelineno-57-5"></a><span class="err">  &quot;message&quot;: {</span>
+</span><span id="__span-57-6"><a id="__codelineno-57-6" name="__codelineno-57-6" href="#__codelineno-57-6"></a><span class="err">    &quot;messageId&quot;: &quot;uuid&quot;,</span>
+</span><span id="__span-57-7"><a id="__codelineno-57-7" name="__codelineno-57-7" href="#__codelineno-57-7"></a><span class="err">    &quot;role&quot;: &quot;ROLE_USER&quot;,</span>
+</span><span id="__span-57-8"><a id="__codelineno-57-8" name="__codelineno-57-8" href="#__codelineno-57-8"></a><span class="err">    &quot;parts&quot;: [{&quot;text&quot;: &quot;Hello&quot;}]</span>
+</span><span id="__span-57-9"><a id="__codelineno-57-9" name="__codelineno-57-9" href="#__codelineno-57-9"></a><span class="err">  },</span>
+</span><span id="__span-57-10"><a id="__codelineno-57-10" name="__codelineno-57-10" href="#__codelineno-57-10"></a><span class="err">  &quot;configuration&quot;: {</span>
+</span><span id="__span-57-11"><a id="__codelineno-57-11" name="__codelineno-57-11" href="#__codelineno-57-11"></a><span class="err">    &quot;acceptedOutputModes&quot;: [&quot;text/plain&quot;]</span>
+</span><span id="__span-57-12"><a id="__codelineno-57-12" name="__codelineno-57-12" href="#__codelineno-57-12"></a><span class="err">  }</span>
+</span><span id="__span-57-13"><a id="__codelineno-57-13" name="__codelineno-57-13" href="#__codelineno-57-13"></a><span class="err">}</span>
 </span></code></pre></div>
 <p><strong>Referenced Objects:</strong> <a href="#321-sendmessagerequest"><code>SendMessageRequest</code></a>, <a href="#414-message"><code>Message</code></a></p>
 <p><strong>Response:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-75-1"><a id="__codelineno-75-1" name="__codelineno-75-1" href="#__codelineno-75-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-</span><span id="__span-75-2"><a id="__codelineno-75-2" name="__codelineno-75-2" href="#__codelineno-75-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-</span><span id="__span-75-3"><a id="__codelineno-75-3" name="__codelineno-75-3" href="#__codelineno-75-3"></a>
-</span><span id="__span-75-4"><a id="__codelineno-75-4" name="__codelineno-75-4" href="#__codelineno-75-4"></a><span class="p">{</span>
-</span><span id="__span-75-5"><a id="__codelineno-75-5" name="__codelineno-75-5" href="#__codelineno-75-5"></a><span class="w">  </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-75-6"><a id="__codelineno-75-6" name="__codelineno-75-6" href="#__codelineno-75-6"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-uuid&quot;</span><span class="p">,</span>
-</span><span id="__span-75-7"><a id="__codelineno-75-7" name="__codelineno-75-7" href="#__codelineno-75-7"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;context-uuid&quot;</span><span class="p">,</span>
-</span><span id="__span-75-8"><a id="__codelineno-75-8" name="__codelineno-75-8" href="#__codelineno-75-8"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-75-9"><a id="__codelineno-75-9" name="__codelineno-75-9" href="#__codelineno-75-9"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TASK_STATE_COMPLETED&quot;</span>
-</span><span id="__span-75-10"><a id="__codelineno-75-10" name="__codelineno-75-10" href="#__codelineno-75-10"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-75-11"><a id="__codelineno-75-11" name="__codelineno-75-11" href="#__codelineno-75-11"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-75-12"><a id="__codelineno-75-12" name="__codelineno-75-12" href="#__codelineno-75-12"></a><span class="p">}</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a>
+</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="p">{</span>
+</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="w">  </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-uuid&quot;</span><span class="p">,</span>
+</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;context-uuid&quot;</span><span class="p">,</span>
+</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TASK_STATE_COMPLETED&quot;</span>
+</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-58-11"><a id="__codelineno-58-11" name="__codelineno-58-11" href="#__codelineno-58-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-58-12"><a id="__codelineno-58-12" name="__codelineno-58-12" href="#__codelineno-58-12"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Referenced Objects:</strong> <a href="#411-task"><code>Task</code></a></p>
 <h3 id="115-query-parameter-naming-for-request-parameters">11.5. Query Parameter Naming for Request Parameters<a class="headerlink" href="#115-query-parameter-naming-for-request-parameters" title="Permanent link">&para;</a></h3>
@@ -10553,10 +10962,10 @@
 </table>
 <p><strong>Usage Examples:</strong></p>
 <p>List tasks with filtering:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-76-1"><a id="__codelineno-76-1" name="__codelineno-76-1" href="#__codelineno-76-1"></a><span class="err">GET /tasks?contextId=uuid&amp;status=working&amp;pageSize=50&amp;pageToken=cursor</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="err">GET /tasks?contextId=uuid&amp;status=working&amp;pageSize=50&amp;pageToken=cursor</span>
 </span></code></pre></div>
 <p>Get task with history:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-77-1"><a id="__codelineno-77-1" name="__codelineno-77-1" href="#__codelineno-77-1"></a><span class="err">GET /tasks/{id}?historyLength=10</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="err">GET /tasks/{id}?historyLength=10</span>
 </span></code></pre></div>
 <p><strong>Field Type Handling:</strong></p>
 <ul>
@@ -10580,35 +10989,35 @@
 <p><strong>A2A Error Representation:</strong></p>
 <p>For A2A-specific errors, the <code>type</code> field <strong>MUST</strong> use the URI from the mapping table in <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>. Additional error context <strong>MAY</strong> be included as extension fields in the problem details object.</p>
 <p><strong>Error Response Example:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-78-1"><a id="__codelineno-78-1" name="__codelineno-78-1" href="#__codelineno-78-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">Not Found</span>
-</span><span id="__span-78-2"><a id="__codelineno-78-2" name="__codelineno-78-2" href="#__codelineno-78-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/problem+json</span>
-</span><span id="__span-78-3"><a id="__codelineno-78-3" name="__codelineno-78-3" href="#__codelineno-78-3"></a>
-</span><span id="__span-78-4"><a id="__codelineno-78-4" name="__codelineno-78-4" href="#__codelineno-78-4"></a><span class="p">{</span>
-</span><span id="__span-78-5"><a id="__codelineno-78-5" name="__codelineno-78-5" href="#__codelineno-78-5"></a><span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://a2a-protocol.org/errors/task-not-found&quot;</span><span class="p">,</span>
-</span><span id="__span-78-6"><a id="__codelineno-78-6" name="__codelineno-78-6" href="#__codelineno-78-6"></a><span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Task Not Found&quot;</span><span class="p">,</span>
-</span><span id="__span-78-7"><a id="__codelineno-78-7" name="__codelineno-78-7" href="#__codelineno-78-7"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">404</span><span class="p">,</span>
-</span><span id="__span-78-8"><a id="__codelineno-78-8" name="__codelineno-78-8" href="#__codelineno-78-8"></a><span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The specified task ID does not exist or is not accessible&quot;</span><span class="p">,</span>
-</span><span id="__span-78-9"><a id="__codelineno-78-9" name="__codelineno-78-9" href="#__codelineno-78-9"></a><span class="w">  </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-123&quot;</span><span class="p">,</span>
-</span><span id="__span-78-10"><a id="__codelineno-78-10" name="__codelineno-78-10" href="#__codelineno-78-10"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-09T10:30:00.000Z&quot;</span>
-</span><span id="__span-78-11"><a id="__codelineno-78-11" name="__codelineno-78-11" href="#__codelineno-78-11"></a><span class="p">}</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">Not Found</span>
+</span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/problem+json</span>
+</span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a>
+</span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a><span class="p">{</span>
+</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a><span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://a2a-protocol.org/errors/task-not-found&quot;</span><span class="p">,</span>
+</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a><span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Task Not Found&quot;</span><span class="p">,</span>
+</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">404</span><span class="p">,</span>
+</span><span id="__span-61-8"><a id="__codelineno-61-8" name="__codelineno-61-8" href="#__codelineno-61-8"></a><span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The specified task ID does not exist or is not accessible&quot;</span><span class="p">,</span>
+</span><span id="__span-61-9"><a id="__codelineno-61-9" name="__codelineno-61-9" href="#__codelineno-61-9"></a><span class="w">  </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-123&quot;</span><span class="p">,</span>
+</span><span id="__span-61-10"><a id="__codelineno-61-10" name="__codelineno-61-10" href="#__codelineno-61-10"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-09T10:30:00.000Z&quot;</span>
+</span><span id="__span-61-11"><a id="__codelineno-61-11" name="__codelineno-61-11" href="#__codelineno-61-11"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Extension fields like <code>taskId</code> and <code>timestamp</code> provide additional context to help diagnose the error.</p>
 <h3 id="117-streaming">11.7. Streaming<a class="headerlink" href="#117-streaming" title="Permanent link">&para;</a></h3>
 <p><span id="stream-response"></span></p>
 <p>REST streaming uses Server-Sent Events with the <code>data</code> field containing JSON serializations of the protocol data objects:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-79-1"><a id="__codelineno-79-1" name="__codelineno-79-1" href="#__codelineno-79-1"></a><span class="err">POST /message:stream</span>
-</span><span id="__span-79-2"><a id="__codelineno-79-2" name="__codelineno-79-2" href="#__codelineno-79-2"></a><span class="err">Content-Type: application/json</span>
-</span><span id="__span-79-3"><a id="__codelineno-79-3" name="__codelineno-79-3" href="#__codelineno-79-3"></a>
-</span><span id="__span-79-4"><a id="__codelineno-79-4" name="__codelineno-79-4" href="#__codelineno-79-4"></a><span class="err">{ /* SendMessageRequest object */ }</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="err">POST /message:stream</span>
+</span><span id="__span-62-2"><a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a><span class="err">Content-Type: application/json</span>
+</span><span id="__span-62-3"><a id="__codelineno-62-3" name="__codelineno-62-3" href="#__codelineno-62-3"></a>
+</span><span id="__span-62-4"><a id="__codelineno-62-4" name="__codelineno-62-4" href="#__codelineno-62-4"></a><span class="err">{ /* SendMessageRequest object */ }</span>
 </span></code></pre></div>
 <p><strong>Referenced Objects:</strong> <a href="#321-sendmessagerequest"><code>SendMessageRequest</code></a></p>
 <p><strong>Response:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-80-1"><a id="__codelineno-80-1" name="__codelineno-80-1" href="#__codelineno-80-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-</span><span id="__span-80-2"><a id="__codelineno-80-2" name="__codelineno-80-2" href="#__codelineno-80-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/event-stream</span>
-</span><span id="__span-80-3"><a id="__codelineno-80-3" name="__codelineno-80-3" href="#__codelineno-80-3"></a>
-</span><span id="__span-80-4"><a id="__codelineno-80-4" name="__codelineno-80-4" href="#__codelineno-80-4"></a>data: { /* StreamResponse object */ }
-</span><span id="__span-80-5"><a id="__codelineno-80-5" name="__codelineno-80-5" href="#__codelineno-80-5"></a>
-</span><span id="__span-80-6"><a id="__codelineno-80-6" name="__codelineno-80-6" href="#__codelineno-80-6"></a>data: { /* StreamResponse object */ }
+<div class="language-http highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/event-stream</span>
+</span><span id="__span-63-3"><a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a>
+</span><span id="__span-63-4"><a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a>data: { /* StreamResponse object */ }
+</span><span id="__span-63-5"><a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a>
+</span><span id="__span-63-6"><a id="__codelineno-63-6" name="__codelineno-63-6" href="#__codelineno-63-6"></a>data: { /* StreamResponse object */ }
 </span></code></pre></div>
 <p><strong>Referenced Objects:</strong> <a href="#323-stream-response"><code>StreamResponse</code></a>
 Streaming responses are simple, linearly ordered sequences: first a <code>Task</code> (or single <code>Message</code>), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final <code>Task</code> snapshot before closing.</p>
@@ -10676,14 +11085,14 @@ Streaming responses are simple, linearly ordered sequences: first a <code>Task</
 <li><strong>Documentation Link</strong>: Include a URL to the complete binding specification</li>
 </ol>
 <p><strong>Example:</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-81-1"><a id="__codelineno-81-1" name="__codelineno-81-1" href="#__codelineno-81-1"></a><span class="p">{</span>
-</span><span id="__span-81-2"><a id="__codelineno-81-2" name="__codelineno-81-2" href="#__codelineno-81-2"></a><span class="w">  </span><span class="nt">&quot;supportedInterfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-</span><span id="__span-81-3"><a id="__codelineno-81-3" name="__codelineno-81-3" href="#__codelineno-81-3"></a><span class="w">    </span><span class="p">{</span>
-</span><span id="__span-81-4"><a id="__codelineno-81-4" name="__codelineno-81-4" href="#__codelineno-81-4"></a><span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wss://agent.example.com/a2a/websocket&quot;</span><span class="p">,</span>
-</span><span id="__span-81-5"><a id="__codelineno-81-5" name="__codelineno-81-5" href="#__codelineno-81-5"></a><span class="w">      </span><span class="nt">&quot;protocolBinding&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WEBSOCKET&quot;</span>
-</span><span id="__span-81-6"><a id="__codelineno-81-6" name="__codelineno-81-6" href="#__codelineno-81-6"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-81-7"><a id="__codelineno-81-7" name="__codelineno-81-7" href="#__codelineno-81-7"></a><span class="w">  </span><span class="p">]</span>
-</span><span id="__span-81-8"><a id="__codelineno-81-8" name="__codelineno-81-8" href="#__codelineno-81-8"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-64-1"><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="p">{</span>
+</span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a><span class="w">  </span><span class="nt">&quot;supportedInterfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-64-3"><a id="__codelineno-64-3" name="__codelineno-64-3" href="#__codelineno-64-3"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-64-4"><a id="__codelineno-64-4" name="__codelineno-64-4" href="#__codelineno-64-4"></a><span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wss://agent.example.com/a2a/websocket&quot;</span><span class="p">,</span>
+</span><span id="__span-64-5"><a id="__codelineno-64-5" name="__codelineno-64-5" href="#__codelineno-64-5"></a><span class="w">      </span><span class="nt">&quot;protocolBinding&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WEBSOCKET&quot;</span>
+</span><span id="__span-64-6"><a id="__codelineno-64-6" name="__codelineno-64-6" href="#__codelineno-64-6"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-64-7"><a id="__codelineno-64-7" name="__codelineno-64-7" href="#__codelineno-64-7"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-64-8"><a id="__codelineno-64-8" name="__codelineno-64-8" href="#__codelineno-64-8"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="128-interoperability-testing">12.8. Interoperability Testing<a class="headerlink" href="#128-interoperability-testing" title="Permanent link">&para;</a></h3>
 <p>Custom binding implementers <strong>SHOULD</strong>:</p>
@@ -10888,7 +11297,7 @@ A2A Protocol Working Group, <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#9
 <p><strong>Related information:</strong>
 The A2A-Version header field indicates the A2A protocol version that the client is using. The value MUST be in the format <code>Major.Minor</code> (e.g., "0.3"). If the version is not supported by the agent, the agent returns a <code>VersionNotSupportedError</code>.</p>
 <p><strong>Example:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-82-1"><a id="__codelineno-82-1" name="__codelineno-82-1" href="#__codelineno-82-1"></a>A2A-Version: 0.3
+<div class="language-text highlight"><pre><span></span><code><span id="__span-65-1"><a id="__codelineno-65-1" name="__codelineno-65-1" href="#__codelineno-65-1"></a>A2A-Version: 0.3
 </span></code></pre></div>
 <h4 id="1422-a2a-extensions-header">14.2.2. A2A-Extensions Header<a class="headerlink" href="#1422-a2a-extensions-header" title="Permanent link">&para;</a></h4>
 <p><strong>Header field name:</strong> A2A-Extensions</p>
@@ -10899,7 +11308,7 @@ The A2A-Version header field indicates the A2A protocol version that the client 
 <p><strong>Related information:</strong>
 The A2A-Extensions header field contains a comma-separated list of extension URIs that the client wants to use for the request. Extensions allow agents to provide additional functionality beyond the core A2A specification while maintaining backward compatibility.</p>
 <p><strong>Example:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-83-1"><a id="__codelineno-83-1" name="__codelineno-83-1" href="#__codelineno-83-1"></a>A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
+<div class="language-text highlight"><pre><span></span><code><span id="__span-66-1"><a id="__codelineno-66-1" name="__codelineno-66-1" href="#__codelineno-66-1"></a>A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
 </span></code></pre></div>
 <h3 id="143-well-known-uri-registration">14.3. Well-Known URI Registration<a class="headerlink" href="#143-well-known-uri-registration" title="Permanent link">&para;</a></h3>
 <p><strong>URI suffix:</strong> agent-card.json</p>
@@ -10917,7 +11326,7 @@ The <code>.well-known/agent-card.json</code> URI provides a standardized locatio
 <li>Extended Agent Cards retrieved via authenticated endpoints (Section 3.1.11) MAY contain additional information and MUST enforce appropriate access controls</li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-84-1"><a id="__codelineno-84-1" name="__codelineno-84-1" href="#__codelineno-84-1"></a>https://agent.example.com/.well-known/agent-card.json
+<div class="language-text highlight"><pre><span></span><code><span id="__span-67-1"><a id="__codelineno-67-1" name="__codelineno-67-1" href="#__codelineno-67-1"></a>https://agent.example.com/.well-known/agent-card.json
 </span></code></pre></div>
 <hr />
 <h2 id="appendix-a-migration-legacy-compatibility">Appendix A. Migration &amp; Legacy Compatibility<a class="headerlink" href="#appendix-a-migration-legacy-compatibility" title="Permanent link">&para;</a></h2>
@@ -11034,32 +11443,32 @@ The <code>.well-known/agent-card.json</code> URI provides a standardized locatio
 <p><strong>Legacy Pattern (v0.3.x):</strong>
 Objects used an inline <code>kind</code> field as a discriminator to identify the object type:</p>
 <p><strong>Example 1 - TextPart:</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-85-1"><a id="__codelineno-85-1" name="__codelineno-85-1" href="#__codelineno-85-1"></a><span class="p">{</span>
-</span><span id="__span-85-2"><a id="__codelineno-85-2" name="__codelineno-85-2" href="#__codelineno-85-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TextPart&quot;</span><span class="p">,</span>
-</span><span id="__span-85-3"><a id="__codelineno-85-3" name="__codelineno-85-3" href="#__codelineno-85-3"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello, world!&quot;</span>
-</span><span id="__span-85-4"><a id="__codelineno-85-4" name="__codelineno-85-4" href="#__codelineno-85-4"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-68-1"><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a><span class="p">{</span>
+</span><span id="__span-68-2"><a id="__codelineno-68-2" name="__codelineno-68-2" href="#__codelineno-68-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TextPart&quot;</span><span class="p">,</span>
+</span><span id="__span-68-3"><a id="__codelineno-68-3" name="__codelineno-68-3" href="#__codelineno-68-3"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello, world!&quot;</span>
+</span><span id="__span-68-4"><a id="__codelineno-68-4" name="__codelineno-68-4" href="#__codelineno-68-4"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Example 2 - FilePart:</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-86-1"><a id="__codelineno-86-1" name="__codelineno-86-1" href="#__codelineno-86-1"></a><span class="p">{</span>
-</span><span id="__span-86-2"><a id="__codelineno-86-2" name="__codelineno-86-2" href="#__codelineno-86-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FilePart&quot;</span><span class="p">,</span>
-</span><span id="__span-86-3"><a id="__codelineno-86-3" name="__codelineno-86-3" href="#__codelineno-86-3"></a><span class="w">  </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
-</span><span id="__span-86-4"><a id="__codelineno-86-4" name="__codelineno-86-4" href="#__codelineno-86-4"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagram.png&quot;</span><span class="p">,</span>
-</span><span id="__span-86-5"><a id="__codelineno-86-5" name="__codelineno-86-5" href="#__codelineno-86-5"></a><span class="w">  </span><span class="nt">&quot;fileWithBytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgo...&quot;</span>
-</span><span id="__span-86-6"><a id="__codelineno-86-6" name="__codelineno-86-6" href="#__codelineno-86-6"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a><span class="p">{</span>
+</span><span id="__span-69-2"><a id="__codelineno-69-2" name="__codelineno-69-2" href="#__codelineno-69-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FilePart&quot;</span><span class="p">,</span>
+</span><span id="__span-69-3"><a id="__codelineno-69-3" name="__codelineno-69-3" href="#__codelineno-69-3"></a><span class="w">  </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+</span><span id="__span-69-4"><a id="__codelineno-69-4" name="__codelineno-69-4" href="#__codelineno-69-4"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagram.png&quot;</span><span class="p">,</span>
+</span><span id="__span-69-5"><a id="__codelineno-69-5" name="__codelineno-69-5" href="#__codelineno-69-5"></a><span class="w">  </span><span class="nt">&quot;fileWithBytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgo...&quot;</span>
+</span><span id="__span-69-6"><a id="__codelineno-69-6" name="__codelineno-69-6" href="#__codelineno-69-6"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Current Pattern (v1.0):</strong>
 Objects now use the <strong>JSON member name</strong> itself to identify the type. The member name acts as the discriminator, and the value structure depends on the specific type:</p>
 <p><strong>Example 1 - TextPart:</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-87-1"><a id="__codelineno-87-1" name="__codelineno-87-1" href="#__codelineno-87-1"></a><span class="p">{</span>
-</span><span id="__span-87-2"><a id="__codelineno-87-2" name="__codelineno-87-2" href="#__codelineno-87-2"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello, world!&quot;</span>
-</span><span id="__span-87-3"><a id="__codelineno-87-3" name="__codelineno-87-3" href="#__codelineno-87-3"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-70-1"><a id="__codelineno-70-1" name="__codelineno-70-1" href="#__codelineno-70-1"></a><span class="p">{</span>
+</span><span id="__span-70-2"><a id="__codelineno-70-2" name="__codelineno-70-2" href="#__codelineno-70-2"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello, world!&quot;</span>
+</span><span id="__span-70-3"><a id="__codelineno-70-3" name="__codelineno-70-3" href="#__codelineno-70-3"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Example 2 - FilePart:</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-88-1"><a id="__codelineno-88-1" name="__codelineno-88-1" href="#__codelineno-88-1"></a><span class="p">{</span>
-</span><span id="__span-88-2"><a id="__codelineno-88-2" name="__codelineno-88-2" href="#__codelineno-88-2"></a><span class="w">  </span><span class="nt">&quot;raw&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgo...&quot;</span><span class="p">,</span>
-</span><span id="__span-88-3"><a id="__codelineno-88-3" name="__codelineno-88-3" href="#__codelineno-88-3"></a><span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagram.png&quot;</span><span class="p">,</span>
-</span><span id="__span-88-4"><a id="__codelineno-88-4" name="__codelineno-88-4" href="#__codelineno-88-4"></a><span class="w">  </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span>
-</span><span id="__span-88-5"><a id="__codelineno-88-5" name="__codelineno-88-5" href="#__codelineno-88-5"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-71-1"><a id="__codelineno-71-1" name="__codelineno-71-1" href="#__codelineno-71-1"></a><span class="p">{</span>
+</span><span id="__span-71-2"><a id="__codelineno-71-2" name="__codelineno-71-2" href="#__codelineno-71-2"></a><span class="w">  </span><span class="nt">&quot;raw&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgo...&quot;</span><span class="p">,</span>
+</span><span id="__span-71-3"><a id="__codelineno-71-3" name="__codelineno-71-3" href="#__codelineno-71-3"></a><span class="w">  </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagram.png&quot;</span><span class="p">,</span>
+</span><span id="__span-71-4"><a id="__codelineno-71-4" name="__codelineno-71-4" href="#__codelineno-71-4"></a><span class="w">  </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span>
+</span><span id="__span-71-5"><a id="__codelineno-71-5" name="__codelineno-71-5" href="#__codelineno-71-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Affected Types:</strong></p>
 <ol>
@@ -11122,20 +11531,20 @@ Objects now use the <strong>JSON member name</strong> itself to identify the typ
 <h4 id="a22-breaking-change-extended-agent-card-field-relocated">A.2.2 Breaking Change: Extended Agent Card Field Relocated<a class="headerlink" href="#a22-breaking-change-extended-agent-card-field-relocated" title="Permanent link">&para;</a></h4>
 <p><strong>Version 1.0 relocates the extended agent card capability</strong> from a top-level field to the capabilities object for architectural consistency.</p>
 <p><strong>Legacy Structure (pre-1.0):</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-89-1"><a id="__codelineno-89-1" name="__codelineno-89-1" href="#__codelineno-89-1"></a><span class="p">{</span>
-</span><span id="__span-89-2"><a id="__codelineno-89-2" name="__codelineno-89-2" href="#__codelineno-89-2"></a><span class="w">  </span><span class="nt">&quot;supportsExtendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-89-3"><a id="__codelineno-89-3" name="__codelineno-89-3" href="#__codelineno-89-3"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-89-4"><a id="__codelineno-89-4" name="__codelineno-89-4" href="#__codelineno-89-4"></a><span class="w">    </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-</span><span id="__span-89-5"><a id="__codelineno-89-5" name="__codelineno-89-5" href="#__codelineno-89-5"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-89-6"><a id="__codelineno-89-6" name="__codelineno-89-6" href="#__codelineno-89-6"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-72-1"><a id="__codelineno-72-1" name="__codelineno-72-1" href="#__codelineno-72-1"></a><span class="p">{</span>
+</span><span id="__span-72-2"><a id="__codelineno-72-2" name="__codelineno-72-2" href="#__codelineno-72-2"></a><span class="w">  </span><span class="nt">&quot;supportsExtendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-72-3"><a id="__codelineno-72-3" name="__codelineno-72-3" href="#__codelineno-72-3"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-72-4"><a id="__codelineno-72-4" name="__codelineno-72-4" href="#__codelineno-72-4"></a><span class="w">    </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-72-5"><a id="__codelineno-72-5" name="__codelineno-72-5" href="#__codelineno-72-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-72-6"><a id="__codelineno-72-6" name="__codelineno-72-6" href="#__codelineno-72-6"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Current Structure (1.0+):</strong></p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-90-1"><a id="__codelineno-90-1" name="__codelineno-90-1" href="#__codelineno-90-1"></a><span class="p">{</span>
-</span><span id="__span-90-2"><a id="__codelineno-90-2" name="__codelineno-90-2" href="#__codelineno-90-2"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-90-3"><a id="__codelineno-90-3" name="__codelineno-90-3" href="#__codelineno-90-3"></a><span class="w">    </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-</span><span id="__span-90-4"><a id="__codelineno-90-4" name="__codelineno-90-4" href="#__codelineno-90-4"></a><span class="w">    </span><span class="nt">&quot;extendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
-</span><span id="__span-90-5"><a id="__codelineno-90-5" name="__codelineno-90-5" href="#__codelineno-90-5"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-90-6"><a id="__codelineno-90-6" name="__codelineno-90-6" href="#__codelineno-90-6"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-73-1"><a id="__codelineno-73-1" name="__codelineno-73-1" href="#__codelineno-73-1"></a><span class="p">{</span>
+</span><span id="__span-73-2"><a id="__codelineno-73-2" name="__codelineno-73-2" href="#__codelineno-73-2"></a><span class="w">  </span><span class="nt">&quot;capabilities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-73-3"><a id="__codelineno-73-3" name="__codelineno-73-3" href="#__codelineno-73-3"></a><span class="w">    </span><span class="nt">&quot;streaming&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-73-4"><a id="__codelineno-73-4" name="__codelineno-73-4" href="#__codelineno-73-4"></a><span class="w">    </span><span class="nt">&quot;extendedAgentCard&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-73-5"><a id="__codelineno-73-5" name="__codelineno-73-5" href="#__codelineno-73-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-73-6"><a id="__codelineno-73-6" name="__codelineno-73-6" href="#__codelineno-73-6"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Proto Changes:</strong></p>
 <ul>
@@ -11154,8 +11563,8 @@ Objects now use the <strong>JSON member name</strong> itself to identify the typ
 <li>Update capability checks: <code>agentCard.capabilities?.extendedAgentCard</code></li>
 <li>Temporary fallback (transition period):</li>
 </ol>
-<div class="language-javascript highlight"><pre><span></span><code><span id="__span-91-1"><a id="__codelineno-91-1" name="__codelineno-91-1" href="#__codelineno-91-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">supported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">capabilities</span><span class="o">?</span><span class="p">.</span><span class="nx">extendedAgentCard</span><span class="w"> </span><span class="o">||</span>
-</span><span id="__span-91-2"><a id="__codelineno-91-2" name="__codelineno-91-2" href="#__codelineno-91-2"></a><span class="w">                  </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">supportsExtendedAgentCard</span><span class="p">;</span>
+<div class="language-javascript highlight"><pre><span></span><code><span id="__span-74-1"><a id="__codelineno-74-1" name="__codelineno-74-1" href="#__codelineno-74-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">supported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">capabilities</span><span class="o">?</span><span class="p">.</span><span class="nx">extendedAgentCard</span><span class="w"> </span><span class="o">||</span>
+</span><span id="__span-74-2"><a id="__codelineno-74-2" name="__codelineno-74-2" href="#__codelineno-74-2"></a><span class="w">                  </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">supportsExtendedAgentCard</span><span class="p">;</span>
 </span></code></pre></div>
 <ol>
 <li>Remove fallback after agent ecosystem migrates</li>

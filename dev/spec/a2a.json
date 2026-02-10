@@ -69,7 +69,7 @@
     "Agent Card": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "AgentCard is a self-describing manifest for an agent. It provides essential\n metadata including the agent's identity, capabilities, skills, supported\n communication methods, and security requirements.\n Next ID: 20",
+      "description": "A self-describing manifest for an agent. It provides essential\n metadata including the agent's identity, capabilities, skills, supported\n communication methods, and security requirements.\n Next ID: 20",
       "patternProperties": {
         "^(default_input_modes)$": {
           "description": "The set of interaction modes that the agent supports across all skills.\n This can be overridden per skill. Defined as media types.",
@@ -895,7 +895,7 @@
         },
         "^(page_token)$": {
           "default": "",
-          "description": "A page token received from a previous ListTaskPushNotificationConfigRequest call.",
+          "description": "A page token received from a previous `ListTaskPushNotificationConfigRequest` call.",
           "type": "string"
         },
         "^(task_id)$": {
@@ -922,7 +922,7 @@
         },
         "pageToken": {
           "default": "",
-          "description": "A page token received from a previous ListTaskPushNotificationConfigRequest call.",
+          "description": "A page token received from a previous `ListTaskPushNotificationConfigRequest` call.",
           "type": "string"
         },
         "taskId": {
@@ -1107,7 +1107,7 @@
     "List Tasks Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Result object for tasks/list method containing an array of tasks and pagination information.",
+      "description": "Result object for `ListTasks` method containing an array of tasks and pagination information.",
       "patternProperties": {
         "^(next_page_token)$": {
           "default": "",
@@ -1195,7 +1195,7 @@
     "Message": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Message is one unit of communication between client and server. It can be\n associated with a context and/or a task. For server messages, context_id must\n be provided, and task_id only if a task was created. For client messages, both\n fields are optional, with the caveat that if both are provided, they have to\n match (the context_id has to be the one that is set on the task). If only\n task_id is provided, the server will infer context_id from it.",
+      "description": "Message is one unit of communication between client and server. It can be\n associated with a context and/or a task. For server messages, `context_id` must\n be provided, and `task_id` only if a task was created. For client messages, both\n fields are optional, with the caveat that if both are provided, they have to\n match (the `context_id` has to be the one that is set on the task). If only\n `task_id` is provided, the server will infer `context_id` from it.",
       "patternProperties": {
         "^(context_id)$": {
           "default": "",
@@ -1652,7 +1652,7 @@
     "Send Message Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "/////////// Request Messages ///////////\n Represents a request for the `SendMessage` method.",
+      "description": "Represents a request for the `SendMessage` method.",
       "properties": {
         "configuration": {
           "$ref": "a2a.v1.SendMessageConfiguration.jsonschema.json",
@@ -1678,7 +1678,6 @@
     "Send Message Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "////// Response Messages ///////////",
       "properties": {
         "message": {
           "$ref": "a2a.v1.Message.jsonschema.json"
@@ -1808,7 +1807,7 @@
     "Task Artifact Update Event": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "TaskArtifactUpdateEvent represents a task delta where an artifact has\n been generated.",
+      "description": "A task delta where an artifact has been generated.",
       "patternProperties": {
         "^(context_id)$": {
           "default": "",
