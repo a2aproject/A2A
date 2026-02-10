@@ -2262,12 +2262,12 @@ Sends a message and subscribes to real-time updates via Server-Sent Events.
 **Response:** HTTP 200 with `Content-Type: text/event-stream`
 
 ```text
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 ```
 
-Referenced Objects: [`Task`](#411-task), [`Message`](#414-message), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)
+**Referenced Objects:** [`StreamResponse`](#323-stream-response)
 
 #### 9.4.3. `GetTask`
 
@@ -2871,15 +2871,12 @@ Content-Type: application/json
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
-data: {"task": { /* Task object */ }}
+data: { /* StreamResponse object */ }
 
-data: {"artifactUpdate": { /* TaskArtifactUpdateEvent */ }}
-
-data: {"statusUpdate": { /* TaskStatusUpdateEvent */ }}
+data: { /* StreamResponse object */ }
 ```
 
-**Referenced Objects:** [`Task`](#411-task), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)
-<span id="4192-taskstatusupdateevent"></span><span id="4193-taskartifactupdateevent"></span>
+**Referenced Objects:** [`StreamResponse`](#323-stream-response)
 Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
 
 ## 12. Custom Binding Guidelines
