@@ -45,7 +45,7 @@ jobs:
           sudo chmod +x /usr/local/bin/buf
 
       - name: Download proto dependencies
-        working-directory: specification/grpc
+        working-directory: specification
         run: |
           buf dep update
           buf export buf.build/googleapis/googleapis --output=.googleapis
@@ -58,7 +58,7 @@ jobs:
           sudo chmod +x /usr/local/bin/api-linter
 
       - name: Run API Linter
-        working-directory: specification/grpc
+        working-directory: specification
         run: |
           # Run api-linter with exported googleapis protos
           api-linter --config .api-linter.yaml --set-exit-status --proto-path . --proto-path .googleapis a2a.proto
