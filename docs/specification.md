@@ -1723,11 +1723,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "file": {
-          "name": "input_image.png",
-          "mediaType": "image/png",
-          "fileWithBytes": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-        }
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
+        "filename": "input_image.png",
+        "mediaType": "image/png"
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
@@ -1755,11 +1753,9 @@ Content-Type: application/a2a+json
         "name": "processed_image_with_faces.png",
         "parts": [
           {
-            "file": {
-              "name": "output.png",
-              "mediaType": "image/png",
-              "fileWithUri": "https://storage.example.com/processed/task-bbb/output.png?token=xyz"
-            }
+            "url": "https://storage.example.com/processed/task-bbb/output.png?token=xyz",
+            "filename": "output.png",
+            "mediaType": "image/png"
           }
         ]
       }
@@ -3439,11 +3435,9 @@ Objects now use the **JSON member name** itself to identify the type. The member
 
 ```json
 {
-  "file": {
-    "mediaType": "image/png",
-    "name": "diagram.png",
-    "fileWithBytes": "iVBORw0KGgo..."
-  }
+  "raw": "iVBORw0KGgo...",
+  "filename": "diagram.png",
+  "mediaType": "image/png"
 }
 ```
 
@@ -3455,7 +3449,7 @@ Objects now use the **JSON member name** itself to identify the type. The member
      - **Current:** `{ "text": "..." }` (direct string value)
    - **FilePart**:
      - **Legacy:** `{ "kind": "FilePart", "mimeType": "...", "name": "...", "fileWithBytes": "..." }`
-     - **Current:** `{ "file": { "mediaType": "...", "name": "...", "fileWithBytes": "..." } }`
+     - **Current:** `{ "raw": "...", "filename": "...", "mediaType": "..." }` (or `url` instead of `raw`)
    - **DataPart**:
      - **Legacy:** `{ "kind": "DataPart", "data": {...} }`
      - **Current:** `{ "data": { "data": {...} } }`
