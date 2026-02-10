@@ -81,7 +81,7 @@ Agent Cards include sensitive information, such as:
 
 To mitigate risks, the following protection mechanisms should be considered:
 
-- **Authenticated Agent Cards:** We recommend the use of [authenticated extended agent cards](../specification.md#710-agentgetauthenticatedextendedcard) for sensitive information or for serving a more detailed version of the card.
+- **Authenticated Agent Cards:** We recommend the use of [authenticated extended agent cards](../specification.md#3111-get-extended-agent-card) for sensitive information or for serving a more detailed version of the card.
 - **Secure Endpoints:** Implement access controls on the HTTP endpoint serving the Agent Card (e.g., `/.well-known/agent-card.json` or registry API). The methods include:
     - Mutual TLS (mTLS)
     - Network restrictions (e.g., IP ranges)

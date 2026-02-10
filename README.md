@@ -58,7 +58,7 @@ With A2A, agents can:
 
 ## Intro to A2A Video
 
-[![A2A Intro Video](https://img.youtube.com/vi/Fbr_Solax1w/hqdefault.jpg)](https://goo.gle/a2a-video)
+[![A2A Intro Video](https://img.youtube.com/vi/Fbr_Solax1w/maxresdefault.jpg)](https://goo.gle/a2a-video)
 
 ## Why A2A?
 

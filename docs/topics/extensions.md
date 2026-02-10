@@ -170,14 +170,13 @@ A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 519
 {
   "jsonrpc": "2.0",
-  "method": "message/send",
+  "method": "SendMessage",
   "id": "1",
   "params": {
     "message": {
-      "kind": "message",
       "messageId": "1",
-      "role": "user",
-      "parts": [{"kind": "text", "text": "Oh magic 8-ball, will it rain today?"}]
+      "role": "ROLE_USER",
+      "parts": [{"text": "Oh magic 8-ball, will it rain today?"}]
     },
     "metadata": {
       "https://example.com/ext/konami-code/v1/code": "motherlode"
@@ -197,10 +196,11 @@ Content-Length: 338
   "jsonrpc": "2.0",
   "id": "1",
   "result": {
-    "kind": "message",
-    "messageId": "2",
-    "role": "agent",
-    "parts": [{"kind": "text", "text": "That's a bingo!"}]
+    "message": {
+      "messageId": "2",
+      "role": "ROLE_AGENT",
+      "parts": [{"text": "That's a bingo!"}]
+    }
   }
 }
 ```
