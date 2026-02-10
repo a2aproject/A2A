@@ -41,7 +41,9 @@ jobs:
       - name: Run API Linter
         uses: googleapis/api-linter@v2.2.0
         with:
-          # Lint all proto files in the specification/grpc directory
-          proto-path: specification/grpc
+          # Lint all proto files in the specification directory
+          proto-path: specification
           # Use the api-linter configuration file
-          config-path: specification/grpc/.api-linter.yaml
+          config-path: specification/.api-linter.yaml
+          # Lint all proto files
+          args: specification/*.proto
