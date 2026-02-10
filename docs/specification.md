@@ -980,7 +980,7 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 <a id="MutualTlsSecurityScheme"></a>
 
-#### 4.5.6. MutualTLSSecurityScheme
+#### 4.5.6. MutualTlsSecurityScheme
 
 {{ proto_to_table("specification/a2a.proto", "MutualTlsSecurityScheme") }}
 
@@ -1723,11 +1723,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "file": {
-          "name": "input_image.png",
-          "mediaType": "image/png",
-          "fileWithBytes": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-        }
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
+        "filename": "input_image.png",
+        "mediaType": "image/png"
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
@@ -1755,11 +1753,9 @@ Content-Type: application/a2a+json
         "name": "processed_image_with_faces.png",
         "parts": [
           {
-            "file": {
-              "name": "output.png",
-              "mediaType": "image/png",
-              "fileWithUri": "https://storage.example.com/processed/task-bbb/output.png?token=xyz"
-            }
+            "url": "https://storage.example.com/processed/task-bbb/output.png?token=xyz",
+            "filename": "output.png",
+            "mediaType": "image/png"
           }
         ]
       }
@@ -2276,12 +2272,12 @@ Sends a message and subscribes to real-time updates via Server-Sent Events.
 **Response:** HTTP 200 with `Content-Type: text/event-stream`
 
 ```text
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 ```
 
-Referenced Objects: [`Task`](#411-task), [`Message`](#414-message), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)
+**Referenced Objects:** [`StreamResponse`](#323-stream-response)
 
 #### 9.4.3. `GetTask`
 
@@ -2931,15 +2927,12 @@ Content-Type: application/json
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
-data: {"task": { /* Task object */ }}
+data: { /* StreamResponse object */ }
 
-data: {"artifactUpdate": { /* TaskArtifactUpdateEvent */ }}
-
-data: {"statusUpdate": { /* TaskStatusUpdateEvent */ }}
+data: { /* StreamResponse object */ }
 ```
 
-**Referenced Objects:** [`Task`](#411-task), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)
-<span id="4192-taskstatusupdateevent"></span><span id="4193-taskartifactupdateevent"></span>
+**Referenced Objects:** [`StreamResponse`](#323-stream-response)
 Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
 
 ## 12. Custom Binding Guidelines
@@ -3442,11 +3435,9 @@ Objects now use the **JSON member name** itself to identify the type. The member
 
 ```json
 {
-  "file": {
-    "mediaType": "image/png",
-    "name": "diagram.png",
-    "fileWithBytes": "iVBORw0KGgo..."
-  }
+  "raw": "iVBORw0KGgo...",
+  "filename": "diagram.png",
+  "mediaType": "image/png"
 }
 ```
 
@@ -3458,7 +3449,7 @@ Objects now use the **JSON member name** itself to identify the type. The member
      - **Current:** `{ "text": "..." }` (direct string value)
    - **FilePart**:
      - **Legacy:** `{ "kind": "FilePart", "mimeType": "...", "name": "...", "fileWithBytes": "..." }`
-     - **Current:** `{ "file": { "mediaType": "...", "name": "...", "fileWithBytes": "..." } }`
+     - **Current:** `{ "raw": "...", "filename": "...", "mediaType": "..." }` (or `url` instead of `raw`)
    - **DataPart**:
      - **Legacy:** `{ "kind": "DataPart", "data": {...} }`
      - **Current:** `{ "data": { "data": {...} } }`
