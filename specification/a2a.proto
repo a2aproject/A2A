@@ -235,6 +235,7 @@ message Part {
 
 // Defines the sender of a message in A2A protocol communication.
 enum Role {
+  // Default value. This value is unused.
   ROLE_UNSPECIFIED = 0;
   // USER role refers to communication from the client to the server.
   ROLE_USER = 1;
@@ -490,12 +491,16 @@ message TaskPushNotificationConfig {
 }
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
+// A list of strings.
 message StringList {
+  // The list of strings.
   repeated string list = 1;
 }
 // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 
+// Defines the security requirements for an agent.
 message SecurityRequirement {
+  // A map of security schemes to the required scopes.
   map<string, StringList> schemes = 1;
 }
 
@@ -573,7 +578,9 @@ message OAuthFlows {
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
+    // Deprecated: Use Authorization Code + PKCE instead.
     ImplicitOAuthFlow implicit = 3 [deprecated = true];
+    // Deprecated: Use Authorization Code + PKCE or Device Code.
     PasswordOAuthFlow password = 4 [deprecated = true];
     // Configuration for the OAuth Device Code flow.
     DeviceCodeOAuthFlow device_code = 5;
@@ -605,7 +612,7 @@ message ClientCredentialsOAuthFlow {
   map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
 }
 
-// DEPRECATED
+// Deprecated: Use Authorization Code + PKCE instead.
 message ImplicitOAuthFlow {
   // The authorization URL to be used for this flow. This MUST be in the
   // form of a URL. The OAuth2 standard requires the use of TLS
@@ -618,7 +625,7 @@ message ImplicitOAuthFlow {
   map<string, string> scopes = 3;
 }
 
-// DEPRECATED
+// Deprecated: Use Authorization Code + PKCE or Device Code.
 message PasswordOAuthFlow {
   // The token URL to be used for this flow. This MUST be in the form of a URL.
   // The OAuth2 standard requires the use of TLS.
@@ -713,6 +720,7 @@ message CancelTaskRequest {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
+// Represents a request for the `GetTaskPushNotificationConfig` method.
 message GetTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
@@ -745,6 +753,7 @@ message CreateTaskPushNotificationConfigRequest {
   PushNotificationConfig config = 5 [(google.api.field_behavior) = REQUIRED];
 }
 
+// Represents a request for the `SubscribeToTask` method.
 message SubscribeToTaskRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 2;
@@ -752,6 +761,7 @@ message SubscribeToTaskRequest {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
+// Represents a request for the `ListTaskPushNotificationConfig` method.
 message ListTaskPushNotificationConfigRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 4;
@@ -765,14 +775,19 @@ message ListTaskPushNotificationConfigRequest {
   string page_token = 3;
 }
 
+// Represents a request for the `GetExtendedAgentCard` method.
 message GetExtendedAgentCardRequest {
   // Optional tenant, provided as a path parameter.
   string tenant = 1;
 }
 
+// Represents the response for the `SendMessage` method.
 message SendMessageResponse {
+  // The payload of the response.
   oneof payload {
+    // The task created or updated by the message.
     Task task = 1;
+    // A message from the agent.
     Message message = 2;
   }
 }
