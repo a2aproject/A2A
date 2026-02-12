@@ -215,6 +215,7 @@ def _extract_comments(element: Any) -> str:
                 '--8<--',
                 'Next ID:',
                 '(-- api-linter',
+                'api-linter',
                 'aip.dev/not-precedent',
             )
         ):
