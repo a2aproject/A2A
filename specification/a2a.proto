@@ -81,6 +81,8 @@ service A2AService {
     };
   }
 
+  // (-- api-linter: client-libraries::4232::required-fields=disabled
+  //     aip.dev/not-precedent: method_signature preserved for backwards compatibility --)
   // Create a push notification config for a task.
   rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
@@ -463,6 +465,8 @@ message AgentSkill {
 // AgentCardSignature represents a JWS signature of an AgentCard.
 // This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
 message AgentCardSignature {
+  // (-- api-linter: core::0140::reserved-words=disabled
+  //     aip.dev/not-precedent: Backwards compatibility --)
   // The protected JWS header for the signature. This is always a
   // base64url-encoded JSON object. Required.
   string protected = 1 [(google.api.field_behavior) = REQUIRED];
