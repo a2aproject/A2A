@@ -9,30 +9,9 @@ OUTPUT_FILE="docs/llms-full.txt"
 DOCS_DIR="docs"
 SPEC_DIR="specification"
 SDK_DOCS_SCRIPT="scripts/build_sdk_docs.sh"
+PROJECT_NAME="A2A (Agent2Agent) Protocol"
 
 echo "--- Generating consolidated LLM file: ${OUTPUT_FILE} ---"
-
-# Clear the output file to start fresh
-true >"${OUTPUT_FILE}"
-
-# --- Helper function to append file content with a header ---
-append_file() {
-  local file_path="$1"
-  local display_path="${2:-$file_path}"
-  if [ -f "$file_path" ]; then
-    echo "Appending: $file_path"
-    {
-      echo "--- START OF FILE ${display_path} ---"
-      echo
-      cat "$file_path"
-      echo
-      echo "================================================="
-      echo
-    } >>"${OUTPUT_FILE}"
-  else
-    echo "Warning: File not found, skipping: $file_path" >&2
-  fi
-}
 
 # --- Generate Python SDK Text Documentation ---
 if [ -f "$SDK_DOCS_SCRIPT" ]; then
@@ -42,33 +21,96 @@ else
   echo "Warning: SDK docs script not found at $SDK_DOCS_SCRIPT"
 fi
 
-# --- Process README ---
-append_file "README.md"
+# Clear the output file and add introduction
+cat <<EOF >"${OUTPUT_FILE}"
+# ${PROJECT_NAME} - Full Documentation
 
-# --- Process Documentation Files ---
-# Find all markdown and rst files in the docs directory, sort them for consistent output,
-# and append each one. Exclude Python SDK source files (rst) because we include generated text.
-find "${DOCS_DIR}" -type f \( -name "*.md" -o -name "*.rst" \) \
-  -not -path "docs/sdk/python/*" \
-  -not -path "docs/README.md" \
-  -not -path "docs/sdk/python.md" | sort | while read -r doc_file; do
-  append_file "$doc_file"
-done
+This file is a consolidated version of all documentation, specifications, and API references
+for the ${PROJECT_NAME} project, optimized for LLM consumption.
 
-# --- Process Python SDK Text Files ---
-# Include the generated text documentation for the Python SDK.
-# The build_sdk_docs.sh script generates text files in docs/sdk/python/_build/text
-SDK_TEXT_DIR="docs/sdk/python/_build/text"
-if [ -d "$SDK_TEXT_DIR" ]; then
-  find "$SDK_TEXT_DIR" -type f -name "*.txt" | sort | while read -r doc_file; do
-    relative_path="${doc_file#$SDK_TEXT_DIR/}"
-    append_file "$doc_file" "sdk/python/$relative_path"
-  done
-else
-  echo "Warning: SDK text docs directory not found at $SDK_TEXT_DIR"
+EOF
+
+# Include llms.txt as the core summary if it exists
+if [ -f "${DOCS_DIR}/llms.txt" ]; then
+  echo "Including summary from ${DOCS_DIR}/llms.txt"
+  {
+    echo "## Project Summary"
+    echo
+    cat "${DOCS_DIR}/llms.txt"
+    echo
+    echo "---"
+    echo
+  } >>"${OUTPUT_FILE}"
 fi
 
-# --- Process Specification Files ---
-append_file "${SPEC_DIR}/a2a.proto"
+# --- Helper function to append file content with XML-style tags ---
+append_file() {
+  local file_path="$1"
+  local display_path="${2:-$file_path}"
+  if [ -f "$file_path" ]; then
+    echo "Appending: $file_path"
+    {
+      echo "<file path=\"${display_path}\">"
+      cat "$file_path"
+      echo "</file>"
+      echo
+    } >>"${OUTPUT_FILE}"
+  else
+    echo "Warning: File not found, skipping: $file_path" >&2
+  fi
+}
+
+# --- Build File List ---
+echo "## File Index" >>"${OUTPUT_FILE}"
+echo >>"${OUTPUT_FILE}"
+
+# Collect all files we intend to include
+FILES_TO_INCLUDE=()
+FILES_TO_INCLUDE+=("README.md")
+
+# Doc files
+while IFS= read -r doc_file; do
+  FILES_TO_INCLUDE+=("$doc_file")
+done < <(find "${DOCS_DIR}" -type f \( -name "*.md" -o -name "*.rst" \) \
+  -not -path "docs/sdk/python/*" \
+  -not -path "docs/README.md" \
+  -not -path "docs/sdk/python.md" \
+  -not -path "docs/llms-full.txt" | sort)
+
+# SDK text files
+SDK_TEXT_DIR="docs/sdk/python/_build/text"
+if [ -d "$SDK_TEXT_DIR" ]; then
+  while IFS= read -r sdk_file; do
+    FILES_TO_INCLUDE+=("$sdk_file")
+  done < <(find "$SDK_TEXT_DIR" -type f -name "*.txt" | sort)
+fi
+
+# Specification
+if [ -f "${SPEC_DIR}/a2a.proto" ]; then
+  FILES_TO_INCLUDE+=("${SPEC_DIR}/a2a.proto")
+fi
+
+# Write the index to the output file
+for f in "${FILES_TO_INCLUDE[@]}"; do
+  display_name="$f"
+  # Clean up display name for SDK files
+  if [[ "$f" == "$SDK_TEXT_DIR"* ]]; then
+    display_name="sdk/python/${f#$SDK_TEXT_DIR/}"
+  fi
+  echo "- ${display_name}" >>"${OUTPUT_FILE}"
+done
+
+echo >>"${OUTPUT_FILE}"
+echo "---" >>"${OUTPUT_FILE}"
+echo >>"${OUTPUT_FILE}"
+
+# --- Append file contents ---
+for f in "${FILES_TO_INCLUDE[@]}"; do
+  display_name="$f"
+  if [[ "$f" == "$SDK_TEXT_DIR"* ]]; then
+    display_name="sdk/python/${f#$SDK_TEXT_DIR/}"
+  fi
+  append_file "$f" "$display_name"
+done
 
 echo "✅ Consolidated LLM file generated successfully at ${OUTPUT_FILE}"
