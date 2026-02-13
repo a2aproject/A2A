@@ -49,7 +49,9 @@ append_file "README.md"
 # Find all markdown and rst files in the docs directory, sort them for consistent output,
 # and append each one. Exclude Python SDK source files (rst) because we include generated text.
 find "${DOCS_DIR}" -type f \( -name "*.md" -o -name "*.rst" \) \
-  -not -path "docs/sdk/python/*" | sort | while read -r doc_file; do
+  -not -path "docs/sdk/python/*" \
+  -not -path "docs/README.md" \
+  -not -path "docs/sdk/python.md" | sort | while read -r doc_file; do
   append_file "$doc_file"
 done
 
