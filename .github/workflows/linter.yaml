@@ -27,3 +27,37 @@ jobs:
         uses: super-linter/super-linter/slim@v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  api-linter:
+    name: API Linter
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Install buf
+        run: |
+          curl -sSL "https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64" -o buf
+          sudo mv buf /usr/local/bin/buf
+          sudo chmod +x /usr/local/bin/buf
+
+      - name: Download proto dependencies
+        working-directory: specification
+        run: |
+          buf dep update
+          buf export buf.build/googleapis/googleapis --output=.googleapis
+
+      - name: Install api-linter
+        run: |
+          curl -L https://github.com/googleapis/api-linter/releases/download/v1.67.6/api-linter-1.67.6-linux-amd64.tar.gz -o api-linter.tar.gz
+          tar -xzf api-linter.tar.gz
+          sudo mv api-linter /usr/local/bin/
+          sudo chmod +x /usr/local/bin/api-linter
+
+      - name: Run API Linter
+        run: |
+          # Run api-linter with exported googleapis protos
+          api-linter --config specification/.api-linter.yaml --output-format github --set-exit-status --proto-path specification --proto-path specification/.googleapis specification/a2a.proto

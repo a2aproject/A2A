@@ -210,7 +210,14 @@ def _extract_comments(element: Any) -> str:
         combined = ' '.join(filter(None, lines))
 
         if combined and not combined.startswith(
-            ('protolint:', '--8<--', 'Next ID:')
+            (
+                'protolint:',
+                '--8<--',
+                'Next ID:',
+                '(-- api-linter',
+                'api-linter',
+                'aip.dev/not-precedent',
+            )
         ):
             cleaned_parts.append(combined)
 
