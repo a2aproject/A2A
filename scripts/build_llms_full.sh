@@ -95,20 +95,22 @@ for f in "${FILES_TO_INCLUDE[@]}"; do
   display_name="$f"
   # Clean up display name for SDK files
   if [[ "$f" == "$SDK_TEXT_DIR"* ]]; then
-    display_name="sdk/python/${f#$SDK_TEXT_DIR/}"
+    display_name="sdk/python/${f#"$SDK_TEXT_DIR"/}"
   fi
   echo "- ${display_name}" >>"${OUTPUT_FILE}"
 done
 
-echo >>"${OUTPUT_FILE}"
-echo "---" >>"${OUTPUT_FILE}"
-echo >>"${OUTPUT_FILE}"
+{
+  echo
+  echo "---"
+  echo
+} >>"${OUTPUT_FILE}"
 
 # --- Append file contents ---
 for f in "${FILES_TO_INCLUDE[@]}"; do
   display_name="$f"
   if [[ "$f" == "$SDK_TEXT_DIR"* ]]; then
-    display_name="sdk/python/${f#$SDK_TEXT_DIR/}"
+    display_name="sdk/python/${f#"$SDK_TEXT_DIR"/}"
   fi
   append_file "$f" "$display_name"
 done
