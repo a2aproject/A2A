@@ -14,6 +14,7 @@ A2A enables agent-to-agent communication, but doesn't specify how agents should 
 ## Why Trust Matters for A2A
 
 When Agent A delegates a task to Agent B:
+
 1. How does A know B is who it claims to be?
 2. How does A know B can actually perform the task?
 3. How does A verify B hasn't been compromised?
