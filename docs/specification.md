@@ -1710,9 +1710,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
         "filename": "input_image.png",
-        "mediaType": "image/png"
+        "mediaType": "image/png",
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
