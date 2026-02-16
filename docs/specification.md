@@ -561,7 +561,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 | `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
 | `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                   |
 | `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
-| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
+| `ExtensionSupportRequiredError`       | Server requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
 | `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
 
 #### 3.3.3. Asynchronous Processing
@@ -1710,9 +1710,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
         "filename": "input_image.png",
         "mediaType": "image/png",
-        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
