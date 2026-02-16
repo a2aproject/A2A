@@ -175,6 +175,7 @@ The primary operation for initiating agent interactions. Clients send a message 
 
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
 - [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
 
