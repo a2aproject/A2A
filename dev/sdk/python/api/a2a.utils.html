@@ -463,6 +463,12 @@ Can be None or empty if the client accepts any.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.helpers.maybe_await">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">maybe_await</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">T</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#a2a.utils.helpers.maybe_await" title="Link to this definition">¶</a></dt>
+<dd><p>Awaits a value if it’s awaitable, otherwise simply provides it back.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.helpers.validate">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.helpers.</span></span><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#a2a.utils.helpers.validate" title="Link to this definition">¶</a></dt>
 <dd><p>Decorator that validates if a given expression evaluates to True.</p>
@@ -807,7 +813,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.FromProto.role">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f964a5d4850&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.role" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f70acda9350&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.role" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -872,7 +878,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.FromProto.task_state">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f964a643570&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.task_state" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f70ace3f460&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></span><a class="headerlink" href="#a2a.utils.proto_utils.FromProto.task_state" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -974,7 +980,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.ToProto.role">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f964a5d4850&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.role" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.Role" title="a2a.types.Role"><span class="pre">Role</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f70acda9350&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.role" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1024,7 +1030,7 @@ The validation happens before the generator starts yielding values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.ToProto.task_state">
-<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f964a643570&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.task_state" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">&lt;google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f70ace3f460&gt;</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.ToProto.task_state" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1290,6 +1296,18 @@ for instrumenting multiple methods within a class.</p>
 - Dynamic attribute setting via an <cite>attribute_extractor</cite> callback.
 - Automatic recording of exceptions and setting of span status.
 - Selective method tracing in classes using include/exclude lists.</p>
+<p>Configuration:
+- Environment Variable Control: OpenTelemetry instrumentation can be</p>
+<blockquote>
+<div><p>disabled using the <cite>OTEL_INSTRUMENTATION_A2A_SDK_ENABLED</cite> environment
+variable.</p>
+<ul class="simple">
+<li><p>Default: <cite>true</cite> (tracing enabled when OpenTelemetry is installed)</p></li>
+<li><p>To disable: Set <cite>OTEL_INSTRUMENTATION_A2A_SDK_ENABLED=false</cite></p></li>
+<li><p>Case insensitive: ‘true’, ‘True’, ‘TRUE’ all enable tracing</p></li>
+<li><p>Any other value disables tracing and logs a debug message</p></li>
+</ul>
+</div></blockquote>
 <dl>
 <dt>Usage:</dt><dd><p>For a single function:
 <a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
@@ -1726,6 +1744,7 @@ finishes and produces artifacts.</p>
 <li><a class="reference internal" href="#a2a.utils.helpers.build_text_artifact"><code class="docutils literal notranslate"><span class="pre">build_text_artifact()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.helpers.canonicalize_agent_card"><code class="docutils literal notranslate"><span class="pre">canonicalize_agent_card()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.helpers.create_task_obj"><code class="docutils literal notranslate"><span class="pre">create_task_obj()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.helpers.maybe_await"><code class="docutils literal notranslate"><span class="pre">maybe_await()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.helpers.validate"><code class="docutils literal notranslate"><span class="pre">validate()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.helpers.validate_async_generator"><code class="docutils literal notranslate"><span class="pre">validate_async_generator()</span></code></a></li>
 </ul>

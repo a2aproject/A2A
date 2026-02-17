@@ -6524,6 +6524,7 @@
 <ul>
 <li><a href="#332-error-handling"><code>ContentTypeNotSupportedError</code></a>: A Media Type provided in the request's message parts is not supported by the agent.</li>
 <li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.</li>
+<li><a href="#332-error-handling"><code>TaskNotFoundError</code></a>: The task ID does not exist or is not accessible.</li>
 </ul>
 <p><strong>Behavior:</strong></p>
 <p>The agent MAY create a new <code>Task</code> to process the provided message asynchronously or MAY return a direct <code>Message</code> response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a <a href="#411-task"><code>Task</code></a> is returned.</p>
@@ -7336,7 +7337,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>ExtensionSupportRequiredError</code></td>
-<td style="text-align: left;">Client requested use of an extension marked as <code>required: true</code> in the Agent Card but the client did not declare support for it in the request.</td>
+<td style="text-align: left;">Server requested use of an extension marked as <code>required: true</code> in the Agent Card but the client did not declare support for it in the request.</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>VersionNotSupportedError</code></td>
@@ -7352,7 +7353,7 @@
 <li><strong>Push Notifications</strong>: If <code>AgentCard.capabilities.pushNotifications</code> is <code>false</code> or not present, operations related to push notification configuration (Create, Get, List, Delete) <strong>MUST</strong> return <a href="#332-error-handling"><code>PushNotificationNotSupportedError</code></a>.</li>
 <li><strong>Streaming</strong>: If <code>AgentCard.capabilities.streaming</code> is <code>false</code> or not present, attempts to use <code>SendStreamingMessage</code> or <code>SubscribeToTask</code> operations <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>.</li>
 <li><strong>Extended Agent Card</strong>: If <code>AgentCard.capabilities.extendedAgentCard</code> is <code>false</code> or not present, attempts to call the Get Extended Agent Card operation <strong>MUST</strong> return <a href="#332-error-handling"><code>UnsupportedOperationError</code></a>. If the agent declares support but has not configured an extended card, it <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtendedAgentCardNotConfiguredError</code></a>.</li>
-<li><strong>Extensions</strong>: When a client requests use of an extension marked as <code>required: true</code> in the Agent Card but the client does not declare support for it, the agent <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtensionSupportRequiredError</code></a>.</li>
+<li><strong>Extensions</strong>: When a server requests use of an extension marked as <code>required: true</code> in the Agent Card but the client does not declare support for it, the agent <strong>MUST</strong> return <a href="#332-error-handling"><code>ExtensionSupportRequiredError</code></a>.</li>
 </ul>
 <p>Clients <strong>SHOULD</strong> validate capability support by examining the Agent Card before attempting operations that require optional capabilities.</p>
 <h3 id="34-multi-turn-interactions">3.4. Multi-Turn Interactions<a class="headerlink" href="#34-multi-turn-interactions" title="Permanent link">&para;</a></h3>
@@ -9146,7 +9147,7 @@
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>data: {&quot;artifactUpdate&quot;: {&quot;taskId&quot;: &quot;task-uuid&quot;, &quot;artifact&quot;: {&quot;parts&quot;: [{&quot;text&quot;: &quot;# Climate Change Report\n\n&quot;}]}}}
 </span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>data: {&quot;statusUpdate&quot;: {&quot;taskId&quot;: &quot;task-uuid&quot;, &quot;status&quot;: {&quot;state&quot;: &quot;TASK_STATE_COMPLETED&quot;}, &quot;final&quot;: true}}
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>data: {&quot;statusUpdate&quot;: {&quot;taskId&quot;: &quot;task-uuid&quot;, &quot;status&quot;: {&quot;state&quot;: &quot;TASK_STATE_COMPLETED&quot;}}}
 </span></code></pre></div>
 <h3 id="63-multi-turn-interaction">6.3. Multi-Turn Interaction<a class="headerlink" href="#63-multi-turn-interaction" title="Permanent link">&para;</a></h3>
 <p><strong>Scenario:</strong> Agent requires additional input to complete a task.</p>
@@ -9441,9 +9442,9 @@
 </span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="w">        </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Analyze this image and highlight any faces.&quot;</span>
 </span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="w">      </span><span class="p">},</span>
 </span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="w">      </span><span class="p">{</span>
-</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="w">        </span><span class="nt">&quot;raw&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgoAAAANSUhEUgAAAAUA...&quot;</span><span class="p">,</span>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="w">        </span><span class="nt">&quot;raw&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;iVBORw0KGgoAAAANSUhEUgAAAAUA...&quot;</span>
 </span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="w">        </span><span class="nt">&quot;filename&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;input_image.png&quot;</span><span class="p">,</span>
-</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="w">        </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span>
+</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="w">        </span><span class="nt">&quot;mediaType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
 </span><span id="__span-28-17"><a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="w">      </span><span class="p">}</span>
 </span><span id="__span-28-18"><a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="w">    </span><span class="p">],</span>
 </span><span id="__span-28-19"><a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="w">    </span><span class="nt">&quot;messageId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6dbc13b5-bd57-4c2b-b503-24e381b6c8d6&quot;</span>
