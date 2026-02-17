@@ -56,9 +56,19 @@ With A2A, agents can:
 - Securely collaborate on long-running tasks.
 - Operate without exposing their internal state, memory, or tools.
 
-## Intro to A2A Video
+## DeepLearning.AI Course
 
-[![A2A Intro Video](https://img.youtube.com/vi/Fbr_Solax1w/hqdefault.jpg)](https://goo.gle/a2a-video)
+[![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
+
+Join this short course on [A2A: The Agent2Agent Protocol](https://goo.gle/dlai-a2a), built in partnership with Google Cloud and IBM Research, and taught by [Holt Skinner](https://github.com/holtskinner), [Ivan Nardini](https://github.com/inardini), and [Sandi Besen](https://github.com/sandijean90).
+
+**What you'll learn:**
+
+- **Make agents A2A-compliant:** Expose agents built with frameworks like Google ADK, LangGraph, or BeeAI as A2A servers.
+- **Connect agents:** Create A2A clients from scratch or using integrations to connect to A2A-compliant agents.
+- **Orchestrate workflows:** Build sequential and hierarchical workflows of A2A-compliant agents.
+- **Multi-agent systems:** Build a healthcare multi-agent system using different frameworks and see how A2A enables collaboration.
+- **A2A and MCP:** Learn how A2A complements MCP by enabling agents to collaborate with each other.
 
 ## Why A2A?
 

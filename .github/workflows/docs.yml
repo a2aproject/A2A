@@ -50,6 +50,9 @@ jobs:
         with:
           python-version: 3.13
 
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
       - name: Restore pip cache
         uses: actions/cache@v5
         with:
@@ -91,18 +94,6 @@ jobs:
 
       - name: Generate protocol specification files
         run: ./scripts/build_docs.sh
-
-      - name: Generate and Build Python SDK Docs
-        run: |
-          # Find the path to the installed package
-          PACKAGE_PATH=$(python -c "import a2a, os; print(os.path.dirname(a2a.__file__))")
-          echo "Found 'a2a' package at: ${PACKAGE_PATH}"
-
-          # Generate RST source files from the installed package
-          sphinx-apidoc -f -o docs/sdk/python "${PACKAGE_PATH}"
-
-          # Build the HTML from the generated RST files
-          sphinx-build -b html docs/sdk/python docs/sdk/python/api
 
       - name: Generate consolidated llms-full.txt file
         run: bash scripts/build_llms_full.sh

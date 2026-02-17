@@ -166,7 +166,7 @@ The following example illustrates a typical task flow with a follow-up:
         "id": "task-boat-gen-123",
         "contextId": "ctx-conversation-abc",
         "status": {
-          "state": "completed"
+          "state": "TASK_STATE_COMPLETED"
         },
         "artifacts": [
           {
@@ -175,11 +175,9 @@ The following example illustrates a typical task flow with a follow-up:
             "description": "A generated image of a sailboat on the ocean.",
             "parts": [
               {
-                "file": {
-                  "name": "sailboat_image.png",
-                  "mediaType": "image/png",
-                  "fileWithBytes": "base64_encoded_png_data_of_a_sailboat"
-                }
+                "filename": "sailboat_image.png",
+                "mediaType": "image/png",
+                "raw": "base64_encoded_png_data_of_a_sailboat"
               }
             ]
           }
@@ -195,7 +193,7 @@ The following example illustrates a typical task flow with a follow-up:
     {
       "jsonrpc": "2.0",
       "id": "req-002",
-      "method": "message.send",
+      "method": "SendMessage",
       "params": {
         "message": {
           "role": "user",
@@ -226,7 +224,7 @@ The following example illustrates a typical task flow with a follow-up:
         "id": "task-boat-color-456",
         "contextId": "ctx-conversation-abc",
         "status": {
-          "state": "completed"
+          "state": "TASK_STATE_COMPLETED"
         },
         "artifacts": [
           {
@@ -235,11 +233,9 @@ The following example illustrates a typical task flow with a follow-up:
             "description": "A generated image of a red sailboat on the ocean.",
             "parts": [
               {
-                "file": {
-                  "name": "sailboat_image.png",
-                  "mediaType": "image/png",
-                  "fileWithBytes": "base64_encoded_png_data_of_a_RED_sailboat"
-                }
+                "filename": "sailboat_image.png",
+                "mediaType": "image/png",
+                "raw": "base64_encoded_png_data_of_a_RED_sailboat"
               }
             ]
           }
