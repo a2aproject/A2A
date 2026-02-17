@@ -1,0 +1,47 @@
+a2a.utils.message module
+************************
+
+Utility functions for creating and handling A2A Message objects.
+
+a2a.utils.message.get_message_text(message: Message, delimiter: str = '\n') -> str
+
+   Extracts and joins all text content from a Message's parts.
+
+   Parameters:
+      * **message** -- The *Message* object.
+
+      * **delimiter** -- The string to use when joining text from
+        multiple TextParts.
+
+   Returns:
+      A single string containing all text content, or an empty string
+      if no text parts are found.
+
+a2a.utils.message.new_agent_parts_message(parts: list[Part], context_id: str | None = None, task_id: str | None = None) -> Message
+
+   Creates a new agent message containing a list of Parts.
+
+   Parameters:
+      * **parts** -- The list of *Part* objects for the message
+        content.
+
+      * **context_id** -- The context ID for the message.
+
+      * **task_id** -- The task ID for the message.
+
+   Returns:
+      A new *Message* object with role 'agent'.
+
+a2a.utils.message.new_agent_text_message(text: str, context_id: str | None = None, task_id: str | None = None) -> Message
+
+   Creates a new agent message containing a single TextPart.
+
+   Parameters:
+      * **text** -- The text content of the message.
+
+      * **context_id** -- The context ID for the message.
+
+      * **task_id** -- The task ID for the message.
+
+   Returns:
+      A new *Message* object with role 'agent'.

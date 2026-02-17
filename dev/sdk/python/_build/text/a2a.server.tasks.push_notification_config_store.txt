@@ -1,0 +1,21 @@
+a2a.server.tasks.push_notification_config_store module
+******************************************************
+
+class a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore
+
+   Bases: "ABC"
+
+   Interface for storing and retrieving push notification
+   configurations for tasks.
+
+   abstractmethod async delete_info(task_id: str, config_id: str | None = None) -> None
+
+      Deletes the push notification configuration for a task.
+
+   abstractmethod async get_info(task_id: str) -> list[PushNotificationConfig]
+
+      Retrieves the push notification configuration for a task.
+
+   abstractmethod async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+
+      Sets or updates the push notification configuration for a task.

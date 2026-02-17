@@ -1,0 +1,286 @@
+a2a.client.transports package
+*****************************
+
+
+Submodules
+==========
+
+* a2a.client.transports.base module
+
+  * "ClientTransport"
+
+    * "ClientTransport.cancel_task()"
+
+    * "ClientTransport.close()"
+
+    * "ClientTransport.get_card()"
+
+    * "ClientTransport.get_task()"
+
+    * "ClientTransport.get_task_callback()"
+
+    * "ClientTransport.resubscribe()"
+
+    * "ClientTransport.send_message()"
+
+    * "ClientTransport.send_message_streaming()"
+
+    * "ClientTransport.set_task_callback()"
+
+* a2a.client.transports.grpc module
+
+  * "GrpcTransport"
+
+    * "GrpcTransport.cancel_task()"
+
+    * "GrpcTransport.close()"
+
+    * "GrpcTransport.create()"
+
+    * "GrpcTransport.get_card()"
+
+    * "GrpcTransport.get_task()"
+
+    * "GrpcTransport.get_task_callback()"
+
+    * "GrpcTransport.resubscribe()"
+
+    * "GrpcTransport.send_message()"
+
+    * "GrpcTransport.send_message_streaming()"
+
+    * "GrpcTransport.set_task_callback()"
+
+* a2a.client.transports.jsonrpc module
+
+  * "JsonRpcTransport"
+
+    * "JsonRpcTransport.cancel_task()"
+
+    * "JsonRpcTransport.close()"
+
+    * "JsonRpcTransport.get_card()"
+
+    * "JsonRpcTransport.get_task()"
+
+    * "JsonRpcTransport.get_task_callback()"
+
+    * "JsonRpcTransport.resubscribe()"
+
+    * "JsonRpcTransport.send_message()"
+
+    * "JsonRpcTransport.send_message_streaming()"
+
+    * "JsonRpcTransport.set_task_callback()"
+
+* a2a.client.transports.rest module
+
+  * "RestTransport"
+
+    * "RestTransport.cancel_task()"
+
+    * "RestTransport.close()"
+
+    * "RestTransport.get_card()"
+
+    * "RestTransport.get_task()"
+
+    * "RestTransport.get_task_callback()"
+
+    * "RestTransport.resubscribe()"
+
+    * "RestTransport.send_message()"
+
+    * "RestTransport.send_message_streaming()"
+
+    * "RestTransport.set_task_callback()"
+
+
+Module contents
+===============
+
+A2A Client Transports.
+
+class a2a.client.transports.ClientTransport
+
+   Bases: "ABC"
+
+   Abstract base class for a client transport.
+
+   abstractmethod async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   abstractmethod async close() -> None
+
+      Closes the transport.
+
+   abstractmethod async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the AgentCard.
+
+   abstractmethod async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   abstractmethod async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   abstractmethod async resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Reconnects to get task updates.
+
+   abstractmethod async send_message(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task | Message
+
+      Sends a non-streaming message request to the agent.
+
+   abstractmethod async send_message_streaming(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+   abstractmethod async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+class a2a.client.transports.GrpcTransport(channel: Channel, agent_card: AgentCard | None, extensions: list[str] | None = None)
+
+   Bases: "ClientTransport"
+
+   A gRPC transport for the A2A client.
+
+   async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   async close() -> None
+
+      Closes the gRPC channel.
+
+   classmethod create(card: AgentCard, url: str, config: ClientConfig, interceptors: list[ClientCallInterceptor]) -> GrpcTransport
+
+      Creates a gRPC transport for the A2A client.
+
+   async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the agent's card.
+
+   async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Reconnects to get task updates.
+
+   async send_message(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task | Message
+
+      Sends a non-streaming message request to the agent.
+
+   send_message_streaming(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+   async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard | None = None, url: str | None = None, interceptors: list[ClientCallInterceptor] | None = None, extensions: list[str] | None = None)
+
+   Bases: "ClientTransport"
+
+   A JSON-RPC transport for the A2A client.
+
+   async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   async close() -> None
+
+      Closes the httpx client.
+
+   async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the agent's card.
+
+   async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Reconnects to get task updates.
+
+   async send_message(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task | Message
+
+      Sends a non-streaming message request to the agent.
+
+   send_message_streaming(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+   async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+class a2a.client.transports.RestTransport(httpx_client: AsyncClient, agent_card: AgentCard | None = None, url: str | None = None, interceptors: list[ClientCallInterceptor] | None = None, extensions: list[str] | None = None)
+
+   Bases: "ClientTransport"
+
+   A REST transport for the A2A client.
+
+   async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   async close() -> None
+
+      Closes the httpx client.
+
+   async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the agent's card.
+
+   async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | Message]
+
+      Reconnects to get task updates.
+
+   async send_message(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task | Message
+
+      Sends a non-streaming message request to the agent.
+
+   send_message_streaming(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | Message]
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+   async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.

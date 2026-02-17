@@ -1,0 +1,26 @@
+a2a.server.context module
+*************************
+
+Defines the ServerCallContext class.
+
+class a2a.server.context.ServerCallContext(*, state: MutableMapping[str, ~typing.Any]={}, user: User = <a2a.auth.user.UnauthenticatedUser object>, requested_extensions: set[str] = <factory>, activated_extensions: set[str] = <factory>)
+
+   Bases: "BaseModel"
+
+   A context passed when calling a server method.
+
+   This class allows storing arbitrary user data in the state
+   attribute.
+
+   activated_extensions: set[str]
+
+   model_config = {'arbitrary_types_allowed': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   requested_extensions: set[str]
+
+   state: MutableMapping[str, Any]
+
+   user: User

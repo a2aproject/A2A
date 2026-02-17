@@ -1,0 +1,16 @@
+a2a.client.auth.interceptor module
+**********************************
+
+class a2a.client.auth.interceptor.AuthInterceptor(credential_service: CredentialService)
+
+   Bases: "ClientCallInterceptor"
+
+   An interceptor that automatically adds authentication details to
+   requests.
+
+   Based on the agent's security schemes.
+
+   async intercept(method_name: str, request_payload: dict[str, Any], http_kwargs: dict[str, Any], agent_card: AgentCard | None, context: ClientCallContext | None) -> tuple[dict[str, Any], dict[str, Any]]
+
+      Applies authentication headers to the request if credentials are
+      available.

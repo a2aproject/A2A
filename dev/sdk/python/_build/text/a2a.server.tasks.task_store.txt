@@ -1,0 +1,22 @@
+a2a.server.tasks.task_store module
+**********************************
+
+class a2a.server.tasks.task_store.TaskStore
+
+   Bases: "ABC"
+
+   Agent Task Store interface.
+
+   Defines the methods for persisting and retrieving *Task* objects.
+
+   abstractmethod async delete(task_id: str, context: ServerCallContext | None = None) -> None
+
+      Deletes a task from the store by ID.
+
+   abstractmethod async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+
+      Retrieves a task from the store by ID.
+
+   abstractmethod async save(task: Task, context: ServerCallContext | None = None) -> None
+
+      Saves or updates a task in the store.

@@ -1,0 +1,104 @@
+a2a.server.tasks.task_updater module
+************************************
+
+class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id: str, context_id: str, artifact_id_generator: IDGenerator | None = None, message_id_generator: IDGenerator | None = None)
+
+   Bases: "object"
+
+   Helper class for agents to publish updates to a task's event queue.
+
+   Simplifies the process of creating and enqueueing standard task
+   events.
+
+   async add_artifact(parts: list[Part], artifact_id: str | None = None, name: str | None = None, metadata: dict[str, Any] | None = None, append: bool | None = None, last_chunk: bool | None = None, extensions: list[str] | None = None) -> None
+
+      Adds an artifact chunk to the task and publishes a
+      *TaskArtifactUpdateEvent*.
+
+      Parameters:
+         * **parts** -- A list of *Part* objects forming the artifact
+           chunk.
+
+         * **artifact_id** -- The ID of the artifact. A new UUID is
+           generated if not provided.
+
+         * **name** -- Optional name for the artifact.
+
+         * **metadata** -- Optional metadata for the artifact.
+
+         * **append** -- Optional boolean indicating if this chunk
+           appends to a previous one.
+
+         * **last_chunk** -- Optional boolean indicating if this is
+           the last chunk.
+
+         * **extensions** -- Optional list of extensions for the
+           artifact.
+
+   async cancel(message: Message | None = None) -> None
+
+      Marks the task as cancelled and publishes a finalstatus update.
+
+   async complete(message: Message | None = None) -> None
+
+      Marks the task as completed and publishes a final status update.
+
+   async failed(message: Message | None = None) -> None
+
+      Marks the task as failed and publishes a final status update.
+
+   new_agent_message(parts: list[Part], metadata: dict[str, Any] | None = None) -> Message
+
+      Creates a new message object sent by the agent for this
+      task/context.
+
+      Note: This method only *creates* the message object. It does not
+         automatically enqueue it.
+
+      Parameters:
+         * **parts** -- A list of *Part* objects for the message
+           content.
+
+         * **metadata** -- Optional metadata for the message.
+
+      Returns:
+         A new *Message* object.
+
+   async reject(message: Message | None = None) -> None
+
+      Marks the task as rejected and publishes a final status update.
+
+   async requires_auth(message: Message | None = None, final: bool = False) -> None
+
+      Marks the task as auth required and publishes a status update.
+
+   async requires_input(message: Message | None = None, final: bool = False) -> None
+
+      Marks the task as input required and publishes a status update.
+
+   async start_work(message: Message | None = None) -> None
+
+      Marks the task as working and publishes a status update.
+
+   async submit(message: Message | None = None) -> None
+
+      Marks the task as submitted and publishes a status update.
+
+   async update_status(state: TaskState, message: Message | None = None, final: bool = False, timestamp: str | None = None, metadata: dict[str, Any] | None = None) -> None
+
+      Updates the status of the task and publishes a
+      *TaskStatusUpdateEvent*.
+
+      Parameters:
+         * **state** -- The new state of the task.
+
+         * **message** -- An optional message associated with the
+           status update.
+
+         * **final** -- If True, indicates this is the final status
+           update for the task.
+
+         * **timestamp** -- Optional ISO 8601 datetime string.
+           Defaults to current time.
+
+         * **metadata** -- Optional metadata for extensions.

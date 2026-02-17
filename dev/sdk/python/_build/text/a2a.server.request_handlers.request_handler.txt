@@ -1,0 +1,157 @@
+a2a.server.request_handlers.request_handler module
+**************************************************
+
+class a2a.server.request_handlers.request_handler.RequestHandler
+
+   Bases: "ABC"
+
+   A2A request handler interface.
+
+   This interface defines the methods that an A2A server
+   implementation must provide to handle incoming JSON-RPC requests.
+
+   abstractmethod async on_cancel_task(params: TaskIdParams, context: ServerCallContext | None = None) -> Task | None
+
+      Handles the 'tasks/cancel' method.
+
+      Requests the agent to cancel an ongoing task.
+
+      Parameters:
+         * **params** -- Parameters specifying the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *Task* object with its status updated to canceled, or
+         *None* if the task was not found.
+
+   abstractmethod async on_delete_task_push_notification_config(params: DeleteTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> None
+
+      Handles the 'tasks/pushNotificationConfig/delete' method.
+
+      Deletes a push notification configuration associated with a
+      task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         None
+
+   abstractmethod async on_get_task(params: TaskQueryParams, context: ServerCallContext | None = None) -> Task | None
+
+      Handles the 'tasks/get' method.
+
+      Retrieves the state and history of a specific task.
+
+      Parameters:
+         * **params** -- Parameters specifying the task ID and
+           optionally history length.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *Task* object if found, otherwise *None*.
+
+   abstractmethod async on_get_task_push_notification_config(params: TaskIdParams | GetTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> TaskPushNotificationConfig
+
+      Handles the 'tasks/pushNotificationConfig/get' method.
+
+      Retrieves the current push notification configuration for a
+      task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *TaskPushNotificationConfig* for the task.
+
+   abstractmethod async on_list_task_push_notification_config(params: ListTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> list[TaskPushNotificationConfig]
+
+      Handles the 'tasks/pushNotificationConfig/list' method.
+
+      Retrieves the current push notification configurations for a
+      task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *list[TaskPushNotificationConfig]* for the task.
+
+   abstractmethod async on_message_send(params: MessageSendParams, context: ServerCallContext | None = None) -> Task | Message
+
+      Handles the 'message/send' method (non-streaming).
+
+      Sends a message to the agent to create, continue, or restart a
+      task, and waits for the final result (Task or Message).
+
+      Parameters:
+         * **params** -- Parameters including the message and
+           configuration.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The final *Task* object or a final *Message* object.
+
+   abstractmethod async on_message_send_stream(params: MessageSendParams, context: ServerCallContext | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Handles the 'message/stream' method (streaming).
+
+      Sends a message to the agent and yields stream events as they
+      are produced (Task updates, Message chunks, Artifact updates).
+
+      Parameters:
+         * **params** -- Parameters including the message and
+           configuration.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *Event* objects from the agent's execution.
+
+      Raises:
+         **ServerError****(****UnsupportedOperationError****)** -- By
+         default, if not implemented.
+
+   abstractmethod async on_resubscribe_to_task(params: TaskIdParams, context: ServerCallContext | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Handles the 'tasks/resubscribe' method.
+
+      Allows a client to re-subscribe to a running streaming task's
+      event stream.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *Event* objects from the agent's ongoing execution for the
+         specified task.
+
+      Raises:
+         **ServerError****(****UnsupportedOperationError****)** -- By
+         default, if not implemented.
+
+   abstractmethod async on_set_task_push_notification_config(params: TaskPushNotificationConfig, context: ServerCallContext | None = None) -> TaskPushNotificationConfig
+
+      Handles the 'tasks/pushNotificationConfig/set' method.
+
+      Sets or updates the push notification configuration for a task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID and push
+           notification configuration.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The provided *TaskPushNotificationConfig* upon success.

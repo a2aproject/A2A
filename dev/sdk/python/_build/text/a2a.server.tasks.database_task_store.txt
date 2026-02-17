@@ -1,0 +1,34 @@
+a2a.server.tasks.database_task_store module
+*******************************************
+
+class a2a.server.tasks.database_task_store.DatabaseTaskStore(engine: AsyncEngine, create_table: bool = True, table_name: str = 'tasks')
+
+   Bases: "TaskStore"
+
+   SQLAlchemy-based implementation of TaskStore.
+
+   Stores task objects in a database supported by SQLAlchemy.
+
+   async_session_maker: async_sessionmaker[AsyncSession]
+
+   create_table: bool
+
+   async delete(task_id: str, context: ServerCallContext | None = None) -> None
+
+      Deletes a task from the database by ID.
+
+   engine: AsyncEngine
+
+   async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+
+      Retrieves a task from the database by ID.
+
+   async initialize() -> None
+
+      Initialize the database and create the table if needed.
+
+   async save(task: Task, context: ServerCallContext | None = None) -> None
+
+      Saves or updates a task in the database.
+
+   task_model: type[TaskModel]

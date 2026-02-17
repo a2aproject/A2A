@@ -1,0 +1,128 @@
+a2a.server.events.event_queue module
+************************************
+
+a2a.server.events.event_queue.Event = a2a.types.Message | a2a.types.Task | a2a.types.TaskStatusUpdateEvent | a2a.types.TaskArtifactUpdateEvent
+
+   Type alias for events that can be enqueued.
+
+class a2a.server.events.event_queue.EventQueue(max_queue_size: int = 1024)
+
+   Bases: "object"
+
+   Event queue for A2A responses from agent.
+
+   Acts as a buffer between the agent's asynchronous execution and the
+   server's response handling (e.g., streaming via SSE). Supports
+   tapping to create child queues that receive the same events.
+
+   async clear_events(clear_child_queues: bool = True) -> None
+
+      Clears all events from the current queue and optionally all
+      child queues.
+
+      This method removes all pending events from the queue without
+      processing them. Child queues can be optionally cleared based on
+      the clear_child_queues parameter.
+
+      Parameters:
+         **clear_child_queues** -- If True (default), clear all child
+         queues as well. If False, only clear the current queue,
+         leaving child queues untouched.
+
+   async close(immediate: bool = False) -> None
+
+      Closes the queue for future push events and also closes all
+      child queues.
+
+      Once closed, no new events can be enqueued. Behavior is
+      consistent across Python versions: - Python >= 3.13: Uses
+      *asyncio.Queue.shutdown* to stop the queue. With
+
+         *immediate=True* the queue is shut down and pending events
+         are cleared; with *immediate=False* the queue is shut down
+         and we wait for it to drain via *queue.join()*.
+
+      * Python < 3.13: Emulates the same semantics by clearing on
+        *immediate=True* or awaiting *queue.join()* on
+        *immediate=False*.
+
+      Consumers attempting to dequeue after close on an empty queue
+      will observe *asyncio.QueueShutDown* on Python >= 3.13 and
+      *asyncio.QueueEmpty* on Python < 3.13.
+
+      Parameters:
+         **immediate** (*bool*) --
+
+         * True: Immediately closes the queue and clears all
+           unprocessed events without waiting for them to be consumed.
+           This is suitable for scenarios where you need to forcefully
+           interrupt and quickly release resources.
+
+         * False (default): Gracefully closes the queue, waiting for
+           all queued events to be processed (i.e., the queue is
+           drained) before closing. This is suitable when you want to
+           ensure all events are handled.
+
+   async dequeue_event(no_wait: bool = False) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+      Dequeues an event from the queue.
+
+      This implementation expects that dequeue to raise an exception
+      when the queue has been closed. In python 3.13+ this is
+      naturally provided by the QueueShutDown exception generated when
+      the queue has closed and the user is awaiting the queue.get
+      method. Python<=3.12 this needs to manage this lifecycle itself.
+      The current implementation can lead to blocking if the
+      dequeue_event is called before the EventQueue has been closed
+      but when there are no events on the queue. Two ways to avoid
+      this are to call this with no_wait = True which won't block, but
+      is the callers responsibility to retry as appropriate.
+      Alternatively, one can use an async Task management solution to
+      cancel the get task if the queue has closed or some other
+      condition is met. The implementation of the EventConsumer uses
+      an async.wait with a timeout to abort the dequeue_event call and
+      retry, when it will return with a closed error.
+
+      Parameters:
+         **no_wait** -- If True, retrieve an event immediately or
+         raise *asyncio.QueueEmpty*. If False (default), wait until an
+         event is available.
+
+      Returns:
+         The next event from the queue.
+
+      Raises:
+         * **asyncio.QueueEmpty** -- If *no_wait* is True and the
+           queue is empty.
+
+         * **asyncio.QueueShutDown** -- If the queue has been closed
+           and is empty.
+
+   async enqueue_event(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
+
+      Enqueues an event to this queue and all its children.
+
+      Parameters:
+         **event** -- The event object to enqueue.
+
+   is_closed() -> bool
+
+      Checks if the queue is closed.
+
+   queue: Queue[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+   tap() -> EventQueue
+
+      Taps the event queue to create a new child queue that receives
+      all future events.
+
+      Returns:
+         A new *EventQueue* instance that will receive all events
+         enqueued to this parent queue from this point forward.
+
+   task_done() -> None
+
+      Signals that a formerly enqueued task is complete.
+
+      Used in conjunction with *dequeue_event* to track processed
+      items.

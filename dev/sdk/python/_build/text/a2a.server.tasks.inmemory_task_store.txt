@@ -1,0 +1,23 @@
+a2a.server.tasks.inmemory_task_store module
+*******************************************
+
+class a2a.server.tasks.inmemory_task_store.InMemoryTaskStore
+
+   Bases: "TaskStore"
+
+   In-memory implementation of TaskStore.
+
+   Stores task objects in a dictionary in memory. Task data is lost
+   when the server process stops.
+
+   async delete(task_id: str, context: ServerCallContext | None = None) -> None
+
+      Deletes a task from the in-memory store by ID.
+
+   async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+
+      Retrieves a task from the in-memory store by ID.
+
+   async save(task: Task, context: ServerCallContext | None = None) -> None
+
+      Saves or updates a task in the in-memory store.

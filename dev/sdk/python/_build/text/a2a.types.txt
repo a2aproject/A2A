@@ -1,0 +1,2442 @@
+a2a.types module
+****************
+
+class a2a.types.A2A(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Any]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: Any
+
+class a2a.types.A2AError(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONParseError, InvalidRequestError,
+   MethodNotFoundError, InvalidParamsError, InternalError,
+   TaskNotFoundError, TaskNotCancelableError,
+   PushNotificationNotSupportedError, UnsupportedOperationError,
+   ContentTypeNotSupportedError, InvalidAgentResponseError,
+   AuthenticatedExtendedCardNotConfiguredError]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONParseError | InvalidRequestError | MethodNotFoundError | InvalidParamsError | InternalError | TaskNotFoundError | TaskNotCancelableError | PushNotificationNotSupportedError | UnsupportedOperationError | ContentTypeNotSupportedError | InvalidAgentResponseError | AuthenticatedExtendedCardNotConfiguredError
+
+      A discriminated union of all standard JSON-RPC and A2A-specific
+      error types.
+
+class a2a.types.A2ARequest(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[SendMessageRequest,
+   SendStreamingMessageRequest, GetTaskRequest, CancelTaskRequest,
+   SetTaskPushNotificationConfigRequest,
+   GetTaskPushNotificationConfigRequest, TaskResubscriptionRequest,
+   ListTaskPushNotificationConfigRequest,
+   DeleteTaskPushNotificationConfigRequest,
+   GetAuthenticatedExtendedCardRequest]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: SendMessageRequest | SendStreamingMessageRequest | GetTaskRequest | CancelTaskRequest | SetTaskPushNotificationConfigRequest | GetTaskPushNotificationConfigRequest | TaskResubscriptionRequest | ListTaskPushNotificationConfigRequest | DeleteTaskPushNotificationConfigRequest | GetAuthenticatedExtendedCardRequest
+
+      A discriminated union representing all possible JSON-RPC 2.0
+      requests supported by the A2A specification.
+
+class a2a.types.APIKeySecurityScheme(*, description: str | None = None, in_: In, name: str, type: Literal['apiKey'] = 'apiKey')
+
+   Bases: "A2ABaseModel"
+
+   Defines a security scheme using an API key.
+
+   description: str | None
+
+      An optional description for the security scheme.
+
+   in_: In
+
+      The location of the API key.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   name: str
+
+      The name of the header, query, or cookie parameter to be used.
+
+   type: Literal['apiKey']
+
+      The type of the security scheme. Must be 'apiKey'.
+
+class a2a.types.AgentCapabilities(*, extensions: list[AgentExtension] | None = None, pushNotifications: bool | None = None, stateTransitionHistory: bool | None = None, streaming: bool | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines optional capabilities supported by an agent.
+
+   extensions: list[AgentExtension] | None
+
+      A list of protocol extensions supported by the agent.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   push_notifications: bool | None
+
+      Indicates if the agent supports sending push notifications for
+      asynchronous task updates.
+
+   state_transition_history: bool | None
+
+      Indicates if the agent provides a history of state transitions
+      for a task.
+
+   streaming: bool | None
+
+      Indicates if the agent supports Server-Sent Events (SSE) for
+      streaming responses.
+
+class a2a.types.AgentCard(*, additionalInterfaces: list[AgentInterface] | None = None, capabilities: AgentCapabilities, defaultInputModes: list[str], defaultOutputModes: list[str], description: str, documentationUrl: str | None = None, iconUrl: str | None = None, name: str, preferredTransport: str | None = 'JSONRPC', protocolVersion: str | None = '0.3.0', provider: AgentProvider | None = None, security: list[dict[str, list[str]]] | None = None, securitySchemes: dict[str, SecurityScheme] | None = None, signatures: list[AgentCardSignature] | None = None, skills: list[AgentSkill], supportsAuthenticatedExtendedCard: bool | None = None, url: str, version: str)
+
+   Bases: "A2ABaseModel"
+
+   The AgentCard is a self-describing manifest for an agent. It
+   provides essential metadata including the agent's identity,
+   capabilities, skills, supported communication methods, and security
+   requirements.
+
+   additional_interfaces: list[AgentInterface] | None
+
+      A list of additional supported interfaces (transport and URL
+      combinations). This allows agents to expose multiple transports,
+      potentially at different URLs.
+
+      Best practices: - SHOULD include all supported transports for
+      completeness - SHOULD include an entry matching the main 'url'
+      and 'preferredTransport' - MAY reuse URLs if multiple transports
+      are available at the same endpoint - MUST accurately declare the
+      transport available at each URL
+
+      Clients can select any interface from this list based on their
+      transport capabilities and preferences. This enables transport
+      negotiation and fallback scenarios.
+
+   capabilities: AgentCapabilities
+
+      A declaration of optional capabilities supported by the agent.
+
+   default_input_modes: list[str]
+
+      Default set of supported input MIME types for all skills, which
+      can be overridden on a per-skill basis.
+
+   default_output_modes: list[str]
+
+      Default set of supported output MIME types for all skills, which
+      can be overridden on a per-skill basis.
+
+   description: str
+
+      A human-readable description of the agent, assisting users and
+      other agents in understanding its purpose.
+
+   documentation_url: str | None
+
+      An optional URL to the agent's documentation.
+
+   icon_url: str | None
+
+      An optional URL to an icon for the agent.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   name: str
+
+      A human-readable name for the agent.
+
+   preferred_transport: str | None
+
+      The transport protocol for the preferred endpoint (the main
+      'url' field). If not specified, defaults to 'JSONRPC'.
+
+      IMPORTANT: The transport specified here MUST be available at the
+      main 'url'. This creates a binding between the main URL and its
+      supported transport protocol. Clients should prefer this
+      transport and URL combination when both are supported.
+
+   protocol_version: str | None
+
+      The version of the A2A protocol this agent supports.
+
+   provider: AgentProvider | None
+
+      Information about the agent's service provider.
+
+   security: list[dict[str, list[str]]] | None
+
+      A list of security requirement objects that apply to all agent
+      interactions. Each object lists security schemes that can be
+      used. Follows the OpenAPI 3.0 Security Requirement Object. This
+      list can be seen as an OR of ANDs. Each object in the list
+      describes one possible set of security requirements that must be
+      present on a request. This allows specifying, for example,
+      "callers must either use OAuth OR an API Key AND mTLS."
+
+   security_schemes: dict[str, SecurityScheme] | None
+
+      A declaration of the security schemes available to authorize
+      requests. The key is the scheme name. Follows the OpenAPI 3.0
+      Security Scheme Object.
+
+   signatures: list[AgentCardSignature] | None
+
+      JSON Web Signatures computed for this AgentCard.
+
+   skills: list[AgentSkill]
+
+      The set of skills, or distinct capabilities, that the agent can
+      perform.
+
+   supports_authenticated_extended_card: bool | None
+
+      If true, the agent can provide an extended agent card with
+      additional details to authenticated users. Defaults to false.
+
+   url: str
+
+      The preferred endpoint URL for interacting with the agent. This
+      URL MUST support the transport specified by
+      'preferredTransport'.
+
+   version: str
+
+      The agent's own version number. The format is defined by the
+      provider.
+
+class a2a.types.AgentCardSignature(*, header: dict[str, Any] | None = None, protected: str, signature: str)
+
+   Bases: "A2ABaseModel"
+
+   AgentCardSignature represents a JWS signature of an AgentCard. This
+   follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
+
+   header: dict[str, Any] | None
+
+      The unprotected JWS header values.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   protected: str
+
+      The protected JWS header for the signature. This is a Base64url-
+      encoded JSON object, as per RFC 7515.
+
+   signature: str
+
+      The computed signature, Base64url-encoded.
+
+class a2a.types.AgentExtension(*, description: str | None = None, params: dict[str, Any] | None = None, required: bool | None = None, uri: str)
+
+   Bases: "A2ABaseModel"
+
+   A declaration of a protocol extension supported by an Agent.
+
+   description: str | None
+
+      A human-readable description of how this agent uses the
+      extension.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: dict[str, Any] | None
+
+      Optional, extension-specific configuration parameters.
+
+   required: bool | None
+
+      If true, the client must understand and comply with the
+      extension's requirements to interact with the agent.
+
+   uri: str
+
+      The unique URI identifying the extension.
+
+class a2a.types.AgentInterface(*, transport: str, url: str)
+
+   Bases: "A2ABaseModel"
+
+   Declares a combination of a target URL and a transport protocol for
+   interacting with the agent. This allows agents to expose the same
+   functionality over multiple transport mechanisms.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   transport: str
+
+      The transport protocol supported at this URL.
+
+   url: str
+
+      The URL where this interface is available. Must be a valid
+      absolute HTTPS URL in production.
+
+class a2a.types.AgentProvider(*, organization: str, url: str)
+
+   Bases: "A2ABaseModel"
+
+   Represents the service provider of an agent.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   organization: str
+
+      The name of the agent provider's organization.
+
+   url: str
+
+      A URL for the agent provider's website or relevant
+      documentation.
+
+class a2a.types.AgentSkill(*, description: str, examples: list[str] | None = None, id: str, inputModes: list[str] | None = None, name: str, outputModes: list[str] | None = None, security: list[dict[str, list[str]]] | None = None, tags: list[str])
+
+   Bases: "A2ABaseModel"
+
+   Represents a distinct capability or function that an agent can
+   perform.
+
+   description: str
+
+      A detailed description of the skill, intended to help clients or
+      users understand its purpose and functionality.
+
+   examples: list[str] | None
+
+      Example prompts or scenarios that this skill can handle.
+      Provides a hint to the client on how to use the skill.
+
+   id: str
+
+      A unique identifier for the agent's skill.
+
+   input_modes: list[str] | None
+
+      The set of supported input MIME types for this skill, overriding
+      the agent's defaults.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   name: str
+
+      A human-readable name for the skill.
+
+   output_modes: list[str] | None
+
+      The set of supported output MIME types for this skill,
+      overriding the agent's defaults.
+
+   security: list[dict[str, list[str]]] | None
+
+      Security schemes necessary for the agent to leverage this skill.
+      As in the overall AgentCard.security, this list represents a
+      logical OR of security requirement objects. Each object is a set
+      of security schemes that must be used together (a logical AND).
+
+   tags: list[str]
+
+      A set of keywords describing the skill's capabilities.
+
+class a2a.types.Artifact(*, artifactId: str, description: str | None = None, extensions: list[str] | None = None, metadata: dict[str, Any] | None = None, name: str | None = None, parts: list[Part])
+
+   Bases: "A2ABaseModel"
+
+   Represents a file, data structure, or other resource generated by
+   an agent during a task.
+
+   artifact_id: str
+
+      A unique identifier (e.g. UUID) for the artifact within the
+      scope of the task.
+
+   description: str | None
+
+      An optional, human-readable description of the artifact.
+
+   extensions: list[str] | None
+
+      The URIs of extensions that are relevant to this artifact.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata for extensions. The key is an extension-
+      specific identifier.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   name: str | None
+
+      An optional, human-readable name for the artifact.
+
+   parts: list[Part]
+
+      An array of content parts that make up the artifact.
+
+class a2a.types.AuthenticatedExtendedCardNotConfiguredError(*, code: Literal[-32007] = -32007, data: Any | None = None, message: str | None = 'Authenticated Extended Card is not configured')
+
+   Bases: "A2ABaseModel"
+
+   An A2A-specific error indicating that the agent does not have an
+   Authenticated Extended Card configured
+
+   code: Literal[-32007]
+
+      The error code for when an authenticated extended card is not
+      configured.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.AuthorizationCodeOAuthFlow(*, authorizationUrl: str, refreshUrl: str | None = None, scopes: dict[str, str], tokenUrl: str)
+
+   Bases: "A2ABaseModel"
+
+   Defines configuration details for the OAuth 2.0 Authorization Code
+   flow.
+
+   authorization_url: str
+
+      The authorization URL to be used for this flow. This MUST be a
+      URL and use TLS.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   refresh_url: str | None
+
+      The URL to be used for obtaining refresh tokens. This MUST be a
+      URL and use TLS.
+
+   scopes: dict[str, str]
+
+      The available scopes for the OAuth2 security scheme. A map
+      between the scope name and a short description for it.
+
+   token_url: str
+
+      The token URL to be used for this flow. This MUST be a URL and
+      use TLS.
+
+class a2a.types.CancelTaskRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['tasks/cancel'] = 'tasks/cancel', params: TaskIdParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the *tasks/cancel* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['tasks/cancel']
+
+      The method name. Must be 'tasks/cancel'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: TaskIdParams
+
+      The parameters identifying the task to cancel.
+
+class a2a.types.CancelTaskResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   CancelTaskSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | CancelTaskSuccessResponse
+
+      Represents a JSON-RPC response for the *tasks/cancel* method.
+
+class a2a.types.CancelTaskSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: Task)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the *tasks/cancel*
+   method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: Task
+
+      The result, containing the final state of the canceled Task
+      object.
+
+class a2a.types.ClientCredentialsOAuthFlow(*, refreshUrl: str | None = None, scopes: dict[str, str], tokenUrl: str)
+
+   Bases: "A2ABaseModel"
+
+   Defines configuration details for the OAuth 2.0 Client Credentials
+   flow.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   refresh_url: str | None
+
+      The URL to be used for obtaining refresh tokens. This MUST be a
+      URL.
+
+   scopes: dict[str, str]
+
+      The available scopes for the OAuth2 security scheme. A map
+      between the scope name and a short description for it.
+
+   token_url: str
+
+      The token URL to be used for this flow. This MUST be a URL.
+
+class a2a.types.ContentTypeNotSupportedError(*, code: Literal[-32005] = -32005, data: Any | None = None, message: str | None = 'Incompatible content types')
+
+   Bases: "A2ABaseModel"
+
+   An A2A-specific error indicating an incompatibility between the
+   requested content types and the agent's capabilities.
+
+   code: Literal[-32005]
+
+      The error code for an unsupported content type.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.DataPart(*, data: dict[str, Any], kind: Literal['data'] = 'data', metadata: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Represents a structured data segment (e.g., JSON) within a message
+   or artifact.
+
+   data: dict[str, Any]
+
+      The structured data content.
+
+   kind: Literal['data']
+
+      The type of this part, used as a discriminator. Always 'data'.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with this part.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.DeleteTaskPushNotificationConfigParams(*, id: str, metadata: dict[str, Any] | None = None, pushNotificationConfigId: str)
+
+   Bases: "A2ABaseModel"
+
+   Defines parameters for deleting a specific push notification
+   configuration for a task.
+
+   id: str
+
+      The unique identifier (e.g. UUID) of the task.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with the request.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   push_notification_config_id: str
+
+      The ID of the push notification configuration to delete.
+
+class a2a.types.DeleteTaskPushNotificationConfigRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['tasks/pushNotificationConfig/delete'] = 'tasks/pushNotificationConfig/delete', params: DeleteTaskPushNotificationConfigParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the
+   *tasks/pushNotificationConfig/delete* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['tasks/pushNotificationConfig/delete']
+
+      The method name. Must be 'tasks/pushNotificationConfig/delete'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: DeleteTaskPushNotificationConfigParams
+
+      The parameters identifying the push notification configuration
+      to delete.
+
+class a2a.types.DeleteTaskPushNotificationConfigResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   DeleteTaskPushNotificationConfigSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | DeleteTaskPushNotificationConfigSuccessResponse
+
+      Represents a JSON-RPC response for the
+      *tasks/pushNotificationConfig/delete* method.
+
+class a2a.types.DeleteTaskPushNotificationConfigSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: None)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the
+   *tasks/pushNotificationConfig/delete* method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: None
+
+      The result is null on successful deletion.
+
+class a2a.types.FileBase(*, mimeType: str | None = None, name: str | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines base properties for a file.
+
+   mime_type: str | None
+
+      The MIME type of the file (e.g., "application/pdf").
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   name: str | None
+
+      An optional name for the file (e.g., "document.pdf").
+
+class a2a.types.FilePart(*, file: FileWithBytes | FileWithUri, kind: Literal['file'] = 'file', metadata: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Represents a file segment within a message or artifact. The file
+   content can be provided either directly as bytes or as a URI.
+
+   file: FileWithBytes | FileWithUri
+
+      The file content, represented as either a URI or as
+      base64-encoded bytes.
+
+   kind: Literal['file']
+
+      The type of this part, used as a discriminator. Always 'file'.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with this part.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.FileWithBytes(*, bytes: str, mimeType: str | None = None, name: str | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Represents a file with its content provided directly as a
+   base64-encoded string.
+
+   bytes: str
+
+      The base64-encoded content of the file.
+
+   mime_type: str | None
+
+      The MIME type of the file (e.g., "application/pdf").
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   name: str | None
+
+      An optional name for the file (e.g., "document.pdf").
+
+class a2a.types.FileWithUri(*, mimeType: str | None = None, name: str | None = None, uri: str)
+
+   Bases: "A2ABaseModel"
+
+   Represents a file with its content located at a specific URI.
+
+   mime_type: str | None
+
+      The MIME type of the file (e.g., "application/pdf").
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   name: str | None
+
+      An optional name for the file (e.g., "document.pdf").
+
+   uri: str
+
+      A URL pointing to the file's content.
+
+class a2a.types.GetAuthenticatedExtendedCardRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['agent/getAuthenticatedExtendedCard'] = 'agent/getAuthenticatedExtendedCard')
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the
+   *agent/getAuthenticatedExtendedCard* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['agent/getAuthenticatedExtendedCard']
+
+      The method name. Must be 'agent/getAuthenticatedExtendedCard'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.GetAuthenticatedExtendedCardResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   GetAuthenticatedExtendedCardSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | GetAuthenticatedExtendedCardSuccessResponse
+
+      Represents a JSON-RPC response for the
+      *agent/getAuthenticatedExtendedCard* method.
+
+class a2a.types.GetAuthenticatedExtendedCardSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: AgentCard)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the
+   *agent/getAuthenticatedExtendedCard* method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: AgentCard
+
+      The result is an Agent Card object.
+
+class a2a.types.GetTaskPushNotificationConfigParams(*, id: str, metadata: dict[str, Any] | None = None, pushNotificationConfigId: str | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines parameters for fetching a specific push notification
+   configuration for a task.
+
+   id: str
+
+      The unique identifier (e.g. UUID) of the task.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with the request.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   push_notification_config_id: str | None
+
+      The ID of the push notification configuration to retrieve.
+
+class a2a.types.GetTaskPushNotificationConfigRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['tasks/pushNotificationConfig/get'] = 'tasks/pushNotificationConfig/get', params: TaskIdParams | GetTaskPushNotificationConfigParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the
+   *tasks/pushNotificationConfig/get* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['tasks/pushNotificationConfig/get']
+
+      The method name. Must be 'tasks/pushNotificationConfig/get'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: TaskIdParams | GetTaskPushNotificationConfigParams
+
+      The parameters for getting a push notification configuration.
+
+class a2a.types.GetTaskPushNotificationConfigResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   GetTaskPushNotificationConfigSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | GetTaskPushNotificationConfigSuccessResponse
+
+      Represents a JSON-RPC response for the
+      *tasks/pushNotificationConfig/get* method.
+
+class a2a.types.GetTaskPushNotificationConfigSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: TaskPushNotificationConfig)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the
+   *tasks/pushNotificationConfig/get* method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: TaskPushNotificationConfig
+
+      The result, containing the requested push notification
+      configuration.
+
+class a2a.types.GetTaskRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['tasks/get'] = 'tasks/get', params: TaskQueryParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the *tasks/get* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['tasks/get']
+
+      The method name. Must be 'tasks/get'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: TaskQueryParams
+
+      The parameters for querying a task.
+
+class a2a.types.GetTaskResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   GetTaskSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | GetTaskSuccessResponse
+
+      Represents a JSON-RPC response for the *tasks/get* method.
+
+class a2a.types.GetTaskSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: Task)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the *tasks/get*
+   method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: Task
+
+      The result, containing the requested Task object.
+
+class a2a.types.HTTPAuthSecurityScheme(*, bearerFormat: str | None = None, description: str | None = None, scheme: str, type: Literal['http'] = 'http')
+
+   Bases: "A2ABaseModel"
+
+   Defines a security scheme using HTTP authentication.
+
+   bearer_format: str | None
+
+      A hint to the client to identify how the bearer token is
+      formatted (e.g., "JWT"). This is primarily for documentation
+      purposes.
+
+   description: str | None
+
+      An optional description for the security scheme.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   scheme: str
+
+      The name of the HTTP Authentication scheme to be used in the
+      Authorization header, as defined in RFC7235 (e.g., "Bearer").
+      This value should be registered in the IANA Authentication
+      Scheme registry.
+
+   type: Literal['http']
+
+      The type of the security scheme. Must be 'http'.
+
+class a2a.types.ImplicitOAuthFlow(*, authorizationUrl: str, refreshUrl: str | None = None, scopes: dict[str, str])
+
+   Bases: "A2ABaseModel"
+
+   Defines configuration details for the OAuth 2.0 Implicit flow.
+
+   authorization_url: str
+
+      The authorization URL to be used for this flow. This MUST be a
+      URL.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   refresh_url: str | None
+
+      The URL to be used for obtaining refresh tokens. This MUST be a
+      URL.
+
+   scopes: dict[str, str]
+
+      The available scopes for the OAuth2 security scheme. A map
+      between the scope name and a short description for it.
+
+class a2a.types.In(*values)
+
+   Bases: "str", "Enum"
+
+   The location of the API key.
+
+   cookie = 'cookie'
+
+   header = 'header'
+
+   query = 'query'
+
+class a2a.types.InternalError(*, code: Literal[-32603] = -32603, data: Any | None = None, message: str | None = 'Internal error')
+
+   Bases: "A2ABaseModel"
+
+   An error indicating an internal error on the server.
+
+   code: Literal[-32603]
+
+      The error code for an internal server error.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.InvalidAgentResponseError(*, code: Literal[-32006] = -32006, data: Any | None = None, message: str | None = 'Invalid agent response')
+
+   Bases: "A2ABaseModel"
+
+   An A2A-specific error indicating that the agent returned a response
+   that does not conform to the specification for the current method.
+
+   code: Literal[-32006]
+
+      The error code for an invalid agent response.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.InvalidParamsError(*, code: Literal[-32602] = -32602, data: Any | None = None, message: str | None = 'Invalid parameters')
+
+   Bases: "A2ABaseModel"
+
+   An error indicating that the method parameters are invalid.
+
+   code: Literal[-32602]
+
+      The error code for an invalid parameters error.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.InvalidRequestError(*, code: Literal[-32600] = -32600, data: Any | None = None, message: str | None = 'Request payload validation error')
+
+   Bases: "A2ABaseModel"
+
+   An error indicating that the JSON sent is not a valid Request
+   object.
+
+   code: Literal[-32600]
+
+      The error code for an invalid request.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.JSONParseError(*, code: Literal[-32700] = -32700, data: Any | None = None, message: str | None = 'Invalid JSON payload')
+
+   Bases: "A2ABaseModel"
+
+   An error indicating that the server received invalid JSON.
+
+   code: Literal[-32700]
+
+      The error code for a JSON parse error.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.JSONRPCError(*, code: int, data: Any | None = None, message: str)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC 2.0 Error object, included in an error
+   response.
+
+   code: int
+
+      A number that indicates the error type that occurred.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str
+
+      A string providing a short description of the error.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.JSONRPCErrorResponse(*, error: JSONRPCError | JSONParseError | InvalidRequestError | MethodNotFoundError | InvalidParamsError | InternalError | TaskNotFoundError | TaskNotCancelableError | PushNotificationNotSupportedError | UnsupportedOperationError | ContentTypeNotSupportedError | InvalidAgentResponseError | AuthenticatedExtendedCardNotConfiguredError, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0')
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC 2.0 Error Response object.
+
+   error: JSONRPCError | JSONParseError | InvalidRequestError | MethodNotFoundError | InvalidParamsError | InternalError | TaskNotFoundError | TaskNotCancelableError | PushNotificationNotSupportedError | UnsupportedOperationError | ContentTypeNotSupportedError | InvalidAgentResponseError | AuthenticatedExtendedCardNotConfiguredError
+
+      An object describing the error that occurred.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.JSONRPCMessage(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0')
+
+   Bases: "A2ABaseModel"
+
+   Defines the base structure for any JSON-RPC 2.0 request, response,
+   or notification.
+
+   id: str | int | None
+
+      A unique identifier established by the client. It must be a
+      String, a Number, or null. The server must reply with the same
+      value in the response. This property is omitted for
+      notifications.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.JSONRPCRequest(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', method: str, params: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC 2.0 Request object.
+
+   id: str | int | None
+
+      A unique identifier established by the client. It must be a
+      String, a Number, or null. The server must reply with the same
+      value in the response. This property is omitted for
+      notifications.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: str
+
+      A string containing the name of the method to be invoked.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: dict[str, Any] | None
+
+      A structured value holding the parameter values to be used
+      during the method invocation.
+
+class a2a.types.JSONRPCResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   SendMessageSuccessResponse, SendStreamingMessageSuccessResponse,
+   GetTaskSuccessResponse, CancelTaskSuccessResponse,
+   SetTaskPushNotificationConfigSuccessResponse,
+   GetTaskPushNotificationConfigSuccessResponse,
+   ListTaskPushNotificationConfigSuccessResponse,
+   DeleteTaskPushNotificationConfigSuccessResponse,
+   GetAuthenticatedExtendedCardSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | SendMessageSuccessResponse | SendStreamingMessageSuccessResponse | GetTaskSuccessResponse | CancelTaskSuccessResponse | SetTaskPushNotificationConfigSuccessResponse | GetTaskPushNotificationConfigSuccessResponse | ListTaskPushNotificationConfigSuccessResponse | DeleteTaskPushNotificationConfigSuccessResponse | GetAuthenticatedExtendedCardSuccessResponse
+
+      A discriminated union representing all possible JSON-RPC 2.0
+      responses for the A2A specification methods.
+
+class a2a.types.JSONRPCSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: Any)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC 2.0 Response object.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: Any
+
+      The value of this member is determined by the method invoked on
+      the Server.
+
+class a2a.types.ListTaskPushNotificationConfigParams(*, id: str, metadata: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines parameters for listing all push notification configurations
+   associated with a task.
+
+   id: str
+
+      The unique identifier (e.g. UUID) of the task.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with the request.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.ListTaskPushNotificationConfigRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['tasks/pushNotificationConfig/list'] = 'tasks/pushNotificationConfig/list', params: ListTaskPushNotificationConfigParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the
+   *tasks/pushNotificationConfig/list* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['tasks/pushNotificationConfig/list']
+
+      The method name. Must be 'tasks/pushNotificationConfig/list'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: ListTaskPushNotificationConfigParams
+
+      The parameters identifying the task whose configurations are to
+      be listed.
+
+class a2a.types.ListTaskPushNotificationConfigResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   ListTaskPushNotificationConfigSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | ListTaskPushNotificationConfigSuccessResponse
+
+      Represents a JSON-RPC response for the
+      *tasks/pushNotificationConfig/list* method.
+
+class a2a.types.ListTaskPushNotificationConfigSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: list[TaskPushNotificationConfig])
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the
+   *tasks/pushNotificationConfig/list* method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: list[TaskPushNotificationConfig]
+
+      The result, containing an array of all push notification
+      configurations for the task.
+
+class a2a.types.Message(*, contextId: str | None = None, extensions: list[str] | None = None, kind: Literal['message'] = 'message', messageId: str, metadata: dict[str, Any] | None = None, parts: list[Part], referenceTaskIds: list[str] | None = None, role: Role, taskId: str | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Represents a single message in the conversation between a user and
+   an agent.
+
+   context_id: str | None
+
+      The context ID for this message, used to group related
+      interactions.
+
+   extensions: list[str] | None
+
+      The URIs of extensions that are relevant to this message.
+
+   kind: Literal['message']
+
+      The type of this object, used as a discriminator. Always
+      'message' for a Message.
+
+   message_id: str
+
+      A unique identifier for the message, typically a UUID, generated
+      by the sender.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata for extensions. The key is an extension-
+      specific identifier.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   parts: list[Part]
+
+      An array of content parts that form the message body. A message
+      can be composed of multiple parts of different types (e.g., text
+      and files).
+
+   reference_task_ids: list[str] | None
+
+      A list of other task IDs that this message references for
+      additional context.
+
+   role: Role
+
+      Identifies the sender of the message. *user* for the client,
+      *agent* for the service.
+
+   task_id: str | None
+
+      The ID of the task this message is part of. Can be omitted for
+      the first message of a new task.
+
+class a2a.types.MessageSendConfiguration(*, acceptedOutputModes: list[str] | None = None, blocking: bool | None = None, historyLength: int | None = None, pushNotificationConfig: PushNotificationConfig | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines configuration options for a *message/send* or
+   *message/stream* request.
+
+   accepted_output_modes: list[str] | None
+
+      A list of output MIME types the client is prepared to accept in
+      the response.
+
+   blocking: bool | None
+
+      If true, the client will wait for the task to complete. The
+      server may reject this if the task is long-running.
+
+   history_length: int | None
+
+      The number of most recent messages from the task's history to
+      retrieve in the response.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   push_notification_config: PushNotificationConfig | None
+
+      Configuration for the agent to send push notifications for
+      updates after the initial response.
+
+class a2a.types.MessageSendParams(*, configuration: MessageSendConfiguration | None = None, message: Message, metadata: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines the parameters for a request to send a message to an agent.
+   This can be used to create a new task, continue an existing one, or
+   restart a task.
+
+   configuration: MessageSendConfiguration | None
+
+      Optional configuration for the send request.
+
+   message: Message
+
+      The message object being sent to the agent.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata for extensions.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.MethodNotFoundError(*, code: Literal[-32601] = -32601, data: Any | None = None, message: str | None = 'Method not found')
+
+   Bases: "A2ABaseModel"
+
+   An error indicating that the requested method does not exist or is
+   not available.
+
+   code: Literal[-32601]
+
+      The error code for a method not found error.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.MutualTLSSecurityScheme(*, description: str | None = None, type: Literal['mutualTLS'] = 'mutualTLS')
+
+   Bases: "A2ABaseModel"
+
+   Defines a security scheme using mTLS authentication.
+
+   description: str | None
+
+      An optional description for the security scheme.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   type: Literal['mutualTLS']
+
+      The type of the security scheme. Must be 'mutualTLS'.
+
+class a2a.types.OAuth2SecurityScheme(*, description: str | None = None, flows: OAuthFlows, oauth2MetadataUrl: str | None = None, type: Literal['oauth2'] = 'oauth2')
+
+   Bases: "A2ABaseModel"
+
+   Defines a security scheme using OAuth 2.0.
+
+   description: str | None
+
+      An optional description for the security scheme.
+
+   flows: OAuthFlows
+
+      An object containing configuration information for the supported
+      OAuth 2.0 flows.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   oauth2_metadata_url: str | None
+
+      URL to the oauth2 authorization server metadata
+      [RFC8414](https://datatracker.ietf.org/doc/html/rfc8414). TLS is
+      required.
+
+   type: Literal['oauth2']
+
+      The type of the security scheme. Must be 'oauth2'.
+
+class a2a.types.OAuthFlows(*, authorizationCode: AuthorizationCodeOAuthFlow | None = None, clientCredentials: ClientCredentialsOAuthFlow | None = None, implicit: ImplicitOAuthFlow | None = None, password: PasswordOAuthFlow | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines the configuration for the supported OAuth 2.0 flows.
+
+   authorization_code: AuthorizationCodeOAuthFlow | None
+
+      Configuration for the OAuth Authorization Code flow. Previously
+      called accessCode in OpenAPI 2.0.
+
+   client_credentials: ClientCredentialsOAuthFlow | None
+
+      Configuration for the OAuth Client Credentials flow. Previously
+      called application in OpenAPI 2.0.
+
+   implicit: ImplicitOAuthFlow | None
+
+      Configuration for the OAuth Implicit flow.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   password: PasswordOAuthFlow | None
+
+      Configuration for the OAuth Resource Owner Password flow.
+
+class a2a.types.OpenIdConnectSecurityScheme(*, description: str | None = None, openIdConnectUrl: str, type: Literal['openIdConnect'] = 'openIdConnect')
+
+   Bases: "A2ABaseModel"
+
+   Defines a security scheme using OpenID Connect.
+
+   description: str | None
+
+      An optional description for the security scheme.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   open_id_connect_url: str
+
+      The OpenID Connect Discovery URL for the OIDC provider's
+      metadata.
+
+   type: Literal['openIdConnect']
+
+      The type of the security scheme. Must be 'openIdConnect'.
+
+class a2a.types.Part(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[TextPart, FilePart, DataPart]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: TextPart | FilePart | DataPart
+
+      A discriminated union representing a part of a message or
+      artifact, which can be text, a file, or structured data.
+
+class a2a.types.PartBase(*, metadata: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines base properties common to all message or artifact parts.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with this part.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.PasswordOAuthFlow(*, refreshUrl: str | None = None, scopes: dict[str, str], tokenUrl: str)
+
+   Bases: "A2ABaseModel"
+
+   Defines configuration details for the OAuth 2.0 Resource Owner
+   Password flow.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   refresh_url: str | None
+
+      The URL to be used for obtaining refresh tokens. This MUST be a
+      URL.
+
+   scopes: dict[str, str]
+
+      The available scopes for the OAuth2 security scheme. A map
+      between the scope name and a short description for it.
+
+   token_url: str
+
+      The token URL to be used for this flow. This MUST be a URL.
+
+class a2a.types.PushNotificationAuthenticationInfo(*, credentials: str | None = None, schemes: list[str])
+
+   Bases: "A2ABaseModel"
+
+   Defines authentication details for a push notification endpoint.
+
+   credentials: str | None
+
+      Optional credentials required by the push notification endpoint.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   schemes: list[str]
+
+      A list of supported authentication schemes (e.g., 'Basic',
+      'Bearer').
+
+class a2a.types.PushNotificationConfig(*, authentication: PushNotificationAuthenticationInfo | None = None, id: str | None = None, token: str | None = None, url: str)
+
+   Bases: "A2ABaseModel"
+
+   Defines the configuration for setting up push notifications for
+   task updates.
+
+   authentication: PushNotificationAuthenticationInfo | None
+
+      Optional authentication details for the agent to use when
+      calling the notification URL.
+
+   id: str | None
+
+      A unique identifier (e.g. UUID) for the push notification
+      configuration, set by the client to support multiple
+      notification callbacks.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   token: str | None
+
+      A unique token for this task or session to validate incoming
+      push notifications.
+
+   url: str
+
+      The callback URL where the agent should send push notifications.
+
+class a2a.types.PushNotificationNotSupportedError(*, code: Literal[-32003] = -32003, data: Any | None = None, message: str | None = 'Push Notification is not supported')
+
+   Bases: "A2ABaseModel"
+
+   An A2A-specific error indicating that the agent does not support
+   push notifications.
+
+   code: Literal[-32003]
+
+      The error code for when push notifications are not supported.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.Role(*values)
+
+   Bases: "str", "Enum"
+
+   Identifies the sender of the message. *user* for the client,
+   *agent* for the service.
+
+   agent = 'agent'
+
+   user = 'user'
+
+class a2a.types.SecurityScheme(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[APIKeySecurityScheme,
+   HTTPAuthSecurityScheme, OAuth2SecurityScheme,
+   OpenIdConnectSecurityScheme, MutualTLSSecurityScheme]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: APIKeySecurityScheme | HTTPAuthSecurityScheme | OAuth2SecurityScheme | OpenIdConnectSecurityScheme | MutualTLSSecurityScheme
+
+      Defines a security scheme that can be used to secure an agent's
+      endpoints. This is a discriminated union type based on the
+      OpenAPI 3.0 Security Scheme Object.
+
+class a2a.types.SecuritySchemeBase(*, description: str | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines base properties shared by all security scheme objects.
+
+   description: str | None
+
+      An optional description for the security scheme.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.SendMessageRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['message/send'] = 'message/send', params: MessageSendParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the *message/send* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['message/send']
+
+      The method name. Must be 'message/send'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: MessageSendParams
+
+      The parameters for sending a message.
+
+class a2a.types.SendMessageResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   SendMessageSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | SendMessageSuccessResponse
+
+      Represents a JSON-RPC response for the *message/send* method.
+
+class a2a.types.SendMessageSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: Task | Message)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the *message/send*
+   method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: Task | Message
+
+      The result, which can be a direct reply Message or the initial
+      Task object.
+
+class a2a.types.SendStreamingMessageRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['message/stream'] = 'message/stream', params: MessageSendParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the *message/stream* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['message/stream']
+
+      The method name. Must be 'message/stream'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: MessageSendParams
+
+      The parameters for sending a message.
+
+class a2a.types.SendStreamingMessageResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   SendStreamingMessageSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | SendStreamingMessageSuccessResponse
+
+      Represents a JSON-RPC response for the *message/stream* method.
+
+class a2a.types.SendStreamingMessageSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the *message/stream*
+   method. The server may send multiple response objects for a single
+   request.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+      The result, which can be a Message, Task, or a streaming update
+      event.
+
+class a2a.types.SetTaskPushNotificationConfigRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['tasks/pushNotificationConfig/set'] = 'tasks/pushNotificationConfig/set', params: TaskPushNotificationConfig)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the
+   *tasks/pushNotificationConfig/set* method.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['tasks/pushNotificationConfig/set']
+
+      The method name. Must be 'tasks/pushNotificationConfig/set'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: TaskPushNotificationConfig
+
+      The parameters for setting the push notification configuration.
+
+class a2a.types.SetTaskPushNotificationConfigResponse(root: RootModelRootType = PydanticUndefined)
+
+   Bases: "RootModel[Union[JSONRPCErrorResponse,
+   SetTaskPushNotificationConfigSuccessResponse]]"
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   root: JSONRPCErrorResponse | SetTaskPushNotificationConfigSuccessResponse
+
+      Represents a JSON-RPC response for the
+      *tasks/pushNotificationConfig/set* method.
+
+class a2a.types.SetTaskPushNotificationConfigSuccessResponse(*, id: str | int | None = None, jsonrpc: Literal['2.0'] = '2.0', result: TaskPushNotificationConfig)
+
+   Bases: "A2ABaseModel"
+
+   Represents a successful JSON-RPC response for the
+   *tasks/pushNotificationConfig/set* method.
+
+   id: str | int | None
+
+      The identifier established by the client.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   result: TaskPushNotificationConfig
+
+      The result, containing the configured push notification
+      settings.
+
+class a2a.types.Task(*, artifacts: list[Artifact] | None = None, contextId: str, history: list[Message] | None = None, id: str, kind: Literal['task'] = 'task', metadata: dict[str, Any] | None = None, status: TaskStatus)
+
+   Bases: "A2ABaseModel"
+
+   Represents a single, stateful operation or conversation between a
+   client and an agent.
+
+   artifacts: list[Artifact] | None
+
+      A collection of artifacts generated by the agent during the
+      execution of the task.
+
+   context_id: str
+
+      A server-generated unique identifier (e.g. UUID) for maintaining
+      context across multiple related tasks or interactions.
+
+   history: list[Message] | None
+
+      An array of messages exchanged during the task, representing the
+      conversation history.
+
+   id: str
+
+      A unique identifier (e.g. UUID) for the task, generated by the
+      server for a new task.
+
+   kind: Literal['task']
+
+      The type of this object, used as a discriminator. Always 'task'
+      for a Task.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata for extensions. The key is an extension-
+      specific identifier.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   status: TaskStatus
+
+      The current status of the task, including its state and a
+      descriptive message.
+
+class a2a.types.TaskArtifactUpdateEvent(*, append: bool | None = None, artifact: Artifact, contextId: str, kind: Literal['artifact-update'] = 'artifact-update', lastChunk: bool | None = None, metadata: dict[str, Any] | None = None, taskId: str)
+
+   Bases: "A2ABaseModel"
+
+   An event sent by the agent to notify the client that an artifact
+   has been generated or updated. This is typically used in streaming
+   models.
+
+   append: bool | None
+
+      If true, the content of this artifact should be appended to a
+      previously sent artifact with the same ID.
+
+   artifact: Artifact
+
+      The artifact that was generated or updated.
+
+   context_id: str
+
+      The context ID associated with the task.
+
+   kind: Literal['artifact-update']
+
+      The type of this event, used as a discriminator. Always
+      'artifact-update'.
+
+   last_chunk: bool | None
+
+      If true, this is the final chunk of the artifact.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata for extensions.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   task_id: str
+
+      The ID of the task this artifact belongs to.
+
+class a2a.types.TaskIdParams(*, id: str, metadata: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines parameters containing a task ID, used for simple task
+   operations.
+
+   id: str
+
+      The unique identifier (e.g. UUID) of the task.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with the request.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.TaskNotCancelableError(*, code: Literal[-32002] = -32002, data: Any | None = None, message: str | None = 'Task cannot be canceled')
+
+   Bases: "A2ABaseModel"
+
+   An A2A-specific error indicating that the task is in a state where
+   it cannot be canceled.
+
+   code: Literal[-32002]
+
+      The error code for a task that cannot be canceled.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.TaskNotFoundError(*, code: Literal[-32001] = -32001, data: Any | None = None, message: str | None = 'Task not found')
+
+   Bases: "A2ABaseModel"
+
+   An A2A-specific error indicating that the requested task ID was not
+   found.
+
+   code: Literal[-32001]
+
+      The error code for a task not found error.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.TaskPushNotificationConfig(*, pushNotificationConfig: PushNotificationConfig, taskId: str)
+
+   Bases: "A2ABaseModel"
+
+   A container associating a push notification configuration with a
+   specific task.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   push_notification_config: PushNotificationConfig
+
+      The push notification configuration for this task.
+
+   task_id: str
+
+      The unique identifier (e.g. UUID) of the task.
+
+class a2a.types.TaskQueryParams(*, historyLength: int | None = None, id: str, metadata: dict[str, Any] | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Defines parameters for querying a task, with an option to limit
+   history length.
+
+   history_length: int | None
+
+      The number of most recent messages from the task's history to
+      retrieve.
+
+   id: str
+
+      The unique identifier (e.g. UUID) of the task.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with the request.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.types.TaskResubscriptionRequest(*, id: str | int, jsonrpc: Literal['2.0'] = '2.0', method: Literal['tasks/resubscribe'] = 'tasks/resubscribe', params: TaskIdParams)
+
+   Bases: "A2ABaseModel"
+
+   Represents a JSON-RPC request for the *tasks/resubscribe* method,
+   used to resume a streaming connection.
+
+   id: str | int
+
+      The identifier for this request.
+
+   jsonrpc: Literal['2.0']
+
+      The version of the JSON-RPC protocol. MUST be exactly "2.0".
+
+   method: Literal['tasks/resubscribe']
+
+      The method name. Must be 'tasks/resubscribe'.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   params: TaskIdParams
+
+      The parameters identifying the task to resubscribe to.
+
+class a2a.types.TaskState(*values)
+
+   Bases: "str", "Enum"
+
+   Defines the lifecycle states of a Task.
+
+   auth_required = 'auth-required'
+
+   canceled = 'canceled'
+
+   completed = 'completed'
+
+   failed = 'failed'
+
+   input_required = 'input-required'
+
+   rejected = 'rejected'
+
+   submitted = 'submitted'
+
+   unknown = 'unknown'
+
+   working = 'working'
+
+class a2a.types.TaskStatus(*, message: Message | None = None, state: TaskState, timestamp: str | None = None)
+
+   Bases: "A2ABaseModel"
+
+   Represents the status of a task at a specific point in time.
+
+   message: Message | None
+
+      An optional, human-readable message providing more details about
+      the current status.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   state: TaskState
+
+      The current state of the task's lifecycle.
+
+   timestamp: str | None
+
+      An ISO 8601 datetime string indicating when this status was
+      recorded.
+
+class a2a.types.TaskStatusUpdateEvent(*, contextId: str, final: bool, kind: Literal['status-update'] = 'status-update', metadata: dict[str, Any] | None = None, status: TaskStatus, taskId: str)
+
+   Bases: "A2ABaseModel"
+
+   An event sent by the agent to notify the client of a change in a
+   task's status. This is typically used in streaming or subscription
+   models.
+
+   context_id: str
+
+      The context ID associated with the task.
+
+   final: bool
+
+      If true, this is the final event in the stream for this
+      interaction.
+
+   kind: Literal['status-update']
+
+      The type of this event, used as a discriminator. Always 'status-
+      update'.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata for extensions.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   status: TaskStatus
+
+      The new status of the task.
+
+   task_id: str
+
+      The ID of the task that was updated.
+
+class a2a.types.TextPart(*, kind: Literal['text'] = 'text', metadata: dict[str, Any] | None = None, text: str)
+
+   Bases: "A2ABaseModel"
+
+   Represents a text segment within a message or artifact.
+
+   kind: Literal['text']
+
+      The type of this part, used as a discriminator. Always 'text'.
+
+   metadata: dict[str, Any] | None
+
+      Optional metadata associated with this part.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   text: str
+
+      The string content of the text part.
+
+class a2a.types.TransportProtocol(*values)
+
+   Bases: "str", "Enum"
+
+   Supported A2A transport protocols.
+
+   grpc = 'GRPC'
+
+   http_json = 'HTTP+JSON'
+
+   jsonrpc = 'JSONRPC'
+
+class a2a.types.UnsupportedOperationError(*, code: Literal[-32004] = -32004, data: Any | None = None, message: str | None = 'This operation is not supported')
+
+   Bases: "A2ABaseModel"
+
+   An A2A-specific error indicating that the requested operation is
+   not supported by the agent.
+
+   code: Literal[-32004]
+
+      The error code for an unsupported operation.
+
+   data: Any | None
+
+      A primitive or structured value containing additional
+      information about the error. This may be omitted.
+
+   message: str | None
+
+      The error message.
+
+   model_config = {'alias_generator': <function to_camel_custom>, 'serialize_by_alias': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].

@@ -1,0 +1,44 @@
+a2a.server.agent_execution.agent_executor module
+************************************************
+
+class a2a.server.agent_execution.agent_executor.AgentExecutor
+
+   Bases: "ABC"
+
+   Agent Executor interface.
+
+   Implementations of this interface contain the core logic of the
+   agent, executing tasks based on requests and publishing updates to
+   an event queue.
+
+   abstractmethod async cancel(context: RequestContext, event_queue: EventQueue) -> None
+
+      Request the agent to cancel an ongoing task.
+
+      The agent should attempt to stop the task identified by the
+      task_id in the context and publish a *TaskStatusUpdateEvent*
+      with state *TaskState.canceled* to the *event_queue*.
+
+      Parameters:
+         * **context** -- The request context containing the task ID
+           to cancel.
+
+         * **event_queue** -- The queue to publish the cancellation
+           status update to.
+
+   abstractmethod async execute(context: RequestContext, event_queue: EventQueue) -> None
+
+      Execute the agent's logic for a given request context.
+
+      The agent should read necessary information from the *context*
+      and publish *Task* or *Message* events, or
+      *TaskStatusUpdateEvent* / *TaskArtifactUpdateEvent* to the
+      *event_queue*. This method should return once the agent's
+      execution for this request is complete or yields control (e.g.,
+      enters an input-required state).
+
+      Parameters:
+         * **context** -- The request context containing the message,
+           task ID, etc.
+
+         * **event_queue** -- The queue to publish events to.

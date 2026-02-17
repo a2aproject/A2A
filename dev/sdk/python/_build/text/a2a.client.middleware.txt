@@ -1,0 +1,51 @@
+a2a.client.middleware module
+****************************
+
+class a2a.client.middleware.ClientCallContext(*, state: MutableMapping[str, ~typing.Any]=<factory>)
+
+   Bases: "BaseModel"
+
+   A context passed with each client call, allowing for call-specific.
+
+   configuration and data passing. Such as authentication details or
+   request deadlines.
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   state: MutableMapping[str, Any]
+
+class a2a.client.middleware.ClientCallInterceptor
+
+   Bases: "ABC"
+
+   An abstract base class for client-side call interceptors.
+
+   Interceptors can inspect and modify requests before they are sent,
+   which is ideal for concerns like authentication, logging, or
+   tracing.
+
+   abstractmethod async intercept(method_name: str, request_payload: dict[str, Any], http_kwargs: dict[str, Any], agent_card: AgentCard | None, context: ClientCallContext | None) -> tuple[dict[str, Any], dict[str, Any]]
+
+      Intercepts a client call before the request is sent.
+
+      Parameters:
+         * **method_name** -- The name of the RPC method (e.g.,
+           'message/send').
+
+         * **request_payload** -- The JSON RPC request payload
+           dictionary.
+
+         * **http_kwargs** -- The keyword arguments for the httpx
+           request.
+
+         * **agent_card** -- The AgentCard associated with the client.
+
+         * **context** -- The ClientCallContext for this specific
+           call.
+
+      Returns:
+         A tuple containing the (potentially modified) request_payload
+         and http_kwargs.

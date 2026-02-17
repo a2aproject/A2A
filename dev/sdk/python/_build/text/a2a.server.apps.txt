@@ -1,0 +1,271 @@
+a2a.server.apps package
+***********************
+
+
+Subpackages
+===========
+
+* a2a.server.apps.jsonrpc package
+
+  * Submodules
+
+    * a2a.server.apps.jsonrpc.fastapi_app module
+
+      * "A2AFastAPI"
+
+      * "A2AFastAPIApplication"
+
+    * a2a.server.apps.jsonrpc.jsonrpc_app module
+
+      * "CallContextBuilder"
+
+      * "DefaultCallContextBuilder"
+
+      * "JSONRPCApplication"
+
+      * "StarletteUserProxy"
+
+    * a2a.server.apps.jsonrpc.starlette_app module
+
+      * "A2AStarletteApplication"
+
+  * Module contents
+
+    * "A2AFastAPIApplication"
+
+      * "A2AFastAPIApplication.add_routes_to_app()"
+
+      * "A2AFastAPIApplication.build()"
+
+    * "A2AStarletteApplication"
+
+      * "A2AStarletteApplication.add_routes_to_app()"
+
+      * "A2AStarletteApplication.build()"
+
+      * "A2AStarletteApplication.routes()"
+
+    * "CallContextBuilder"
+
+      * "CallContextBuilder.build()"
+
+    * "DefaultCallContextBuilder"
+
+      * "DefaultCallContextBuilder.build()"
+
+    * "JSONRPCApplication"
+
+      * "JSONRPCApplication.A2ARequestModel"
+
+      * "JSONRPCApplication.METHOD_TO_MODEL"
+
+      * "JSONRPCApplication.build()"
+
+    * "StarletteUserProxy"
+
+      * "StarletteUserProxy.is_authenticated"
+
+      * "StarletteUserProxy.user_name"
+
+* a2a.server.apps.rest package
+
+  * Submodules
+
+    * a2a.server.apps.rest.fastapi_app module
+
+      * "A2ARESTFastAPIApplication"
+
+    * a2a.server.apps.rest.rest_adapter module
+
+      * "RESTAdapter"
+
+  * Module contents
+
+    * "A2ARESTFastAPIApplication"
+
+      * "A2ARESTFastAPIApplication.build()"
+
+
+Module contents
+===============
+
+HTTP application components for the A2A server.
+
+class a2a.server.apps.A2AFastAPIApplication(agent_card: AgentCard, http_handler: RequestHandler, extended_agent_card: AgentCard | None = None, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None, max_content_length: int | None = 10485760)
+
+   Bases: "JSONRPCApplication"
+
+   A FastAPI application implementing the A2A protocol server
+   endpoints.
+
+   Handles incoming JSON-RPC requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   add_routes_to_app(app: FastAPI, agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard') -> None
+
+      Adds the routes to the FastAPI application.
+
+      Parameters:
+         * **app** -- The FastAPI application to add the routes to.
+
+         * **agent_card_url** -- The URL for the agent card endpoint.
+
+         * **rpc_url** -- The URL for the A2A JSON-RPC endpoint.
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+   build(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard', **kwargs: Any) -> FastAPI
+
+      Builds and returns the FastAPI application instance.
+
+      Parameters:
+         * **agent_card_url** -- The URL for the agent card endpoint.
+
+         * **rpc_url** -- The URL for the A2A JSON-RPC endpoint.
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+         * ****kwargs** -- Additional keyword arguments to pass to the
+           FastAPI constructor.
+
+      Returns:
+         A configured FastAPI application instance.
+
+class a2a.server.apps.A2ARESTFastAPIApplication(agent_card: AgentCard, http_handler: RequestHandler, extended_agent_card: AgentCard | None = None, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None)
+
+   Bases: "object"
+
+   A FastAPI application implementing the A2A protocol server REST
+   endpoints.
+
+   Handles incoming REST requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   build(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '', **kwargs: Any) -> FastAPI
+
+      Builds and returns the FastAPI application instance.
+
+      Parameters:
+         * **agent_card_url** -- The URL for the agent card endpoint.
+
+         * **rpc_url** -- The URL for the A2A JSON-RPC endpoint.
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+         * ****kwargs** -- Additional keyword arguments to pass to the
+           FastAPI constructor.
+
+      Returns:
+         A configured FastAPI application instance.
+
+class a2a.server.apps.A2AStarletteApplication(agent_card: AgentCard, http_handler: RequestHandler, extended_agent_card: AgentCard | None = None, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None, max_content_length: int | None = 10485760)
+
+   Bases: "JSONRPCApplication"
+
+   A Starlette application implementing the A2A protocol server
+   endpoints.
+
+   Handles incoming JSON-RPC requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   add_routes_to_app(app: Starlette, agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard') -> None
+
+      Adds the routes to the Starlette application.
+
+      Parameters:
+         * **app** -- The Starlette application to add the routes to.
+
+         * **agent_card_url** -- The URL path for the agent card
+           endpoint.
+
+         * **rpc_url** -- The URL path for the A2A JSON-RPC endpoint
+           (POST requests).
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+   build(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard', **kwargs: Any) -> Starlette
+
+      Builds and returns the Starlette application instance.
+
+      Parameters:
+         * **agent_card_url** -- The URL path for the agent card
+           endpoint.
+
+         * **rpc_url** -- The URL path for the A2A JSON-RPC endpoint
+           (POST requests).
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+         * ****kwargs** -- Additional keyword arguments to pass to the
+           Starlette constructor.
+
+      Returns:
+         A configured Starlette application instance.
+
+   routes(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard') -> list[Route]
+
+      Returns the Starlette Routes for handling A2A requests.
+
+      Parameters:
+         * **agent_card_url** -- The URL path for the agent card
+           endpoint.
+
+         * **rpc_url** -- The URL path for the A2A JSON-RPC endpoint
+           (POST requests).
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+      Returns:
+         A list of Starlette Route objects.
+
+class a2a.server.apps.CallContextBuilder
+
+   Bases: "ABC"
+
+   A class for building ServerCallContexts using the Starlette
+   Request.
+
+   abstractmethod build(request: Request) -> ServerCallContext
+
+      Builds a ServerCallContext from a Starlette Request.
+
+class a2a.server.apps.JSONRPCApplication(agent_card: AgentCard, http_handler: RequestHandler, extended_agent_card: AgentCard | None = None, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None, max_content_length: int | None = 10485760)
+
+   Bases: "ABC"
+
+   Base class for A2A JSONRPC applications.
+
+   Handles incoming JSON-RPC requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   A2ARequestModel = a2a.types.SendMessageRequest | a2a.types.SendStreamingMessageRequest | a2a.types.GetTaskRequest | a2a.types.CancelTaskRequest | a2a.types.SetTaskPushNotificationConfigRequest | a2a.types.GetTaskPushNotificationConfigRequest | a2a.types.ListTaskPushNotificationConfigRequest | a2a.types.DeleteTaskPushNotificationConfigRequest | a2a.types.TaskResubscriptionRequest | a2a.types.GetAuthenticatedExtendedCardRequest
+
+   METHOD_TO_MODEL: dict[str, type[SendMessageRequest | SendStreamingMessageRequest | GetTaskRequest | CancelTaskRequest | SetTaskPushNotificationConfigRequest | GetTaskPushNotificationConfigRequest | ListTaskPushNotificationConfigRequest | DeleteTaskPushNotificationConfigRequest | TaskResubscriptionRequest | GetAuthenticatedExtendedCardRequest]] = {'agent/getAuthenticatedExtendedCard': <class 'a2a.types.GetAuthenticatedExtendedCardRequest'>, 'message/send': <class 'a2a.types.SendMessageRequest'>, 'message/stream': <class 'a2a.types.SendStreamingMessageRequest'>, 'tasks/cancel': <class 'a2a.types.CancelTaskRequest'>, 'tasks/get': <class 'a2a.types.GetTaskRequest'>, 'tasks/pushNotificationConfig/delete': <class 'a2a.types.DeleteTaskPushNotificationConfigRequest'>, 'tasks/pushNotificationConfig/get': <class 'a2a.types.GetTaskPushNotificationConfigRequest'>, 'tasks/pushNotificationConfig/list': <class 'a2a.types.ListTaskPushNotificationConfigRequest'>, 'tasks/pushNotificationConfig/set': <class 'a2a.types.SetTaskPushNotificationConfigRequest'>, 'tasks/resubscribe': <class 'a2a.types.TaskResubscriptionRequest'>}
+
+   abstractmethod build(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard', **kwargs: Any) -> Any | Starlette
+
+      Builds and returns the JSONRPC application instance.
+
+      Parameters:
+         * **agent_card_url** -- The URL for the agent card endpoint.
+
+         * **rpc_url** -- The URL for the A2A JSON-RPC endpoint.
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+         * ****kwargs** -- Additional keyword arguments to pass to the
+           FastAPI constructor.
+
+      Returns:
+         A configured JSONRPC application instance.

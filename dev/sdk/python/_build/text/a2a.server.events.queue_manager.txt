@@ -1,0 +1,43 @@
+a2a.server.events.queue_manager module
+**************************************
+
+exception a2a.server.events.queue_manager.NoTaskQueue
+
+   Bases: "Exception"
+
+   Exception raised when attempting to access or close a queue for a
+   task ID that does not exist.
+
+class a2a.server.events.queue_manager.QueueManager
+
+   Bases: "ABC"
+
+   Interface for managing the event queue lifecycles per task.
+
+   abstractmethod async add(task_id: str, queue: EventQueue) -> None
+
+      Adds a new event queue associated with a task ID.
+
+   abstractmethod async close(task_id: str) -> None
+
+      Closes and removes the event queue for a task ID.
+
+   abstractmethod async create_or_tap(task_id: str) -> EventQueue
+
+      Creates a queue if one doesn't exist, otherwise taps the
+      existing one.
+
+   abstractmethod async get(task_id: str) -> EventQueue | None
+
+      Retrieves the event queue for a task ID.
+
+   abstractmethod async tap(task_id: str) -> EventQueue | None
+
+      Creates a child event queue (tap) for an existing task ID.
+
+exception a2a.server.events.queue_manager.TaskQueueExists
+
+   Bases: "Exception"
+
+   Exception raised when attempting to add a queue for a task ID that
+   already exists.

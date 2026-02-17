@@ -1,0 +1,80 @@
+a2a.utils.signing module
+************************
+
+exception a2a.utils.signing.InvalidSignaturesError
+
+   Bases: "SignatureVerificationError"
+
+   Exception raised when all signatures are invalid.
+
+exception a2a.utils.signing.NoSignatureError
+
+   Bases: "SignatureVerificationError"
+
+   Exception raised when no signature is found on an AgentCard.
+
+class a2a.utils.signing.ProtectedHeader
+
+   Bases: "TypedDict"
+
+   Protected header parameters for JWS (JSON Web Signature).
+
+   alg: str | None
+
+      Algorithm used for signing.
+
+   jku: str | None
+
+      JSON Web Key Set URL.
+
+   kid: str
+
+      Key identifier.
+
+   typ: str | None
+
+      Token type.
+
+      Best practice: SHOULD be "JOSE" for JWS tokens.
+
+exception a2a.utils.signing.SignatureVerificationError
+
+   Bases: "Exception"
+
+   Base exception for signature verification errors.
+
+a2a.utils.signing.create_agent_card_signer(signing_key: PyJWK | str | bytes, protected_header: ProtectedHeader, header: dict[str, Any] | None = None) -> Callable[[AgentCard], AgentCard]
+
+   Creates a function that signs an AgentCard and adds the signature.
+
+   Parameters:
+      * **signing_key** -- The private key for signing.
+
+      * **protected_header** -- The protected header parameters.
+
+      * **header** -- Unprotected header parameters.
+
+   Returns:
+      A callable that takes an AgentCard and returns the modified
+      AgentCard with a signature.
+
+a2a.utils.signing.create_signature_verifier(key_provider: Callable[[str | None, str | None], PyJWK | str | bytes], algorithms: list[str]) -> Callable[[AgentCard], None]
+
+   Creates a function that verifies the signatures on an AgentCard.
+
+   The verifier succeeds if at least one signature is valid.
+   Otherwise, it raises an error.
+
+   Parameters:
+      * **key_provider** -- A callable that accepts a key ID (kid) and
+        a JWK Set URL (jku) and returns the verification key. This
+        function is responsible for fetching the correct key for a
+        given signature.
+
+      * **algorithms** -- A list of acceptable algorithms (e.g.,
+        ['ES256', 'RS256']) for verification used to prevent algorithm
+        confusion attacks.
+
+   Returns:
+      A function that takes an AgentCard as input, and raises an error
+      if none of the signatures are valid.

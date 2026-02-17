@@ -1,0 +1,141 @@
+a2a.server.request_handlers.grpc_handler module
+***********************************************
+
+class a2a.server.request_handlers.grpc_handler.CallContextBuilder
+
+   Bases: "ABC"
+
+   A class for building ServerCallContexts using the Starlette
+   Request.
+
+   abstractmethod build(context: ServicerContext) -> ServerCallContext
+
+      Builds a ServerCallContext from a gRPC Request.
+
+class a2a.server.request_handlers.grpc_handler.DefaultCallContextBuilder
+
+   Bases: "CallContextBuilder"
+
+   A default implementation of CallContextBuilder.
+
+   build(context: ServicerContext) -> ServerCallContext
+
+      Builds the ServerCallContext.
+
+class a2a.server.request_handlers.grpc_handler.GrpcHandler(agent_card: AgentCard, request_handler: RequestHandler, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None)
+
+   Bases: "A2AServiceServicer"
+
+   Maps incoming gRPC requests to the appropriate request handler
+   method.
+
+   async CancelTask(request: CancelTaskRequest, context: ServicerContext) -> Task
+
+      Handles the 'CancelTask' gRPC method.
+
+      Parameters:
+         * **request** -- The incoming *CancelTaskRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *Task* object containing the updated Task or a gRPC error.
+
+   async CreateTaskPushNotificationConfig(request: CreateTaskPushNotificationConfigRequest, context: ServicerContext) -> TaskPushNotificationConfig
+
+      Handles the 'CreateTaskPushNotificationConfig' gRPC method.
+
+      Requires the agent to support push notifications.
+
+      Parameters:
+         * **request** -- The incoming
+           *CreateTaskPushNotificationConfigRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *TaskPushNotificationConfig* object
+
+      Raises:
+         **ServerError** -- If push notifications are not supported by
+         the agent     (due to the *@validate* decorator).
+
+   async GetAgentCard(request: GetAgentCardRequest, context: ServicerContext) -> AgentCard
+
+      Get the agent card for the agent served.
+
+   async GetTask(request: GetTaskRequest, context: ServicerContext) -> Task
+
+      Handles the 'GetTask' gRPC method.
+
+      Parameters:
+         * **request** -- The incoming *GetTaskRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *Task* object.
+
+   async GetTaskPushNotificationConfig(request: GetTaskPushNotificationConfigRequest, context: ServicerContext) -> TaskPushNotificationConfig
+
+      Handles the 'GetTaskPushNotificationConfig' gRPC method.
+
+      Parameters:
+         * **request** -- The incoming
+           *GetTaskPushNotificationConfigRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *TaskPushNotificationConfig* object containing the config.
+
+   async SendMessage(request: SendMessageRequest, context: ServicerContext) -> SendMessageResponse
+
+      Handles the 'SendMessage' gRPC method.
+
+      Parameters:
+         * **request** -- The incoming *SendMessageRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *SendMessageResponse* object containing the result (Task or
+         Message) or throws an error response if a *ServerError* is
+         raised by the handler.
+
+   async SendStreamingMessage(request: SendMessageRequest, context: ServicerContext) -> AsyncIterable[StreamResponse]
+
+      Handles the 'StreamMessage' gRPC method.
+
+      Yields response objects as they are produced by the underlying
+      handler's stream.
+
+      Parameters:
+         * **request** -- The incoming *SendMessageRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *StreamResponse* objects containing streaming events (Task,
+         Message, TaskStatusUpdateEvent, TaskArtifactUpdateEvent) or
+         gRPC error responses if a *ServerError* is raised.
+
+   async TaskSubscription(request: TaskSubscriptionRequest, context: ServicerContext) -> AsyncIterable[StreamResponse]
+
+      Handles the 'TaskSubscription' gRPC method.
+
+      Yields response objects as they are produced by the underlying
+      handler's stream.
+
+      Parameters:
+         * **request** -- The incoming *TaskSubscriptionRequest*
+           object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *StreamResponse* objects containing streaming events
+
+   async abort_context(error: ServerError, context: ServicerContext) -> None
+
+      Sets the grpc errors appropriately in the context.

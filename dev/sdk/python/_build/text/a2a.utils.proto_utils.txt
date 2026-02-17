@@ -1,0 +1,207 @@
+a2a.utils.proto_utils module
+****************************
+
+Utils for converting between proto and Python types.
+
+class a2a.utils.proto_utils.FromProto
+
+   Bases: "object"
+
+   Converts proto types to Python types.
+
+   classmethod agent_card(card: AgentCard) -> AgentCard
+
+   classmethod agent_card_signature(signature: AgentCardSignature) -> AgentCardSignature
+
+   classmethod agent_extension(extension: AgentExtension) -> AgentExtension
+
+   classmethod agent_interface(interface: AgentInterface) -> AgentInterface
+
+   classmethod artifact(artifact: Artifact) -> Artifact
+
+   classmethod authentication_info(info: AuthenticationInfo) -> PushNotificationAuthenticationInfo
+
+   classmethod capabilities(capabilities: AgentCapabilities) -> AgentCapabilities
+
+   classmethod data(data: DataPart) -> dict[str, Any]
+
+   classmethod file(file: FilePart) -> FileWithUri | FileWithBytes
+
+   classmethod message(message: Message) -> Message
+
+   classmethod message_send_configuration(config: SendMessageConfiguration) -> MessageSendConfiguration
+
+   classmethod message_send_params(request: SendMessageRequest) -> MessageSendParams
+
+   classmethod metadata(metadata: Struct) -> dict[str, Any]
+
+   classmethod oauth2_flows(flows: OAuthFlows) -> OAuthFlows
+
+   classmethod part(part: Part) -> Part
+
+   classmethod provider(provider: AgentProvider | None) -> AgentProvider | None
+
+   classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
+
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2483950>) -> Role
+
+   classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
+
+   classmethod security_scheme(scheme: SecurityScheme) -> SecurityScheme
+
+   classmethod security_schemes(schemes: dict[str, SecurityScheme]) -> dict[str, SecurityScheme]
+
+   classmethod skill(skill: AgentSkill) -> AgentSkill
+
+   classmethod stream_response(response: StreamResponse) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+   classmethod task(task: Task) -> Task
+
+   classmethod task_artifact_update_event(event: TaskArtifactUpdateEvent) -> TaskArtifactUpdateEvent
+
+   classmethod task_id_params(request: CancelTaskRequest | TaskSubscriptionRequest | GetTaskPushNotificationConfigRequest) -> TaskIdParams
+
+   classmethod task_or_message(event: SendMessageResponse) -> Task | Message
+
+   classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
+
+   classmethod task_push_notification_config_request(request: CreateTaskPushNotificationConfigRequest) -> TaskPushNotificationConfig
+
+   classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
+
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2473df0>) -> TaskState
+
+   classmethod task_status(status: TaskStatus) -> TaskStatus
+
+   classmethod task_status_update_event(event: TaskStatusUpdateEvent) -> TaskStatusUpdateEvent
+
+class a2a.utils.proto_utils.ToProto
+
+   Bases: "object"
+
+   Converts Python types to proto types.
+
+   classmethod agent_card(card: AgentCard) -> AgentCard
+
+   classmethod agent_card_signature(signature: AgentCardSignature) -> AgentCardSignature
+
+   classmethod agent_interface(interface: AgentInterface) -> AgentInterface
+
+   classmethod artifact(artifact: Artifact) -> Artifact
+
+   classmethod authentication_info(info: PushNotificationAuthenticationInfo) -> AuthenticationInfo
+
+   classmethod capabilities(capabilities: AgentCapabilities) -> AgentCapabilities
+
+   classmethod data(data: dict[str, Any]) -> DataPart
+
+   classmethod extension(extension: AgentExtension) -> AgentExtension
+
+   classmethod file(file: FileWithUri | FileWithBytes) -> FilePart
+
+   classmethod message(message: Message | None) -> Message | None
+
+   classmethod message_send_configuration(config: MessageSendConfiguration | None) -> SendMessageConfiguration
+
+   classmethod metadata(metadata: dict[str, Any] | None) -> Struct | None
+
+   classmethod oauth2_flows(flows: OAuthFlows) -> OAuthFlows
+
+   classmethod part(part: Part) -> Part
+
+   classmethod provider(provider: AgentProvider | None) -> AgentProvider | None
+
+   classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
+
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2483950>
+
+   classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
+
+   classmethod security_scheme(scheme: SecurityScheme) -> SecurityScheme
+
+   classmethod security_schemes(schemes: dict[str, SecurityScheme] | None) -> dict[str, SecurityScheme] | None
+
+   classmethod skill(skill: AgentSkill) -> AgentSkill
+
+   classmethod stream_response(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> StreamResponse
+
+   classmethod task(task: Task) -> Task
+
+   classmethod task_artifact_update_event(event: TaskArtifactUpdateEvent) -> TaskArtifactUpdateEvent
+
+   classmethod task_or_message(event: Task | Message) -> SendMessageResponse
+
+   classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
+
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2473df0>
+
+   classmethod task_status(status: TaskStatus) -> TaskStatus
+
+   classmethod task_status_update_event(event: TaskStatusUpdateEvent) -> TaskStatusUpdateEvent
+
+   classmethod update_event(event: Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> StreamResponse
+
+      Converts a task, message, or task update event to a
+      StreamResponse.
+
+a2a.utils.proto_utils.dict_to_struct(dictionary: dict[str, Any]) -> Struct
+
+   Converts a Python dict to a Struct proto.
+
+   Unfortunately, using *json_format.ParseDict* does not work because
+   this wants the dictionary to be an exact match of the Struct proto
+   with fields and keys and values, not the traditional Python dict
+   structure.
+
+   Parameters:
+      **dictionary** -- The Python dict to convert.
+
+   Returns:
+      The Struct proto.
+
+a2a.utils.proto_utils.make_dict_serializable(value: Any) -> Any
+
+   Dict pre-processing utility: converts non-serializable values to
+   serializable form.
+
+   Use this when you want to normalize a dictionary before
+   dict->Struct conversion.
+
+   Parameters:
+      **value** -- The value to convert.
+
+   Returns:
+      A serializable value.
+
+a2a.utils.proto_utils.normalize_large_integers_to_strings(value: Any, max_safe_digits: int = 15) -> Any
+
+   Integer preprocessing utility: converts large integers to strings.
+
+   Use this when you want to convert large integers to strings
+   considering JavaScript's MAX_SAFE_INTEGER (2^53 - 1) limitation.
+
+   Parameters:
+      * **value** -- The value to convert.
+
+      * **max_safe_digits** -- Maximum safe integer digits (default:
+        15).
+
+   Returns:
+      A normalized value.
+
+a2a.utils.proto_utils.parse_string_integers_in_dict(value: Any, max_safe_digits: int = 15) -> Any
+
+   String post-processing utility: converts large integer strings back
+   to integers.
+
+   Use this when you want to restore large integer strings to integers
+   after Struct->dict conversion.
+
+   Parameters:
+      * **value** -- The value to convert.
+
+      * **max_safe_digits** -- Maximum safe integer digits (default:
+        15).
+
+   Returns:
+      A parsed value.

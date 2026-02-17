@@ -1,0 +1,39 @@
+a2a.server.tasks.database_push_notification_config_store module
+***************************************************************
+
+class a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore(engine: AsyncEngine, create_table: bool = True, table_name: str = 'push_notification_configs', encryption_key: str | bytes | None = None)
+
+   Bases: "PushNotificationConfigStore"
+
+   SQLAlchemy-based implementation of PushNotificationConfigStore.
+
+   Stores push notification configurations in a database supported by
+   SQLAlchemy.
+
+   async_session_maker: async_sessionmaker[AsyncSession]
+
+   config_model: type[PushNotificationConfigModel]
+
+   create_table: bool
+
+   async delete_info(task_id: str, config_id: str | None = None) -> None
+
+      Deletes push notification configurations for a task.
+
+      If config_id is provided, only that specific configuration is
+      deleted. If config_id is None, all configurations for the task
+      are deleted.
+
+   engine: AsyncEngine
+
+   async get_info(task_id: str) -> list[PushNotificationConfig]
+
+      Retrieves all push notification configurations for a task.
+
+   async initialize() -> None
+
+      Initialize the database and create the table if needed.
+
+   async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+
+      Sets or updates the push notification configuration for a task.

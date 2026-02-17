@@ -1,0 +1,212 @@
+a2a.client.legacy module
+************************
+
+Backwards compatibility layer for legacy A2A clients.
+
+class a2a.client.legacy.A2AClient(httpx_client: AsyncClient, agent_card: AgentCard | None = None, url: str | None = None, interceptors: list[ClientCallInterceptor] | None = None)
+
+   Bases: "object"
+
+   [DEPRECATED] Backwards compatibility wrapper for the JSON-RPC
+   client.
+
+   async cancel_task(request: CancelTaskRequest, *, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> CancelTaskResponse
+
+      Requests the agent to cancel a specific task.
+
+      Parameters:
+         * **request** -- The *CancelTaskRequest* object specifying
+           the task ID.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request.
+
+         * **context** -- The client call context.
+
+      Returns:
+         A *CancelTaskResponse* object containing the updated Task
+         with canceled status or an error.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP error occurs during
+           the request.
+
+         * **A2AClientJSONError** -- If the response body cannot be
+           decoded as JSON or validated.
+
+   async get_card(*, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> AgentCard
+
+      Retrieves the authenticated card (if necessary) or the public
+      one.
+
+      Parameters:
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request.
+
+         * **context** -- The client call context.
+
+      Returns:
+         A *AgentCard* object containing the card or an error.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP error occurs during
+           the request.
+
+         * **A2AClientJSONError** -- If the response body cannot be
+           decoded as JSON or validated.
+
+   async get_task(request: GetTaskRequest, *, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> GetTaskResponse
+
+      Retrieves the current state and history of a specific task.
+
+      Parameters:
+         * **request** -- The *GetTaskRequest* object specifying the
+           task ID and history length.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request.
+
+         * **context** -- The client call context.
+
+      Returns:
+         A *GetTaskResponse* object containing the Task or an error.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP error occurs during
+           the request.
+
+         * **A2AClientJSONError** -- If the response body cannot be
+           decoded as JSON or validated.
+
+   async get_task_callback(request: GetTaskPushNotificationConfigRequest, *, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> GetTaskPushNotificationConfigResponse
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+      Parameters:
+         * **request** -- The *GetTaskPushNotificationConfigRequest*
+           object specifying the task ID.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request.
+
+         * **context** -- The client call context.
+
+      Returns:
+         A *GetTaskPushNotificationConfigResponse* object containing
+         the configuration or an error.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP error occurs during
+           the request.
+
+         * **A2AClientJSONError** -- If the response body cannot be
+           decoded as JSON or validated.
+
+   async resubscribe(request: TaskResubscriptionRequest, *, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> AsyncGenerator[SendStreamingMessageResponse, None]
+
+      Reconnects to get task updates.
+
+      This method uses Server-Sent Events (SSE) to receive a stream of
+      updates from the agent.
+
+      Parameters:
+         * **request** -- The *TaskResubscriptionRequest* object
+           containing the task information to reconnect to.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request. A default
+           *timeout=None* is set but can be overridden.
+
+         * **context** -- The client call context.
+
+      Yields:
+         *SendStreamingMessageResponse* objects as they are received
+         in the SSE stream. These can be Task, Message,
+         TaskStatusUpdateEvent, or TaskArtifactUpdateEvent.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP or SSE protocol error
+           occurs during the request.
+
+         * **A2AClientJSONError** -- If an SSE event data cannot be
+           decoded as JSON or validated.
+
+   async send_message(request: SendMessageRequest, *, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> SendMessageResponse
+
+      Sends a non-streaming message request to the agent.
+
+      Parameters:
+         * **request** -- The *SendMessageRequest* object containing
+           the message and configuration.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request.
+
+         * **context** -- The client call context.
+
+      Returns:
+         A *SendMessageResponse* object containing the agent's
+         response (Task or Message) or an error.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP error occurs during
+           the request.
+
+         * **A2AClientJSONError** -- If the response body cannot be
+           decoded as JSON or validated.
+
+   async send_message_streaming(request: SendStreamingMessageRequest, *, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> AsyncGenerator[SendStreamingMessageResponse, None]
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+      This method uses Server-Sent Events (SSE) to receive a stream of
+      updates from the agent.
+
+      Parameters:
+         * **request** -- The *SendStreamingMessageRequest* object
+           containing the message and configuration.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request. A default
+           *timeout=None* is set but can be overridden.
+
+         * **context** -- The client call context.
+
+      Yields:
+         *SendStreamingMessageResponse* objects as they are received
+         in the SSE stream. These can be Task, Message,
+         TaskStatusUpdateEvent, or TaskArtifactUpdateEvent.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP or SSE protocol error
+           occurs during the request.
+
+         * **A2AClientJSONError** -- If an SSE event data cannot be
+           decoded as JSON or validated.
+
+   async set_task_callback(request: SetTaskPushNotificationConfigRequest, *, http_kwargs: dict[str, Any] | None = None, context: ClientCallContext | None = None) -> SetTaskPushNotificationConfigResponse
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+      Parameters:
+         * **request** -- The *SetTaskPushNotificationConfigRequest*
+           object specifying the task ID and configuration.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.post request.
+
+         * **context** -- The client call context.
+
+      Returns:
+         A *SetTaskPushNotificationConfigResponse* object containing
+         the confirmation or an error.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP error occurs during
+           the request.
+
+         * **A2AClientJSONError** -- If the response body cannot be
+           decoded as JSON or validated.

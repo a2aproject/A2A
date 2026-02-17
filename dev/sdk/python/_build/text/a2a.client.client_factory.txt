@@ -1,0 +1,114 @@
+a2a.client.client_factory module
+********************************
+
+class a2a.client.client_factory.ClientFactory(config: ClientConfig, consumers: list[Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]] | None = None)
+
+   Bases: "object"
+
+   ClientFactory is used to generate the appropriate client for the
+   agent.
+
+   The factory is configured with a *ClientConfig* and optionally a
+   list of >>`<<Consumer`s to use for all generated >>`<<Client`s. The
+   expected use is:
+
+      factory = ClientFactory(config, consumers)
+      # Optionally register custom client implementations
+      factory.register('my_customer_transport', NewCustomTransportClient)
+      # Then with an agent card make a client with additional consumers and
+      # interceptors
+      client = factory.create(card, additional_consumers, interceptors)
+
+   Now the client can be used consistently regardless of the
+   transport. This aligns the client configuration with the server's
+   capabilities.
+
+   async classmethod connect(agent: str | AgentCard, client_config: ClientConfig | None = None, consumers: list[Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]] | None = None, interceptors: list[ClientCallInterceptor] | None = None, relative_card_path: str | None = None, resolver_http_kwargs: dict[str, Any] | None = None, extra_transports: dict[str, Callable[[AgentCard, str, ClientConfig, list[ClientCallInterceptor]], ClientTransport]] | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> Client
+
+      Convenience method for constructing a client.
+
+      Constructs a client that connects to the specified agent. Note
+      that creating multiple clients via this method is less efficient
+      than constructing an instance of ClientFactory and reusing that.
+
+         # This will search for an AgentCard at /.well-known/agent-card.json
+         my_agent_url = 'https://travel.agents.example.com'
+         client = await ClientFactory.connect(my_agent_url)
+
+      Parameters:
+         * **agent** -- The base URL of the agent, or the AgentCard to
+           connect to.
+
+         * **client_config** -- The ClientConfig to use when
+           connecting to the agent.
+
+         * **consumers** -- A list of *Consumer* methods to pass
+           responses to.
+
+         * **interceptors** -- A list of interceptors to use for each
+           request. These are used for things like attaching
+           credentials or http headers to all outbound requests.
+
+         * **relative_card_path** -- If the agent field is a URL, this
+           value is used as the relative path when resolving the agent
+           card. See A2AAgentCardResolver.get_agent_card for more
+           details.
+
+         * **resolver_http_kwargs** -- Dictionary of arguments to
+           provide to the httpx client when resolving the agent card.
+           This value is provided to
+           A2AAgentCardResolver.get_agent_card as the http_kwargs
+           parameter.
+
+         * **extra_transports** -- Additional transport protocols to
+           enable when constructing the client.
+
+         * **extensions** -- List of extensions to be activated.
+
+         * **signature_verifier** -- A callable used to verify the
+           agent card's signatures.
+
+      Returns:
+         A *Client* object.
+
+   create(card: AgentCard, consumers: list[Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]] | None = None, interceptors: list[ClientCallInterceptor] | None = None, extensions: list[str] | None = None) -> Client
+
+      Create a new *Client* for the provided *AgentCard*.
+
+      Parameters:
+         * **card** -- An *AgentCard* defining the characteristics of
+           the agent.
+
+         * **consumers** -- A list of *Consumer* methods to pass
+           responses to.
+
+         * **interceptors** -- A list of interceptors to use for each
+           request. These are used for things like attaching
+           credentials or http headers to all outbound requests.
+
+         * **extensions** -- List of extensions to be activated.
+
+      Returns:
+         A *Client* object.
+
+      Raises:
+         * **If there is no valid matching**** of ****the client
+           configuration with the** --
+
+         * **server configuration****, ****a ValueError is raised.**
+           --
+
+   register(label: str, generator: Callable[[AgentCard, str, ClientConfig, list[ClientCallInterceptor]], ClientTransport]) -> None
+
+      Register a new transport producer for a given transport label.
+
+a2a.client.client_factory.minimal_agent_card(url: str, transports: list[str] | None = None) -> AgentCard
+
+   Generates a minimal card to simplify bootstrapping client creation.
+
+   This minimal card is not viable itself to interact with the remote
+   agent. Instead this is a shorthand way to take a known url and
+   transport option and interact with the get card endpoint of the
+   agent server to get the correct agent card. This pattern is
+   necessary for gRPC based card access as typically these servers
+   won't expose a well known path card.

@@ -1,0 +1,35 @@
+a2a.server.id_generator module
+******************************
+
+class a2a.server.id_generator.IDGenerator
+
+   Bases: "ABC"
+
+   Interface for generating unique identifiers.
+
+   abstractmethod generate(context: IDGeneratorContext) -> str
+
+class a2a.server.id_generator.IDGeneratorContext(*, task_id: str | None = None, context_id: str | None = None)
+
+   Bases: "BaseModel"
+
+   Context for providing additional information to ID generators.
+
+   context_id: str | None
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   task_id: str | None
+
+class a2a.server.id_generator.UUIDGenerator
+
+   Bases: "IDGenerator"
+
+   UUID implementation of the IDGenerator interface.
+
+   generate(context: IDGeneratorContext) -> str
+
+      Generates a random UUID, ignoring the context.

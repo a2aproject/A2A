@@ -1,0 +1,153 @@
+a2a.server.request_handlers.rest_handler module
+***********************************************
+
+class a2a.server.request_handlers.rest_handler.RESTHandler(agent_card: AgentCard, request_handler: RequestHandler)
+
+   Bases: "object"
+
+   Maps incoming REST-like (JSON+HTTP) requests to the appropriate
+   request handler method and formats responses.
+
+   This uses the protobuf definitions of the gRPC service as the
+   source of truth. By doing this, it ensures that this implementation
+   and the gRPC transcoding (via Envoy) are equivalent. This handler
+   should be used if using the gRPC handler with Envoy is not feasible
+   for a given deployment solution. Use this handler and a related
+   application if you desire to ONLY server the RESTful API.
+
+   async get_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/get' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the config
+
+   async list_push_notifications(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/list' REST method.
+
+      This method is currently not implemented.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A list of *dict* representing the
+         *TaskPushNotificationConfig* objects.
+
+      Raises:
+         **NotImplementedError** -- This method is not yet
+         implemented.
+
+   async list_tasks(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/list' REST method.
+
+      This method is currently not implemented.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A list of dict representing the`Task` objects.
+
+      Raises:
+         **NotImplementedError** -- This method is not yet
+         implemented.
+
+   async on_cancel_task(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/cancel' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the updated Task
+
+   async on_get_task(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'v1/tasks/{id}' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *Task* object containing the Task.
+
+   async on_message_send(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'message/send' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the result (Task or Message)
+
+   on_message_send_stream(request: Request, context: ServerCallContext) -> AsyncIterator[str]
+
+      Handles the 'message/stream' REST method.
+
+      Yields response objects as they are produced by the underlying
+      handler's stream.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         JSON serialized objects containing streaming events (Task,
+         Message, TaskStatusUpdateEvent, TaskArtifactUpdateEvent) as
+         JSON
+
+   on_resubscribe_to_task(request: Request, context: ServerCallContext) -> AsyncIterable[str]
+
+      Handles the 'tasks/resubscribe' REST method.
+
+      Yields response objects as they are produced by the underlying
+      handler's stream.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         JSON serialized objects containing streaming events
+
+   async set_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/set' REST method.
+
+      Requires the agent to support push notifications.
+
+      Parameters:
+         * **request** -- The incoming *TaskPushNotificationConfig*
+           object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the config object.
+
+      Raises:
+         **ServerError** -- If push notifications are not supported by
+         the agent     (due to the *@validate* decorator), A2AError if
+         processing error is     found.

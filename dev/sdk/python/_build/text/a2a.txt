@@ -1,0 +1,1476 @@
+a2a package
+***********
+
+
+Subpackages
+===========
+
+* a2a.auth package
+
+  * Submodules
+
+    * a2a.auth.user module
+
+      * "UnauthenticatedUser"
+
+      * "User"
+
+  * Module contents
+
+* a2a.client package
+
+  * Subpackages
+
+    * a2a.client.auth package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.client.transports package
+
+      * Submodules
+
+      * Module contents
+
+  * Submodules
+
+    * a2a.client.base_client module
+
+      * "BaseClient"
+
+    * a2a.client.card_resolver module
+
+      * "A2ACardResolver"
+
+    * a2a.client.client module
+
+      * "Client"
+
+      * "ClientConfig"
+
+    * a2a.client.client_factory module
+
+      * "ClientFactory"
+
+      * "minimal_agent_card()"
+
+    * a2a.client.client_task_manager module
+
+      * "ClientTaskManager"
+
+    * a2a.client.errors module
+
+      * "A2AClientError"
+
+      * "A2AClientHTTPError"
+
+      * "A2AClientInvalidArgsError"
+
+      * "A2AClientInvalidStateError"
+
+      * "A2AClientJSONError"
+
+      * "A2AClientJSONRPCError"
+
+      * "A2AClientTimeoutError"
+
+    * a2a.client.helpers module
+
+      * "create_text_message_object()"
+
+    * a2a.client.legacy module
+
+      * "A2AClient"
+
+    * a2a.client.legacy_grpc module
+
+      * "A2AGrpcClient"
+
+    * a2a.client.middleware module
+
+      * "ClientCallContext"
+
+      * "ClientCallInterceptor"
+
+    * a2a.client.optionals module
+
+  * Module contents
+
+    * "A2ACardResolver"
+
+      * "A2ACardResolver.get_agent_card()"
+
+    * "A2AClient"
+
+      * "A2AClient.cancel_task()"
+
+      * "A2AClient.get_card()"
+
+      * "A2AClient.get_task()"
+
+      * "A2AClient.get_task_callback()"
+
+      * "A2AClient.resubscribe()"
+
+      * "A2AClient.send_message()"
+
+      * "A2AClient.send_message_streaming()"
+
+      * "A2AClient.set_task_callback()"
+
+    * "A2AClientError"
+
+    * "A2AClientHTTPError"
+
+    * "A2AClientJSONError"
+
+    * "A2AClientTimeoutError"
+
+    * "A2AGrpcClient"
+
+    * "AuthInterceptor"
+
+      * "AuthInterceptor.intercept()"
+
+    * "BaseClient"
+
+      * "BaseClient.cancel_task()"
+
+      * "BaseClient.close()"
+
+      * "BaseClient.get_card()"
+
+      * "BaseClient.get_task()"
+
+      * "BaseClient.get_task_callback()"
+
+      * "BaseClient.resubscribe()"
+
+      * "BaseClient.send_message()"
+
+      * "BaseClient.set_task_callback()"
+
+    * "Client"
+
+      * "Client.add_event_consumer()"
+
+      * "Client.add_request_middleware()"
+
+      * "Client.cancel_task()"
+
+      * "Client.consume()"
+
+      * "Client.get_card()"
+
+      * "Client.get_task()"
+
+      * "Client.get_task_callback()"
+
+      * "Client.resubscribe()"
+
+      * "Client.send_message()"
+
+      * "Client.set_task_callback()"
+
+    * "ClientCallContext"
+
+      * "ClientCallContext.model_config"
+
+      * "ClientCallContext.state"
+
+    * "ClientCallInterceptor"
+
+      * "ClientCallInterceptor.intercept()"
+
+    * "ClientConfig"
+
+      * "ClientConfig.accepted_output_modes"
+
+      * "ClientConfig.extensions"
+
+      * "ClientConfig.grpc_channel_factory"
+
+      * "ClientConfig.httpx_client"
+
+      * "ClientConfig.polling"
+
+      * "ClientConfig.push_notification_configs"
+
+      * "ClientConfig.streaming"
+
+      * "ClientConfig.supported_transports"
+
+      * "ClientConfig.use_client_preference"
+
+    * "ClientFactory"
+
+      * "ClientFactory.connect()"
+
+      * "ClientFactory.create()"
+
+      * "ClientFactory.register()"
+
+    * "CredentialService"
+
+      * "CredentialService.get_credentials()"
+
+    * "InMemoryContextCredentialStore"
+
+      * "InMemoryContextCredentialStore.get_credentials()"
+
+      * "InMemoryContextCredentialStore.set_credentials()"
+
+    * "create_text_message_object()"
+
+    * "minimal_agent_card()"
+
+* a2a.extensions package
+
+  * Submodules
+
+    * a2a.extensions.common module
+
+      * "find_extension_by_uri()"
+
+      * "get_requested_extensions()"
+
+      * "update_extension_header()"
+
+  * Module contents
+
+* a2a.grpc package
+
+  * Submodules
+
+    * a2a.grpc.a2a_pb2 module
+
+    * a2a.grpc.a2a_pb2_grpc module
+
+      * "A2AService"
+
+      * "A2AServiceServicer"
+
+      * "A2AServiceStub"
+
+      * "add_A2AServiceServicer_to_server()"
+
+  * Module contents
+
+* a2a.server package
+
+  * Subpackages
+
+    * a2a.server.agent_execution package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.server.apps package
+
+      * Subpackages
+
+      * Module contents
+
+    * a2a.server.events package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.server.request_handlers package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.server.tasks package
+
+      * Submodules
+
+      * Module contents
+
+  * Submodules
+
+    * a2a.server.context module
+
+      * "ServerCallContext"
+
+    * a2a.server.id_generator module
+
+      * "IDGenerator"
+
+      * "IDGeneratorContext"
+
+      * "UUIDGenerator"
+
+    * a2a.server.models module
+
+      * "Base"
+
+      * "PushNotificationConfigMixin"
+
+      * "PushNotificationConfigModel"
+
+      * "PydanticListType"
+
+      * "PydanticType"
+
+      * "TaskMixin"
+
+      * "TaskModel"
+
+      * "create_push_notification_config_model()"
+
+      * "create_task_model()"
+
+      * "override()"
+
+  * Module contents
+
+* a2a.utils package
+
+  * Submodules
+
+    * a2a.utils.artifact module
+
+      * "get_artifact_text()"
+
+      * "new_artifact()"
+
+      * "new_data_artifact()"
+
+      * "new_text_artifact()"
+
+    * a2a.utils.constants module
+
+    * a2a.utils.error_handlers module
+
+      * "rest_error_handler()"
+
+      * "rest_stream_error_handler()"
+
+    * a2a.utils.errors module
+
+      * "A2AServerError"
+
+      * "MethodNotImplementedError"
+
+      * "ServerError"
+
+    * a2a.utils.helpers module
+
+      * "append_artifact_to_task()"
+
+      * "are_modalities_compatible()"
+
+      * "build_text_artifact()"
+
+      * "canonicalize_agent_card()"
+
+      * "create_task_obj()"
+
+      * "maybe_await()"
+
+      * "validate()"
+
+      * "validate_async_generator()"
+
+    * a2a.utils.message module
+
+      * "get_message_text()"
+
+      * "new_agent_parts_message()"
+
+      * "new_agent_text_message()"
+
+    * a2a.utils.parts module
+
+      * "get_data_parts()"
+
+      * "get_file_parts()"
+
+      * "get_text_parts()"
+
+    * a2a.utils.proto_utils module
+
+      * "FromProto"
+
+      * "ToProto"
+
+      * "dict_to_struct()"
+
+      * "make_dict_serializable()"
+
+      * "normalize_large_integers_to_strings()"
+
+      * "parse_string_integers_in_dict()"
+
+    * a2a.utils.signing module
+
+      * "InvalidSignaturesError"
+
+      * "NoSignatureError"
+
+      * "ProtectedHeader"
+
+      * "SignatureVerificationError"
+
+      * "create_agent_card_signer()"
+
+      * "create_signature_verifier()"
+
+    * a2a.utils.task module
+
+      * "apply_history_length()"
+
+      * "completed_task()"
+
+      * "new_task()"
+
+    * a2a.utils.telemetry module
+
+      * "SpanKind"
+
+  * Module contents
+
+    * "append_artifact_to_task()"
+
+    * "are_modalities_compatible()"
+
+    * "build_text_artifact()"
+
+    * "completed_task()"
+
+    * "create_task_obj()"
+
+    * "get_artifact_text()"
+
+    * "get_data_parts()"
+
+    * "get_file_parts()"
+
+    * "get_message_text()"
+
+    * "get_text_parts()"
+
+    * "new_agent_parts_message()"
+
+    * "new_agent_text_message()"
+
+    * "new_artifact()"
+
+    * "new_data_artifact()"
+
+    * "new_task()"
+
+    * "new_text_artifact()"
+
+
+Submodules
+==========
+
+* a2a.types module
+
+  * "A2A"
+
+    * "A2A.model_config"
+
+    * "A2A.root"
+
+  * "A2AError"
+
+    * "A2AError.model_config"
+
+    * "A2AError.root"
+
+  * "A2ARequest"
+
+    * "A2ARequest.model_config"
+
+    * "A2ARequest.root"
+
+  * "APIKeySecurityScheme"
+
+    * "APIKeySecurityScheme.description"
+
+    * "APIKeySecurityScheme.in_"
+
+    * "APIKeySecurityScheme.model_config"
+
+    * "APIKeySecurityScheme.name"
+
+    * "APIKeySecurityScheme.type"
+
+  * "AgentCapabilities"
+
+    * "AgentCapabilities.extensions"
+
+    * "AgentCapabilities.model_config"
+
+    * "AgentCapabilities.push_notifications"
+
+    * "AgentCapabilities.state_transition_history"
+
+    * "AgentCapabilities.streaming"
+
+  * "AgentCard"
+
+    * "AgentCard.additional_interfaces"
+
+    * "AgentCard.capabilities"
+
+    * "AgentCard.default_input_modes"
+
+    * "AgentCard.default_output_modes"
+
+    * "AgentCard.description"
+
+    * "AgentCard.documentation_url"
+
+    * "AgentCard.icon_url"
+
+    * "AgentCard.model_config"
+
+    * "AgentCard.name"
+
+    * "AgentCard.preferred_transport"
+
+    * "AgentCard.protocol_version"
+
+    * "AgentCard.provider"
+
+    * "AgentCard.security"
+
+    * "AgentCard.security_schemes"
+
+    * "AgentCard.signatures"
+
+    * "AgentCard.skills"
+
+    * "AgentCard.supports_authenticated_extended_card"
+
+    * "AgentCard.url"
+
+    * "AgentCard.version"
+
+  * "AgentCardSignature"
+
+    * "AgentCardSignature.header"
+
+    * "AgentCardSignature.model_config"
+
+    * "AgentCardSignature.protected"
+
+    * "AgentCardSignature.signature"
+
+  * "AgentExtension"
+
+    * "AgentExtension.description"
+
+    * "AgentExtension.model_config"
+
+    * "AgentExtension.params"
+
+    * "AgentExtension.required"
+
+    * "AgentExtension.uri"
+
+  * "AgentInterface"
+
+    * "AgentInterface.model_config"
+
+    * "AgentInterface.transport"
+
+    * "AgentInterface.url"
+
+  * "AgentProvider"
+
+    * "AgentProvider.model_config"
+
+    * "AgentProvider.organization"
+
+    * "AgentProvider.url"
+
+  * "AgentSkill"
+
+    * "AgentSkill.description"
+
+    * "AgentSkill.examples"
+
+    * "AgentSkill.id"
+
+    * "AgentSkill.input_modes"
+
+    * "AgentSkill.model_config"
+
+    * "AgentSkill.name"
+
+    * "AgentSkill.output_modes"
+
+    * "AgentSkill.security"
+
+    * "AgentSkill.tags"
+
+  * "Artifact"
+
+    * "Artifact.artifact_id"
+
+    * "Artifact.description"
+
+    * "Artifact.extensions"
+
+    * "Artifact.metadata"
+
+    * "Artifact.model_config"
+
+    * "Artifact.name"
+
+    * "Artifact.parts"
+
+  * "AuthenticatedExtendedCardNotConfiguredError"
+
+    * "AuthenticatedExtendedCardNotConfiguredError.code"
+
+    * "AuthenticatedExtendedCardNotConfiguredError.data"
+
+    * "AuthenticatedExtendedCardNotConfiguredError.message"
+
+    * "AuthenticatedExtendedCardNotConfiguredError.model_config"
+
+  * "AuthorizationCodeOAuthFlow"
+
+    * "AuthorizationCodeOAuthFlow.authorization_url"
+
+    * "AuthorizationCodeOAuthFlow.model_config"
+
+    * "AuthorizationCodeOAuthFlow.refresh_url"
+
+    * "AuthorizationCodeOAuthFlow.scopes"
+
+    * "AuthorizationCodeOAuthFlow.token_url"
+
+  * "CancelTaskRequest"
+
+    * "CancelTaskRequest.id"
+
+    * "CancelTaskRequest.jsonrpc"
+
+    * "CancelTaskRequest.method"
+
+    * "CancelTaskRequest.model_config"
+
+    * "CancelTaskRequest.params"
+
+  * "CancelTaskResponse"
+
+    * "CancelTaskResponse.model_config"
+
+    * "CancelTaskResponse.root"
+
+  * "CancelTaskSuccessResponse"
+
+    * "CancelTaskSuccessResponse.id"
+
+    * "CancelTaskSuccessResponse.jsonrpc"
+
+    * "CancelTaskSuccessResponse.model_config"
+
+    * "CancelTaskSuccessResponse.result"
+
+  * "ClientCredentialsOAuthFlow"
+
+    * "ClientCredentialsOAuthFlow.model_config"
+
+    * "ClientCredentialsOAuthFlow.refresh_url"
+
+    * "ClientCredentialsOAuthFlow.scopes"
+
+    * "ClientCredentialsOAuthFlow.token_url"
+
+  * "ContentTypeNotSupportedError"
+
+    * "ContentTypeNotSupportedError.code"
+
+    * "ContentTypeNotSupportedError.data"
+
+    * "ContentTypeNotSupportedError.message"
+
+    * "ContentTypeNotSupportedError.model_config"
+
+  * "DataPart"
+
+    * "DataPart.data"
+
+    * "DataPart.kind"
+
+    * "DataPart.metadata"
+
+    * "DataPart.model_config"
+
+  * "DeleteTaskPushNotificationConfigParams"
+
+    * "DeleteTaskPushNotificationConfigParams.id"
+
+    * "DeleteTaskPushNotificationConfigParams.metadata"
+
+    * "DeleteTaskPushNotificationConfigParams.model_config"
+
+    * "DeleteTaskPushNotificationConfigParams.push_notification_config
+      _id"
+
+  * "DeleteTaskPushNotificationConfigRequest"
+
+    * "DeleteTaskPushNotificationConfigRequest.id"
+
+    * "DeleteTaskPushNotificationConfigRequest.jsonrpc"
+
+    * "DeleteTaskPushNotificationConfigRequest.method"
+
+    * "DeleteTaskPushNotificationConfigRequest.model_config"
+
+    * "DeleteTaskPushNotificationConfigRequest.params"
+
+  * "DeleteTaskPushNotificationConfigResponse"
+
+    * "DeleteTaskPushNotificationConfigResponse.model_config"
+
+    * "DeleteTaskPushNotificationConfigResponse.root"
+
+  * "DeleteTaskPushNotificationConfigSuccessResponse"
+
+    * "DeleteTaskPushNotificationConfigSuccessResponse.id"
+
+    * "DeleteTaskPushNotificationConfigSuccessResponse.jsonrpc"
+
+    * "DeleteTaskPushNotificationConfigSuccessResponse.model_config"
+
+    * "DeleteTaskPushNotificationConfigSuccessResponse.result"
+
+  * "FileBase"
+
+    * "FileBase.mime_type"
+
+    * "FileBase.model_config"
+
+    * "FileBase.name"
+
+  * "FilePart"
+
+    * "FilePart.file"
+
+    * "FilePart.kind"
+
+    * "FilePart.metadata"
+
+    * "FilePart.model_config"
+
+  * "FileWithBytes"
+
+    * "FileWithBytes.bytes"
+
+    * "FileWithBytes.mime_type"
+
+    * "FileWithBytes.model_config"
+
+    * "FileWithBytes.name"
+
+  * "FileWithUri"
+
+    * "FileWithUri.mime_type"
+
+    * "FileWithUri.model_config"
+
+    * "FileWithUri.name"
+
+    * "FileWithUri.uri"
+
+  * "GetAuthenticatedExtendedCardRequest"
+
+    * "GetAuthenticatedExtendedCardRequest.id"
+
+    * "GetAuthenticatedExtendedCardRequest.jsonrpc"
+
+    * "GetAuthenticatedExtendedCardRequest.method"
+
+    * "GetAuthenticatedExtendedCardRequest.model_config"
+
+  * "GetAuthenticatedExtendedCardResponse"
+
+    * "GetAuthenticatedExtendedCardResponse.model_config"
+
+    * "GetAuthenticatedExtendedCardResponse.root"
+
+  * "GetAuthenticatedExtendedCardSuccessResponse"
+
+    * "GetAuthenticatedExtendedCardSuccessResponse.id"
+
+    * "GetAuthenticatedExtendedCardSuccessResponse.jsonrpc"
+
+    * "GetAuthenticatedExtendedCardSuccessResponse.model_config"
+
+    * "GetAuthenticatedExtendedCardSuccessResponse.result"
+
+  * "GetTaskPushNotificationConfigParams"
+
+    * "GetTaskPushNotificationConfigParams.id"
+
+    * "GetTaskPushNotificationConfigParams.metadata"
+
+    * "GetTaskPushNotificationConfigParams.model_config"
+
+    * "GetTaskPushNotificationConfigParams.push_notification_config_id
+      "
+
+  * "GetTaskPushNotificationConfigRequest"
+
+    * "GetTaskPushNotificationConfigRequest.id"
+
+    * "GetTaskPushNotificationConfigRequest.jsonrpc"
+
+    * "GetTaskPushNotificationConfigRequest.method"
+
+    * "GetTaskPushNotificationConfigRequest.model_config"
+
+    * "GetTaskPushNotificationConfigRequest.params"
+
+  * "GetTaskPushNotificationConfigResponse"
+
+    * "GetTaskPushNotificationConfigResponse.model_config"
+
+    * "GetTaskPushNotificationConfigResponse.root"
+
+  * "GetTaskPushNotificationConfigSuccessResponse"
+
+    * "GetTaskPushNotificationConfigSuccessResponse.id"
+
+    * "GetTaskPushNotificationConfigSuccessResponse.jsonrpc"
+
+    * "GetTaskPushNotificationConfigSuccessResponse.model_config"
+
+    * "GetTaskPushNotificationConfigSuccessResponse.result"
+
+  * "GetTaskRequest"
+
+    * "GetTaskRequest.id"
+
+    * "GetTaskRequest.jsonrpc"
+
+    * "GetTaskRequest.method"
+
+    * "GetTaskRequest.model_config"
+
+    * "GetTaskRequest.params"
+
+  * "GetTaskResponse"
+
+    * "GetTaskResponse.model_config"
+
+    * "GetTaskResponse.root"
+
+  * "GetTaskSuccessResponse"
+
+    * "GetTaskSuccessResponse.id"
+
+    * "GetTaskSuccessResponse.jsonrpc"
+
+    * "GetTaskSuccessResponse.model_config"
+
+    * "GetTaskSuccessResponse.result"
+
+  * "HTTPAuthSecurityScheme"
+
+    * "HTTPAuthSecurityScheme.bearer_format"
+
+    * "HTTPAuthSecurityScheme.description"
+
+    * "HTTPAuthSecurityScheme.model_config"
+
+    * "HTTPAuthSecurityScheme.scheme"
+
+    * "HTTPAuthSecurityScheme.type"
+
+  * "ImplicitOAuthFlow"
+
+    * "ImplicitOAuthFlow.authorization_url"
+
+    * "ImplicitOAuthFlow.model_config"
+
+    * "ImplicitOAuthFlow.refresh_url"
+
+    * "ImplicitOAuthFlow.scopes"
+
+  * "In"
+
+    * "In.cookie"
+
+    * "In.header"
+
+    * "In.query"
+
+  * "InternalError"
+
+    * "InternalError.code"
+
+    * "InternalError.data"
+
+    * "InternalError.message"
+
+    * "InternalError.model_config"
+
+  * "InvalidAgentResponseError"
+
+    * "InvalidAgentResponseError.code"
+
+    * "InvalidAgentResponseError.data"
+
+    * "InvalidAgentResponseError.message"
+
+    * "InvalidAgentResponseError.model_config"
+
+  * "InvalidParamsError"
+
+    * "InvalidParamsError.code"
+
+    * "InvalidParamsError.data"
+
+    * "InvalidParamsError.message"
+
+    * "InvalidParamsError.model_config"
+
+  * "InvalidRequestError"
+
+    * "InvalidRequestError.code"
+
+    * "InvalidRequestError.data"
+
+    * "InvalidRequestError.message"
+
+    * "InvalidRequestError.model_config"
+
+  * "JSONParseError"
+
+    * "JSONParseError.code"
+
+    * "JSONParseError.data"
+
+    * "JSONParseError.message"
+
+    * "JSONParseError.model_config"
+
+  * "JSONRPCError"
+
+    * "JSONRPCError.code"
+
+    * "JSONRPCError.data"
+
+    * "JSONRPCError.message"
+
+    * "JSONRPCError.model_config"
+
+  * "JSONRPCErrorResponse"
+
+    * "JSONRPCErrorResponse.error"
+
+    * "JSONRPCErrorResponse.id"
+
+    * "JSONRPCErrorResponse.jsonrpc"
+
+    * "JSONRPCErrorResponse.model_config"
+
+  * "JSONRPCMessage"
+
+    * "JSONRPCMessage.id"
+
+    * "JSONRPCMessage.jsonrpc"
+
+    * "JSONRPCMessage.model_config"
+
+  * "JSONRPCRequest"
+
+    * "JSONRPCRequest.id"
+
+    * "JSONRPCRequest.jsonrpc"
+
+    * "JSONRPCRequest.method"
+
+    * "JSONRPCRequest.model_config"
+
+    * "JSONRPCRequest.params"
+
+  * "JSONRPCResponse"
+
+    * "JSONRPCResponse.model_config"
+
+    * "JSONRPCResponse.root"
+
+  * "JSONRPCSuccessResponse"
+
+    * "JSONRPCSuccessResponse.id"
+
+    * "JSONRPCSuccessResponse.jsonrpc"
+
+    * "JSONRPCSuccessResponse.model_config"
+
+    * "JSONRPCSuccessResponse.result"
+
+  * "ListTaskPushNotificationConfigParams"
+
+    * "ListTaskPushNotificationConfigParams.id"
+
+    * "ListTaskPushNotificationConfigParams.metadata"
+
+    * "ListTaskPushNotificationConfigParams.model_config"
+
+  * "ListTaskPushNotificationConfigRequest"
+
+    * "ListTaskPushNotificationConfigRequest.id"
+
+    * "ListTaskPushNotificationConfigRequest.jsonrpc"
+
+    * "ListTaskPushNotificationConfigRequest.method"
+
+    * "ListTaskPushNotificationConfigRequest.model_config"
+
+    * "ListTaskPushNotificationConfigRequest.params"
+
+  * "ListTaskPushNotificationConfigResponse"
+
+    * "ListTaskPushNotificationConfigResponse.model_config"
+
+    * "ListTaskPushNotificationConfigResponse.root"
+
+  * "ListTaskPushNotificationConfigSuccessResponse"
+
+    * "ListTaskPushNotificationConfigSuccessResponse.id"
+
+    * "ListTaskPushNotificationConfigSuccessResponse.jsonrpc"
+
+    * "ListTaskPushNotificationConfigSuccessResponse.model_config"
+
+    * "ListTaskPushNotificationConfigSuccessResponse.result"
+
+  * "Message"
+
+    * "Message.context_id"
+
+    * "Message.extensions"
+
+    * "Message.kind"
+
+    * "Message.message_id"
+
+    * "Message.metadata"
+
+    * "Message.model_config"
+
+    * "Message.parts"
+
+    * "Message.reference_task_ids"
+
+    * "Message.role"
+
+    * "Message.task_id"
+
+  * "MessageSendConfiguration"
+
+    * "MessageSendConfiguration.accepted_output_modes"
+
+    * "MessageSendConfiguration.blocking"
+
+    * "MessageSendConfiguration.history_length"
+
+    * "MessageSendConfiguration.model_config"
+
+    * "MessageSendConfiguration.push_notification_config"
+
+  * "MessageSendParams"
+
+    * "MessageSendParams.configuration"
+
+    * "MessageSendParams.message"
+
+    * "MessageSendParams.metadata"
+
+    * "MessageSendParams.model_config"
+
+  * "MethodNotFoundError"
+
+    * "MethodNotFoundError.code"
+
+    * "MethodNotFoundError.data"
+
+    * "MethodNotFoundError.message"
+
+    * "MethodNotFoundError.model_config"
+
+  * "MutualTLSSecurityScheme"
+
+    * "MutualTLSSecurityScheme.description"
+
+    * "MutualTLSSecurityScheme.model_config"
+
+    * "MutualTLSSecurityScheme.type"
+
+  * "OAuth2SecurityScheme"
+
+    * "OAuth2SecurityScheme.description"
+
+    * "OAuth2SecurityScheme.flows"
+
+    * "OAuth2SecurityScheme.model_config"
+
+    * "OAuth2SecurityScheme.oauth2_metadata_url"
+
+    * "OAuth2SecurityScheme.type"
+
+  * "OAuthFlows"
+
+    * "OAuthFlows.authorization_code"
+
+    * "OAuthFlows.client_credentials"
+
+    * "OAuthFlows.implicit"
+
+    * "OAuthFlows.model_config"
+
+    * "OAuthFlows.password"
+
+  * "OpenIdConnectSecurityScheme"
+
+    * "OpenIdConnectSecurityScheme.description"
+
+    * "OpenIdConnectSecurityScheme.model_config"
+
+    * "OpenIdConnectSecurityScheme.open_id_connect_url"
+
+    * "OpenIdConnectSecurityScheme.type"
+
+  * "Part"
+
+    * "Part.model_config"
+
+    * "Part.root"
+
+  * "PartBase"
+
+    * "PartBase.metadata"
+
+    * "PartBase.model_config"
+
+  * "PasswordOAuthFlow"
+
+    * "PasswordOAuthFlow.model_config"
+
+    * "PasswordOAuthFlow.refresh_url"
+
+    * "PasswordOAuthFlow.scopes"
+
+    * "PasswordOAuthFlow.token_url"
+
+  * "PushNotificationAuthenticationInfo"
+
+    * "PushNotificationAuthenticationInfo.credentials"
+
+    * "PushNotificationAuthenticationInfo.model_config"
+
+    * "PushNotificationAuthenticationInfo.schemes"
+
+  * "PushNotificationConfig"
+
+    * "PushNotificationConfig.authentication"
+
+    * "PushNotificationConfig.id"
+
+    * "PushNotificationConfig.model_config"
+
+    * "PushNotificationConfig.token"
+
+    * "PushNotificationConfig.url"
+
+  * "PushNotificationNotSupportedError"
+
+    * "PushNotificationNotSupportedError.code"
+
+    * "PushNotificationNotSupportedError.data"
+
+    * "PushNotificationNotSupportedError.message"
+
+    * "PushNotificationNotSupportedError.model_config"
+
+  * "Role"
+
+    * "Role.agent"
+
+    * "Role.user"
+
+  * "SecurityScheme"
+
+    * "SecurityScheme.model_config"
+
+    * "SecurityScheme.root"
+
+  * "SecuritySchemeBase"
+
+    * "SecuritySchemeBase.description"
+
+    * "SecuritySchemeBase.model_config"
+
+  * "SendMessageRequest"
+
+    * "SendMessageRequest.id"
+
+    * "SendMessageRequest.jsonrpc"
+
+    * "SendMessageRequest.method"
+
+    * "SendMessageRequest.model_config"
+
+    * "SendMessageRequest.params"
+
+  * "SendMessageResponse"
+
+    * "SendMessageResponse.model_config"
+
+    * "SendMessageResponse.root"
+
+  * "SendMessageSuccessResponse"
+
+    * "SendMessageSuccessResponse.id"
+
+    * "SendMessageSuccessResponse.jsonrpc"
+
+    * "SendMessageSuccessResponse.model_config"
+
+    * "SendMessageSuccessResponse.result"
+
+  * "SendStreamingMessageRequest"
+
+    * "SendStreamingMessageRequest.id"
+
+    * "SendStreamingMessageRequest.jsonrpc"
+
+    * "SendStreamingMessageRequest.method"
+
+    * "SendStreamingMessageRequest.model_config"
+
+    * "SendStreamingMessageRequest.params"
+
+  * "SendStreamingMessageResponse"
+
+    * "SendStreamingMessageResponse.model_config"
+
+    * "SendStreamingMessageResponse.root"
+
+  * "SendStreamingMessageSuccessResponse"
+
+    * "SendStreamingMessageSuccessResponse.id"
+
+    * "SendStreamingMessageSuccessResponse.jsonrpc"
+
+    * "SendStreamingMessageSuccessResponse.model_config"
+
+    * "SendStreamingMessageSuccessResponse.result"
+
+  * "SetTaskPushNotificationConfigRequest"
+
+    * "SetTaskPushNotificationConfigRequest.id"
+
+    * "SetTaskPushNotificationConfigRequest.jsonrpc"
+
+    * "SetTaskPushNotificationConfigRequest.method"
+
+    * "SetTaskPushNotificationConfigRequest.model_config"
+
+    * "SetTaskPushNotificationConfigRequest.params"
+
+  * "SetTaskPushNotificationConfigResponse"
+
+    * "SetTaskPushNotificationConfigResponse.model_config"
+
+    * "SetTaskPushNotificationConfigResponse.root"
+
+  * "SetTaskPushNotificationConfigSuccessResponse"
+
+    * "SetTaskPushNotificationConfigSuccessResponse.id"
+
+    * "SetTaskPushNotificationConfigSuccessResponse.jsonrpc"
+
+    * "SetTaskPushNotificationConfigSuccessResponse.model_config"
+
+    * "SetTaskPushNotificationConfigSuccessResponse.result"
+
+  * "Task"
+
+    * "Task.artifacts"
+
+    * "Task.context_id"
+
+    * "Task.history"
+
+    * "Task.id"
+
+    * "Task.kind"
+
+    * "Task.metadata"
+
+    * "Task.model_config"
+
+    * "Task.status"
+
+  * "TaskArtifactUpdateEvent"
+
+    * "TaskArtifactUpdateEvent.append"
+
+    * "TaskArtifactUpdateEvent.artifact"
+
+    * "TaskArtifactUpdateEvent.context_id"
+
+    * "TaskArtifactUpdateEvent.kind"
+
+    * "TaskArtifactUpdateEvent.last_chunk"
+
+    * "TaskArtifactUpdateEvent.metadata"
+
+    * "TaskArtifactUpdateEvent.model_config"
+
+    * "TaskArtifactUpdateEvent.task_id"
+
+  * "TaskIdParams"
+
+    * "TaskIdParams.id"
+
+    * "TaskIdParams.metadata"
+
+    * "TaskIdParams.model_config"
+
+  * "TaskNotCancelableError"
+
+    * "TaskNotCancelableError.code"
+
+    * "TaskNotCancelableError.data"
+
+    * "TaskNotCancelableError.message"
+
+    * "TaskNotCancelableError.model_config"
+
+  * "TaskNotFoundError"
+
+    * "TaskNotFoundError.code"
+
+    * "TaskNotFoundError.data"
+
+    * "TaskNotFoundError.message"
+
+    * "TaskNotFoundError.model_config"
+
+  * "TaskPushNotificationConfig"
+
+    * "TaskPushNotificationConfig.model_config"
+
+    * "TaskPushNotificationConfig.push_notification_config"
+
+    * "TaskPushNotificationConfig.task_id"
+
+  * "TaskQueryParams"
+
+    * "TaskQueryParams.history_length"
+
+    * "TaskQueryParams.id"
+
+    * "TaskQueryParams.metadata"
+
+    * "TaskQueryParams.model_config"
+
+  * "TaskResubscriptionRequest"
+
+    * "TaskResubscriptionRequest.id"
+
+    * "TaskResubscriptionRequest.jsonrpc"
+
+    * "TaskResubscriptionRequest.method"
+
+    * "TaskResubscriptionRequest.model_config"
+
+    * "TaskResubscriptionRequest.params"
+
+  * "TaskState"
+
+    * "TaskState.auth_required"
+
+    * "TaskState.canceled"
+
+    * "TaskState.completed"
+
+    * "TaskState.failed"
+
+    * "TaskState.input_required"
+
+    * "TaskState.rejected"
+
+    * "TaskState.submitted"
+
+    * "TaskState.unknown"
+
+    * "TaskState.working"
+
+  * "TaskStatus"
+
+    * "TaskStatus.message"
+
+    * "TaskStatus.model_config"
+
+    * "TaskStatus.state"
+
+    * "TaskStatus.timestamp"
+
+  * "TaskStatusUpdateEvent"
+
+    * "TaskStatusUpdateEvent.context_id"
+
+    * "TaskStatusUpdateEvent.final"
+
+    * "TaskStatusUpdateEvent.kind"
+
+    * "TaskStatusUpdateEvent.metadata"
+
+    * "TaskStatusUpdateEvent.model_config"
+
+    * "TaskStatusUpdateEvent.status"
+
+    * "TaskStatusUpdateEvent.task_id"
+
+  * "TextPart"
+
+    * "TextPart.kind"
+
+    * "TextPart.metadata"
+
+    * "TextPart.model_config"
+
+    * "TextPart.text"
+
+  * "TransportProtocol"
+
+    * "TransportProtocol.grpc"
+
+    * "TransportProtocol.http_json"
+
+    * "TransportProtocol.jsonrpc"
+
+  * "UnsupportedOperationError"
+
+    * "UnsupportedOperationError.code"
+
+    * "UnsupportedOperationError.data"
+
+    * "UnsupportedOperationError.message"
+
+    * "UnsupportedOperationError.model_config"
+
+
+Module contents
+===============
+
+The A2A Python SDK.

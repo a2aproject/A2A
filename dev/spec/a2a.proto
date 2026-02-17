@@ -673,7 +673,7 @@ message GetTaskRequest {
 // Parameters for listing tasks with optional filtering criteria.
 message ListTasksRequest {
   // Optional tenant, provided as a path parameter.
-  string tenant = 9;
+  string tenant = 8;
   // Filter tasks by context ID to get tasks from a specific conversation or session.
   string context_id = 1;
   // Filter tasks by their current status state.
@@ -681,7 +681,7 @@ message ListTasksRequest {
   // Maximum number of tasks to return. Must be between 1 and 100.
   // Defaults to 50 if not specified.
   optional int32 page_size = 3;
-  // Token for pagination. Use the next_page_token from a previous ListTasksResponse.
+  // Token for pagination. Use the `next_page_token` from a previous `ListTasksResponse`.
   string page_token = 4;
   // The maximum number of messages to include in each task's history.
   optional int32 history_length = 5;

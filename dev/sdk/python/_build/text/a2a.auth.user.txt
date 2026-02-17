@@ -1,0 +1,33 @@
+a2a.auth.user module
+********************
+
+Authenticated user information.
+
+class a2a.auth.user.UnauthenticatedUser
+
+   Bases: "User"
+
+   A representation that no user has been authenticated in the
+   request.
+
+   property is_authenticated: bool
+
+      Returns whether the current user is authenticated.
+
+   property user_name: str
+
+      Returns the user name of the current user.
+
+class a2a.auth.user.User
+
+   Bases: "ABC"
+
+   A representation of an authenticated user.
+
+   abstract property is_authenticated: bool
+
+      Returns whether the current user is authenticated.
+
+   abstract property user_name: str
+
+      Returns the user name of the current user.

@@ -1,0 +1,25 @@
+a2a.server.tasks.inmemory_push_notification_config_store module
+***************************************************************
+
+class a2a.server.tasks.inmemory_push_notification_config_store.InMemoryPushNotificationConfigStore
+
+   Bases: "PushNotificationConfigStore"
+
+   In-memory implementation of PushNotificationConfigStore interface.
+
+   Stores push notification configurations in memory
+
+   async delete_info(task_id: str, config_id: str | None = None) -> None
+
+      Deletes the push notification configuration for a task from
+      memory.
+
+   async get_info(task_id: str) -> list[PushNotificationConfig]
+
+      Retrieves the push notification configuration for a task from
+      memory.
+
+   async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+
+      Sets or updates the push notification configuration for a task
+      in memory.

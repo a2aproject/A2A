@@ -1,0 +1,47 @@
+a2a.client.errors module
+************************
+
+Custom exceptions for the A2A client.
+
+exception a2a.client.errors.A2AClientError
+
+   Bases: "Exception"
+
+   Base exception for A2A Client errors.
+
+exception a2a.client.errors.A2AClientHTTPError(status_code: int, message: str)
+
+   Bases: "A2AClientError"
+
+   Client exception for HTTP errors received from the server.
+
+exception a2a.client.errors.A2AClientInvalidArgsError(message: str)
+
+   Bases: "A2AClientError"
+
+   Client exception for invalid arguments passed to a method.
+
+exception a2a.client.errors.A2AClientInvalidStateError(message: str)
+
+   Bases: "A2AClientError"
+
+   Client exception for an invalid client state.
+
+exception a2a.client.errors.A2AClientJSONError(message: str)
+
+   Bases: "A2AClientError"
+
+   Client exception for JSON errors during response parsing or
+   validation.
+
+exception a2a.client.errors.A2AClientJSONRPCError(error: JSONRPCErrorResponse)
+
+   Bases: "A2AClientError"
+
+   Client exception for JSON-RPC errors returned by the server.
+
+exception a2a.client.errors.A2AClientTimeoutError(message: str)
+
+   Bases: "A2AClientError"
+
+   Client exception for timeout errors during a request.
