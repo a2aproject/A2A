@@ -445,7 +445,7 @@ This section defines common parameter objects used across multiple operations.
 
 The `blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation waits for task completion:
 
-- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `canceled`, `rejected`) or an interrupted state (`input_required`, `auth_required`) before returning. The response MUST include the current task state with all artifacts and status information.
+- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information.
 
 - **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
