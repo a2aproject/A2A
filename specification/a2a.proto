@@ -711,6 +711,8 @@ message CancelTaskRequest {
   string tenant = 2;
   // The resource id of the task to cancel.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
+  // A flexible key-value map for passing additional context or parameters.
+  google.protobuf.Struct metadata = 3;
 }
 
 message GetTaskPushNotificationConfigRequest {
