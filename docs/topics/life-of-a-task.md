@@ -163,25 +163,27 @@ The following example illustrates a typical task flow with a follow-up:
       "jsonrpc": "2.0",
       "id": "req-001",
       "result": {
-        "id": "task-boat-gen-123",
-        "contextId": "ctx-conversation-abc",
-        "status": {
-          "state": "TASK_STATE_COMPLETED"
-        },
-        "artifacts": [
-          {
-            "artifactId": "artifact-boat-v1-xyz",
-            "name": "sailboat_image.png",
-            "description": "A generated image of a sailboat on the ocean.",
-            "parts": [
-              {
-                "filename": "sailboat_image.png",
-                "mediaType": "image/png",
-                "raw": "base64_encoded_png_data_of_a_sailboat"
-              }
-            ]
-          }
-        ]
+        "task": {
+          "id": "task-boat-gen-123",
+          "contextId": "ctx-conversation-abc",
+          "status": {
+            "state": "TASK_STATE_COMPLETED"
+          },
+          "artifacts": [
+            {
+              "artifactId": "artifact-boat-v1-xyz",
+              "name": "sailboat_image.png",
+              "description": "A generated image of a sailboat on the ocean.",
+              "parts": [
+                {
+                  "filename": "sailboat_image.png",
+                  "mediaType": "image/png",
+                  "raw": "base64_encoded_png_data_of_a_sailboat"
+                }
+              ]
+            }
+          ]
+        }
       }
     }
     ```
@@ -221,25 +223,27 @@ The following example illustrates a typical task flow with a follow-up:
       "jsonrpc": "2.0",
       "id": "req-002",
       "result": {
-        "id": "task-boat-color-456",
-        "contextId": "ctx-conversation-abc",
-        "status": {
-          "state": "TASK_STATE_COMPLETED"
-        },
-        "artifacts": [
-          {
-            "artifactId": "artifact-boat-v2-red-pqr",
-            "name": "sailboat_image.png",
-            "description": "A generated image of a red sailboat on the ocean.",
-            "parts": [
-              {
-                "filename": "sailboat_image.png",
-                "mediaType": "image/png",
-                "raw": "base64_encoded_png_data_of_a_RED_sailboat"
-              }
-            ]
-          }
-        ]
+        "task": {
+          "id": "task-boat-color-456",
+          "contextId": "ctx-conversation-abc",
+          "status": {
+            "state": "TASK_STATE_COMPLETED"
+          },
+          "artifacts": [
+            {
+              "artifactId": "artifact-boat-v2-red-pqr",
+              "name": "sailboat_image.png",
+              "description": "A generated image of a red sailboat on the ocean.",
+              "parts": [
+                {
+                  "filename": "sailboat_image.png",
+                  "mediaType": "image/png",
+                  "raw": "base64_encoded_png_data_of_a_RED_sailboat"
+                }
+              ]
+            }
+          ]
+        }
       }
     }
     ```
