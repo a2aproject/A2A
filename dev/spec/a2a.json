@@ -4,6 +4,21 @@
   "description": "Non-normative JSON Schema bundle extracted from proto definitions.",
   "version": "v1",
   "definitions": {
+    "Struct": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Struct",
+      "type": "object"
+    },
+    "Timestamp": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "Value": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Value"
+    },
     "API Key Security Scheme": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
@@ -50,7 +65,7 @@
         "extensions": {
           "description": "A list of protocol extensions supported by the agent.",
           "items": {
-            "$ref": "a2a.v1.AgentExtension.jsonschema.json"
+            "$ref": "lf.a2a.v1.AgentExtension.jsonschema.json"
           },
           "type": "array"
         },
@@ -96,13 +111,13 @@
         "^(security_requirements)$": {
           "description": "Security requirements for contacting the agent.",
           "items": {
-            "$ref": "a2a.v1.SecurityRequirement.jsonschema.json"
+            "$ref": "lf.a2a.v1.SecurityRequirement.jsonschema.json"
           },
           "type": "array"
         },
         "^(security_schemes)$": {
           "additionalProperties": {
-            "$ref": "a2a.v1.SecurityScheme.jsonschema.json"
+            "$ref": "lf.a2a.v1.SecurityScheme.jsonschema.json"
           },
           "description": "The security scheme details used for authenticating with this agent.",
           "propertyNames": {
@@ -113,14 +128,14 @@
         "^(supported_interfaces)$": {
           "description": "Ordered list of supported interfaces. The first entry is preferred.",
           "items": {
-            "$ref": "a2a.v1.AgentInterface.jsonschema.json"
+            "$ref": "lf.a2a.v1.AgentInterface.jsonschema.json"
           },
           "type": "array"
         }
       },
       "properties": {
         "capabilities": {
-          "$ref": "a2a.v1.AgentCapabilities.jsonschema.json",
+          "$ref": "lf.a2a.v1.AgentCapabilities.jsonschema.json",
           "description": "A2A Capability set supported by the agent."
         },
         "defaultInputModes": {
@@ -156,19 +171,19 @@
           "type": "string"
         },
         "provider": {
-          "$ref": "a2a.v1.AgentProvider.jsonschema.json",
+          "$ref": "lf.a2a.v1.AgentProvider.jsonschema.json",
           "description": "The service provider of the agent."
         },
         "securityRequirements": {
           "description": "Security requirements for contacting the agent.",
           "items": {
-            "$ref": "a2a.v1.SecurityRequirement.jsonschema.json"
+            "$ref": "lf.a2a.v1.SecurityRequirement.jsonschema.json"
           },
           "type": "array"
         },
         "securitySchemes": {
           "additionalProperties": {
-            "$ref": "a2a.v1.SecurityScheme.jsonschema.json"
+            "$ref": "lf.a2a.v1.SecurityScheme.jsonschema.json"
           },
           "description": "The security scheme details used for authenticating with this agent.",
           "propertyNames": {
@@ -179,21 +194,21 @@
         "signatures": {
           "description": "JSON Web Signatures computed for this `AgentCard`.",
           "items": {
-            "$ref": "a2a.v1.AgentCardSignature.jsonschema.json"
+            "$ref": "lf.a2a.v1.AgentCardSignature.jsonschema.json"
           },
           "type": "array"
         },
         "skills": {
           "description": "Skills represent the abilities of an agent.\n It is largely a descriptive concept but represents a more focused set of behaviors that the\n agent is likely to succeed at.",
           "items": {
-            "$ref": "a2a.v1.AgentSkill.jsonschema.json"
+            "$ref": "lf.a2a.v1.AgentSkill.jsonschema.json"
           },
           "type": "array"
         },
         "supportedInterfaces": {
           "description": "Ordered list of supported interfaces. The first entry is preferred.",
           "items": {
-            "$ref": "a2a.v1.AgentInterface.jsonschema.json"
+            "$ref": "lf.a2a.v1.AgentInterface.jsonschema.json"
           },
           "type": "array"
         },
@@ -339,7 +354,7 @@
         "^(security_requirements)$": {
           "description": "Security schemes necessary for this skill.",
           "items": {
-            "$ref": "a2a.v1.SecurityRequirement.jsonschema.json"
+            "$ref": "lf.a2a.v1.SecurityRequirement.jsonschema.json"
           },
           "type": "array"
         }
@@ -384,7 +399,7 @@
         "securityRequirements": {
           "description": "Security schemes necessary for this skill.",
           "items": {
-            "$ref": "a2a.v1.SecurityRequirement.jsonschema.json"
+            "$ref": "lf.a2a.v1.SecurityRequirement.jsonschema.json"
           },
           "type": "array"
         },
@@ -440,7 +455,7 @@
         "parts": {
           "description": "The content of the artifact. Must contain at least one part.",
           "items": {
-            "$ref": "a2a.v1.Part.jsonschema.json"
+            "$ref": "lf.a2a.v1.Part.jsonschema.json"
           },
           "type": "array"
         }
@@ -538,6 +553,10 @@
           "description": "The resource ID of the task to cancel.",
           "type": "string"
         },
+        "metadata": {
+          "$ref": "google.protobuf.Struct.jsonschema.json",
+          "description": "A flexible key-value map for passing additional context or parameters."
+        },
         "tenant": {
           "default": "",
           "description": "Optional. Tenant ID, provided as a path parameter.",
@@ -606,7 +625,7 @@
       },
       "properties": {
         "config": {
-          "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
+          "$ref": "lf.a2a.v1.PushNotificationConfig.jsonschema.json",
           "description": "The configuration to create."
         },
         "configId": {
@@ -876,10 +895,10 @@
       "title": "ImplicitO Auth Flow",
       "type": "object"
     },
-    "List Task Push Notification Config Request": {
+    "List Task Push Notification Configs Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a request for the `ListTaskPushNotificationConfig` method.",
+      "description": "Represents a request for the `ListTaskPushNotificationConfigs` method.",
       "patternProperties": {
         "^(page_size)$": {
           "anyOf": [
@@ -898,7 +917,7 @@
         },
         "^(page_token)$": {
           "default": "",
-          "description": "A page token received from a previous `ListTaskPushNotificationConfig` call.",
+          "description": "A page token received from a previous `ListTaskPushNotificationConfigsRequest` call.",
           "type": "string"
         },
         "^(task_id)$": {
@@ -925,7 +944,7 @@
         },
         "pageToken": {
           "default": "",
-          "description": "A page token received from a previous `ListTaskPushNotificationConfig` call.",
+          "description": "A page token received from a previous `ListTaskPushNotificationConfigsRequest` call.",
           "type": "string"
         },
         "taskId": {
@@ -939,13 +958,13 @@
           "type": "string"
         }
       },
-      "title": "List Task Push Notification Config Request",
+      "title": "List Task Push Notification Configs Request",
       "type": "object"
     },
-    "List Task Push Notification Config Response": {
+    "List Task Push Notification Configs Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a successful response for the `ListTaskPushNotificationConfig` method.",
+      "description": "Represents a successful response for the `ListTaskPushNotificationConfigs`\n method.",
       "patternProperties": {
         "^(next_page_token)$": {
           "default": "",
@@ -957,7 +976,7 @@
         "configs": {
           "description": "The list of push notification configurations.",
           "items": {
-            "$ref": "a2a.v1.TaskPushNotificationConfig.jsonschema.json"
+            "$ref": "lf.a2a.v1.TaskPushNotificationConfig.jsonschema.json"
           },
           "type": "array"
         },
@@ -967,7 +986,7 @@
           "type": "string"
         }
       },
-      "title": "List Task Push Notification Config Response",
+      "title": "List Task Push Notification Configs Response",
       "type": "object"
     },
     "List Tasks Request": {
@@ -1172,7 +1191,7 @@
         "tasks": {
           "description": "Array of tasks matching the specified criteria.",
           "items": {
-            "$ref": "a2a.v1.Task.jsonschema.json"
+            "$ref": "lf.a2a.v1.Task.jsonschema.json"
           },
           "type": "array"
         },
@@ -1248,7 +1267,7 @@
         "parts": {
           "description": "Parts is the container of the message content.",
           "items": {
-            "$ref": "a2a.v1.Part.jsonschema.json"
+            "$ref": "lf.a2a.v1.Part.jsonschema.json"
           },
           "type": "array"
         },
@@ -1323,7 +1342,7 @@
           "type": "string"
         },
         "flows": {
-          "$ref": "a2a.v1.OAuthFlows.jsonschema.json",
+          "$ref": "lf.a2a.v1.OAuthFlows.jsonschema.json",
           "description": "An object containing configuration information for the supported OAuth 2.0 flows."
         },
         "oauth2MetadataUrl": {
@@ -1341,37 +1360,37 @@
       "description": "Defines the configuration for the supported OAuth 2.0 flows.",
       "patternProperties": {
         "^(authorization_code)$": {
-          "$ref": "a2a.v1.AuthorizationCodeOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.AuthorizationCodeOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Authorization Code flow."
         },
         "^(client_credentials)$": {
-          "$ref": "a2a.v1.ClientCredentialsOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.ClientCredentialsOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Client Credentials flow."
         },
         "^(device_code)$": {
-          "$ref": "a2a.v1.DeviceCodeOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.DeviceCodeOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Device Code flow."
         }
       },
       "properties": {
         "authorizationCode": {
-          "$ref": "a2a.v1.AuthorizationCodeOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.AuthorizationCodeOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Authorization Code flow."
         },
         "clientCredentials": {
-          "$ref": "a2a.v1.ClientCredentialsOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.ClientCredentialsOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Client Credentials flow."
         },
         "deviceCode": {
-          "$ref": "a2a.v1.DeviceCodeOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.DeviceCodeOAuthFlow.jsonschema.json",
           "description": "Configuration for the OAuth Device Code flow."
         },
         "implicit": {
-          "$ref": "a2a.v1.ImplicitOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.ImplicitOAuthFlow.jsonschema.json",
           "description": "Deprecated: Use Authorization Code + PKCE instead."
         },
         "password": {
-          "$ref": "a2a.v1.PasswordOAuthFlow.jsonschema.json",
+          "$ref": "lf.a2a.v1.PasswordOAuthFlow.jsonschema.json",
           "description": "Deprecated: Use Authorization Code + PKCE or Device Code."
         }
       },
@@ -1498,7 +1517,7 @@
       "description": "Configuration for setting up push notifications for task updates.",
       "properties": {
         "authentication": {
-          "$ref": "a2a.v1.AuthenticationInfo.jsonschema.json",
+          "$ref": "lf.a2a.v1.AuthenticationInfo.jsonschema.json",
           "description": "Authentication information required to send the notification."
         },
         "id": {
@@ -1527,7 +1546,7 @@
       "properties": {
         "schemes": {
           "additionalProperties": {
-            "$ref": "a2a.v1.StringList.jsonschema.json"
+            "$ref": "lf.a2a.v1.StringList.jsonschema.json"
           },
           "description": "A map of security schemes to the required scopes.",
           "propertyNames": {
@@ -1545,45 +1564,45 @@
       "description": "Defines a security scheme that can be used to secure an agent's endpoints.\n This is a discriminated union type based on the OpenAPI 3.2 Security Scheme Object.\n See: https://spec.openapis.org/oas/v3.2.0.html#security-scheme-object",
       "patternProperties": {
         "^(api_key_security_scheme)$": {
-          "$ref": "a2a.v1.APIKeySecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.APIKeySecurityScheme.jsonschema.json",
           "description": "API key-based authentication."
         },
         "^(http_auth_security_scheme)$": {
-          "$ref": "a2a.v1.HTTPAuthSecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.HTTPAuthSecurityScheme.jsonschema.json",
           "description": "HTTP authentication (Basic, Bearer, etc.)."
         },
         "^(mtls_security_scheme)$": {
-          "$ref": "a2a.v1.MutualTlsSecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.MutualTlsSecurityScheme.jsonschema.json",
           "description": "Mutual TLS authentication."
         },
         "^(oauth2_security_scheme)$": {
-          "$ref": "a2a.v1.OAuth2SecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.OAuth2SecurityScheme.jsonschema.json",
           "description": "OAuth 2.0 authentication."
         },
         "^(open_id_connect_security_scheme)$": {
-          "$ref": "a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json",
           "description": "OpenID Connect authentication."
         }
       },
       "properties": {
         "apiKeySecurityScheme": {
-          "$ref": "a2a.v1.APIKeySecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.APIKeySecurityScheme.jsonschema.json",
           "description": "API key-based authentication."
         },
         "httpAuthSecurityScheme": {
-          "$ref": "a2a.v1.HTTPAuthSecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.HTTPAuthSecurityScheme.jsonschema.json",
           "description": "HTTP authentication (Basic, Bearer, etc.)."
         },
         "mtlsSecurityScheme": {
-          "$ref": "a2a.v1.MutualTlsSecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.MutualTlsSecurityScheme.jsonschema.json",
           "description": "Mutual TLS authentication."
         },
         "oauth2SecurityScheme": {
-          "$ref": "a2a.v1.OAuth2SecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.OAuth2SecurityScheme.jsonschema.json",
           "description": "OAuth 2.0 authentication."
         },
         "openIdConnectSecurityScheme": {
-          "$ref": "a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json",
+          "$ref": "lf.a2a.v1.OpenIdConnectSecurityScheme.jsonschema.json",
           "description": "OpenID Connect authentication."
         }
       },
@@ -1617,7 +1636,7 @@
           "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
         },
         "^(push_notification_config)$": {
-          "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
+          "$ref": "lf.a2a.v1.PushNotificationConfig.jsonschema.json",
           "description": "Configuration for the agent to send push notifications for task updates."
         }
       },
@@ -1649,7 +1668,7 @@
           "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
         },
         "pushNotificationConfig": {
-          "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
+          "$ref": "lf.a2a.v1.PushNotificationConfig.jsonschema.json",
           "description": "Configuration for the agent to send push notifications for task updates."
         }
       },
@@ -1662,11 +1681,11 @@
       "description": "Represents a request for the `SendMessage` method.",
       "properties": {
         "configuration": {
-          "$ref": "a2a.v1.SendMessageConfiguration.jsonschema.json",
+          "$ref": "lf.a2a.v1.SendMessageConfiguration.jsonschema.json",
           "description": "Configuration for the send request."
         },
         "message": {
-          "$ref": "a2a.v1.Message.jsonschema.json",
+          "$ref": "lf.a2a.v1.Message.jsonschema.json",
           "description": "The message to send to the agent."
         },
         "metadata": {
@@ -1688,11 +1707,11 @@
       "description": "Represents the response for the `SendMessage` method.",
       "properties": {
         "message": {
-          "$ref": "a2a.v1.Message.jsonschema.json",
+          "$ref": "lf.a2a.v1.Message.jsonschema.json",
           "description": "A message from the agent."
         },
         "task": {
-          "$ref": "a2a.v1.Task.jsonschema.json",
+          "$ref": "lf.a2a.v1.Task.jsonschema.json",
           "description": "The task created or updated by the message."
         }
       },
@@ -1705,29 +1724,29 @@
       "description": "A wrapper object used in streaming operations to encapsulate different types of response data.",
       "patternProperties": {
         "^(artifact_update)$": {
-          "$ref": "a2a.v1.TaskArtifactUpdateEvent.jsonschema.json",
+          "$ref": "lf.a2a.v1.TaskArtifactUpdateEvent.jsonschema.json",
           "description": "An event indicating a task artifact update."
         },
         "^(status_update)$": {
-          "$ref": "a2a.v1.TaskStatusUpdateEvent.jsonschema.json",
+          "$ref": "lf.a2a.v1.TaskStatusUpdateEvent.jsonschema.json",
           "description": "An event indicating a task status update."
         }
       },
       "properties": {
         "artifactUpdate": {
-          "$ref": "a2a.v1.TaskArtifactUpdateEvent.jsonschema.json",
+          "$ref": "lf.a2a.v1.TaskArtifactUpdateEvent.jsonschema.json",
           "description": "An event indicating a task artifact update."
         },
         "message": {
-          "$ref": "a2a.v1.Message.jsonschema.json",
+          "$ref": "lf.a2a.v1.Message.jsonschema.json",
           "description": "A Message object containing a message from the agent."
         },
         "statusUpdate": {
-          "$ref": "a2a.v1.TaskStatusUpdateEvent.jsonschema.json",
+          "$ref": "lf.a2a.v1.TaskStatusUpdateEvent.jsonschema.json",
           "description": "An event indicating a task status update."
         },
         "task": {
-          "$ref": "a2a.v1.Task.jsonschema.json",
+          "$ref": "lf.a2a.v1.Task.jsonschema.json",
           "description": "A Task object containing the current state of the task."
         }
       },
@@ -1784,7 +1803,7 @@
         "artifacts": {
           "description": "A set of output artifacts for a `Task`.",
           "items": {
-            "$ref": "a2a.v1.Artifact.jsonschema.json"
+            "$ref": "lf.a2a.v1.Artifact.jsonschema.json"
           },
           "type": "array"
         },
@@ -1796,7 +1815,7 @@
         "history": {
           "description": "The history of interactions from a `Task`.",
           "items": {
-            "$ref": "a2a.v1.Message.jsonschema.json"
+            "$ref": "lf.a2a.v1.Message.jsonschema.json"
           },
           "type": "array"
         },
@@ -1810,7 +1829,7 @@
           "description": "A key/value object to store custom metadata about a task."
         },
         "status": {
-          "$ref": "a2a.v1.TaskStatus.jsonschema.json",
+          "$ref": "lf.a2a.v1.TaskStatus.jsonschema.json",
           "description": "The current status of a `Task`, including `state` and a `message`."
         }
       },
@@ -1845,7 +1864,7 @@
           "type": "boolean"
         },
         "artifact": {
-          "$ref": "a2a.v1.Artifact.jsonschema.json",
+          "$ref": "lf.a2a.v1.Artifact.jsonschema.json",
           "description": "The artifact that was generated or updated."
         },
         "contextId": {
@@ -1877,7 +1896,7 @@
       "description": "A container associating a push notification configuration with a specific task.",
       "patternProperties": {
         "^(push_notification_config)$": {
-          "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
+          "$ref": "lf.a2a.v1.PushNotificationConfig.jsonschema.json",
           "description": "The push notification configuration details."
         },
         "^(task_id)$": {
@@ -1893,7 +1912,7 @@
           "type": "string"
         },
         "pushNotificationConfig": {
-          "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
+          "$ref": "lf.a2a.v1.PushNotificationConfig.jsonschema.json",
           "description": "The push notification configuration details."
         },
         "taskId": {
@@ -1916,7 +1935,7 @@
       "description": "A container for the status of a task",
       "properties": {
         "message": {
-          "$ref": "a2a.v1.Message.jsonschema.json",
+          "$ref": "lf.a2a.v1.Message.jsonschema.json",
           "description": "A message associated with the status."
         },
         "state": {
@@ -1983,7 +2002,7 @@
           "description": "Optional. Metadata associated with the task update."
         },
         "status": {
-          "$ref": "a2a.v1.TaskStatus.jsonschema.json",
+          "$ref": "lf.a2a.v1.TaskStatus.jsonschema.json",
           "description": "The new status of the task."
         },
         "taskId": {
@@ -1994,21 +2013,6 @@
       },
       "title": "Task Status Update Event",
       "type": "object"
-    },
-    "Struct": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "title": "Struct",
-      "type": "object"
-    },
-    "Timestamp": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "format": "date-time",
-      "title": "Timestamp",
-      "type": "string"
-    },
-    "Value": {
-      "$schema": "https://json-schema.org/draft/2020-12/schema",
-      "title": "Value"
     }
   }
 }

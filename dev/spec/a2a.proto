@@ -1,6 +1,6 @@
 // Older protoc compilers don't understand edition yet.
 syntax = "proto3";
-package a2a.v1;
+package lf.a2a.v1;
 
 import "google/api/annotations.proto";
 import "google/api/client.proto";
@@ -9,11 +9,11 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
 
-option csharp_namespace = "A2a.V1";
-option go_package = "google.golang.org/a2a/v1";
+option csharp_namespace = "Lf.A2a.V1";
+option go_package = "google.golang.org/lf/a2a/v1";
 option java_multiple_files = true;
 option java_outer_classname = "A2A";
-option java_package = "com.google.a2a.v1";
+option java_package = "com.google.lf.a2a.v1";
 
 // Provides operations for interacting with agents using the A2A protocol.
 service A2AService {
@@ -107,8 +107,8 @@ service A2AService {
     };
     option (google.api.method_signature) = "task_id,id";
   }
-  // Lists push notification configs for a task.
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
+  // Get a list of push notifications configured for a task.
+  rpc ListTaskPushNotificationConfigs(ListTaskPushNotificationConfigsRequest) returns (ListTaskPushNotificationConfigsResponse) {
     option (google.api.http) = {
       get: "/tasks/{task_id=*}/pushNotificationConfigs"
       additional_bindings: {
@@ -716,6 +716,8 @@ message CancelTaskRequest {
   string tenant = 2;
   // The resource ID of the task to cancel.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
+  // A flexible key-value map for passing additional context or parameters.
+  google.protobuf.Struct metadata = 3;
 }
 
 // Represents a request for the `GetTaskPushNotificationConfig` method.
@@ -759,8 +761,8 @@ message SubscribeToTaskRequest {
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
-// Represents a request for the `ListTaskPushNotificationConfig` method.
-message ListTaskPushNotificationConfigRequest {
+// Represents a request for the `ListTaskPushNotificationConfigs` method.
+message ListTaskPushNotificationConfigsRequest {
   // Optional. Tenant ID, provided as a path parameter.
   string tenant = 4;
   // The parent task resource ID.
@@ -769,7 +771,7 @@ message ListTaskPushNotificationConfigRequest {
   // The maximum number of configurations to return.
   int32 page_size = 2;
 
-  // A page token received from a previous `ListTaskPushNotificationConfig` call.
+  // A page token received from a previous `ListTaskPushNotificationConfigsRequest` call.
   string page_token = 3;
 }
 
@@ -805,8 +807,9 @@ message StreamResponse {
   }
 }
 
-// Represents a successful response for the `ListTaskPushNotificationConfig` method.
-message ListTaskPushNotificationConfigResponse {
+// Represents a successful response for the `ListTaskPushNotificationConfigs`
+// method.
+message ListTaskPushNotificationConfigsResponse {
   // The list of push notification configurations.
   repeated TaskPushNotificationConfig configs = 1;
   // A token to retrieve the next page of results, or empty if there are no more results in the list.

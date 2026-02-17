@@ -3012,10 +3012,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#1049-listtaskpushnotificationconfig" class="md-nav__link">
+  <a href="#1049-listtaskpushnotificationconfigs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        10.4.9. ListTaskPushNotificationConfig
+        10.4.9. ListTaskPushNotificationConfigs
       
     </span>
   </a>
@@ -5712,10 +5712,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#1049-listtaskpushnotificationconfig" class="md-nav__link">
+  <a href="#1049-listtaskpushnotificationconfigs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        10.4.9. ListTaskPushNotificationConfig
+        10.4.9. ListTaskPushNotificationConfigs
       
     </span>
   </a>
@@ -6742,6 +6742,12 @@
 <td>Yes</td>
 <td>The resource ID of the task to cancel.</td>
 </tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>object</code></td>
+<td>No</td>
+<td>A flexible key-value map for passing additional context or parameters.</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Outputs:</strong></p>
@@ -6904,7 +6910,7 @@
 <h4 id="319-list-push-notification-configs">3.1.9. List Push Notification Configs<a class="headerlink" href="#319-list-push-notification-configs" title="Permanent link">&para;</a></h4>
 <p>Retrieves all push notification configurations for a task.</p>
 <p><strong>Inputs:</strong></p>
-<p>Represents a request for the <code>ListTaskPushNotificationConfig</code> method.</p>
+<p>Represents a request for the <code>ListTaskPushNotificationConfigs</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6937,12 +6943,12 @@
 <td><code>pageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A page token received from a previous <code>ListTaskPushNotificationConfig</code> call.</td>
+<td>A page token received from a previous <code>ListTaskPushNotificationConfigsRequest</code> call.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Outputs:</strong></p>
-<p>Represents a successful response for the <code>ListTaskPushNotificationConfig</code> method.</p>
+<p>Represents a successful response for the <code>ListTaskPushNotificationConfigs</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -8927,8 +8933,8 @@
 </tr>
 <tr>
 <td style="text-align: left;">List push notification configs</td>
-<td style="text-align: left;"><code>ListTaskPushNotificationConfig</code></td>
-<td style="text-align: left;"><code>ListTaskPushNotificationConfig</code></td>
+<td style="text-align: left;"><code>ListTaskPushNotificationConfigs</code></td>
+<td style="text-align: left;"><code>ListTaskPushNotificationConfigs</code></td>
 <td style="text-align: left;"><code>GET /tasks/{id}/pushNotificationConfigs</code></td>
 </tr>
 <tr>
@@ -9985,7 +9991,7 @@
 <ul>
 <li><code>CreateTaskPushNotificationConfig</code> - Create push notification configuration</li>
 <li><code>GetTaskPushNotificationConfig</code> - Get push notification configuration</li>
-<li><code>ListTaskPushNotificationConfig</code> - List push notification configurations</li>
+<li><code>ListTaskPushNotificationConfigs</code> - List push notification configurations</li>
 <li><code>DeleteTaskPushNotificationConfig</code> - Delete push notification configuration</li>
 </ul>
 <h4 id="948-getextendedagentcard">9.4.8. <code>GetExtendedAgentCard</code><a class="headerlink" href="#948-getextendedagentcard" title="Permanent link">&para;</a></h4>
@@ -10172,10 +10178,10 @@
 <td>Gets a push notification config for a task.</td>
 </tr>
 <tr>
-<td><code>ListTaskPushNotificationConfig</code></td>
-<td><a href="#listtaskpushnotificationconfigrequest"><code>ListTaskPushNotificationConfigRequest</code></a></td>
-<td><a href="#listtaskpushnotificationconfigresponse"><code>ListTaskPushNotificationConfigResponse</code></a></td>
-<td>Lists push notification configs for a task.</td>
+<td><code>ListTaskPushNotificationConfigs</code></td>
+<td><a href="#listtaskpushnotificationconfigsrequest"><code>ListTaskPushNotificationConfigsRequest</code></a></td>
+<td><a href="#listtaskpushnotificationconfigsresponse"><code>ListTaskPushNotificationConfigsResponse</code></a></td>
+<td>Get a list of push notifications configured for a task.</td>
 </tr>
 <tr>
 <td><code>GetExtendedAgentCard</code></td>
@@ -10463,6 +10469,12 @@
 <td>Yes</td>
 <td>The resource ID of the task to cancel.</td>
 </tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>object</code></td>
+<td>No</td>
+<td>A flexible key-value map for passing additional context or parameters.</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Response:</strong> See <a href="#411-task"><code>Task</code></a> object definition.</p>
@@ -10571,10 +10583,10 @@
 </tbody>
 </table>
 <p><strong>Response:</strong> See <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> object definition.</p>
-<h4 id="1049-listtaskpushnotificationconfig">10.4.9. ListTaskPushNotificationConfig<a class="headerlink" href="#1049-listtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
+<h4 id="1049-listtaskpushnotificationconfigs">10.4.9. ListTaskPushNotificationConfigs<a class="headerlink" href="#1049-listtaskpushnotificationconfigs" title="Permanent link">&para;</a></h4>
 <p>Lists all push notification configurations for a task.</p>
 <p><strong>Request:</strong></p>
-<p>Represents a request for the <code>ListTaskPushNotificationConfig</code> method.</p>
+<p>Represents a request for the <code>ListTaskPushNotificationConfigs</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -10607,12 +10619,12 @@
 <td><code>pageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A page token received from a previous <code>ListTaskPushNotificationConfig</code> call.</td>
+<td>A page token received from a previous <code>ListTaskPushNotificationConfigsRequest</code> call.</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Response:</strong></p>
-<p>Represents a successful response for the <code>ListTaskPushNotificationConfig</code> method.</p>
+<p>Represents a successful response for the <code>ListTaskPushNotificationConfigs</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -11397,7 +11409,7 @@ The <code>.well-known/agent-card.json</code> URI provides a standardized locatio
 </tr>
 <tr>
 <td><code>ListTaskPushNotificationConfigSuccessResponse</code></td>
-<td><code>ListTaskPushNotificationConfigResponse</code></td>
+<td><code>ListTaskPushNotificationConfigsResponse</code></td>
 <td>&gt;= 0.5.0</td>
 <td>Consistent response suffix removal</td>
 </tr>
