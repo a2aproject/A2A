@@ -3345,7 +3345,7 @@ Objects used an inline `kind` field as a discriminator to identify the object ty
 
 ```json
 {
-  "kind": "text",
+  "kind": "TextPart",
   "text": "Hello, world!"
 }
 ```
@@ -3354,12 +3354,10 @@ Objects used an inline `kind` field as a discriminator to identify the object ty
 
 ```json
 {
-  "kind": "file",
-  "file": {
-    "name": "diagram.png",
-    "mimeType": "image/png",
-    "fileWithBytes": "iVBORw0KGgo..."
-  }
+  "kind": "FilePart",
+  "mimeType": "image/png",
+  "name": "diagram.png",
+  "fileWithBytes": "iVBORw0KGgo..."
 }
 ```
 
@@ -3388,22 +3386,22 @@ Objects now use the **JSON member name** itself to identify the type. The member
 
 1. **Part Union Types**:
    - **TextPart**:
-     - **Legacy:** `{ "kind": "text", "text": "..." }`
-     - **Current:** `{ "text": "..." }` (member presence acts as discriminator)
+     - **Legacy:** `{ "kind": "TextPart", "text": "..." }`
+     - **Current:** `{ "text": "..." }` (direct string value)
    - **FilePart**:
-     - **Legacy:** `{ "kind": "file", "file": { "name": "...", "mimeType": "...", "fileWithBytes": "..." } }`
+     - **Legacy:** `{ "kind": "FilePart", "mimeType": "...", "name": "...", "fileWithBytes": "..." }`
      - **Current:** `{ "raw": "...", "filename": "...", "mediaType": "..." }` (or `url` instead of `raw`)
    - **DataPart**:
-     - **Legacy:** `{ "kind": "data", "data": {...} }`
+     - **Legacy:** `{ "kind": "DataPart", "data": {...} }`
      - **Current:** `{ "data": {...}, "mediaType": "application/json" }`
 
 2. **Streaming Event Types**:
    - **TaskStatusUpdateEvent**:
-     - **Legacy:** `{ "kind": "taskStatusUpdate", "taskId": "...", "status": {...} }`
-     - **Current:** `{ "taskStatusUpdate": { "taskId": "...", "status": {...} } }`
+     - **Legacy:** `{ "kind": "TaskStatusUpdateEvent", "taskId": "...", "status": {...} }`
+     - **Current:** `{ "statusUpdate": { "taskId": "...", "status": {...} } }`
    - **TaskArtifactUpdateEvent**:
-     - **Legacy:** `{ "kind": "taskArtifactUpdate", "taskId": "...", "artifact": {...} }`
-     - **Current:** `{ "taskArtifactUpdate": { "taskId": "...", "artifact": {...} } }`
+     - **Legacy:** `{ "kind": "TaskArtifactUpdateEvent", "taskId": "...", "artifact": {...} }`
+     - **Current:** `{ "artifactUpdate": { "taskId": "...", "artifact": {...} } }`
 
 **Migration Strategy:**
 
