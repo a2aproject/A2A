@@ -6254,28 +6254,18 @@ The v1.0 release focuses on four major themes:
 **v0.3.0 Behavior:**
 
 - Operation named `message/send`
-- Blocking behavior not explicitly controllable
 - Less formal specification of when `Task` vs `Message` is returned
 
 **v1.0 Changes:**
 
-- **✅ NEW:** Operation formally named **`SendMessage`** (with legacy alias support)
-- **✅ NEW:** `SendMessageConfiguration.blocking` parameter explicitly controls wait behavior
-    - `blocking: true` - Server waits until task reaches terminal or interrupted state
-    - `blocking: false` - Server returns immediately; client polls/streams for updates
+- **✅ RENAMED:** Operation now **`SendMessage`**
 - **✅ CLARIFIED:** More precise specification of Task vs Message return semantics
-    - Simple queries MAY return Message directly without creating a Task
-    - Complex operations MUST return Task for asynchronous handling
-- **✅ NEW:** Service parameters transmitted as headers/metadata:
-    - `A2A-Version`: Protocol version (Major.Minor format)
-    - `A2A-Extensions`: Comma-separated extension URIs
 
 ### Send Streaming Message (`message/stream` → **SendStreamingMessage**)
 
 **v0.3.0 Behavior:**
 
 - Operation named `message/stream`
-- SSE-based streaming for JSON-RPC, unspecified for gRPC
 - Stream events had `kind` discriminator field
 
 **v1.0 Changes:**
@@ -6283,10 +6273,8 @@ The v1.0 release focuses on four major themes:
 - **✅ RENAMED:** Operation now **`SendStreamingMessage`**
 - **✅ BREAKING:** Stream events no longer have `kind` field
     - Use JSON member names to discriminate between `TaskStatusUpdateEvent` and `TaskArtifactUpdateEvent`
-- **✅ NEW:** Formal gRPC streaming semantics defined
 - **✅ REMOVED:** `final` boolean field removed from TaskStatusUpdateEvent. Leverage protocol binding specific stream closure mechanism instead.
 - **✅ CLARIFIED:** Multiple concurrent streams allowed; all receive same ordered events
-- **✅ NEW:** Blocking parameter applies but streaming always provides real-time updates
 
 ### Get Task (`tasks/get` → **GetTask**)
 
@@ -6327,12 +6315,10 @@ The v1.0 release focuses on four major themes:
 
 - Operation named `tasks/cancel`
 - Request with taskId, returns Task
-- Error if task not cancelable (implicit)
 
 **v1.0 Changes:**
 
 - **✅ RENAMED:** Operation now **CancelTask**
-- **✅ NEW:** Explicit `TaskNotCancelableError` for terminal/non-cancelable tasks
 - **✅ CLARIFIED:** More precise specification of when cancellation is allowed
 - **✅ CLARIFIED:** Task state transitions for cancellation scenarios
 
@@ -6348,15 +6334,12 @@ The v1.0 release focuses on four major themes:
 
 - **✅ RENAMED:** `agent/getAuthenticatedExtendedCard` → **GetExtendedAgentCard**
 - **✅ BREAKING:** `supportsAuthenticatedExtendedCard` moved to `capabilities.extendedAgentCard`
-- **✅ NEW:** Agent Card signature support with JWS (RFC 7515) and canonicalization (RFC 8785)
-- **✅ NEW:** `agentId` field added to identify agent instances
+- **✅ NEW:** Canonicalization (RFC 8785) clarified for Agent Card signature
 - **✅ BREAKING:** `protocolVersion` moved from AgentCard to individual AgentInterface objects
 - **✅ BREAKING:** `preferredTransport` and `additionalInterfaces` consolidated into `supportedInterfaces[]`
     - Each interface has `url`, `protocolBinding`, and `protocolVersion`
-- **✅ NEW:** Extension declarations now include `uri`, `description`, and `required` flag
-- **✅ NEW:** Mutual TLS security scheme support added
 
-### NEW: Subscribe to Task (**SubscribeToTask**)
+### Subscribe to task (`tasks/resubscribe` → **SubscribeToTask**)
 
 **v0.3.0 Behavior:**
 
@@ -6365,11 +6348,10 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ NEW OPERATION:** **SubscribeToTask** replaces informal resubscription
+- **✅ RENAMED:** Operation now **SubscribeToTask**
 - **✅ CLARIFIED:** Formal specification of streaming subscription lifecycle
 - **✅ CLARIFIED:** Stream closure behavior when task reaches terminal state
 - **✅ CLARIFIED:** Multiple concurrent subscriptions supported per task
-- **✅ BEHAVIOR CHANGE:** Can subscribe to tasks not originally created via streaming
 
 ### Push Notification Operations
 
@@ -6384,10 +6366,7 @@ The v1.0 release focuses on four major themes:
 
 - **✅ RENAMED:** Operations now **CreatePushNotificationConfig**, **GetPushNotificationConfig**, **ListPushNotificationConfigs**, **DeletePushNotificationConfig**
 - **✅ NEW:** `createdAt` timestamp field added to PushNotificationConfig
-- **✅ BREAKING:** `token` field removed from PushNotificationConfig (authentication handled via schemes)
-- **✅ NEW:** `configId` field added for unique identification
 - **✅ CLARIFIED:** Push notification payloads now use StreamResponse format
-- **✅ NEW:** Explicit `PushNotificationNotSupportedError` when capability not available
 
 ### NEW: Multi-Tenancy Support
 
@@ -6406,10 +6385,16 @@ The v1.0 release focuses on four major themes:
 **Example:**
 
 ```protobuf
+// Represents a request for the `SendMessage` method.
 message SendMessageRequest {
-  string tenant = 1;  // Optional tenant identifier
-  Message message = 2;
-  SendMessageConfiguration configuration = 3;
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
+  // The message to send to the agent.
+  Message message = 1 [(google.api.field_behavior) = REQUIRED];
+  // Configuration for the send request.
+  SendMessageConfiguration configuration = 2;
+  // A flexible key-value map for passing additional context or parameters.
+  google.protobuf.Struct metadata = 3;
 }
 ```
 
@@ -6449,29 +6434,11 @@ message SendMessageRequest {
 
 ### Task Object
 
-**Added Fields:**
-
-- ✅ `createdAt`: Timestamp (ISO 8601) - Task creation time
-- ✅ `lastModified`: Timestamp (ISO 8601) - Last state change time
-
-**Modified Fields:**
-
-- ✅ `status`: TaskStatus object now includes more precise timestamp semantics
-
 **Removed Fields:**
 
 - ⛔ `kind`: Discriminator field removed (was always "task")
 
-**Behavior Changes:**
-
-- Messages in `history[]` now include `extensions[]` array
-- Artifacts now include `extensions[]` array and `metadata` map
-
 ### TaskStatus Object
-
-**Added Fields:**
-
-- No new top-level fields
 
 **Modified Fields:**
 
@@ -6479,7 +6446,6 @@ message SendMessageRequest {
     - v0.3.0: `"submitted"`, `"working"`, `"completed"`, `"failed"`, `"canceled"`, `"rejected"`, `"input-required"`, `"auth-required"`
     - v1.0: `"TASK_STATE_SUBMITTED"`, `"TASK_STATE_WORKING"`, `"TASK_STATE_COMPLETED"`, `"TASK_STATE_FAILED"`, `"TASK_STATE_CANCELED"`, `"TASK_STATE_REJECTED"`, `"TASK_STATE_INPUT_REQUIRED"`, `"TASK_STATE_AUTH_REQUIRED"`
 - ✅ `timestamp`: Now explicitly ISO 8601 UTC with millisecond precision (YYYY-MM-DDTHH:mm:ss.sssZ)
-- ✅ `message`: Optional Message with enhanced extension support
 
 **Removed Fields:**
 
@@ -6509,7 +6475,6 @@ message SendMessageRequest {
 
 **Added Fields:**
 
-- ✅ `timestamp`: ISO 8601 timestamp - Message creation time
 - ✅ `extensions[]`: Array of extension URIs applicable to this message
 
 **Modified Fields:**
@@ -6517,11 +6482,6 @@ message SendMessageRequest {
 - ✅ `role`: **BREAKING** - Enum values changed from lowercase to `SCREAMING_SNAKE_CASE` with `ROLE_` prefix
     - v0.3.0: `"user"`, `"agent"`
     - v1.0: `"ROLE_USER"`, `"ROLE_AGENT"`
-- ✅ `metadata`: Remains optional key-value map but with stricter typing
-
-**Removed Fields:**
-
-- None
 
 **Example Migration:**
 
@@ -6536,7 +6496,6 @@ message SendMessageRequest {
 {
   "role": "ROLE_USER",
   "parts": [{"text": "Hello"}],
-  "timestamp": "2024-03-15T10:15:00.000Z"
 }
 ```
 
@@ -6616,7 +6575,6 @@ The Part structure has been completely redesigned in v1.0. Instead of separate T
 - ✅ **NEW:** `filename` field - available for all part types (not just files)
 - ✅ **NEW:** `raw` field for inline binary content (base64 in JSON)
 - ✅ **NEW:** `url` field for file references (replaces `file.fileWithUri`)
-- ✅ **RETAINED:** `metadata` optional map
 
 **Migration Examples:**
 
@@ -6640,34 +6598,17 @@ if ("text" in part) { ... }        // v1.0
 
 **Added Fields:**
 
-- ✅ `createdAt`: Timestamp - Artifact creation time
 - ✅ `extensions[]`: Array of extension URIs
 
 **Modified Fields:**
 
 - ✅ `parts[]`: Now uses member-based Part discrimination (see Part changes above)
 
-**Removed Fields:**
-
-- None
-
-**Behavior Changes:**
-
-- Metadata now more formally specified with extension integration
-
 ### AgentCard Object
 
 **Added Fields:**
 
-- ✅ `agentId`: Unique identifier for the agent instance
-- ✅ `supportedInterfaces[]`: Array of AgentInterface objects (each with url, protocolBinding, and protocolVersion)
-- ✅ `signatures[]`: Array of JWS signatures for card verification
-
-**Modified Fields:**
-
-- ✅ `capabilities.extendedAgentCard`: Moved from top-level `supportsAuthenticatedExtendedCard`
-- ✅ `extensions[]`: Enhanced with `uri`, `description`, and `required` fields (previously simpler Extension type)
-- ✅ `securitySchemes`: Enhanced with mutual TLS support
+- ✅ `supportedInterfaces[]`: Array of `AgentInterface` objects
 
 **Removed Fields:**
 
@@ -6695,7 +6636,6 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "agentId": "agent-abc-123",
   "supportedInterfaces": [
     {
       "url": "https://agent.example.com/a2a",
@@ -6710,46 +6650,11 @@ if ("text" in part) { ... }        // v1.0
 }
 ```
 
-### AgentExtension Object
-
-**v0.3.0 Structure:**
-
-```json
-{
-  "id": "extension-id",
-  "name": "Extension Name",
-  "version": "1.0",
-  "description": "Description",
-  "documentation": "https://...",
-  "metadata": {}
-}
-```
-
-**v1.0 Structure:**
-
-```json
-{
-  "uri": "https://example.com/extensions/custom-ext/v1",
-  "description": "Description",
-  "required": false
-}
-```
-
-**Changes:**
-
-- ⛔ **REMOVED:** `id`, `name`, `version` fields
-- ⛔ **REMOVED:** `documentation` field
-- ⛔ **REMOVED:** `metadata` field
-- ✅ **NEW:** `uri` field - Versioned URI identifying the extension
-- ✅ **NEW:** `required` boolean - Indicates if client must support this extension
-- ✅ **SIMPLIFIED:** Description remains, but structure dramatically simplified
-- ✅ **PATTERN:** Extension versioning now embedded in URI (e.g., `/v1`, `/v2`)
-
 ### AgentCapabilities Object
 
 **Removed Fields:**
 
-- ⛔ `stateTransitionHistory` (#1396) - Removed as no API implementation existed for this feature
+- ⛔ `stateTransitionHistory` - Removed as no API implementation existed for this feature
 
 **Rationale:**
 
@@ -6764,20 +6669,6 @@ This capability may be reintroduced in a future version with proper implementati
 **Modified Fields:**
 
 - ✅ `extendedAgentCard`: Moved from top-level `supportsAuthenticatedExtendedCard` field
-- ✅ `pushNotifications`: More formally specified with enhanced configuration options
-- ✅ `streaming`: Enhanced with clearer semantics for SSE support
-
-### SecurityScheme Objects
-
-**Added:**
-
-- ✅ `MutualTLSSecurityScheme`: Support for mutual TLS authentication
-
-**Enhanced:**
-
-- ✅ More formal alignment with OpenAPI security scheme patterns
-- ✅ Better documentation of OAuth2 flows and scopes
-- ✅ Clearer distinction between security scheme definitions and requirements
 
 ### PushNotificationConfig Object
 
@@ -6789,15 +6680,6 @@ This capability may be reintroduced in a future version with proper implementati
 **Modified Fields:**
 
 - ✅ `authentication`: Enhanced PushNotificationAuthenticationInfo structure
-
-**Removed Fields:**
-
-- ⛔ `token`: Client-provided token removed (auth handled via schemes)
-
-**Behavior Changes:**
-
-- Configuration now identified by `configId` instead of implicit task association
-- Authentication schemes formalized with proper standards alignment
 
 ### Stream Event Objects
 
@@ -10546,7 +10428,7 @@ class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_ref
 a2a.server.apps.jsonrpc.fastapi_app module
 ******************************************
 
-class a2a.server.apps.jsonrpc.fastapi_app.A2AFastAPI(*, debug: ~typing.Annotated[bool, Doc('\n                Boolean indicating if debug tracebacks should be returned on server\n                errors.\n\n                Read more in the\n                [Starlette docs for Applications](https://www.starlette.dev/applications/#instantiating-the-application).\n                ')] = False, routes: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc("\n                **Note**: you probably shouldn't use this parameter, it is inherited\n                from Starlette and supported for compatibility.\n\n                ---\n\n                A list of routes to serve incoming HTTP and WebSocket requests.\n                "), <warnings.deprecated object at 0x7f30f13217f0>] = None, title: ~typing.Annotated[str, Doc('\n                The title of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(title="ChimichangApp")\n                ```\n                ')] = 'FastAPI', summary: ~typing.Annotated[str | None, Doc('\n                A short summary of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(summary="Deadpond\'s favorite app. Nuff said.")\n                ```\n                ')] = None, description: ~typing.Annotated[str, Doc('\n                A description of the API. Supports Markdown (using\n                [CommonMark syntax](https://commonmark.org/)).\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    description="""\n                                ChimichangApp API helps you do awesome stuff. 🚀\n\n                                ## Items\n\n                                You can **read items**.\n\n                                ## Users\n\n                                You will be able to:\n\n                                * **Create users** (_not implemented_).\n                                * **Read users** (_not implemented_).\n\n                                """\n                )\n                ```\n                ')] = '', version: ~typing.Annotated[str, Doc('\n                The version of the API.\n\n                **Note** This is the version of your application, not the version of\n                the OpenAPI specification nor the version of FastAPI being used.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(version="0.0.1")\n                ```\n                ')] = '0.1.0', openapi_url: ~typing.Annotated[str | None, Doc('\n                The URL where the OpenAPI schema will be served from.\n\n                If you set it to `None`, no OpenAPI schema will be served publicly, and\n                the default automatic endpoints `/docs` and `/redoc` will also be\n                disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#openapi-url).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(openapi_url="/api/v1/openapi.json")\n                ```\n                ')] = '/openapi.json', openapi_tags: ~typing.Annotated[list[dict[str, ~typing.Any]] | None, Doc('\n                A list of tags used by OpenAPI, these are the same `tags` you can set\n                in the *path operations*, like:\n\n                * `@app.get("/users/", tags=["users"])`\n                * `@app.get("/items/", tags=["items"])`\n\n                The order of the tags can be used to specify the order shown in\n                tools like Swagger UI, used in the automatic path `/docs`.\n\n                It\'s not required to specify all the tags used.\n\n                The tags that are not declared MAY be organized randomly or based\n                on the tools\' logic. Each tag name in the list MUST be unique.\n\n                The value of each item is a `dict` containing:\n\n                * `name`: The name of the tag.\n                * `description`: A short description of the tag.\n                    [CommonMark syntax](https://commonmark.org/) MAY be used for rich\n                    text representation.\n                * `externalDocs`: Additional external documentation for this tag. If\n                    provided, it would contain a `dict` with:\n                    * `description`: A short description of the target documentation.\n                        [CommonMark syntax](https://commonmark.org/) MAY be used for\n                        rich text representation.\n                    * `url`: The URL for the target documentation. Value MUST be in\n                        the form of a URL.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-tags).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                tags_metadata = [\n                    {\n                        "name": "users",\n                        "description": "Operations with users. The **login** logic is also here.",\n                    },\n                    {\n                        "name": "items",\n                        "description": "Manage items. So _fancy_ they have their own docs.",\n                        "externalDocs": {\n                            "description": "Items external docs",\n                            "url": "https://fastapi.tiangolo.com/",\n                        },\n                    },\n                ]\n\n                app = FastAPI(openapi_tags=tags_metadata)\n                ```\n                ')] = None, servers: ~typing.Annotated[list[dict[str, str | ~typing.Any]] | None, Doc('\n                A `list` of `dict`s with connectivity information to a target server.\n\n                You would use it, for example, if your application is served from\n                different domains and you want to use the same Swagger UI in the\n                browser to interact with each of them (instead of having multiple\n                browser tabs open). Or if you want to leave fixed the possible URLs.\n\n                If the servers `list` is not provided, or is an empty `list`, the\n                `servers` property in the generated OpenAPI will be:\n\n                * a `dict` with a `url` value of the application\'s mounting point\n                (`root_path`) if it\'s different from `/`.\n                * otherwise, the `servers` property will be omitted from the OpenAPI\n                schema.\n\n                Each item in the `list` is a `dict` containing:\n\n                * `url`: A URL to the target host. This URL supports Server Variables\n                and MAY be relative, to indicate that the host location is relative\n                to the location where the OpenAPI document is being served. Variable\n                substitutions will be made when a variable is named in `{`brackets`}`.\n                * `description`: An optional string describing the host designated by\n                the URL. [CommonMark syntax](https://commonmark.org/) MAY be used for\n                rich text representation.\n                * `variables`: A `dict` between a variable name and its value. The value\n                    is used for substitution in the server\'s URL template.\n\n                Read more in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#additional-servers).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    servers=[\n                        {"url": "https://stag.example.com", "description": "Staging environment"},\n                        {"url": "https://prod.example.com", "description": "Production environment"},\n                    ]\n                )\n                ```\n                ')] = None, dependencies: ~typing.Annotated[~collections.abc.Sequence[~fastapi.params.Depends] | None, Doc('\n                A list of global dependencies, they will be applied to each\n                *path operation*, including in sub-routers.\n\n                Read more about it in the\n                [FastAPI docs for Global Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/global-dependencies/).\n\n                **Example**\n\n                ```python\n                from fastapi import Depends, FastAPI\n\n                from .dependencies import func_dep_1, func_dep_2\n\n                app = FastAPI(dependencies=[Depends(func_dep_1), Depends(func_dep_2)])\n                ```\n                ')] = None, default_response_class: ~typing.Annotated[type[~starlette.responses.Response], Doc('\n                The default response class to be used.\n\n                Read more in the\n                [FastAPI docs for Custom Response - HTML, Stream, File, others](https://fastapi.tiangolo.com/advanced/custom-response/#default-response-class).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n                from fastapi.responses import ORJSONResponse\n\n                app = FastAPI(default_response_class=ORJSONResponse)\n                ```\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, redirect_slashes: ~typing.Annotated[bool, Doc('\n                Whether to detect and redirect slashes in URLs when the client doesn\'t\n                use the same format.\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(redirect_slashes=True)  # the default\n\n                @app.get("/items/")\n                async def read_items():\n                    return [{"item_id": "Foo"}]\n                ```\n\n                With this app, if a client goes to `/items` (without a trailing slash),\n                they will be automatically redirected with an HTTP status code of 307\n                to `/items/`.\n                ')] = True, docs_url: ~typing.Annotated[str | None, Doc('\n                The path to the automatic interactive API documentation.\n                It is handled in the browser by Swagger UI.\n\n                The default URL is `/docs`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url=None)\n                ```\n                ')] = '/docs', redoc_url: ~typing.Annotated[str | None, Doc('\n                The path to the alternative automatic interactive API documentation\n                provided by ReDoc.\n\n                The default URL is `/redoc`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url="redocumentation")\n                ```\n                ')] = '/redoc', swagger_ui_oauth2_redirect_url: ~typing.Annotated[str | None, Doc('\n                The OAuth2 redirect endpoint for the Swagger UI.\n\n                By default it is `/docs/oauth2-redirect`.\n\n                This is only used if you use OAuth2 (with the "Authorize" button)\n                with Swagger UI.\n                ')] = '/docs/oauth2-redirect', swagger_ui_init_oauth: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                OAuth2 configuration for the Swagger UI, by default shown at `/docs`.\n\n                Read more about the available configuration options in the\n                [Swagger UI docs](https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/).\n                ')] = None, middleware: ~typing.Annotated[~collections.abc.Sequence[~starlette.middleware.Middleware] | None, Doc('\n                List of middleware to be added when creating the application.\n\n                In FastAPI you would normally do this with `app.add_middleware()`\n                instead.\n\n                Read more in the\n                [FastAPI docs for Middleware](https://fastapi.tiangolo.com/tutorial/middleware/).\n                ')] = None, exception_handlers: ~typing.Annotated[dict[int | type[Exception], ~collections.abc.Callable[[~starlette.requests.Request, ~typing.Any], ~collections.abc.Coroutine[~typing.Any, ~typing.Any, ~starlette.responses.Response]]] | None, Doc('\n                A dictionary with handlers for exceptions.\n\n                In FastAPI, you would normally use the decorator\n                `@app.exception_handler()`.\n\n                Read more in the\n                [FastAPI docs for Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/).\n                ')] = None, on_startup: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of startup event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, on_shutdown: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of shutdown event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, lifespan: ~typing.Annotated[~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[None]] | ~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[~collections.abc.Mapping[str, ~typing.Any]]] | None, Doc('\n                A `Lifespan` context manager handler. This replaces `startup` and\n                `shutdown` functions with a single context manager.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, terms_of_service: ~typing.Annotated[str | None, Doc('\n                A URL to the Terms of Service for your API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(terms_of_service="http://example.com/terms/")\n                ```\n                ')] = None, contact: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the contact information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) The name of the contact person/organization.\n                * `url`: (`str`) A URL pointing to the contact information. MUST be in\n                    the format of a URL.\n                * `email`: (`str`) The email address of the contact person/organization.\n                    MUST be in the format of an email address.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    contact={\n                        "name": "Deadpoolio the Amazing",\n                        "url": "http://x-force.example.com/contact/",\n                        "email": "dp@x-force.example.com",\n                    }\n                )\n                ```\n                ')] = None, license_info: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the license information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) **REQUIRED** (if a `license_info` is set). The\n                    license name used for the API.\n                * `identifier`: (`str`) An [SPDX](https://spdx.dev/) license expression\n                    for the API. The `identifier` field is mutually exclusive of the `url`\n                    field. Available since OpenAPI 3.1.0, FastAPI 0.99.0.\n                * `url`: (`str`) A URL to the license used for the API. This MUST be\n                    the format of a URL.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    license_info={\n                        "name": "Apache 2.0",\n                        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",\n                    }\n                )\n                ```\n                ')] = None, openapi_prefix: ~typing.Annotated[str, Doc('\n                A URL prefix for the OpenAPI URL.\n                '), <warnings.deprecated object at 0x7f30f106fcb0>] = '', root_path: ~typing.Annotated[str, Doc('\n                A path prefix handled by a proxy that is not seen by the application\n                but is seen by external clients, which affects things like Swagger UI.\n\n                Read more about it at the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path="/api/v1")\n                ```\n                ')] = '', root_path_in_servers: ~typing.Annotated[bool, Doc('\n                To disable automatically generating the URLs in the `servers` field\n                in the autogenerated OpenAPI using the `root_path`.\n\n                Read more about it in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#disable-automatic-server-from-root-path).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path_in_servers=False)\n                ```\n                ')] = True, responses: ~typing.Annotated[dict[int | str, dict[str, ~typing.Any]] | None, Doc('\n                Additional responses to be shown in OpenAPI.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Additional Responses in OpenAPI](https://fastapi.tiangolo.com/advanced/additional-responses/).\n\n                And in the\n                [FastAPI docs for Bigger Applications](https://fastapi.tiangolo.com/tutorial/bigger-applications/#include-an-apirouter-with-a-custom-prefix-tags-responses-and-dependencies).\n                ')] = None, callbacks: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc('\n                OpenAPI callbacks that should apply to all *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Callbacks](https://fastapi.tiangolo.com/advanced/openapi-callbacks/).\n                ')] = None, webhooks: ~typing.Annotated[~fastapi.routing.APIRouter | None, Doc("\n                Add OpenAPI webhooks. This is similar to `callbacks` but it doesn't\n                depend on specific *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                **Note**: This is available since OpenAPI 3.1.0, FastAPI 0.99.0.\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Webhooks](https://fastapi.tiangolo.com/advanced/openapi-webhooks/).\n                ")] = None, deprecated: ~typing.Annotated[bool | None, Doc("\n                Mark all *path operations* as deprecated. You probably don't need it,\n                but it's available.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Path Operation Configuration](https://fastapi.tiangolo.com/tutorial/path-operation-configuration/#deprecate-a-path-operation).\n                ")] = None, include_in_schema: ~typing.Annotated[bool, Doc("\n                To include (or not) all the *path operations* in the generated OpenAPI.\n                You probably don't need it, but it's available.\n\n                This affects the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Query Parameters and String Validations](https://fastapi.tiangolo.com/tutorial/query-params-str-validations/#exclude-parameters-from-openapi).\n                ")] = True, swagger_ui_parameters: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                Parameters to configure Swagger UI, the autogenerated interactive API\n                documentation (by default at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs about how to Configure Swagger UI](https://fastapi.tiangolo.com/how-to/configure-swagger-ui/).\n                ')] = None, generate_unique_id_function: ~typing.Annotated[~collections.abc.Callable[[~fastapi.routing.APIRoute], str], Doc('\n                Customize the function used to generate unique IDs for the *path\n                operations* shown in the generated OpenAPI.\n\n                This is particularly useful when automatically generating clients or\n                SDKs for your API.\n\n                Read more about it in the\n                [FastAPI docs about how to Generate Clients](https://fastapi.tiangolo.com/advanced/generate-clients/#custom-generate-unique-id-function).\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, separate_input_output_schemas: ~typing.Annotated[bool, Doc("\n                Whether to generate separate OpenAPI schemas for request body and\n                response body when the results would be more precise.\n\n                This is particularly useful when automatically generating clients.\n\n                For example, if you have a model like:\n\n                ```python\n                from pydantic import BaseModel\n\n                class Item(BaseModel):\n                    name: str\n                    tags: list[str] = []\n                ```\n\n                When `Item` is used for input, a request body, `tags` is not required,\n                the client doesn't have to provide it.\n\n                But when using `Item` for output, for a response body, `tags` is always\n                available because it has a default value, even if it's just an empty\n                list. So, the client should be able to always expect it.\n\n                In this case, there would be two different schemas, one for input and\n                another one for output.\n\n                Read more about it in the\n                [FastAPI docs about how to separate schemas for input and output](https://fastapi.tiangolo.com/how-to/separate-openapi-schemas)\n                ")] = True, openapi_external_docs: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                This field allows you to provide additional external documentation links.\n                If provided, it must be a dictionary containing:\n\n                * `description`: A brief description of the external documentation.\n                * `url`: The URL pointing to the external documentation. The value **MUST**\n                be a valid URL format.\n\n                **Example**:\n\n                ```python\n                from fastapi import FastAPI\n\n                external_docs = {\n                    "description": "Detailed API Reference",\n                    "url": "https://example.com/api-docs",\n                }\n\n                app = FastAPI(openapi_external_docs=external_docs)\n                ```\n                ')] = None, **extra: ~typing.Annotated[~typing.Any, Doc('\n                Extra keyword arguments to be stored in the app, not used by FastAPI\n                anywhere.\n                ')])
+class a2a.server.apps.jsonrpc.fastapi_app.A2AFastAPI(*, debug: ~typing.Annotated[bool, Doc('\n                Boolean indicating if debug tracebacks should be returned on server\n                errors.\n\n                Read more in the\n                [Starlette docs for Applications](https://www.starlette.dev/applications/#instantiating-the-application).\n                ')] = False, routes: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc("\n                **Note**: you probably shouldn't use this parameter, it is inherited\n                from Starlette and supported for compatibility.\n\n                ---\n\n                A list of routes to serve incoming HTTP and WebSocket requests.\n                "), <warnings.deprecated object at 0x7faae0468470>] = None, title: ~typing.Annotated[str, Doc('\n                The title of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(title="ChimichangApp")\n                ```\n                ')] = 'FastAPI', summary: ~typing.Annotated[str | None, Doc('\n                A short summary of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(summary="Deadpond\'s favorite app. Nuff said.")\n                ```\n                ')] = None, description: ~typing.Annotated[str, Doc('\n                A description of the API. Supports Markdown (using\n                [CommonMark syntax](https://commonmark.org/)).\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    description="""\n                                ChimichangApp API helps you do awesome stuff. 🚀\n\n                                ## Items\n\n                                You can **read items**.\n\n                                ## Users\n\n                                You will be able to:\n\n                                * **Create users** (_not implemented_).\n                                * **Read users** (_not implemented_).\n\n                                """\n                )\n                ```\n                ')] = '', version: ~typing.Annotated[str, Doc('\n                The version of the API.\n\n                **Note** This is the version of your application, not the version of\n                the OpenAPI specification nor the version of FastAPI being used.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(version="0.0.1")\n                ```\n                ')] = '0.1.0', openapi_url: ~typing.Annotated[str | None, Doc('\n                The URL where the OpenAPI schema will be served from.\n\n                If you set it to `None`, no OpenAPI schema will be served publicly, and\n                the default automatic endpoints `/docs` and `/redoc` will also be\n                disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#openapi-url).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(openapi_url="/api/v1/openapi.json")\n                ```\n                ')] = '/openapi.json', openapi_tags: ~typing.Annotated[list[dict[str, ~typing.Any]] | None, Doc('\n                A list of tags used by OpenAPI, these are the same `tags` you can set\n                in the *path operations*, like:\n\n                * `@app.get("/users/", tags=["users"])`\n                * `@app.get("/items/", tags=["items"])`\n\n                The order of the tags can be used to specify the order shown in\n                tools like Swagger UI, used in the automatic path `/docs`.\n\n                It\'s not required to specify all the tags used.\n\n                The tags that are not declared MAY be organized randomly or based\n                on the tools\' logic. Each tag name in the list MUST be unique.\n\n                The value of each item is a `dict` containing:\n\n                * `name`: The name of the tag.\n                * `description`: A short description of the tag.\n                    [CommonMark syntax](https://commonmark.org/) MAY be used for rich\n                    text representation.\n                * `externalDocs`: Additional external documentation for this tag. If\n                    provided, it would contain a `dict` with:\n                    * `description`: A short description of the target documentation.\n                        [CommonMark syntax](https://commonmark.org/) MAY be used for\n                        rich text representation.\n                    * `url`: The URL for the target documentation. Value MUST be in\n                        the form of a URL.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-tags).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                tags_metadata = [\n                    {\n                        "name": "users",\n                        "description": "Operations with users. The **login** logic is also here.",\n                    },\n                    {\n                        "name": "items",\n                        "description": "Manage items. So _fancy_ they have their own docs.",\n                        "externalDocs": {\n                            "description": "Items external docs",\n                            "url": "https://fastapi.tiangolo.com/",\n                        },\n                    },\n                ]\n\n                app = FastAPI(openapi_tags=tags_metadata)\n                ```\n                ')] = None, servers: ~typing.Annotated[list[dict[str, str | ~typing.Any]] | None, Doc('\n                A `list` of `dict`s with connectivity information to a target server.\n\n                You would use it, for example, if your application is served from\n                different domains and you want to use the same Swagger UI in the\n                browser to interact with each of them (instead of having multiple\n                browser tabs open). Or if you want to leave fixed the possible URLs.\n\n                If the servers `list` is not provided, or is an empty `list`, the\n                `servers` property in the generated OpenAPI will be:\n\n                * a `dict` with a `url` value of the application\'s mounting point\n                (`root_path`) if it\'s different from `/`.\n                * otherwise, the `servers` property will be omitted from the OpenAPI\n                schema.\n\n                Each item in the `list` is a `dict` containing:\n\n                * `url`: A URL to the target host. This URL supports Server Variables\n                and MAY be relative, to indicate that the host location is relative\n                to the location where the OpenAPI document is being served. Variable\n                substitutions will be made when a variable is named in `{`brackets`}`.\n                * `description`: An optional string describing the host designated by\n                the URL. [CommonMark syntax](https://commonmark.org/) MAY be used for\n                rich text representation.\n                * `variables`: A `dict` between a variable name and its value. The value\n                    is used for substitution in the server\'s URL template.\n\n                Read more in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#additional-servers).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    servers=[\n                        {"url": "https://stag.example.com", "description": "Staging environment"},\n                        {"url": "https://prod.example.com", "description": "Production environment"},\n                    ]\n                )\n                ```\n                ')] = None, dependencies: ~typing.Annotated[~collections.abc.Sequence[~fastapi.params.Depends] | None, Doc('\n                A list of global dependencies, they will be applied to each\n                *path operation*, including in sub-routers.\n\n                Read more about it in the\n                [FastAPI docs for Global Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/global-dependencies/).\n\n                **Example**\n\n                ```python\n                from fastapi import Depends, FastAPI\n\n                from .dependencies import func_dep_1, func_dep_2\n\n                app = FastAPI(dependencies=[Depends(func_dep_1), Depends(func_dep_2)])\n                ```\n                ')] = None, default_response_class: ~typing.Annotated[type[~starlette.responses.Response], Doc('\n                The default response class to be used.\n\n                Read more in the\n                [FastAPI docs for Custom Response - HTML, Stream, File, others](https://fastapi.tiangolo.com/advanced/custom-response/#default-response-class).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n                from fastapi.responses import ORJSONResponse\n\n                app = FastAPI(default_response_class=ORJSONResponse)\n                ```\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, redirect_slashes: ~typing.Annotated[bool, Doc('\n                Whether to detect and redirect slashes in URLs when the client doesn\'t\n                use the same format.\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(redirect_slashes=True)  # the default\n\n                @app.get("/items/")\n                async def read_items():\n                    return [{"item_id": "Foo"}]\n                ```\n\n                With this app, if a client goes to `/items` (without a trailing slash),\n                they will be automatically redirected with an HTTP status code of 307\n                to `/items/`.\n                ')] = True, docs_url: ~typing.Annotated[str | None, Doc('\n                The path to the automatic interactive API documentation.\n                It is handled in the browser by Swagger UI.\n\n                The default URL is `/docs`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url=None)\n                ```\n                ')] = '/docs', redoc_url: ~typing.Annotated[str | None, Doc('\n                The path to the alternative automatic interactive API documentation\n                provided by ReDoc.\n\n                The default URL is `/redoc`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url="redocumentation")\n                ```\n                ')] = '/redoc', swagger_ui_oauth2_redirect_url: ~typing.Annotated[str | None, Doc('\n                The OAuth2 redirect endpoint for the Swagger UI.\n\n                By default it is `/docs/oauth2-redirect`.\n\n                This is only used if you use OAuth2 (with the "Authorize" button)\n                with Swagger UI.\n                ')] = '/docs/oauth2-redirect', swagger_ui_init_oauth: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                OAuth2 configuration for the Swagger UI, by default shown at `/docs`.\n\n                Read more about the available configuration options in the\n                [Swagger UI docs](https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/).\n                ')] = None, middleware: ~typing.Annotated[~collections.abc.Sequence[~starlette.middleware.Middleware] | None, Doc('\n                List of middleware to be added when creating the application.\n\n                In FastAPI you would normally do this with `app.add_middleware()`\n                instead.\n\n                Read more in the\n                [FastAPI docs for Middleware](https://fastapi.tiangolo.com/tutorial/middleware/).\n                ')] = None, exception_handlers: ~typing.Annotated[dict[int | type[Exception], ~collections.abc.Callable[[~starlette.requests.Request, ~typing.Any], ~collections.abc.Coroutine[~typing.Any, ~typing.Any, ~starlette.responses.Response]]] | None, Doc('\n                A dictionary with handlers for exceptions.\n\n                In FastAPI, you would normally use the decorator\n                `@app.exception_handler()`.\n\n                Read more in the\n                [FastAPI docs for Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/).\n                ')] = None, on_startup: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of startup event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, on_shutdown: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of shutdown event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, lifespan: ~typing.Annotated[~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[None]] | ~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[~collections.abc.Mapping[str, ~typing.Any]]] | None, Doc('\n                A `Lifespan` context manager handler. This replaces `startup` and\n                `shutdown` functions with a single context manager.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, terms_of_service: ~typing.Annotated[str | None, Doc('\n                A URL to the Terms of Service for your API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(terms_of_service="http://example.com/terms/")\n                ```\n                ')] = None, contact: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the contact information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) The name of the contact person/organization.\n                * `url`: (`str`) A URL pointing to the contact information. MUST be in\n                    the format of a URL.\n                * `email`: (`str`) The email address of the contact person/organization.\n                    MUST be in the format of an email address.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    contact={\n                        "name": "Deadpoolio the Amazing",\n                        "url": "http://x-force.example.com/contact/",\n                        "email": "dp@x-force.example.com",\n                    }\n                )\n                ```\n                ')] = None, license_info: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the license information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) **REQUIRED** (if a `license_info` is set). The\n                    license name used for the API.\n                * `identifier`: (`str`) An [SPDX](https://spdx.dev/) license expression\n                    for the API. The `identifier` field is mutually exclusive of the `url`\n                    field. Available since OpenAPI 3.1.0, FastAPI 0.99.0.\n                * `url`: (`str`) A URL to the license used for the API. This MUST be\n                    the format of a URL.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    license_info={\n                        "name": "Apache 2.0",\n                        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",\n                    }\n                )\n                ```\n                ')] = None, openapi_prefix: ~typing.Annotated[str, Doc('\n                A URL prefix for the OpenAPI URL.\n                '), <warnings.deprecated object at 0x7faae016a5d0>] = '', root_path: ~typing.Annotated[str, Doc('\n                A path prefix handled by a proxy that is not seen by the application\n                but is seen by external clients, which affects things like Swagger UI.\n\n                Read more about it at the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path="/api/v1")\n                ```\n                ')] = '', root_path_in_servers: ~typing.Annotated[bool, Doc('\n                To disable automatically generating the URLs in the `servers` field\n                in the autogenerated OpenAPI using the `root_path`.\n\n                Read more about it in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#disable-automatic-server-from-root-path).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path_in_servers=False)\n                ```\n                ')] = True, responses: ~typing.Annotated[dict[int | str, dict[str, ~typing.Any]] | None, Doc('\n                Additional responses to be shown in OpenAPI.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Additional Responses in OpenAPI](https://fastapi.tiangolo.com/advanced/additional-responses/).\n\n                And in the\n                [FastAPI docs for Bigger Applications](https://fastapi.tiangolo.com/tutorial/bigger-applications/#include-an-apirouter-with-a-custom-prefix-tags-responses-and-dependencies).\n                ')] = None, callbacks: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc('\n                OpenAPI callbacks that should apply to all *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Callbacks](https://fastapi.tiangolo.com/advanced/openapi-callbacks/).\n                ')] = None, webhooks: ~typing.Annotated[~fastapi.routing.APIRouter | None, Doc("\n                Add OpenAPI webhooks. This is similar to `callbacks` but it doesn't\n                depend on specific *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                **Note**: This is available since OpenAPI 3.1.0, FastAPI 0.99.0.\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Webhooks](https://fastapi.tiangolo.com/advanced/openapi-webhooks/).\n                ")] = None, deprecated: ~typing.Annotated[bool | None, Doc("\n                Mark all *path operations* as deprecated. You probably don't need it,\n                but it's available.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Path Operation Configuration](https://fastapi.tiangolo.com/tutorial/path-operation-configuration/#deprecate-a-path-operation).\n                ")] = None, include_in_schema: ~typing.Annotated[bool, Doc("\n                To include (or not) all the *path operations* in the generated OpenAPI.\n                You probably don't need it, but it's available.\n\n                This affects the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Query Parameters and String Validations](https://fastapi.tiangolo.com/tutorial/query-params-str-validations/#exclude-parameters-from-openapi).\n                ")] = True, swagger_ui_parameters: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                Parameters to configure Swagger UI, the autogenerated interactive API\n                documentation (by default at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs about how to Configure Swagger UI](https://fastapi.tiangolo.com/how-to/configure-swagger-ui/).\n                ')] = None, generate_unique_id_function: ~typing.Annotated[~collections.abc.Callable[[~fastapi.routing.APIRoute], str], Doc('\n                Customize the function used to generate unique IDs for the *path\n                operations* shown in the generated OpenAPI.\n\n                This is particularly useful when automatically generating clients or\n                SDKs for your API.\n\n                Read more about it in the\n                [FastAPI docs about how to Generate Clients](https://fastapi.tiangolo.com/advanced/generate-clients/#custom-generate-unique-id-function).\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, separate_input_output_schemas: ~typing.Annotated[bool, Doc("\n                Whether to generate separate OpenAPI schemas for request body and\n                response body when the results would be more precise.\n\n                This is particularly useful when automatically generating clients.\n\n                For example, if you have a model like:\n\n                ```python\n                from pydantic import BaseModel\n\n                class Item(BaseModel):\n                    name: str\n                    tags: list[str] = []\n                ```\n\n                When `Item` is used for input, a request body, `tags` is not required,\n                the client doesn't have to provide it.\n\n                But when using `Item` for output, for a response body, `tags` is always\n                available because it has a default value, even if it's just an empty\n                list. So, the client should be able to always expect it.\n\n                In this case, there would be two different schemas, one for input and\n                another one for output.\n\n                Read more about it in the\n                [FastAPI docs about how to separate schemas for input and output](https://fastapi.tiangolo.com/how-to/separate-openapi-schemas)\n                ")] = True, openapi_external_docs: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                This field allows you to provide additional external documentation links.\n                If provided, it must be a dictionary containing:\n\n                * `description`: A brief description of the external documentation.\n                * `url`: The URL pointing to the external documentation. The value **MUST**\n                be a valid URL format.\n\n                **Example**:\n\n                ```python\n                from fastapi import FastAPI\n\n                external_docs = {\n                    "description": "Detailed API Reference",\n                    "url": "https://example.com/api-docs",\n                }\n\n                app = FastAPI(openapi_external_docs=external_docs)\n                ```\n                ')] = None, **extra: ~typing.Annotated[~typing.Any, Doc('\n                Extra keyword arguments to be stored in the app, not used by FastAPI\n                anywhere.\n                ')])
 
    Bases: "FastAPI"
 
@@ -20292,7 +20174,7 @@ class a2a.utils.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2483950>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7faae0f6c250>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -20318,7 +20200,7 @@ class a2a.utils.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2473df0>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7faae13f7680>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -20362,7 +20244,7 @@ class a2a.utils.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2483950>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7faae0f6c250>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -20382,7 +20264,7 @@ class a2a.utils.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f30f2473df0>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7faae13f7680>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -21496,9 +21378,9 @@ option java_multiple_files = true;
 option java_outer_classname = "A2A";
 option java_package = "com.google.a2a.v1";
 
-// A2AService defines the operations of the A2A protocol.
+// Provides operations for interacting with agents using the A2A protocol.
 service A2AService {
-  // Send a message to the agent.
+  // Sends a message to an agent.
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {
     option (google.api.http) = {
       post: "/message:send"
@@ -21509,7 +21391,8 @@ service A2AService {
       }
     };
   }
-  // SendStreamingMessage is a streaming version of SendMessage.
+  // Sends a streaming message to an agent, allowing for real-time interaction and status updates.
+  // Streaming version of `SendMessage`
   rpc SendStreamingMessage(SendMessageRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       post: "/message:stream"
@@ -21521,7 +21404,7 @@ service A2AService {
     };
   }
 
-  // Get the current state of a task from the agent.
+  // Gets the latest state of a task.
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
       get: "/tasks/{id=*}"
@@ -21531,7 +21414,7 @@ service A2AService {
     };
     option (google.api.method_signature) = "id";
   }
-  // List tasks with optional filtering and pagination.
+  // Lists tasks that match the specified filter.
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
       get: "/tasks"
@@ -21540,7 +21423,7 @@ service A2AService {
       }
     };
   }
-  // Cancel a task.
+  // Cancels a task in progress.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
     option (google.api.http) = {
       post: "/tasks/{id=*}:cancel"
@@ -21551,8 +21434,8 @@ service A2AService {
       }
     };
   }
-  // SubscribeToTask allows subscribing to task updates for tasks not in terminal state.
-  // Returns UnsupportedOperationError if task is in terminal state (completed, failed, canceled, rejected).
+  // Subscribes to task updates for tasks not in a terminal state.
+  // Returns `UnsupportedOperationError` if the task is already in a terminal state (completed, failed, canceled, rejected).
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       get: "/tasks/{id=*}:subscribe"
@@ -21562,7 +21445,10 @@ service A2AService {
     };
   }
 
-  // Create a push notification config for a task.
+  // (-- api-linter: client-libraries::4232::required-fields=disabled
+  //     api-linter: core::0133::method-signature=disabled
+  //     aip.dev/not-precedent: method_signature preserved for backwards compatibility --)
+  // Creates a push notification config for a task.
   rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/tasks/{task_id=*}/pushNotificationConfigs"
@@ -21574,7 +21460,7 @@ service A2AService {
     };
     option (google.api.method_signature) = "task_id,config";
   }
-  // Get a push notification config for a task.
+  // Gets a push notification config for a task.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       get: "/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
@@ -21584,7 +21470,7 @@ service A2AService {
     };
     option (google.api.method_signature) = "task_id,id";
   }
-  // Get a list of push notifications configured for a task.
+  // Lists push notification configs for a task.
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
       get: "/tasks/{task_id=*}/pushNotificationConfigs"
@@ -21594,7 +21480,7 @@ service A2AService {
     };
     option (google.api.method_signature) = "task_id";
   }
-  // GetExtendedAgentCard returns the extended agent card for authenticated agents.
+  // Gets the extended agent card for the authenticated agent.
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
       get: "/extendedAgentCard"
@@ -21603,7 +21489,7 @@ service A2AService {
       }
     };
   }
-  // Delete a push notification config for a task.
+  // Deletes a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
@@ -21617,7 +21503,8 @@ service A2AService {
 
 // Configuration of a send message request.
 message SendMessageConfiguration {
-  // A list of media types the client is prepared to accept for response parts. Agents SHOULD use this to tailor their output.
+  // A list of media types the client is prepared to accept for response parts.
+  // Agents SHOULD use this to tailor their output.
   repeated string accepted_output_modes = 1;
   // Configuration for the agent to send push notifications for task updates.
   PushNotificationConfig push_notification_config = 2;
@@ -21626,11 +21513,12 @@ message SendMessageConfiguration {
   // value of zero is a request to not include any messages. The server MUST NOT
   // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
-  // If true, the operation waits until the task reaches a terminal or interrupted state before returning. Default is false.
+  // If true, the operation waits until the task reaches a terminal or interrupted state before returning.
+  // Defaults to `false`.
   bool blocking = 4;
 }
 
-// Task is the core unit of action for A2A. It has a current status
+// `Task` is the core unit of action for A2A. It has a current status
 // and when results are created for the task they are stored in the
 // artifact. If there are multiple turns for a task, these are stored in
 // history.
@@ -21641,12 +21529,12 @@ message Task {
   // Unique identifier (e.g. UUID) for the contextual collection of interactions
   // (tasks and messages). Created by the A2A server.
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
-  // The current status of a Task, including state and a message.
+  // The current status of a `Task`, including `state` and a `message`.
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
-  // A set of output artifacts for a Task.
+  // A set of output artifacts for a `Task`.
   repeated Artifact artifacts = 4;
   // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
-  // The history of interactions from a task.
+  // The history of interactions from a `Task`.
   repeated Message history = 5;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
@@ -21657,26 +21545,23 @@ message Task {
 enum TaskState {
   // The task is in an unknown or indeterminate state.
   TASK_STATE_UNSPECIFIED = 0;
-  // Represents the status that acknowledges a task is created.
+  // Indicates that a task has been successfully submitted and acknowledged.
   TASK_STATE_SUBMITTED = 1;
-  // Represents the status that a task is actively being processed.
+  // Indicates that a task is actively being processed by the agent.
   TASK_STATE_WORKING = 2;
-  // Represents the status a task is finished. This is a terminal state.
+  // Indicates that a task has finished successfully. This is a terminal state.
   TASK_STATE_COMPLETED = 3;
-  // Represents the status a task is done but failed. This is a terminal state.
+  // Indicates that a task has finished with an error. This is a terminal state.
   TASK_STATE_FAILED = 4;
-  // Represents the status a task was canceled before it finished.
-  // This is a terminal state.
+  // Indicates that a task was canceled before completion. This is a terminal state.
   TASK_STATE_CANCELED = 5;
-  // Represents the status that the task requires information to complete.
-  // This is an interrupted state.
+  // Indicates that the agent requires additional user input to proceed. This is an interrupted state.
   TASK_STATE_INPUT_REQUIRED = 6;
-  // Represents the status that the agent has decided to not perform the task.
+  // Indicates that the agent has decided to not perform the task.
   // This may be done during initial task creation or later once an agent
   // has determined it can't or won't proceed. This is a terminal state.
   TASK_STATE_REJECTED = 7;
-  // Represents the state that some authentication is needed from the upstream
-  // client. This is an interrupted state. Authentication is expected to come out-of-band.
+  // Indicates that authentication is required to proceed. This is an interrupted state.
   TASK_STATE_AUTH_REQUIRED = 8;
 }
 
@@ -21691,61 +21576,57 @@ message TaskStatus {
   google.protobuf.Timestamp timestamp = 3;
 }
 
-// Part represents a container for a section of communication content.
+// `Part` represents a container for a section of communication content.
 // Parts can be purely textual, some sort of file (image, video, etc) or
 // a structured data blob (i.e. JSON).
 message Part {
   oneof content {
-    // The string content of the text part.
+    // The string content of the `text` part.
     string text = 1;
-    // The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.
+    // The `raw` byte content of a file. In JSON serialization, this is encoded as a base64 string.
     bytes raw = 2;
-    // A URL pointing to the file's content.
+    // A `url` pointing to the file's content.
     string url = 3;
-    // Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null).
+    // Arbitrary structured `data` as a JSON value (object, array, string, number, boolean, or null).
     google.protobuf.Value data = 4;
   }
-  // Optional metadata associated with this part.
+  // Optional. metadata associated with this part.
   google.protobuf.Struct metadata = 5;
-  // An optional name for the file (e.g., "document.pdf").
+  // An optional `filename` for the file (e.g., "document.pdf").
   string filename = 6;
-  // The media type (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png").
+  // The `media_type` (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png").
   // This field is available for all part types.
   string media_type = 7;
 }
 
 // Defines the sender of a message in A2A protocol communication.
 enum Role {
+  // The role is unspecified.
   ROLE_UNSPECIFIED = 0;
-  // USER role refers to communication from the client to the server.
+  // The message is from the client to the server.
   ROLE_USER = 1;
-  // AGENT role refers to communication from the server to the client.
+  // The message is from the server to the client.
   ROLE_AGENT = 2;
 }
 
-// Message is one unit of communication between client and server. It can be
+// `Message` is one unit of communication between client and server. It can be
 // associated with a context and/or a task. For server messages, `context_id` must
 // be provided, and `task_id` only if a task was created. For client messages, both
 // fields are optional, with the caveat that if both are provided, they have to
 // match (the `context_id` has to be the one that is set on the task). If only
 // `task_id` is provided, the server will infer `context_id` from it.
 message Message {
-  // The unique identifier (e.g. UUID) of the message. This is required and
-  // created by the message creator.
+  // The unique identifier (e.g. UUID) of the message. This is created by the message creator.
   string message_id = 1 [(google.api.field_behavior) = REQUIRED];
-  // The context id of the message. This is optional and if set, the message
-  // will be associated with the given context.
+  // Optional. The context id of the message. If set, the message will be associated with the given context.
   string context_id = 2;
-  // The task id of the message. This is optional and if set, the message
-  // will be associated with the given task.
+  // Optional. The task id of the message. If set, the message will be associated with the given task.
   string task_id = 3;
   // Identifies the sender of the message.
   Role role = 4 [(google.api.field_behavior) = REQUIRED];
-  // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
   // Parts is the container of the message content.
   repeated Part parts = 5 [(google.api.field_behavior) = REQUIRED];
-  // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
-  // Any optional metadata to provide along with the message.
+  // Optional. Any metadata to provide along with the message.
   google.protobuf.Struct metadata = 6;
   // The URIs of extensions that are present or contributed to this Message.
   repeated string extensions = 7;
@@ -21755,40 +21636,38 @@ message Message {
 
 // Artifacts represent task outputs.
 message Artifact {
-  // Unique identifier (e.g. UUID) for the artifact. It must be at least unique
-  // within a task.
+  // Unique identifier (e.g. UUID) for the artifact. It must be unique within a task.
   string artifact_id = 1 [(google.api.field_behavior) = REQUIRED];
   // A human readable name for the artifact.
   string name = 3;
-  // A human readable description of the artifact, optional.
+  // Optional. A human readable description of the artifact.
   string description = 4;
   // The content of the artifact. Must contain at least one part.
   repeated Part parts = 5 [(google.api.field_behavior) = REQUIRED];
-  // Optional metadata included with the artifact.
+  // Optional. Metadata included with the artifact.
   google.protobuf.Struct metadata = 6;
   // The URIs of extensions that are present or contributed to this Artifact.
   repeated string extensions = 7;
 }
 
-// An event sent by the agent to notify the client of a change in a task's
-// status.
+// An event sent by the agent to notify the client of a change in a task's status.
 message TaskStatusUpdateEvent {
-  // The id of the task that is changed
+  // The ID of the task that has changed.
   string task_id = 1 [(google.api.field_behavior) = REQUIRED];
-  // The id of the context that the task belongs to
+  // The ID of the context that the task belongs to.
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The new status of the task.
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
   reserved 4;
-  // Optional metadata to associate with the task update.
+  // Optional. Metadata associated with the task update.
   google.protobuf.Struct metadata = 5;
 }
 
 // A task delta where an artifact has been generated.
 message TaskArtifactUpdateEvent {
-  // The id of the task for this artifact.
+  // The ID of the task for this artifact.
   string task_id = 1 [(google.api.field_behavior) = REQUIRED];
-  // The id of the context that this task belongs to.
+  // The ID of the context that this task belongs to.
   string context_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The artifact that was generated or updated.
   Artifact artifact = 3 [(google.api.field_behavior) = REQUIRED];
@@ -21797,26 +21676,27 @@ message TaskArtifactUpdateEvent {
   bool append = 4;
   // If true, this is the final chunk of the artifact.
   bool last_chunk = 5;
-  // Optional metadata associated with the artifact update.
+  // Optional. Metadata associated with the artifact update.
   google.protobuf.Struct metadata = 6;
 }
 
 // Configuration for setting up push notifications for task updates.
 message PushNotificationConfig {
-  // A unique identifier (e.g. UUID) for this push notification.
+  // A unique identifier (e.g. UUID) for this push notification configuration.
   string id = 1;
-  // Url to send the notification too
+  // The URL where the notification should be sent.
   string url = 2 [(google.api.field_behavior) = REQUIRED];
-  // Token unique for this task/session
+  // A token unique for this task or session.
   string token = 3;
-  // Authentication information required to send the notification
+  // Authentication information required to send the notification.
   AuthenticationInfo authentication = 4;
 }
 
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
   // HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
-  // Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
+  // Examples: `Bearer`, `Basic`, `Digest`.
+  // Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
   string scheme = 1 [(google.api.field_behavior) = REQUIRED];
   // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
   string credentials = 2;
@@ -21832,7 +21712,7 @@ message AgentInterface {
   // easily extended for other protocol bindings. The core ones officially
   // supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
-  // Tenant to be set in the request when calling the agent.
+  // Tenant ID to be used in the request when calling the agent.
   string tenant = 3;
   // The version of the A2A protocol this interface exposes.
   // Use the latest supported minor version per major version.
@@ -21855,14 +21735,14 @@ message AgentCard {
   // in understanding its purpose.
   // Example: "Agent that helps users with recipes and cooking."
   string description = 2 [(google.api.field_behavior) = REQUIRED];
-  // Ordered list of supported interfaces. First entry is preferred.
+  // Ordered list of supported interfaces. The first entry is preferred.
   repeated AgentInterface supported_interfaces = 19 [(google.api.field_behavior) = REQUIRED];
   // The service provider of the agent.
   AgentProvider provider = 4;
   // The version of the agent.
   // Example: "1.0.0"
   string version = 5 [(google.api.field_behavior) = REQUIRED];
-  // A url to provide additional documentation about the agent.
+  // A URL providing additional documentation about the agent.
   optional string documentation_url = 6;
   // A2A Capability set supported by the agent.
   AgentCapabilities capabilities = 7 [(google.api.field_behavior) = REQUIRED];
@@ -21876,13 +21756,13 @@ message AgentCard {
   repeated string default_input_modes = 10 [(google.api.field_behavior) = REQUIRED];
   // The media types supported as outputs from this agent.
   repeated string default_output_modes = 11 [(google.api.field_behavior) = REQUIRED];
-  // Skills represent an ability of an agent. It is largely
-  // a descriptive concept but represents a more focused set of behaviors that the
+  // Skills represent the abilities of an agent.
+  // It is largely a descriptive concept but represents a more focused set of behaviors that the
   // agent is likely to succeed at.
   repeated AgentSkill skills = 12 [(google.api.field_behavior) = REQUIRED];
-  // JSON Web Signatures computed for this AgentCard.
+  // JSON Web Signatures computed for this `AgentCard`.
   repeated AgentCardSignature signatures = 17;
-  // An optional URL to an icon for the agent.
+  // Optional. A URL to an icon for the agent.
   optional string icon_url = 18;
 }
 
@@ -21918,7 +21798,7 @@ message AgentExtension {
   string description = 2;
   // If true, the client must understand and comply with the extension's requirements.
   bool required = 3;
-  // Optional, extension-specific configuration parameters.
+  // Optional. Extension-specific configuration parameters.
   google.protobuf.Struct params = 4;
 }
 
@@ -21945,38 +21825,40 @@ message AgentSkill {
 // AgentCardSignature represents a JWS signature of an AgentCard.
 // This follows the JSON format of an RFC 7515 JSON Web Signature (JWS).
 message AgentCardSignature {
-  // The protected JWS header for the signature. This is always a
-  // base64url-encoded JSON object. Required.
+  // (-- api-linter: core::0140::reserved-words=disabled
+  //     aip.dev/not-precedent: Backwards compatibility --)
+  // Required. The protected JWS header for the signature. This is always a
+  // base64url-encoded JSON object.
   string protected = 1 [(google.api.field_behavior) = REQUIRED];
-  // The computed signature, base64url-encoded. Required.
+  // Required. The computed signature, base64url-encoded.
   string signature = 2 [(google.api.field_behavior) = REQUIRED];
   // The unprotected JWS header values.
   google.protobuf.Struct header = 3;
 }
 
-// A container associating a push notification configuration with a specific
-// task.
+// A container associating a push notification configuration with a specific task.
 message TaskPushNotificationConfig {
-  // Optional tenant
+  // Optional. Tenant ID.
   string tenant = 4;
-
-  // The id of the config.
+  // The ID of the configuration.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
-
-  // The id of the task this config is associated with.
+  // The ID of the task this configuration is associated with.
   string task_id = 3 [(google.api.field_behavior) = REQUIRED];
-
   // The push notification configuration details.
   PushNotificationConfig push_notification_config = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
+// A list of strings.
 message StringList {
+  // The individual string values.
   repeated string list = 1;
 }
 // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 
+// Defines the security requirements for an agent.
 message SecurityRequirement {
+  // A map of security schemes to the required scopes.
   map<string, StringList> schemes = 1;
 }
 
@@ -22017,7 +21899,7 @@ message HTTPAuthSecurityScheme {
   // This value should be registered in the IANA Authentication Scheme registry.
   string scheme = 2 [(google.api.field_behavior) = REQUIRED];
   // A hint to the client to identify how the bearer token is formatted (e.g., "JWT").
-  // This is primarily for documentation purposes.
+  // Primarily for documentation purposes.
   string bearer_format = 3;
 }
 
@@ -22027,8 +21909,8 @@ message OAuth2SecurityScheme {
   string description = 1;
   // An object containing configuration information for the supported OAuth 2.0 flows.
   OAuthFlows flows = 2 [(google.api.field_behavior) = REQUIRED];
-  // URL to the oauth2 authorization server metadata
-  // RFC8414 (https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.
+  // URL to the OAuth2 authorization server metadata [RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414).
+  // TLS is required.
   string oauth2_metadata_url = 3;
 }
 
@@ -22036,8 +21918,7 @@ message OAuth2SecurityScheme {
 message OpenIdConnectSecurityScheme {
   // An optional description for the security scheme.
   string description = 1;
-  // The OpenID Connect Discovery URL for the OIDC provider's metadata.
-  // See: https://openid.net/specs/openid-connect-discovery-1_0.html
+  // The [OpenID Connect Discovery URL](https://openid.net/specs/openid-connect-discovery-1_0.html) for the OIDC provider's metadata.
   string open_id_connect_url = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
@@ -22054,7 +21935,9 @@ message OAuthFlows {
     AuthorizationCodeOAuthFlow authorization_code = 1;
     // Configuration for the OAuth Client Credentials flow.
     ClientCredentialsOAuthFlow client_credentials = 2;
+    // Deprecated: Use Authorization Code + PKCE instead.
     ImplicitOAuthFlow implicit = 3 [deprecated = true];
+    // Deprecated: Use Authorization Code + PKCE or Device Code.
     PasswordOAuthFlow password = 4 [deprecated = true];
     // Configuration for the OAuth Device Code flow.
     DeviceCodeOAuthFlow device_code = 5;
@@ -22086,7 +21969,7 @@ message ClientCredentialsOAuthFlow {
   map<string, string> scopes = 3 [(google.api.field_behavior) = REQUIRED];
 }
 
-// DEPRECATED
+// Deprecated: Use Authorization Code + PKCE instead.
 message ImplicitOAuthFlow {
   // The authorization URL to be used for this flow. This MUST be in the
   // form of a URL. The OAuth2 standard requires the use of TLS
@@ -22099,7 +21982,7 @@ message ImplicitOAuthFlow {
   map<string, string> scopes = 3;
 }
 
-// DEPRECATED
+// Deprecated: Use Authorization Code + PKCE or Device Code.
 message PasswordOAuthFlow {
   // The token URL to be used for this flow. This MUST be in the form of a URL.
   // The OAuth2 standard requires the use of TLS.
@@ -22128,7 +22011,7 @@ message DeviceCodeOAuthFlow {
 
 // Represents a request for the `SendMessage` method.
 message SendMessageRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 4;
   // The message to send to the agent.
   Message message = 1 [(google.api.field_behavior) = REQUIRED];
@@ -22140,9 +22023,9 @@ message SendMessageRequest {
 
 // Represents a request for the `GetTask` method.
 message GetTaskRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 3;
-  // The resource id of the task.
+  // The resource ID of the task to retrieve.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
   // The maximum number of most recent messages from the task's history to retrieve. An
   // unset value means the client does not impose any limit. A value of zero is
@@ -22153,16 +22036,20 @@ message GetTaskRequest {
 
 // Parameters for listing tasks with optional filtering criteria.
 message ListTasksRequest {
-  // Optional tenant, provided as a path parameter.
+  // Tenant ID, provided as a path parameter.
   string tenant = 8;
   // Filter tasks by context ID to get tasks from a specific conversation or session.
   string context_id = 1;
   // Filter tasks by their current status state.
   TaskState status = 2;
-  // Maximum number of tasks to return. Must be between 1 and 100.
-  // Defaults to 50 if not specified.
+  // The maximum number of tasks to return. The service may return fewer than this value.
+  // If unspecified, at most 50 tasks will be returned.
+  // The minimum value is 1.
+  // The maximum value is 100.
   optional int32 page_size = 3;
-  // Token for pagination. Use the `next_page_token` from a previous `ListTasksResponse`.
+  // A page token, received from a previous `ListTasks` call.
+  // `ListTasksResponse.next_page_token`.
+  // Provide this to retrieve the subsequent page.
   string page_token = 4;
   // The maximum number of messages to include in each task's history.
   optional int32 history_length = 5;
@@ -22178,9 +22065,9 @@ message ListTasksRequest {
 message ListTasksResponse {
   // Array of tasks matching the specified criteria.
   repeated Task tasks = 1 [(google.api.field_behavior) = REQUIRED];
-  // Token for retrieving the next page. Empty string if no more results.
+  // A token to retrieve the next page of results, or empty if there are no more results in the list.
   string next_page_token = 2 [(google.api.field_behavior) = REQUIRED];
-  // The size of page requested.
+  // The page size used for this response.
   int32 page_size = 3 [(google.api.field_behavior) = REQUIRED];
   // Total number of tasks available (before pagination).
   int32 total_size = 4 [(google.api.field_behavior) = REQUIRED];
@@ -22188,78 +22075,87 @@ message ListTasksResponse {
 
 // Represents a request for the `CancelTask` method.
 message CancelTaskRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 2;
-  // The resource id of the task to cancel.
+  // The resource ID of the task to cancel.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
+// Represents a request for the `GetTaskPushNotificationConfig` method.
 message GetTaskPushNotificationConfigRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 2;
-  // The parent task resource id.
+  // The parent task resource ID.
   string task_id = 3 [(google.api.field_behavior) = REQUIRED];
-  // The resource id of the config to retrieve.
+  // The resource ID of the configuration to retrieve.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Represents a request for the `DeleteTaskPushNotificationConfig` method.
 message DeleteTaskPushNotificationConfigRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 2;
-  // The parent task resource id.
+  // The parent task resource ID.
   string task_id = 3 [(google.api.field_behavior) = REQUIRED];
-  // The resource id of the config to delete.
+  // The resource ID of the configuration to delete.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Represents a request for the `CreateTaskPushNotificationConfig` method.
 message CreateTaskPushNotificationConfigRequest {
   reserved 3;
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 4;
-  // The parent task resource id.
+  // The parent task resource ID.
   string task_id = 1 [(google.api.field_behavior) = REQUIRED];
-  // The ID for the new config.
+  // The ID for the new configuration.
   string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
   PushNotificationConfig config = 5 [(google.api.field_behavior) = REQUIRED];
 }
 
+// Represents a request for the `SubscribeToTask` method.
 message SubscribeToTaskRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 2;
-  // The resource id of the task to subscribe to.
+  // The resource ID of the task to subscribe to.
   string id = 1 [(google.api.field_behavior) = REQUIRED];
 }
 
+// Represents a request for the `ListTaskPushNotificationConfig` method.
 message ListTaskPushNotificationConfigRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 4;
-  // The parent task resource id.
+  // The parent task resource ID.
   string task_id = 1 [(google.api.field_behavior) = REQUIRED];
 
   // The maximum number of configurations to return.
   int32 page_size = 2;
 
-  // A page token received from a previous `ListTaskPushNotificationConfigRequest` call.
+  // A page token received from a previous `ListTaskPushNotificationConfig` call.
   string page_token = 3;
 }
 
+// Represents a request for the `GetExtendedAgentCard` method.
 message GetExtendedAgentCardRequest {
-  // Optional tenant, provided as a path parameter.
+  // Optional. Tenant ID, provided as a path parameter.
   string tenant = 1;
 }
 
+// Represents the response for the `SendMessage` method.
 message SendMessageResponse {
+  // The payload of the response.
   oneof payload {
+    // The task created or updated by the message.
     Task task = 1;
+    // A message from the agent.
     Message message = 2;
   }
 }
 
 // A wrapper object used in streaming operations to encapsulate different types of response data.
 message StreamResponse {
+  // The payload of the stream response.
   oneof payload {
     // A Task object containing the current state of the task.
     Task task = 1;
@@ -22272,13 +22168,11 @@ message StreamResponse {
   }
 }
 
-// Represents a successful response for the `ListTaskPushNotificationConfig`
-// method.
+// Represents a successful response for the `ListTaskPushNotificationConfig` method.
 message ListTaskPushNotificationConfigResponse {
   // The list of push notification configurations.
   repeated TaskPushNotificationConfig configs = 1;
-  // A token, which can be sent as `page_token` to retrieve the next page.
-  // If this field is omitted, there are no subsequent pages.
+  // A token to retrieve the next page of results, or empty if there are no more results in the list.
   string next_page_token = 2;
 }
 </file>

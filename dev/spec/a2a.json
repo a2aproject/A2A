@@ -86,11 +86,11 @@
           "type": "array"
         },
         "^(documentation_url)$": {
-          "description": "A url to provide additional documentation about the agent.",
+          "description": "A URL providing additional documentation about the agent.",
           "type": "string"
         },
         "^(icon_url)$": {
-          "description": "An optional URL to an icon for the agent.",
+          "description": "Optional. A URL to an icon for the agent.",
           "type": "string"
         },
         "^(security_requirements)$": {
@@ -111,7 +111,7 @@
           "type": "object"
         },
         "^(supported_interfaces)$": {
-          "description": "Ordered list of supported interfaces. First entry is preferred.",
+          "description": "Ordered list of supported interfaces. The first entry is preferred.",
           "items": {
             "$ref": "a2a.v1.AgentInterface.jsonschema.json"
           },
@@ -143,11 +143,11 @@
           "type": "string"
         },
         "documentationUrl": {
-          "description": "A url to provide additional documentation about the agent.",
+          "description": "A URL providing additional documentation about the agent.",
           "type": "string"
         },
         "iconUrl": {
-          "description": "An optional URL to an icon for the agent.",
+          "description": "Optional. A URL to an icon for the agent.",
           "type": "string"
         },
         "name": {
@@ -177,21 +177,21 @@
           "type": "object"
         },
         "signatures": {
-          "description": "JSON Web Signatures computed for this AgentCard.",
+          "description": "JSON Web Signatures computed for this `AgentCard`.",
           "items": {
             "$ref": "a2a.v1.AgentCardSignature.jsonschema.json"
           },
           "type": "array"
         },
         "skills": {
-          "description": "Skills represent an ability of an agent. It is largely\n a descriptive concept but represents a more focused set of behaviors that the\n agent is likely to succeed at.",
+          "description": "Skills represent the abilities of an agent.\n It is largely a descriptive concept but represents a more focused set of behaviors that the\n agent is likely to succeed at.",
           "items": {
             "$ref": "a2a.v1.AgentSkill.jsonschema.json"
           },
           "type": "array"
         },
         "supportedInterfaces": {
-          "description": "Ordered list of supported interfaces. First entry is preferred.",
+          "description": "Ordered list of supported interfaces. The first entry is preferred.",
           "items": {
             "$ref": "a2a.v1.AgentInterface.jsonschema.json"
           },
@@ -217,12 +217,12 @@
         },
         "protected": {
           "default": "",
-          "description": "The protected JWS header for the signature. This is always a\n base64url-encoded JSON object. Required.",
+          "description": "(-- api-linter: core::0140::reserved-words=disabled\n     aip.dev/not-precedent: Backwards compatibility --)\n Required. The protected JWS header for the signature. This is always a\n base64url-encoded JSON object.",
           "type": "string"
         },
         "signature": {
           "default": "",
-          "description": "The computed signature, base64url-encoded. Required.",
+          "description": "Required. The computed signature, base64url-encoded.",
           "type": "string"
         }
       },
@@ -241,7 +241,7 @@
         },
         "params": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Optional, extension-specific configuration parameters."
+          "description": "Optional. Extension-specific configuration parameters."
         },
         "required": {
           "default": false,
@@ -286,7 +286,7 @@
         },
         "tenant": {
           "default": "",
-          "description": "Tenant to be set in the request when calling the agent.",
+          "description": "Tenant ID to be used in the request when calling the agent.",
           "type": "string"
         },
         "url": {
@@ -406,19 +406,19 @@
       "patternProperties": {
         "^(artifact_id)$": {
           "default": "",
-          "description": "Unique identifier (e.g. UUID) for the artifact. It must be at least unique\n within a task.",
+          "description": "Unique identifier (e.g. UUID) for the artifact. It must be unique within a task.",
           "type": "string"
         }
       },
       "properties": {
         "artifactId": {
           "default": "",
-          "description": "Unique identifier (e.g. UUID) for the artifact. It must be at least unique\n within a task.",
+          "description": "Unique identifier (e.g. UUID) for the artifact. It must be unique within a task.",
           "type": "string"
         },
         "description": {
           "default": "",
-          "description": "A human readable description of the artifact, optional.",
+          "description": "Optional. A human readable description of the artifact.",
           "type": "string"
         },
         "extensions": {
@@ -430,7 +430,7 @@
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Optional metadata included with the artifact."
+          "description": "Optional. Metadata included with the artifact."
         },
         "name": {
           "default": "",
@@ -460,7 +460,7 @@
         },
         "scheme": {
           "default": "",
-          "description": "HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).\n Common values: `Bearer`, `Basic`, `Digest`. Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).",
+          "description": "HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).\n Examples: `Bearer`, `Basic`, `Digest`.\n Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).",
           "type": "string"
         }
       },
@@ -535,12 +535,12 @@
       "properties": {
         "id": {
           "default": "",
-          "description": "The resource id of the task to cancel.",
+          "description": "The resource ID of the task to cancel.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -595,12 +595,12 @@
       "patternProperties": {
         "^(config_id)$": {
           "default": "",
-          "description": "The ID for the new config.",
+          "description": "The ID for the new configuration.",
           "type": "string"
         },
         "^(task_id)$": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         }
       },
@@ -611,17 +611,17 @@
         },
         "configId": {
           "default": "",
-          "description": "The ID for the new config.",
+          "description": "The ID for the new configuration.",
           "type": "string"
         },
         "taskId": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -635,24 +635,24 @@
       "patternProperties": {
         "^(task_id)$": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         }
       },
       "properties": {
         "id": {
           "default": "",
-          "description": "The resource id of the config to delete.",
+          "description": "The resource ID of the configuration to delete.",
           "type": "string"
         },
         "taskId": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -713,10 +713,11 @@
     "Get Extended Agent Card Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
+      "description": "Represents a request for the `GetExtendedAgentCard` method.",
       "properties": {
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -726,27 +727,28 @@
     "Get Task Push Notification Config Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
+      "description": "Represents a request for the `GetTaskPushNotificationConfig` method.",
       "patternProperties": {
         "^(task_id)$": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         }
       },
       "properties": {
         "id": {
           "default": "",
-          "description": "The resource id of the config to retrieve.",
+          "description": "The resource ID of the configuration to retrieve.",
           "type": "string"
         },
         "taskId": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -790,12 +792,12 @@
         },
         "id": {
           "default": "",
-          "description": "The resource id of the task.",
+          "description": "The resource ID of the task to retrieve.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -809,14 +811,14 @@
       "patternProperties": {
         "^(bearer_format)$": {
           "default": "",
-          "description": "A hint to the client to identify how the bearer token is formatted (e.g., \"JWT\").\n This is primarily for documentation purposes.",
+          "description": "A hint to the client to identify how the bearer token is formatted (e.g., \"JWT\").\n Primarily for documentation purposes.",
           "type": "string"
         }
       },
       "properties": {
         "bearerFormat": {
           "default": "",
-          "description": "A hint to the client to identify how the bearer token is formatted (e.g., \"JWT\").\n This is primarily for documentation purposes.",
+          "description": "A hint to the client to identify how the bearer token is formatted (e.g., \"JWT\").\n Primarily for documentation purposes.",
           "type": "string"
         },
         "description": {
@@ -836,7 +838,7 @@
     "ImplicitO Auth Flow": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "DEPRECATED",
+      "description": "Deprecated: Use Authorization Code + PKCE instead.",
       "patternProperties": {
         "^(authorization_url)$": {
           "default": "",
@@ -877,6 +879,7 @@
     "List Task Push Notification Config Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
+      "description": "Represents a request for the `ListTaskPushNotificationConfig` method.",
       "patternProperties": {
         "^(page_size)$": {
           "anyOf": [
@@ -895,12 +898,12 @@
         },
         "^(page_token)$": {
           "default": "",
-          "description": "A page token received from a previous `ListTaskPushNotificationConfigRequest` call.",
+          "description": "A page token received from a previous `ListTaskPushNotificationConfig` call.",
           "type": "string"
         },
         "^(task_id)$": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         }
       },
@@ -922,17 +925,17 @@
         },
         "pageToken": {
           "default": "",
-          "description": "A page token received from a previous `ListTaskPushNotificationConfigRequest` call.",
+          "description": "A page token received from a previous `ListTaskPushNotificationConfig` call.",
           "type": "string"
         },
         "taskId": {
           "default": "",
-          "description": "The parent task resource id.",
+          "description": "The parent task resource ID.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -942,11 +945,11 @@
     "List Task Push Notification Config Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Represents a successful response for the `ListTaskPushNotificationConfig`\n method.",
+      "description": "Represents a successful response for the `ListTaskPushNotificationConfig` method.",
       "patternProperties": {
         "^(next_page_token)$": {
           "default": "",
-          "description": "A token, which can be sent as `page_token` to retrieve the next page.\n If this field is omitted, there are no subsequent pages.",
+          "description": "A token to retrieve the next page of results, or empty if there are no more results in the list.",
           "type": "string"
         }
       },
@@ -960,7 +963,7 @@
         },
         "nextPageToken": {
           "default": "",
-          "description": "A token, which can be sent as `page_token` to retrieve the next page.\n If this field is omitted, there are no subsequent pages.",
+          "description": "A token to retrieve the next page of results, or empty if there are no more results in the list.",
           "type": "string"
         }
       },
@@ -1007,11 +1010,11 @@
               "type": "string"
             }
           ],
-          "description": "Maximum number of tasks to return. Must be between 1 and 100.\n Defaults to 50 if not specified."
+          "description": "The maximum number of tasks to return. The service may return fewer than this value.\n If unspecified, at most 50 tasks will be returned.\n The minimum value is 1.\n The maximum value is 100."
         },
         "^(page_token)$": {
           "default": "",
-          "description": "Token for pagination. Use the `next_page_token` from a previous `ListTasksResponse`.",
+          "description": "A page token, received from a previous `ListTasks` call.\n `ListTasksResponse.next_page_token`.\n Provide this to retrieve the subsequent page.",
           "type": "string"
         },
         "^(status_timestamp_after)$": {
@@ -1055,11 +1058,11 @@
               "type": "string"
             }
           ],
-          "description": "Maximum number of tasks to return. Must be between 1 and 100.\n Defaults to 50 if not specified."
+          "description": "The maximum number of tasks to return. The service may return fewer than this value.\n If unspecified, at most 50 tasks will be returned.\n The minimum value is 1.\n The maximum value is 100."
         },
         "pageToken": {
           "default": "",
-          "description": "Token for pagination. Use the `next_page_token` from a previous `ListTasksResponse`.",
+          "description": "A page token, received from a previous `ListTasks` call.\n `ListTasksResponse.next_page_token`.\n Provide this to retrieve the subsequent page.",
           "type": "string"
         },
         "status": {
@@ -1097,7 +1100,7 @@
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -1111,7 +1114,7 @@
       "patternProperties": {
         "^(next_page_token)$": {
           "default": "",
-          "description": "Token for retrieving the next page. Empty string if no more results.",
+          "description": "A token to retrieve the next page of results, or empty if there are no more results in the list.",
           "type": "string"
         },
         "^(page_size)$": {
@@ -1127,7 +1130,7 @@
             }
           ],
           "default": 0,
-          "description": "The size of page requested."
+          "description": "The page size used for this response."
         },
         "^(total_size)$": {
           "anyOf": [
@@ -1148,7 +1151,7 @@
       "properties": {
         "nextPageToken": {
           "default": "",
-          "description": "Token for retrieving the next page. Empty string if no more results.",
+          "description": "A token to retrieve the next page of results, or empty if there are no more results in the list.",
           "type": "string"
         },
         "pageSize": {
@@ -1164,7 +1167,7 @@
             }
           ],
           "default": 0,
-          "description": "The size of page requested."
+          "description": "The page size used for this response."
         },
         "tasks": {
           "description": "Array of tasks matching the specified criteria.",
@@ -1195,16 +1198,16 @@
     "Message": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Message is one unit of communication between client and server. It can be\n associated with a context and/or a task. For server messages, `context_id` must\n be provided, and `task_id` only if a task was created. For client messages, both\n fields are optional, with the caveat that if both are provided, they have to\n match (the `context_id` has to be the one that is set on the task). If only\n `task_id` is provided, the server will infer `context_id` from it.",
+      "description": "`Message` is one unit of communication between client and server. It can be\n associated with a context and/or a task. For server messages, `context_id` must\n be provided, and `task_id` only if a task was created. For client messages, both\n fields are optional, with the caveat that if both are provided, they have to\n match (the `context_id` has to be the one that is set on the task). If only\n `task_id` is provided, the server will infer `context_id` from it.",
       "patternProperties": {
         "^(context_id)$": {
           "default": "",
-          "description": "The context id of the message. This is optional and if set, the message\n will be associated with the given context.",
+          "description": "Optional. The context id of the message. If set, the message will be associated with the given context.",
           "type": "string"
         },
         "^(message_id)$": {
           "default": "",
-          "description": "The unique identifier (e.g. UUID) of the message. This is required and\n created by the message creator.",
+          "description": "The unique identifier (e.g. UUID) of the message. This is created by the message creator.",
           "type": "string"
         },
         "^(reference_task_ids)$": {
@@ -1216,14 +1219,14 @@
         },
         "^(task_id)$": {
           "default": "",
-          "description": "The task id of the message. This is optional and if set, the message\n will be associated with the given task.",
+          "description": "Optional. The task id of the message. If set, the message will be associated with the given task.",
           "type": "string"
         }
       },
       "properties": {
         "contextId": {
           "default": "",
-          "description": "The context id of the message. This is optional and if set, the message\n will be associated with the given context.",
+          "description": "Optional. The context id of the message. If set, the message will be associated with the given context.",
           "type": "string"
         },
         "extensions": {
@@ -1235,12 +1238,12 @@
         },
         "messageId": {
           "default": "",
-          "description": "The unique identifier (e.g. UUID) of the message. This is required and\n created by the message creator.",
+          "description": "The unique identifier (e.g. UUID) of the message. This is created by the message creator.",
           "type": "string"
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Any optional metadata to provide along with the message."
+          "description": "Optional. Any metadata to provide along with the message."
         },
         "parts": {
           "description": "Parts is the container of the message content.",
@@ -1281,7 +1284,7 @@
         },
         "taskId": {
           "default": "",
-          "description": "The task id of the message. This is optional and if set, the message\n will be associated with the given task.",
+          "description": "Optional. The task id of the message. If set, the message will be associated with the given task.",
           "type": "string"
         }
       },
@@ -1309,7 +1312,7 @@
       "patternProperties": {
         "^(oauth2_metadata_url)$": {
           "default": "",
-          "description": "URL to the oauth2 authorization server metadata\n RFC8414 (https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.",
+          "description": "URL to the OAuth2 authorization server metadata [RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414).\n TLS is required.",
           "type": "string"
         }
       },
@@ -1325,7 +1328,7 @@
         },
         "oauth2MetadataUrl": {
           "default": "",
-          "description": "URL to the oauth2 authorization server metadata\n RFC8414 (https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.",
+          "description": "URL to the OAuth2 authorization server metadata [RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414).\n TLS is required.",
           "type": "string"
         }
       },
@@ -1364,10 +1367,12 @@
           "description": "Configuration for the OAuth Device Code flow."
         },
         "implicit": {
-          "$ref": "a2a.v1.ImplicitOAuthFlow.jsonschema.json"
+          "$ref": "a2a.v1.ImplicitOAuthFlow.jsonschema.json",
+          "description": "Deprecated: Use Authorization Code + PKCE instead."
         },
         "password": {
-          "$ref": "a2a.v1.PasswordOAuthFlow.jsonschema.json"
+          "$ref": "a2a.v1.PasswordOAuthFlow.jsonschema.json",
+          "description": "Deprecated: Use Authorization Code + PKCE or Device Code."
         }
       },
       "title": "O Auth Flows",
@@ -1380,7 +1385,7 @@
       "patternProperties": {
         "^(open_id_connect_url)$": {
           "default": "",
-          "description": "The OpenID Connect Discovery URL for the OIDC provider's metadata.\n See: https://openid.net/specs/openid-connect-discovery-1_0.html",
+          "description": "The [OpenID Connect Discovery URL](https://openid.net/specs/openid-connect-discovery-1_0.html) for the OIDC provider's metadata.",
           "type": "string"
         }
       },
@@ -1392,7 +1397,7 @@
         },
         "openIdConnectUrl": {
           "default": "",
-          "description": "The OpenID Connect Discovery URL for the OIDC provider's metadata.\n See: https://openid.net/specs/openid-connect-discovery-1_0.html",
+          "description": "The [OpenID Connect Discovery URL](https://openid.net/specs/openid-connect-discovery-1_0.html) for the OIDC provider's metadata.",
           "type": "string"
         }
       },
@@ -1402,44 +1407,44 @@
     "Part": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Part represents a container for a section of communication content.\n Parts can be purely textual, some sort of file (image, video, etc) or\n a structured data blob (i.e. JSON).",
+      "description": "`Part` represents a container for a section of communication content.\n Parts can be purely textual, some sort of file (image, video, etc) or\n a structured data blob (i.e. JSON).",
       "patternProperties": {
         "^(media_type)$": {
           "default": "",
-          "description": "The media type (MIME type) of the part content (e.g., \"text/plain\", \"application/json\", \"image/png\").\n This field is available for all part types.",
+          "description": "The `media_type` (MIME type) of the part content (e.g., \"text/plain\", \"application/json\", \"image/png\").\n This field is available for all part types.",
           "type": "string"
         }
       },
       "properties": {
         "data": {
           "$ref": "google.protobuf.Value.jsonschema.json",
-          "description": "Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null)."
+          "description": "Arbitrary structured `data` as a JSON value (object, array, string, number, boolean, or null)."
         },
         "filename": {
           "default": "",
-          "description": "An optional name for the file (e.g., \"document.pdf\").",
+          "description": "An optional `filename` for the file (e.g., \"document.pdf\").",
           "type": "string"
         },
         "mediaType": {
           "default": "",
-          "description": "The media type (MIME type) of the part content (e.g., \"text/plain\", \"application/json\", \"image/png\").\n This field is available for all part types.",
+          "description": "The `media_type` (MIME type) of the part content (e.g., \"text/plain\", \"application/json\", \"image/png\").\n This field is available for all part types.",
           "type": "string"
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Optional metadata associated with this part."
+          "description": "Optional. metadata associated with this part."
         },
         "raw": {
-          "description": "The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.",
+          "description": "The `raw` byte content of a file. In JSON serialization, this is encoded as a base64 string.",
           "pattern": "^[A-Za-z0-9+/]*={0,2}$",
           "type": "string"
         },
         "text": {
-          "description": "The string content of the text part.",
+          "description": "The string content of the `text` part.",
           "type": "string"
         },
         "url": {
-          "description": "A URL pointing to the file's content.",
+          "description": "A `url` pointing to the file's content.",
           "type": "string"
         }
       },
@@ -1449,7 +1454,7 @@
     "PasswordO Auth Flow": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "DEPRECATED",
+      "description": "Deprecated: Use Authorization Code + PKCE or Device Code.",
       "patternProperties": {
         "^(refresh_url)$": {
           "default": "",
@@ -1494,21 +1499,21 @@
       "properties": {
         "authentication": {
           "$ref": "a2a.v1.AuthenticationInfo.jsonschema.json",
-          "description": "Authentication information required to send the notification"
+          "description": "Authentication information required to send the notification."
         },
         "id": {
           "default": "",
-          "description": "A unique identifier (e.g. UUID) for this push notification.",
+          "description": "A unique identifier (e.g. UUID) for this push notification configuration.",
           "type": "string"
         },
         "token": {
           "default": "",
-          "description": "Token unique for this task/session",
+          "description": "A token unique for this task or session.",
           "type": "string"
         },
         "url": {
           "default": "",
-          "description": "Url to send the notification too",
+          "description": "The URL where the notification should be sent.",
           "type": "string"
         }
       },
@@ -1518,11 +1523,13 @@
     "Security Requirement": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
+      "description": "Defines the security requirements for an agent.",
       "properties": {
         "schemes": {
           "additionalProperties": {
             "$ref": "a2a.v1.StringList.jsonschema.json"
           },
+          "description": "A map of security schemes to the required scopes.",
           "propertyNames": {
             "type": "string"
           },
@@ -1589,7 +1596,7 @@
       "description": "Configuration of a send message request.",
       "patternProperties": {
         "^(accepted_output_modes)$": {
-          "description": "A list of media types the client is prepared to accept for response parts. Agents SHOULD use this to tailor their output.",
+          "description": "A list of media types the client is prepared to accept for response parts.\n Agents SHOULD use this to tailor their output.",
           "items": {
             "type": "string"
           },
@@ -1616,7 +1623,7 @@
       },
       "properties": {
         "acceptedOutputModes": {
-          "description": "A list of media types the client is prepared to accept for response parts. Agents SHOULD use this to tailor their output.",
+          "description": "A list of media types the client is prepared to accept for response parts.\n Agents SHOULD use this to tailor their output.",
           "items": {
             "type": "string"
           },
@@ -1624,7 +1631,7 @@
         },
         "blocking": {
           "default": false,
-          "description": "If true, the operation waits until the task reaches a terminal or interrupted state before returning. Default is false.",
+          "description": "If true, the operation waits until the task reaches a terminal or interrupted state before returning.\n Defaults to `false`.",
           "type": "boolean"
         },
         "historyLength": {
@@ -1668,7 +1675,7 @@
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -1678,12 +1685,15 @@
     "Send Message Response": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
+      "description": "Represents the response for the `SendMessage` method.",
       "properties": {
         "message": {
-          "$ref": "a2a.v1.Message.jsonschema.json"
+          "$ref": "a2a.v1.Message.jsonschema.json",
+          "description": "A message from the agent."
         },
         "task": {
-          "$ref": "a2a.v1.Task.jsonschema.json"
+          "$ref": "a2a.v1.Task.jsonschema.json",
+          "description": "The task created or updated by the message."
         }
       },
       "title": "Send Message Response",
@@ -1727,8 +1737,10 @@
     "String List": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
+      "description": "A list of strings.",
       "properties": {
         "list": {
+          "description": "The individual string values.",
           "items": {
             "type": "string"
           },
@@ -1741,15 +1753,16 @@
     "Subscribe To Task Request": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
+      "description": "Represents a request for the `SubscribeToTask` method.",
       "properties": {
         "id": {
           "default": "",
-          "description": "The resource id of the task to subscribe to.",
+          "description": "The resource ID of the task to subscribe to.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant, provided as a path parameter.",
+          "description": "Optional. Tenant ID, provided as a path parameter.",
           "type": "string"
         }
       },
@@ -1759,7 +1772,7 @@
     "Task": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "Task is the core unit of action for A2A. It has a current status\n and when results are created for the task they are stored in the\n artifact. If there are multiple turns for a task, these are stored in\n history.",
+      "description": "`Task` is the core unit of action for A2A. It has a current status\n and when results are created for the task they are stored in the\n artifact. If there are multiple turns for a task, these are stored in\n history.",
       "patternProperties": {
         "^(context_id)$": {
           "default": "",
@@ -1769,7 +1782,7 @@
       },
       "properties": {
         "artifacts": {
-          "description": "A set of output artifacts for a Task.",
+          "description": "A set of output artifacts for a `Task`.",
           "items": {
             "$ref": "a2a.v1.Artifact.jsonschema.json"
           },
@@ -1781,7 +1794,7 @@
           "type": "string"
         },
         "history": {
-          "description": "The history of interactions from a task.",
+          "description": "The history of interactions from a `Task`.",
           "items": {
             "$ref": "a2a.v1.Message.jsonschema.json"
           },
@@ -1798,7 +1811,7 @@
         },
         "status": {
           "$ref": "a2a.v1.TaskStatus.jsonschema.json",
-          "description": "The current status of a Task, including state and a message."
+          "description": "The current status of a `Task`, including `state` and a `message`."
         }
       },
       "title": "Task",
@@ -1811,7 +1824,7 @@
       "patternProperties": {
         "^(context_id)$": {
           "default": "",
-          "description": "The id of the context that this task belongs to.",
+          "description": "The ID of the context that this task belongs to.",
           "type": "string"
         },
         "^(last_chunk)$": {
@@ -1821,7 +1834,7 @@
         },
         "^(task_id)$": {
           "default": "",
-          "description": "The id of the task for this artifact.",
+          "description": "The ID of the task for this artifact.",
           "type": "string"
         }
       },
@@ -1837,7 +1850,7 @@
         },
         "contextId": {
           "default": "",
-          "description": "The id of the context that this task belongs to.",
+          "description": "The ID of the context that this task belongs to.",
           "type": "string"
         },
         "lastChunk": {
@@ -1847,11 +1860,11 @@
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Optional metadata associated with the artifact update."
+          "description": "Optional. Metadata associated with the artifact update."
         },
         "taskId": {
           "default": "",
-          "description": "The id of the task for this artifact.",
+          "description": "The ID of the task for this artifact.",
           "type": "string"
         }
       },
@@ -1861,7 +1874,7 @@
     "Task Push Notification Config": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "A container associating a push notification configuration with a specific\n task.",
+      "description": "A container associating a push notification configuration with a specific task.",
       "patternProperties": {
         "^(push_notification_config)$": {
           "$ref": "a2a.v1.PushNotificationConfig.jsonschema.json",
@@ -1869,14 +1882,14 @@
         },
         "^(task_id)$": {
           "default": "",
-          "description": "The id of the task this config is associated with.",
+          "description": "The ID of the task this configuration is associated with.",
           "type": "string"
         }
       },
       "properties": {
         "id": {
           "default": "",
-          "description": "The id of the config.",
+          "description": "The ID of the configuration.",
           "type": "string"
         },
         "pushNotificationConfig": {
@@ -1885,12 +1898,12 @@
         },
         "taskId": {
           "default": "",
-          "description": "The id of the task this config is associated with.",
+          "description": "The ID of the task this configuration is associated with.",
           "type": "string"
         },
         "tenant": {
           "default": "",
-          "description": "Optional tenant",
+          "description": "Optional. Tenant ID.",
           "type": "string"
         }
       },
@@ -1946,28 +1959,28 @@
     "Task Status Update Event": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "additionalProperties": false,
-      "description": "An event sent by the agent to notify the client of a change in a task's\n status.",
+      "description": "An event sent by the agent to notify the client of a change in a task's status.",
       "patternProperties": {
         "^(context_id)$": {
           "default": "",
-          "description": "The id of the context that the task belongs to",
+          "description": "The ID of the context that the task belongs to.",
           "type": "string"
         },
         "^(task_id)$": {
           "default": "",
-          "description": "The id of the task that is changed",
+          "description": "The ID of the task that has changed.",
           "type": "string"
         }
       },
       "properties": {
         "contextId": {
           "default": "",
-          "description": "The id of the context that the task belongs to",
+          "description": "The ID of the context that the task belongs to.",
           "type": "string"
         },
         "metadata": {
           "$ref": "google.protobuf.Struct.jsonschema.json",
-          "description": "Optional metadata to associate with the task update."
+          "description": "Optional. Metadata associated with the task update."
         },
         "status": {
           "$ref": "a2a.v1.TaskStatus.jsonschema.json",
@@ -1975,7 +1988,7 @@
         },
         "taskId": {
           "default": "",
-          "description": "The id of the task that is changed",
+          "description": "The ID of the task that has changed.",
           "type": "string"
         }
       },

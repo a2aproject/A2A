@@ -6579,13 +6579,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the task.</td>
+<td>The resource ID of the task to retrieve.</td>
 </tr>
 <tr>
 <td><code>historyLength</code></td>
@@ -6622,7 +6622,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>contextId</code></td>
@@ -6640,13 +6640,13 @@
 <td><code>pageSize</code></td>
 <td><code>integer</code></td>
 <td>No</td>
-<td>Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified.</td>
+<td>The maximum number of tasks to return. The service may return fewer than this value. If unspecified, at most 50 tasks will be returned. The minimum value is 1. The maximum value is 100.</td>
 </tr>
 <tr>
 <td><code>pageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Token for pagination. Use the <code>next_page_token</code> from a previous <code>ListTasksResponse</code>.</td>
+<td>A page token, received from a previous <code>ListTasks</code> call. <code>ListTasksResponse.next_page_token</code>. Provide this to retrieve the subsequent page.</td>
 </tr>
 <tr>
 <td><code>historyLength</code></td>
@@ -6691,13 +6691,13 @@
 <td><code>nextPageToken</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>Token for retrieving the next page. Empty string if no more results.</td>
+<td>A token to retrieve the next page of results, or empty if there are no more results in the list.</td>
 </tr>
 <tr>
 <td><code>pageSize</code></td>
 <td><code>integer</code></td>
 <td>Yes</td>
-<td>The size of page requested.</td>
+<td>The page size used for this response.</td>
 </tr>
 <tr>
 <td><code>totalSize</code></td>
@@ -6734,13 +6734,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the task to cancel.</td>
+<td>The resource ID of the task to cancel.</td>
 </tr>
 </tbody>
 </table>
@@ -6759,6 +6759,7 @@
 <p><span id="79-taskssubscribe"></span></p>
 <p>Establishes a streaming connection to receive updates for an existing task.</p>
 <p><strong>Inputs:</strong></p>
+<p>Represents a request for the <code>SubscribeToTask</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6773,13 +6774,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the task to subscribe to.</td>
+<td>The resource ID of the task to subscribe to.</td>
 </tr>
 </tbody>
 </table>
@@ -6820,19 +6821,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>configId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The ID for the new config.</td>
+<td>The ID for the new configuration.</td>
 </tr>
 <tr>
 <td><code>config</code></td>
@@ -6858,6 +6859,7 @@
 <p><span id="76-taskspushnotificationconfigget"></span></p>
 <p>Retrieves an existing push notification configuration for a task.</p>
 <p><strong>Inputs:</strong></p>
+<p>Represents a request for the <code>GetTaskPushNotificationConfig</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6872,19 +6874,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the config to retrieve.</td>
+<td>The resource ID of the configuration to retrieve.</td>
 </tr>
 </tbody>
 </table>
@@ -6902,6 +6904,7 @@
 <h4 id="319-list-push-notification-configs">3.1.9. List Push Notification Configs<a class="headerlink" href="#319-list-push-notification-configs" title="Permanent link">&para;</a></h4>
 <p>Retrieves all push notification configurations for a task.</p>
 <p><strong>Inputs:</strong></p>
+<p>Represents a request for the <code>ListTaskPushNotificationConfig</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -6916,13 +6919,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>pageSize</code></td>
@@ -6934,7 +6937,7 @@
 <td><code>pageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A page token received from a previous <code>ListTaskPushNotificationConfigRequest</code> call.</td>
+<td>A page token received from a previous <code>ListTaskPushNotificationConfig</code> call.</td>
 </tr>
 </tbody>
 </table>
@@ -6960,7 +6963,7 @@
 <td><code>nextPageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A token, which can be sent as <code>page_token</code> to retrieve the next page. If this field is omitted, there are no subsequent pages.</td>
+<td>A token to retrieve the next page of results, or empty if there are no more results in the list.</td>
 </tr>
 </tbody>
 </table>
@@ -6989,19 +6992,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the config to delete.</td>
+<td>The resource ID of the configuration to delete.</td>
 </tr>
 </tbody>
 </table>
@@ -7019,6 +7022,7 @@
 <h4 id="3111-get-extended-agent-card">3.1.11. Get Extended Agent Card<a class="headerlink" href="#3111-get-extended-agent-card" title="Permanent link">&para;</a></h4>
 <p>Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if <code>AgentCard.capabilities.extendedAgentCard</code> is <code>true</code>.</p>
 <p><strong>Inputs:</strong></p>
+<p>Represents a request for the <code>GetExtendedAgentCard</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -7033,7 +7037,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 </tbody>
 </table>
@@ -7072,7 +7076,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
@@ -7128,7 +7132,7 @@
 <td><code>blocking</code></td>
 <td><code>boolean</code></td>
 <td>No</td>
-<td>If true, the operation waits until the task reaches a terminal or interrupted state before returning. Default is false.</td>
+<td>If true, the operation waits until the task reaches a terminal or interrupted state before returning. Defaults to <code>false</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -7504,7 +7508,7 @@
 <h3 id="41-core-objects">4.1. Core Objects<a class="headerlink" href="#41-core-objects" title="Permanent link">&para;</a></h3>
 <p><a id="Task"></a></p>
 <h4 id="411-task">4.1.1. Task<a class="headerlink" href="#411-task" title="Permanent link">&para;</a></h4>
-<p>Task is the core unit of action for A2A. It has a current status and when results are created for the task they are stored in the artifact. If there are multiple turns for a task, these are stored in history.</p>
+<p><code>Task</code> is the core unit of action for A2A. It has a current status and when results are created for the task they are stored in the artifact. If there are multiple turns for a task, these are stored in history.</p>
 <table>
 <thead>
 <tr>
@@ -7531,19 +7535,19 @@
 <td><code>status</code></td>
 <td><a href="#taskstatus"><code>TaskStatus</code></a></td>
 <td>Yes</td>
-<td>The current status of a Task, including state and a message.</td>
+<td>The current status of a <code>Task</code>, including <code>state</code> and a <code>message</code>.</td>
 </tr>
 <tr>
 <td><code>artifacts</code></td>
 <td>array of <a href="#artifact"><code>Artifact</code></a></td>
 <td>No</td>
-<td>A set of output artifacts for a Task.</td>
+<td>A set of output artifacts for a <code>Task</code>.</td>
 </tr>
 <tr>
 <td><code>history</code></td>
 <td>array of <a href="#message"><code>Message</code></a></td>
 <td>No</td>
-<td>The history of interactions from a task.</td>
+<td>The history of interactions from a <code>Task</code>.</td>
 </tr>
 <tr>
 <td><code>metadata</code></td>
@@ -7603,41 +7607,41 @@
 </tr>
 <tr>
 <td><code>TASK_STATE_SUBMITTED</code></td>
-<td>Represents the status that acknowledges a task is created.</td>
+<td>Indicates that a task has been successfully submitted and acknowledged.</td>
 </tr>
 <tr>
 <td><code>TASK_STATE_WORKING</code></td>
-<td>Represents the status that a task is actively being processed.</td>
+<td>Indicates that a task is actively being processed by the agent.</td>
 </tr>
 <tr>
 <td><code>TASK_STATE_COMPLETED</code></td>
-<td>Represents the status a task is finished. This is a terminal state.</td>
+<td>Indicates that a task has finished successfully. This is a terminal state.</td>
 </tr>
 <tr>
 <td><code>TASK_STATE_FAILED</code></td>
-<td>Represents the status a task is done but failed. This is a terminal state.</td>
+<td>Indicates that a task has finished with an error. This is a terminal state.</td>
 </tr>
 <tr>
 <td><code>TASK_STATE_CANCELED</code></td>
-<td>Represents the status a task was canceled before it finished. This is a terminal state.</td>
+<td>Indicates that a task was canceled before completion. This is a terminal state.</td>
 </tr>
 <tr>
 <td><code>TASK_STATE_INPUT_REQUIRED</code></td>
-<td>Represents the status that the task requires information to complete. This is an interrupted state.</td>
+<td>Indicates that the agent requires additional user input to proceed. This is an interrupted state.</td>
 </tr>
 <tr>
 <td><code>TASK_STATE_REJECTED</code></td>
-<td>Represents the status that the agent has decided to not perform the task. This may be done during initial task creation or later once an agent has determined it can't or won't proceed. This is a terminal state.</td>
+<td>Indicates that the agent has decided to not perform the task. This may be done during initial task creation or later once an agent has determined it can't or won't proceed. This is a terminal state.</td>
 </tr>
 <tr>
 <td><code>TASK_STATE_AUTH_REQUIRED</code></td>
-<td>Represents the state that some authentication is needed from the upstream client. This is an interrupted state. Authentication is expected to come out-of-band.</td>
+<td>Indicates that authentication is required to proceed. This is an interrupted state.</td>
 </tr>
 </tbody>
 </table>
 <p><a id="Message"></a></p>
 <h4 id="414-message">4.1.4. Message<a class="headerlink" href="#414-message" title="Permanent link">&para;</a></h4>
-<p>Message is one unit of communication between client and server. It can be associated with a context and/or a task. For server messages, <code>context_id</code> must be provided, and <code>task_id</code> only if a task was created. For client messages, both fields are optional, with the caveat that if both are provided, they have to match (the <code>context_id</code> has to be the one that is set on the task). If only <code>task_id</code> is provided, the server will infer <code>context_id</code> from it.</p>
+<p><code>Message</code> is one unit of communication between client and server. It can be associated with a context and/or a task. For server messages, <code>context_id</code> must be provided, and <code>task_id</code> only if a task was created. For client messages, both fields are optional, with the caveat that if both are provided, they have to match (the <code>context_id</code> has to be the one that is set on the task). If only <code>task_id</code> is provided, the server will infer <code>context_id</code> from it.</p>
 <table>
 <thead>
 <tr>
@@ -7652,19 +7656,19 @@
 <td><code>messageId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The unique identifier (e.g. UUID) of the message. This is required and created by the message creator.</td>
+<td>The unique identifier (e.g. UUID) of the message. This is created by the message creator.</td>
 </tr>
 <tr>
 <td><code>contextId</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>The context id of the message. This is optional and if set, the message will be associated with the given context.</td>
+<td>Optional. The context id of the message. If set, the message will be associated with the given context.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>The task id of the message. This is optional and if set, the message will be associated with the given task.</td>
+<td>Optional. The task id of the message. If set, the message will be associated with the given task.</td>
 </tr>
 <tr>
 <td><code>role</code></td>
@@ -7682,7 +7686,7 @@
 <td><code>metadata</code></td>
 <td><code>object</code></td>
 <td>No</td>
-<td>Any optional metadata to provide along with the message.</td>
+<td>Optional. Any metadata to provide along with the message.</td>
 </tr>
 <tr>
 <td><code>extensions</code></td>
@@ -7711,21 +7715,21 @@
 <tbody>
 <tr>
 <td><code>ROLE_UNSPECIFIED</code></td>
-<td></td>
+<td>The role is unspecified.</td>
 </tr>
 <tr>
 <td><code>ROLE_USER</code></td>
-<td>USER role refers to communication from the client to the server.</td>
+<td>The message is from the client to the server.</td>
 </tr>
 <tr>
 <td><code>ROLE_AGENT</code></td>
-<td>AGENT role refers to communication from the server to the client.</td>
+<td>The message is from the server to the client.</td>
 </tr>
 </tbody>
 </table>
 <p><a id="Part"></a></p>
 <h4 id="416-part">4.1.6. Part<a class="headerlink" href="#416-part" title="Permanent link">&para;</a></h4>
-<p>Part represents a container for a section of communication content. Parts can be purely textual, some sort of file (image, video, etc) or a structured data blob (i.e. JSON).</p>
+<p><code>Part</code> represents a container for a section of communication content. Parts can be purely textual, some sort of file (image, video, etc) or a structured data blob (i.e. JSON).</p>
 <table>
 <thead>
 <tr>
@@ -7740,43 +7744,43 @@
 <td><code>text</code></td>
 <td><code>string</code></td>
 <td>Optional (OneOf)</td>
-<td>The string content of the text part.</td>
+<td>The string content of the <code>text</code> part.</td>
 </tr>
 <tr>
 <td><code>raw</code></td>
 <td><code>bytes</code></td>
 <td>Optional (OneOf)</td>
-<td>The raw byte content of a file. In JSON serialization, this is encoded as a base64 string.</td>
+<td>The <code>raw</code> byte content of a file. In JSON serialization, this is encoded as a base64 string.</td>
 </tr>
 <tr>
 <td><code>url</code></td>
 <td><code>string</code></td>
 <td>Optional (OneOf)</td>
-<td>A URL pointing to the file's content.</td>
+<td>A <code>url</code> pointing to the file's content.</td>
 </tr>
 <tr>
 <td><code>data</code></td>
 <td><code>any</code></td>
 <td>Optional (OneOf)</td>
-<td>Arbitrary structured data as a JSON value (object, array, string, number, boolean, or null).</td>
+<td>Arbitrary structured <code>data</code> as a JSON value (object, array, string, number, boolean, or null).</td>
 </tr>
 <tr>
 <td><code>metadata</code></td>
 <td><code>object</code></td>
 <td>No</td>
-<td>Optional metadata associated with this part.</td>
+<td>Optional. metadata associated with this part.</td>
 </tr>
 <tr>
 <td><code>filename</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>An optional name for the file (e.g., "document.pdf").</td>
+<td>An optional <code>filename</code> for the file (e.g., "document.pdf").</td>
 </tr>
 <tr>
 <td><code>mediaType</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>The media type (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png"). This field is available for all part types.</td>
+<td>The <code>media_type</code> (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png"). This field is available for all part types.</td>
 </tr>
 </tbody>
 </table>
@@ -7798,7 +7802,7 @@
 <td><code>artifactId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>Unique identifier (e.g. UUID) for the artifact. It must be at least unique within a task.</td>
+<td>Unique identifier (e.g. UUID) for the artifact. It must be unique within a task.</td>
 </tr>
 <tr>
 <td><code>name</code></td>
@@ -7810,7 +7814,7 @@
 <td><code>description</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A human readable description of the artifact, optional.</td>
+<td>Optional. A human readable description of the artifact.</td>
 </tr>
 <tr>
 <td><code>parts</code></td>
@@ -7822,7 +7826,7 @@
 <td><code>metadata</code></td>
 <td><code>object</code></td>
 <td>No</td>
-<td>Optional metadata included with the artifact.</td>
+<td>Optional. Metadata included with the artifact.</td>
 </tr>
 <tr>
 <td><code>extensions</code></td>
@@ -7850,13 +7854,13 @@
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the task that is changed</td>
+<td>The ID of the task that has changed.</td>
 </tr>
 <tr>
 <td><code>contextId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the context that the task belongs to</td>
+<td>The ID of the context that the task belongs to.</td>
 </tr>
 <tr>
 <td><code>status</code></td>
@@ -7868,7 +7872,7 @@
 <td><code>metadata</code></td>
 <td><code>object</code></td>
 <td>No</td>
-<td>Optional metadata to associate with the task update.</td>
+<td>Optional. Metadata associated with the task update.</td>
 </tr>
 </tbody>
 </table>
@@ -7889,13 +7893,13 @@
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the task for this artifact.</td>
+<td>The ID of the task for this artifact.</td>
 </tr>
 <tr>
 <td><code>contextId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the context that this task belongs to.</td>
+<td>The ID of the context that this task belongs to.</td>
 </tr>
 <tr>
 <td><code>artifact</code></td>
@@ -7919,7 +7923,7 @@
 <td><code>metadata</code></td>
 <td><code>object</code></td>
 <td>No</td>
-<td>Optional metadata associated with the artifact update.</td>
+<td>Optional. Metadata associated with the artifact update.</td>
 </tr>
 </tbody>
 </table>
@@ -7941,25 +7945,25 @@
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A unique identifier (e.g. UUID) for this push notification.</td>
+<td>A unique identifier (e.g. UUID) for this push notification configuration.</td>
 </tr>
 <tr>
 <td><code>url</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>Url to send the notification too</td>
+<td>The URL where the notification should be sent.</td>
 </tr>
 <tr>
 <td><code>token</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Token unique for this task/session</td>
+<td>A token unique for this task or session.</td>
 </tr>
 <tr>
 <td><code>authentication</code></td>
 <td><a href="#authenticationinfo"><code>AuthenticationInfo</code></a></td>
 <td>No</td>
-<td>Authentication information required to send the notification</td>
+<td>Authentication information required to send the notification.</td>
 </tr>
 </tbody>
 </table>
@@ -7980,7 +7984,7 @@
 <td><code>scheme</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>HTTP Authentication Scheme from the <a href="https://www.iana.org/assignments/http-authschemes/">IANA registry</a>. Common values: <code>Bearer</code>, <code>Basic</code>, <code>Digest</code>. Scheme names are case-insensitive per <a href="https://www.rfc-editor.org/rfc/rfc9110#section-11.1">RFC 9110 Section 11.1</a>.</td>
+<td>HTTP Authentication Scheme from the <a href="https://www.iana.org/assignments/http-authschemes/">IANA registry</a>. Examples: <code>Bearer</code>, <code>Basic</code>, <code>Digest</code>. Scheme names are case-insensitive per <a href="https://www.rfc-editor.org/rfc/rfc9110#section-11.1">RFC 9110 Section 11.1</a>.</td>
 </tr>
 <tr>
 <td><code>credentials</code></td>
@@ -8060,7 +8064,7 @@
 <td><code>supportedInterfaces</code></td>
 <td>array of <a href="#agentinterface"><code>AgentInterface</code></a></td>
 <td>Yes</td>
-<td>Ordered list of supported interfaces. First entry is preferred.</td>
+<td>Ordered list of supported interfaces. The first entry is preferred.</td>
 </tr>
 <tr>
 <td><code>provider</code></td>
@@ -8078,7 +8082,7 @@
 <td><code>documentationUrl</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A url to provide additional documentation about the agent.</td>
+<td>A URL providing additional documentation about the agent.</td>
 </tr>
 <tr>
 <td><code>capabilities</code></td>
@@ -8114,19 +8118,19 @@
 <td><code>skills</code></td>
 <td>array of <a href="#agentskill"><code>AgentSkill</code></a></td>
 <td>Yes</td>
-<td>Skills represent an ability of an agent. It is largely a descriptive concept but represents a more focused set of behaviors that the agent is likely to succeed at.</td>
+<td>Skills represent the abilities of an agent. It is largely a descriptive concept but represents a more focused set of behaviors that the agent is likely to succeed at.</td>
 </tr>
 <tr>
 <td><code>signatures</code></td>
 <td>array of <a href="#agentcardsignature"><code>AgentCardSignature</code></a></td>
 <td>No</td>
-<td>JSON Web Signatures computed for this AgentCard.</td>
+<td>JSON Web Signatures computed for this <code>AgentCard</code>.</td>
 </tr>
 <tr>
 <td><code>iconUrl</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>An optional URL to an icon for the agent.</td>
+<td>Optional. A URL to an icon for the agent.</td>
 </tr>
 </tbody>
 </table>
@@ -8231,7 +8235,7 @@
 <td><code>params</code></td>
 <td><code>object</code></td>
 <td>No</td>
-<td>Optional, extension-specific configuration parameters.</td>
+<td>Optional. Extension-specific configuration parameters.</td>
 </tr>
 </tbody>
 </table>
@@ -8327,7 +8331,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Tenant to be set in the request when calling the agent.</td>
+<td>Tenant ID to be used in the request when calling the agent.</td>
 </tr>
 <tr>
 <td><code>protocolVersion</code></td>
@@ -8354,13 +8358,13 @@
 <td><code>protected</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The protected JWS header for the signature. This is always a base64url-encoded JSON object. Required.</td>
+<td>Required. The protected JWS header for the signature. This is always a base64url-encoded JSON object.</td>
 </tr>
 <tr>
 <td><code>signature</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The computed signature, base64url-encoded. Required.</td>
+<td>Required. The computed signature, base64url-encoded.</td>
 </tr>
 <tr>
 <td><code>header</code></td>
@@ -8480,7 +8484,7 @@
 <td><code>bearerFormat</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A hint to the client to identify how the bearer token is formatted (e.g., "JWT"). This is primarily for documentation purposes.</td>
+<td>A hint to the client to identify how the bearer token is formatted (e.g., "JWT"). Primarily for documentation purposes.</td>
 </tr>
 </tbody>
 </table>
@@ -8513,7 +8517,7 @@
 <td><code>oauth2MetadataUrl</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>URL to the oauth2 authorization server metadata RFC8414 (https://datatracker.ietf.org/doc/html/rfc8414). TLS is required.</td>
+<td>URL to the OAuth2 authorization server metadata <a href="https://datatracker.ietf.org/doc/html/rfc8414">RFC 8414</a>. TLS is required.</td>
 </tr>
 </tbody>
 </table>
@@ -8540,7 +8544,7 @@
 <td><code>openIdConnectUrl</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The OpenID Connect Discovery URL for the OIDC provider's metadata. See: https://openid.net/specs/openid-connect-discovery-1_0.html</td>
+<td>The <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect Discovery URL</a> for the OIDC provider's metadata.</td>
 </tr>
 </tbody>
 </table>
@@ -8594,13 +8598,13 @@
 <td><code>implicit</code></td>
 <td><a href="#implicitoauthflow"><code>ImplicitOAuthFlow</code></a></td>
 <td>Optional (OneOf)</td>
-<td></td>
+<td>Deprecated: Use Authorization Code + PKCE instead.</td>
 </tr>
 <tr>
 <td><code>password</code></td>
 <td><a href="#passwordoauthflow"><code>PasswordOAuthFlow</code></a></td>
 <td>Optional (OneOf)</td>
-<td></td>
+<td>Deprecated: Use Authorization Code + PKCE or Device Code.</td>
 </tr>
 <tr>
 <td><code>deviceCode</code></td>
@@ -10123,67 +10127,67 @@
 <td><code>SendMessage</code></td>
 <td><a href="#sendmessagerequest"><code>SendMessageRequest</code></a></td>
 <td><a href="#sendmessageresponse"><code>SendMessageResponse</code></a></td>
-<td>Send a message to the agent.</td>
+<td>Sends a message to an agent.</td>
 </tr>
 <tr>
 <td><code>SendStreamingMessage</code></td>
 <td><a href="#sendmessagerequest"><code>SendMessageRequest</code></a></td>
 <td>stream <a href="#streamresponse"><code>StreamResponse</code></a></td>
-<td>SendStreamingMessage is a streaming version of SendMessage.</td>
+<td>Sends a streaming message to an agent, allowing for real-time interaction and status updates. Streaming version of <code>SendMessage</code></td>
 </tr>
 <tr>
 <td><code>GetTask</code></td>
 <td><a href="#gettaskrequest"><code>GetTaskRequest</code></a></td>
 <td><a href="#task"><code>Task</code></a></td>
-<td>Get the current state of a task from the agent.</td>
+<td>Gets the latest state of a task.</td>
 </tr>
 <tr>
 <td><code>ListTasks</code></td>
 <td><a href="#listtasksrequest"><code>ListTasksRequest</code></a></td>
 <td><a href="#listtasksresponse"><code>ListTasksResponse</code></a></td>
-<td>List tasks with optional filtering and pagination.</td>
+<td>Lists tasks that match the specified filter.</td>
 </tr>
 <tr>
 <td><code>CancelTask</code></td>
 <td><a href="#canceltaskrequest"><code>CancelTaskRequest</code></a></td>
 <td><a href="#task"><code>Task</code></a></td>
-<td>Cancel a task.</td>
+<td>Cancels a task in progress.</td>
 </tr>
 <tr>
 <td><code>SubscribeToTask</code></td>
 <td><a href="#subscribetotaskrequest"><code>SubscribeToTaskRequest</code></a></td>
 <td>stream <a href="#streamresponse"><code>StreamResponse</code></a></td>
-<td>SubscribeToTask allows subscribing to task updates for tasks not in terminal state. Returns UnsupportedOperationError if task is in terminal state (completed, failed, canceled, rejected).</td>
+<td>Subscribes to task updates for tasks not in a terminal state. Returns <code>UnsupportedOperationError</code> if the task is already in a terminal state (completed, failed, canceled, rejected).</td>
 </tr>
 <tr>
 <td><code>CreateTaskPushNotificationConfig</code></td>
 <td><a href="#createtaskpushnotificationconfigrequest"><code>CreateTaskPushNotificationConfigRequest</code></a></td>
 <td><a href="#taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a></td>
-<td>Create a push notification config for a task.</td>
+<td>Creates a push notification config for a task.</td>
 </tr>
 <tr>
 <td><code>GetTaskPushNotificationConfig</code></td>
 <td><a href="#gettaskpushnotificationconfigrequest"><code>GetTaskPushNotificationConfigRequest</code></a></td>
 <td><a href="#taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a></td>
-<td>Get a push notification config for a task.</td>
+<td>Gets a push notification config for a task.</td>
 </tr>
 <tr>
 <td><code>ListTaskPushNotificationConfig</code></td>
 <td><a href="#listtaskpushnotificationconfigrequest"><code>ListTaskPushNotificationConfigRequest</code></a></td>
 <td><a href="#listtaskpushnotificationconfigresponse"><code>ListTaskPushNotificationConfigResponse</code></a></td>
-<td>Get a list of push notifications configured for a task.</td>
+<td>Lists push notification configs for a task.</td>
 </tr>
 <tr>
 <td><code>GetExtendedAgentCard</code></td>
 <td><a href="#getextendedagentcardrequest"><code>GetExtendedAgentCardRequest</code></a></td>
 <td><a href="#agentcard"><code>AgentCard</code></a></td>
-<td>GetExtendedAgentCard returns the extended agent card for authenticated agents.</td>
+<td>Gets the extended agent card for the authenticated agent.</td>
 </tr>
 <tr>
 <td><code>DeleteTaskPushNotificationConfig</code></td>
 <td><a href="#deletetaskpushnotificationconfigrequest"><code>DeleteTaskPushNotificationConfigRequest</code></a></td>
 <td><code>empty</code></td>
-<td>Delete a push notification config for a task.</td>
+<td>Deletes a push notification config for a task.</td>
 </tr>
 </tbody>
 </table>
@@ -10206,7 +10210,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
@@ -10229,6 +10233,7 @@
 </tbody>
 </table>
 <p><strong>Response:</strong></p>
+<p>Represents the response for the <code>SendMessage</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -10243,13 +10248,13 @@
 <td><code>task</code></td>
 <td><a href="#task"><code>Task</code></a></td>
 <td>Optional (OneOf)</td>
-<td></td>
+<td>The task created or updated by the message.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
 <td><a href="#message"><code>Message</code></a></td>
 <td>Optional (OneOf)</td>
-<td></td>
+<td>A message from the agent.</td>
 </tr>
 </tbody>
 </table>
@@ -10272,7 +10277,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
@@ -10313,13 +10318,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the task.</td>
+<td>The resource ID of the task to retrieve.</td>
 </tr>
 <tr>
 <td><code>historyLength</code></td>
@@ -10348,7 +10353,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>contextId</code></td>
@@ -10366,13 +10371,13 @@
 <td><code>pageSize</code></td>
 <td><code>integer</code></td>
 <td>No</td>
-<td>Maximum number of tasks to return. Must be between 1 and 100. Defaults to 50 if not specified.</td>
+<td>The maximum number of tasks to return. The service may return fewer than this value. If unspecified, at most 50 tasks will be returned. The minimum value is 1. The maximum value is 100.</td>
 </tr>
 <tr>
 <td><code>pageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Token for pagination. Use the <code>next_page_token</code> from a previous <code>ListTasksResponse</code>.</td>
+<td>A page token, received from a previous <code>ListTasks</code> call. <code>ListTasksResponse.next_page_token</code>. Provide this to retrieve the subsequent page.</td>
 </tr>
 <tr>
 <td><code>historyLength</code></td>
@@ -10416,13 +10421,13 @@
 <td><code>nextPageToken</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>Token for retrieving the next page. Empty string if no more results.</td>
+<td>A token to retrieve the next page of results, or empty if there are no more results in the list.</td>
 </tr>
 <tr>
 <td><code>pageSize</code></td>
 <td><code>integer</code></td>
 <td>Yes</td>
-<td>The size of page requested.</td>
+<td>The page size used for this response.</td>
 </tr>
 <tr>
 <td><code>totalSize</code></td>
@@ -10450,13 +10455,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the task to cancel.</td>
+<td>The resource ID of the task to cancel.</td>
 </tr>
 </tbody>
 </table>
@@ -10464,6 +10469,7 @@
 <h4 id="1046-subscribetotask">10.4.6. SubscribeToTask<a class="headerlink" href="#1046-subscribetotask" title="Permanent link">&para;</a></h4>
 <p>Subscribe to task updates via streaming. Returns <code>UnsupportedOperationError</code> if the task is in a terminal state.</p>
 <p><strong>Request:</strong></p>
+<p>Represents a request for the <code>SubscribeToTask</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -10478,13 +10484,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the task to subscribe to.</td>
+<td>The resource ID of the task to subscribe to.</td>
 </tr>
 </tbody>
 </table>
@@ -10507,19 +10513,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>configId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The ID for the new config.</td>
+<td>The ID for the new configuration.</td>
 </tr>
 <tr>
 <td><code>config</code></td>
@@ -10533,6 +10539,7 @@
 <h4 id="1048-gettaskpushnotificationconfig">10.4.8. GetTaskPushNotificationConfig<a class="headerlink" href="#1048-gettaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Retrieves an existing push notification configuration for a task.</p>
 <p><strong>Request:</strong></p>
+<p>Represents a request for the <code>GetTaskPushNotificationConfig</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -10547,19 +10554,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the config to retrieve.</td>
+<td>The resource ID of the configuration to retrieve.</td>
 </tr>
 </tbody>
 </table>
@@ -10567,6 +10574,7 @@
 <h4 id="1049-listtaskpushnotificationconfig">10.4.9. ListTaskPushNotificationConfig<a class="headerlink" href="#1049-listtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Lists all push notification configurations for a task.</p>
 <p><strong>Request:</strong></p>
+<p>Represents a request for the <code>ListTaskPushNotificationConfig</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -10581,13 +10589,13 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>pageSize</code></td>
@@ -10599,7 +10607,7 @@
 <td><code>pageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A page token received from a previous <code>ListTaskPushNotificationConfigRequest</code> call.</td>
+<td>A page token received from a previous <code>ListTaskPushNotificationConfig</code> call.</td>
 </tr>
 </tbody>
 </table>
@@ -10625,7 +10633,7 @@
 <td><code>nextPageToken</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>A token, which can be sent as <code>page_token</code> to retrieve the next page. If this field is omitted, there are no subsequent pages.</td>
+<td>A token to retrieve the next page of results, or empty if there are no more results in the list.</td>
 </tr>
 </tbody>
 </table>
@@ -10647,19 +10655,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The parent task resource id.</td>
+<td>The parent task resource ID.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The resource id of the config to delete.</td>
+<td>The resource ID of the configuration to delete.</td>
 </tr>
 </tbody>
 </table>
@@ -10667,6 +10675,7 @@
 <h4 id="10411-getextendedagentcard">10.4.11. GetExtendedAgentCard<a class="headerlink" href="#10411-getextendedagentcard" title="Permanent link">&para;</a></h4>
 <p>Retrieves the agent's extended capability card after authentication.</p>
 <p><strong>Request:</strong></p>
+<p>Represents a request for the <code>GetExtendedAgentCard</code> method.</p>
 <table>
 <thead>
 <tr>
@@ -10681,7 +10690,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant, provided as a path parameter.</td>
+<td>Optional. Tenant ID, provided as a path parameter.</td>
 </tr>
 </tbody>
 </table>
@@ -10704,19 +10713,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant</td>
+<td>Optional. Tenant ID.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the config.</td>
+<td>The ID of the configuration.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the task this config is associated with.</td>
+<td>The ID of the task this configuration is associated with.</td>
 </tr>
 <tr>
 <td><code>pushNotificationConfig</code></td>
@@ -10742,19 +10751,19 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional tenant</td>
+<td>Optional. Tenant ID.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the config.</td>
+<td>The ID of the configuration.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
 <td><code>string</code></td>
 <td>Yes</td>
-<td>The id of the task this config is associated with.</td>
+<td>The ID of the task this configuration is associated with.</td>
 </tr>
 <tr>
 <td><code>pushNotificationConfig</code></td>
