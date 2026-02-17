@@ -45,9 +45,7 @@ service A2AService {
   rpc GetTask(GetTaskRequest) returns (Task) {
     option (google.api.http) = {
       get: "/tasks/{id=*}"
-      additional_bindings: {
-        get: "/{tenant}/tasks/{id=*}"
-      }
+      additional_bindings: {get: "/{tenant}/tasks/{id=*}"}
     };
     option (google.api.method_signature) = "id";
   }
@@ -55,9 +53,7 @@ service A2AService {
   rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
     option (google.api.http) = {
       get: "/tasks"
-      additional_bindings: {
-        get: "/{tenant}/tasks"
-      }
+      additional_bindings: {get: "/{tenant}/tasks"}
     };
   }
   // Cancels a task in progress.
@@ -76,9 +72,7 @@ service A2AService {
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
       get: "/tasks/{id=*}:subscribe"
-      additional_bindings: {
-        get: "/{tenant}/tasks/{id=*}:subscribe"
-      }
+      additional_bindings: {get: "/{tenant}/tasks/{id=*}:subscribe"}
     };
   }
 
@@ -101,9 +95,7 @@ service A2AService {
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       get: "/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
-      additional_bindings: {
-        get: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
-      }
+      additional_bindings: {get: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"}
     };
     option (google.api.method_signature) = "task_id,id";
   }
@@ -111,9 +103,7 @@ service A2AService {
   rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse) {
     option (google.api.http) = {
       get: "/tasks/{task_id=*}/pushNotificationConfigs"
-      additional_bindings: {
-        get: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs"
-      }
+      additional_bindings: {get: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs"}
     };
     option (google.api.method_signature) = "task_id";
   }
@@ -121,18 +111,14 @@ service A2AService {
   rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard) {
     option (google.api.http) = {
       get: "/extendedAgentCard"
-      additional_bindings: {
-        get: "/{tenant}/extendedAgentCard"
-      }
+      additional_bindings: {get: "/{tenant}/extendedAgentCard"}
     };
   }
   // Deletes a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
-      additional_bindings: {
-        delete: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
-      }
+      additional_bindings: {delete: "/{tenant}/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"}
     };
     option (google.api.method_signature) = "task_id,id";
   }
@@ -477,8 +463,6 @@ message AgentCardSignature {
 message TaskPushNotificationConfig {
   // Optional. Tenant ID.
   string tenant = 4;
-  // The ID of the configuration.
-  string id = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID of the task this configuration is associated with.
   string task_id = 3 [(google.api.field_behavior) = REQUIRED];
   // The push notification configuration details.
