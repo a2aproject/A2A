@@ -367,11 +367,11 @@ Retrieves all push notification configurations for a task.
 
 **Inputs:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsRequest") }}
 
 **Outputs:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigResponse") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
 **Errors:**
 
@@ -1169,7 +1169,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
 | Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
-| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /tasks/{id}/pushNotificationConfigs`               |
+| List push notification configs  | `ListTaskPushNotificationConfigs`   | `ListTaskPushNotificationConfigs`   | `GET /tasks/{id}/pushNotificationConfigs`               |
 | Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
 | Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /extendedAgentCard`                                |
 
@@ -2348,7 +2348,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 - `CreateTaskPushNotificationConfig` - Create push notification configuration
 - `GetTaskPushNotificationConfig` - Get push notification configuration
-- `ListTaskPushNotificationConfig` - List push notification configurations
+- `ListTaskPushNotificationConfigs` - List push notification configurations
 - `DeleteTaskPushNotificationConfig` - Delete push notification configuration
 
 #### 9.4.8. `GetExtendedAgentCard`
@@ -2554,17 +2554,17 @@ Retrieves an existing push notification configuration for a task.
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
-#### 10.4.9. ListTaskPushNotificationConfig
+#### 10.4.9. ListTaskPushNotificationConfigs
 
 Lists all push notification configurations for a task.
 
 **Request:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsRequest") }}
 
 **Response:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigResponse") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
 #### 10.4.10. DeleteTaskPushNotificationConfig
 
@@ -3267,7 +3267,7 @@ This appendix catalogs renamed protocol messages and objects, their legacy ident
 | `SendMessageSuccessResponse`                    | `SendMessageResponse`                     | >= 0.5.0                 | Unified success response naming                        |
 | `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response           |
 | `SetTaskPushNotificationConfigRequest`          | `CreateTaskPushNotificationConfigRequest` | >= 0.5.0                 | Explicit creation intent                               |
-| `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
+| `ListTaskPushNotificationConfigsSuccessResponse` | `ListTaskPushNotificationConfigsResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
 | `GetAuthenticatedExtendedCardRequest`           | `GetExtendedAgentCardRequest`             | >= 0.5.0                 | Removed "Authenticated" from naming                    |
 
 Planned Lifecycle (example timeline; adjust per release strategy):
@@ -3306,7 +3306,7 @@ Hidden anchor spans preserve old inbound links:
 <span id="751-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget"></span>
 <span id="77-taskspushnotificationconfigget"></span>
 <span id="771-gettaskpushnotificationconfigparams-object-taskspushnotificationconfigget"></span>
-<span id="781-listtaskpushnotificationconfigparams-object-taskspushnotificationconfiglist"></span>
+<span id="781-listtaskpushnotificationconfigsparams-object-taskspushnotificationconfiglist"></span>
 <span id="791-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete"></span>
 <span id="8-error-handling"></span>
 <span id="82-a2a-specific-errors"></span>
@@ -3315,7 +3315,7 @@ Hidden anchor spans preserve old inbound links:
 <span id="sendmessagesuccessresponse"></span>
 <span id="sendstreamingmessagesuccessresponse"></span>
 <span id="settaskpushnotificationconfigrequest"></span>
-<span id="listtaskpushnotificationconfigsuccessresponse"></span>
+<span id="listtaskpushnotificationconfigssuccessresponse"></span>
 <span id="getauthenticatedextendedcardrequest"></span>
 <span id="938-agentgetauthenticatedextendedcard"></span>
 
