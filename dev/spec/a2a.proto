@@ -150,8 +150,9 @@ message SendMessageConfiguration {
   // value of zero is a request to not include any messages. The server MUST NOT
   // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
-  // If true, the operation waits until the task reaches a terminal or interrupted state before returning.
-  // Defaults to `false`.
+  // If `true`, the operation MUST wait until the task reaches a terminal state
+  // (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state
+  // (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. Default is `false`.
   bool blocking = 4;
 }
 
@@ -477,8 +478,6 @@ message AgentCardSignature {
 message TaskPushNotificationConfig {
   // Optional. Tenant ID.
   string tenant = 4;
-  // The ID of the configuration.
-  string id = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID of the task this configuration is associated with.
   string task_id = 3 [(google.api.field_behavior) = REQUIRED];
   // The push notification configuration details.
@@ -747,8 +746,6 @@ message CreateTaskPushNotificationConfigRequest {
   string tenant = 4;
   // The parent task resource ID.
   string task_id = 1 [(google.api.field_behavior) = REQUIRED];
-  // The ID for the new configuration.
-  string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
   PushNotificationConfig config = 5 [(google.api.field_behavior) = REQUIRED];
 }

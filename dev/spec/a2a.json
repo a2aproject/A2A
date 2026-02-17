@@ -612,11 +612,6 @@
       "additionalProperties": false,
       "description": "Represents a request for the `CreateTaskPushNotificationConfig` method.",
       "patternProperties": {
-        "^(config_id)$": {
-          "default": "",
-          "description": "The ID for the new configuration.",
-          "type": "string"
-        },
         "^(task_id)$": {
           "default": "",
           "description": "The parent task resource ID.",
@@ -627,11 +622,6 @@
         "config": {
           "$ref": "lf.a2a.v1.PushNotificationConfig.jsonschema.json",
           "description": "The configuration to create."
-        },
-        "configId": {
-          "default": "",
-          "description": "The ID for the new configuration.",
-          "type": "string"
         },
         "taskId": {
           "default": "",
@@ -1650,7 +1640,7 @@
         },
         "blocking": {
           "default": false,
-          "description": "If true, the operation waits until the task reaches a terminal or interrupted state before returning.\n Defaults to `false`.",
+          "description": "If `true`, the operation MUST wait until the task reaches a terminal state\n (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state\n (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. Default is `false`.",
           "type": "boolean"
         },
         "historyLength": {
@@ -1906,11 +1896,6 @@
         }
       },
       "properties": {
-        "id": {
-          "default": "",
-          "description": "The ID of the configuration.",
-          "type": "string"
-        },
         "pushNotificationConfig": {
           "$ref": "lf.a2a.v1.PushNotificationConfig.jsonschema.json",
           "description": "The push notification configuration details."
