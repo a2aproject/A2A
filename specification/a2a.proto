@@ -477,8 +477,6 @@ message AgentCardSignature {
 message TaskPushNotificationConfig {
   // Optional. Tenant ID.
   string tenant = 4;
-  // The ID of the configuration.
-  string id = 1 [(google.api.field_behavior) = REQUIRED];
   // The ID of the task this configuration is associated with.
   string task_id = 3 [(google.api.field_behavior) = REQUIRED];
   // The push notification configuration details.
@@ -747,8 +745,6 @@ message CreateTaskPushNotificationConfigRequest {
   string tenant = 4;
   // The parent task resource ID.
   string task_id = 1 [(google.api.field_behavior) = REQUIRED];
-  // The ID for the new configuration.
-  string config_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The configuration to create.
   PushNotificationConfig config = 5 [(google.api.field_behavior) = REQUIRED];
 }
