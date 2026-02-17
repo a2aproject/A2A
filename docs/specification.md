@@ -175,6 +175,7 @@ The primary operation for initiating agent interactions. Clients send a message 
 
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
 - [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
 
@@ -366,11 +367,11 @@ Retrieves all push notification configurations for a task.
 
 **Inputs:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsRequest") }}
 
 **Outputs:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigResponse") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
 **Errors:**
 
@@ -444,7 +445,7 @@ This section defines common parameter objects used across multiple operations.
 
 The `blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation waits for task completion:
 
-- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`completed`, `failed`, `canceled`, `rejected`) or an interrupted state (`input_required`, `auth_required`) before returning. The response MUST include the current task state with all artifacts and status information.
+- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information.
 
 - **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
@@ -560,7 +561,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 | `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
 | `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                   |
 | `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
-| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
+| `ExtensionSupportRequiredError`       | Server requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
 | `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
 
 #### 3.3.3. Asynchronous Processing
@@ -574,7 +575,7 @@ Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). Whe
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
-- **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
+- **Extensions**: When a server requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
 Clients **SHOULD** validate capability support by examining the Agent Card before attempting operations that require optional capabilities.
 
@@ -1168,7 +1169,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
 | Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
-| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /tasks/{id}/pushNotificationConfigs`               |
+| List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |
 | Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
 | Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /extendedAgentCard`                                |
 
@@ -1349,7 +1350,7 @@ data: {"task": {"id": "task-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
 data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}, "final": true}}
+data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1709,9 +1710,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
         "filename": "input_image.png",
-        "mediaType": "image/png"
+        "mediaType": "image/png",
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
@@ -2363,7 +2364,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 - `CreateTaskPushNotificationConfig` - Create push notification configuration
 - `GetTaskPushNotificationConfig` - Get push notification configuration
-- `ListTaskPushNotificationConfig` - List push notification configurations
+- `ListTaskPushNotificationConfigs` - List push notification configurations
 - `DeleteTaskPushNotificationConfig` - Delete push notification configuration
 
 #### 9.4.8. `GetExtendedAgentCard`
@@ -2569,17 +2570,17 @@ Retrieves an existing push notification configuration for a task.
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
-#### 10.4.9. ListTaskPushNotificationConfig
+#### 10.4.9. ListTaskPushNotificationConfigs
 
 Lists all push notification configurations for a task.
 
 **Request:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsRequest") }}
 
 **Response:**
 
-{{ proto_to_table("ListTaskPushNotificationConfigResponse") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
 #### 10.4.10. DeleteTaskPushNotificationConfig
 
@@ -3282,7 +3283,7 @@ This appendix catalogs renamed protocol messages and objects, their legacy ident
 | `SendMessageSuccessResponse`                    | `SendMessageResponse`                     | >= 0.5.0                 | Unified success response naming                        |
 | `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response           |
 | `SetTaskPushNotificationConfigRequest`          | `CreateTaskPushNotificationConfigRequest` | >= 0.5.0                 | Explicit creation intent                               |
-| `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
+| `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigsResponse` | >= 0.5.0                 | Consistent response suffix removal                     |
 | `GetAuthenticatedExtendedCardRequest`           | `GetExtendedAgentCardRequest`             | >= 0.5.0                 | Removed "Authenticated" from naming                    |
 
 Planned Lifecycle (example timeline; adjust per release strategy):
