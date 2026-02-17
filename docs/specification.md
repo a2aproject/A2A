@@ -1,18 +1,4 @@
-# Agent2Agent (A2A) Protocol Specification (DRAFT v1.0)
-
-{% macro render_spec_tabs(region_tag) %}
-=== "JSON-RPC"
-
-    ```ts { .no-copy }
-    --8<-- "types/src/types.ts:{{ region_tag }}"
-    ```
-
-=== "gRPC"
-
-    ```proto { .no-copy }
-    --8<-- "specification/grpc/a2a.proto:{{ region_tag }}"
-    ```
-{% endmacro %}
+# Agent2Agent (A2A) Protocol Specification (Release Candidate v1.0)
 
 ??? note "**Latest Released Version** [`0.3.0`](https://a2a-protocol.org/v0.3.0/specification)"
 
@@ -189,6 +175,7 @@ The primary operation for initiating agent interactions. Clients send a message 
 
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
 - [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
 
@@ -232,7 +219,7 @@ Retrieves the current state (including status, artifacts, and optionally history
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "GetTaskRequest") }}
+{{ proto_to_table("GetTaskRequest") }}
 
 See [History Length Semantics](#324-history-length-semantics) for details about `historyLength`.
 
@@ -250,13 +237,13 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ListTasksRequest") }}
+{{ proto_to_table("ListTasksRequest") }}
 
 When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ListTasksResponse") }}
+{{ proto_to_table("ListTasksResponse") }}
 
 Note on `nextPageToken`: The `nextPageToken` field MUST always be present in the response. When there are no more results to retrieve (i.e., this is the final page), the field MUST be set to an empty string (""). Clients should check for an empty string to determine if more pages are available.
 
@@ -282,7 +269,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "CancelTaskRequest") }}
+{{ proto_to_table("CancelTaskRequest") }}
 
 **Outputs:**
 
@@ -305,7 +292,7 @@ Establishes a streaming connection to receive updates for an existing task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "SubscribeToTaskRequest") }}
+{{ proto_to_table("SubscribeToTaskRequest") }}
 
 **Outputs:**
 
@@ -334,7 +321,7 @@ Creates a push notification configuration for a task to receive asynchronous upd
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "CreateTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -359,7 +346,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "GetTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -380,11 +367,11 @@ Retrieves all push notification configurations for a task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ListTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsRequest") }}
 
 **Outputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ListTaskPushNotificationConfigResponse") }}
+{{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
 **Errors:**
 
@@ -401,7 +388,7 @@ Removes a push notification configuration for a task.
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "DeleteTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("DeleteTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
 
@@ -422,7 +409,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 **Inputs:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "GetExtendedAgentCardRequest") }}
+{{ proto_to_table("GetExtendedAgentCardRequest") }}
 
 **Outputs:**
 
@@ -448,11 +435,11 @@ This section defines common parameter objects used across multiple operations.
 
 #### 3.2.1. SendMessageRequest
 
-{{ proto_to_table("specification/grpc/a2a.proto", "SendMessageRequest") }}
+{{ proto_to_table("SendMessageRequest") }}
 
 #### 3.2.2. SendMessageConfiguration
 
-{{ proto_to_table("specification/grpc/a2a.proto", "SendMessageConfiguration") }}
+{{ proto_to_table("SendMessageConfiguration") }}
 
 **Blocking vs Non-Blocking Execution:**
 
@@ -473,7 +460,7 @@ The `blocking` field has no effect:
 <span id="323-stream-response"></span>
 <span id="72-messagestream"></span>
 
-{{ proto_to_table("specification/grpc/a2a.proto", "StreamResponse") }}
+{{ proto_to_table("StreamResponse") }}
 
 This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.
 
@@ -574,7 +561,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 | `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
 | `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                   |
 | `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
-| `ExtensionSupportRequiredError`       | Client requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
+| `ExtensionSupportRequiredError`       | Server requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
 | `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
 
 #### 3.3.3. Asynchronous Processing
@@ -588,7 +575,7 @@ Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). Whe
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
-- **Extensions**: When a client requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
+- **Extensions**: When a server requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
 Clients **SHOULD** validate capability support by examining the Agent Card before attempting operations that require optional capabilities.
 
@@ -722,7 +709,7 @@ The specific version of the A2A protocol in use is identified using the `Major.M
 
 #### 3.6.1 Client Responsibilities
 
-It is RECOMMENDED that clients send the `A2A-Version` header with each request to maintain compatibility after an agent upgrades to a new version of the protocol. Sending the `A2A-Version` header also provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
+Clients MUST send the `A2A-Version` header with each request to maintain compatibility after an agent upgrades to a new version of the protocol (except for 0.3 Clients - 0.3 will be assumed for empty header). Sending the `A2A-Version` header also provides visibility to agents about version usage in the ecosystem, which can help inform the risks of inplace version upgrades.
 
 **Example of HTTP GET Request with Version Header:**
 
@@ -734,34 +721,47 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 Accept: application/json
 ```
 
-#### 3.6.2 Server Responsibilities
+Clients MAY provide the `A2A-Version` as a request parameter instead of a header.
 
-Agents MUST process requests using the semantics of the requested `A2A-Version` (matching `Major.Minor`). If the version is not supported, agents MUST return a [`VersionNotSupportedError`](#332-error-handling).
+**Example of HTTP GET Request with Version request parameter:**
 
-Agents SHOULD declare their supported protocol versions in the `protocolVersions` field of their Agent Card:
-
-- **For stable versions (1.x and above):** Backward compatibility within a major version is required. An agent supporting version `1.2` must also support `1.0` and `1.1`. Only the latest supported minor version per major version needs to be listed.
-- **For legacy experimental versions (0.x):** These early versions introduced breaking changes between minor versions. Agents that still support any `0.x` versions MUST explicitly list each one they support.
-
-**Example of Agent Card with Supported Protocol Versions:**
-
-```json
-{
-  "agentId": "agent-123",
-  "name": "Example Agent",
-  "protocolVersions": ["0.3", "1.1"]
-}
+```http
+GET /tasks/task-123?A2A-Version=1.0 HTTP/1.1
+Host: agent.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Accept: application/json
 ```
 
-The above example indicates that the agent supports A2A protocol versions `0.3`, `1.0` and `1.1`.
+#### 3.6.2 Server Responsibilities
 
-#### 3.6.3 Client Fallback
+Agents MUST process requests using the semantics of the requested `A2A-Version` (matching `Major.Minor`). If the version is not supported by the interface, agents MUST return a [`VersionNotSupportedError`](#332-error-handling).
 
-Clients that receive a `VersionNotSupportedError` can choose to retry the request with an earlier supported version, or fail the request. This explicit failure handling helps prevent unexpected behavior that could arise if an agent processes a request containing protocol features or fields it does not recognize.
+Agents MUST interpret empty value as 0.3 version.
 
-#### 3.6.4 Tooling support
+Agents CAN expose multiple interfaces for the same transport with different versions under the same or different URLs.
 
-Tooling libraries and SDKs that implement the A2A protocol SHOULD provide mechanisms to help clients manage protocol versioning, such as providing configuration options to enable automatic fallback to earlier versions when a `VersionNotSupportedError` is encountered. Client Agents that require the latest features of the protocol should not enable automatic fallback, to avoid silently losing functionality.
+#### 3.6.3 Tooling support
+
+Tooling libraries and SDKs that implement the A2A protocol MUST provide mechanisms to help clients manage protocol versioning, such as negotiation of the transport and protocol version used. Client Agents that require the latest features of the protocol should be configured to request specific versions and avoid automatic fallback to older versions, to prevent silently losing functionality.
+
+### 3.7 Messages and Artifacts
+
+Messages and Artifacts serve distinct purposes within the A2A protocol. The core interaction model defined by A2A is for clients to send messages to initiate a task that produces one or more artifacts.
+
+Messages play several key roles:
+
+- **Task Initiation**: Clients send Messages to agents to initiate new tasks.
+- **Clarification Messages**: Agents may send Messages back to the client to request clarification prior to initiating a task.
+- **Status Messages**: Agents attach Messages to status update events to inform clients about task progress, request additional input, or provide informational updates.
+- **Task Interaction**: Clients send Messages to provide additional input or instructions for ongoing tasks.
+
+Messages SHOULD NOT be used to deliver task outputs. Results SHOULD BE returned using Artifacts associated with a Task. This separation allows for a clear distinction between communication (Messages) and data output (Artifacts).
+
+The Task History field contains Messages exchanged during task execution. However, not all Messages are guaranteed to be persisted in the Task history; for example, transient informational messages may not be stored. Messages exchanged prior to task creation may not be stored in Task history. The agent is responsible to determine which Messages are persisted in the Task History.
+
+Clients using streaming to retrieve task updates MAY not receive all status update messages if the client is disconnected and then reconnects. Messages MUST NOT be considered a reliable delivery mechanism for critical information.
+
+Agents MAY choose to persist all Messages that contain important information in the Task history to ensure clients can retrieve it later. However, clients MUST NOT rely on this behavior unless negotiated out-of-band.
 
 ## 4. Protocol Data Model
 
@@ -773,43 +773,43 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.1.1. Task
 
-{{ proto_to_table("specification/grpc/a2a.proto", "Task") }}
+{{ proto_to_table("Task") }}
 
 <a id="TaskStatus"></a>
 
 #### 4.1.2. TaskStatus
 
-{{ proto_to_table("specification/grpc/a2a.proto", "TaskStatus") }}
+{{ proto_to_table("TaskStatus") }}
 
 <a id="TaskState"></a>
 
 #### 4.1.3. TaskState
 
-{{ proto_enum_to_table("specification/grpc/a2a.proto", "TaskState") }}
+{{ proto_enum_to_table("TaskState") }}
 
 <a id="Message"></a>
 
 #### 4.1.4. Message
 
-{{ proto_to_table("specification/grpc/a2a.proto", "Message") }}
+{{ proto_to_table("Message") }}
 
 <a id="Role"></a>
 
 #### 4.1.5. Role
 
-{{ proto_enum_to_table("specification/grpc/a2a.proto", "Role") }}
+{{ proto_enum_to_table("Role") }}
 
 <a id="Part"></a>
 
 #### 4.1.6. Part
 
-{{ proto_to_table("specification/grpc/a2a.proto", "Part") }}
+{{ proto_to_table("Part") }}
 
 <a id="Artifact"></a>
 
 #### 4.1.7. Artifact
 
-{{ proto_to_table("specification/grpc/a2a.proto", "Artifact") }}
+{{ proto_to_table("Artifact") }}
 
 ### 4.2. Streaming Events
 
@@ -817,13 +817,13 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.2.1. TaskStatusUpdateEvent
 
-{{ proto_to_table("specification/grpc/a2a.proto", "TaskStatusUpdateEvent") }}
+{{ proto_to_table("TaskStatusUpdateEvent") }}
 
 <a id="TaskArtifactUpdateEvent"></a>
 
 #### 4.2.2. TaskArtifactUpdateEvent
 
-{{ proto_to_table("specification/grpc/a2a.proto", "TaskArtifactUpdateEvent") }}
+{{ proto_to_table("TaskArtifactUpdateEvent") }}
 
 ### 4.3. Push Notification Objects
 
@@ -831,13 +831,13 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.3.1. PushNotificationConfig
 
-{{ proto_to_table("specification/grpc/a2a.proto", "PushNotificationConfig") }}
+{{ proto_to_table("PushNotificationConfig") }}
 
 <a id="PushNotificationAuthenticationInfo"></a>
 
 #### 4.3.2. AuthenticationInfo
 
-{{ proto_to_table("specification/grpc/a2a.proto", "PushNotificationAuthenticationInfo") }}
+{{ proto_to_table("AuthenticationInfo") }}
 
 #### 4.3.3. Push Notification Payload
 
@@ -894,43 +894,43 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 #### 4.4.1. AgentCard
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AgentCard") }}
+{{ proto_to_table("AgentCard") }}
 
 <a id="AgentProvider"></a>
 
 #### 4.4.2. AgentProvider
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AgentProvider") }}
+{{ proto_to_table("AgentProvider") }}
 
 <a id="AgentCapabilities"></a>
 
 #### 4.4.3. AgentCapabilities
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AgentCapabilities") }}
+{{ proto_to_table("AgentCapabilities") }}
 
 <a id="AgentExtension"></a>
 
 #### 4.4.4. AgentExtension
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AgentExtension") }}
+{{ proto_to_table("AgentExtension") }}
 
 <a id="AgentSkill"></a>
 
 #### 4.4.5. AgentSkill
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AgentSkill") }}
+{{ proto_to_table("AgentSkill") }}
 
 <a id="AgentInterface"></a>
 
 #### 4.4.6. AgentInterface
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AgentInterface") }}
+{{ proto_to_table("AgentInterface") }}
 
 <a id="AgentCardSignature"></a>
 
 #### 4.4.7. AgentCardSignature
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AgentCardSignature") }}
+{{ proto_to_table("AgentCardSignature") }}
 
 ### 4.5. Security Objects
 
@@ -939,61 +939,61 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 #### 4.5.1. SecurityScheme
 
-{{ proto_to_table("specification/grpc/a2a.proto", "SecurityScheme") }}
+{{ proto_to_table("SecurityScheme") }}
 
 <a id="APIKeySecurityScheme"></a>
 
 #### 4.5.2. APIKeySecurityScheme
 
-{{ proto_to_table("specification/grpc/a2a.proto", "APIKeySecurityScheme") }}
+{{ proto_to_table("APIKeySecurityScheme") }}
 
 <a id="HTTPAuthSecurityScheme"></a>
 
 #### 4.5.3. HTTPAuthSecurityScheme
 
-{{ proto_to_table("specification/grpc/a2a.proto", "HTTPAuthSecurityScheme") }}
+{{ proto_to_table("HTTPAuthSecurityScheme") }}
 
 <a id="OAuth2SecurityScheme"></a>
 
 #### 4.5.4. OAuth2SecurityScheme
 
-{{ proto_to_table("specification/grpc/a2a.proto", "OAuth2SecurityScheme") }}
+{{ proto_to_table("OAuth2SecurityScheme") }}
 
 <a id="OpenIdConnectSecurityScheme"></a>
 
 #### 4.5.5. OpenIdConnectSecurityScheme
 
-{{ proto_to_table("specification/grpc/a2a.proto", "OpenIdConnectSecurityScheme") }}
+{{ proto_to_table("OpenIdConnectSecurityScheme") }}
 
 <a id="MutualTlsSecurityScheme"></a>
 
-#### 4.5.6. MutualTLSSecurityScheme
+#### 4.5.6. MutualTlsSecurityScheme
 
-{{ proto_to_table("specification/grpc/a2a.proto", "MutualTlsSecurityScheme") }}
+{{ proto_to_table("MutualTlsSecurityScheme") }}
 
 <a id="OAuthFlows"></a>
 
 #### 4.5.7. OAuthFlows
 
-{{ proto_to_table("specification/grpc/a2a.proto", "OAuthFlows") }}
+{{ proto_to_table("OAuthFlows") }}
 
 <a id="AuthorizationCodeOAuthFlow"></a>
 
 #### 4.5.8. AuthorizationCodeOAuthFlow
 
-{{ proto_to_table("specification/grpc/a2a.proto", "AuthorizationCodeOAuthFlow") }}
+{{ proto_to_table("AuthorizationCodeOAuthFlow") }}
 
 <a id="ClientCredentialsOAuthFlow"></a>
 
 #### 4.5.9. ClientCredentialsOAuthFlow
 
-{{ proto_to_table("specification/grpc/a2a.proto", "ClientCredentialsOAuthFlow") }}
+{{ proto_to_table("ClientCredentialsOAuthFlow") }}
 
 <a id="DeviceCodeOAuthFlow"></a>
 
 #### 4.5.10. DeviceCodeOAuthFlow
 
-{{ proto_to_table("specification/grpc/a2a.proto", "DeviceCodeOAuthFlow") }}
+{{ proto_to_table("DeviceCodeOAuthFlow") }}
 
 ### 4.6. Extensions
 
@@ -1007,13 +1007,13 @@ Agents declare their supported extensions in the [`AgentCard`](#441-agentcard) u
 
 ```json
 {
-  "protocolVersions": ["0.3"],
   "name": "Research Assistant Agent",
   "description": "AI agent for academic research and fact-checking",
   "supportedInterfaces": [
     {
       "url": "https://research-agent.example.com/a2a/v1",
-      "protocolBinding": "HTTP+JSON"
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "0.3",
     }
   ],
   "capabilities": {
@@ -1155,7 +1155,6 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 - **Agent Declaration**: Agents **MUST** declare all supported protocols in their AgentCard
 - **Client Choice**: Clients **MAY** choose any protocol declared by the agent
-- **No Dynamic Negotiation**: A2A does not define runtime protocol negotiation
 - **Fallback Behavior**: Clients **SHOULD** implement fallback logic for alternative protocols
 
 ### 5.3. Method Mapping Reference
@@ -1170,7 +1169,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
 | Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
-| List push notification configs  | `ListTaskPushNotificationConfig`   | `ListTaskPushNotificationConfig`   | `GET /tasks/{id}/pushNotificationConfigs`               |
+| List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |
 | Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
 | Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /extendedAgentCard`                                |
 
@@ -1206,7 +1205,7 @@ All JSON serializations of the A2A protocol data model **MUST** use **camelCase*
 
 **Naming Convention:**
 
-- Protocol Buffer field: `protocol_versions` → JSON field: `protocolVersions`
+- Protocol Buffer field: `protocol_version` → JSON field: `protocolVersion`
 - Protocol Buffer field: `context_id` → JSON field: `contextId`
 - Protocol Buffer field: `default_input_modes` → JSON field: `defaultInputModes`
 - Protocol Buffer field: `push_notification_config` → JSON field: `pushNotificationConfig`
@@ -1257,7 +1256,7 @@ The A2A protocol uses [`google.protobuf.Timestamp`](https://protobuf.dev/referen
 
 ### 5.7. Field Presence and Optionality
 
-The Protocol Buffer definition in `specification/grpc/a2a.proto` uses [`google.api.field_behavior`](https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto) annotations to indicate whether fields are `REQUIRED`. These annotations serve as both documentation and validation hints for implementations.
+The Protocol Buffer definition in `specification/a2a.proto` uses [`google.api.field_behavior`](https://github.com/googleapis/googleapis/blob/master/google/api/field_behavior.proto) annotations to indicate whether fields are `REQUIRED`. These annotations serve as both documentation and validation hints for implementations.
 
 **Required Fields:**
 
@@ -1267,7 +1266,7 @@ Fields marked with `[(google.api.field_behavior) = REQUIRED]` indicate that the 
 
 The Protocol Buffer `optional` keyword is used to distinguish between a field being explicitly set versus omitted. This distinction is critical for two scenarios:
 
-1. **Explicit Default Values:** Some fields in the specification define default values that differ from Protocol Buffer's implicit defaults (e.g., `protocolVersions` defaults to `["1.0"]` rather than an empty array). Implementations should apply the default value when the field is not explicitly provided.
+1. **Explicit Default Values:** Some fields in the specification define default values that differ from Protocol Buffer's implicit defaults. Implementations should apply the default value when the field is not explicitly provided.
 
 2. **Agent Card Canonicalization:** When creating cryptographic signatures of Agent Cards, it is required to produce a canonical JSON representation. The `optional` keyword enables implementations to distinguish between fields that were explicitly set (and should be included in the canonical form) versus fields that were omitted (and should be excluded from canonicalization). This ensures Agent Cards can be reconstructed to accurately match their signature.
 
@@ -1351,7 +1350,7 @@ data: {"task": {"id": "task-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
 data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}, "final": true}}
+data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1711,11 +1710,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "file": {
-          "name": "input_image.png",
-          "mediaType": "image/png",
-          "fileWithBytes": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-        }
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+        "filename": "input_image.png",
+        "mediaType": "image/png",
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
@@ -1743,11 +1740,9 @@ Content-Type: application/a2a+json
         "name": "processed_image_with_faces.png",
         "parts": [
           {
-            "file": {
-              "name": "output.png",
-              "mediaType": "image/png",
-              "fileWithUri": "https://storage.example.com/processed/task-bbb/output.png?token=xyz"
-            }
+            "url": "https://storage.example.com/processed/task-bbb/output.png?token=xyz",
+            "filename": "output.png",
+            "mediaType": "image/png"
           }
         ]
       }
@@ -1867,7 +1862,6 @@ HTTP/1.1 200 OK
 Content-Type: application/a2a+json
 
 {
-  "protocolVersions": ["1.0"],
   "name": "Extended Agent with Additional Skills",
   "skills": [
     /* Extended skills available to authenticated users */
@@ -2095,13 +2089,12 @@ Clients verifying Agent Card signatures **MUST**:
 
 ```json
 {
-  "protocolVersions": ["1.0"],
   "name": "GeoSpatial Route Planner Agent",
   "description": "Provides advanced route planning, traffic analysis, and custom map generation services. This agent can calculate optimal routes, estimate travel times considering real-time traffic, and create personalized maps with points of interest.",
   "supportedInterfaces": [
-    {"url": "https://georoute-agent.example.com/a2a/v1", "protocolBinding": "JSONRPC"},
-    {"url": "https://georoute-agent.example.com/a2a/grpc", "protocolBinding": "GRPC"},
-    {"url": "https://georoute-agent.example.com/a2a/json", "protocolBinding": "HTTP+JSON"}
+    {"url": "https://georoute-agent.example.com/a2a/v1", "protocolBinding": "JSONRPC", "protocolVersion": "1.0"},
+    {"url": "https://georoute-agent.example.com/a2a/grpc", "protocolBinding": "GRPC", "protocolVersion": "1.0"},
+    {"url": "https://georoute-agent.example.com/a2a/json", "protocolBinding": "HTTP+JSON", "protocolVersion": "1.0"}
   ],
   "provider": {
     "organization": "Example Geo Services Inc.",
@@ -2266,12 +2259,12 @@ Sends a message and subscribes to real-time updates via Server-Sent Events.
 **Response:** HTTP 200 with `Content-Type: text/event-stream`
 
 ```text
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 
-data: {"jsonrpc": "2.0", "id": 1, "result": { /* Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent */ }}
+data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 ```
 
-Referenced Objects: [`Task`](#411-task), [`Message`](#414-message), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)
+**Referenced Objects:** [`StreamResponse`](#323-stream-response)
 
 #### 9.4.3. `GetTask`
 
@@ -2355,7 +2348,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 - `CreateTaskPushNotificationConfig` - Create push notification configuration
 - `GetTaskPushNotificationConfig` - Get push notification configuration
-- `ListTaskPushNotificationConfig` - List push notification configurations
+- `ListTaskPushNotificationConfigs` - List push notification configurations
 - `DeleteTaskPushNotificationConfig` - Delete push notification configuration
 
 #### 9.4.8. `GetExtendedAgentCard`
@@ -2436,7 +2429,7 @@ The gRPC Protocol Binding provides a high-performance, strongly-typed interface 
 ### 10.1. Protocol Requirements
 
 - **Protocol:** gRPC over HTTP/2 with TLS
-- **Definition:** Use the normative Protocol Buffers definition in `specification/grpc/a2a.proto`
+- **Definition:** Use the normative Protocol Buffers definition in `specification/a2a.proto`
 - **Serialization:** Protocol Buffers version 3
 - **Service:** Implement the `A2AService` gRPC service
 
@@ -2473,21 +2466,7 @@ response, err := client.SendMessage(ctx, request)
 
 ### 10.3. Service Definition
 
-```proto
-service A2AService {
-  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
-  rpc SendStreamingMessage(SendMessageRequest) returns (stream StreamResponse);
-  rpc GetTask(GetTaskRequest) returns (Task);
-  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
-  rpc CancelTask(CancelTaskRequest) returns (Task);
-  rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse);
-  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
-  rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig);
-  rpc ListTaskPushNotificationConfig(ListTaskPushNotificationConfigRequest) returns (ListTaskPushNotificationConfigResponse);
-  rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty);
-  rpc GetExtendedAgentCard(GetExtendedAgentCardRequest) returns (AgentCard);
-}
-```
+{{ proto_service_to_table("A2AService") }}
 
 ### 10.4. Core Methods
 
@@ -2497,15 +2476,11 @@ Sends a message to an agent.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:SendMessageRequest"
-```
+{{ proto_to_table("SendMessageRequest") }}
 
 **Response:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:SendMessageResponse"
-```
+{{ proto_to_table("SendMessageResponse") }}
 
 #### 10.4.2. SendStreamingMessage
 
@@ -2513,9 +2488,7 @@ Sends a message with streaming updates.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:SendMessageRequest"
-```
+{{ proto_to_table("SendMessageRequest") }}
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
@@ -2525,9 +2498,7 @@ Retrieves task status.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:GetTaskRequest"
-```
+{{ proto_to_table("GetTaskRequest") }}
 
 **Response:** See [`Task`](#411-task) object definition.
 
@@ -2537,15 +2508,11 @@ Lists tasks with filtering.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:ListTasksRequest"
-```
+{{ proto_to_table("ListTasksRequest") }}
 
 **Response:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:ListTasksResponse"
-```
+{{ proto_to_table("ListTasksResponse") }}
 
 #### 10.4.5. CancelTask
 
@@ -2553,9 +2520,7 @@ Cancels a running task.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:CancelTaskRequest"
-```
+{{ proto_to_table("CancelTaskRequest") }}
 
 **Response:** See [`Task`](#411-task) object definition.
 
@@ -2565,9 +2530,7 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:SubscribeToTaskRequest"
-```
+{{ proto_to_table("SubscribeToTaskRequest") }}
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
@@ -2577,9 +2540,7 @@ Creates a push notification configuration for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:CreateTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
@@ -2589,27 +2550,21 @@ Retrieves an existing push notification configuration for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:GetTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
-#### 10.4.9. ListTaskPushNotificationConfig
+#### 10.4.9. ListTaskPushNotificationConfigs
 
 Lists all push notification configurations for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:ListTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("ListTaskPushNotificationConfigsRequest") }}
 
 **Response:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:ListTaskPushNotificationConfigResponse"
-```
+{{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
 #### 10.4.10. DeleteTaskPushNotificationConfig
 
@@ -2617,9 +2572,7 @@ Removes a push notification configuration for a task.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:DeleteTaskPushNotificationConfigRequest"
-```
+{{ proto_to_table("DeleteTaskPushNotificationConfigRequest") }}
 
 **Response:** `google.protobuf.Empty`
 
@@ -2629,9 +2582,7 @@ Retrieves the agent's extended capability card after authentication.
 
 **Request:**
 
-```proto
---8<-- "specification/grpc/a2a.proto:GetExtendedAgentCardRequest"
-```
+{{ proto_to_table("GetExtendedAgentCardRequest") }}
 
 **Response:** See [`AgentCard`](#441-agentcard) object definition.
 
@@ -2641,13 +2592,11 @@ Retrieves the agent's extended capability card after authentication.
 
 Resource wrapper for push notification configurations. This is a gRPC-specific type used in resource-oriented operations to provide the full resource name along with the configuration data.
 
-```proto
---8<-- "specification/grpc/a2a.proto:TaskPushNotificationConfig"
-```
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 **Fields:**
 
-{{ proto_to_table("specification/grpc/a2a.proto", "TaskPushNotificationConfig") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 ### 10.6. Error Handling
 
@@ -2713,9 +2662,7 @@ status {
 
 gRPC streaming uses server streaming RPCs for real-time updates. The `StreamResponse` message provides a union of possible streaming events:
 
-```proto
---8<-- "specification/grpc/a2a.proto:StreamResponse"
-```
+{{ proto_to_table("StreamResponse") }}
 
 ## 11. HTTP+JSON/REST Protocol Binding
 
@@ -2864,6 +2811,7 @@ GET /tasks/{id}?historyLength=10
 - **Enums**: Represented using their string values (e.g., `status=working`)
 - **Repeated Fields**: Multiple values **MAY** be passed by repeating the parameter name (e.g., `?tag=value1&tag=value2`) or as comma-separated values (e.g., `?tag=value1,value2`)
 - **Nested Objects**: Not supported in query parameters; operations requiring nested objects **MUST** use POST with a request body
+- **Datetimes/Timestamps**: Represented as ISO 8601 strings (e.g., `2025-11-09T10:30:00Z`)
 
 **URL Encoding:**
 
@@ -2920,15 +2868,12 @@ Content-Type: application/json
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
-data: {"task": { /* Task object */ }}
+data: { /* StreamResponse object */ }
 
-data: {"artifactUpdate": { /* TaskArtifactUpdateEvent */ }}
-
-data: {"statusUpdate": { /* TaskStatusUpdateEvent */ }}
+data: { /* StreamResponse object */ }
 ```
 
-**Referenced Objects:** [`Task`](#411-task), [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)
-<span id="4192-taskstatusupdateevent"></span><span id="4193-taskartifactupdateevent"></span>
+**Referenced Objects:** [`StreamResponse`](#323-stream-response)
 Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
 
 ## 12. Custom Binding Guidelines
@@ -3322,7 +3267,7 @@ This appendix catalogs renamed protocol messages and objects, their legacy ident
 | `SendMessageSuccessResponse`                    | `SendMessageResponse`                     | >= 0.5.0                 | Unified success response naming                        |
 | `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response           |
 | `SetTaskPushNotificationConfigRequest`          | `CreateTaskPushNotificationConfigRequest` | >= 0.5.0                 | Explicit creation intent                               |
-| `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
+| `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigsResponse` | >= 0.5.0                 | Consistent response suffix removal                     |
 | `GetAuthenticatedExtendedCardRequest`           | `GetExtendedAgentCardRequest`             | >= 0.5.0                 | Removed "Authenticated" from naming                    |
 
 Planned Lifecycle (example timeline; adjust per release strategy):
@@ -3431,11 +3376,9 @@ Objects now use the **JSON member name** itself to identify the type. The member
 
 ```json
 {
-  "file": {
-    "mediaType": "image/png",
-    "name": "diagram.png",
-    "fileWithBytes": "iVBORw0KGgo..."
-  }
+  "raw": "iVBORw0KGgo...",
+  "filename": "diagram.png",
+  "mediaType": "image/png"
 }
 ```
 
@@ -3447,7 +3390,7 @@ Objects now use the **JSON member name** itself to identify the type. The member
      - **Current:** `{ "text": "..." }` (direct string value)
    - **FilePart**:
      - **Legacy:** `{ "kind": "FilePart", "mimeType": "...", "name": "...", "fileWithBytes": "..." }`
-     - **Current:** `{ "file": { "mediaType": "...", "name": "...", "fileWithBytes": "..." } }`
+     - **Current:** `{ "raw": "...", "filename": "...", "mediaType": "..." }` (or `url` instead of `raw`)
    - **DataPart**:
      - **Legacy:** `{ "kind": "DataPart", "data": {...} }`
      - **Current:** `{ "data": { "data": {...} } }`

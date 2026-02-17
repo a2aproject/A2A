@@ -57,7 +57,7 @@ There are some changes to the protocol that extensions don't allow, primarily
 to prevent breaking core type validations:
 
 - **Changing the Definition of Core Data Structures**: For example, adding new
-    fields or removing required fields to protocol-defined data structures).
+    fields or removing required fields to protocol-defined data structures.
     Extensions should place custom attributes in the `metadata` map present on
     core data structures.
 - **Adding New Values to Enum Types**: Extensions should use existing enum values
@@ -170,14 +170,13 @@ A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 519
 {
   "jsonrpc": "2.0",
-  "method": "message/send",
+  "method": "SendMessage",
   "id": "1",
   "params": {
     "message": {
-      "kind": "message",
       "messageId": "1",
-      "role": "user",
-      "parts": [{"kind": "text", "text": "Oh magic 8-ball, will it rain today?"}]
+      "role": "ROLE_USER",
+      "parts": [{"text": "Oh magic 8-ball, will it rain today?"}]
     },
     "metadata": {
       "https://example.com/ext/konami-code/v1/code": "motherlode"
@@ -197,10 +196,11 @@ Content-Length: 338
   "jsonrpc": "2.0",
   "id": "1",
   "result": {
-    "kind": "message",
-    "messageId": "2",
-    "role": "agent",
-    "parts": [{"kind": "text", "text": "That's a bingo!"}]
+    "message": {
+      "messageId": "2",
+      "role": "ROLE_AGENT",
+      "parts": [{"text": "That's a bingo!"}]
+    }
   }
 }
 ```

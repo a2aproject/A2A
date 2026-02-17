@@ -6,6 +6,37 @@
   <img src="https://www.gstatic.com/_/boq-sdlc-agents-ui/_/r/Mvosg4klCA4.svg" alt="Ask Code Wiki" height="20">
 </a>
 
+<div style="text-align: left;">
+  <details>
+    <summary>🌐 Language</summary>
+    <div>
+      <div style="text-align: center;">
+        <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=as">অসমীয়া</a>
+      </div>
+    </div>
+  </details>
+</div>
+
 <!-- markdownlint-disable MD041 -->
 <div style="text-align: center;">
   <div class="centered-logo-text-group">
@@ -25,9 +56,19 @@ With A2A, agents can:
 - Securely collaborate on long-running tasks.
 - Operate without exposing their internal state, memory, or tools.
 
-## Intro to A2A Video
+## DeepLearning.AI Course
 
-[![A2A Intro Video](https://img.youtube.com/vi/Fbr_Solax1w/hqdefault.jpg)](https://goo.gle/a2a-video)
+[![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
+
+Join this short course on [A2A: The Agent2Agent Protocol](https://goo.gle/dlai-a2a), built in partnership with Google Cloud and IBM Research, and taught by [Holt Skinner](https://github.com/holtskinner), [Ivan Nardini](https://github.com/inardini), and [Sandi Besen](https://github.com/sandijean90).
+
+**What you'll learn:**
+
+- **Make agents A2A-compliant:** Expose agents built with frameworks like Google ADK, LangGraph, or BeeAI as A2A servers.
+- **Connect agents:** Create A2A clients from scratch or using integrations to connect to A2A-compliant agents.
+- **Orchestrate workflows:** Build sequential and hierarchical workflows of A2A-compliant agents.
+- **Multi-agent systems:** Build a healthcare multi-agent system using different frameworks and see how A2A enables collaboration.
+- **A2A and MCP:** Learn how A2A complements MCP by enabling agents to collaborate with each other.
 
 ## Why A2A?
 
