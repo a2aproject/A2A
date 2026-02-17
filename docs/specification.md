@@ -3267,7 +3267,7 @@ This appendix catalogs renamed protocol messages and objects, their legacy ident
 | `SendMessageSuccessResponse`                    | `SendMessageResponse`                     | >= 0.5.0                 | Unified success response naming                        |
 | `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response           |
 | `SetTaskPushNotificationConfigRequest`          | `CreateTaskPushNotificationConfigRequest` | >= 0.5.0                 | Explicit creation intent                               |
-| `ListTaskPushNotificationConfigsSuccessResponse` | `ListTaskPushNotificationConfigsResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
+| `ListTaskPushNotificationConfigSuccessResponse` | `ListTaskPushNotificationConfigsResponse`  | >= 0.5.0                 | Consistent response suffix removal                     |
 | `GetAuthenticatedExtendedCardRequest`           | `GetExtendedAgentCardRequest`             | >= 0.5.0                 | Removed "Authenticated" from naming                    |
 
 Planned Lifecycle (example timeline; adjust per release strategy):
@@ -3306,7 +3306,7 @@ Hidden anchor spans preserve old inbound links:
 <span id="751-taskidparams-object-for-taskscancel-and-taskspushnotificationconfigget"></span>
 <span id="77-taskspushnotificationconfigget"></span>
 <span id="771-gettaskpushnotificationconfigparams-object-taskspushnotificationconfigget"></span>
-<span id="781-listtaskpushnotificationconfigsparams-object-taskspushnotificationconfiglist"></span>
+<span id="781-listtaskpushnotificationconfigparams-object-taskspushnotificationconfiglist"></span>
 <span id="791-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete"></span>
 <span id="8-error-handling"></span>
 <span id="82-a2a-specific-errors"></span>
@@ -3315,7 +3315,7 @@ Hidden anchor spans preserve old inbound links:
 <span id="sendmessagesuccessresponse"></span>
 <span id="sendstreamingmessagesuccessresponse"></span>
 <span id="settaskpushnotificationconfigrequest"></span>
-<span id="listtaskpushnotificationconfigssuccessresponse"></span>
+<span id="listtaskpushnotificationconfigsuccessresponse"></span>
 <span id="getauthenticatedextendedcardrequest"></span>
 <span id="938-agentgetauthenticatedextendedcard"></span>
 
