@@ -141,7 +141,7 @@ The following example illustrates a typical task flow with a follow-up:
     {
       "jsonrpc": "2.0",
       "id": "req-001",
-      "method": "message.send",
+      "method": "SendMessage",
       "params": {
         "message": {
           "role": "user",
