@@ -51,6 +51,187 @@ However, some foreseeable applications include:
 | [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |
 | [Agent Gateway Protocol (AGP) Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp) | A Core Protocol Layer or Routing Extension that introduces Autonomous Squads (ASq) and routes Intent payloads based on declared Capabilities, enhancing scalability (v1). |
 
+## Extension Governance
+
+The A2A protocol provides extension points in the specification, allowing
+agents to advertise and negotiate extended capabilities. This section defines
+a formal governance framework for how extensions are proposed, developed,
+promoted, and maintained within the A2A organization.
+
+### Extension Tiers
+
+This framework defines two tiers of extensions within the A2A organization.
+Anyone may develop and publish their own extensions independently; these tiers
+apply specifically to extensions hosted under the `a2aproject` GitHub
+organization.
+
+#### Official Extensions
+
+Official extensions are developed and maintained under the `a2aproject` GitHub
+organization, officially recommended by the TSC, and use the
+`https://a2a-protocol.org/extensions/` URI prefix.
+
+**Repository Structure:**
+
+- Extension repositories use the `ext-` prefix:
+    `github.com/a2aproject/ext-{name}`
+- Examples: `ext-ui`, `ext-payments`, `ext-auth`
+- Each repository has designated maintainers identified in `MAINTAINERS.md`
+
+**Requirements:**
+
+- Extension specifications MUST use the same language as the core
+    specification ([RFC 2119](https://tools.ietf.org/html/rfc2119))
+- Extensions MUST be licensed under Apache 2.0
+- Extensions MUST have at least one reference implementation
+- Extensions SHOULD have associated documentation on the A2A website
+
+#### Experimental Extensions
+
+Experimental extensions provide an incubation pathway for community
+contributors to prototype and collaborate on extension ideas before graduation
+to official status.
+
+**Repository Structure:**
+
+- Experimental repositories use the `experimental-ext-` prefix:
+    `github.com/a2aproject/experimental-ext-{name}`
+- Example: `experimental-ext-orchestration`
+
+**Creation Requirements:**
+
+- An experimental extension repository can ONLY be created with sponsorship
+    from an A2A Maintainer
+- The sponsoring Maintainer is responsible for initial oversight of the
+    experimental extension
+- Experimental repositories MUST clearly indicate their
+    experimental/non-official status in the README
+- Any published packages MUST use naming that clearly indicates experimental
+    status
+- The TSC retains oversight, including the ability to archive or remove
+    experimental repositories
+
+### Extension Lifecycle
+
+Extensions progress through the following phases:
+
+#### Proposal Phase
+
+Any community member may propose an extension:
+
+1. **Open an Issue**: Create an issue in the main `a2aproject/A2A` repository
+    describing:
+    - An abstract describing the extension's purpose
+    - Motivation explaining why this cannot be achieved with the core protocol
+    - An initial technical approach or specification draft
+2. **Community Discussion**: The proposal is open for community feedback and
+    refinement
+
+#### Maintainer Sponsorship
+
+For a proposal to proceed to experimental status:
+
+1. **Secure a Sponsor**: An A2A Maintainer must agree to sponsor the extension
+    proposal
+2. **Repository Creation**: The sponsoring Maintainer creates the
+    `experimental-ext-*` repository under `a2aproject`
+3. **Oversight**: The sponsoring Maintainer provides initial oversight and
+    ensures alignment with A2A design principles
+
+#### Experimental Development
+
+While in experimental status:
+
+- Contributors iterate on the specification and reference implementations
+- The experimental extension MAY be used by early adopters with the
+    understanding that breaking changes are expected
+- Community feedback is gathered and incorporated
+- The experimental repository MUST clearly indicate its non-official status
+
+#### Graduation to Official Extension
+
+To graduate an experimental extension to official status:
+
+1. **Maturity Requirements**:
+    - At least one production-quality reference implementation
+    - Documentation meeting A2A standards
+    - Evidence of community adoption or interest
+    - Clear maintainer commitment for ongoing maintenance
+2. **Graduation Proposal**: Open an issue in `a2aproject/A2A` with:
+    - Reference to the experimental repository and its implementations
+    - Summary of community feedback and adoption
+    - Proposed maintainers for the official extension
+3. **TSC Vote**:
+    - The proposal is added to the TSC meeting agenda
+    - **Quorum Requirement**: At least 50% of TSC voting members must be
+        present
+    - **Approval**: Requires majority vote of those in attendance (per A2A
+        governance)
+    - The TSC may request revisions before a final vote
+4. **Acceptance**:
+    - Upon approval, the repository is renamed from `experimental-ext-*` to
+        `ext-*`
+    - Documentation is added to the A2A website's extensions page
+
+#### Official Extension Iteration
+
+Once official, extensions may be iterated on without further TSC review for
+non-breaking changes:
+
+- Extension repository maintainers are responsible for day-to-day governance
+- Changes SHOULD be coordinated via the relevant working group if one exists
+- Breaking changes require a new extension identifier
+- Maintainers SHOULD coordinate with SDK maintainers for implementation
+    updates
+
+#### Promotion to Core Protocol
+
+Some extensions may eventually transition to core protocol features. This is
+governed through the existing A2A specification enhancement process:
+
+- A proposal is submitted following the standard specification change process
+- The proposal references the official extension and its adoption
+- TSC vote with standard quorum and majority requirements applies
+- Not all extensions are suitable for core inclusion; many will remain as
+    extensions indefinitely
+
+### SDK Extension Support
+
+A2A SDKs MAY implement extensions. Where implemented:
+
+- Extensions MUST be disabled by default and require explicit opt-in
+- SDK documentation SHOULD list supported extensions
+- SDK maintainers have full autonomy over extension support decisions
+- Extension support is not required for protocol conformance
+
+### Legal Requirements
+
+#### Licensing
+
+Official extensions MUST be available under the Apache 2.0 license, consistent
+with the core A2A project.
+
+#### Contributor License Grant
+
+By submitting a contribution to an official A2A extension repository,
+contributors represent that:
+
+1. They have the legal authority to grant the rights
+2. The contribution is original work or they have sufficient rights to submit
+    it
+3. They grant to the Linux Foundation and recipients a perpetual, worldwide,
+    non-exclusive, royalty-free license to use, reproduce, modify, and
+    distribute the contribution
+
+#### Antitrust
+
+Extension developers acknowledge that:
+
+- They may compete with other participants
+- They have no obligation to implement any extension
+- They are free to develop competing extensions
+- Status as an official extension does not create an exclusive relationship
+
 ## Limitations
 
 There are some changes to the protocol that extensions don't allow, primarily
@@ -228,9 +409,10 @@ versioning, and distributing extension implementations.
     - **Permanent Identifiers**: Authors are encouraged to use a permanent
         identifier service, such as `w3id.org`, for their extension URIs to
         prevent broken links.
-    - **Community Registry (Future)**: The A2A community might establish a
-        central registry for discovering and browsing available extensions in
-        the future.
+    - **Community Registry**: The A2A [Extension Governance](#extension-governance)
+        framework defines a tiered system for official and experimental
+        extensions hosted under the `a2aproject` organization, including a
+        lifecycle for proposing and promoting extensions.
 - **Packaging and Reusability (A2A SDKs and Libraries)**:
     To promote adoption, extension logic should be packaged into reusable
         libraries that can be integrated into existing A2A client and
