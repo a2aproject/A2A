@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/a2a-logo-black.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
     
     
       
@@ -11492,17 +11492,19 @@ The <code>.well-known/agent-card.json</code> URI provides a standardized locatio
 Objects used an inline <code>kind</code> field as a discriminator to identify the object type:</p>
 <p><strong>Example 1 - TextPart:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-68-1"><a id="__codelineno-68-1" name="__codelineno-68-1" href="#__codelineno-68-1"></a><span class="p">{</span>
-</span><span id="__span-68-2"><a id="__codelineno-68-2" name="__codelineno-68-2" href="#__codelineno-68-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TextPart&quot;</span><span class="p">,</span>
+</span><span id="__span-68-2"><a id="__codelineno-68-2" name="__codelineno-68-2" href="#__codelineno-68-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
 </span><span id="__span-68-3"><a id="__codelineno-68-3" name="__codelineno-68-3" href="#__codelineno-68-3"></a><span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Hello, world!&quot;</span>
 </span><span id="__span-68-4"><a id="__codelineno-68-4" name="__codelineno-68-4" href="#__codelineno-68-4"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Example 2 - FilePart:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-69-1"><a id="__codelineno-69-1" name="__codelineno-69-1" href="#__codelineno-69-1"></a><span class="p">{</span>
-</span><span id="__span-69-2"><a id="__codelineno-69-2" name="__codelineno-69-2" href="#__codelineno-69-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FilePart&quot;</span><span class="p">,</span>
-</span><span id="__span-69-3"><a id="__codelineno-69-3" name="__codelineno-69-3" href="#__codelineno-69-3"></a><span class="w">  </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
-</span><span id="__span-69-4"><a id="__codelineno-69-4" name="__codelineno-69-4" href="#__codelineno-69-4"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagram.png&quot;</span><span class="p">,</span>
-</span><span id="__span-69-5"><a id="__codelineno-69-5" name="__codelineno-69-5" href="#__codelineno-69-5"></a><span class="w">  </span><span class="nt">&quot;fileWithBytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgo...&quot;</span>
-</span><span id="__span-69-6"><a id="__codelineno-69-6" name="__codelineno-69-6" href="#__codelineno-69-6"></a><span class="p">}</span>
+</span><span id="__span-69-2"><a id="__codelineno-69-2" name="__codelineno-69-2" href="#__codelineno-69-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+</span><span id="__span-69-3"><a id="__codelineno-69-3" name="__codelineno-69-3" href="#__codelineno-69-3"></a><span class="w">  </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-69-4"><a id="__codelineno-69-4" name="__codelineno-69-4" href="#__codelineno-69-4"></a><span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;diagram.png&quot;</span><span class="p">,</span>
+</span><span id="__span-69-5"><a id="__codelineno-69-5" name="__codelineno-69-5" href="#__codelineno-69-5"></a><span class="w">    </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+</span><span id="__span-69-6"><a id="__codelineno-69-6" name="__codelineno-69-6" href="#__codelineno-69-6"></a><span class="w">    </span><span class="nt">&quot;fileWithBytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iVBORw0KGgo...&quot;</span>
+</span><span id="__span-69-7"><a id="__codelineno-69-7" name="__codelineno-69-7" href="#__codelineno-69-7"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-69-8"><a id="__codelineno-69-8" name="__codelineno-69-8" href="#__codelineno-69-8"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Current Pattern (v1.0):</strong>
 Objects now use the <strong>JSON member name</strong> itself to identify the type. The member name acts as the discriminator, and the value structure depends on the specific type:</p>
@@ -11522,32 +11524,32 @@ Objects now use the <strong>JSON member name</strong> itself to identify the typ
 <ol>
 <li><strong>Part Union Types</strong>:</li>
 <li><strong>TextPart</strong>:<ul>
-<li><strong>Legacy:</strong> <code>{ "kind": "TextPart", "text": "..." }</code></li>
-<li><strong>Current:</strong> <code>{ "text": "..." }</code> (direct string value)</li>
+<li><strong>Legacy:</strong> <code>{ "kind": "text", "text": "..." }</code></li>
+<li><strong>Current:</strong> <code>{ "text": "..." }</code> (member presence acts as discriminator)</li>
 </ul>
 </li>
 <li><strong>FilePart</strong>:<ul>
-<li><strong>Legacy:</strong> <code>{ "kind": "FilePart", "mimeType": "...", "name": "...", "fileWithBytes": "..." }</code></li>
+<li><strong>Legacy:</strong> <code>{ "kind": "file", "file": { "name": "...", "mimeType": "...", "fileWithBytes": "..." } }</code></li>
 <li><strong>Current:</strong> <code>{ "raw": "...", "filename": "...", "mediaType": "..." }</code> (or <code>url</code> instead of <code>raw</code>)</li>
 </ul>
 </li>
 <li>
 <p><strong>DataPart</strong>:</p>
 <ul>
-<li><strong>Legacy:</strong> <code>{ "kind": "DataPart", "data": {...} }</code></li>
-<li><strong>Current:</strong> <code>{ "data": { "data": {...} } }</code></li>
+<li><strong>Legacy:</strong> <code>{ "kind": "data", "data": {...} }</code></li>
+<li><strong>Current:</strong> <code>{ "data": {...}, "mediaType": "application/json" }</code></li>
 </ul>
 </li>
 <li>
 <p><strong>Streaming Event Types</strong>:</p>
 </li>
 <li><strong>TaskStatusUpdateEvent</strong>:<ul>
-<li><strong>Legacy:</strong> <code>{ "kind": "TaskStatusUpdateEvent", "taskId": "...", "status": {...} }</code></li>
+<li><strong>Legacy:</strong> <code>{ "kind": "status-update", "taskId": "...", "status": {...} }</code></li>
 <li><strong>Current:</strong> <code>{ "statusUpdate": { "taskId": "...", "status": {...} } }</code></li>
 </ul>
 </li>
 <li><strong>TaskArtifactUpdateEvent</strong>:<ul>
-<li><strong>Legacy:</strong> <code>{ "kind": "TaskArtifactUpdateEvent", "taskId": "...", "artifact": {...} }</code></li>
+<li><strong>Legacy:</strong> <code>{ "kind": "artifact-update", "taskId": "...", "artifact": {...} }</code></li>
 <li><strong>Current:</strong> <code>{ "artifactUpdate": { "taskId": "...", "artifact": {...} } }</code></li>
 </ul>
 </li>
