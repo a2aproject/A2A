@@ -1928,7 +1928,7 @@ For more on discovery strategies, see the [Agent Discovery guide](./topics/agent
 
 Clients can find Agent Cards through:
 
-- **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json`
+- **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json` (see [Section 8.6](#86-caching) for caching guidance)
 - **Registries/Catalogs:** Querying curated catalogs of agents
 - **Direct Configuration:** Pre-configured Agent Card URLs or content
 
@@ -2162,6 +2162,22 @@ Clients verifying Agent Card signatures **MUST**:
   ]
 }
 ```
+
+### 8.6. Caching
+
+Agent Card content changes infrequently relative to the frequency at which clients may fetch it. Servers and clients **SHOULD** use standard HTTP caching mechanisms to reduce unnecessary network overhead.
+
+#### 8.6.1. Server Requirements
+
+- Agent Card HTTP endpoints **SHOULD** include a `Cache-Control` response header with a `max-age` directive appropriate for the agent's expected update frequency
+- Agent Card HTTP endpoints **SHOULD** include an `ETag` response header derived from the Agent Card's `version` field or a hash of the card content
+- Agent Card HTTP endpoints **MAY** include a `Last-Modified` response header
+
+#### 8.6.2. Client Requirements
+
+- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) when fetching Agent Cards
+- When a cached Agent Card has expired, clients **SHOULD** use conditional requests (`If-None-Match` with the stored `ETag`, or `If-Modified-Since`) to avoid re-downloading unchanged cards
+- When the server does not include caching headers, clients **MAY** apply an implementation-specific default cache duration
 
 ## 9. JSON-RPC Protocol Binding
 
