@@ -84,9 +84,10 @@ service A2AService {
 
   // (-- api-linter: client-libraries::4232::required-fields=disabled
   //     api-linter: core::0133::method-signature=disabled
+  //     api-linter: core::0133::request-message-name=disabled
   //     aip.dev/not-precedent: method_signature preserved for backwards compatibility --)
   // Creates a push notification config for a task.
-  rpc CreateTaskPushNotificationConfig(CreateTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
+  rpc CreateTaskPushNotificationConfig(TaskPushNotificationConfig) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       post: "/tasks/{task_id=*}/pushNotificationConfigs"
       body: "config"
@@ -144,7 +145,8 @@ message SendMessageConfiguration {
   // Agents SHOULD use this to tailor their output.
   repeated string accepted_output_modes = 1;
   // Configuration for the agent to send push notifications for task updates.
-  PushNotificationConfig push_notification_config = 2;
+  // Task id should be empty when sending this configuration in a `SendMessage` request.
+  TaskPushNotificationConfig task_push_notification_config = 2;
   // The maximum number of most recent messages from the task's history to retrieve in
   // the response. An unset value means the client does not impose any limit. A
   // value of zero is a request to not include any messages. The server MUST NOT
@@ -317,18 +319,6 @@ message TaskArtifactUpdateEvent {
   google.protobuf.Struct metadata = 6;
 }
 
-// Configuration for setting up push notifications for task updates.
-message PushNotificationConfig {
-  // A unique identifier (e.g. UUID) for this push notification configuration.
-  string id = 1;
-  // The URL where the notification should be sent.
-  string url = 2 [(google.api.field_behavior) = REQUIRED];
-  // A token unique for this task or session.
-  string token = 3;
-  // Authentication information required to send the notification.
-  AuthenticationInfo authentication = 4;
-}
-
 // Defines authentication details, used for push notifications.
 message AuthenticationInfo {
   // HTTP Authentication Scheme from the [IANA registry](https://www.iana.org/assignments/http-authschemes/).
@@ -472,10 +462,17 @@ message AgentCardSignature {
 message TaskPushNotificationConfig {
   // Optional. Tenant ID.
   string tenant = 1;
-  // The ID of the task this configuration is associated with.
-  string task_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The push notification configuration details.
-  PushNotificationConfig push_notification_config = 3 [(google.api.field_behavior) = REQUIRED];
+  // A unique identifier (e.g. UUID) for this push notification configuration.
+  string id = 2;
+  // The ID of the task this configuration is associated with.
+  string task_id = 3 [(google.api.field_behavior) = REQUIRED];
+  // The URL where the notification should be sent.
+  string url = 4 [(google.api.field_behavior) = REQUIRED];
+  // A token unique for this task or session.
+  string token = 5;
+  // Authentication information required to send the notification.
+  AuthenticationInfo authentication = 6;
 }
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
@@ -731,16 +728,6 @@ message DeleteTaskPushNotificationConfigRequest {
   string task_id = 2 [(google.api.field_behavior) = REQUIRED];
   // The resource ID of the configuration to delete.
   string id = 3 [(google.api.field_behavior) = REQUIRED];
-}
-
-// Represents a request for the `CreateTaskPushNotificationConfig` method.
-message CreateTaskPushNotificationConfigRequest {
-  // Optional. Tenant ID, provided as a path parameter.
-  string tenant = 1;
-  // The parent task resource ID.
-  string task_id = 2 [(google.api.field_behavior) = REQUIRED];
-  // The configuration to create.
-  PushNotificationConfig config = 3 [(google.api.field_behavior) = REQUIRED];
 }
 
 // Represents a request for the `SubscribeToTask` method.
