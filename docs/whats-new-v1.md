@@ -800,14 +800,14 @@ const message = { role: "ROLE_USER", parts: [...] };
 
 ### New Capabilities to Leverage
 
-#### 1. Blocking Parameter Control
+#### 1. Execution Mode Control
 
 ```typescript
-// Wait for task completion
-const result = await sendMessage(message, { blocking: true });
+// Wait for task completion (Default)
+const result = await sendMessage(message, { nonBlocking: false });
 
 // Return immediately, poll later
-const task = await sendMessage(message, { blocking: false });
+const task = await sendMessage(message, { nonBlocking: true });
 ```
 
 #### 2. Agent Card Signature Verification
@@ -935,7 +935,7 @@ class A2AClient {
 
 - Implement cursor-based pagination
 - Update enum value handling (state field)
-- Add blocking parameter support
+- Add non_blocking parameter support
 
 #### Medium (Within 3 Months)
 
