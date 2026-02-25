@@ -39,7 +39,7 @@ Agents advertise their AIP identity via the standard `extensions` field in their
         "did": "did:aip:abc123...",
         "verification_endpoint": "https://aip-service.fly.dev/verify",
         "trust_score_endpoint": "https://aip-service.fly.dev/trust-score",
-        "capabilities": ["sign", "verify", "vouch", "message"]
+        "capabilities": ["SIGN", "VERIFY", "VOUCH", "MESSAGE"]
       }
     }
   ]
@@ -96,7 +96,7 @@ All A2A messages between AIP-enabled agents SHOULD be signed:
 }
 ```
 
-The signature covers `method + params.message.parts + timestamp + nonce` to prevent replay attacks.
+The signature covers a deterministically serialized representation of `method`, `params.message.parts`, `timestamp`, and `nonce` to prevent replay attacks. It is RECOMMENDED to use a canonical JSON format (such as RFC 8785) for structured data before signing.
 
 ### Vouch Chains for Delegation
 
@@ -113,7 +113,7 @@ This maps directly to abdelsfane's delegation chain proposal but with cryptograp
 client.vouch(
     voucher_did=agent_a_did,
     subject_did=agent_b_did,
-    scope=["data-analysis", "read-only"],
+    scope=["DATA_ANALYSIS", "READ_ONLY"],
     trust_level=0.8
 )
 
