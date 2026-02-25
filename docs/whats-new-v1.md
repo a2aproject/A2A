@@ -804,10 +804,10 @@ const message = { role: "ROLE_USER", parts: [...] };
 
 ```typescript
 // Wait for task completion (Default)
-const result = await sendMessage(message, { nonBlocking: false });
+const result = await sendMessage(message, { returnImmediately: false });
 
 // Return immediately, poll later
-const task = await sendMessage(message, { nonBlocking: true });
+const task = await sendMessage(message, { returnImmediately: true });
 ```
 
 #### 2. Agent Card Signature Verification
@@ -935,7 +935,7 @@ class A2AClient {
 
 - Implement cursor-based pagination
 - Update enum value handling (state field)
-- Add non_blocking parameter support
+- Add return_immediately parameter support
 
 #### Medium (Within 3 Months)
 

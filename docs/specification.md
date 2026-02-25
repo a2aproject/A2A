@@ -443,13 +443,13 @@ This section defines common parameter objects used across multiple operations.
 
 **Execution Mode:**
 
-The `non_blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation returns immediately or waits for task completion.
+The `return_immediately` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation returns immediately or waits for task completion. By default, operations are blocking:
 
-- **Blocking (`non_blocking: false` or unset)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.
+- **Blocking (`return_immediately: false` or unset)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.
 
-- **Non-Blocking (`non_blocking: true`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
+- **Non-Blocking (`return_immediately: true`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
-The `non_blocking` field has no effect:
+The `return_immediately` field has no effect:
 
 - when the operation returns a direct [`Message`](#414-message) response instead of a task.
 - for streaming operations, which always return updates in real-time.
