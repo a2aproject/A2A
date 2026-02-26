@@ -29,7 +29,7 @@ The repository contains:
 Describes an agent's identity and capabilities.
 - `name`, `description`, `version`: Identity metadata.
 - `supported_interfaces`: List of `AgentInterface` (URL, protocol binding, tenant, protocol version).
-- `capabilities`: `streaming`, `push_notifications`, `extended_agent_card`, `extensions`.
+- `capabilities`: `streaming`, `push_notifications`, `extended_agent_card`, `bidi_streaming`, `extensions`.
 - `skills`: List of `AgentSkill` (id, name, description, tags, examples).
 - `security_schemes`, `security_requirements`: Authentication configuration (API Key, OAuth2, OIDC, mTLS, HTTP Auth).
 - `default_input_modes`, `default_output_modes`: Supported MIME types (e.g., `text/plain`, `application/json`).
@@ -58,6 +58,7 @@ Represents a stateful unit of work.
 | :--- | :--- | :--- | :--- |
 | `SendMessage` | `SendMessageRequest` | `SendMessageResponse` | Initiates or continues a task. |
 | `SendStreamingMessage` | `SendMessageRequest` | `stream StreamResponse` | Sends message and receives real-time SSE updates. |
+| `SendLiveMessage` | `stream SendMessageRequest` | `stream StreamResponse` | Bidirectional streaming for live agent interaction (gRPC only). |
 | `GetTask` | `GetTaskRequest` | `Task` | Retrieves current task state. |
 | `ListTasks` | `ListTasksRequest` | `ListTasksResponse` | Filter and paginate tasks. |
 | `CancelTask` | `CancelTaskRequest` | `Task` | Requests cancellation of a task. |

@@ -55,7 +55,7 @@ graph TB
 
     subgraph L2 ["A2A Operations"]
         direction LR
-        G[Send Message] ~~~ H[Stream Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
+        G[Send Message] ~~~ H[Stream Message] ~~~ H2[Live Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
     end
 
     subgraph L3 ["Protocol Bindings"]
@@ -213,7 +213,44 @@ The operation MUST establish a streaming connection for real-time updates. The s
 
 The agent MAY return a `Task` for complex processing with status/artifact updates or MAY return a `Message` for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
 
-#### 3.1.3. Get Task
+#### 3.1.3. Send Live Message (Bidirectional Streaming)
+
+Establishes a bidirectional streaming connection with the agent, enabling inline responses to interrupted states without reconnecting. This operation is only available via the gRPC protocol binding.
+
+**Inputs:**
+
+- `stream` [`SendMessageRequest`](#321-sendmessagerequest): A stream of request objects. The initial request contains the message and optional configuration; subsequent requests provide follow-up messages (e.g., responses to `INPUT_REQUIRED` states).
+
+**Outputs:**
+
+- `stream` [`Stream Response`](#323-stream-response) objects containing:
+    - Initial response: [`Task`](#411-task) object OR [`Message`](#414-message) object
+    - Subsequent events following a `Task` MAY include [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+
+**Errors:**
+
+- [`UnsupportedOperationError`](#332-error-handling): Bidirectional streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)). Maps to gRPC `UNIMPLEMENTED`.
+- [`TaskNotFoundError`](#332-error-handling): Client specified a `taskId` that does not exist. Maps to gRPC `NOT_FOUND`.
+- The agent MAY return gRPC `FAILED_PRECONDITION` if another client already has an active bidirectional stream for the specified task and the agent does not support multiple active request streams.
+
+**Behavior:**
+
+The operation MUST establish a bidirectional streaming connection. The stream MUST follow one of these patterns:
+
+1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` and then half-close.
+
+2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more status/artifact update events. Unlike [Send Streaming Message](#312-send-streaming-message), the stream MUST remain open when the task reaches an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`), allowing the client to send follow-up messages on the same stream. The agent MUST half-close the connection only when the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`).
+
+**Configuration and ID Semantics:**
+
+- The initial `SendMessageRequest` MAY specify a `SendMessageConfiguration`. Subsequent requests MUST either send the same configuration or omit it. If omitted, the agent MUST continue using the initial configuration.
+- The initial `Message` MAY include `taskId` and `contextId`. Subsequent messages MUST either specify the same `taskId` and `contextId` or omit them. Omitted values are interpreted as the established stream's task and context.
+
+**Reconnection:**
+
+A client may reconnect to an ongoing task by specifying a `taskId` with empty message parts. If the task is in a terminal state, the agent returns the task and half-closes. If the task is active, the agent sends the current state and begins sending updates.
+
+#### 3.1.4. Get Task
 
 Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with message/send, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.
 
@@ -574,6 +611,7 @@ Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). Whe
 
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
+- **Bidirectional Streaming**: If `AgentCard.capabilities.bidiStreaming` is `false` or not present, attempts to use `SendLiveMessage` **MUST** return `UNIMPLEMENTED` (gRPC). This capability is only applicable to the gRPC protocol binding.
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a server requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
@@ -659,11 +697,12 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task)), and Live Message ([Section 3.1.3](#313-send-live-message-bidirectional-streaming), gRPC only)
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
-- Requires `AgentCard.capabilities.streaming` to be `true`
+- `SendStreamingMessage`/`SubscribeToTask` require `AgentCard.capabilities.streaming` to be `true`
+- `SendLiveMessage` (bidirectional) requires `AgentCard.capabilities.bidiStreaming` to be `true` and is gRPC-only. Unlike server-streaming, the stream stays open during interrupted states for inline client responses
 
 **Push Notifications (WebHooks):**
 
@@ -1163,6 +1202,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
 | Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
 | Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
+| Live message (bidi streaming)   | N/A                                | `SendLiveMessage`                  | N/A                                                     |
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
@@ -2492,7 +2532,21 @@ Sends a message with streaming updates.
 
 **Response:** Server streaming [`StreamResponse`](#stream-response) objects.
 
-#### 10.4.3. GetTask
+#### 10.4.3. SendLiveMessage
+
+Establishes a bidirectional streaming connection with an agent. The client streams `SendMessageRequest` messages and receives `StreamResponse` events. Unlike `SendStreamingMessage`, the stream remains open during interrupted task states (`INPUT_REQUIRED`, `AUTH_REQUIRED`), allowing inline follow-up. The agent half-closes only on terminal states.
+
+**Request:** Client streaming [`SendMessageRequest`](#321-sendmessagerequest) objects.
+
+**Response:** Server streaming [`StreamResponse`](#stream-response) objects.
+
+**Error Codes:**
+
+- `UNIMPLEMENTED`: Agent does not support bidirectional streaming
+- `NOT_FOUND`: Specified `taskId` does not exist
+- `FAILED_PRECONDITION`: Another client already has an active stream for the task
+
+#### 10.4.4. GetTask
 
 Retrieves task status.
 
@@ -2660,7 +2714,7 @@ status {
 
 ### 10.7. Streaming
 
-gRPC streaming uses server streaming RPCs for real-time updates. The `StreamResponse` message provides a union of possible streaming events:
+gRPC supports both server streaming and bidirectional streaming RPCs for real-time updates. Server streaming (`SendStreamingMessage`, `SubscribeToTask`) delivers events until a terminal or interrupted state. Bidirectional streaming (`SendLiveMessage`) additionally allows the client to send messages on the same stream, keeping the connection open during interrupted states. The `StreamResponse` message provides a union of possible streaming events:
 
 {{ proto_to_table("StreamResponse") }}
 
