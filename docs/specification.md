@@ -248,7 +248,7 @@ The operation MUST establish a bidirectional streaming connection. The stream MU
 
 **Reconnection:**
 
-A client may reconnect to an ongoing task by specifying a `taskId` with empty message parts. If the task is in a terminal state, the agent returns the task and half-closes. If the task is active, the agent sends the current state and begins sending updates.
+A client may reconnect to an ongoing task by specifying a `taskId` with empty message parts. If the task is in a terminal state, the agent returns the task and half-closes. If the task is active, the agent sends the current state and begins sending updates. If no task exists with the specified ID, the agent SHOULD return a `NOT_FOUND` error. If another client already has an active stream for the task and the agent does not support multiple connections, the agent MAY return a `FAILED_PRECONDITION` error.
 
 #### 3.1.4. Get Task
 

@@ -64,7 +64,7 @@ For tasks that require human-in-the-loop interactions — such as multi-step app
 
 - **Stream Termination:** The agent MUST half-close the connection when the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`).
 
-- **Reconnection:** A client can reconnect to an ongoing task by calling `SendLiveMessage` with a `taskId` and empty message parts. If the task is active, the agent sends the current state and resumes streaming updates.
+- **Reconnection:** A client can reconnect to an ongoing task by calling `SendLiveMessage` with a `taskId` and empty message parts. If the task is active, the agent sends the current state and resumes streaming updates. If the task is already in a terminal state, the agent returns the final task details and half-closes the stream. If the task ID is not found, or if another stream is already active and the agent doesn't support multiplexing, an error (`NOT_FOUND` or `FAILED_PRECONDITION`) is returned.
 
 ### When to Use Bidirectional Streaming
 
