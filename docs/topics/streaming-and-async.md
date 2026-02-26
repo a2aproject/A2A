@@ -114,7 +114,7 @@ Push notifications are ideal for:
 
 Refer to the Protocol Specification for detailed structures:
 
-- [`CreateTaskPushNotificationConfig`](../specification.md#317-create-push-notification-config)
+- [`CreateTaskPushNotificationConfig`](../specification.md#318-create-push-notification-config)
 - [`GetTask`](../specification.md#76-taskspushnotificationconfigget)
 
 ### Client-Side Push Notification Service
