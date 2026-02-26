@@ -266,7 +266,7 @@ See [History Length Semantics](#324-history-length-semantics) for details about 
 
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
-#### 3.1.4. List Tasks
+#### 3.1.5. List Tasks
 
 Retrieves a list of tasks with optional filtering and pagination capabilities. This method allows clients to discover and manage multiple tasks across different contexts or with specific status criteria.
 
@@ -298,7 +298,7 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
 
-#### 3.1.5. Cancel Task
+#### 3.1.6. Cancel Task
 
 Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).
 
@@ -319,7 +319,7 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 The operation attempts to cancel the specified task and returns its updated state.
 
-#### 3.1.6. Subscribe to Task
+#### 3.1.7. Subscribe to Task
 
 <span id="79-taskssubscribe"></span>
 
@@ -347,7 +347,7 @@ The operation enables real-time monitoring of task progress and can be used with
 
 The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
-#### 3.1.7. Create Push Notification Config
+#### 3.1.8. Create Push Notification Config
 
 <span id="75-taskspushnotificationconfigset"></span>
 <span id="317-create-push-notification-config"></span>
@@ -373,7 +373,7 @@ The operation MUST establish a webhook endpoint for task update notifications. W
 
  <span id="tasks-push-notification-config-operations"></span><span id="grpc-push-notification-operations"></span><span id="push-notification-operations"></span>
 
-#### 3.1.8. Get Push Notification Config
+#### 3.1.9. Get Push Notification Config
 
 <span id="76-taskspushnotificationconfigget"></span>
 
@@ -396,7 +396,7 @@ Retrieves an existing push notification configuration for a task.
 
 The operation MUST return configuration details including webhook URL and notification settings. The operation MUST fail if the configuration does not exist or the client lacks access.
 
-#### 3.1.9. List Push Notification Configs
+#### 3.1.10. List Push Notification Configs
 
 Retrieves all push notification configurations for a task.
 
@@ -417,7 +417,7 @@ Retrieves all push notification configurations for a task.
 
 The operation MUST return all active push notification configurations for the specified task and MAY support pagination for tasks with many configurations.
 
-#### 3.1.10. Delete Push Notification Config
+#### 3.1.11. Delete Push Notification Config
 
 Removes a push notification configuration for a task.
 
@@ -438,7 +438,7 @@ Removes a push notification configuration for a task.
 
 The operation MUST permanently remove the specified push notification configuration. No further notifications will be sent to the configured webhook after deletion. This operation MUST be idempotent - multiple deletions of the same config have the same effect.
 
-#### 3.1.11. Get Extended Agent Card
+#### 3.1.12. Get Extended Agent Card
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.capabilities.extendedAgentCard` is `true`.
 
@@ -482,7 +482,7 @@ The `return_immediately` field in [`SendMessageConfiguration`](#322-sendmessagec
 
 - **Blocking (`return_immediately: false` or unset)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.
 
-- **Non-Blocking (`return_immediately: true`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
+- **Non-Blocking (`return_immediately: true`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#314-get-task), subscribe via [Subscribe to Task](#317-subscribe-to-task), or receive updates via push notifications.
 
 The `return_immediately` field has no effect:
 
@@ -689,7 +689,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 
 **Polling (Get Task):**
 
-- Client periodically calls Get Task ([Section 3.1.3](#313-get-task)) to check task status
+- Client periodically calls Get Task ([Section 3.1.4](#314-get-task)) to check task status
 - Simple to implement, works with all protocol bindings
 - Higher latency, potential for unnecessary requests
 - Best for: Simple integrations, infrequent updates, clients behind restrictive firewalls
@@ -697,7 +697,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task)), and Live Message ([Section 3.1.3](#313-send-live-message-bidirectional-streaming), gRPC only)
+- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.7](#317-subscribe-to-task)), and Live Message ([Section 3.1.3](#313-send-live-message-bidirectional-streaming), gRPC only)
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -710,7 +710,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Operations: Create ([Section 3.1.8](#318-create-push-notification-config)), Get ([Section 3.1.9](#319-get-push-notification-config)), List ([Section 3.1.10](#3110-list-push-notification-configs)), Delete ([Section 3.1.11](#3111-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -3117,8 +3117,8 @@ Implementations **MUST** ensure appropriate scope limitation based on the authen
 
 **Operations Requiring Scope Limitation:**
 
-- [`List Tasks`](#314-list-tasks): **MUST** only return tasks visible to the authenticated client according to the agent's authorization model
-- [`Get Task`](#313-get-task): **MUST** verify the authenticated client has access to the requested task according to the agent's authorization model
+- [`List Tasks`](#315-list-tasks): **MUST** only return tasks visible to the authenticated client according to the agent's authorization model
+- [`Get Task`](#314-get-task): **MUST** verify the authenticated client has access to the requested task according to the agent's authorization model
 - Task-related operations (Cancel, Subscribe, Push Notification Config): **MUST** verify the client has appropriate access rights according to the agent's authorization model
 
 **Implementation Requirements:**
@@ -3127,7 +3127,7 @@ Implementations **MUST** ensure appropriate scope limitation based on the authen
 - Authorization checks **MUST** occur before any database queries or operations that could leak information about the existence of resources outside the caller's authorization scope
 - Agents **SHOULD** document their authorization model and access control policies
 
-See also: [Section 3.1.4 List Tasks (Security Note)](#314-list-tasks) for operation-specific requirements.
+See also: [Section 3.1.5 List Tasks (Security Note)](#315-list-tasks) for operation-specific requirements.
 
 ### 13.2. Push Notification Security
 
@@ -3168,7 +3168,7 @@ The extended Agent Card feature allows agents to provide additional capabilities
 
 **Access Control Requirements:**
 
-- The [`Get Extended Agent Card`](#3111-get-extended-agent-card) operation **MUST** require authentication
+- The [`Get Extended Agent Card`](#3112-get-extended-agent-card) operation **MUST** require authentication
 - Agents **MUST** authenticate requests using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields
 - Agents **MAY** return different extended card content based on the authenticated client's identity or authorization level
 - Agents **SHOULD** implement appropriate caching headers to control client-side caching of extended cards
@@ -3193,7 +3193,7 @@ The extended Agent Card feature allows agents to provide additional capabilities
 - When `capabilities.extendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
 - When support is declared but no extended card is configured, the operation **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling)
 
-See also: [Section 3.1.11 Get Extended Agent Card](#3111-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).
+See also: [Section 3.1.12 Get Extended Agent Card](#3112-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).
 
 ### 13.4. General Security Best Practices
 
@@ -3371,7 +3371,7 @@ The `.well-known/agent-card.json` URI provides a standardized location for disco
 - Implementations SHOULD support HTTPS to ensure authenticity and integrity of the Agent Card
 - Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object (Section 4.4.7)
 - Clients SHOULD verify signatures when present to ensure the Agent Card has not been tampered with
-- Extended Agent Cards retrieved via authenticated endpoints (Section 3.1.11) MAY contain additional information and MUST enforce appropriate access controls
+- Extended Agent Cards retrieved via authenticated endpoints (Section 3.1.12) MAY contain additional information and MUST enforce appropriate access controls
 
 **Example:**
 
