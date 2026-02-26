@@ -173,6 +173,22 @@ The v1.0 release focuses on four major themes:
 - **✅ CLARIFIED:** Tenant provided per-request, inherited from AgentInterface
 - **✅ USE CASE:** Enables to serve multiple agents from a single endpoint
 
+### NEW: SendLiveMessage (Bidirectional Streaming)
+
+**v0.3.0:**
+
+- No bidirectional streaming support
+- Agents requiring client input mid-task used `INPUT_REQUIRED` state, which closed the SSE stream, requiring the client to send a new `SendMessage` and re-subscribe
+
+**v1.0 Changes:**
+
+- **✅ NEW:** `SendLiveMessage` RPC for bidirectional streaming (gRPC only)
+- **✅ NEW:** `capabilities.bidiStreaming` field in `AgentCapabilities`
+- **✅ BEHAVIOR:** Stream remains open during interrupted states (`INPUT_REQUIRED`, `AUTH_REQUIRED`), allowing inline client responses
+- **✅ BEHAVIOR:** Agent half-closes connection only on terminal states (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`)
+- **✅ USE CASE:** Human-in-the-loop approval flows, multi-step confirmations, and interactive task execution without reconnection overhead
+- **✅ FALLBACK:** Agents that do not support this return `UNIMPLEMENTED`; no JSON-RPC or REST equivalent
+
 ### Protocol Simplifications
 
 #### ID Format Simplification (#1389)
@@ -420,6 +436,24 @@ if ("text" in part) { ... }        // v1.0
 ```
 
 ### AgentCapabilities Object
+
+**Added Fields:**
+
+- ✅ `bidiStreaming`: Indicates if the agent supports bidirectional streaming via `SendLiveMessage` (gRPC only)
+
+**Removed Fields:**
+
+- ⛔ `stateTransitionHistory` - Removed as no API implementation existed for this feature
+
+**Rationale:**
+
+The `stateTransitionHistory` capability flag was misleading as v1.0 has no corresponding API to:
+
+- Store status history in Task objects
+- Retrieve status history via Get/List operations
+- Query historical state transitions
+
+This capability may be reintroduced in a future version with proper implementation.
 
 **Modified Fields:**
 

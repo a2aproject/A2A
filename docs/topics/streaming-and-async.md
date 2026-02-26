@@ -40,6 +40,53 @@ Refer to the Protocol Specification for detailed structures:
 - [`SendStreamingMessage`](../specification.md#72-messagestream)
 - [`SubscribeToTask`](../specification.md#79-taskssubscribe)
 
+## Bidirectional Streaming with gRPC
+
+For tasks that require human-in-the-loop interactions — such as multi-step approvals, clarification requests, or interactive confirmations — A2A supports bidirectional streaming via gRPC. This allows both the client and the agent to send messages on the same persistent connection, eliminating the need to reconnect after each interruption.
+
+### Key Differences from SSE Streaming
+
+| Aspect | SSE Streaming (`SendStreamingMessage`) | BiDi Streaming (`SendLiveMessage`) |
+| :--- | :--- | :--- |
+| Transport | Any (JSON-RPC, gRPC, HTTP+JSON) | gRPC only |
+| Client sends | Single request | Stream of requests |
+| Stream closes on | Terminal OR interrupted state | Terminal state only |
+| `INPUT_REQUIRED` behavior | Stream closes; client must send new `SendMessage` | Stream stays open; client responds inline |
+| Capability flag | `capabilities.streaming` | `capabilities.bidiStreaming` |
+
+### How It Works
+
+- **Server Capability:** The A2A Server must indicate its support for bidirectional streaming by setting `capabilities.bidiStreaming: true` in its Agent Card.
+
+- **Initiating a Stream:** The client calls the `SendLiveMessage` RPC, which accepts a stream of `SendMessageRequest` objects and returns a stream of `StreamResponse` objects.
+
+- **Interrupted States:** When the agent transitions a task to `INPUT_REQUIRED` or `AUTH_REQUIRED`, the stream remains open. The client sends a follow-up `SendMessageRequest` on the same stream with the additional input. The agent then transitions back to `WORKING` and continues processing.
+
+- **Stream Termination:** The agent MUST half-close the connection when the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`).
+
+- **Reconnection:** A client can reconnect to an ongoing task by calling `SendLiveMessage` with a `taskId` and empty message parts. If the task is active, the agent sends the current state and resumes streaming updates.
+
+### When to Use Bidirectional Streaming
+
+Bidirectional streaming is best suited for:
+
+- Tasks requiring one or more human confirmations or approvals mid-execution.
+- Interactive workflows where the agent needs clarification before proceeding.
+- Scenarios where maintaining connection state reduces complexity (e.g., distributed agent routing).
+- gRPC-native environments where full-duplex communication is available.
+
+### When NOT to Use Bidirectional Streaming
+
+- **Multi-turn conversations** across separate tasks — use multiple `SendMessage` calls with shared `contextId` instead.
+- **Simple one-way streaming** (progress updates only) — use `SendStreamingMessage`.
+- **Non-gRPC transports** — `SendLiveMessage` has no JSON-RPC or REST equivalent.
+
+### Protocol Specification References
+
+Refer to the Protocol Specification for detailed structures:
+
+- [`SendLiveMessage`](../specification.md#313-send-live-message-bidirectional-streaming)
+
 ## Push Notifications for Disconnected Scenarios
 
 For very long-running tasks (for example, lasting minutes, hours, or even days) or when clients are unable to or prefer not to maintain persistent connections (like mobile clients or serverless functions), A2A supports asynchronous updates using push notifications. This allows the A2A Server to actively notify a client-provided webhook when a significant task update occurs.
