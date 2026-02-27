@@ -32,7 +32,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
     a. **"Startup Phase."** At the inception of the Project, each organization listed in the [`GOVERNANCE`](GOVERNANCE.md) file in the governance repository of the Project will have the right to appoint (and remove and replace) one employee to serve as a voting member of the TSC.
 
-      1. Adding new organizations to the GOVERNANCE file will be determined through a proposal to the TSC. Any new organization will be added through a majority vote of the TSC, and an employee of that organization will serve as a voting member of the TSC. 
+        1. Adding new organizations to the GOVERNANCE file will be determined through a proposal to the TSC. Any new organization will be added through a majority vote of the TSC, and an employee of that organization will serve as a voting member of the TSC.
 
     b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, subproject technical leads, or other method as determined by the TSC), to take effect from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
 
