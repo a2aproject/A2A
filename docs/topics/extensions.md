@@ -68,9 +68,7 @@ to prevent breaking core type validations:
 Agents declare their support for extensions in their Agent Card by including
 `AgentExtension` objects within their `AgentCapabilities` object.
 
-```protobuf { .no-copy }
---8<-- "specification/a2a.proto:AgentExtension"
-```
+{{ proto_to_table("AgentExtension") }}
 
 The following is an example of an Agent Card with an extension:
 
