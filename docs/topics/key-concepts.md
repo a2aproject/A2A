@@ -47,11 +47,11 @@ complexity or duration:
 - **Push Notifications**: For very long-running tasks or disconnected
     scenarios, the server can actively send asynchronous notifications to a
     client-provided webhook when significant task updates occur.
-- **Bidirectional Streaming (gRPC)**: For tasks requiring human-in-the-loop
-    interactions, clients can establish a persistent bidirectional stream with
-    the agent. Unlike SSE streaming, the stream stays open during interrupted
-    states (e.g., `input-required`), allowing clients to respond inline without
-    reconnecting. This is gRPC-only and requires `capabilities.bidiStreaming`.
+- **Bidirectional Streaming (gRPC)**: Clients can maintain a persistent
+    bidirectional stream with the agent, enabling inline responses during
+    interrupted states (e.g., `input-required`) without reconnecting.
+    This simplifies state management for both agents and clients in
+    interactive task flows. gRPC-only; requires `capabilities.bidiStreaming`.
 
 For a detailed exploration of streaming and push notifications, refer to the
 [Streaming & Asynchronous Operations](./streaming-and-async.md) document.

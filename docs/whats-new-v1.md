@@ -186,7 +186,7 @@ The v1.0 release focuses on four major themes:
 - **✅ NEW:** `capabilities.bidiStreaming` field in `AgentCapabilities`
 - **✅ BEHAVIOR:** Stream remains open during interrupted states (`INPUT_REQUIRED`, `AUTH_REQUIRED`), allowing inline client responses
 - **✅ BEHAVIOR:** Agent half-closes connection only on terminal states (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`)
-- **✅ USE CASE:** Human-in-the-loop approval flows, multi-step confirmations, and interactive task execution without reconnection overhead
+- **✅ USE CASE:** Interactive task execution with mid-task input (e.g., approvals, clarifications) without reconnection overhead
 - **✅ FALLBACK:** Agents that do not support this return `UNIMPLEMENTED`; no JSON-RPC or REST equivalent
 
 ### Protocol Simplifications

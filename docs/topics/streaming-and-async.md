@@ -42,7 +42,11 @@ Refer to the Protocol Specification for detailed structures:
 
 ## Bidirectional Streaming with gRPC
 
-For tasks that require human-in-the-loop interactions — such as multi-step approvals, clarification requests, or interactive confirmations — A2A supports bidirectional streaming via gRPC. This allows both the client and the agent to send messages on the same persistent connection, eliminating the need to reconnect after each interruption.
+For tasks where the client needs to provide additional input mid-execution —
+such as clarification responses, configuration updates, or approval
+confirmations — A2A supports bidirectional streaming via gRPC. This allows both
+the client and the agent to exchange messages on the same persistent connection,
+eliminating the need to reconnect after each interruption.
 
 ### Key Differences from SSE Streaming
 
@@ -70,7 +74,7 @@ For tasks that require human-in-the-loop interactions — such as multi-step app
 
 Bidirectional streaming is best suited for:
 
-- Tasks requiring one or more human confirmations or approvals mid-execution.
+- Tasks requiring one or more client responses or confirmations mid-execution.
 - Interactive workflows where the agent needs clarification before proceeding.
 - Scenarios where maintaining connection state reduces complexity (e.g., distributed agent routing).
 - gRPC-native environments where full-duplex communication is available.
