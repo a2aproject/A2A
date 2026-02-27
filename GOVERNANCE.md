@@ -38,7 +38,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
     c. The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the GOVERNANCE file. Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
 
-4. TSC projects generally will involve Contributors and Maintainers. The TSC may adopt or modify roles so long as the roles are documented in the CONTRIBUTING file. Unless otherwise documented:
+3. TSC projects generally will involve Contributors and Maintainers. The TSC may adopt or modify roles so long as the roles are documented in the CONTRIBUTING file. Unless otherwise documented:
 
     a. **Contributors** include anyone in the technical community that contributes code, documentation, or other technical artifacts to the Project;
 
