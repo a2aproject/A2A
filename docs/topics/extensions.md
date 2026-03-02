@@ -68,9 +68,7 @@ to prevent breaking core type validations:
 Agents declare their support for extensions in their Agent Card by including
 `AgentExtension` objects within their `AgentCapabilities` object.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentExtension"
-```
+{{ proto_to_table("AgentExtension") }}
 
 The following is an example of an Agent Card with an extension:
 
