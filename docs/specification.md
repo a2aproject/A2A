@@ -589,11 +589,12 @@ A `contextId` is an identifier that logically groups multiple related [`Task`](#
 
 **Generation and Assignment:**
 
-- Agents **SHOULD** generate a new `contextId` when processing a [`Message`](#414-message) that does not include a `contextId` field
-- The generated `contextId` **MUST** be included in the response (either [`Task`](#411-task) or [`Message`](#414-message))
-- Agents **MUST** accept and preserve client-provided `contextId` values if validations pass (i.e., it doesn't conflict with provided `taskId`)
-- `contextId` values **SHOULD** be treated as opaque identifiers by clients
-- Clients **SHOULD NOT** provide a client-generated `contextId` to a server unless they understand how the server will process that `contextId`.
+- Agents **MAY** generate a new `contextId` when processing a [`Message`](#414-message) that does not include a `contextId` field
+- If an agent generates a new `contextId`, it **MUST** be included in the response (either [`Task`](#411-task) or [`Message`](#414-message))
+- Agents **MAY** accept and preserve client-provided `contextId` values if validations pass (i.e., it doesn't conflict with provided `taskId`)
+- If an agent cannot accept a client-provided `contextId`, it **MUST** reject the request with an error and **MUST NOT** generate a new `contextId` for the response
+- Server-generated `contextId` values **SHOULD** be treated as opaque identifiers by clients
+- Clients **SHOULD NOT** provide a client-generated `contextId` to a server unless they understand how the server will process that `contextId`
 
 **Grouping and Scope:**
 
