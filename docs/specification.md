@@ -589,7 +589,7 @@ A `contextId` is an identifier that logically groups multiple related [`Task`](#
 
 **Generation and Assignment:**
 
-- When a client includes a `contextId` in a [`Message`](#414-message), it **MUST** reference an existing context on the server
+- When a client includes a `contextId` in a [`Message`](#414-message), it **MAY** reference an existing context on the server
 - Agents **MUST** accept and preserve client-provided `contextId` values if validations pass
 - If a `contextId` is not provided, agents **MAY** generate a new `contextId` and include it in the response (either [`Task`](#411-task) or [`Message`](#414-message))
 - `contextId` values **SHOULD** be treated as opaque identifiers by clients
