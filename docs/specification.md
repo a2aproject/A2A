@@ -594,6 +594,8 @@ A `contextId` is an identifier that logically groups multiple related [`Task`](#
 - If a `contextId` is not provided, agents **MAY** generate a new `contextId` and include it in the response (either [`Task`](#411-task) or [`Message`](#414-message))
 - `contextId` values **SHOULD** be treated as opaque identifiers by clients
 
+See [Section 3.4.3](#343-multi-turn-conversation-patterns) for usage patterns that build on these semantics.
+
 **Grouping and Scope:**
 
 - A `contextId` logically groups multiple [`Task`](#411-task) objects and [`Message`](#414-message) objects that are part of the same conversational context
@@ -616,16 +618,15 @@ A `taskId` is a unique identifier for a [`Task`](#411-task) object, representing
 
 #### 3.4.3. Multi-Turn Conversation Patterns
 
-The A2A protocol supports several patterns for multi-turn interactions:
+The A2A protocol supports several patterns for multi-turn interactions. Agents that do not support multi-turn interactions are not required to generate or preserve `contextId` values beyond the requirements in [Section 3.4.1](#341-context-identifier-semantics).
 
 **Context Continuity:**
 
-- [`Task`](#411-task) objects maintain conversation context through the `contextId` field
-- Clients **MAY** include the `contextId` in subsequent messages to indicate continuation of a previous interaction
+- [`Task`](#411-task) objects **MAY** maintain conversation context through the optional `contextId` field
+- Clients **MAY** include a `contextId` in any [`Message`](#414-message) to associate it with an existing context or to indicate continuation of a previous interaction
 - Clients **MAY** use `taskId` (with or without `contextId`) to continue or refine a specific task
 - Clients **MAY** use `contextId` without `taskId` to start a new task within an existing conversation context
-- Agents **MUST** infer `contextId` from the task if only `taskId` is provided
-- Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (i.e., the provided `contextId` is different from that of the referenced [`Task`](#411-task)).
+- Agents **SHOULD** infer `contextId` from the task if only `taskId` is provided, as not all tasks may have a `contextId`
 
 **Input Required State:**
 
