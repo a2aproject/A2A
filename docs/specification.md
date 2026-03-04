@@ -623,10 +623,11 @@ The A2A protocol supports several patterns for multi-turn interactions. Agents t
 **Context Continuity:**
 
 - [`Task`](#411-task) objects **MAY** maintain conversation context through the optional `contextId` field
-- Clients **MAY** include a `contextId` in any [`Message`](#414-message) to associate it with an existing context or to indicate continuation of a previous interaction
+- Clients **MAY** include the `contextId` in subsequent messages to indicate continuation of a previous interaction
 - Clients **MAY** use `taskId` (with or without `contextId`) to continue or refine a specific task
-- Clients **MAY** use `contextId` without `taskId` to start a new task within an existing conversation context
+- Clients **MAY** use `contextId` without `taskId` to start a new task within an existing or non-existing conversation context provided validations pass
 - Agents **SHOULD** infer `contextId` from the task if only `taskId` is provided, as not all tasks may have a `contextId`
+- Agents **MUST** reject messages containing mismatching `contextId` and `taskId` (i.e., the provided `contextId` is different from that of the referenced [`Task`](#411-task)).
 
 **Input Required State:**
 
