@@ -193,6 +193,22 @@ message SendMessageRequest {
 }
 ```
 
+### NEW: SendLiveMessage (Bidirectional Streaming)
+
+**v0.3.0:**
+
+- No bidirectional streaming support
+- Agents requiring client input mid-task used `INPUT_REQUIRED` state, which closed the SSE stream, requiring the client to send a new `SendMessage` and re-subscribe
+
+**v1.0 Changes:**
+
+- **✅ NEW:** `SendLiveMessage` RPC for bidirectional streaming (gRPC only)
+- **✅ NEW:** `capabilities.bidiStreaming` field in `AgentCapabilities`
+- **✅ BEHAVIOR:** Stream remains open during interrupted states (`INPUT_REQUIRED`, `AUTH_REQUIRED`), allowing inline client responses
+- **✅ BEHAVIOR:** Agent half-closes connection only on terminal states (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`)
+- **✅ USE CASE:** Interactive task execution with mid-task input (e.g., approvals, clarifications) without reconnection overhead
+- **✅ FALLBACK:** Agents that do not support this return `UNIMPLEMENTED`; no JSON-RPC or REST equivalent
+
 ### Protocol Simplifications
 
 #### ID Format Simplification (#1389)
@@ -446,6 +462,10 @@ if ("text" in part) { ... }        // v1.0
 ```
 
 ### AgentCapabilities Object
+
+**Added Fields:**
+
+- ✅ `bidiStreaming`: Indicates if the agent supports bidirectional streaming via `SendLiveMessage` (gRPC only)
 
 **Removed Fields:**
 
