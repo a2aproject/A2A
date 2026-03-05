@@ -1,0 +1,29 @@
+{
+  "jsonrpc": "2.0",
+  "method": "SendMessage",
+  "id": "req-42",
+  "params": {
+    "message": {
+      "messageId": "msg-001",
+      "role": "ROLE_USER",
+      "parts": [
+        {
+          "text": "Process this invoice."
+        }
+      ],
+      "extensions": [
+        "https://github.com/a2aproject/A2A/extensions/aiar.identity/v0"
+      ]
+    },
+    "metadata": {
+      "https://github.com/a2aproject/A2A/extensions/aiar.identity/v0/request": {
+        "minAssurance": "org-signed",
+        "acceptableIssuers": [
+          "https://example.com",
+          "https://trusted-partner.org"
+        ],
+        "requireFreshnessSeconds": 300
+      }
+    }
+  }
+}

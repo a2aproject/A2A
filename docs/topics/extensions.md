@@ -46,6 +46,7 @@ However, some foreseeable applications include:
 
 | Extension | Description |
 | :-------- | :------------ |
+| [Agent Identity and Accountability Reporting (AIAR)](../extensions/aiar-identity-v0.md) | Provides verifiable identity binding for Agent Cards and runtime proof-of-possession for agent endpoints (v0). |
 | [Secure Passport Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/secure-passport) | Adds a trusted, contextual layer for immediate personalization and reduced overhead (v1). |
 | [Hello World or Timestamp Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/timestamp) | A simple extension demonstrating how to augment base A2A types by adding timestamps to the `metadata` field of `Message` and `Artifact` objects (v1). |
 | [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |

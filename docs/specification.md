@@ -1134,6 +1134,82 @@ Artifacts can include extension data to provide strongly typed context or metada
 }
 ```
 
+*Example: Agent Card with AIAR identity extension ([spec](../extensions/aiar-identity-v0.md)):*
+
+```json
+{
+  "name": "Invoice Processing Agent",
+  "description": "Processes invoices with verifiable organizational identity",
+  "supportedInterfaces": [
+    {
+      "url": "https://agent.example.com/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "0.3"
+    }
+  ],
+  "capabilities": {
+    "extensions": [
+      {
+        "uri": "https://github.com/a2aproject/A2A/extensions/aiar.identity/v0",
+        "description": "Verifiable agent identity and accountability reporting",
+        "required": false,
+        "params": {
+          "issuer": "https://example.com",
+          "kid": "example-key-2025-01",
+          "signedFields": "card",
+          "jws": {
+            "protected": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImV4YW1wbGUta2V5LTIwMjUtMDEifQ",
+            "signature": "MEUCIQC...base64url..."
+          }
+        }
+      }
+    ]
+  },
+  "version": "1.0.0",
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "invoice-processing",
+      "name": "Invoice Processor",
+      "description": "Processes and validates invoices",
+      "tags": ["finance", "invoices"]
+    }
+  ]
+}
+```
+
+*Example: Client requesting identity proof via message metadata:*
+
+```http
+POST /message:send HTTP/1.1
+Host: agent.example.com
+Content-Type: application/json
+A2A-Extensions: https://github.com/a2aproject/A2A/extensions/aiar.identity/v0
+
+{
+  "jsonrpc": "2.0",
+  "method": "SendMessage",
+  "id": "req-42",
+  "params": {
+    "message": {
+      "messageId": "msg-001",
+      "role": "ROLE_USER",
+      "parts": [{"text": "Process this invoice."}],
+      "extensions": [
+        "https://github.com/a2aproject/A2A/extensions/aiar.identity/v0"
+      ]
+    },
+    "metadata": {
+      "https://github.com/a2aproject/A2A/extensions/aiar.identity/v0/request": {
+        "minAssurance": "org-signed",
+        "requireFreshnessSeconds": 300
+      }
+    }
+  }
+}
+```
+
 #### 4.6.3. Extension Versioning and Compatibility
 
 Extensions **SHOULD** include version information in their URI identifier. This allows clients and agents to negotiate compatible versions of extensions during interactions. A new URI **MUST** be created for breaking changes to an extension.
