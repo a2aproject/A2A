@@ -2836,7 +2836,7 @@ For A2A-specific errors, implementations **MUST** include a `google.rpc.ErrorInf
 - `domain`: Set to `"a2a-protocol.org"`
 - `metadata`: Optional map of additional error context
 
-For the complete mapping of A2A error types to HTTP and gRPC status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings).
+For the complete mapping of A2A error types to HTTP and gRPC status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings). Additional error context **MAY** be included in the `details` array of the Status object.
 
 **Error Response Example:**
 
