@@ -1941,7 +1941,7 @@ Upon receiving a Task in `TASK_STATE_AUTH_REQUIRED`, a client is expected to tak
 
 A client may:
 
-- Send a response message to the Task
+- Send a response message to the Task to negotiate, correct, or reject the authorization request.
 - Contact another human, agent, or service to fulfill the authorization request
 - Directly fulfill the authorization request via an out-of-band or extension negotiated means
 
