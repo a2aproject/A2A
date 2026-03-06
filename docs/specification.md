@@ -2823,9 +2823,9 @@ All query parameter values **MUST** be properly URL-encoded per [RFC 3986](https
 
 HTTP error responses use the ProtoJSON representation of the [`google.rpc.Status`](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto) structure, which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
 
- - **Error Code**: Mapped to the HTTP status code and the `code` field (gRPC status code integer)
- - **Error Message**: Mapped to the `message` field (human-readable string)
- - **Error Details**: Mapped to the `details` array (containing `google.protobuf.Any` messages)
+- **Error Code**: Mapped to the HTTP status code and the `code` field (gRPC status code integer)
+- **Error Message**: Mapped to the `message` field (human-readable string)
+- **Error Details**: Mapped to the `details` array (containing `google.protobuf.Any` messages)
 
 **A2A Error Representation:**
 
