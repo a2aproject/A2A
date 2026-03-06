@@ -2821,7 +2821,7 @@ All query parameter values **MUST** be properly URL-encoded per [RFC 3986](https
 
 ### 11.6. Error Handling
 
-HTTP error responses use the ProtoJSON representation of the [`google.rpc.Status`](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto) structure, which maps to the generic A2A error model defined in Section 3.3.2 as follows:
+HTTP error responses use the ProtoJSON representation of the [`google.rpc.Status`](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto) structure, which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
 
  - **Error Code**: Mapped to the HTTP status code and the `code` field (gRPC status code integer)
  - **Error Message**: Mapped to the `message` field (human-readable string)
@@ -2836,7 +2836,7 @@ For A2A-specific errors, implementations **MUST** include a `google.rpc.ErrorInf
 - `domain`: Set to `"a2a-protocol.org"`
 - `metadata`: Optional map of additional error context
 
-For the complete mapping of A2A error types to HTTP and gRPC status codes, see Section 5.4 (Error Code Mappings).
+For the complete mapping of A2A error types to HTTP and gRPC status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings).
 
 **Error Response Example:**
 
@@ -2853,7 +2853,7 @@ Content-Type: application/json
       "reason": "TASK_NOT_FOUND",
       "domain": "a2a-protocol.org",
       "metadata": {
-        "task_id": "task-123",
+        "taskId": "task-123",
         "timestamp": "2025-11-09T10:30:00.000Z"
       }
     }
