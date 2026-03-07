@@ -1,0 +1,31 @@
+{
+  "name": "Invoice Processing Agent",
+  "description": "Processes and validates invoices with AI-powered extraction",
+  "supportedInterfaces": [
+    {
+      "url": "https://agent.example.com/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "0.3"
+    }
+  ],
+  "provider": {
+    "organization": "Example Corp",
+    "url": "https://example.com"
+  },
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "extensions": []
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "invoice-processing",
+      "name": "Invoice Processor",
+      "description": "Extracts and validates invoice data",
+      "tags": ["finance", "invoices", "extraction"]
+    }
+  ]
+}

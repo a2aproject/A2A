@@ -1,0 +1,46 @@
+{
+  "name": "Invoice Processing Agent",
+  "description": "Processes and validates invoices with AI-powered extraction",
+  "supportedInterfaces": [
+    {
+      "url": "https://agent.example.com/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "0.3"
+    }
+  ],
+  "provider": {
+    "organization": "Example Corp",
+    "url": "https://example.com"
+  },
+  "version": "1.0.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "https://github.com/a2aproject/A2A/extensions/aiar.identity/v0",
+        "description": "Verifiable agent identity and accountability reporting",
+        "required": false,
+        "params": {
+          "issuer": "https://example.com",
+          "kid": "example-key-2025-01",
+          "signedFields": "card",
+          "jws": {
+            "protected": "eyJhbGciOiJFUzI1NiIsImtpZCI6ImV4YW1wbGUta2V5LTIwMjUtMDEiLCJ0eXAiOiJhZ2VudC1jYXJkK2p3cyJ9",
+            "signature": "MEUCIQDExample_Base64url_Signature_Value_Here_For_Illustration_OnlyIgExample"
+          }
+        }
+      }
+    ]
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "invoice-processing",
+      "name": "Invoice Processor",
+      "description": "Extracts and validates invoice data",
+      "tags": ["finance", "invoices", "extraction"]
+    }
+  ]
+}
