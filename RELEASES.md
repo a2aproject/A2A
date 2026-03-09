@@ -172,9 +172,9 @@ Confirm GitHub generated source archives
 - [ ] Continue triaging issues and pull requests
 
 ## Appendix: Maintainer Guidelines
-Prefer smaller, frequent releases rather than infrequent large releases.
-Avoid breaking changes whenever possible.
-Clearly document migration paths for protocol changes.
-Encourage implementers to test against release candidates.
-Maintain strong interoperability across A2A implementations.
+- Prefer smaller, frequent releases rather than infrequent large releases.
+- Avoid breaking changes whenever possible.
+- Clearly document migration paths for protocol changes.
+- Encourage implementers to test against release candidates.
+- Maintain strong interoperability across A2A implementations.
 
