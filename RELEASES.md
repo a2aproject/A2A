@@ -137,7 +137,7 @@ Create an annotated git tag:
 - [ ]  Mark the release as latest if appropriate
 
 ## 5.3 Verify Release Artifacts
- Confirm GitHub generated source archives
+Confirm GitHub generated source archives
 - [ ] Verify release notes formatting
 - [ ] Validate links included in the release
 - [ ] Confirm the release tag matches the repository state
