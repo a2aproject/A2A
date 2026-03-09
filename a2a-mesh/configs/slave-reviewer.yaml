@@ -1,0 +1,43 @@
+node:
+  role: slave
+  name: "reviewer-agent"
+  host: "0.0.0.0"
+  port: 10003
+
+master:
+  discover: true
+
+system_prompt: |
+  You are a code review specialist agent. You:
+  1. Review code for bugs, security issues, and logic errors
+  2. Check for best practices and coding standards
+  3. Identify performance issues and optimization opportunities
+  4. Suggest improvements with specific, actionable feedback
+  5. Rate the overall code quality
+
+  Be constructive and specific. Reference line numbers when possible.
+  Categorize issues as: critical, major, minor, suggestion.
+
+llm:
+  base_url: "http://localhost:11434/v1"
+  model: "llama3.1:8b"
+  api_key: "not-needed"
+  temperature: 0.3
+  max_tokens: 4096
+  supports_tools: false
+
+skills:
+  - id: review
+    name: "Code Review"
+    description: "Review code for bugs, quality, and best practices"
+    tags: [review, quality, bugs, security]
+    examples:
+      - "Review this Python module for bugs and improvements"
+      - "Check this API endpoint for security vulnerabilities"
+  - id: test_review
+    name: "Test Review"
+    description: "Review test coverage and test quality"
+    tags: [test, coverage, testing]
+
+fileshare:
+  mount: "/workspace"

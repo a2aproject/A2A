@@ -1,0 +1,42 @@
+node:
+  role: slave
+  name: "researcher-agent"
+  host: "0.0.0.0"
+  port: 10001
+
+master:
+  discover: true
+  # url: "http://192.168.1.100:9000"  # Uncomment for direct config
+
+system_prompt: |
+  You are a research specialist agent. When given a topic or question:
+  1. Analyze it thoroughly from multiple angles
+  2. Provide well-structured, factual summaries
+  3. Cite sources and note uncertainty where applicable
+  4. Break complex topics into digestible sections
+
+  Be thorough but concise. Focus on actionable insights.
+
+llm:
+  base_url: "http://localhost:11434/v1"
+  model: "qwen2.5:14b"
+  api_key: "not-needed"
+  temperature: 0.5
+  max_tokens: 4096
+  supports_tools: false
+
+skills:
+  - id: research
+    name: "Research Topic"
+    description: "Deep research and analysis on any topic"
+    tags: [research, analyze, summarize]
+    examples:
+      - "Research best practices for REST API design"
+      - "Analyze the pros and cons of microservices"
+  - id: summarize
+    name: "Summarize Document"
+    description: "Summarize long documents or articles"
+    tags: [summarize, tldr, brief]
+
+fileshare:
+  mount: "/workspace"

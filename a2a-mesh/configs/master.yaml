@@ -1,0 +1,58 @@
+node:
+  role: master
+  name: "mesh-master"
+  host: "0.0.0.0"
+  port: 9000
+
+system_prompt: |
+  You are the orchestrator of an AI agent mesh network. Your job is to:
+  1. Understand user requests
+  2. Decompose them into subtasks
+  3. Assign subtasks to the best available agent
+  4. Monitor progress and report results
+
+  Available agents will be provided in context. Route tasks wisely.
+
+llm:
+  base_url: "http://localhost:11434/v1"
+  model: "llama3.1:8b"
+  api_key: "not-needed"
+  temperature: 0.3
+  supports_tools: false
+
+skills:
+  - id: orchestrate
+    name: "Orchestrate Tasks"
+    description: "Decompose and route complex tasks to specialized agents"
+    tags: [orchestrate, plan, route]
+  - id: general
+    name: "General Assistant"
+    description: "Answer general questions directly"
+    tags: [general, qa, help]
+
+discovery:
+  enabled: true
+  method: mdns
+
+orchestrator:
+  auto_approve: false
+  auto_approve_skills:
+    - research
+    - summarize
+    - analyze
+    - read_file
+  require_approval_skills:
+    - execute_command
+    - deploy
+    - delete_file
+  default_autonomy: 1  # supervised
+  approval_timeout: 300
+
+fileshare:
+  enabled: true
+  root: "/tmp/mesh-workspace"
+  port: 9001
+
+ui:
+  enabled: true
+  port: 8080

@@ -1,0 +1,41 @@
+# Example: Wrap Claude Code CLI as an A2A agent
+# Requires: Claude Code CLI installed, ANTHROPIC_API_KEY set
+
+node:
+  role: slave
+  name: "claude-code-agent"
+  host: "0.0.0.0"
+  port: 10004
+
+master:
+  discover: true
+
+system_prompt: |
+  You are a Claude Code-powered agent. Tasks are delegated to
+  the Claude Code CLI for execution.
+
+# LLM config is not used directly — Claude Code has its own
+llm:
+  base_url: "http://localhost:11434/v1"
+  model: "llama3.1:8b"
+  api_key: "not-needed"
+
+skills:
+  - id: claude_implement
+    name: "Implement with Claude"
+    description: "Use Claude Code to implement features and fix bugs"
+    tags: [code, implement, fix, refactor, claude]
+  - id: claude_review
+    name: "Review with Claude"
+    description: "Use Claude Code to review code"
+    tags: [review, analyze, claude]
+
+integration:
+  type: "claude_code"
+  workspace_dir: "/workspace"
+  timeout: 300
+  environment:
+    ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+
+fileshare:
+  mount: "/workspace"

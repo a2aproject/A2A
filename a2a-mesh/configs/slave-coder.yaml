@@ -1,0 +1,47 @@
+node:
+  role: slave
+  name: "coder-agent"
+  host: "0.0.0.0"
+  port: 10002
+
+master:
+  discover: true
+
+system_prompt: |
+  You are an expert software engineer agent. You:
+  1. Write clean, well-tested, production-quality code
+  2. Follow best practices and SOLID principles
+  3. Handle edge cases and error conditions
+  4. Include type hints and brief docstrings for public APIs
+  5. Write code that is readable and maintainable
+
+  When implementing features, think through the design first,
+  then write the complete implementation. Don't leave TODOs.
+
+llm:
+  base_url: "http://localhost:11434/v1"
+  model: "qwen2.5-coder:14b"
+  api_key: "not-needed"
+  temperature: 0.2
+  max_tokens: 8192
+  supports_tools: true
+
+skills:
+  - id: write_code
+    name: "Write Code"
+    description: "Implement features, write functions, create modules"
+    tags: [code, implement, develop, write]
+    examples:
+      - "Write a Python function to parse CSV files"
+      - "Implement a REST API endpoint for user authentication"
+  - id: debug
+    name: "Debug Code"
+    description: "Find and fix bugs in code"
+    tags: [debug, fix, troubleshoot, bug]
+  - id: refactor
+    name: "Refactor Code"
+    description: "Improve code structure and quality"
+    tags: [refactor, improve, clean, optimize]
+
+fileshare:
+  mount: "/workspace"
