@@ -125,8 +125,8 @@ For major releases or releases with significant protocol changes.
 
 ## 5.1 Create Git Tag
 Create an annotated git tag:
-- [ ]  Verify the tag points to the correct commit
-- [ ]  Confirm the tag appears on GitHub
+- [ ] Verify the tag points to the correct commit
+- [ ] Confirm the tag appears on GitHub
 
 ## 5.2 Create GitHub Release
  Create a new GitHub release from the tag
