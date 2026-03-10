@@ -441,19 +441,19 @@ This section defines common parameter objects used across multiple operations.
 
 {{ proto_to_table("SendMessageConfiguration") }}
 
-**Blocking vs Non-Blocking Execution:**
+**Execution Mode:**
 
-The `blocking` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation waits for task completion:
+The `return_immediately` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation returns immediately or waits for task completion. Operations are blocking by default:
 
-- **Blocking (`blocking: true`)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information.
+- **Blocking (`return_immediately: false` or unset)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.
 
-- **Non-Blocking (`blocking: false`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
+- **Non-Blocking (`return_immediately: true`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
-The `blocking` field has no effect:
+The `return_immediately` field has no effect:
 
 - when the operation returns a direct [`Message`](#414-message) response instead of a task.
 - for streaming operations, which always return updates in real-time.
-- on configured push notification configurations, which operates independently of blocking mode.
+- on configured push notification configurations, which operates independently of execution mode.
 
 #### 3.2.3. Stream Response
 
@@ -1899,15 +1899,7 @@ The A2A Server:
 - **SHOULD** use appropriate binding-specific error codes for authentication challenges or rejections.
 - **SHOULD** provide relevant authentication challenge information with error responses.
 
-### 7.5. In-Task Authentication (Secondary Credentials)
-
-If an agent requires additional credentials during task execution:
-
-1. It **SHOULD** transition the A2A task to the `TASK_STATE_AUTH_REQUIRED` state.
-2. The accompanying `TaskStatus.update` **SHOULD** provide details about the required secondary authentication.
-3. The A2A Client obtains these credentials out-of-band and provides them in a subsequent message request.
-
-### 7.6. Authorization
+### 7.5. Server Authorization Responsibilities
 
 Once authenticated, the A2A Server authorizes requests based on the authenticated identity and its own policies. Authorization logic is implementation-specific and **MAY** consider:
 
@@ -1915,6 +1907,62 @@ Once authenticated, the A2A Server authorizes requests based on the authenticate
 - Actions attempted within tasks
 - Data access policies
 - OAuth scopes (if applicable)
+
+### 7.6. In-Task Authorization
+
+In the course of performing a task, an agent may require authorization to perform some action. Examples include:
+
+- An agent requiring an OAuth access token to call an API or another agent
+- An agent requiring human approval before a destructive action is taken
+
+In the sections below, we refer to the object that represents the approved authorization as a credential.
+
+Agents may have multiple means for retrieving this authorization, such as via directly sending messages to a human.
+
+A2A provides the capability for agents to delegate the fulfillment of this authorization to the client via the `TASK_STATE_AUTH_REQUIRED` Task state. This provides agents a fallback path for requesting authorization by passing the responsibility to the client.
+
+#### 7.6.1 In-Task Authorization Agent Responsibilities
+
+To request that a client fulfills an authorization request, the agent:
+
+1. MUST use a Task to track the operation it is performing
+2. MUST transition the TaskState to `TASK_STATE_AUTH_REQUIRED`
+3. MUST include a TaskStatus message explaining the required authorization, unless the details of the authorization have been negotiated out-of-band or via an extension
+
+Agents MUST arrange to receive credentials via an out-of-band means, unless an in-band mechanism has been negotiated out-of-band or via an extension.
+
+If the credential is received out-of-band, the agent SHOULD maintain any active response streams with the client after setting the TaskState to `TASK_STATE_AUTH_REQUIRED`. The agent MAY immediately continue Task processing after receiving the credential, without a requirement that clients send a follow-up message.
+
+Agents SHOULD support receiving messages directed to the Task while the Task remains in `TASK_STATE_AUTH_REQUIRED`. This enables clients to negotiate, correct, or reject an authorization request.
+
+#### 7.6.2 In-Task Authorization Client Responsibilities
+
+Upon receiving a Task in `TASK_STATE_AUTH_REQUIRED`, a client is expected to take action in some way to resolve the agent's request for authorization.
+
+A client may:
+
+- Send a response message to the Task to negotiate, correct, or reject the authorization request.
+- Contact another human, agent, or service to fulfill the authorization request
+- Directly fulfill the authorization request via an out-of-band or extension negotiated means
+
+If the client is itself an A2A agent actively processing a Task, the client may further delegate the authorization request to its client by transitioning its own Task to `TASK_STATE_AUTH_REQUIRED`. The client SHOULD follow all [In-Task Authorization Agent Responsibilities](#761-in-task-authorization-agent-responsibilities). This enables forming a chain of Tasks in `TASK_STATE_AUTH_REQUIRED`.
+
+Clients may not be aware of when the agent receives credentials out-of-band and subsequently continues Task processing. If a client does not have an active response stream open with the agent, the client risks missing Task updates. To avoid this, a client SHOULD perform one of the following:
+
+- Subscribe to a stream of events for the Task using the [Subscribe to Task](#316-subscribe-to-task) operation
+- Register a webhook to receive events, if supported by the agent, using the [Create Push Notification Config](#317-create-push-notification-config) operation
+- Begin polling the Task using the [Get Task](#313-get-task) operation
+
+#### 7.6.3 In-Task Authorization Security Considerations
+
+Agents SHOULD receive credentials for in-task authorization requests out of band via a secure channel, such as HTTPS. This ensures that credentials are provided directly to the agent.
+
+In-band credential exchange may be negotiated via out-of-band means or by using extensions. In-band credential exchange can allow credentials to be passed across chains of multiple A2A agents, exposing those credentials to each agent participating in the chain.
+
+If using in-band credential exchange, we recommend adhering to the following security practices:
+
+- Credentials SHOULD be bound to the agent which originated the request, such that only this agent is able to use the credentials. This ensures that credentials propagating through a chain of A2A requests are only usable by the requesting agent.
+- Credentials containing sensitive information SHOULD be only readable by the agent which originated the request, such as by encrypting the credential.
 
 ## 8. Agent Discovery: The Agent Card
 
