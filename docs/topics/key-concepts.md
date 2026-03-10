@@ -41,9 +41,11 @@ complexity or duration:
 - **Request/Response (Polling)**: Clients send a request and the server
     responds. For long-running tasks, the client periodically polls the server
     for updates.
-- **Streaming with Server-Sent Events (SSE)**: Clients initiate a stream to
-    receive real-time, incremental results or status updates from the server
-    over an open HTTP connection.
+- **Streaming**: Clients initiate a stream to receive real-time, incremental
+    results or status updates from the server. The default transport is
+    Server-Sent Events (SSE) for HTTP-based bindings, but agents may advertise
+    alternative streaming transports (e.g., WebSockets, pub/sub) via their
+    [`AgentInterface`](../specification.md#AgentInterface).
 - **Push Notifications**: For very long-running tasks or disconnected
     scenarios, the server can actively send asynchronous notifications to a
     client-provided webhook when significant task updates occur.

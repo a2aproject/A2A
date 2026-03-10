@@ -34,7 +34,7 @@ This document provides the detailed technical specification for the A2A protocol
 
 ### 1.2. Guiding Principles
 
-- **Simple:** Reuse existing, well-understood standards (HTTP, JSON-RPC 2.0, Server-Sent Events).
+- **Simple:** Reuse existing, well-understood standards (HTTP, JSON-RPC 2.0, SSE) while remaining open to alternative streaming transports.
 - **Enterprise Ready:** Address authentication, authorization, security, privacy, tracing, and monitoring by aligning with established enterprise practices.
 - **Async First:** Designed for (potentially very) long-running tasks and human-in-the-loop interactions.
 - **Modality Agnostic:** Support exchange of diverse content types including text, audio/video (via file references), structured data/forms, and potentially embedded UI components (e.g., iframes referenced in parts).
@@ -663,7 +663,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Real-time delivery of events as they occur
 - Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
 - Low latency, efficient for frequent updates
-- Requires persistent connection support
+- The streaming transport mechanism depends on the protocol binding (e.g., SSE for JSON-RPC/HTTP+JSON, server streaming for gRPC) and MAY be overridden per-interface via `streamingTransports` in [`AgentInterface`](#446-agentinterface)
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
 - Requires `AgentCard.capabilities.streaming` to be `true`
 
@@ -928,9 +928,19 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("AgentInterface") }}
 
+The optional `streamingTransports` field allows an interface to advertise streaming transport mechanisms beyond the default for its protocol binding. When present, clients **SHOULD** select the first transport they support from the list. When absent, the default streaming mechanism for the protocol binding is assumed (e.g., SSE for `JSONRPC` and `HTTP+JSON`, server streaming for `GRPC`).
+
+<a id="StreamingTransport"></a>
+
+#### 4.4.7. StreamingTransport
+
+{{ proto_to_table("StreamingTransport") }}
+
+Standard `type` values include `"sse"` (Server-Sent Events) and `"grpc"` (gRPC server streaming). Custom values **MAY** be used for additional transports (e.g., `"websocket"`, `"pubnub"`, `"kafka"`, `"mqtt"`). The `config` field carries transport-specific parameters; its structure is defined by the transport type and **SHOULD** be documented by the transport provider.
+
 <a id="AgentCardSignature"></a>
 
-#### 4.4.7. AgentCardSignature
+#### 4.4.8. AgentCardSignature
 
 {{ proto_to_table("AgentCardSignature") }}
 
@@ -1342,7 +1352,7 @@ Authorization: Bearer token
 }
 ```
 
-**SSE Response Stream:**
+**Streaming Response (SSE example):**
 
 ```http
 HTTP/1.1 200 OK
@@ -1354,6 +1364,8 @@ data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text":
 
 data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
+
+The streaming transport used (SSE, WebSocket, pub/sub, etc.) depends on the protocol binding and the agent's [`AgentInterface`](#446-agentinterface) configuration. The `StreamResponse` payload format remains the same regardless of transport.
 
 ### 6.3. Multi-Turn Interaction
 
@@ -1992,6 +2004,7 @@ The AgentCard **MUST** properly declare supported protocols:
 - The first entry in `supportedInterfaces` represents the preferred interface
 - Each interface **MUST** accurately declare its transport protocol and URL
 - URLs **MAY** be reused if multiple transports are available at the same endpoint
+- Each interface **MAY** include `streamingTransports` to advertise available streaming transports beyond the binding's default. When present, the first entry is the preferred transport.
 
 #### 8.3.2. Client Protocol Selection
 
@@ -2059,7 +2072,7 @@ After applying RFC 8785:
 
 #### 8.4.2. Signature Format
 
-Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
+Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#448-agentcardsignature) object represents JWS components using three fields:
 
 - **`protected`** (required, string): Base64url-encoded JSON object containing the JWS Protected Header
 - **`signature`** (required, string): Base64url-encoded signature value
@@ -2215,14 +2228,14 @@ Clients verifying Agent Card signatures **MUST**:
 
 ## 9. JSON-RPC Protocol Binding
 
-The JSON-RPC protocol binding provides a simple, HTTP-based interface using JSON-RPC 2.0 for method calls and Server-Sent Events for streaming.
+The JSON-RPC protocol binding provides a simple, HTTP-based interface using JSON-RPC 2.0 for method calls. Streaming defaults to Server-Sent Events (SSE) but alternative transports may be used when declared in the agent's interface.
 
 ### 9.1. Protocol Requirements
 
 - **Protocol:** JSON-RPC 2.0 over HTTP(S)
 - **Content-Type:** `application/json` for requests and responses
 - **Method Naming:** PascalCase method names matching gRPC conventions (e.g., `SendMessage`, `GetTask`)
-- **Streaming:** Server-Sent Events (`text/event-stream`)
+- **Default Streaming:** Server-Sent Events (`text/event-stream`). Alternative streaming transports **MAY** be used when declared via `streamingTransports` in [`AgentInterface`](#446-agentinterface).
 
 ### 9.2. Service Parameter Transmission
 
@@ -2302,17 +2315,19 @@ Sends a message to initiate or continue a task.
 
 #### 9.4.2. `SendStreamingMessage`
 
-Sends a message and subscribes to real-time updates via Server-Sent Events.
+Sends a message and subscribes to real-time updates. The default streaming transport is Server-Sent Events; alternative transports **MAY** be used when declared via `streamingTransports` in [`AgentInterface`](#446-agentinterface).
 
 **Request:** Same as `SendMessage`
 
-**Response:** HTTP 200 with `Content-Type: text/event-stream`
+**Default Response (SSE):** HTTP 200 with `Content-Type: text/event-stream`
 
 ```text
 data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 
 data: {"jsonrpc": "2.0", "id": 1, "result": { /* StreamResponse object */ }}
 ```
+
+When an alternative streaming transport is used, the response **MUST** still deliver [`StreamResponse`](#323-stream-response) objects with equivalent content and ordering guarantees.
 
 **Referenced Objects:** [`StreamResponse`](#323-stream-response)
 
@@ -2390,7 +2405,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 }
 ```
 
-**Response:** SSE stream (same format as `SendStreamingMessage`)
+**Response:** Streaming response (same format and transport as `SendStreamingMessage`)
 
 **Error:** Returns `UnsupportedOperationError` if the task is in a terminal state (`completed`, `failed`, `canceled`, or `rejected`).
 
@@ -2724,7 +2739,7 @@ The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP 
 - **Content-Type:** `application/json` for requests and responses
 - **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
 - **URL Patterns:** RESTful resource-based URLs
-- **Streaming:** Server-Sent Events for real-time updates
+- **Default Streaming:** Server-Sent Events for real-time updates. Alternative streaming transports **MAY** be used when declared via `streamingTransports` in [`AgentInterface`](#446-agentinterface).
 
 ### 11.2. Service Parameter Transmission
 
@@ -2759,14 +2774,14 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 #### 11.3.1. Message Operations
 
 - `POST /message:send` - Send message
-- `POST /message:stream` - Send message with streaming (SSE response)
+- `POST /message:stream` - Send message with streaming (SSE by default; alternative transports per `AgentInterface`)
 
 #### 11.3.2. Task Operations
 
 - `GET /tasks/{id}` - Get task status
 - `GET /tasks` - List tasks (with query parameters)
 - `POST /tasks/{id}:cancel` - Cancel task
-- `POST /tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
+- `POST /tasks/{id}:subscribe` - Subscribe to task updates (SSE by default; alternative transports per `AgentInterface`; returns error for terminal tasks)
 
 #### 11.3.3. Push Notification Configuration
 
@@ -2901,7 +2916,9 @@ Extension fields like `taskId` and `timestamp` provide additional context to hel
 
 <span id="stream-response"></span>
 
-REST streaming uses Server-Sent Events with the `data` field containing JSON serializations of the protocol data objects:
+By default, REST streaming uses Server-Sent Events with the `data` field containing JSON serializations of the protocol data objects. Alternative streaming transports **MAY** be used when declared via `streamingTransports` in [`AgentInterface`](#446-agentinterface).
+
+**Default Transport (SSE):**
 
 ```http
 POST /message:stream
@@ -2924,7 +2941,10 @@ data: { /* StreamResponse object */ }
 ```
 
 **Referenced Objects:** [`StreamResponse`](#323-stream-response)
-Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
+
+Regardless of transport, streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations **SHOULD** avoid re-ordering events and **MAY** optionally resend a final `Task` snapshot before closing.
+
+When an alternative streaming transport is used, the transport **MUST** deliver [`StreamResponse`](#323-stream-response) objects serialized as JSON with equivalent content and ordering guarantees. The transport-specific connection details (e.g., channel, topic, or endpoint) are provided in the `streamingTransports[].config` of the [`AgentInterface`](#446-agentinterface).
 
 ## 12. Custom Binding Guidelines
 
@@ -2975,12 +2995,45 @@ Custom bindings **MUST**:
 
 If the binding supports streaming operations:
 
-1. **Define Stream Mechanism**: Document how streaming is implemented (e.g., WebSockets, long-polling, chunked encoding)
+1. **Define Stream Mechanism**: Document how streaming is implemented (e.g., WebSockets, long-polling, chunked encoding, pub/sub messaging)
 2. **Event Ordering**: Specify ordering guarantees for streaming events
 3. **Reconnection**: Define behavior for connection interruption and resumption
 4. **Stream Termination**: Specify how stream completion is signaled
+5. **StreamingTransport Type**: Define a `type` identifier for use in [`StreamingTransport`](#447-streamingtransport) and document the expected `config` structure
+6. **Payload Format**: The transport **MUST** deliver [`StreamResponse`](#323-stream-response) objects serialized as JSON with equivalent content and ordering guarantees to the standard bindings
 
 If streaming is not supported, the binding **MUST** clearly document this limitation in the Agent Card.
+
+**Example: Pub/Sub Streaming Transport**
+
+A pub/sub-based streaming transport (e.g., PubNub, Kafka, MQTT) would typically:
+
+- Use a dedicated channel or topic per task for delivering `StreamResponse` events
+- Provide the channel name or topic and any required connection credentials in `StreamingTransport.config`
+- Guarantee ordered delivery of events within a channel
+- Signal stream termination by delivering a final `TaskStatusUpdateEvent` with a terminal state
+
+```json
+{
+  "supportedInterfaces": [
+    {
+      "url": "https://agent.example.com/a2a/v1",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "1.0",
+      "streamingTransports": [
+        { "type": "sse" },
+        {
+          "type": "pubnub",
+          "config": {
+            "subscribeKey": "sub-c-...",
+            "channelPrefix": "a2a-task-"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
 
 ### 12.6. Authentication and Authorization
 
@@ -3295,7 +3348,7 @@ The `.well-known/agent-card.json` URI provides a standardized location for disco
 
 - The Agent Card MAY contain public information about an agent's capabilities and SHOULD NOT include sensitive credentials or internal implementation details
 - Implementations SHOULD support HTTPS to ensure authenticity and integrity of the Agent Card
-- Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object (Section 4.4.7)
+- Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object (Section 4.4.8)
 - Clients SHOULD verify signatures when present to ensure the Agent Card has not been tampered with
 - Extended Agent Cards retrieved via authenticated endpoints (Section 3.1.11) MAY contain additional information and MUST enforce appropriate access controls
 

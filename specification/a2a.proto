@@ -347,6 +347,23 @@ message AgentInterface {
   // Use the latest supported minor version per major version.
   // Examples: "0.3", "1.0"
   string protocol_version = 4 [(google.api.field_behavior) = REQUIRED];
+  // Optional. The streaming transports available for this interface.
+  // If empty, the default streaming mechanism for the protocol binding is assumed
+  // (e.g., SSE for JSONRPC and HTTP+JSON, server streaming for GRPC).
+  // When specified, clients SHOULD select the first transport they support.
+  repeated StreamingTransport streaming_transports = 5;
+}
+
+// Describes a streaming transport mechanism and its configuration.
+message StreamingTransport {
+  // The streaming transport type identifier.
+  // Standard values include "sse" (Server-Sent Events) and "grpc" (gRPC server streaming).
+  // Custom values MAY be used for additional transports (e.g., "websocket", "pubnub", "kafka", "mqtt").
+  string type = 1 [(google.api.field_behavior) = REQUIRED];
+  // Optional. Transport-specific configuration parameters.
+  // The structure depends on the transport type. For example, a pub/sub transport
+  // might include channel naming conventions or connection credentials.
+  google.protobuf.Struct config = 2;
 }
 
 // A self-describing manifest for an agent. It provides essential

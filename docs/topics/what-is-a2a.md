@@ -108,7 +108,7 @@ Implementing the A2A protocol offers significant advantages across the AI ecosys
     communication, enabling teams to focus on the unique value their agents
     provide.
 - **Support for LRO**: The protocol supports long-running operations (LRO) and
-    streaming with Server-Sent Events (SSE) and asynchronous execution.
+    real-time streaming (via SSE, gRPC, or alternative transports) and asynchronous execution.
 
 ### Key Design Principles of A2A
 
@@ -116,8 +116,9 @@ A2A development follows principles that prioritize broad adoption,
 enterprise-grade capabilities, and future-proofing.
 
 - **Simplicity**: A2A leverages existing standards like HTTP, JSON-RPC, and
-    Server-Sent Events (SSE). This avoids reinventing core technologies and
-    accelerates developer adoption.
+    Server-Sent Events (SSE), while remaining open to alternative streaming
+    transports. This avoids reinventing core technologies and accelerates
+    developer adoption.
 - **Enterprise Readiness**: A2A addresses critical enterprise needs. It aligns
     with standard web practices for robust authentication, authorization,
     security, privacy, tracing, and monitoring.
