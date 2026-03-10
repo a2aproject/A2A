@@ -9,6 +9,7 @@ Subpackages
 
    a2a.auth
    a2a.client
+   a2a.contrib
    a2a.extensions
    a2a.grpc
    a2a.server

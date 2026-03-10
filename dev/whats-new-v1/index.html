@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/a2a-logo-black.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -1740,10 +1740,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-blocking-parameter-control" class="md-nav__link">
+  <a href="#1-execution-mode-control" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Blocking Parameter Control
+        1. Execution Mode Control
       
     </span>
   </a>
@@ -2760,10 +2760,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-blocking-parameter-control" class="md-nav__link">
+  <a href="#1-execution-mode-control" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Blocking Parameter Control
+        1. Execution Mode Control
       
     </span>
   </a>
@@ -3736,12 +3736,12 @@
 <li>Operation names (aliases provided during transition)</li>
 </ul>
 <h3 id="new-capabilities-to-leverage">New Capabilities to Leverage<a class="headerlink" href="#new-capabilities-to-leverage" title="Permanent link">&para;</a></h3>
-<h4 id="1-blocking-parameter-control">1. Blocking Parameter Control<a class="headerlink" href="#1-blocking-parameter-control" title="Permanent link">&para;</a></h4>
-<div class="language-typescript highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// Wait for task completion</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">blocking</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">});</span>
+<h4 id="1-execution-mode-control">1. Execution Mode Control<a class="headerlink" href="#1-execution-mode-control" title="Permanent link">&para;</a></h4>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// Wait for task completion (Default)</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">returnImmediately</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">});</span>
 </span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
 </span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1">// Return immediately, poll later</span>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">blocking</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">});</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">returnImmediately</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">});</span>
 </span></code></pre></div>
 <h4 id="2-agent-card-signature-verification">2. Agent Card Signature Verification<a class="headerlink" href="#2-agent-card-signature-verification" title="Permanent link">&para;</a></h4>
 <div class="language-typescript highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">signatures</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">agentCard</span><span class="p">.</span><span class="nx">signatures</span><span class="p">.</span><span class="nx">length</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -3849,7 +3849,7 @@
 <ul>
 <li>Implement cursor-based pagination</li>
 <li>Update enum value handling (state field)</li>
-<li>Add blocking parameter support</li>
+<li>Add return_immediately parameter support</li>
 </ul>
 <h4 id="medium-within-3-months">Medium (Within 3 Months)<a class="headerlink" href="#medium-within-3-months" title="Permanent link">&para;</a></h4>
 <ul>

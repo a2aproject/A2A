@@ -42,7 +42,7 @@ class a2a.server.tasks.result_aggregator.ResultAggregator(task_manager: TaskMana
          **BaseException** -- If the *EventConsumer* raises an
          exception during consumption.
 
-   async consume_and_break_on_interrupt(consumer: EventConsumer, blocking: bool = True, event_callback: Callable[[], Awaitable[None]] | None = None) -> tuple[Task | Message | None, bool]
+   async consume_and_break_on_interrupt(consumer: EventConsumer, blocking: bool = True, event_callback: Callable[[], Awaitable[None]] | None = None) -> tuple[Task | Message | None, bool, Task | None]
 
       Processes the event stream until completion or an interruptable
       state is encountered.
@@ -70,6 +70,13 @@ class a2a.server.tasks.result_aggregator.ResultAggregator(task_manager: TaskMana
 
          * A boolean indicating whether the consumption was
            interrupted (*True*) or completed naturally (*False*).
+
+         * The background "asyncio.Task" that continues consuming
+           events after an interruption, or "None" when no background
+           work was spawned.  **Callers must hold a strong reference**
+           to this task (e.g. in a "set") to prevent the garbage
+           collector from collecting it before it finishes — the event
+           loop only keeps weak references to tasks.
 
       Return type:
          A tuple containing

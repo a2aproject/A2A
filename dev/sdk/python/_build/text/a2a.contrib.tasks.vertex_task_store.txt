@@ -1,0 +1,24 @@
+a2a.contrib.tasks.vertex_task_store module
+******************************************
+
+class a2a.contrib.tasks.vertex_task_store.VertexTaskStore(client: Client, agent_engine_resource_id: str)
+
+   Bases: "TaskStore"
+
+   Implementation of TaskStore using Vertex AI Agent Engine Task
+   Store.
+
+   Stores task objects in Vertex AI Agent Engine Task Store.
+
+   async delete(task_id: str, context: ServerCallContext | None = None) -> None
+
+      The backend doesn't support deleting tasks, so this is not
+      implemented.
+
+   async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+
+      Retrieves a task from the database by ID.
+
+   async save(task: Task, context: ServerCallContext | None = None) -> None
+
+      Saves or updates a task in the store.

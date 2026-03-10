@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/a2a-logo-black.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -7129,28 +7129,28 @@
 <td>The maximum number of most recent messages from the task's history to retrieve in the response. An unset value means the client does not impose any limit. A value of zero is a request to not include any messages. The server MUST NOT return more messages than the provided value, but MAY apply a lower limit.</td>
 </tr>
 <tr>
-<td><code>blocking</code></td>
+<td><code>returnImmediately</code></td>
 <td><code>boolean</code></td>
 <td>No</td>
-<td>If <code>true</code>, the operation MUST wait until the task reaches a terminal state (<code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>REJECTED</code>) or an interrupted state (<code>INPUT_REQUIRED</code>, <code>AUTH_REQUIRED</code>) before returning. Default is <code>false</code>.</td>
+<td>If <code>true</code>, the operation returns immediately after creating the task, even if processing is still in progress. If <code>false</code> (default), the operation MUST wait until the task reaches a terminal (<code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>REJECTED</code>) or interrupted (<code>INPUT_REQUIRED</code>, <code>AUTH_REQUIRED</code>) state before returning.</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Blocking vs Non-Blocking Execution:</strong></p>
-<p>The <code>blocking</code> field in <a href="#322-sendmessageconfiguration"><code>SendMessageConfiguration</code></a> controls whether the operation waits for task completion:</p>
+<p><strong>Execution Mode:</strong></p>
+<p>The <code>return_immediately</code> field in <a href="#322-sendmessageconfiguration"><code>SendMessageConfiguration</code></a> controls whether the operation returns immediately or waits for task completion. Operations are blocking by default:</p>
 <ul>
 <li>
-<p><strong>Blocking (<code>blocking: true</code>)</strong>: The operation MUST wait until the task reaches a terminal state (<code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>REJECTED</code>) or an interrupted state (<code>INPUT_REQUIRED</code>, <code>AUTH_REQUIRED</code>) before returning. The response MUST include the latest task state with all artifacts and status information.</p>
+<p><strong>Blocking (<code>return_immediately: false</code> or unset)</strong>: The operation MUST wait until the task reaches a terminal state (<code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>REJECTED</code>) or an interrupted state (<code>INPUT_REQUIRED</code>, <code>AUTH_REQUIRED</code>) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.</p>
 </li>
 <li>
-<p><strong>Non-Blocking (<code>blocking: false</code>)</strong>: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., <code>working</code>, <code>input_required</code>). It is the caller's responsibility to poll for updates using <a href="#313-get-task">Get Task</a>, subscribe via <a href="#316-subscribe-to-task">Subscribe to Task</a>, or receive updates via push notifications.</p>
+<p><strong>Non-Blocking (<code>return_immediately: true</code>)</strong>: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., <code>working</code>, <code>input_required</code>). It is the caller's responsibility to poll for updates using <a href="#313-get-task">Get Task</a>, subscribe via <a href="#316-subscribe-to-task">Subscribe to Task</a>, or receive updates via push notifications.</p>
 </li>
 </ul>
-<p>The <code>blocking</code> field has no effect:</p>
+<p>The <code>return_immediately</code> field has no effect:</p>
 <ul>
 <li>when the operation returns a direct <a href="#414-message"><code>Message</code></a> response instead of a task.</li>
 <li>for streaming operations, which always return updates in real-time.</li>
-<li>on configured push notification configurations, which operates independently of blocking mode.</li>
+<li>on configured push notification configurations, which operates independently of execution mode.</li>
 </ul>
 <h4 id="323-stream-response">3.2.3. Stream Response<a class="headerlink" href="#323-stream-response" title="Permanent link">&para;</a></h4>
 <p><span id="323-stream-response"></span>

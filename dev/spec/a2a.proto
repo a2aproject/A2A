@@ -152,10 +152,12 @@ message SendMessageConfiguration {
   // value of zero is a request to not include any messages. The server MUST NOT
   // return more messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
-  // If `true`, the operation MUST wait until the task reaches a terminal state
-  // (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state
-  // (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. Default is `false`.
-  bool blocking = 4;
+  // If `true`, the operation returns immediately after creating the task,
+  // even if processing is still in progress.
+  // If `false` (default), the operation MUST wait until the task reaches a
+  // terminal (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or interrupted
+  // (`INPUT_REQUIRED`, `AUTH_REQUIRED`) state before returning.
+  bool return_immediately = 4;
 }
 
 // `Task` is the core unit of action for A2A. It has a current status

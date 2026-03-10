@@ -1567,6 +1567,11 @@
           ],
           "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
         },
+        "^(return_immediately)$": {
+          "default": false,
+          "description": "If `true`, the operation returns immediately after creating the task,\n even if processing is still in progress.\n If `false` (default), the operation MUST wait until the task reaches a\n terminal (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or interrupted\n (`INPUT_REQUIRED`, `AUTH_REQUIRED`) state before returning.",
+          "type": "boolean"
+        },
         "^(task_push_notification_config)$": {
           "$ref": "lf.a2a.v1.TaskPushNotificationConfig.jsonschema.json",
           "description": "Configuration for the agent to send push notifications for task updates.\n Task id should be empty when sending this configuration in a `SendMessage` request."
@@ -1579,11 +1584,6 @@
             "type": "string"
           },
           "type": "array"
-        },
-        "blocking": {
-          "default": false,
-          "description": "If `true`, the operation MUST wait until the task reaches a terminal state\n (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state\n (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. Default is `false`.",
-          "type": "boolean"
         },
         "historyLength": {
           "anyOf": [
@@ -1598,6 +1598,11 @@
             }
           ],
           "description": "The maximum number of most recent messages from the task's history to retrieve in\n the response. An unset value means the client does not impose any limit. A\n value of zero is a request to not include any messages. The server MUST NOT\n return more messages than the provided value, but MAY apply a lower limit."
+        },
+        "returnImmediately": {
+          "default": false,
+          "description": "If `true`, the operation returns immediately after creating the task,\n even if processing is still in progress.\n If `false` (default), the operation MUST wait until the task reaches a\n terminal (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or interrupted\n (`INPUT_REQUIRED`, `AUTH_REQUIRED`) state before returning.",
+          "type": "boolean"
         },
         "taskPushNotificationConfig": {
           "$ref": "lf.a2a.v1.TaskPushNotificationConfig.jsonschema.json",
