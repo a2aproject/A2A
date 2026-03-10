@@ -7,7 +7,7 @@
 - Release `1.0` version of the protocol which represents significant maturation of the protocol with enhanced clarity, stronger specifications, and important structural improvements.
 - [What's New in A2A Protocol v1.0](https://a2a-protocol.org/latest/whats-new-v1/) has further updates. 
 - Continue to support additional [A2A extensions](topics/extensions.md) with SDK support. 
-- Prioritize community-led development with standardized processes for contributing to the specification, SDKs and tooling
+- Prioritize community-led development with standardized processes for contributing to the specification, SDKs and tooling.
 
 To review recent protocol changes see [Release Notes](https://github.com/a2aproject/A2A/releases).
 
