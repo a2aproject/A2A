@@ -7,12 +7,12 @@ Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2
 ## Recent News & Blog Posts
 
 Stay up-to-date with the latest announcements, tutorials, and insights from the A2A team and our community.
-
-- **[Announcing Agent Payments Protocol (AP2)](https://cloud.google.com/blog/products/ai-machine-learning/announcing-agent-payments-protocol-ap2)** - *September 16*
-- **[A2A Extensions Empowering Custom Agent Functionality](https://developers.googleblog.com/en/a2a-extensions-empowering-custom-agent-functionality/)** - *September 9*
-- **[A2A protocol: Demystifying Tasks vs Messages](https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879)** - *August 18*
-- **[End-to-end evaluation of multi-agent systems on Vertex AI](https://discuss.google.dev/t/end-to-end-evaluation-of-multi-agent-systems-on-vertex-ai-with-cloud-run-deployment-for-a2a-agents/250552)** - *August 7*
-- **[Agent2Agent (A2A) protocol is getting an upgrade](https://cloud.google.com/blog/products/ai-machine-learning/agent2agent-protocol-is-getting-an-upgrade?e=48754805)** - *July 26*
+- **[Announcing Agent2Agent Protocol 1.0](https://github.com/a2aproject/A2A/docs/announcing-1.0.md)** *March 12, 2026* 
+- **[Announcing Agent Payments Protocol (AP2)](https://cloud.google.com/blog/products/ai-machine-learning/announcing-agent-payments-protocol-ap2)** - *September 16, 2025*
+- **[A2A Extensions Empowering Custom Agent Functionality](https://developers.googleblog.com/en/a2a-extensions-empowering-custom-agent-functionality/)** - *September 9, 2025*
+- **[A2A protocol: Demystifying Tasks vs Messages](https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879)** - *August 18, 2025*
+- **[End-to-end evaluation of multi-agent systems on Vertex AI](https://discuss.google.dev/t/end-to-end-evaluation-of-multi-agent-systems-on-vertex-ai-with-cloud-run-deployment-for-a2a-agents/250552)** - *August 7, 2025*
+- **[Agent2Agent (A2A) protocol is getting an upgrade](https://cloud.google.com/blog/products/ai-machine-learning/agent2agent-protocol-is-getting-an-upgrade?e=48754805)** - *July 26, 2025*
 
 ---
 
