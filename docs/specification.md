@@ -443,7 +443,7 @@ This section defines common parameter objects used across multiple operations.
 
 **Execution Mode:**
 
-The `return_immediately` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation returns immediately or waits for task completion. By default, operations are blocking:
+The `return_immediately` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation returns immediately or waits for task completion. Operations are blocking by default:
 
 - **Blocking (`return_immediately: false` or unset)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.
 
