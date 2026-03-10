@@ -2537,10 +2537,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#75-in-task-authentication-secondary-credentials" class="md-nav__link">
+  <a href="#75-server-authorization-responsibilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7.5. In-Task Authentication (Secondary Credentials)
+        7.5. Server Authorization Responsibilities
       
     </span>
   </a>
@@ -2548,13 +2548,52 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#76-authorization" class="md-nav__link">
+  <a href="#76-in-task-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7.6. Authorization
+        7.6. In-Task Authorization
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="7.6. In-Task Authorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#761-in-task-authorization-agent-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.1 In-Task Authorization Agent Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#762-in-task-authorization-client-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.2 In-Task Authorization Client Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#763-in-task-authorization-security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.3 In-Task Authorization Security Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -5265,10 +5304,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#75-in-task-authentication-secondary-credentials" class="md-nav__link">
+  <a href="#75-server-authorization-responsibilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7.5. In-Task Authentication (Secondary Credentials)
+        7.5. Server Authorization Responsibilities
       
     </span>
   </a>
@@ -5276,13 +5315,52 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#76-authorization" class="md-nav__link">
+  <a href="#76-in-task-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7.6. Authorization
+        7.6. In-Task Authorization
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="7.6. In-Task Authorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#761-in-task-authorization-agent-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.1 In-Task Authorization Agent Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#762-in-task-authorization-client-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.2 In-Task Authorization Client Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#763-in-task-authorization-security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.3 In-Task Authorization Security Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -9564,20 +9642,55 @@
 <li><strong>SHOULD</strong> use appropriate binding-specific error codes for authentication challenges or rejections.</li>
 <li><strong>SHOULD</strong> provide relevant authentication challenge information with error responses.</li>
 </ul>
-<h3 id="75-in-task-authentication-secondary-credentials">7.5. In-Task Authentication (Secondary Credentials)<a class="headerlink" href="#75-in-task-authentication-secondary-credentials" title="Permanent link">&para;</a></h3>
-<p>If an agent requires additional credentials during task execution:</p>
-<ol>
-<li>It <strong>SHOULD</strong> transition the A2A task to the <code>TASK_STATE_AUTH_REQUIRED</code> state.</li>
-<li>The accompanying <code>TaskStatus.update</code> <strong>SHOULD</strong> provide details about the required secondary authentication.</li>
-<li>The A2A Client obtains these credentials out-of-band and provides them in a subsequent message request.</li>
-</ol>
-<h3 id="76-authorization">7.6. Authorization<a class="headerlink" href="#76-authorization" title="Permanent link">&para;</a></h3>
+<h3 id="75-server-authorization-responsibilities">7.5. Server Authorization Responsibilities<a class="headerlink" href="#75-server-authorization-responsibilities" title="Permanent link">&para;</a></h3>
 <p>Once authenticated, the A2A Server authorizes requests based on the authenticated identity and its own policies. Authorization logic is implementation-specific and <strong>MAY</strong> consider:</p>
 <ul>
 <li>Specific skills requested</li>
 <li>Actions attempted within tasks</li>
 <li>Data access policies</li>
 <li>OAuth scopes (if applicable)</li>
+</ul>
+<h3 id="76-in-task-authorization">7.6. In-Task Authorization<a class="headerlink" href="#76-in-task-authorization" title="Permanent link">&para;</a></h3>
+<p>In the course of performing a task, an agent may require authorization to perform some action. Examples include:</p>
+<ul>
+<li>An agent requiring an OAuth access token to call an API or another agent</li>
+<li>An agent requiring human approval before a destructive action is taken</li>
+</ul>
+<p>In the sections below, we refer to the object that represents the approved authorization as a credential.</p>
+<p>Agents may have multiple means for retrieving this authorization, such as via directly sending messages to a human.</p>
+<p>A2A provides the capability for agents to delegate the fulfillment of this authorization to the client via the <code>TASK_STATE_AUTH_REQUIRED</code> Task state. This provides agents a fallback path for requesting authorization by passing the responsibility to the client.</p>
+<h4 id="761-in-task-authorization-agent-responsibilities">7.6.1 In-Task Authorization Agent Responsibilities<a class="headerlink" href="#761-in-task-authorization-agent-responsibilities" title="Permanent link">&para;</a></h4>
+<p>To request that a client fulfills an authorization request, the agent:</p>
+<ol>
+<li>MUST use a Task to track the operation it is performing</li>
+<li>MUST transition the TaskState to <code>TASK_STATE_AUTH_REQUIRED</code></li>
+<li>MUST include a TaskStatus message explaining the required authorization, unless the details of the authorization have been negotiated out-of-band or via an extension</li>
+</ol>
+<p>Agents MUST arrange to receive credentials via an out-of-band means, unless an in-band mechanism has been negotiated out-of-band or via an extension.</p>
+<p>If the credential is received out-of-band, the agent SHOULD maintain any active response streams with the client after setting the TaskState to <code>TASK_STATE_AUTH_REQUIRED</code>. The agent MAY immediately continue Task processing after receiving the credential, without a requirement that clients send a follow-up message.</p>
+<p>Agents SHOULD support receiving messages directed to the Task while the Task remains in <code>TASK_STATE_AUTH_REQUIRED</code>. This enables clients to negotiate, correct, or reject an authorization request.</p>
+<h4 id="762-in-task-authorization-client-responsibilities">7.6.2 In-Task Authorization Client Responsibilities<a class="headerlink" href="#762-in-task-authorization-client-responsibilities" title="Permanent link">&para;</a></h4>
+<p>Upon receiving a Task in <code>TASK_STATE_AUTH_REQUIRED</code>, a client is expected to take action in some way to resolve the agent's request for authorization.</p>
+<p>A client may:</p>
+<ul>
+<li>Send a response message to the Task to negotiate, correct, or reject the authorization request.</li>
+<li>Contact another human, agent, or service to fulfill the authorization request</li>
+<li>Directly fulfill the authorization request via an out-of-band or extension negotiated means</li>
+</ul>
+<p>If the client is itself an A2A agent actively processing a Task, the client may further delegate the authorization request to its client by transitioning its own Task to <code>TASK_STATE_AUTH_REQUIRED</code>. The client SHOULD follow all <a href="#761-in-task-authorization-agent-responsibilities">In-Task Authorization Agent Responsibilities</a>. This enables forming a chain of Tasks in <code>TASK_STATE_AUTH_REQUIRED</code>.</p>
+<p>Clients may not be aware of when the agent receives credentials out-of-band and subsequently continues Task processing. If a client does not have an active response stream open with the agent, the client risks missing Task updates. To avoid this, a client SHOULD perform one of the following:</p>
+<ul>
+<li>Subscribe to a stream of events for the Task using the <a href="#316-subscribe-to-task">Subscribe to Task</a> operation</li>
+<li>Register a webhook to receive events, if supported by the agent, using the <a href="#317-create-push-notification-config">Create Push Notification Config</a> operation</li>
+<li>Begin polling the Task using the <a href="#313-get-task">Get Task</a> operation</li>
+</ul>
+<h4 id="763-in-task-authorization-security-considerations">7.6.3 In-Task Authorization Security Considerations<a class="headerlink" href="#763-in-task-authorization-security-considerations" title="Permanent link">&para;</a></h4>
+<p>Agents SHOULD receive credentials for in-task authorization requests out of band via a secure channel, such as HTTPS. This ensures that credentials are provided directly to the agent.</p>
+<p>In-band credential exchange may be negotiated via out-of-band means or by using extensions. In-band credential exchange can allow credentials to be passed across chains of multiple A2A agents, exposing those credentials to each agent participating in the chain.</p>
+<p>If using in-band credential exchange, we recommend adhering to the following security practices:</p>
+<ul>
+<li>Credentials SHOULD be bound to the agent which originated the request, such that only this agent is able to use the credentials. This ensures that credentials propagating through a chain of A2A requests are only usable by the requesting agent.</li>
+<li>Credentials containing sensitive information SHOULD be only readable by the agent which originated the request, such as by encrypting the credential.</li>
 </ul>
 <h2 id="8-agent-discovery-the-agent-card">8. Agent Discovery: The Agent Card<a class="headerlink" href="#8-agent-discovery-the-agent-card" title="Permanent link">&para;</a></h2>
 <p><span id="5-agent-discovery-the-agent-card"></span></p>
