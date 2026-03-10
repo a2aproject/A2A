@@ -60,15 +60,13 @@ workflow and adapted for the A2A project.
 ## 2.1 Update CHANGELOG
 - [ ] Update `CHANGELOG.md`
 - [ ] Organize entries under the upcoming version heading
-- [ ] Group changes under standard sections:
-
-Suggested sections:
-- Added
-- Changed
-- Deprecated
-- Removed
-- Fixed
-- Security
+- [ ] Group changes under standard sections, for example:
+  - Added
+  - Changed
+  - Deprecated
+  - Removed
+  - Fixed
+  - Security
 
 ## 2.2 Review Changelog
 - [ ] Confirm all merged PRs are included
