@@ -127,7 +127,7 @@ Create an annotated git tag:
 - [ ] Confirm the tag appears on GitHub
 
 ## 5.2 Create GitHub Release
- Create a new GitHub release from the tag
+Create a new GitHub release from the tag
 
 - [ ]  Copy release notes from CHANGELOG.md
 - [ ]  Highlight major changes
