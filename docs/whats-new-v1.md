@@ -49,28 +49,18 @@ The v1.0 release focuses on four major themes:
 **v0.3.0 Behavior:**
 
 - Operation named `message/send`
-- Blocking behavior not explicitly controllable
 - Less formal specification of when `Task` vs `Message` is returned
 
 **v1.0 Changes:**
 
-- **✅ NEW:** Operation formally named **`SendMessage`** (with legacy alias support)
-- **✅ NEW:** `SendMessageConfiguration.blocking` parameter explicitly controls wait behavior
-    - `blocking: true` - Server waits until task reaches terminal or interrupted state
-    - `blocking: false` - Server returns immediately; client polls/streams for updates
+- **✅ RENAMED:** Operation now **`SendMessage`**
 - **✅ CLARIFIED:** More precise specification of Task vs Message return semantics
-    - Simple queries MAY return Message directly without creating a Task
-    - Complex operations MUST return Task for asynchronous handling
-- **✅ NEW:** Service parameters transmitted as headers/metadata:
-    - `A2A-Version`: Protocol version (Major.Minor format)
-    - `A2A-Extensions`: Comma-separated extension URIs
 
 ### Send Streaming Message (`message/stream` → **SendStreamingMessage**)
 
 **v0.3.0 Behavior:**
 
 - Operation named `message/stream`
-- SSE-based streaming for JSON-RPC, unspecified for gRPC
 - Stream events had `kind` discriminator field
 
 **v1.0 Changes:**
@@ -78,10 +68,8 @@ The v1.0 release focuses on four major themes:
 - **✅ RENAMED:** Operation now **`SendStreamingMessage`**
 - **✅ BREAKING:** Stream events no longer have `kind` field
     - Use JSON member names to discriminate between `TaskStatusUpdateEvent` and `TaskArtifactUpdateEvent`
-- **✅ NEW:** Formal gRPC streaming semantics defined
 - **✅ REMOVED:** `final` boolean field removed from TaskStatusUpdateEvent. Leverage protocol binding specific stream closure mechanism instead.
 - **✅ CLARIFIED:** Multiple concurrent streams allowed; all receive same ordered events
-- **✅ NEW:** Blocking parameter applies but streaming always provides real-time updates
 
 ### Get Task (`tasks/get` → **GetTask**)
 
@@ -122,12 +110,10 @@ The v1.0 release focuses on four major themes:
 
 - Operation named `tasks/cancel`
 - Request with taskId, returns Task
-- Error if task not cancelable (implicit)
 
 **v1.0 Changes:**
 
 - **✅ RENAMED:** Operation now **CancelTask**
-- **✅ NEW:** Explicit `TaskNotCancelableError` for terminal/non-cancelable tasks
 - **✅ CLARIFIED:** More precise specification of when cancellation is allowed
 - **✅ CLARIFIED:** Task state transitions for cancellation scenarios
 
@@ -143,15 +129,12 @@ The v1.0 release focuses on four major themes:
 
 - **✅ RENAMED:** `agent/getAuthenticatedExtendedCard` → **GetExtendedAgentCard**
 - **✅ BREAKING:** `supportsAuthenticatedExtendedCard` moved to `capabilities.extendedAgentCard`
-- **✅ NEW:** Agent Card signature support with JWS (RFC 7515) and canonicalization (RFC 8785)
-- **✅ NEW:** `agentId` field added to identify agent instances
+- **✅ NEW:** Canonicalization (RFC 8785) clarified for Agent Card signature
 - **✅ BREAKING:** `protocolVersion` moved from AgentCard to individual AgentInterface objects
 - **✅ BREAKING:** `preferredTransport` and `additionalInterfaces` consolidated into `supportedInterfaces[]`
     - Each interface has `url`, `protocolBinding`, and `protocolVersion`
-- **✅ NEW:** Extension declarations now include `uri`, `description`, and `required` flag
-- **✅ NEW:** Mutual TLS security scheme support added
 
-### NEW: Subscribe to Task (**SubscribeToTask**)
+### Subscribe to task (`tasks/resubscribe` → **SubscribeToTask**)
 
 **v0.3.0 Behavior:**
 
@@ -160,11 +143,10 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ NEW OPERATION:** **SubscribeToTask** replaces informal resubscription
+- **✅ RENAMED:** Operation now **SubscribeToTask**
 - **✅ CLARIFIED:** Formal specification of streaming subscription lifecycle
 - **✅ CLARIFIED:** Stream closure behavior when task reaches terminal state
 - **✅ CLARIFIED:** Multiple concurrent subscriptions supported per task
-- **✅ BEHAVIOR CHANGE:** Can subscribe to tasks not originally created via streaming
 
 ### Push Notification Operations
 
@@ -179,10 +161,7 @@ The v1.0 release focuses on four major themes:
 
 - **✅ RENAMED:** Operations now **CreatePushNotificationConfig**, **GetPushNotificationConfig**, **ListPushNotificationConfigs**, **DeletePushNotificationConfig**
 - **✅ NEW:** `createdAt` timestamp field added to PushNotificationConfig
-- **✅ BREAKING:** `token` field removed from PushNotificationConfig (authentication handled via schemes)
-- **✅ NEW:** `configId` field added for unique identification
 - **✅ CLARIFIED:** Push notification payloads now use StreamResponse format
-- **✅ NEW:** Explicit `PushNotificationNotSupportedError` when capability not available
 
 ### NEW: Multi-Tenancy Support
 
@@ -201,10 +180,16 @@ The v1.0 release focuses on four major themes:
 **Example:**
 
 ```protobuf
+// Represents a request for the `SendMessage` method.
 message SendMessageRequest {
-  string tenant = 1;  // Optional tenant identifier
-  Message message = 2;
-  SendMessageConfiguration configuration = 3;
+  // Optional tenant, provided as a path parameter.
+  string tenant = 4;
+  // The message to send to the agent.
+  Message message = 1 [(google.api.field_behavior) = REQUIRED];
+  // Configuration for the send request.
+  SendMessageConfiguration configuration = 2;
+  // A flexible key-value map for passing additional context or parameters.
+  google.protobuf.Struct metadata = 3;
 }
 ```
 
@@ -244,29 +229,11 @@ message SendMessageRequest {
 
 ### Task Object
 
-**Added Fields:**
-
-- ✅ `createdAt`: Timestamp (ISO 8601) - Task creation time
-- ✅ `lastModified`: Timestamp (ISO 8601) - Last state change time
-
-**Modified Fields:**
-
-- ✅ `status`: TaskStatus object now includes more precise timestamp semantics
-
 **Removed Fields:**
 
 - ⛔ `kind`: Discriminator field removed (was always "task")
 
-**Behavior Changes:**
-
-- Messages in `history[]` now include `extensions[]` array
-- Artifacts now include `extensions[]` array and `metadata` map
-
 ### TaskStatus Object
-
-**Added Fields:**
-
-- No new top-level fields
 
 **Modified Fields:**
 
@@ -274,7 +241,6 @@ message SendMessageRequest {
     - v0.3.0: `"submitted"`, `"working"`, `"completed"`, `"failed"`, `"canceled"`, `"rejected"`, `"input-required"`, `"auth-required"`
     - v1.0: `"TASK_STATE_SUBMITTED"`, `"TASK_STATE_WORKING"`, `"TASK_STATE_COMPLETED"`, `"TASK_STATE_FAILED"`, `"TASK_STATE_CANCELED"`, `"TASK_STATE_REJECTED"`, `"TASK_STATE_INPUT_REQUIRED"`, `"TASK_STATE_AUTH_REQUIRED"`
 - ✅ `timestamp`: Now explicitly ISO 8601 UTC with millisecond precision (YYYY-MM-DDTHH:mm:ss.sssZ)
-- ✅ `message`: Optional Message with enhanced extension support
 
 **Removed Fields:**
 
@@ -304,7 +270,6 @@ message SendMessageRequest {
 
 **Added Fields:**
 
-- ✅ `timestamp`: ISO 8601 timestamp - Message creation time
 - ✅ `extensions[]`: Array of extension URIs applicable to this message
 
 **Modified Fields:**
@@ -312,11 +277,6 @@ message SendMessageRequest {
 - ✅ `role`: **BREAKING** - Enum values changed from lowercase to `SCREAMING_SNAKE_CASE` with `ROLE_` prefix
     - v0.3.0: `"user"`, `"agent"`
     - v1.0: `"ROLE_USER"`, `"ROLE_AGENT"`
-- ✅ `metadata`: Remains optional key-value map but with stricter typing
-
-**Removed Fields:**
-
-- None
 
 **Example Migration:**
 
@@ -331,7 +291,6 @@ message SendMessageRequest {
 {
   "role": "ROLE_USER",
   "parts": [{"text": "Hello"}],
-  "timestamp": "2024-03-15T10:15:00.000Z"
 }
 ```
 
@@ -411,7 +370,6 @@ The Part structure has been completely redesigned in v1.0. Instead of separate T
 - ✅ **NEW:** `filename` field - available for all part types (not just files)
 - ✅ **NEW:** `raw` field for inline binary content (base64 in JSON)
 - ✅ **NEW:** `url` field for file references (replaces `file.fileWithUri`)
-- ✅ **RETAINED:** `metadata` optional map
 
 **Migration Examples:**
 
@@ -435,34 +393,17 @@ if ("text" in part) { ... }        // v1.0
 
 **Added Fields:**
 
-- ✅ `createdAt`: Timestamp - Artifact creation time
 - ✅ `extensions[]`: Array of extension URIs
 
 **Modified Fields:**
 
 - ✅ `parts[]`: Now uses member-based Part discrimination (see Part changes above)
 
-**Removed Fields:**
-
-- None
-
-**Behavior Changes:**
-
-- Metadata now more formally specified with extension integration
-
 ### AgentCard Object
 
 **Added Fields:**
 
-- ✅ `agentId`: Unique identifier for the agent instance
-- ✅ `supportedInterfaces[]`: Array of AgentInterface objects (each with url, protocolBinding, and protocolVersion)
-- ✅ `signatures[]`: Array of JWS signatures for card verification
-
-**Modified Fields:**
-
-- ✅ `capabilities.extendedAgentCard`: Moved from top-level `supportsAuthenticatedExtendedCard`
-- ✅ `extensions[]`: Enhanced with `uri`, `description`, and `required` fields (previously simpler Extension type)
-- ✅ `securitySchemes`: Enhanced with mutual TLS support
+- ✅ `supportedInterfaces[]`: Array of `AgentInterface` objects
 
 **Removed Fields:**
 
@@ -490,7 +431,6 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "agentId": "agent-abc-123",
   "supportedInterfaces": [
     {
       "url": "https://agent.example.com/a2a",
@@ -505,46 +445,11 @@ if ("text" in part) { ... }        // v1.0
 }
 ```
 
-### AgentExtension Object
-
-**v0.3.0 Structure:**
-
-```json
-{
-  "id": "extension-id",
-  "name": "Extension Name",
-  "version": "1.0",
-  "description": "Description",
-  "documentation": "https://...",
-  "metadata": {}
-}
-```
-
-**v1.0 Structure:**
-
-```json
-{
-  "uri": "https://example.com/extensions/custom-ext/v1",
-  "description": "Description",
-  "required": false
-}
-```
-
-**Changes:**
-
-- ⛔ **REMOVED:** `id`, `name`, `version` fields
-- ⛔ **REMOVED:** `documentation` field
-- ⛔ **REMOVED:** `metadata` field
-- ✅ **NEW:** `uri` field - Versioned URI identifying the extension
-- ✅ **NEW:** `required` boolean - Indicates if client must support this extension
-- ✅ **SIMPLIFIED:** Description remains, but structure dramatically simplified
-- ✅ **PATTERN:** Extension versioning now embedded in URI (e.g., `/v1`, `/v2`)
-
 ### AgentCapabilities Object
 
 **Removed Fields:**
 
-- ⛔ `stateTransitionHistory` (#1396) - Removed as no API implementation existed for this feature
+- ⛔ `stateTransitionHistory` - Removed as no API implementation existed for this feature
 
 **Rationale:**
 
@@ -559,20 +464,6 @@ This capability may be reintroduced in a future version with proper implementati
 **Modified Fields:**
 
 - ✅ `extendedAgentCard`: Moved from top-level `supportsAuthenticatedExtendedCard` field
-- ✅ `pushNotifications`: More formally specified with enhanced configuration options
-- ✅ `streaming`: Enhanced with clearer semantics for SSE support
-
-### SecurityScheme Objects
-
-**Added:**
-
-- ✅ `MutualTLSSecurityScheme`: Support for mutual TLS authentication
-
-**Enhanced:**
-
-- ✅ More formal alignment with OpenAPI security scheme patterns
-- ✅ Better documentation of OAuth2 flows and scopes
-- ✅ Clearer distinction between security scheme definitions and requirements
 
 ### PushNotificationConfig Object
 
@@ -584,15 +475,6 @@ This capability may be reintroduced in a future version with proper implementati
 **Modified Fields:**
 
 - ✅ `authentication`: Enhanced PushNotificationAuthenticationInfo structure
-
-**Removed Fields:**
-
-- ⛔ `token`: Client-provided token removed (auth handled via schemes)
-
-**Behavior Changes:**
-
-- Configuration now identified by `configId` instead of implicit task association
-- Authentication schemes formalized with proper standards alignment
 
 ### Stream Event Objects
 
@@ -918,14 +800,14 @@ const message = { role: "ROLE_USER", parts: [...] };
 
 ### New Capabilities to Leverage
 
-#### 1. Blocking Parameter Control
+#### 1. Execution Mode Control
 
 ```typescript
-// Wait for task completion
-const result = await sendMessage(message, { blocking: true });
+// Wait for task completion (Default)
+const result = await sendMessage(message, { returnImmediately: false });
 
 // Return immediately, poll later
-const task = await sendMessage(message, { blocking: false });
+const task = await sendMessage(message, { returnImmediately: true });
 ```
 
 #### 2. Agent Card Signature Verification
@@ -1053,7 +935,7 @@ class A2AClient {
 
 - Implement cursor-based pagination
 - Update enum value handling (state field)
-- Add blocking parameter support
+- Add return_immediately parameter support
 
 #### Medium (Within 3 Months)
 
