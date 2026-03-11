@@ -8,6 +8,7 @@ The v1.0 release focuses on four major themes:
 
 ### 1. **Protocol Maturity and Standardization**
 
+- Elevate a2a.proto from being a gRPC-specific implementation file to the universal, normative source of truth
 - Leverage formal specification standards (RFC 9457, RFC 8785, RFC 7515) where possible
 - Stricter adherence to industry-standard patterns for REST, gRPC, and JSON-RPC bindings
 - Enhanced versioning strategy with explicit backward compatibility rules
@@ -91,17 +92,11 @@ The v1.0 release focuses on four major themes:
 
 **v0.3.0 Behavior:**
 
-- Operation named `tasks/list`
-- Available in gRPC and REST only
-- Basic pagination with page numbers
+- Operation unavailable.
 
 **v1.0 Changes:**
 
-- **✅ RENAMED:** Operation now **ListTasks**
-- **✅ BREAKING:** Changed to cursor-based pagination for scalability
-    - Request: `cursor` (opaque token from previous response), `limit` (max results)
-    - Response: `tasks[]`, `nextCursor` (for next page)
-- **✅ NEW:** Enhanced filtering capabilities with more explicit specifications
+- **✅ NEW:** New operation **ListTasks** with enhanced filtering capabilities and explicit specifications
 - **✅ CLARIFIED:** Task visibility scoped to authenticated caller
 
 ### Cancel Task (`tasks/cancel` → **CancelTask**)
@@ -159,9 +154,10 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ RENAMED:** Operations now **CreatePushNotificationConfig**, **GetPushNotificationConfig**, **ListPushNotificationConfigs**, **DeletePushNotificationConfig**
+- **✅ RENAMED:** Operations now **CreateTaskPushNotificationConfig**, **GetTaskPushNotificationConfig**, **ListTaskushNotificationConfigs**, **DeleteTaskPushNotificationConfig**
 - **✅ NEW:** `createdAt` timestamp field added to PushNotificationConfig
 - **✅ CLARIFIED:** Push notification payloads now use StreamResponse format
+- **✅ BREAKING:** model changed for all methods, with TaskPushNotificationConfig flattened
 
 ### NEW: Multi-Tenancy Support
 
@@ -172,26 +168,10 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ NEW:** `tenant` field added to all gRPC request messages
+- **✅ NEW:** `tenant` field added to all request messages
 - **✅ NEW:** `tenant` field added to `AgentInterface` to specify default tenant
-- **✅ CLARIFIED:** Tenant can be provided per-request or inherited from AgentInterface
-- **✅ USE CASE:** Enables agents to serve multiple organizations from single endpoint
-
-**Example:**
-
-```protobuf
-// Represents a request for the `SendMessage` method.
-message SendMessageRequest {
-  // Optional tenant, provided as a path parameter.
-  string tenant = 4;
-  // The message to send to the agent.
-  Message message = 1 [(google.api.field_behavior) = REQUIRED];
-  // Configuration for the send request.
-  SendMessageConfiguration configuration = 2;
-  // A flexible key-value map for passing additional context or parameters.
-  google.protobuf.Struct metadata = 3;
-}
-```
+- **✅ CLARIFIED:** Tenant provided per-request, inherited from AgentInterface
+- **✅ USE CASE:** Enables to serve multiple agents from a single endpoint
 
 ### Protocol Simplifications
 
@@ -220,18 +200,12 @@ message SendMessageRequest {
 
 - **✅ BREAKING:** Removed `/v1` prefix from HTTP+JSON URL paths
 - **✅ NEW:** Examples: `POST /message:send`, `GET /tasks/{id}`
-- **✅ RATIONALE:** Version specified in `AgentInterface.protocolVersion` field instead
+- **✅ RATIONALE:** Version can be part of the base url if required by agent owner
 - **✅ BENEFIT:** Cleaner URLs, version management at interface level
 
 ---
 
 ## Structural Changes in Core Model Objects
-
-### Task Object
-
-**Removed Fields:**
-
-- ⛔ `kind`: Discriminator field removed (was always "task")
 
 ### TaskStatus Object
 
@@ -446,20 +420,6 @@ if ("text" in part) { ... }        // v1.0
 ```
 
 ### AgentCapabilities Object
-
-**Removed Fields:**
-
-- ⛔ `stateTransitionHistory` - Removed as no API implementation existed for this feature
-
-**Rationale:**
-
-The `stateTransitionHistory` capability flag was misleading as v1.0 has no corresponding API to:
-
-- Store status history in Task objects
-- Retrieve status history via Get/List operations
-- Query historical state transitions
-
-This capability may be reintroduced in a future version with proper implementation.
 
 **Modified Fields:**
 
