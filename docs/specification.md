@@ -2421,7 +2421,7 @@ JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://ww
 
 - **Error Code**: Mapped to `error.code` (numeric JSON-RPC error code)
 - **Error Message**: Mapped to `error.message` (human-readable string)
-- **Error Details**: Mapped to `error.data` (optional structured object)
+- **Error Details**: Mapped to `error.data` (array containing `google.protobuf.Any` messages, using ProtoJSON representation)
 
 **Standard JSON-RPC Error Codes:**
 
@@ -2436,6 +2436,17 @@ JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://ww
 **A2A-Specific Error Codes:**
 
 A2A-specific errors use codes in the range `-32001` to `-32099`. For the complete mapping of A2A error types to JSON-RPC error codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings).
+
+**A2A Error Representation:**
+
+For A2A-specific errors, implementations **MUST** include a `google.rpc.ErrorInfo` message in the `data` array with:
+
+- `@type`: Set to `"type.googleapis.com/google.rpc.ErrorInfo"`
+- `reason`: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., `TASK_NOT_FOUND`)
+- `domain`: Set to `"a2a-protocol.org"`
+- `metadata`: Optional map of additional error context
+
+Additional error context **MAY** be included in the `data` array.
 
 **Error Response Structure:**
 
@@ -2462,15 +2473,20 @@ A2A-specific errors use codes in the range `-32001` to `-32099`. For the complet
   "error": {
     "code": -32001,
     "message": "Task not found",
-    "data": {
-      "taskId": "nonexistent-task-id",
-      "timestamp": "2025-11-09T10:30:00.000Z"
-    }
+    "data": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "TASK_NOT_FOUND",
+        "domain": "a2a-protocol.org",
+        "metadata": {
+          "taskId": "nonexistent-task-id",
+          "timestamp": "2025-11-09T10:30:00.000Z"
+        }
+      }
+    ]
   }
 }
 ```
-
-The `data` field **MAY** include additional context-specific information to help clients diagnose and resolve the error.
 
 ## 10. gRPC Protocol Binding
 
