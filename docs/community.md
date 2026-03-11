@@ -7,7 +7,7 @@ Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2
 ## Recent News & Blog Posts
 
 Stay up-to-date with the latest announcements, tutorials, and insights from the A2A team and our community.
-- **[Announcing Agent2Agent Protocol 1.0](https://github.com/a2aproject/A2A/docs/announcing-1.0.md)** *March 12, 2026* 
+- **[Announcing Agent2Agent Protocol 1.0](announcing-1.0.md)** - *March 12, 2026* 
 - **[Announcing Agent Payments Protocol (AP2)](https://cloud.google.com/blog/products/ai-machine-learning/announcing-agent-payments-protocol-ap2)** - *September 16, 2025*
 - **[A2A Extensions Empowering Custom Agent Functionality](https://developers.googleblog.com/en/a2a-extensions-empowering-custom-agent-functionality/)** - *September 9, 2025*
 - **[A2A protocol: Demystifying Tasks vs Messages](https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879)** - *August 18, 2025*
