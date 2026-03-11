@@ -175,12 +175,12 @@ To graduate an experimental extension to official status:
 
 #### Official Extension Iteration
 
-Once official, extensions may be iterated on without further TSC review for
-non-breaking changes:
+Once official, extensions may be iterated on:
 
 - Extension repository maintainers are responsible for day-to-day governance
 - Changes SHOULD be coordinated via the relevant working group if one exists
 - Breaking changes require a new extension identifier
+- Breaking changes require TSC review
 - Maintainers SHOULD coordinate with SDK maintainers for implementation
     updates
 
