@@ -1460,16 +1460,9 @@ Content-Type: application/problem+json
 **Request:**
 
 ```http
-POST /tasks/list HTTP/1.1
+GET /tasks?contextId=c295ea44-7543-4f78-b524-7a38915ad6e4&pageSize=10&historyLength=3 HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
 Authorization: Bearer token
-
-{
-  "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
-  "pageSize": 10,
-  "historyLength": 3
-}
 ```
 
 **Response:**
@@ -1500,15 +1493,9 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /tasks/list HTTP/1.1
+GET /tasks?status=TASK_STATE_WORKING&pageSize=20 HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
 Authorization: Bearer token
-
-{
-  "status": "TASK_STATE_WORKING",
-  "pageSize": 20
-}
 ```
 
 **Response:**
@@ -1548,16 +1535,9 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /tasks/list HTTP/1.1
+GET /tasks?contextId=c295ea44-7543-4f78-b524-7a38915ad6e4&pageSize=10&pageToken=base64-encoded-cursor-token HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
 Authorization: Bearer token
-
-{
-  "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
-  "pageSize": 10,
-  "pageToken": "base64-encoded-cursor-token"
-}
 ```
 
 **Response:**
@@ -1581,16 +1561,9 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-POST /tasks/list HTTP/1.1
+GET /tasks?pageSize=150&historyLength=-5&status=TASK_STATE_RUNNING HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
 Authorization: Bearer token
-
-{
-  "pageSize": 150,
-  "historyLength": -5,
-  "status": "running"
-}
 ```
 
 **Response:**
