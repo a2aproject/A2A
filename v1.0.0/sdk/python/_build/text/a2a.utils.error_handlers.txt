@@ -1,0 +1,12 @@
+a2a.utils.error_handlers module
+*******************************
+
+a2a.utils.error_handlers.rest_error_handler(func: Callable[[...], Awaitable[Response]]) -> Callable[[...], Awaitable[Response]]
+
+   Decorator to catch ServerError and map it to an appropriate
+   JSONResponse.
+
+a2a.utils.error_handlers.rest_stream_error_handler(func: Callable[[...], Coroutine[Any, Any, Any]]) -> Callable[[...], Coroutine[Any, Any, Any]]
+
+   Decorator to catch ServerError for a streaming method,log it and
+   then rethrow it to be handled by framework.

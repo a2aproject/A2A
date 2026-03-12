@@ -1,0 +1,97 @@
+a2a.utils.telemetry module
+**************************
+
+OpenTelemetry Tracing Utilities for A2A Python SDK.
+
+This module provides decorators to simplify the integration of
+OpenTelemetry tracing into Python applications. It offers
+*trace_function* for instrumenting individual functions (both
+synchronous and asynchronous) and *trace_class* for instrumenting
+multiple methods within a class.
+
+The tracer is initialized with the module name and version defined by
+*INSTRUMENTING_MODULE_NAME* ('a2a-python-sdk') and
+*INSTRUMENTING_MODULE_VERSION* ('1.0.0').
+
+Features: - Automatic span creation for decorated functions/methods. -
+Support for both synchronous and asynchronous functions. - Default
+span naming based on module and function/class/method name. -
+Customizable span names, kinds, and static attributes. - Dynamic
+attribute setting via an *attribute_extractor* callback. - Automatic
+recording of exceptions and setting of span status. - Selective method
+tracing in classes using include/exclude lists.
+
+Configuration: - Environment Variable Control: OpenTelemetry
+instrumentation can be
+
+   disabled using the *OTEL_INSTRUMENTATION_A2A_SDK_ENABLED*
+   environment variable.
+
+   * Default: *true* (tracing enabled when OpenTelemetry is installed)
+
+   * To disable: Set *OTEL_INSTRUMENTATION_A2A_SDK_ENABLED=false*
+
+   * Case insensitive: 'true', 'True', 'TRUE' all enable tracing
+
+   * Any other value disables tracing and logs a debug message
+
+Usage:
+   For a single function: >>``<<>>`<<python from your_module import
+   trace_function
+
+   @trace_function def my_function():
+
+      # ... pass
+
+   @trace_function(span_name='custom.op', kind=SpanKind.CLIENT) async
+   def my_async_function():
+
+      # ... pass
+
+   >>``<<>>`<<
+
+   For a class: >>``<<>>`<<python from your_module import trace_class
+
+   @trace_class(exclude_list=['internal_method']) class MyService:
+
+      def public_api(self, user_id):
+         # This method will be traced pass
+
+      def internal_method(self):
+         # This method will not be traced pass
+
+   >>``<<>>`<<
+
+class a2a.utils.telemetry.SpanKind(*values)
+
+   Bases: "Enum"
+
+   Specifies additional details on how this span relates to its parent
+   span.
+
+   Note that this enumeration is experimental and likely to change.
+   See https://github.com/open-telemetry/opentelemetry-
+   specification/pull/226.
+
+   CLIENT = 2
+
+      Indicates that the span describes a request to some remote
+      service.
+
+   CONSUMER = 4
+
+      Indicates that the span describes a consumer receiving a message
+      from a broker. Unlike client and server, there is usually no
+      direct critical path latency relationship between producer and
+      consumer spans.
+
+   INTERNAL = 0
+
+   PRODUCER = 3
+
+      Indicates that the span describes a producer sending a message
+      to a broker. Unlike client and server, there is usually no
+      direct critical path latency relationship between producer and
+      consumer spans.
+
+   SERVER = 1

@@ -1,0 +1,47 @@
+a2a.client.transports.base module
+*********************************
+
+class a2a.client.transports.base.ClientTransport
+
+   Bases: "ABC"
+
+   Abstract base class for a client transport.
+
+   abstractmethod async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   abstractmethod async close() -> None
+
+      Closes the transport.
+
+   abstractmethod async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the AgentCard.
+
+   abstractmethod async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   abstractmethod async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   abstractmethod async resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Reconnects to get task updates.
+
+   abstractmethod async send_message(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task | Message
+
+      Sends a non-streaming message request to the agent.
+
+   abstractmethod async send_message_streaming(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+   abstractmethod async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.

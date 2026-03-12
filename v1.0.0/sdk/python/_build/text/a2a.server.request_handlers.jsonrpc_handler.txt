@@ -1,0 +1,162 @@
+a2a.server.request_handlers.jsonrpc_handler module
+**************************************************
+
+class a2a.server.request_handlers.jsonrpc_handler.JSONRPCHandler(agent_card: AgentCard, request_handler: RequestHandler, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None)
+
+   Bases: "object"
+
+   Maps incoming JSON-RPC requests to the appropriate request handler
+   method and formats responses.
+
+   async delete_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, context: ServerCallContext | None = None) -> DeleteTaskPushNotificationConfigResponse
+
+      Handles the 'tasks/pushNotificationConfig/list' JSON-RPC method.
+
+      Parameters:
+         * **request** -- The incoming
+           *DeleteTaskPushNotificationConfigRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *DeleteTaskPushNotificationConfigResponse* object
+         containing the config or a JSON-RPC error.
+
+   async get_authenticated_extended_card(request: GetAuthenticatedExtendedCardRequest, context: ServerCallContext | None = None) -> GetAuthenticatedExtendedCardResponse
+
+      Handles the 'agent/authenticatedExtendedCard' JSON-RPC method.
+
+      Parameters:
+         * **request** -- The incoming
+           *GetAuthenticatedExtendedCardRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *GetAuthenticatedExtendedCardResponse* object containing
+         the config or a JSON-RPC error.
+
+   async get_push_notification_config(request: GetTaskPushNotificationConfigRequest, context: ServerCallContext | None = None) -> GetTaskPushNotificationConfigResponse
+
+      Handles the 'tasks/pushNotificationConfig/get' JSON-RPC method.
+
+      Parameters:
+         * **request** -- The incoming
+           *GetTaskPushNotificationConfigRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *GetTaskPushNotificationConfigResponse* object containing
+         the config or a JSON-RPC error.
+
+   async list_push_notification_config(request: ListTaskPushNotificationConfigRequest, context: ServerCallContext | None = None) -> ListTaskPushNotificationConfigResponse
+
+      Handles the 'tasks/pushNotificationConfig/list' JSON-RPC method.
+
+      Parameters:
+         * **request** -- The incoming
+           *ListTaskPushNotificationConfigRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *ListTaskPushNotificationConfigResponse* object containing
+         the config or a JSON-RPC error.
+
+   async on_cancel_task(request: CancelTaskRequest, context: ServerCallContext | None = None) -> CancelTaskResponse
+
+      Handles the 'tasks/cancel' JSON-RPC method.
+
+      Parameters:
+         * **request** -- The incoming *CancelTaskRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *CancelTaskResponse* object containing the updated Task or
+         a JSON-RPC error.
+
+   async on_get_task(request: GetTaskRequest, context: ServerCallContext | None = None) -> GetTaskResponse
+
+      Handles the 'tasks/get' JSON-RPC method.
+
+      Parameters:
+         * **request** -- The incoming *GetTaskRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *GetTaskResponse* object containing the Task or a JSON-RPC
+         error.
+
+   async on_message_send(request: SendMessageRequest, context: ServerCallContext | None = None) -> SendMessageResponse
+
+      Handles the 'message/send' JSON-RPC method.
+
+      Parameters:
+         * **request** -- The incoming *SendMessageRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *SendMessageResponse* object containing the result (Task or
+         Message) or a JSON-RPC error response if a *ServerError* is
+         raised by the handler.
+
+   on_message_send_stream(request: SendStreamingMessageRequest, context: ServerCallContext | None = None) -> AsyncIterable[SendStreamingMessageResponse]
+
+      Handles the 'message/stream' JSON-RPC method.
+
+      Yields response objects as they are produced by the underlying
+      handler's stream.
+
+      Parameters:
+         * **request** -- The incoming *SendStreamingMessageRequest*
+           object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *SendStreamingMessageResponse* objects containing streaming
+         events (Task, Message, TaskStatusUpdateEvent,
+         TaskArtifactUpdateEvent) or JSON-RPC error responses if a
+         *ServerError* is raised.
+
+   on_resubscribe_to_task(request: TaskResubscriptionRequest, context: ServerCallContext | None = None) -> AsyncIterable[SendStreamingMessageResponse]
+
+      Handles the 'tasks/resubscribe' JSON-RPC method.
+
+      Yields response objects as they are produced by the underlying
+      handler's stream.
+
+      Parameters:
+         * **request** -- The incoming *TaskResubscriptionRequest*
+           object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *SendStreamingMessageResponse* objects containing streaming
+         events or JSON-RPC error responses if a *ServerError* is
+         raised.
+
+   async set_push_notification_config(request: SetTaskPushNotificationConfigRequest, context: ServerCallContext | None = None) -> SetTaskPushNotificationConfigResponse
+
+      Handles the 'tasks/pushNotificationConfig/set' JSON-RPC method.
+
+      Requires the agent to support push notifications.
+
+      Parameters:
+         * **request** -- The incoming
+           *SetTaskPushNotificationConfigRequest* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *SetTaskPushNotificationConfigResponse* object containing
+         the config or a JSON-RPC error.
+
+      Raises:
+         **ServerError** -- If push notifications are not supported by
+         the agent     (due to the *@validate* decorator).

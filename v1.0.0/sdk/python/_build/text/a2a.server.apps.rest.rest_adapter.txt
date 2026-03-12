@@ -1,0 +1,54 @@
+a2a.server.apps.rest.rest_adapter module
+****************************************
+
+class a2a.server.apps.rest.rest_adapter.RESTAdapter(agent_card: AgentCard, http_handler: RequestHandler, extended_agent_card: AgentCard | None = None, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None)
+
+   Bases: "object"
+
+   Adapter to make RequestHandler work with RESTful API.
+
+   Defines REST requests processors and the routes to attach them too,
+   as well as manages response generation including Server-Sent Events
+   (SSE).
+
+   async handle_authenticated_agent_card(request: Request, call_context: ServerCallContext | None = None) -> dict[str, Any]
+
+      Hook for per credential agent card response.
+
+      If a dynamic card is needed based on the credentials provided in
+      the request override this method and return the customized
+      content.
+
+      Parameters:
+         * **request** -- The incoming Starlette Request  object.
+
+         * **call_context** -- ServerCallContext
+
+      Returns:
+         A JSONResponse containing the authenticated card.
+
+   async handle_get_agent_card(request: Request, call_context: ServerCallContext | None = None) -> dict[str, Any]
+
+      Handles GET requests for the agent card endpoint.
+
+      Parameters:
+         * **request** -- The incoming Starlette Request object.
+
+         * **call_context** -- ServerCallContext
+
+      Returns:
+         A JSONResponse containing the agent card data.
+
+   routes() -> dict[tuple[str, str], Callable[[Request], Any]]
+
+      Constructs a dictionary of API routes and their corresponding
+      handlers.
+
+      This method maps URL paths and HTTP methods to the appropriate
+      handler functions from the RESTHandler. It can be used by a web
+      framework (like Starlette or FastAPI) to set up the
+      application's endpoints.
+
+      Returns:
+         A dictionary where each key is a tuple of (path, http_method)
+         and the value is the callable handler for that route.

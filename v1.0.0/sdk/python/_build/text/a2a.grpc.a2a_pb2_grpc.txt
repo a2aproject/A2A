@@ -1,0 +1,118 @@
+a2a.grpc.a2a_pb2_grpc module
+****************************
+
+Client and server classes corresponding to protobuf-defined services.
+
+class a2a.grpc.a2a_pb2_grpc.A2AService
+
+   Bases: "object"
+
+   A2AService defines the gRPC version of the A2A protocol. This has a
+   slightly different shape than the JSONRPC version to better conform
+   to AIP-127, where appropriate. The nouns are AgentCard, Message,
+   Task and TaskPushNotificationConfig. - Messages are not a standard
+   resource so there is no get/delete/update/list interface, only a
+   send and stream custom methods. - Tasks have a get interface and
+   custom cancel and subscribe methods. - TaskPushNotificationConfig
+   are a resource whose parent is a task. They have get, list and
+   create methods. - AgentCard is a static resource with only a get
+   method.
+
+   static CancelTask(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static CreateTaskPushNotificationConfig(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static DeleteTaskPushNotificationConfig(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static GetAgentCard(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static GetTask(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static GetTaskPushNotificationConfig(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static ListTaskPushNotificationConfig(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static SendMessage(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static SendStreamingMessage(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static TaskSubscription(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+class a2a.grpc.a2a_pb2_grpc.A2AServiceServicer
+
+   Bases: "object"
+
+   A2AService defines the gRPC version of the A2A protocol. This has a
+   slightly different shape than the JSONRPC version to better conform
+   to AIP-127, where appropriate. The nouns are AgentCard, Message,
+   Task and TaskPushNotificationConfig. - Messages are not a standard
+   resource so there is no get/delete/update/list interface, only a
+   send and stream custom methods. - Tasks have a get interface and
+   custom cancel and subscribe methods. - TaskPushNotificationConfig
+   are a resource whose parent is a task. They have get, list and
+   create methods. - AgentCard is a static resource with only a get
+   method.
+
+   CancelTask(request, context)
+
+      Cancel a task from the agent. If supported one should expect no
+      more task updates for the task.
+
+   CreateTaskPushNotificationConfig(request, context)
+
+      Set a push notification config for a task.
+
+   DeleteTaskPushNotificationConfig(request, context)
+
+      Delete a push notification config for a task.
+
+   GetAgentCard(request, context)
+
+      GetAgentCard returns the agent card for the agent.
+
+   GetTask(request, context)
+
+      Get the current state of a task from the agent.
+
+   GetTaskPushNotificationConfig(request, context)
+
+      Get a push notification config for a task.
+
+   ListTaskPushNotificationConfig(request, context)
+
+      Get a list of push notifications configured for a task.
+
+   SendMessage(request, context)
+
+      Send a message to the agent. This is a blocking call that will
+      return the task once it is completed, or a LRO if requested.
+
+   SendStreamingMessage(request, context)
+
+      SendStreamingMessage is a streaming call that will return a
+      stream of task update events until the Task is in an interrupted
+      or terminal state.
+
+   TaskSubscription(request, context)
+
+      TaskSubscription is a streaming call that will return a stream
+      of task update events. This attaches the stream to an existing
+      in process task. If the task is complete the stream will return
+      the completed task (like GetTask) and close the stream.
+
+class a2a.grpc.a2a_pb2_grpc.A2AServiceStub(channel)
+
+   Bases: "object"
+
+   A2AService defines the gRPC version of the A2A protocol. This has a
+   slightly different shape than the JSONRPC version to better conform
+   to AIP-127, where appropriate. The nouns are AgentCard, Message,
+   Task and TaskPushNotificationConfig. - Messages are not a standard
+   resource so there is no get/delete/update/list interface, only a
+   send and stream custom methods. - Tasks have a get interface and
+   custom cancel and subscribe methods. - TaskPushNotificationConfig
+   are a resource whose parent is a task. They have get, list and
+   create methods. - AgentCard is a static resource with only a get
+   method.
+
+a2a.grpc.a2a_pb2_grpc.add_A2AServiceServicer_to_server(servicer, server)

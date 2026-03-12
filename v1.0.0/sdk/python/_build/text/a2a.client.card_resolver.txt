@@ -1,0 +1,39 @@
+a2a.client.card_resolver module
+*******************************
+
+class a2a.client.card_resolver.A2ACardResolver(httpx_client: AsyncClient, base_url: str, agent_card_path: str = '/.well-known/agent-card.json')
+
+   Bases: "object"
+
+   Agent Card resolver.
+
+   async get_agent_card(relative_card_path: str | None = None, http_kwargs: dict[str, Any] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Fetches an agent card from a specified path relative to the
+      base_url.
+
+      If relative_card_path is None, it defaults to the resolver's
+      configured agent_card_path (for the public agent card).
+
+      Parameters:
+         * **relative_card_path** -- Optional path to the agent card
+           endpoint, relative to the base URL. If None, uses the
+           default public agent card path. Use *'/'* for an empty
+           path.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.get request.
+
+         * **signature_verifier** -- A callable used to verify the
+           agent card's signatures.
+
+      Returns:
+         An *AgentCard* object representing the agent's capabilities.
+
+      Raises:
+         * **A2AClientHTTPError** -- If an HTTP error occurs during
+           the request.
+
+         * **A2AClientJSONError** -- If the response body cannot be
+           decoded as JSON     or validated against the AgentCard
+           schema.

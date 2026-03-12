@@ -1,0 +1,84 @@
+a2a.server.tasks.task_manager module
+************************************
+
+class a2a.server.tasks.task_manager.TaskManager(task_id: str | None, context_id: str | None, task_store: TaskStore, initial_message: Message | None, context: ServerCallContext | None = None)
+
+   Bases: "object"
+
+   Helps manage a task's lifecycle during execution of a request.
+
+   Responsible for retrieving, saving, and updating the *Task* object
+   based on events received from the agent.
+
+   async ensure_task(event: TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Task
+
+      Ensures a Task object exists in memory, loading from store or
+      creating new if needed.
+
+      Parameters:
+         **event** -- The task-related event triggering the need for a
+         Task object.
+
+      Returns:
+         An existing or newly created *Task* object.
+
+   async get_task() -> Task | None
+
+      Retrieves the current task object, either from memory or the
+      store.
+
+      If *task_id* is set, it first checks the in-memory
+      *_current_task*, then attempts to load it from the *task_store*.
+
+      Returns:
+         The *Task* object if found, otherwise *None*.
+
+   async process(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+      Processes an event, updates the task state if applicable, stores
+      it, and returns the event.
+
+      If the event is task-related (*Task*, *TaskStatusUpdateEvent*,
+      *TaskArtifactUpdateEvent*), the internal task state is updated
+      and persisted.
+
+      Parameters:
+         **event** -- The event object received from the agent.
+
+      Returns:
+         The same event object that was processed.
+
+   async save_task_event(event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Task | None
+
+      Processes a task-related event (Task, Status, Artifact) and
+      saves the updated task state.
+
+      Ensures task and context IDs match or are set from the event.
+
+      Parameters:
+         **event** -- The task-related event (*Task*,
+         *TaskStatusUpdateEvent*, or *TaskArtifactUpdateEvent*).
+
+      Returns:
+         The updated *Task* object after processing the event.
+
+      Raises:
+         **ServerError** -- If the task ID in the event conflicts with
+         the TaskManager's ID     when the TaskManager's ID is already
+         set.
+
+   update_with_message(message: Message, task: Task) -> Task
+
+      Updates a task object in memory by adding a new message to its
+      history.
+
+      If the task has a message in its current status, that message is
+      moved to the history first.
+
+      Parameters:
+         * **message** -- The new *Message* to add to the history.
+
+         * **task** -- The *Task* object to update.
+
+      Returns:
+         The updated *Task* object (updated in-place).

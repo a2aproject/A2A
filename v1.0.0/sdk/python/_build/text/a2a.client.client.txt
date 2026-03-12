@@ -1,0 +1,113 @@
+a2a.client.client module
+************************
+
+class a2a.client.client.Client(consumers: list[Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]] | None = None, middleware: list[ClientCallInterceptor] | None = None)
+
+   Bases: "ABC"
+
+   Abstract base class defining the interface for an A2A client.
+
+   This class provides a standard set of methods for interacting with
+   an A2A agent, regardless of the underlying transport protocol
+   (e.g., gRPC, JSON-RPC). It supports sending messages, managing
+   tasks, and handling event streams.
+
+   async add_event_consumer(consumer: Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]) -> None
+
+      Attaches additional consumers to the *Client*.
+
+   async add_request_middleware(middleware: ClientCallInterceptor) -> None
+
+      Attaches additional middleware to the *Client*.
+
+   abstractmethod async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   async consume(event: tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message | None, card: AgentCard) -> None
+
+      Processes the event via all the registered >>`<<Consumer`s.
+
+   abstractmethod async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the agent's card.
+
+   abstractmethod async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   abstractmethod async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   abstractmethod async resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncIterator[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None]]
+
+      Resubscribes to a task's event stream.
+
+   abstractmethod async send_message(request: Message, *, context: ClientCallContext | None = None, request_metadata: dict[str, Any] | None = None, extensions: list[str] | None = None) -> AsyncIterator[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message]
+
+      Sends a message to the server.
+
+      This will automatically use the streaming or non-streaming
+      approach as supported by the server and the client config.
+      Client will aggregate update events and return an iterator of
+      (*Task*,`Update`) pairs, or a *Message*. Client will also send
+      these values to any configured >>`<<Consumer`s in the client.
+
+   abstractmethod async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+class a2a.client.client.ClientConfig(streaming: bool = True, polling: bool = False, httpx_client: ~httpx.AsyncClient | None = None, grpc_channel_factory: ~collections.abc.Callable[[str], ~grpc.aio._base_channel.Channel] | None = None, supported_transports: list[~a2a.types.TransportProtocol | str] = <factory>, use_client_preference: bool = False, accepted_output_modes: list[str] = <factory>, push_notification_configs: list[~a2a.types.PushNotificationConfig] = <factory>, extensions: list[str] = <factory>)
+
+   Bases: "object"
+
+   Configuration class for the A2AClient Factory.
+
+   accepted_output_modes: list[str]
+
+      The set of accepted output modes for the client.
+
+   extensions: list[str]
+
+      A list of extension URIs the client supports.
+
+   grpc_channel_factory: Callable[[str], Channel] | None = None
+
+      Generates a grpc connection channel for a given url.
+
+   httpx_client: AsyncClient | None = None
+
+      Http client to use to connect to agent.
+
+   polling: bool = False
+
+      send. It is the callers job to check if the response is
+      completed and if not run a polling loop.
+
+      Type:
+         Whether client prefers to poll for updates from message
+
+   push_notification_configs: list[PushNotificationConfig]
+
+      Push notification callbacks to use for every request.
+
+   streaming: bool = True
+
+      Whether client supports streaming
+
+   supported_transports: list[TransportProtocol | str]
+
+      Ordered list of transports for connecting to agent (in order of
+      preference). Empty implies JSONRPC only.
+
+      This is a string type to allow custom transports to exist in
+      closed ecosystems.
+
+   use_client_preference: bool = False
+
+      Whether to use client transport preferences over server
+      preferences. Recommended to use server preferences in most
+      situations.

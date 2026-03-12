@@ -1,0 +1,428 @@
+a2a.server.models module
+************************
+
+class a2a.server.models.Base(**kwargs: Any)
+
+   Bases: "DeclarativeBase"
+
+   Base class for declarative models in A2A SDK.
+
+   metadata: ClassVar[MetaData] = MetaData()
+
+      Refers to the "_schema.MetaData" collection that will be used
+      for new "_schema.Table" objects.
+
+      See also: *orm_declarative_metadata*
+
+   registry: ClassVar[registry] = <sqlalchemy.orm.decl_api.registry object>
+
+      Refers to the "_orm.registry" in use where new "_orm.Mapper"
+      objects will be associated.
+
+class a2a.server.models.PushNotificationConfigMixin
+
+   Bases: "object"
+
+   Mixin providing standard push notification config columns.
+
+   config_data: Mapped[bytes] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   config_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.PushNotificationConfigModel(**kwargs)
+
+   Bases: "PushNotificationConfigMixin", "Base"
+
+   Default push notification config model with standard table name.
+
+   config_data: Mapped[bytes]
+
+   config_id: Mapped[str]
+
+   task_id: Mapped[str]
+
+class a2a.server.models.PydanticListType(pydantic_type: type[T], **kwargs: dict[str, Any])
+
+   Bases: "TypeDecorator", "Generic"["T"]
+
+   SQLAlchemy type that handles lists of Pydantic models.
+
+   cache_ok = True
+
+      Indicate if statements using this "ExternalType" are "safe to
+      cache".
+
+      The default value "None" will emit a warning and then not allow
+      caching of a statement which includes this type.   Set to
+      "False" to disable statements using this type from being cached
+      at all without a warning. When set to "True", the object's class
+      and selected elements from its state will be used as part of the
+      cache key.  For example, using a "TypeDecorator":
+
+         class MyType(TypeDecorator):
+             impl = String
+
+             cache_ok = True
+
+             def __init__(self, choices):
+                 self.choices = tuple(choices)
+                 self.internal_only = True
+
+      The cache key for the above type would be equivalent to:
+
+         >>> MyType(["a", "b", "c"])._static_cache_key
+         (<class '__main__.MyType'>, ('choices', ('a', 'b', 'c')))
+
+      The caching scheme will extract attributes from the type that
+      correspond to the names of parameters in the "__init__()"
+      method.  Above, the "choices" attribute becomes part of the
+      cache key but "internal_only" does not, because there is no
+      parameter named "internal_only".
+
+      The requirements for cacheable elements is that they are
+      hashable and also that they indicate the same SQL rendered for
+      expressions using this type every time for a given cache value.
+
+      To accommodate for datatypes that refer to unhashable structures
+      such as dictionaries, sets and lists, these objects can be made
+      "cacheable" by assigning hashable structures to the attributes
+      whose names correspond with the names of the arguments.  For
+      example, a datatype which accepts a dictionary of lookup values
+      may publish this as a sorted series of tuples.   Given a
+      previously un-cacheable type as:
+
+         class LookupType(UserDefinedType):
+             """a custom type that accepts a dictionary as a parameter.
+
+             this is the non-cacheable version, as "self.lookup" is not
+             hashable.
+
+             """
+
+             def __init__(self, lookup):
+                 self.lookup = lookup
+
+             def get_col_spec(self, **kw):
+                 return "VARCHAR(255)"
+
+             def bind_processor(self, dialect): ...  # works with "self.lookup" ...
+
+      Where "lookup" is a dictionary.  The type will not be able to
+      generate a cache key:
+
+         >>> type_ = LookupType({"a": 10, "b": 20})
+         >>> type_._static_cache_key
+         <stdin>:1: SAWarning: UserDefinedType LookupType({'a': 10, 'b': 20}) will not
+         produce a cache key because the ``cache_ok`` flag is not set to True.
+         Set this flag to True if this type object's state is safe to use
+         in a cache key, or False to disable this warning.
+         symbol('no_cache')
+
+      If we **did** set up such a cache key, it wouldn't be usable. We
+      would get a tuple structure that contains a dictionary inside of
+      it, which cannot itself be used as a key in a "cache dictionary"
+      such as SQLAlchemy's statement cache, since Python dictionaries
+      aren't hashable:
+
+         >>> # set cache_ok = True
+         >>> type_.cache_ok = True
+
+         >>> # this is the cache key it would generate
+         >>> key = type_._static_cache_key
+         >>> key
+         (<class '__main__.LookupType'>, ('lookup', {'a': 10, 'b': 20}))
+
+         >>> # however this key is not hashable, will fail when used with
+         >>> # SQLAlchemy statement cache
+         >>> some_cache = {key: "some sql value"}
+         Traceback (most recent call last): File "<stdin>", line 1,
+         in <module> TypeError: unhashable type: 'dict'
+
+      The type may be made cacheable by assigning a sorted tuple of
+      tuples to the ".lookup" attribute:
+
+         class LookupType(UserDefinedType):
+             """a custom type that accepts a dictionary as a parameter.
+
+             The dictionary is stored both as itself in a private variable,
+             and published in a public variable as a sorted tuple of tuples,
+             which is hashable and will also return the same value for any
+             two equivalent dictionaries.  Note it assumes the keys and
+             values of the dictionary are themselves hashable.
+
+             """
+
+             cache_ok = True
+
+             def __init__(self, lookup):
+                 self._lookup = lookup
+
+                 # assume keys/values of "lookup" are hashable; otherwise
+                 # they would also need to be converted in some way here
+                 self.lookup = tuple((key, lookup[key]) for key in sorted(lookup))
+
+             def get_col_spec(self, **kw):
+                 return "VARCHAR(255)"
+
+             def bind_processor(self, dialect): ...  # works with "self._lookup" ...
+
+      Where above, the cache key for "LookupType({"a": 10, "b": 20})"
+      will be:
+
+         >>> LookupType({"a": 10, "b": 20})._static_cache_key
+         (<class '__main__.LookupType'>, ('lookup', (('a', 10), ('b', 20))))
+
+      Added in version 1.4.14: - added the "cache_ok" flag to allow
+      some configurability of caching for "TypeDecorator" classes.
+
+      Added in version 1.4.28: - added the "ExternalType" mixin which
+      generalizes the "cache_ok" flag to both the "TypeDecorator" and
+      "UserDefinedType" classes.
+
+      See also: *sql_caching*
+
+   impl
+
+      alias of "JSON"
+
+   process_bind_param(value: list[T] | None, dialect: Dialect) -> list[dict[str, Any]] | None
+
+      Convert a list of Pydantic models to a JSON-serializable list
+      for the DB.
+
+   process_result_value(value: list[dict[str, Any]] | None, dialect: Dialect) -> list[T] | None
+
+      Convert a JSON-like list from the DB back to a list of Pydantic
+      models.
+
+class a2a.server.models.PydanticType(pydantic_type: type[T], **kwargs: dict[str, Any])
+
+   Bases: "TypeDecorator", "Generic"["T"]
+
+   SQLAlchemy type that handles Pydantic model serialization.
+
+   cache_ok = True
+
+      Indicate if statements using this "ExternalType" are "safe to
+      cache".
+
+      The default value "None" will emit a warning and then not allow
+      caching of a statement which includes this type.   Set to
+      "False" to disable statements using this type from being cached
+      at all without a warning. When set to "True", the object's class
+      and selected elements from its state will be used as part of the
+      cache key.  For example, using a "TypeDecorator":
+
+         class MyType(TypeDecorator):
+             impl = String
+
+             cache_ok = True
+
+             def __init__(self, choices):
+                 self.choices = tuple(choices)
+                 self.internal_only = True
+
+      The cache key for the above type would be equivalent to:
+
+         >>> MyType(["a", "b", "c"])._static_cache_key
+         (<class '__main__.MyType'>, ('choices', ('a', 'b', 'c')))
+
+      The caching scheme will extract attributes from the type that
+      correspond to the names of parameters in the "__init__()"
+      method.  Above, the "choices" attribute becomes part of the
+      cache key but "internal_only" does not, because there is no
+      parameter named "internal_only".
+
+      The requirements for cacheable elements is that they are
+      hashable and also that they indicate the same SQL rendered for
+      expressions using this type every time for a given cache value.
+
+      To accommodate for datatypes that refer to unhashable structures
+      such as dictionaries, sets and lists, these objects can be made
+      "cacheable" by assigning hashable structures to the attributes
+      whose names correspond with the names of the arguments.  For
+      example, a datatype which accepts a dictionary of lookup values
+      may publish this as a sorted series of tuples.   Given a
+      previously un-cacheable type as:
+
+         class LookupType(UserDefinedType):
+             """a custom type that accepts a dictionary as a parameter.
+
+             this is the non-cacheable version, as "self.lookup" is not
+             hashable.
+
+             """
+
+             def __init__(self, lookup):
+                 self.lookup = lookup
+
+             def get_col_spec(self, **kw):
+                 return "VARCHAR(255)"
+
+             def bind_processor(self, dialect): ...  # works with "self.lookup" ...
+
+      Where "lookup" is a dictionary.  The type will not be able to
+      generate a cache key:
+
+         >>> type_ = LookupType({"a": 10, "b": 20})
+         >>> type_._static_cache_key
+         <stdin>:1: SAWarning: UserDefinedType LookupType({'a': 10, 'b': 20}) will not
+         produce a cache key because the ``cache_ok`` flag is not set to True.
+         Set this flag to True if this type object's state is safe to use
+         in a cache key, or False to disable this warning.
+         symbol('no_cache')
+
+      If we **did** set up such a cache key, it wouldn't be usable. We
+      would get a tuple structure that contains a dictionary inside of
+      it, which cannot itself be used as a key in a "cache dictionary"
+      such as SQLAlchemy's statement cache, since Python dictionaries
+      aren't hashable:
+
+         >>> # set cache_ok = True
+         >>> type_.cache_ok = True
+
+         >>> # this is the cache key it would generate
+         >>> key = type_._static_cache_key
+         >>> key
+         (<class '__main__.LookupType'>, ('lookup', {'a': 10, 'b': 20}))
+
+         >>> # however this key is not hashable, will fail when used with
+         >>> # SQLAlchemy statement cache
+         >>> some_cache = {key: "some sql value"}
+         Traceback (most recent call last): File "<stdin>", line 1,
+         in <module> TypeError: unhashable type: 'dict'
+
+      The type may be made cacheable by assigning a sorted tuple of
+      tuples to the ".lookup" attribute:
+
+         class LookupType(UserDefinedType):
+             """a custom type that accepts a dictionary as a parameter.
+
+             The dictionary is stored both as itself in a private variable,
+             and published in a public variable as a sorted tuple of tuples,
+             which is hashable and will also return the same value for any
+             two equivalent dictionaries.  Note it assumes the keys and
+             values of the dictionary are themselves hashable.
+
+             """
+
+             cache_ok = True
+
+             def __init__(self, lookup):
+                 self._lookup = lookup
+
+                 # assume keys/values of "lookup" are hashable; otherwise
+                 # they would also need to be converted in some way here
+                 self.lookup = tuple((key, lookup[key]) for key in sorted(lookup))
+
+             def get_col_spec(self, **kw):
+                 return "VARCHAR(255)"
+
+             def bind_processor(self, dialect): ...  # works with "self._lookup" ...
+
+      Where above, the cache key for "LookupType({"a": 10, "b": 20})"
+      will be:
+
+         >>> LookupType({"a": 10, "b": 20})._static_cache_key
+         (<class '__main__.LookupType'>, ('lookup', (('a', 10), ('b', 20))))
+
+      Added in version 1.4.14: - added the "cache_ok" flag to allow
+      some configurability of caching for "TypeDecorator" classes.
+
+      Added in version 1.4.28: - added the "ExternalType" mixin which
+      generalizes the "cache_ok" flag to both the "TypeDecorator" and
+      "UserDefinedType" classes.
+
+      See also: *sql_caching*
+
+   impl
+
+      alias of "JSON"
+
+   process_bind_param(value: T | None, dialect: Dialect) -> dict[str, Any] | None
+
+      Convert Pydantic model to a JSON-serializable dictionary for the
+      database.
+
+   process_result_value(value: dict[str, Any] | None, dialect: Dialect) -> T | None
+
+      Convert a JSON-like dictionary from the database back to a
+      Pydantic model.
+
+class a2a.server.models.TaskMixin
+
+   Bases: "object"
+
+   Mixin providing standard task columns with proper type handling.
+
+   artifacts: Mapped[list[Artifact] | None] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   context_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   history: Mapped[list[Message] | None] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   kind: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   status: Mapped[TaskStatus] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_metadata = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.TaskModel(**kwargs)
+
+   Bases: "TaskMixin", "Base"
+
+   Default task model with standard table name.
+
+   artifacts: Mapped[list[Artifact] | None]
+
+   context_id: Mapped[str]
+
+   history: Mapped[list[Message] | None]
+
+   id: Mapped[str]
+
+   kind: Mapped[str]
+
+   status: Mapped[TaskStatus]
+
+   task_metadata
+
+a2a.server.models.create_push_notification_config_model(table_name: str = 'push_notification_configs', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a PushNotificationConfigModel class with a configurable
+   table name.
+
+a2a.server.models.create_task_model(table_name: str = 'tasks', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a TaskModel class with a configurable table name.
+
+   Parameters:
+      * **table_name** -- Name of the database table. Defaults to
+        'tasks'.
+
+      * **base** -- Base declarative class to use. Defaults to the
+        SDK's Base class.
+
+   Returns:
+      TaskModel class with the specified table name.
+
+   -[ Example ]-
+
+      # Create a task model with default table name
+      TaskModel = create_task_model()
+
+      # Create a task model with custom table name
+      CustomTaskModel = create_task_model('my_tasks')
+
+      # Use with a custom base
+      from myapp.database import Base as MyBase
+
+      TaskModel = create_task_model('tasks', MyBase)
+
+a2a.server.models.override(func)
+
+   Override decorator.

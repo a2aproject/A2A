@@ -1,0 +1,80 @@
+a2a.client.auth package
+***********************
+
+
+Submodules
+==========
+
+* a2a.client.auth.credentials module
+
+  * "CredentialService"
+
+    * "CredentialService.get_credentials()"
+
+  * "InMemoryContextCredentialStore"
+
+    * "InMemoryContextCredentialStore.get_credentials()"
+
+    * "InMemoryContextCredentialStore.set_credentials()"
+
+* a2a.client.auth.interceptor module
+
+  * "AuthInterceptor"
+
+    * "AuthInterceptor.intercept()"
+
+
+Module contents
+===============
+
+Client-side authentication components for the A2A Python SDK.
+
+class a2a.client.auth.AuthInterceptor(credential_service: CredentialService)
+
+   Bases: "ClientCallInterceptor"
+
+   An interceptor that automatically adds authentication details to
+   requests.
+
+   Based on the agent's security schemes.
+
+   async intercept(method_name: str, request_payload: dict[str, Any], http_kwargs: dict[str, Any], agent_card: AgentCard | None, context: ClientCallContext | None) -> tuple[dict[str, Any], dict[str, Any]]
+
+      Applies authentication headers to the request if credentials are
+      available.
+
+class a2a.client.auth.CredentialService
+
+   Bases: "ABC"
+
+   An abstract service for retrieving credentials.
+
+   abstractmethod async get_credentials(security_scheme_name: str, context: ClientCallContext | None) -> str | None
+
+      Retrieves a credential (e.g., token) for a security scheme.
+
+class a2a.client.auth.InMemoryContextCredentialStore
+
+   Bases: "CredentialService"
+
+   A simple in-memory store for session-keyed credentials.
+
+   This class uses the 'sessionId' from the ClientCallContext state to
+   store and retrieve credentials...
+
+   async get_credentials(security_scheme_name: str, context: ClientCallContext | None) -> str | None
+
+      Retrieves credentials from the in-memory store.
+
+      Parameters:
+         * **security_scheme_name** -- The name of the security
+           scheme.
+
+         * **context** -- The client call context.
+
+      Returns:
+         The credential string, or None if not found.
+
+   async set_credentials(session_id: str, security_scheme_name: str, credential: str) -> None
+
+      Method to populate the store.

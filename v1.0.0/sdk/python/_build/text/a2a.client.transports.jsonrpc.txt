@@ -1,0 +1,47 @@
+a2a.client.transports.jsonrpc module
+************************************
+
+class a2a.client.transports.jsonrpc.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard | None = None, url: str | None = None, interceptors: list[ClientCallInterceptor] | None = None, extensions: list[str] | None = None)
+
+   Bases: "ClientTransport"
+
+   A JSON-RPC transport for the A2A client.
+
+   async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   async close() -> None
+
+      Closes the httpx client.
+
+   async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the agent's card.
+
+   async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Reconnects to get task updates.
+
+   async send_message(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task | Message
+
+      Sends a non-streaming message request to the agent.
+
+   send_message_streaming(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+   async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.

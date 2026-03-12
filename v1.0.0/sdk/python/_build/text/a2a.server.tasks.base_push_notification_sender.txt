@@ -1,0 +1,12 @@
+a2a.server.tasks.base_push_notification_sender module
+*****************************************************
+
+class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore)
+
+   Bases: "PushNotificationSender"
+
+   Base implementation of PushNotificationSender interface.
+
+   async send_notification(task: Task) -> None
+
+      Sends a push notification for a task if configuration exists.

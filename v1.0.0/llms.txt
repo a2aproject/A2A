@@ -1,0 +1,81 @@
+# A2A (Agent2Agent) Protocol High-Level Summary
+
+This project defines the **Agent2Agent (A2A) protocol**, an open standard initiated by Google and donated to the Linux Foundation, designed to enable communication and interoperability between disparate AI agent systems. It allows agents built on different frameworks (e.g., LangGraph, CrewAI, Google ADK, Genkit) to discover each other's capabilities, negotiate interaction modes, and collaborate on tasks securely without exposing internal state.
+
+The repository contains:
+1.  **Formal Specification:** Protobuf definitions (`specification/a2a.proto`) and JSON Schema (`specification/json/a2a.json`).
+2.  **Core Concepts Documentation:** Guides on discovery, task lifecycle, streaming, and enterprise-readiness (`docs/topics/`).
+3.  **SDKs:** Production-ready SDKs for Python, JS/TS, Java, Go, and .NET.
+4.  **Sample Implementations:** Real-world examples integrated with various agent frameworks.
+
+## Key Files & Directories
+
+- `specification/a2a.proto`: The authoritative Protobuf definition of the protocol.
+- `docs/topics/`: Detailed conceptual guides (Discovery, Lifecycle, Security, etc.).
+- `docs/tutorials/`: Step-by-step guides for building A2A-compliant agents.
+- `scripts/`: Utility scripts for building documentation and formatting.
+
+# A2A (Agent2Agent) Protocol Reference
+
+## 1. Overview
+
+- **Purpose:** Open standard for agent-to-agent interoperability.
+- **Communication Bindings:** Supports JSON-RPC 2.0 (HTTP/SSE), gRPC, and HTTP/REST.
+- **Key Concepts:** Agent Cards for discovery, Task-based execution, Multi-turn Messages, and Artifact outputs.
+
+## 2. Core Data Objects
+
+### 2.1 AgentCard (`/.well-known/agent-card.json`)
+Describes an agent's identity and capabilities.
+- `name`, `description`, `version`: Identity metadata.
+- `supported_interfaces`: List of `AgentInterface` (URL, protocol binding, tenant, protocol version).
+- `capabilities`: `streaming`, `push_notifications`, `extended_agent_card`, `extensions`.
+- `skills`: List of `AgentSkill` (id, name, description, tags, examples).
+- `security_schemes`, `security_requirements`: Authentication configuration (API Key, OAuth2, OIDC, mTLS, HTTP Auth).
+- `default_input_modes`, `default_output_modes`: Supported MIME types (e.g., `text/plain`, `application/json`).
+
+### 2.2 Task
+Represents a stateful unit of work.
+- `id`, `context_id`: Identifiers for the task and its conversational context.
+- `status`: `TaskStatus` (state, message, timestamp).
+- `artifacts`: List of `Artifact` (outputs produced).
+- `history`: List of `Message` (conversation history).
+- `metadata`: Custom structured data.
+
+### 2.3 TaskState (Enum)
+- `SUBMITTED`, `WORKING`, `COMPLETED` (terminal), `FAILED` (terminal), `CANCELED` (terminal), `REJECTED` (terminal), `INPUT_REQUIRED` (interrupted), `AUTH_REQUIRED` (interrupted).
+
+### 2.4 Message & Part
+- `Message`: Contains `message_id`, `role` (USER/AGENT), `parts`, `context_id`, `task_id`, `reference_task_ids`.
+- `Part`: Union type containing `text`, `raw` (bytes), `url`, or `data` (JSON). Includes `media_type` and `filename`.
+
+### 2.5 Artifact
+- A tangible output from a task, containing one or more `Part`s and metadata.
+
+## 3. RPC Methods
+
+| Method | Request | Response | Description |
+| :--- | :--- | :--- | :--- |
+| `SendMessage` | `SendMessageRequest` | `SendMessageResponse` | Initiates or continues a task. |
+| `SendStreamingMessage` | `SendMessageRequest` | `stream StreamResponse` | Sends message and receives real-time SSE updates. |
+| `GetTask` | `GetTaskRequest` | `Task` | Retrieves current task state. |
+| `ListTasks` | `ListTasksRequest` | `ListTasksResponse` | Filter and paginate tasks. |
+| `CancelTask` | `CancelTaskRequest` | `Task` | Requests cancellation of a task. |
+| `SubscribeToTask` | `SubscribeToTaskRequest` | `stream StreamResponse` | Subscribes to updates for an existing task. |
+| `GetExtendedAgentCard` | `GetExtendedAgentCardRequest` | `AgentCard` | Fetches detailed metadata after authentication. |
+
+### 3.1 Streaming Events (`StreamResponse`)
+Streams return a payload containing one of:
+- `task`: Full task state.
+- `message`: A discrete message part.
+- `status_update`: `TaskStatusUpdateEvent` (taskId, contextId, status).
+- `artifact_update`: `TaskArtifactUpdateEvent` (taskId, artifact, append, last_chunk).
+
+## 4. Security & Authentication
+- **Transport:** HTTPS/TLS required for production.
+- **Authentication:** Declared in `AgentCard` via OpenAPI-style security schemes.
+- **Push Notifications:** Webhooks secured via authentication tokens/schemes configured per task.
+
+## 5. Implementation Status
+- **Official SDKs:** Python (`a2a-sdk`), JS/TS (`@a2a-js/sdk`), Java, Go, C#/.NET.
+- **Integrations:** LangGraph, CrewAI, Google ADK, Genkit, AG2, BeeAI, PydanticAI, and more.

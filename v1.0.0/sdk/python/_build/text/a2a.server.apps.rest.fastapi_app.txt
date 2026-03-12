@@ -1,0 +1,31 @@
+a2a.server.apps.rest.fastapi_app module
+***************************************
+
+class a2a.server.apps.rest.fastapi_app.A2ARESTFastAPIApplication(agent_card: AgentCard, http_handler: RequestHandler, extended_agent_card: AgentCard | None = None, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None)
+
+   Bases: "object"
+
+   A FastAPI application implementing the A2A protocol server REST
+   endpoints.
+
+   Handles incoming REST requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   build(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '', **kwargs: Any) -> FastAPI
+
+      Builds and returns the FastAPI application instance.
+
+      Parameters:
+         * **agent_card_url** -- The URL for the agent card endpoint.
+
+         * **rpc_url** -- The URL for the A2A JSON-RPC endpoint.
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+         * ****kwargs** -- Additional keyword arguments to pass to the
+           FastAPI constructor.
+
+      Returns:
+         A configured FastAPI application instance.

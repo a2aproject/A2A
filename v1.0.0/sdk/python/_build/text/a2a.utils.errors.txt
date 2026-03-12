@@ -1,0 +1,28 @@
+a2a.utils.errors module
+***********************
+
+Custom exceptions for A2A server-side errors.
+
+exception a2a.utils.errors.A2AServerError
+
+   Bases: "Exception"
+
+   Base exception for A2A Server errors.
+
+exception a2a.utils.errors.MethodNotImplementedError(message: str = 'This method is not implemented by the server')
+
+   Bases: "A2AServerError"
+
+   Exception raised for methods that are not implemented by the server
+   handler.
+
+exception a2a.utils.errors.ServerError(error: JSONRPCError | JSONParseError | InvalidRequestError | MethodNotFoundError | InvalidParamsError | InternalError | TaskNotFoundError | TaskNotCancelableError | PushNotificationNotSupportedError | UnsupportedOperationError | ContentTypeNotSupportedError | InvalidAgentResponseError | AuthenticatedExtendedCardNotConfiguredError | None)
+
+   Bases: "Exception"
+
+   Wrapper exception for A2A or JSON-RPC errors originating from the
+   server's logic.
+
+   This exception is used internally by request handlers and other
+   server components to signal a specific error that should be
+   formatted as a JSON-RPC error response.

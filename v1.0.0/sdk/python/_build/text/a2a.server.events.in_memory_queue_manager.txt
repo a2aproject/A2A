@@ -1,0 +1,55 @@
+a2a.server.events.in_memory_queue_manager module
+************************************************
+
+class a2a.server.events.in_memory_queue_manager.InMemoryQueueManager
+
+   Bases: "QueueManager"
+
+   InMemoryQueueManager is used for a single binary management.
+
+   This implements the *QueueManager* interface using in-memory
+   storage for event queues. It requires all incoming interactions for
+   a given task ID to hit the same binary instance.
+
+   This implementation is suitable for single-instance deployments but
+   needs a distributed approach for scalable deployments.
+
+   async add(task_id: str, queue: EventQueue) -> None
+
+      Adds a new event queue for a task ID.
+
+      Raises:
+         **TaskQueueExists** -- If a queue for the given *task_id*
+         already exists.
+
+   async close(task_id: str) -> None
+
+      Closes and removes the event queue for a task ID.
+
+      Raises:
+         **NoTaskQueue** -- If no queue exists for the given
+         *task_id*.
+
+   async create_or_tap(task_id: str) -> EventQueue
+
+      Creates a new event queue for a task ID if one doesn't exist,
+      otherwise taps the existing one.
+
+      Returns:
+         A new or child *EventQueue* instance for the *task_id*.
+
+   async get(task_id: str) -> EventQueue | None
+
+      Retrieves the event queue for a task ID.
+
+      Returns:
+         The *EventQueue* instance for the *task_id*, or *None* if not
+         found.
+
+   async tap(task_id: str) -> EventQueue | None
+
+      Taps the event queue for a task ID to create a child queue.
+
+      Returns:
+         A new child *EventQueue* instance, or *None* if the task ID
+         is not found.

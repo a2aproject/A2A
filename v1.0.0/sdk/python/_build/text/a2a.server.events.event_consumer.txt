@@ -1,0 +1,45 @@
+a2a.server.events.event_consumer module
+***************************************
+
+class a2a.server.events.event_consumer.EventConsumer(queue: EventQueue)
+
+   Bases: "object"
+
+   Consumer to read events from the agent event queue.
+
+   agent_task_callback(agent_task: Task[None]) -> None
+
+      Callback to handle exceptions from the agent's execution task.
+
+      If the agent's asyncio task raises an exception, this callback
+      is invoked, and the exception is stored to be re-raised by the
+      consumer loop.
+
+      Parameters:
+         **agent_task** -- The asyncio.Task that completed.
+
+   consume_all() -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Consume all the generated streaming events from the agent.
+
+      This method yields events as they become available from the
+      queue until a final event is received or the queue is closed. It
+      also monitors for exceptions set by the *agent_task_callback*.
+
+      Yields:
+         Events dequeued from the queue.
+
+      Raises:
+         **BaseException** -- If an exception was set by the
+         *agent_task_callback*.
+
+   async consume_one() -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+      Consume one event from the agent event queue non-blocking.
+
+      Returns:
+         The next event from the queue.
+
+      Raises:
+         **ServerError** -- If the queue is empty when attempting to
+         dequeue     immediately.

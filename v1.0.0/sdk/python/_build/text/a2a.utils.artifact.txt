@@ -1,0 +1,61 @@
+a2a.utils.artifact module
+*************************
+
+Utility functions for creating A2A Artifact objects.
+
+a2a.utils.artifact.get_artifact_text(artifact: Artifact, delimiter: str = '\n') -> str
+
+   Extracts and joins all text content from an Artifact's parts.
+
+   Parameters:
+      * **artifact** -- The *Artifact* object.
+
+      * **delimiter** -- The string to use when joining text from
+        multiple TextParts.
+
+   Returns:
+      A single string containing all text content, or an empty string
+      if no text parts are found.
+
+a2a.utils.artifact.new_artifact(parts: list[Part], name: str, description: str | None = None) -> Artifact
+
+   Creates a new Artifact object.
+
+   Parameters:
+      * **parts** -- The list of *Part* objects forming the artifact's
+        content.
+
+      * **name** -- The human-readable name of the artifact.
+
+      * **description** -- An optional description of the artifact.
+
+   Returns:
+      A new *Artifact* object with a generated artifact_id.
+
+a2a.utils.artifact.new_data_artifact(name: str, data: dict[str, Any], description: str | None = None) -> Artifact
+
+   Creates a new Artifact object containing only a single DataPart.
+
+   Parameters:
+      * **name** -- The human-readable name of the artifact.
+
+      * **data** -- The structured data content of the artifact.
+
+      * **description** -- An optional description of the artifact.
+
+   Returns:
+      A new *Artifact* object with a generated artifact_id.
+
+a2a.utils.artifact.new_text_artifact(name: str, text: str, description: str | None = None) -> Artifact
+
+   Creates a new Artifact object containing only a single TextPart.
+
+   Parameters:
+      * **name** -- The human-readable name of the artifact.
+
+      * **text** -- The text content of the artifact.
+
+      * **description** -- An optional description of the artifact.
+
+   Returns:
+      A new *Artifact* object with a generated artifact_id.

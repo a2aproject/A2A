@@ -1,0 +1,66 @@
+a2a.server.apps.jsonrpc.starlette_app module
+********************************************
+
+class a2a.server.apps.jsonrpc.starlette_app.A2AStarletteApplication(agent_card: AgentCard, http_handler: RequestHandler, extended_agent_card: AgentCard | None = None, context_builder: CallContextBuilder | None = None, card_modifier: Callable[[AgentCard], Awaitable[AgentCard] | AgentCard] | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard] | AgentCard] | None = None, max_content_length: int | None = 10485760)
+
+   Bases: "JSONRPCApplication"
+
+   A Starlette application implementing the A2A protocol server
+   endpoints.
+
+   Handles incoming JSON-RPC requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   add_routes_to_app(app: Starlette, agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard') -> None
+
+      Adds the routes to the Starlette application.
+
+      Parameters:
+         * **app** -- The Starlette application to add the routes to.
+
+         * **agent_card_url** -- The URL path for the agent card
+           endpoint.
+
+         * **rpc_url** -- The URL path for the A2A JSON-RPC endpoint
+           (POST requests).
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+   build(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard', **kwargs: Any) -> Starlette
+
+      Builds and returns the Starlette application instance.
+
+      Parameters:
+         * **agent_card_url** -- The URL path for the agent card
+           endpoint.
+
+         * **rpc_url** -- The URL path for the A2A JSON-RPC endpoint
+           (POST requests).
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+         * ****kwargs** -- Additional keyword arguments to pass to the
+           Starlette constructor.
+
+      Returns:
+         A configured Starlette application instance.
+
+   routes(agent_card_url: str = '/.well-known/agent-card.json', rpc_url: str = '/', extended_agent_card_url: str = '/agent/authenticatedExtendedCard') -> list[Route]
+
+      Returns the Starlette Routes for handling A2A requests.
+
+      Parameters:
+         * **agent_card_url** -- The URL path for the agent card
+           endpoint.
+
+         * **rpc_url** -- The URL path for the A2A JSON-RPC endpoint
+           (POST requests).
+
+         * **extended_agent_card_url** -- The URL for the
+           authenticated extended agent card endpoint.
+
+      Returns:
+         A list of Starlette Route objects.

@@ -1,0 +1,80 @@
+a2a.server.agent_execution.context module
+*****************************************
+
+class a2a.server.agent_execution.context.RequestContext(request: MessageSendParams | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, call_context: ServerCallContext | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
+
+   Bases: "object"
+
+   Request Context.
+
+   Holds information about the current request being processed by the
+   server, including the incoming message, task and context
+   identifiers, and related tasks.
+
+   add_activated_extension(uri: str) -> None
+
+      Add an extension to the set of activated extensions for this
+      request.
+
+      This causes the extension to be indicated back to the client in
+      the response.
+
+   attach_related_task(task: Task) -> None
+
+      Attaches a related task to the context.
+
+      This is useful for scenarios like tool execution where a new
+      task might be spawned.
+
+      Parameters:
+         **task** -- The *Task* object to attach.
+
+   property call_context: ServerCallContext | None
+
+      The server call context associated with this request.
+
+   property configuration: MessageSendConfiguration | None
+
+      The *MessageSendConfiguration* from the request, if available.
+
+   property context_id: str | None
+
+      The ID of the conversation context associated with this task.
+
+   property current_task: Task | None
+
+      The current *Task* object being processed.
+
+   get_user_input(delimiter: str = '\n') -> str
+
+      Extracts text content from the user's message parts.
+
+      Parameters:
+         **delimiter** -- The string to use when joining multiple text
+         parts.
+
+      Returns:
+         A single string containing all text content from the user
+         message, joined by the specified delimiter. Returns an empty
+         string if no user message is present or if it contains no
+         text parts.
+
+   property message: Message | None
+
+      The incoming *Message* object from the request, if available.
+
+   property metadata: dict[str, Any]
+
+      Metadata associated with the request, if available.
+
+   property related_tasks: list[Task]
+
+      A list of tasks related to the current request.
+
+   property requested_extensions: set[str]
+
+      Extensions that the client requested to activate.
+
+   property task_id: str | None
+
+      The ID of the task associated with this context.
