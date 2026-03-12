@@ -812,15 +812,17 @@ HTTP/1.1 404 Not Found
 Content-Type: application/json
 
 {
-  "code": 5, // gRPC Status NOT_FOUND
-  "message": "The specified task ID does not exist",
-  "details": [
-    {
-      "@type": "type.googleapis.com/google.rpc.ErrorInfo",
-      "reason": "TASK_NOT_FOUND",
-      "domain": "a2a-protocol.org"
-    }
-  ]
+  "error": {
+    "code": 5, // gRPC Status NOT_FOUND
+    "message": "The specified task ID does not exist",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "TASK_NOT_FOUND",
+        "domain": "a2a-protocol.org"
+      }
+    ]
+  }
 }
 ```
 
