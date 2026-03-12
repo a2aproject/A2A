@@ -33,7 +33,7 @@ MCP and A2A solve different layers of the problem. MCP is commonly used for tool
 
 ## Smooth migration from earlier versions
 
-The v1.0 release tightens specification behavior, which includes breaking changes in the interaction protocol. AgentCard, however, has evolved in a backward-compatible way and now allows agents to advertise support for both existing 0.3 protocol behavior and v1.0 simultaneously. This enables clients to migrate progressively rather than through a single cutover.
+The v1.0 release tightens specification behavior, which includes breaking changes in the interaction protocol. AgentCard, however, has evolved in a backward-compatible way and now allows agents to advertise support for both existing v0.3 protocol behavior and v1.0 simultaneously. This enables clients to migrate progressively rather than through a single cutover.
 
 That approach is intended to protect current investments while still delivering the benefits of a cleaner, more durable standard.
 
