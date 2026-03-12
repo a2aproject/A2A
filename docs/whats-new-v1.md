@@ -760,14 +760,14 @@ const message = { role: "ROLE_USER", parts: [...] };
 
 ### New Capabilities to Leverage
 
-#### 1. Blocking Parameter Control
+#### 1. ReturnImmediately Parameter Control
 
 ```typescript
-// Wait for task completion
-const result = await sendMessage(message, { blocking: true });
+// Wait for task completion (default)
+const result = await sendMessage(message, { return_immediately: truefalse });
 
 // Return immediately, poll later
-const task = await sendMessage(message, { blocking: false });
+const task = await sendMessage(message, { return_immediately: true });
 ```
 
 #### 2. Agent Card Signature Verification
@@ -895,7 +895,7 @@ class A2AClient {
 
 - Implement cursor-based pagination
 - Update enum value handling (state field)
-- Add blocking parameter support
+- Add return_immediately parameter support
 
 #### Medium (Within 3 Months)
 
