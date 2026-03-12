@@ -96,7 +96,7 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ NEW:** New operation **ListTasks** with enhanced filtering capabilities and explicit specifications
+- **✅ NEW:** New operation **ListTasks** with filtering capabilities
 - **✅ CLARIFIED:** Task visibility scoped to authenticated caller
 
 ### Cancel Task (`tasks/cancel` → **CancelTask**)
