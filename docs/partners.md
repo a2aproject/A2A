@@ -82,6 +82,7 @@ collaborate effectively with each other and with users.
 - [InfoSys](https://www.infosys.com)
 - [Intuit](https://www.intuit.com)
 - [Iron Mountain](https://www.ironmountain.com/)
+- [JamJet](https://github.com/jamjet-labs/jamjet)
 - [JetBrains](https://www.jetbrains.com)
 - [JFrog](https://jfrog.com)
 - [Kakao](https://www.kakaocorp.com)
