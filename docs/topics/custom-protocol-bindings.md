@@ -84,9 +84,7 @@ The binding must map all A2A error types to transport-native error
 representations while preserving their semantic meaning. Provide a mapping
 table equivalent to the one in the specification's
 [Error Code Mappings](specification.md#54-error-code-mappings) section, showing
-how each A2A error type (e.g., `TaskNotFoundError`,
-`UnsupportedOperationError`) is expressed in the custom binding's native error
-format.
+how each A2A error type (e.g., `TaskNotFoundError`, `UnsupportedOperationError`) is expressed in the custom binding's native error format.
 
 ### Streaming
 
