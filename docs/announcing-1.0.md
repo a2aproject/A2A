@@ -27,7 +27,7 @@ A2A also gives consumers flexibility in how they receive results. Depending on w
 
 ## Complementary to MCP, not a replacement
 
-The release also clarifies A2A's relationship with the Model Context Protocol (MCP), a point that has generated confusion in early ecosystem discussions.
+The release also reinforces A2A's relationship with the Model Context Protocol (MCP), a point that has generated confusion in early ecosystem discussions.
 
 MCP and A2A solve different layers of the problem. MCP is commonly used for tool and context integration at the individual agent level. A2A focuses on communication and coordination between agents. In practice, many systems will use both: MCP inside agents, A2A between agents.
 
