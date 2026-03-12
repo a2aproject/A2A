@@ -2885,11 +2885,11 @@ All query parameter values **MUST** be properly URL-encoded per [RFC 3986](https
 
 ### 11.6. Error Handling
 
-HTTP error responses use the ProtoJSON representation of the [`google.rpc.Status`](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto) structure, which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
+HTTP error responses use the representation specified in [AIP-193](https://google.aip.dev/193#http11json-representation) which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
 
-- **Error Code**: Mapped to the HTTP status code and the `code` field (gRPC status code integer)
-- **Error Message**: Mapped to the `message` field (human-readable string)
-- **Error Details**: Mapped to the `details` array (containing `google.protobuf.Any` messages)
+- **Error Code**: Mapped to the HTTP status code and the `error.code` field
+- **Error Message**: Mapped to the `error.message` field (human-readable string)
+- **Error Details**: Mapped to the `error.details` array (containing `google.protobuf.Any` messages)
 
 **A2A Error Representation:**
 
@@ -2900,7 +2900,7 @@ For A2A-specific errors, implementations **MUST** include a `google.rpc.ErrorInf
 - `domain`: Set to `"a2a-protocol.org"`
 - `metadata`: Optional map of additional error context
 
-For the complete mapping of A2A error types to HTTP and gRPC status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings). Additional error context **MAY** be included in the `details` array of the Status object.
+For the complete mapping of A2A error types to HTTP status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings). Additional error context **MAY** be included in the `details` array of the Status object.
 
 **Error Response Example:**
 
@@ -2909,19 +2909,22 @@ HTTP/1.1 404 Not Found
 Content-Type: application/json
 
 {
-  "code": 5,
-  "message": "The specified task ID does not exist or is not accessible",
-  "details": [
-    {
-      "@type": "type.googleapis.com/google.rpc.ErrorInfo",
-      "reason": "TASK_NOT_FOUND",
-      "domain": "a2a-protocol.org",
-      "metadata": {
-        "taskId": "task-123",
-        "timestamp": "2025-11-09T10:30:00.000Z"
+  "error": {
+    "code": 404,
+    "status": "NOT_FOUND",
+    "message": "The specified task ID does not exist or is not accessible",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "TASK_NOT_FOUND",
+        "domain": "a2a-protocol.org",
+        "metadata": {
+          "taskId": "task-123",
+          "timestamp": "2025-11-09T10:30:00.000Z"
+        }
       }
-    }
-  ]
+    ]
+  }
 }
 ```
 
