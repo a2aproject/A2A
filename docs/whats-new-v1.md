@@ -763,6 +763,7 @@ const message = { role: "ROLE_USER", parts: [...] };
 HTTP+JSON error responses have been updated to use the ProtoJSON representation of `google.rpc.Status` instead of RFC 9457 (Problem Details). JSON-RPC and HTTP+JSON bindings now use `google.rpc.ErrorInfo` within the `data` / `details` array to provide A2A-specific error context.
 
 **Changes:**
+
 - **HTTP+JSON Content-Type:** Changed from `application/problem+json` to `application/json`.
 - **Error Model:** Uses `google.rpc.Status` fields (`code`, `message`, `details`).
 - **A2A Error Info:** MUST include a `google.rpc.ErrorInfo` object in `details` with `reason` (UPPER_SNAKE_CASE from A2A error types) and `domain: "a2a-protocol.org"`.
