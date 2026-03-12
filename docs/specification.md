@@ -1493,7 +1493,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-GET /tasks?status=working&pageSize=20 HTTP/1.1
+GET /tasks?status=TASK_STATE_WORKING&pageSize=20 HTTP/1.1
 Host: agent.example.com
 Authorization: Bearer token
 ```
