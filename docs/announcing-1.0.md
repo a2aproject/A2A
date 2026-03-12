@@ -4,7 +4,7 @@ The A2A Protocol community today are announcing the release of A2A Protocol v1.0
 
 As organizations build increasingly sophisticated multi-agent systems, interoperability has become the defining challenge. Teams can coordinate agents effectively within a single platform, but connecting those systems across technology stacks and organizational boundaries remains difficult. A2A addresses that challenge by combining support for multiple protocol bindings, seamless version negotiation, and a common semantic model so agents can interoperate across systems with predictable behavior.
 
-The v1.0 release emphasizes maturity rather than reinvention: the core ideas remain intact, while rough edges have been removed, ambiguous areas clarified, and enterprise deployment requirements addressed more directly. The official SDKs ensure 1.0 A2A agents work seamlessly with older versions.
+The v1.0 release emphasizes maturity rather than reinvention: the core ideas remain intact, while rough edges have been removed, ambiguous areas clarified, and enterprise deployment requirements addressed more directly. The official SDKs ensure v1.0 A2A agents work seamlessly with older versions.
 
 ## Delivering on enterprise requirements
 
