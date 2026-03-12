@@ -2736,6 +2736,45 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#86-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6. Caching
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.6. Caching">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#861-server-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.1. Server Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#862-client-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.2. Client Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -5500,6 +5539,45 @@
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#86-caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6. Caching
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.6. Caching">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#861-server-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.1. Server Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#862-client-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.2. Client Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -9268,16 +9346,9 @@
 <p><strong>Scenario:</strong> Client wants to see all tasks from a specific context or all tasks with a particular status.</p>
 <h4 id="request-all-tasks-from-a-specific-context">Request: All tasks from a specific context<a class="headerlink" href="#request-all-tasks-from-a-specific-context" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nf">GET</span> <span class="nn">/tasks?contextId=c295ea44-7543-4f78-b524-7a38915ad6e4&amp;pageSize=10&amp;historyLength=3</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="p">{</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">  </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c295ea44-7543-4f78-b524-7a38915ad6e4&quot;</span><span class="p">,</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">  </span><span class="nt">&quot;historyLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
-</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="p">}</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
 </span></code></pre></div>
 <p><strong>Response:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
@@ -9301,15 +9372,9 @@
 </span></code></pre></div>
 <h4 id="request-all-working-tasks-across-all-contexts">Request: All working tasks across all contexts<a class="headerlink" href="#request-all-working-tasks-across-all-contexts" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nf">GET</span> <span class="nn">/tasks?status=TASK_STATE_WORKING&amp;pageSize=20</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="p">{</span>
-</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TASK_STATE_WORKING&quot;</span><span class="p">,</span>
-</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span>
-</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="p">}</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
 </span></code></pre></div>
 <p><strong>Response:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
@@ -9342,16 +9407,9 @@
 </span></code></pre></div>
 <h4 id="pagination-example">Pagination Example<a class="headerlink" href="#pagination-example" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nf">GET</span> <span class="nn">/tasks?contextId=c295ea44-7543-4f78-b524-7a38915ad6e4&amp;pageSize=10&amp;pageToken=base64-encoded-cursor-token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="p">{</span>
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">  </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c295ea44-7543-4f78-b524-7a38915ad6e4&quot;</span><span class="p">,</span>
-</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">  </span><span class="nt">&quot;pageToken&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base64-encoded-cursor-token&quot;</span>
-</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="p">}</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
 </span></code></pre></div>
 <p><strong>Response:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
@@ -9368,16 +9426,9 @@
 </span></code></pre></div>
 <h4 id="validation-error-example">Validation Error Example<a class="headerlink" href="#validation-error-example" title="Permanent link">&para;</a></h4>
 <p><strong>Request:</strong></p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nf">POST</span> <span class="nn">/tasks/list</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nf">GET</span> <span class="nn">/tasks?pageSize=150&amp;historyLength=-5&amp;status=TASK_STATE_RUNNING</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="p">{</span>
-</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">  </span><span class="nt">&quot;pageSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
-</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="w">  </span><span class="nt">&quot;historyLength&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-5</span><span class="p">,</span>
-</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;running&quot;</span>
-</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="p">}</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
 </span></code></pre></div>
 <p><strong>Response:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
@@ -9690,7 +9741,7 @@
 <h3 id="82-discovery-mechanisms">8.2. Discovery Mechanisms<a class="headerlink" href="#82-discovery-mechanisms" title="Permanent link">&para;</a></h3>
 <p>Clients can find Agent Cards through:</p>
 <ul>
-<li><strong>Well-Known URI:</strong> Accessing <code>https://{server_domain}/.well-known/agent-card.json</code></li>
+<li><strong>Well-Known URI:</strong> Accessing <code>https://{server_domain}/.well-known/agent-card.json</code> (see <a href="#86-caching">Section 8.6</a> for caching guidance)</li>
 <li><strong>Registries/Catalogs:</strong> Querying curated catalogs of agents</li>
 <li><strong>Direct Configuration:</strong> Pre-configured Agent Card URLs or content</li>
 </ul>
@@ -9921,6 +9972,20 @@
 </span><span id="__span-40-72"><a id="__codelineno-40-72" name="__codelineno-40-72" href="#__codelineno-40-72"></a><span class="w">  </span><span class="p">]</span>
 </span><span id="__span-40-73"><a id="__codelineno-40-73" name="__codelineno-40-73" href="#__codelineno-40-73"></a><span class="p">}</span>
 </span></code></pre></div>
+<h3 id="86-caching">8.6. Caching<a class="headerlink" href="#86-caching" title="Permanent link">&para;</a></h3>
+<p>Agent Card content changes infrequently relative to the frequency at which clients may fetch it. Servers and clients <strong>SHOULD</strong> use standard HTTP caching mechanisms to reduce unnecessary network overhead.</p>
+<h4 id="861-server-requirements">8.6.1. Server Requirements<a class="headerlink" href="#861-server-requirements" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Agent Card HTTP endpoints <strong>SHOULD</strong> include a <code>Cache-Control</code> response header with a <code>max-age</code> directive appropriate for the agent's expected update frequency</li>
+<li>Agent Card HTTP endpoints <strong>SHOULD</strong> include an <code>ETag</code> response header derived from the Agent Card's <code>version</code> field or a hash of the card content</li>
+<li>Agent Card HTTP endpoints <strong>MAY</strong> include a <code>Last-Modified</code> response header</li>
+</ul>
+<h4 id="862-client-requirements">8.6.2. Client Requirements<a class="headerlink" href="#862-client-requirements" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Clients <strong>SHOULD</strong> honor HTTP caching semantics as defined in <a href="https://www.rfc-editor.org/rfc/rfc9111">RFC 9111</a> when fetching Agent Cards</li>
+<li>When a cached Agent Card has expired, clients <strong>SHOULD</strong> use conditional requests (<code>If-None-Match</code> with the stored <code>ETag</code>, or <code>If-Modified-Since</code>) to avoid re-downloading unchanged cards</li>
+<li>When the server does not include caching headers, clients <strong>MAY</strong> apply an implementation-specific default cache duration</li>
+</ul>
 <h2 id="9-json-rpc-protocol-binding">9. JSON-RPC Protocol Binding<a class="headerlink" href="#9-json-rpc-protocol-binding" title="Permanent link">&para;</a></h2>
 <p>The JSON-RPC protocol binding provides a simple, HTTP-based interface using JSON-RPC 2.0 for method calls and Server-Sent Events for streaming.</p>
 <h3 id="91-protocol-requirements">9.1. Protocol Requirements<a class="headerlink" href="#91-protocol-requirements" title="Permanent link">&para;</a></h3>
