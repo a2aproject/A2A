@@ -154,7 +154,7 @@ The v1.0 release focuses on four major themes:
 
 **v1.0 Changes:**
 
-- **✅ RENAMED:** Operations now **CreateTaskPushNotificationConfig**, **GetTaskPushNotificationConfig**, **ListTaskushNotificationConfigs**, **DeleteTaskPushNotificationConfig**
+- **✅ RENAMED:** Operations now **CreateTaskPushNotificationConfig**, **GetTaskPushNotificationConfig**, **ListTaskPushNotificationConfigs**, **DeleteTaskPushNotificationConfig**
 - **✅ NEW:** `createdAt` timestamp field added to PushNotificationConfig
 - **✅ CLARIFIED:** Push notification payloads now use StreamResponse format
 - **✅ BREAKING:** model changed for all methods, with TaskPushNotificationConfig flattened
