@@ -84,12 +84,6 @@
 * **spec:** Move `extendedAgentCard` field to `AgentCapabilities` ([#1307](https://github.com/a2aproject/A2A/issues/1307)) ([40d6286](https://github.com/a2aproject/A2A/commit/40d6286fbe29fb083d416b77e84122df8d70ae9d))
 * **spec:** Remove redundant `final` field from `TaskStatusUpdateEvent` ([#1308](https://github.com/a2aproject/A2A/issues/1308)) ([5b101cc](https://github.com/a2aproject/A2A/commit/5b101cce0fff449c1120ad50ce360acf7c90bac3))
 
-## [0.4.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v0.4.0) (2025-09-15)
-
-### Features
-
-* **spec:** Add `tasks/list` method for retrieving and filtering tasks with pagination
-
 ## [0.3.0](https://github.com/a2aproject/A2A/compare/v0.2.6...v0.3.0) (2025-07-30)
 
 
