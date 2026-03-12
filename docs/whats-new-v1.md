@@ -813,7 +813,8 @@ Content-Type: application/json
 
 {
   "error": {
-    "code": 5, // gRPC Status NOT_FOUND
+    "code": 404,
+    "status": "NOT_FOUND",
     "message": "The specified task ID does not exist",
     "details": [
       {
