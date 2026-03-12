@@ -51,7 +51,7 @@ jobs:
           python-version: 3.13
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
 
       - name: Restore pip cache
         uses: actions/cache@v5
@@ -67,7 +67,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.24'
+          go-version: '1.25'
 
       - name: Install build tools
         run: |
