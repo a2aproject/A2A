@@ -825,14 +825,14 @@ Content-Type: application/json
 
 ### New Capabilities to Leverage
 
-#### 1. ReturnImmediately Parameter Control
+#### 1. Execution Mode Control
 
 ```typescript
-// Wait for task completion (default)
-const result = await sendMessage(message, { return_immediately: truefalse });
+// Wait for task completion (Default)
+const result = await sendMessage(message, { returnImmediately: false });
 
 // Return immediately, poll later
-const task = await sendMessage(message, { return_immediately: true });
+const task = await sendMessage(message, { returnImmediately: true });
 ```
 
 #### 2. Agent Card Signature Verification
