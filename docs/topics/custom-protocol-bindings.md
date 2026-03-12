@@ -1,7 +1,7 @@
 # Custom Protocol Bindings
 
-The A2A protocol ships with three standard bindings—JSON-RPC, gRPC, and
-HTTP+JSON/REST—that cover the majority of deployment scenarios. Custom protocol
+The A2A protocol ships with three standard bindings (JSON-RPC, gRPC, and
+HTTP+JSON/REST) that cover the majority of deployment scenarios. Custom protocol
 bindings let implementers expose A2A operations over additional transport
 mechanisms not covered by the standard set.
 
@@ -37,7 +37,7 @@ entries should be listed in preference order.
 ## Requirements
 
 Custom protocol bindings must comply with all requirements in the
-[Protocol Binding Requirements and Interoperability](specification.md#5-protocol-binding-requirements-and-interoperability)
+[Protocol Binding Requirements and Interoperability](../specification.md#5-protocol-binding-requirements-and-interoperability)
 section of the specification. In particular:
 
 - **All core operations must be supported.** The binding must expose every
@@ -83,7 +83,7 @@ service parameters as a JSON object in a dedicated metadata field, for example
 The binding must map all A2A error types to transport-native error
 representations while preserving their semantic meaning. Provide a mapping
 table equivalent to the one in the specification's
-[Error Code Mappings](specification.md#54-error-code-mappings) section, showing
+[Error Code Mappings](../specification.md#54-error-code-mappings) section, showing
 how each A2A error type (e.g., `TaskNotFoundError`, `UnsupportedOperationError`) is expressed in the custom binding's native error format.
 
 ### Streaming
