@@ -1561,7 +1561,7 @@ Content-Type: application/a2a+json
 **Request:**
 
 ```http
-GET /tasks?pageSize=150&historyLength=-5&status=running HTTP/1.1
+GET /tasks?pageSize=150&historyLength=-5&status=TASK_STATE_RUNNING HTTP/1.1
 Host: agent.example.com
 Authorization: Bearer token
 ```
