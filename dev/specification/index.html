@@ -8998,7 +8998,6 @@
 <th style="text-align: left;">JSON-RPC Code</th>
 <th style="text-align: left;">gRPC Status</th>
 <th style="text-align: left;">HTTP Status</th>
-<th style="text-align: left;">HTTP Type URI</th>
 </tr>
 </thead>
 <tbody>
@@ -9007,63 +9006,54 @@
 <td style="text-align: left;"><code>-32001</code></td>
 <td style="text-align: left;"><code>NOT_FOUND</code></td>
 <td style="text-align: left;"><code>404 Not Found</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/task-not-found</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>TaskNotCancelableError</code></td>
 <td style="text-align: left;"><code>-32002</code></td>
 <td style="text-align: left;"><code>FAILED_PRECONDITION</code></td>
 <td style="text-align: left;"><code>409 Conflict</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/task-not-cancelable</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>PushNotificationNotSupportedError</code></td>
 <td style="text-align: left;"><code>-32003</code></td>
 <td style="text-align: left;"><code>UNIMPLEMENTED</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/push-notification-not-supported</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>UnsupportedOperationError</code></td>
 <td style="text-align: left;"><code>-32004</code></td>
 <td style="text-align: left;"><code>UNIMPLEMENTED</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/unsupported-operation</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ContentTypeNotSupportedError</code></td>
 <td style="text-align: left;"><code>-32005</code></td>
 <td style="text-align: left;"><code>INVALID_ARGUMENT</code></td>
 <td style="text-align: left;"><code>415 Unsupported Media Type</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/content-type-not-supported</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>InvalidAgentResponseError</code></td>
 <td style="text-align: left;"><code>-32006</code></td>
 <td style="text-align: left;"><code>INTERNAL</code></td>
 <td style="text-align: left;"><code>502 Bad Gateway</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/invalid-agent-response</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ExtendedAgentCardNotConfiguredError</code></td>
 <td style="text-align: left;"><code>-32007</code></td>
 <td style="text-align: left;"><code>FAILED_PRECONDITION</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/extended-agent-card-not-configured</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ExtensionSupportRequiredError</code></td>
 <td style="text-align: left;"><code>-32008</code></td>
 <td style="text-align: left;"><code>FAILED_PRECONDITION</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/extension-support-required</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>VersionNotSupportedError</code></td>
 <td style="text-align: left;"><code>-32009</code></td>
 <td style="text-align: left;"><code>UNIMPLEMENTED</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
-<td style="text-align: left;"><code>https://a2a-protocol.org/errors/version-not-supported</code></td>
 </tr>
 </tbody>
 </table>
@@ -10081,7 +10071,7 @@
 <ul>
 <li><strong>Error Code</strong>: Mapped to <code>error.code</code> (numeric JSON-RPC error code)</li>
 <li><strong>Error Message</strong>: Mapped to <code>error.message</code> (human-readable string)</li>
-<li><strong>Error Details</strong>: Mapped to <code>error.data</code> (optional structured object)</li>
+<li><strong>Error Details</strong>: Mapped to <code>error.data</code> (array containing <code>google.protobuf.Any</code> messages, using ProtoJSON representation)</li>
 </ul>
 <p><strong>Standard JSON-RPC Error Codes:</strong></p>
 <table>
@@ -10128,6 +10118,15 @@
 </table>
 <p><strong>A2A-Specific Error Codes:</strong></p>
 <p>A2A-specific errors use codes in the range <code>-32001</code> to <code>-32099</code>. For the complete mapping of A2A error types to JSON-RPC error codes, see <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>.</p>
+<p><strong>A2A Error Representation:</strong></p>
+<p>For A2A-specific errors, implementations <strong>MUST</strong> include a <code>google.rpc.ErrorInfo</code> message in the <code>data</code> array with:</p>
+<ul>
+<li><code>@type</code>: Set to <code>"type.googleapis.com/google.rpc.ErrorInfo"</code></li>
+<li><code>reason</code>: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., <code>TASK_NOT_FOUND</code>)</li>
+<li><code>domain</code>: Set to <code>"a2a-protocol.org"</code></li>
+<li><code>metadata</code>: Optional map of additional error context</li>
+</ul>
+<p>Additional error context <strong>MAY</strong> be included in the <code>data</code> array.</p>
 <p><strong>Error Response Structure:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a><span class="p">{</span>
 </span><span id="__span-51-2"><a id="__codelineno-51-2" name="__codelineno-51-2" href="#__codelineno-51-2"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
@@ -10148,14 +10147,20 @@
 </span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-32001</span><span class="p">,</span>
 </span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Task not found&quot;</span><span class="p">,</span>
-</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a><span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-52-8"><a id="__codelineno-52-8" name="__codelineno-52-8" href="#__codelineno-52-8"></a><span class="w">      </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nonexistent-task-id&quot;</span><span class="p">,</span>
-</span><span id="__span-52-9"><a id="__codelineno-52-9" name="__codelineno-52-9" href="#__codelineno-52-9"></a><span class="w">      </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-09T10:30:00.000Z&quot;</span>
-</span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-52-12"><a id="__codelineno-52-12" name="__codelineno-52-12" href="#__codelineno-52-12"></a><span class="p">}</span>
+</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a><span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-52-8"><a id="__codelineno-52-8" name="__codelineno-52-8" href="#__codelineno-52-8"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-52-9"><a id="__codelineno-52-9" name="__codelineno-52-9" href="#__codelineno-52-9"></a><span class="w">        </span><span class="nt">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type.googleapis.com/google.rpc.ErrorInfo&quot;</span><span class="p">,</span>
+</span><span id="__span-52-10"><a id="__codelineno-52-10" name="__codelineno-52-10" href="#__codelineno-52-10"></a><span class="w">        </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TASK_NOT_FOUND&quot;</span><span class="p">,</span>
+</span><span id="__span-52-11"><a id="__codelineno-52-11" name="__codelineno-52-11" href="#__codelineno-52-11"></a><span class="w">        </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a2a-protocol.org&quot;</span><span class="p">,</span>
+</span><span id="__span-52-12"><a id="__codelineno-52-12" name="__codelineno-52-12" href="#__codelineno-52-12"></a><span class="w">        </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-52-13"><a id="__codelineno-52-13" name="__codelineno-52-13" href="#__codelineno-52-13"></a><span class="w">          </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nonexistent-task-id&quot;</span><span class="p">,</span>
+</span><span id="__span-52-14"><a id="__codelineno-52-14" name="__codelineno-52-14" href="#__codelineno-52-14"></a><span class="w">          </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-09T10:30:00.000Z&quot;</span>
+</span><span id="__span-52-15"><a id="__codelineno-52-15" name="__codelineno-52-15" href="#__codelineno-52-15"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-52-16"><a id="__codelineno-52-16" name="__codelineno-52-16" href="#__codelineno-52-16"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-52-17"><a id="__codelineno-52-17" name="__codelineno-52-17" href="#__codelineno-52-17"></a><span class="w">    </span><span class="p">]</span>
+</span><span id="__span-52-18"><a id="__codelineno-52-18" name="__codelineno-52-18" href="#__codelineno-52-18"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-52-19"><a id="__codelineno-52-19" name="__codelineno-52-19" href="#__codelineno-52-19"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>The <code>data</code> field <strong>MAY</strong> include additional context-specific information to help clients diagnose and resolve the error.</p>
 <h2 id="10-grpc-protocol-binding">10. gRPC Protocol Binding<a class="headerlink" href="#10-grpc-protocol-binding" title="Permanent link">&para;</a></h2>
 <p>The gRPC Protocol Binding provides a high-performance, strongly-typed interface using Protocol Buffers over HTTP/2. The gRPC Protocol Binding leverages the <a href="https://google.aip.dev/general">API guidelines</a> to simplify gRPC to HTTP mapping.</p>
 <h3 id="101-protocol-requirements">10.1. Protocol Requirements<a class="headerlink" href="#101-protocol-requirements" title="Permanent link">&para;</a></h3>
@@ -11083,26 +11088,43 @@
 <p><strong>URL Encoding:</strong></p>
 <p>All query parameter values <strong>MUST</strong> be properly URL-encoded per <a href="https://www.rfc-editor.org/rfc/rfc3986.html">RFC 3986</a>.</p>
 <h3 id="116-error-handling">11.6. Error Handling<a class="headerlink" href="#116-error-handling" title="Permanent link">&para;</a></h3>
-<p>HTTP error responses use <a href="https://www.rfc-editor.org/rfc/rfc9457.html">RFC 9457 Problem Details</a> format with <code>Content-Type: application/problem+json</code>, which maps to the generic A2A error model defined in <a href="#332-error-handling">Section 3.3.2</a> as follows:</p>
+<p>HTTP error responses use the representation specified in <a href="https://google.aip.dev/193#http11json-representation">AIP-193</a> which maps to the generic A2A error model defined in <a href="#332-error-handling">Section 3.3.2</a> as follows:</p>
 <ul>
-<li><strong>Error Code</strong>: Mapped to <code>status</code> (HTTP status code) and <code>type</code> (URI identifier)</li>
-<li><strong>Error Message</strong>: Mapped to <code>detail</code> (human-readable string)</li>
-<li><strong>Error Details</strong>: Mapped to extension fields in the problem details object</li>
+<li><strong>Error Code</strong>: Mapped to the HTTP status code and the <code>error.code</code> field</li>
+<li><strong>Error Message</strong>: Mapped to the <code>error.message</code> field (human-readable string)</li>
+<li><strong>Error Details</strong>: Mapped to the <code>error.details</code> array (containing <code>google.protobuf.Any</code> messages)</li>
 </ul>
 <p><strong>A2A Error Representation:</strong></p>
-<p>For A2A-specific errors, the <code>type</code> field <strong>MUST</strong> use the URI from the mapping table in <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>. Additional error context <strong>MAY</strong> be included as extension fields in the problem details object.</p>
+<p>For A2A-specific errors, implementations <strong>MUST</strong> include a <code>google.rpc.ErrorInfo</code> message in the <code>details</code> array with:</p>
+<ul>
+<li><code>@type</code>: Set to <code>"type.googleapis.com/google.rpc.ErrorInfo"</code></li>
+<li><code>reason</code>: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., <code>TASK_NOT_FOUND</code>)</li>
+<li><code>domain</code>: Set to <code>"a2a-protocol.org"</code></li>
+<li><code>metadata</code>: Optional map of additional error context</li>
+</ul>
+<p>For the complete mapping of A2A error types to HTTP status codes, see <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>. Additional error context <strong>MAY</strong> be included in the <code>details</code> array of the Status object.</p>
 <p><strong>Error Response Example:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">Not Found</span>
-</span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/problem+json</span>
+</span><span id="__span-61-2"><a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </span><span id="__span-61-3"><a id="__codelineno-61-3" name="__codelineno-61-3" href="#__codelineno-61-3"></a>
 </span><span id="__span-61-4"><a id="__codelineno-61-4" name="__codelineno-61-4" href="#__codelineno-61-4"></a><span class="p">{</span>
-</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a><span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://a2a-protocol.org/errors/task-not-found&quot;</span><span class="p">,</span>
-</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a><span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Task Not Found&quot;</span><span class="p">,</span>
-</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">404</span><span class="p">,</span>
-</span><span id="__span-61-8"><a id="__codelineno-61-8" name="__codelineno-61-8" href="#__codelineno-61-8"></a><span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The specified task ID does not exist or is not accessible&quot;</span><span class="p">,</span>
-</span><span id="__span-61-9"><a id="__codelineno-61-9" name="__codelineno-61-9" href="#__codelineno-61-9"></a><span class="w">  </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-123&quot;</span><span class="p">,</span>
-</span><span id="__span-61-10"><a id="__codelineno-61-10" name="__codelineno-61-10" href="#__codelineno-61-10"></a><span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-09T10:30:00.000Z&quot;</span>
-</span><span id="__span-61-11"><a id="__codelineno-61-11" name="__codelineno-61-11" href="#__codelineno-61-11"></a><span class="p">}</span>
+</span><span id="__span-61-5"><a id="__codelineno-61-5" name="__codelineno-61-5" href="#__codelineno-61-5"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-61-6"><a id="__codelineno-61-6" name="__codelineno-61-6" href="#__codelineno-61-6"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">404</span><span class="p">,</span>
+</span><span id="__span-61-7"><a id="__codelineno-61-7" name="__codelineno-61-7" href="#__codelineno-61-7"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NOT_FOUND&quot;</span><span class="p">,</span>
+</span><span id="__span-61-8"><a id="__codelineno-61-8" name="__codelineno-61-8" href="#__codelineno-61-8"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The specified task ID does not exist or is not accessible&quot;</span><span class="p">,</span>
+</span><span id="__span-61-9"><a id="__codelineno-61-9" name="__codelineno-61-9" href="#__codelineno-61-9"></a><span class="w">    </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-61-10"><a id="__codelineno-61-10" name="__codelineno-61-10" href="#__codelineno-61-10"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-61-11"><a id="__codelineno-61-11" name="__codelineno-61-11" href="#__codelineno-61-11"></a><span class="w">        </span><span class="nt">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type.googleapis.com/google.rpc.ErrorInfo&quot;</span><span class="p">,</span>
+</span><span id="__span-61-12"><a id="__codelineno-61-12" name="__codelineno-61-12" href="#__codelineno-61-12"></a><span class="w">        </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TASK_NOT_FOUND&quot;</span><span class="p">,</span>
+</span><span id="__span-61-13"><a id="__codelineno-61-13" name="__codelineno-61-13" href="#__codelineno-61-13"></a><span class="w">        </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a2a-protocol.org&quot;</span><span class="p">,</span>
+</span><span id="__span-61-14"><a id="__codelineno-61-14" name="__codelineno-61-14" href="#__codelineno-61-14"></a><span class="w">        </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-61-15"><a id="__codelineno-61-15" name="__codelineno-61-15" href="#__codelineno-61-15"></a><span class="w">          </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task-123&quot;</span><span class="p">,</span>
+</span><span id="__span-61-16"><a id="__codelineno-61-16" name="__codelineno-61-16" href="#__codelineno-61-16"></a><span class="w">          </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-09T10:30:00.000Z&quot;</span>
+</span><span id="__span-61-17"><a id="__codelineno-61-17" name="__codelineno-61-17" href="#__codelineno-61-17"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-61-18"><a id="__codelineno-61-18" name="__codelineno-61-18" href="#__codelineno-61-18"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-61-19"><a id="__codelineno-61-19" name="__codelineno-61-19" href="#__codelineno-61-19"></a><span class="w">    </span><span class="p">]</span>
+</span><span id="__span-61-20"><a id="__codelineno-61-20" name="__codelineno-61-20" href="#__codelineno-61-20"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-61-21"><a id="__codelineno-61-21" name="__codelineno-61-21" href="#__codelineno-61-21"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Extension fields like <code>taskId</code> and <code>timestamp</code> provide additional context to help diagnose the error.</p>
 <h3 id="117-streaming">11.7. Streaming<a class="headerlink" href="#117-streaming" title="Permanent link">&para;</a></h3>
