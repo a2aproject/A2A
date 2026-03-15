@@ -163,6 +163,7 @@ collaborate effectively with each other and with users.
 - [Wipro](https://www.wipro.com)
 - [Workday](https://www.workday.com)
 - [Writer](https://writer.com)
+- [WritBase](https://github.com/Writbase/writbase)
 - [Zenity](https://zenity.io)
 - [Zeotap](https://www.zeotap.com)
 - [Zocket Technologies , Inc.](https://zocket.ai)
