@@ -71,7 +71,9 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 
 Community-built SDKs that implement the A2A protocol in additional languages:
 
-- [a2a-swift](https://github.com/Victory-Apps/a2a-swift) — Swift SDK with full v1.0 data model, JSON-RPC routing, SSE streaming, Vapor integration, and testing utilities. Supports macOS, Linux, iOS, tvOS, watchOS.
+- [a2a-swift](https://github.com/Victory-Apps/a2a-swift) — A Swift SDK for the A2A protocol.
+  - **Features**: Full v1.0 data model, JSON-RPC routing, SSE streaming, Vapor integration, and testing utilities.
+  - **Platforms**: macOS, Linux, iOS, tvOS, watchOS.
 
 ---
 
