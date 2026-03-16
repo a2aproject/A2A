@@ -67,6 +67,14 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
 - [Strands Agents](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
+## Community SDKs
+
+Community-built SDKs that implement the A2A protocol in additional languages:
+
+- [a2a-swift](https://github.com/Victory-Apps/a2a-swift) — Swift SDK with full v1.0 data model, JSON-RPC routing, SSE streaming, Vapor integration, and testing utilities. Supports macOS, Linux, iOS, tvOS, watchOS.
+
+---
+
 ## The Future is Interoperable
 
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
