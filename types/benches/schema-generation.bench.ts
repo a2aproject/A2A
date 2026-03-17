@@ -1,52 +1,42 @@
+import { readFileSync } from "fs";
 import { resolve } from "path";
 import { bench, describe } from "vitest";
-import * as TJS from "typescript-json-schema";
 
-const typesFile = resolve(__dirname, "../src/types.ts");
+const schemaPath = resolve(__dirname, "../../specification/json/a2a.json");
+const schemaContent = readFileSync(schemaPath, "utf-8");
 
-const compilerOptions: TJS.CompilerOptions = {
-  strictNullChecks: false,
-  skipLibCheck: true,
-};
-
-describe("JSON Schema Generation", () => {
-  bench("generate full schema from types.ts", () => {
-    const program = TJS.getProgramFromFiles([typesFile], compilerOptions);
-    TJS.generateSchema(program, "*", {
-      required: true,
-      defaultNumberType: "integer",
-    });
+describe("JSON Schema Operations", () => {
+  bench("parse A2A JSON schema", () => {
+    JSON.parse(schemaContent);
   });
 
-  bench("build schema generator", () => {
-    const program = TJS.getProgramFromFiles([typesFile], compilerOptions);
-    TJS.buildGenerator(program, {
-      required: true,
-      defaultNumberType: "integer",
-    });
+  bench("parse and extract definitions", () => {
+    const schema = JSON.parse(schemaContent);
+    Object.keys(schema.definitions);
   });
 
-  bench("generate schema for AgentCard type", () => {
-    const program = TJS.getProgramFromFiles([typesFile], compilerOptions);
-    TJS.generateSchema(program, "AgentCard", {
-      required: true,
-      defaultNumberType: "integer",
-    });
+  bench("serialize A2A JSON schema", () => {
+    const schema = JSON.parse(schemaContent);
+    JSON.stringify(schema);
   });
 
-  bench("generate schema for Task type", () => {
-    const program = TJS.getProgramFromFiles([typesFile], compilerOptions);
-    TJS.generateSchema(program, "Task", {
-      required: true,
-      defaultNumberType: "integer",
-    });
+  bench("deep clone A2A JSON schema", () => {
+    const schema = JSON.parse(schemaContent);
+    JSON.parse(JSON.stringify(schema));
   });
 
-  bench("generate schema for Message type", () => {
-    const program = TJS.getProgramFromFiles([typesFile], compilerOptions);
-    TJS.generateSchema(program, "Message", {
-      required: true,
-      defaultNumberType: "integer",
-    });
+  bench("resolve AgentCard type references", () => {
+    const schema = JSON.parse(schemaContent);
+    const definitions = schema.definitions;
+    const agentCard = definitions["AgentCard"];
+    if (agentCard && agentCard.properties) {
+      for (const [, prop] of Object.entries(agentCard.properties)) {
+        const p = prop as Record<string, unknown>;
+        if (p["$ref"] && typeof p["$ref"] === "string") {
+          const refName = (p["$ref"] as string).replace("#/definitions/", "");
+          definitions[refName];
+        }
+      }
+    }
   });
 });
