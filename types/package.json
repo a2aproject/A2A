@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "generate": "./node_modules/.bin/typescript-json-schema tsconfig.json \"*\" --defaultNumberType integer --required --out ../specification/json/a2a.json",
-    "prettier": "prettier src/types.ts --write"
+    "prettier": "prettier src/types.ts --write",
+    "bench": "vitest bench --run"
   },
   "author": "",
   "description": "A2A Types",
@@ -12,7 +13,9 @@
     "typescript-json-schema": "^0.65.1"
   },
   "devDependencies": {
+    "@codspeed/vitest-plugin": "^5.2.0",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   }
 }

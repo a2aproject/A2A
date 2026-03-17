@@ -4,6 +4,7 @@
 [![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/a2aproject/A2A)
 [![RepoMapr](https://img.shields.io/badge/RepoMapr-View_Interactive_Diagram-blue)](https://repomapr.com/a2aproject/A2A)
+[![CodSpeed](https://img.shields.io/endpoint?url=https://codspeed.io/badge.json)](https://codspeed.io/jozrftamson/A2A?utm_source=badge)
 
 <!-- markdownlint-disable MD041 -->
 <div style="text-align: center;">
