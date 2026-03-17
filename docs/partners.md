@@ -162,6 +162,7 @@ collaborate effectively with each other and with users.
 - [Weights & Biases](https://wandb.ai/wandb_fc/product-announcements-fc/reports/Powering-Agent-Collaboration-Weights-Biases-Partners-with-Google-Cloud-on-Agent2Agent-Interoperability-Protocol---VmlldzoxMjE3NDg3OA)
 - [Wipro](https://www.wipro.com)
 - [Workday](https://www.workday.com)
+- [WritBase](https://github.com/Writbase/writbase)
 - [Writer](https://writer.com)
 - [Zenity](https://zenity.io)
 - [Zeotap](https://www.zeotap.com)
