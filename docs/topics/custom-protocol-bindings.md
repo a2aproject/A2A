@@ -120,8 +120,8 @@ Before publishing a custom binding, verify that:
 
 ## Governance
 
-The A2A protocol provides extension points that allow agents to advertise and
-negotiate custom transport bindings. This section defines a formal governance
+The A2A protocol's `supportedInterfaces` field in the Agent Card allows agents to advertise and
+negotiate custom transport bindings.
 framework for how custom protocol bindings are proposed, developed, promoted,
 and maintained within the A2A organization.
 
