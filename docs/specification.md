@@ -1297,7 +1297,7 @@ The `protocolBinding` field in the Agent Card's `supportedInterfaces` entry
 When a breaking change is introduced to a binding, a new URI **MUST** be used
 so that clients can distinguish between incompatible versions:
 
-```
+```text
 https://example.com/bindings/websocket/v1  →  https://example.com/bindings/websocket/v2
 ```
 
