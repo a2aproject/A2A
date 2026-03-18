@@ -13,7 +13,7 @@ The result is that orchestrators either over-delegate (sending tasks to agents t
 We will add a `QuerySkill` RPC to `a2a.proto` as a capability declaration, not a task execution.
 
 The design has three layers:
-1.  **Proto definition**: Add `SkillQueryRequest` and `SkillQueryResult` messages, and the `SkillSupportLevel` enum with values `SUPPORTED`, `PARTIAL`, and `UNSUPPORTED`.
+1.  **Proto definition**: Add `SkillQueryRequest` and `SkillQueryResult` messages, and the `SkillSupportLevel` enum with values `SKILL_SUPPORT_LEVEL_SUPPORTED`, `SKILL_SUPPORT_LEVEL_PARTIAL`, and `SKILL_SUPPORT_LEVEL_UNSUPPORTED`.
 2.  **Protocol binding**: Map to JSON-RPC as `skills/query`, to gRPC as `QuerySkill` on the existing `A2AService`, and to HTTP/REST as `POST /skills/{skill_id}/query`. All bindings must return `UnsupportedOperationError` if the server hasn't declared `capabilities.skill_query: true` in its `AgentCard`.
 3.  **Caching and staleness**: `SkillQueryResult` includes a `cache_ttl_seconds` field. Furthermore, we define `stale-if-error` semantics: if a `QuerySkill` call fails transiently, the orchestrator MAY use a cached `SUPPORTED` result for up to 2 × `cache_ttl_seconds`.
 

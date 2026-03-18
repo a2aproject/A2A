@@ -812,17 +812,17 @@ message ListTaskPushNotificationConfigsResponse {
 // Support level for a requested skill.
 enum SkillSupportLevel {
   SKILL_SUPPORT_LEVEL_UNSPECIFIED = 0;
-  SKILL_SUPPORT_LEVEL_SUPPORTED   = 1;
-  SKILL_SUPPORT_LEVEL_PARTIAL     = 2;
-  SKILL_SUPPORT_LEVEL_UNSUPPORTED = 3;
+  SUPPORTED   = 1;
+  PARTIAL     = 2;
+  UNSUPPORTED = 3;
 }
 
 // Request to query if an agent supports a specific skill dynamically.
 message SkillQueryRequest {
   string tenant   = 1;
   string skill_id = 2;
-  map<string, string> context     = 3;  // runtime parameters
-  map<string, string> metadata    = 4;
+  google.protobuf.Struct context     = 3;  // runtime parameters
+  google.protobuf.Struct metadata    = 4;
 }
 
 // Result of a query for a specific skill's support level.
