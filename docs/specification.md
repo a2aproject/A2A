@@ -1013,7 +1013,7 @@ Agents declare their supported extensions in the [`AgentCard`](#441-agentcard) u
     {
       "url": "https://research-agent.example.com/a2a/v1",
       "protocolBinding": "HTTP+JSON",
-      "protocolVersion": "0.3",
+      "protocolVersion": "0.3"
     }
   ],
   "capabilities": {
@@ -1613,11 +1613,11 @@ Authorization: Bearer token
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
   },
   "configuration": {
-    "pushNotificationConfig": {
+    "taskPushNotificationConfig": {
       "url": "https://client.example.com/webhook/a2a-notifications",
       "token": "secure-client-token-for-task-aaa",
       "authentication": {
-        "schemes": ["Bearer"]
+        "scheme": "Bearer"
       }
     }
   }
@@ -1635,7 +1635,7 @@ Content-Type: application/a2a+json
     "id": "43667960-d455-4453-b0cf-1bae4955270d",
     "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
     "status": {
-      "state": "submitted",
+      "state": "TASK_STATE_SUBMITTED",
       "timestamp": "2024-03-15T11:00:00Z"
     }
   }
@@ -1683,9 +1683,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
         "filename": "input_image.png",
-        "mediaType": "image/png",
+        "mediaType": "image/png"
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
