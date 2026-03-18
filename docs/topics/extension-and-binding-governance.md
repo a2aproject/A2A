@@ -14,11 +14,11 @@ those hosted under the `a2aproject` GitHub organization.
 Both extensions and custom protocol bindings use a two-tier system within the
 `a2aproject` organization. Repository naming and URI prefixes differ by type:
 
-|                        | Extensions                                      | Custom Protocol Bindings                       |
-| :--------------------- | :---------------------------------------------- | :--------------------------------------------- |
-| Official repo prefix   | `ext-{name}`                                    | `cpb-{name}`                                   |
-| Experimental repo prefix | `experimental-ext-{name}`                     | `experimental-cpb-{name}`                      |
-| Official URI prefix    | `https://a2a-protocol.org/extensions/`          | `https://a2a-protocol.org/bindings/`           |
+|                          | Extensions                                      | Custom Protocol Bindings                       |
+| :----------------------- | :---------------------------------------------- | :--------------------------------------------- |
+| Official repo prefix     | `ext-{name}`                                    | `cpb-{name}`                                   |
+| Experimental repo prefix | `experimental-ext-{name}`                       | `experimental-cpb-{name}`                      |
+| Official URI prefix      | `https://a2a-protocol.org/extensions/`          | `https://a2a-protocol.org/bindings/`           |
 
 ### Official
 
