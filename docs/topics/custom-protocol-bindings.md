@@ -17,7 +17,7 @@ communication, or over MQTT for IoT environments with constrained connectivity.
 Custom protocol bindings are declared in the Agent Card's `supportedInterfaces`
 list. Each entry identifies the transport by URI, the endpoint URL, and the A2A
 protocol version it implements. The `protocolBinding` field should be a URI that uniquely identifies the
-binding (see [Section 5.8 of the specification](specification.md#58-custom-binding-identification)
+binding (see [Section 5.8 of the specification](../specification.md#58-custom-binding-identification)
 for the normative requirement and versioning guidance).
 
 ```json
