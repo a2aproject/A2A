@@ -118,6 +118,14 @@ service A2AService {
       }
     };
   }
+  // Reconnects to an existing task with bidirectional streaming.
+  // The bidi equivalent of SubscribeToTask — allows the client to resume
+  // receiving updates and send follow-up messages on interrupted states.
+  // Returns `UnsupportedOperationError` if bidi streaming is not supported.
+  // Returns `TaskNotFoundError` if the task does not exist.
+  rpc ReconnectToTask(stream SendMessageRequest)
+      returns (stream StreamResponse) {
+  }
 
   // (-- api-linter: client-libraries::4232::required-fields=disabled
   //     api-linter: core::0133::method-signature=disabled
@@ -449,7 +457,7 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 4;
-  // Indicates if the agent supports bidirectional streaming (gRPC only).
+  // Indicates if the agent supports bidirectional streaming.
   optional bool bidi_streaming = 5;
 }
 

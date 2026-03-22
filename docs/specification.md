@@ -213,7 +213,7 @@ The agent MAY return a `Task` for complex processing with status/artifact update
 
 #### 3.1.3. Send Live Message (Bidirectional Streaming)
 
-Establishes a bidirectional streaming connection with the agent, enabling inline responses to interrupted states without reconnecting. This operation is only available via the gRPC protocol binding.
+Establishes a bidirectional streaming connection with the agent, enabling inline responses to interrupted states without reconnecting.
 
 **Inputs:**
 
@@ -243,10 +243,6 @@ The operation MUST establish a bidirectional streaming connection. The stream MU
 
 - The initial `SendMessageRequest` MAY specify a `SendMessageConfiguration`. Subsequent requests MUST either send the same configuration or omit it. If omitted, the agent MUST continue using the initial configuration.
 - The initial `Message` MAY include `taskId` and `contextId`. Subsequent messages MUST either specify the same `taskId` and `contextId` or omit them. Omitted values are interpreted as the established stream's task and context.
-
-**Reconnection:**
-
-A client may reconnect to an ongoing task by specifying a `taskId` with empty message parts. If the task is in a terminal state, the agent returns the task and half-closes. If the task is active, the agent sends the current state and begins sending updates. If no task exists with the specified ID, the agent SHOULD return a `NOT_FOUND` error. If another client already has an active stream for the task and the agent does not support multiple connections, the agent MAY return a `FAILED_PRECONDITION` error.
 
 #### 3.1.4. Get Task
 
@@ -347,7 +343,33 @@ The operation enables real-time monitoring of task progress and can be used with
 
 The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
-#### 3.1.8. Create Push Notification Config
+#### 3.1.8. Reconnect to Task (Bidirectional Streaming)
+
+Reconnects to an existing task with a bidirectional streaming connection. This is the bidi equivalent of [Subscribe to Task](#317-subscribe-to-task) — it allows the client to resume receiving updates and send follow-up messages on interrupted states.
+
+**Inputs:**
+
+- `stream` [`SendMessageRequest`](#321-sendmessagerequest): The initial request MUST include the `taskId` of the task to reconnect to. Subsequent requests provide follow-up messages (e.g., responses to `INPUT_REQUIRED` states).
+
+**Outputs:**
+
+- `stream` [`Stream Response`](#323-stream-response) objects containing:
+    - Initial response: [`Task`](#411-task) object with current state
+    - Subsequent events MAY include [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+
+**Errors:**
+
+- [`UnsupportedOperationError`](#332-error-handling): Bidirectional streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
+- [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
+- The agent MAY return `FAILED_PRECONDITION` if another client already has an active bidirectional stream for the specified task and the agent does not support multiple active connections.
+
+**Behavior:**
+
+If the task is active, the agent MUST send the current task state and begin streaming updates. The stream MUST remain open when the task reaches an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`), allowing the client to send follow-up messages. The agent MUST half-close the connection only when the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`).
+
+If the task is already in a terminal state, the agent MUST return the final task details and half-close the stream.
+
+#### 3.1.9. Create Push Notification Config
 
 <span id="75-taskspushnotificationconfigset"></span>
 <span id="317-create-push-notification-config"></span>
@@ -373,7 +395,7 @@ The operation MUST establish a webhook endpoint for task update notifications. W
 
  <span id="tasks-push-notification-config-operations"></span><span id="grpc-push-notification-operations"></span><span id="push-notification-operations"></span>
 
-#### 3.1.9. Get Push Notification Config
+#### 3.1.10. Get Push Notification Config
 
 <span id="76-taskspushnotificationconfigget"></span>
 
@@ -396,7 +418,7 @@ Retrieves an existing push notification configuration for a task.
 
 The operation MUST return configuration details including webhook URL and notification settings. The operation MUST fail if the configuration does not exist or the client lacks access.
 
-#### 3.1.10. List Push Notification Configs
+#### 3.1.11. List Push Notification Configs
 
 Retrieves all push notification configurations for a task.
 
@@ -417,7 +439,7 @@ Retrieves all push notification configurations for a task.
 
 The operation MUST return all active push notification configurations for the specified task and MAY support pagination for tasks with many configurations.
 
-#### 3.1.11. Delete Push Notification Config
+#### 3.1.12. Delete Push Notification Config
 
 Removes a push notification configuration for a task.
 
@@ -438,7 +460,7 @@ Removes a push notification configuration for a task.
 
 The operation MUST permanently remove the specified push notification configuration. No further notifications will be sent to the configured webhook after deletion. This operation MUST be idempotent - multiple deletions of the same config have the same effect.
 
-#### 3.1.12. Get Extended Agent Card
+#### 3.1.13. Get Extended Agent Card
 
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.capabilities.extendedAgentCard` is `true`.
 
@@ -609,7 +631,7 @@ Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). Whe
 
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
 - **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
-- **Bidirectional Streaming**: If `AgentCard.capabilities.bidiStreaming` is `false` or not present, attempts to use `SendLiveMessage` **MUST** return `UNIMPLEMENTED` (gRPC). This capability is only applicable to the gRPC protocol binding.
+- **Bidirectional Streaming**: If `AgentCard.capabilities.bidiStreaming` is `false` or not present, attempts to use `SendLiveMessage` or `ReconnectToTask` **MUST** return [`UnsupportedOperationError`](#332-error-handling).
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a server requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
@@ -697,12 +719,12 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.7](#317-subscribe-to-task)), and Live Message ([Section 3.1.3](#313-send-live-message-bidirectional-streaming), gRPC only)
+- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.7](#317-subscribe-to-task)), Live Message ([Section 3.1.3](#313-send-live-message-bidirectional-streaming)), and Reconnect to Task ([Section 3.1.8](#318-reconnect-to-task-bidirectional-streaming))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
 - `SendStreamingMessage`/`SubscribeToTask` require `AgentCard.capabilities.streaming` to be `true`
-- `SendLiveMessage` (bidirectional) requires `AgentCard.capabilities.bidiStreaming` to be `true` and is gRPC-only. Unlike server-streaming, the stream stays open during interrupted states for inline client responses
+- `SendLiveMessage`/`ReconnectToTask` (bidirectional) require `AgentCard.capabilities.bidiStreaming` to be `true`. Unlike server-streaming, the stream stays open during interrupted states for inline client responses
 
 **Push Notifications (WebHooks):**
 
@@ -1202,11 +1224,12 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
 | Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
 | Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
-| Live message (bidi streaming)   | N/A                                | `SendLiveMessage`                  | N/A                                                     |
+| Live message (bidi streaming)   | `SendLiveMessage`                  | `SendLiveMessage`                  | `POST /message:live`                                    |
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
+| Reconnect to task (bidi)        | `ReconnectToTask`                  | `ReconnectToTask`                  | `POST /tasks/{id}:reconnect`                            |
 | Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
 | List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |

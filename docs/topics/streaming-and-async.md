@@ -64,11 +64,11 @@ eliminating the need to reconnect after each interruption.
 
 - **Initiating a Stream:** The client calls the `SendLiveMessage` RPC, which accepts a stream of `SendMessageRequest` objects and returns a stream of `StreamResponse` objects.
 
-- **Interrupted States:** When the agent transitions a task to `INPUT_REQUIRED` or `AUTH_REQUIRED`, the stream remains open. The client sends a follow-up `SendMessageRequest` on the same stream with the additional input. The agent then transitions back to `WORKING` and continues processing.
+- **Interrupted States:** When the agent transitions a task to `INPUT_REQUIRED` or `AUTH_REQUIRED`, the stream remains open. The client can then send any required follow-up `SendMessageRequest` on the same stream. The agent may then transition back to `WORKING` and continues processing and return events on the stream.
 
 - **Stream Termination:** The agent MUST half-close the connection when the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`).
 
-- **Reconnection:** A client can reconnect to an ongoing task by calling `SendLiveMessage` with a `taskId` and empty message parts. If the task is active, the agent sends the current state and resumes streaming updates. If the task is already in a terminal state, the agent returns the final task details and half-closes the stream. If the task ID is not found, or if another stream is already active and the agent doesn't support multiplexing, an error (`NOT_FOUND` or `FAILED_PRECONDITION`) is returned.
+- **Reconnection:** A client can reconnect to an ongoing task by calling the `ReconnectToTask` RPC with the `taskId`. This is the bidi equivalent of `SubscribeToTask`. If the task is active, the agent sends the current state and resumes streaming updates, and the client can send follow-up messages on interrupted states. If the task is already in a terminal state, the agent returns the final task details and half-closes the stream. If the task ID is not found, or if another stream is already active and the agent doesn't support multiplexing, an error (`NOT_FOUND` or `FAILED_PRECONDITION`) is returned.
 
 ### When to Use Bidirectional Streaming
 

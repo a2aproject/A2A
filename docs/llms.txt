@@ -58,11 +58,12 @@ Represents a stateful unit of work.
 | :--- | :--- | :--- | :--- |
 | `SendMessage` | `SendMessageRequest` | `SendMessageResponse` | Initiates or continues a task. |
 | `SendStreamingMessage` | `SendMessageRequest` | `stream StreamResponse` | Sends message and receives real-time SSE updates. |
-| `SendLiveMessage` | `stream SendMessageRequest` | `stream StreamResponse` | Bidirectional streaming for live agent interaction (gRPC only). |
+| `SendLiveMessage` | `stream SendMessageRequest` | `stream StreamResponse` | Bidirectional streaming for live agent interaction. |
 | `GetTask` | `GetTaskRequest` | `Task` | Retrieves current task state. |
 | `ListTasks` | `ListTasksRequest` | `ListTasksResponse` | Filter and paginate tasks. |
 | `CancelTask` | `CancelTaskRequest` | `Task` | Requests cancellation of a task. |
 | `SubscribeToTask` | `SubscribeToTaskRequest` | `stream StreamResponse` | Subscribes to updates for an existing task. |
+| `ReconnectToTask` | `stream SendMessageRequest` | `stream StreamResponse` | Reconnects to an existing task with bidirectional streaming. |
 | `GetExtendedAgentCard` | `GetExtendedAgentCardRequest` | `AgentCard` | Fetches detailed metadata after authentication. |
 
 ### 3.1 Streaming Events (`StreamResponse`)
