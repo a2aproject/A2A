@@ -73,10 +73,9 @@ service A2AService {
   // multiple active request streams are not supported.
   //
   // If the agent does not support this method, it returns `UNIMPLEMENTED`.
+  // No direct mapping to REST for bidirectional streaming.
   rpc SendLiveMessage(stream SendMessageRequest)
-      returns (stream StreamResponse) {
-    // No direct mapping to REST for bidirectional streaming.
-  }
+      returns (stream StreamResponse) {}
 
   // Gets the latest state of a task.
   rpc GetTask(GetTaskRequest) returns (Task) {

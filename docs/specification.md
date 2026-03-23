@@ -241,8 +241,8 @@ The operation MUST establish a bidirectional streaming connection. The stream MU
 
 **Configuration and ID Semantics:**
 
-- The initial `SendMessageRequest` MAY specify a `SendMessageConfiguration`. Subsequent requests MUST either send the same configuration or omit it. If omitted, the agent MUST continue using the initial configuration.
-- The initial `Message` MAY include `taskId` and `contextId`. Subsequent messages MUST either specify the same `taskId` and `contextId` or omit them. Omitted values are interpreted as the established stream's task and context.
+- The initial `SendMessageRequest` MAY specify a `SendMessageConfiguration`. Subsequent requests MAY include configuration fields; per-field semantics govern whether a field can be overridden or is ignored after the initial request (e.g., `blocking` is only meaningful on the initial request, while other fields may be updated). If omitted, the agent MUST continue using the initial configuration for that field.
+- The initial client `Message` MAY include `contextId`. Subsequent messages after a `Task` response MUST either specify the matching `taskId` and `contextId` or omit them. Omitted values are interpreted as the established stream's task and context.
 
 #### 3.1.4. Get Task
 
@@ -732,7 +732,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Create ([Section 3.1.8](#318-create-push-notification-config)), Get ([Section 3.1.9](#319-get-push-notification-config)), List ([Section 3.1.10](#3110-list-push-notification-configs)), Delete ([Section 3.1.11](#3111-delete-push-notification-config))
+- Operations: Create ([Section 3.1.9](#319-create-push-notification-config)), Get ([Section 3.1.10](#3110-get-push-notification-config)), List ([Section 3.1.11](#3111-list-push-notification-configs)), Delete ([Section 3.1.12](#3112-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -1983,9 +1983,9 @@ If the client is itself an A2A agent actively processing a Task, the client may 
 
 Clients may not be aware of when the agent receives credentials out-of-band and subsequently continues Task processing. If a client does not have an active response stream open with the agent, the client risks missing Task updates. To avoid this, a client SHOULD perform one of the following:
 
-- Subscribe to a stream of events for the Task using the [Subscribe to Task](#316-subscribe-to-task) operation
-- Register a webhook to receive events, if supported by the agent, using the [Create Push Notification Config](#317-create-push-notification-config) operation
-- Begin polling the Task using the [Get Task](#313-get-task) operation
+- Subscribe to a stream of events for the Task using the [Subscribe to Task](#317-subscribe-to-task) operation
+- Register a webhook to receive events, if supported by the agent, using the [Create Push Notification Config](#319-create-push-notification-config) operation
+- Begin polling the Task using the [Get Task](#314-get-task) operation
 
 #### 7.6.3 In-Task Authorization Security Considerations
 
@@ -3191,7 +3191,7 @@ The extended Agent Card feature allows agents to provide additional capabilities
 
 **Access Control Requirements:**
 
-- The [`Get Extended Agent Card`](#3112-get-extended-agent-card) operation **MUST** require authentication
+- The [`Get Extended Agent Card`](#3113-get-extended-agent-card) operation **MUST** require authentication
 - Agents **MUST** authenticate requests using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields
 - Agents **MAY** return different extended card content based on the authenticated client's identity or authorization level
 - Agents **SHOULD** implement appropriate caching headers to control client-side caching of extended cards
@@ -3216,7 +3216,7 @@ The extended Agent Card feature allows agents to provide additional capabilities
 - When `capabilities.extendedAgentCard` is `false` or not present, the operation **MUST** return [`UnsupportedOperationError`](#332-error-handling)
 - When support is declared but no extended card is configured, the operation **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling)
 
-See also: [Section 3.1.12 Get Extended Agent Card](#3112-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).
+See also: [Section 3.1.13 Get Extended Agent Card](#3113-get-extended-agent-card) and [Section 3.3.4 Capability Validation](#334-capability-validation).
 
 ### 13.4. General Security Best Practices
 
