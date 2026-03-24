@@ -46,7 +46,8 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         1. It retrieves the current task from the context or creates a new one, enqueueing it as the first event.
         2. It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing.
         3. It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
-        4. Finally, it enqueues a `TaskArtifactUpdateEvent` containing the result text, marking it as the last chunk of the response.
+        4. It enqueues a `TaskArtifactUpdateEvent` containing the result text.
+        5. Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
 
     - **`cancel`**:
         The Hello World example's `cancel` method simply raises an exception, indicating that cancellation is not supported for this basic agent.

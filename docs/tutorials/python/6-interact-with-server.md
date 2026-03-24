@@ -37,7 +37,7 @@ python samples/python/agents/helloworld/test_client.py
 
 Let's look at key parts of `test_client.py`:
 
-1. **Fetching the Agent Card & Initializing the Client**:
+1. **Fetching the Agent Card**:
 
     ```python { .no-copy }
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:A2ACardResolver"
@@ -45,10 +45,10 @@ Let's look at key parts of `test_client.py`:
 
     The `A2ACardResolver` class is a convenience. It first fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL) which is then used to initialize the client.
 
-2. **Sending a Non-Streaming Message**:
+2. **Initializing the Client & Sending a Non-Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message/send"
     ```
 
     - A `ClientFactory` creates a non-streaming client based on the fetched card.
@@ -56,10 +56,10 @@ Let's look at key parts of `test_client.py`:
     - This is wrapped in a `SendMessageRequest`.
     - The client's `send_message` method returns an async generator that yields a sequence of `Task` events from the agent.
 
-3. **Sending a Streaming Message**:
+3. **Initializing the Client & Sending a Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message_streaming"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message/stream"
     ```
 
     - A new streaming client is created via `ClientFactory` configured with `streaming=True`.
@@ -70,8 +70,8 @@ Let's look at key parts of `test_client.py`:
 
 When you run `test_client.py`, you'll see in protobuf text format outputs for:
 
-- The non-streaming response (a single final `task` log detailing the history, status, and artifact generated).
-- The streaming response (multiple discrete events including the initial `task`, a `status_update`, and a final `artifact_update`).
+- The non-streaming response (a single final `task` log detailing the history, status, and the generated artifact containing the "Hello, World!" text).
+- The streaming response (multiple discrete events including the initial `task`, a `status_update`, and a final `artifact_update` containing the "Hello, World!" text).
 
 The `id` fields in the output will vary with each run.
 

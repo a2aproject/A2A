@@ -8,14 +8,15 @@ We'll use the `helloworld` example located in [`a2a-samples/samples/python/agent
 
 An **Agent Skill** describes a specific capability or function the agent can perform. It's a building block that tells clients what kinds of tasks the agent is good for.
 
-Key attributes of an `AgentSkill` (defined in `a2a.types`):
+Attributes of an `AgentSkill` (defined in `a2a.types`):
 
 - `id`: A unique identifier for the skill.
 - `name`: A human-readable name.
 - `description`: A more detailed explanation of what the skill does.
 - `tags`: Keywords for categorization and discovery.
 - `examples`: Sample prompts or use cases.
-- `inputModes` / `outputModes`: Supported Media Types for input and output (e.g., "text/plain", "application/json").
+- `input_modes` / `output_modes`: Supported Media Types for input and output (e.g., "text/plain", "application/json").
+- `security_requirements`: Security schemes necessary for this skill.
 
 In `__main__.py`, you can see how a skill for the Helloworld agent is defined:
 
@@ -35,7 +36,7 @@ Key attributes of an `AgentCard` (defined in `a2a.types`):
 - `icon_url`: A URL to an icon representing the agent.
 - `supported_interfaces`: Ordered list of endpoints and protocols where the A2A service can be reached.
 - `capabilities`: Supported A2A features like `streaming` or `extended_agent_card`.
-- `defaultInputModes` / `defaultOutputModes`: Default Media Types for the agent.
+- `default_input_modes` / `default_output_modes`: Default Media Types for the agent.
 - `skills`: A list of `AgentSkill` objects that the agent offers.
 
 The `helloworld` example defines its Agent Card like this:
@@ -44,6 +45,6 @@ The `helloworld` example defines its Agent Card like this:
 --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/__main__.py:AgentCard"
 ```
 
-This card tells us the agent is named "Hello World Agent", runs at `http://localhost:9999` using `JSONRPC`, supports text interactions, and has the `hello_world` skill. It also indicates it has an extended authenticated configuration and supports streaming via its capabilities.
+This card tells us the agent is named "Hello World Agent", runs at `http://localhost:9999` using `JSONRPC`, supports text interactions, and has the `hello_world` skill. Its capabilities also indicate support for streaming and an extended authenticated configuration.
 
 Understanding the Agent Card is crucial because it's how a client discovers an agent and learns how to interact with it.
