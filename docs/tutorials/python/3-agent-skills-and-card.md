@@ -32,8 +32,9 @@ The **Agent Card** is a JSON document that an A2A Server makes available, typica
 Key attributes of an `AgentCard` (defined in `a2a.types`):
 
 - `name`, `description`, `version`: Basic identity information.
-- `url`: The endpoint where the A2A service can be reached.
-- `capabilities`: Specifies supported A2A features like `streaming` or `pushNotifications`.
+- `icon_url`: A URL to an icon representing the agent.
+- `supported_interfaces`: Ordered list of endpoints and protocols where the A2A service can be reached.
+- `capabilities`: Supported A2A features like `streaming` or `extended_agent_card`.
 - `defaultInputModes` / `defaultOutputModes`: Default Media Types for the agent.
 - `skills`: A list of `AgentSkill` objects that the agent offers.
 
@@ -43,6 +44,6 @@ The `helloworld` example defines its Agent Card like this:
 --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/__main__.py:AgentCard"
 ```
 
-This card tells us the agent is named "Hello World Agent", runs at `http://localhost:9999/`, supports text interactions, and has the `hello_world` skill. It also indicates public authentication, meaning no specific credentials are required.
+This card tells us the agent is named "Hello World Agent", runs at `http://localhost:9999` using `JSONRPC`, supports text interactions, and has the `hello_world` skill. It also indicates it has an extended authenticated configuration and supports streaming via its capabilities.
 
 Understanding the Agent Card is crucial because it's how a client discovers an agent and learns how to interact with it.
