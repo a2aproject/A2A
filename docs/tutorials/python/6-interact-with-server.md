@@ -68,7 +68,7 @@ Let's look at key parts of `test_client.py`:
 
 ## Expected Output
 
-When you run `test_client.py`, you'll see JSON outputs for:
+When you run `test_client.py`, you'll see in protobuf text format outputs for:
 
 - The non-streaming response (a single final `task` log detailing the history, status, and artifact generated).
 - The streaming response (multiple discrete events including the initial `task`, a `status_update`, and a final `artifact_update`).
@@ -105,6 +105,62 @@ task {
     parts {
       text: "Processing request..."
     }
+  }
+}
+
+// Streaming response
+task {
+  id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_SUBMITTED
+  }
+  history {
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy-s"
+    task_id: "xxxxxxxx-s"
+    role: ROLE_USER
+    parts {
+      text: "Say hello."
+    }
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_WORKING
+    message {
+      message_id: "zzzzzzzz-s"
+      role: ROLE_AGENT
+      parts {
+        text: "Processing request..."
+      }
+    }
+  }
+}
+
+Response chunk:
+artifact_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  artifact {
+    artifact_id: "wwwwwwww-s"
+    name: "result"
+    parts {
+      text: "Hello, World!"
+    }
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_COMPLETED
   }
 }
 ```
