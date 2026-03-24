@@ -63,7 +63,7 @@ Let's look at key parts of `test_client.py`:
     ```
 
     - A new streaming client is created via `ClientFactory` configured with `streaming=True`.
-    - We again call `send_message` (which now handles both streaming and non-streaming under the same method name, based on the `ClientConfig`).
+    - We again call `send_message` (which now handles both streaming and non-streaming under the same method name, based on the `ClientConfig` and agent `capabilities`).
     - The response dynamically yields `Task` events as they are streamed over the network.
 
 ## Expected Output
@@ -78,12 +78,12 @@ The `id` fields in the output will vary with each run.
 ```console { .no-copy }
 // Non-streaming response
 task {
-  id: "f2d64c50-0850-4abf-96bf-e5702967ed21"
-  context_id: "36a81ce7-a041-4698-b029-f0d900ab1562"
+  id: "xxxxxxxx"
+  context_id: "yyyyyyyy"
   status {
     state: TASK_STATE_WORKING
     message {
-      message_id: "9e666f39-cf19-41b3-a23c-c3ad7cf011d5"
+      message_id: "zzzzzzzz"
       role: ROLE_AGENT
       parts {
         text: "Processing request..."
@@ -91,16 +91,16 @@ task {
     }
   }
   artifacts {
-    artifact_id: "bb39244e-2c35-436d-8d5f-b62967b15ae0"
+    artifact_id: "wwwwwwww"
     name: "result"
     parts {
       text: "Hello, World!"
     }
   }
   history {
-    message_id: "32166163067c40c0a71f74064c2bea33"
-    context_id: "36a81ce7-a041-4698-b029-f0d900ab1562"
-    task_id: "f2d64c50-0850-4abf-96bf-e5702967ed21"
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy"
+    task_id: "xxxxxxxx"
     role: ROLE_USER
     parts {
       text: "how much is 10 USD in INR?"
@@ -108,6 +108,8 @@ task {
   }
 }
 ```
+
+_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `vvvvvvvv`, `wwwwwwww` will be different UUIDs/request IDs)_
 
 This confirms your server is correctly handling basic A2A interactions with the updated SDK structure!
 

@@ -44,7 +44,7 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor):
 
         1. It retrieves the current task from the context or creates a new one, enqueueing it as the first event.
-        2. It enqueues a `TaskStatusUpdateEvent` with a state of `WORKING` to indicate the agent has begun processing.
+        2. It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing.
         3. It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
         4. Finally, it enqueues a `TaskArtifactUpdateEvent` containing the result text, marking it as the last chunk of the response.
 
