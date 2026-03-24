@@ -81,17 +81,10 @@ task {
   id: "xxxxxxxx"
   context_id: "yyyyyyyy"
   status {
-    state: TASK_STATE_WORKING
-    message {
-      message_id: "zzzzzzzz"
-      role: ROLE_AGENT
-      parts {
-        text: "Processing request..."
-      }
-    }
+    state: TASK_STATE_COMPLETED
   }
   artifacts {
-    artifact_id: "wwwwwwww"
+    artifact_id: "zzzzzzzz"
     name: "result"
     parts {
       text: "Hello, World!"
@@ -103,7 +96,14 @@ task {
     task_id: "xxxxxxxx"
     role: ROLE_USER
     parts {
-      text: "how much is 10 USD in INR?"
+      text: "Say hello."
+    }
+  }
+  history {
+    message_id: "wwwwwwww"
+    role: ROLE_AGENT
+    parts {
+      text: "Processing request..."
     }
   }
 }
