@@ -1348,7 +1348,7 @@ Content-Type: text/event-stream
 
 data: {"task": {"id": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
-data: {"artifactUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
+data: {"artifactUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "artifact": {"artifactId": "artifact-uuid", "parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
 data: {"statusUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
