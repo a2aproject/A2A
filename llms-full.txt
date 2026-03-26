@@ -6137,14 +6137,15 @@ We'll use the `helloworld` example located in [`a2a-samples/samples/python/agent
 
 An **Agent Skill** describes a specific capability or function the agent can perform. It's a building block that tells clients what kinds of tasks the agent is good for.
 
-Key attributes of an `AgentSkill` (defined in `a2a.types`):
+Attributes of an `AgentSkill` (defined in `a2a.types`):
 
 - `id`: A unique identifier for the skill.
 - `name`: A human-readable name.
 - `description`: A more detailed explanation of what the skill does.
 - `tags`: Keywords for categorization and discovery.
 - `examples`: Sample prompts or use cases.
-- `inputModes` / `outputModes`: Supported Media Types for input and output (e.g., "text/plain", "application/json").
+- `input_modes` / `output_modes`: Supported Media Types for input and output (e.g., "text/plain", "application/json").
+- `security_requirements`: Security schemes necessary for this skill.
 
 In `__main__.py`, you can see how a skill for the Helloworld agent is defined:
 
@@ -6161,9 +6162,10 @@ The **Agent Card** is a JSON document that an A2A Server makes available, typica
 Key attributes of an `AgentCard` (defined in `a2a.types`):
 
 - `name`, `description`, `version`: Basic identity information.
-- `url`: The endpoint where the A2A service can be reached.
-- `capabilities`: Specifies supported A2A features like `streaming` or `pushNotifications`.
-- `defaultInputModes` / `defaultOutputModes`: Default Media Types for the agent.
+- `icon_url`: A URL to an icon representing the agent.
+- `supported_interfaces`: Ordered list of endpoints and protocols where the A2A service can be reached.
+- `capabilities`: Supported A2A features like `streaming` or `extended_agent_card`.
+- `default_input_modes` / `default_output_modes`: Default Media Types for the agent.
 - `skills`: A list of `AgentSkill` objects that the agent offers.
 
 The `helloworld` example defines its Agent Card like this:
@@ -6172,7 +6174,7 @@ The `helloworld` example defines its Agent Card like this:
 --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/__main__.py:AgentCard"
 ```
 
-This card tells us the agent is named "Hello World Agent", runs at `http://localhost:9999/`, supports text interactions, and has the `hello_world` skill. It also indicates public authentication, meaning no specific credentials are required.
+This card tells us the agent is named "Hello World Agent", runs at `http://localhost:9999` using `JSONRPC`, supports text interactions, and has the `hello_world` skill. Its capabilities also indicate support for streaming and an extended authenticated configuration.
 
 Understanding the Agent Card is crucial because it's how a client discovers an agent and learns how to interact with it.
 </file>
@@ -6202,7 +6204,7 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgent"
     ```
 
-    It has a simple `invoke` method that returns the string "Hello World".
+    It has a simple `invoke` method that returns the string "Hello, World!".
 
 2. **The Executor (`HelloWorldAgentExecutor`)**:
     This class implements the `AgentExecutor` interface.
@@ -6223,9 +6225,11 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
 
         When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor):
 
-        1. It calls `self.agent.invoke()` to get the "Hello World" string.
-        2. It creates an A2A `Message` object using the `new_agent_text_message` utility function.
-        3. It enqueues this message onto the `event_queue`. The underlying `DefaultRequestHandler` will then process this queue to send the response(s) to the client. For a single message like this, it will result in a single response for `message/send` or a single event for `message/stream` before the stream closes.
+        1. It retrieves the current task from the context or creates a new one, enqueueing it as the first event.
+        2. It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing.
+        3. It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
+        4. It enqueues a `TaskArtifactUpdateEvent` containing the result text.
+        5. Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
 
     - **`cancel`**:
         The Hello World example's `cancel` method simply raises an exception, indicating that cancellation is not supported for this basic agent.
@@ -6262,15 +6266,16 @@ Let's break this down:
 
 2. **`A2AStarletteApplication`**:
 
-    - The `A2AStarletteApplication` class is instantiated with the `agent_card` and the `request_handler` (referred to as `http_handler` in its constructor).
-    - The `agent_card` is crucial because the server will expose it at the `/.well-known/agent-card.json` endpoint (by default).
-    - The `request_handler` is responsible for processing all incoming A2A method calls by interacting with your `AgentExecutor`.
+    - The `A2AStarletteApplication` class is instantiated with the `agent_card`, `request_handler` (referred to as `http_handler` in its constructor), and an optional `extended_agent_card`.
+    - The `agent_card` is exposed at the `/.well-known/agent-card.json` endpoint for public discovery.
+    - The `request_handler` processes all incoming A2A method calls by interacting with your `AgentExecutor`.
+    - The `extended_agent_card` provides additional capabilities and skills for authenticated users and is exposed via the `GetExtendedAgentCard` RPC method.
 
 3. **`uvicorn.run(server_app_builder.build(), ...)`**:
     - The `A2AStarletteApplication` has a `build()` method that constructs the actual Starlette application.
     - This application is then run using `uvicorn.run()`, making your agent accessible over HTTP.
-    - `host='0.0.0.0'` makes the server accessible on all network interfaces on your machine.
-    - `port=9999` specifies the port to listen on. This matches the `url` in the `AgentCard`.
+    - `host='127.0.0.1'` makes the server accessible only from your local machine.
+    - `port=9999` specifies the port to listen on. This matches the endpoints defined in the `AgentCard`'s `supported_interfaces`.
 
 ## Running the Helloworld Server
 
@@ -6289,7 +6294,7 @@ You should see output similar to this, indicating the server is running:
 INFO:     Started server process [xxxxx]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:9999 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://127.0.0.1:9999 (Press CTRL+C to quit)
 ```
 
 Your A2A Helloworld agent is now live and listening for requests! In the next step, we'll interact with it.
@@ -6335,58 +6340,135 @@ python samples/python/agents/helloworld/test_client.py
 
 Let's look at key parts of `test_client.py`:
 
-1. **Fetching the Agent Card & Initializing the Client**:
+1. **Fetching the Agent Card**:
 
     ```python { .no-copy }
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:A2ACardResolver"
     ```
 
-    The `A2ACardResolver` class is a convenience. It first fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL) and then initializes the client with it.
+    The `A2ACardResolver` class is a convenience. It first fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL) which is then used to initialize the client.
 
-2. **Sending a Non-Streaming Message (`send_message`)**:
+2. **Initializing the Client & Sending a Non-Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message/send"
     ```
 
-    - The `send_message_payload` constructs the data for `MessageSendParams`.
+    - A `ClientFactory` creates a non-streaming client based on the fetched card.
+    - We construct a `Message` object using `Role.ROLE_USER` and `Part` for the content.
     - This is wrapped in a `SendMessageRequest`.
-    - It includes a `message` object with the `role` set to "user" and the content in `parts`.
-    - The Helloworld agent's `execute` method will enqueue a single "Hello World" message. The `DefaultRequestHandler` will retrieve this and send it as the response.
-    - The `response` will be a `SendMessageResponse` object, which contains either a `SendMessageSuccessResponse` (with the agent's `Message` as the result) or a `JSONRPCErrorResponse`.
+    - The client's `send_message` method returns an async generator that yields a sequence of `Task` events from the agent.
 
-3. **Handling Task IDs (Illustrative Note for Helloworld)**:
-
-    The Helloworld client (`test_client.py`) doesn't attempt `get_task` or `cancel_task` directly because the simple Helloworld agent's `execute` method, when called via `message/send`, results in the `DefaultRequestHandler` returning a direct `Message` response rather than a `Task` object. More complex agents that explicitly manage tasks (like the LangGraph example) would return a `Task` object from `message/send`, and its `id` could then be used for `get_task` or `cancel_task`.
-
-4. **Sending a Streaming Message (`send_message_streaming`)**:
+3. **Initializing the Client & Sending a Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message_streaming"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message/stream"
     ```
 
-    - This method calls the agent's `message/stream` endpoint. The `DefaultRequestHandler` will invoke the `HelloWorldAgentExecutor.execute` method.
-    - The `execute` method enqueues one "Hello World" message, and then the event queue is closed.
-    - The client will receive this single message as one `SendStreamingMessageResponse` event, and then the stream will terminate.
-    - The `stream_response` is an `AsyncGenerator`.
+    - A new streaming client is created via `ClientFactory` configured with `streaming=True`.
+    - We again call `send_message` (which now handles both streaming and non-streaming under the same method name, based on the `ClientConfig` and agent `capabilities`).
+    - The response dynamically yields `Task` events as they are streamed over the network.
 
 ## Expected Output
 
-When you run `test_client.py`, you'll see JSON outputs for:
+When you run `test_client.py`, you'll see in protobuf text format outputs for:
 
-- The non-streaming response (a single "Hello World" message).
-- The streaming response (a single "Hello World" message as one chunk, after which the stream ends).
+- The non-streaming response (a single final `task` log detailing the history, status, and the generated artifact containing the "Hello, World!" text).
+- The streaming response (multiple discrete events including the initial `task`, a `status_update`, and a final `artifact_update` containing the "Hello, World!" text).
 
 The `id` fields in the output will vary with each run.
 
 ```console { .no-copy }
 // Non-streaming response
-{"jsonrpc":"2.0","id":"xxxxxxxx","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"yyyyyyyy"}}}
-// Streaming response (one chunk)
-{"jsonrpc":"2.0","id":"zzzzzzzz","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"wwwwwwww"}}}
+task {
+  id: "xxxxxxxx"
+  context_id: "yyyyyyyy"
+  status {
+    state: TASK_STATE_COMPLETED
+  }
+  artifacts {
+    artifact_id: "zzzzzzzz"
+    name: "result"
+    parts {
+      text: "Hello, World!"
+    }
+  }
+  history {
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy"
+    task_id: "xxxxxxxx"
+    role: ROLE_USER
+    parts {
+      text: "Say hello."
+    }
+  }
+  history {
+    message_id: "wwwwwwww"
+    role: ROLE_AGENT
+    parts {
+      text: "Processing request..."
+    }
+  }
+}
+
+// Streaming response
+task {
+  id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_SUBMITTED
+  }
+  history {
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy-s"
+    task_id: "xxxxxxxx-s"
+    role: ROLE_USER
+    parts {
+      text: "Say hello."
+    }
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_WORKING
+    message {
+      message_id: "zzzzzzzz-s"
+      role: ROLE_AGENT
+      parts {
+        text: "Processing request..."
+      }
+    }
+  }
+}
+
+Response chunk:
+artifact_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  artifact {
+    artifact_id: "wwwwwwww-s"
+    name: "result"
+    parts {
+      text: "Hello, World!"
+    }
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_COMPLETED
+  }
+}
 ```
 
-_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww` will be different UUIDs/request IDs)_
+_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `vvvvvvvv`, `wwwwwwww` will be different UUIDs/request IDs)_
 
 This confirms your server is correctly handling basic A2A interactions with the updated SDK structure!
 
@@ -10158,31 +10240,7 @@ Submodules
 
 * a2a.contrib.tasks.vertex_task_converter module
 
-  * "to_sdk_artifact()"
-
-  * "to_sdk_part()"
-
-  * "to_sdk_task()"
-
-  * "to_sdk_task_state()"
-
-  * "to_stored_artifact()"
-
-  * "to_stored_part()"
-
-  * "to_stored_task()"
-
-  * "to_stored_task_state()"
-
 * a2a.contrib.tasks.vertex_task_store module
-
-  * "VertexTaskStore"
-
-    * "VertexTaskStore.delete()"
-
-    * "VertexTaskStore.get()"
-
-    * "VertexTaskStore.save()"
 
 
 Module contents
@@ -10192,65 +10250,11 @@ Module contents
 <file path="sdk/python/a2a.contrib.tasks.vertex_task_converter.txt">
 a2a.contrib.tasks.vertex_task_converter module
 **********************************************
-
-a2a.contrib.tasks.vertex_task_converter.to_sdk_artifact(stored_artifact: TaskArtifact) -> Artifact
-
-   Converts a proto TaskArtifact to a SDK Artifact.
-
-a2a.contrib.tasks.vertex_task_converter.to_sdk_part(stored_part: Part) -> Part
-
-   Converts a proto Part to a SDK Part.
-
-a2a.contrib.tasks.vertex_task_converter.to_sdk_task(a2a_task: A2aTask) -> Task
-
-   Converts a proto A2aTask to a SDK Task.
-
-a2a.contrib.tasks.vertex_task_converter.to_sdk_task_state(stored_state: State) -> TaskState
-
-   Converts a proto A2aTask.State to a TaskState enum.
-
-a2a.contrib.tasks.vertex_task_converter.to_stored_artifact(artifact: Artifact) -> TaskArtifact
-
-   Converts a SDK Artifact to a proto TaskArtifact.
-
-a2a.contrib.tasks.vertex_task_converter.to_stored_part(part: Part) -> Part
-
-   Converts a SDK Part to a proto Part.
-
-a2a.contrib.tasks.vertex_task_converter.to_stored_task(task: Task) -> A2aTask
-
-   Converts a SDK Task to a proto A2aTask.
-
-a2a.contrib.tasks.vertex_task_converter.to_stored_task_state(task_state: TaskState) -> State
-
-   Converts a TaskState enum to a proto A2aTask.State enum value.
 </file>
 
 <file path="sdk/python/a2a.contrib.tasks.vertex_task_store.txt">
 a2a.contrib.tasks.vertex_task_store module
 ******************************************
-
-class a2a.contrib.tasks.vertex_task_store.VertexTaskStore(client: Client, agent_engine_resource_id: str)
-
-   Bases: "TaskStore"
-
-   Implementation of TaskStore using Vertex AI Agent Engine Task
-   Store.
-
-   Stores task objects in Vertex AI Agent Engine Task Store.
-
-   async delete(task_id: str, context: ServerCallContext | None = None) -> None
-
-      The backend doesn't support deleting tasks, so this is not
-      implemented.
-
-   async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
-
-      Retrieves a task from the database by ID.
-
-   async save(task: Task, context: ServerCallContext | None = None) -> None
-
-      Saves or updates a task in the store.
 </file>
 
 <file path="sdk/python/a2a.contrib.txt">
@@ -10267,25 +10271,7 @@ Subpackages
 
     * a2a.contrib.tasks.vertex_task_converter module
 
-      * "to_sdk_artifact()"
-
-      * "to_sdk_part()"
-
-      * "to_sdk_task()"
-
-      * "to_sdk_task_state()"
-
-      * "to_stored_artifact()"
-
-      * "to_stored_part()"
-
-      * "to_stored_task()"
-
-      * "to_stored_task_state()"
-
     * a2a.contrib.tasks.vertex_task_store module
-
-      * "VertexTaskStore"
 
   * Module contents
 
@@ -10937,7 +10923,7 @@ class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_ref
 a2a.server.apps.jsonrpc.fastapi_app module
 ******************************************
 
-class a2a.server.apps.jsonrpc.fastapi_app.A2AFastAPI(*, debug: ~typing.Annotated[bool, Doc('\n                Boolean indicating if debug tracebacks should be returned on server\n                errors.\n\n                Read more in the\n                [Starlette docs for Applications](https://www.starlette.dev/applications/#instantiating-the-application).\n                ')] = False, routes: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc("\n                **Note**: you probably shouldn't use this parameter, it is inherited\n                from Starlette and supported for compatibility.\n\n                ---\n\n                A list of routes to serve incoming HTTP and WebSocket requests.\n                "), <warnings.deprecated object at 0x7f01e8a38ad0>] = None, title: ~typing.Annotated[str, Doc('\n                The title of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(title="ChimichangApp")\n                ```\n                ')] = 'FastAPI', summary: ~typing.Annotated[str | None, Doc('\n                A short summary of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(summary="Deadpond\'s favorite app. Nuff said.")\n                ```\n                ')] = None, description: ~typing.Annotated[str, Doc('\n                A description of the API. Supports Markdown (using\n                [CommonMark syntax](https://commonmark.org/)).\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    description="""\n                                ChimichangApp API helps you do awesome stuff. 🚀\n\n                                ## Items\n\n                                You can **read items**.\n\n                                ## Users\n\n                                You will be able to:\n\n                                * **Create users** (_not implemented_).\n                                * **Read users** (_not implemented_).\n\n                                """\n                )\n                ```\n                ')] = '', version: ~typing.Annotated[str, Doc('\n                The version of the API.\n\n                **Note** This is the version of your application, not the version of\n                the OpenAPI specification nor the version of FastAPI being used.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(version="0.0.1")\n                ```\n                ')] = '0.1.0', openapi_url: ~typing.Annotated[str | None, Doc('\n                The URL where the OpenAPI schema will be served from.\n\n                If you set it to `None`, no OpenAPI schema will be served publicly, and\n                the default automatic endpoints `/docs` and `/redoc` will also be\n                disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#openapi-url).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(openapi_url="/api/v1/openapi.json")\n                ```\n                ')] = '/openapi.json', openapi_tags: ~typing.Annotated[list[dict[str, ~typing.Any]] | None, Doc('\n                A list of tags used by OpenAPI, these are the same `tags` you can set\n                in the *path operations*, like:\n\n                * `@app.get("/users/", tags=["users"])`\n                * `@app.get("/items/", tags=["items"])`\n\n                The order of the tags can be used to specify the order shown in\n                tools like Swagger UI, used in the automatic path `/docs`.\n\n                It\'s not required to specify all the tags used.\n\n                The tags that are not declared MAY be organized randomly or based\n                on the tools\' logic. Each tag name in the list MUST be unique.\n\n                The value of each item is a `dict` containing:\n\n                * `name`: The name of the tag.\n                * `description`: A short description of the tag.\n                    [CommonMark syntax](https://commonmark.org/) MAY be used for rich\n                    text representation.\n                * `externalDocs`: Additional external documentation for this tag. If\n                    provided, it would contain a `dict` with:\n                    * `description`: A short description of the target documentation.\n                        [CommonMark syntax](https://commonmark.org/) MAY be used for\n                        rich text representation.\n                    * `url`: The URL for the target documentation. Value MUST be in\n                        the form of a URL.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-tags).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                tags_metadata = [\n                    {\n                        "name": "users",\n                        "description": "Operations with users. The **login** logic is also here.",\n                    },\n                    {\n                        "name": "items",\n                        "description": "Manage items. So _fancy_ they have their own docs.",\n                        "externalDocs": {\n                            "description": "Items external docs",\n                            "url": "https://fastapi.tiangolo.com/",\n                        },\n                    },\n                ]\n\n                app = FastAPI(openapi_tags=tags_metadata)\n                ```\n                ')] = None, servers: ~typing.Annotated[list[dict[str, str | ~typing.Any]] | None, Doc('\n                A `list` of `dict`s with connectivity information to a target server.\n\n                You would use it, for example, if your application is served from\n                different domains and you want to use the same Swagger UI in the\n                browser to interact with each of them (instead of having multiple\n                browser tabs open). Or if you want to leave fixed the possible URLs.\n\n                If the servers `list` is not provided, or is an empty `list`, the\n                `servers` property in the generated OpenAPI will be:\n\n                * a `dict` with a `url` value of the application\'s mounting point\n                (`root_path`) if it\'s different from `/`.\n                * otherwise, the `servers` property will be omitted from the OpenAPI\n                schema.\n\n                Each item in the `list` is a `dict` containing:\n\n                * `url`: A URL to the target host. This URL supports Server Variables\n                and MAY be relative, to indicate that the host location is relative\n                to the location where the OpenAPI document is being served. Variable\n                substitutions will be made when a variable is named in `{`brackets`}`.\n                * `description`: An optional string describing the host designated by\n                the URL. [CommonMark syntax](https://commonmark.org/) MAY be used for\n                rich text representation.\n                * `variables`: A `dict` between a variable name and its value. The value\n                    is used for substitution in the server\'s URL template.\n\n                Read more in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#additional-servers).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    servers=[\n                        {"url": "https://stag.example.com", "description": "Staging environment"},\n                        {"url": "https://prod.example.com", "description": "Production environment"},\n                    ]\n                )\n                ```\n                ')] = None, dependencies: ~typing.Annotated[~collections.abc.Sequence[~fastapi.params.Depends] | None, Doc('\n                A list of global dependencies, they will be applied to each\n                *path operation*, including in sub-routers.\n\n                Read more about it in the\n                [FastAPI docs for Global Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/global-dependencies/).\n\n                **Example**\n\n                ```python\n                from fastapi import Depends, FastAPI\n\n                from .dependencies import func_dep_1, func_dep_2\n\n                app = FastAPI(dependencies=[Depends(func_dep_1), Depends(func_dep_2)])\n                ```\n                ')] = None, default_response_class: ~typing.Annotated[type[~starlette.responses.Response], Doc('\n                The default response class to be used.\n\n                Read more in the\n                [FastAPI docs for Custom Response - HTML, Stream, File, others](https://fastapi.tiangolo.com/advanced/custom-response/#default-response-class).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n                from fastapi.responses import ORJSONResponse\n\n                app = FastAPI(default_response_class=ORJSONResponse)\n                ```\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, redirect_slashes: ~typing.Annotated[bool, Doc('\n                Whether to detect and redirect slashes in URLs when the client doesn\'t\n                use the same format.\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(redirect_slashes=True)  # the default\n\n                @app.get("/items/")\n                async def read_items():\n                    return [{"item_id": "Foo"}]\n                ```\n\n                With this app, if a client goes to `/items` (without a trailing slash),\n                they will be automatically redirected with an HTTP status code of 307\n                to `/items/`.\n                ')] = True, docs_url: ~typing.Annotated[str | None, Doc('\n                The path to the automatic interactive API documentation.\n                It is handled in the browser by Swagger UI.\n\n                The default URL is `/docs`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url=None)\n                ```\n                ')] = '/docs', redoc_url: ~typing.Annotated[str | None, Doc('\n                The path to the alternative automatic interactive API documentation\n                provided by ReDoc.\n\n                The default URL is `/redoc`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url="redocumentation")\n                ```\n                ')] = '/redoc', swagger_ui_oauth2_redirect_url: ~typing.Annotated[str | None, Doc('\n                The OAuth2 redirect endpoint for the Swagger UI.\n\n                By default it is `/docs/oauth2-redirect`.\n\n                This is only used if you use OAuth2 (with the "Authorize" button)\n                with Swagger UI.\n                ')] = '/docs/oauth2-redirect', swagger_ui_init_oauth: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                OAuth2 configuration for the Swagger UI, by default shown at `/docs`.\n\n                Read more about the available configuration options in the\n                [Swagger UI docs](https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/).\n                ')] = None, middleware: ~typing.Annotated[~collections.abc.Sequence[~starlette.middleware.Middleware] | None, Doc('\n                List of middleware to be added when creating the application.\n\n                In FastAPI you would normally do this with `app.add_middleware()`\n                instead.\n\n                Read more in the\n                [FastAPI docs for Middleware](https://fastapi.tiangolo.com/tutorial/middleware/).\n                ')] = None, exception_handlers: ~typing.Annotated[dict[int | type[Exception], ~collections.abc.Callable[[~starlette.requests.Request, ~typing.Any], ~collections.abc.Coroutine[~typing.Any, ~typing.Any, ~starlette.responses.Response]]] | None, Doc('\n                A dictionary with handlers for exceptions.\n\n                In FastAPI, you would normally use the decorator\n                `@app.exception_handler()`.\n\n                Read more in the\n                [FastAPI docs for Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/).\n                ')] = None, on_startup: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of startup event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, on_shutdown: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of shutdown event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, lifespan: ~typing.Annotated[~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[None]] | ~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[~collections.abc.Mapping[str, ~typing.Any]]] | None, Doc('\n                A `Lifespan` context manager handler. This replaces `startup` and\n                `shutdown` functions with a single context manager.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, terms_of_service: ~typing.Annotated[str | None, Doc('\n                A URL to the Terms of Service for your API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(terms_of_service="http://example.com/terms/")\n                ```\n                ')] = None, contact: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the contact information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) The name of the contact person/organization.\n                * `url`: (`str`) A URL pointing to the contact information. MUST be in\n                    the format of a URL.\n                * `email`: (`str`) The email address of the contact person/organization.\n                    MUST be in the format of an email address.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    contact={\n                        "name": "Deadpoolio the Amazing",\n                        "url": "http://x-force.example.com/contact/",\n                        "email": "dp@x-force.example.com",\n                    }\n                )\n                ```\n                ')] = None, license_info: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the license information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) **REQUIRED** (if a `license_info` is set). The\n                    license name used for the API.\n                * `identifier`: (`str`) An [SPDX](https://spdx.dev/) license expression\n                    for the API. The `identifier` field is mutually exclusive of the `url`\n                    field. Available since OpenAPI 3.1.0, FastAPI 0.99.0.\n                * `url`: (`str`) A URL to the license used for the API. This MUST be\n                    the format of a URL.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    license_info={\n                        "name": "Apache 2.0",\n                        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",\n                    }\n                )\n                ```\n                ')] = None, openapi_prefix: ~typing.Annotated[str, Doc('\n                A URL prefix for the OpenAPI URL.\n                '), <warnings.deprecated object at 0x7f01e882b8f0>] = '', root_path: ~typing.Annotated[str, Doc('\n                A path prefix handled by a proxy that is not seen by the application\n                but is seen by external clients, which affects things like Swagger UI.\n\n                Read more about it at the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path="/api/v1")\n                ```\n                ')] = '', root_path_in_servers: ~typing.Annotated[bool, Doc('\n                To disable automatically generating the URLs in the `servers` field\n                in the autogenerated OpenAPI using the `root_path`.\n\n                Read more about it in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#disable-automatic-server-from-root-path).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path_in_servers=False)\n                ```\n                ')] = True, responses: ~typing.Annotated[dict[int | str, dict[str, ~typing.Any]] | None, Doc('\n                Additional responses to be shown in OpenAPI.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Additional Responses in OpenAPI](https://fastapi.tiangolo.com/advanced/additional-responses/).\n\n                And in the\n                [FastAPI docs for Bigger Applications](https://fastapi.tiangolo.com/tutorial/bigger-applications/#include-an-apirouter-with-a-custom-prefix-tags-responses-and-dependencies).\n                ')] = None, callbacks: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc('\n                OpenAPI callbacks that should apply to all *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Callbacks](https://fastapi.tiangolo.com/advanced/openapi-callbacks/).\n                ')] = None, webhooks: ~typing.Annotated[~fastapi.routing.APIRouter | None, Doc("\n                Add OpenAPI webhooks. This is similar to `callbacks` but it doesn't\n                depend on specific *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                **Note**: This is available since OpenAPI 3.1.0, FastAPI 0.99.0.\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Webhooks](https://fastapi.tiangolo.com/advanced/openapi-webhooks/).\n                ")] = None, deprecated: ~typing.Annotated[bool | None, Doc("\n                Mark all *path operations* as deprecated. You probably don't need it,\n                but it's available.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Path Operation Configuration](https://fastapi.tiangolo.com/tutorial/path-operation-configuration/#deprecate-a-path-operation).\n                ")] = None, include_in_schema: ~typing.Annotated[bool, Doc("\n                To include (or not) all the *path operations* in the generated OpenAPI.\n                You probably don't need it, but it's available.\n\n                This affects the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Query Parameters and String Validations](https://fastapi.tiangolo.com/tutorial/query-params-str-validations/#exclude-parameters-from-openapi).\n                ")] = True, swagger_ui_parameters: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                Parameters to configure Swagger UI, the autogenerated interactive API\n                documentation (by default at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs about how to Configure Swagger UI](https://fastapi.tiangolo.com/how-to/configure-swagger-ui/).\n                ')] = None, generate_unique_id_function: ~typing.Annotated[~collections.abc.Callable[[~fastapi.routing.APIRoute], str], Doc('\n                Customize the function used to generate unique IDs for the *path\n                operations* shown in the generated OpenAPI.\n\n                This is particularly useful when automatically generating clients or\n                SDKs for your API.\n\n                Read more about it in the\n                [FastAPI docs about how to Generate Clients](https://fastapi.tiangolo.com/advanced/generate-clients/#custom-generate-unique-id-function).\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, separate_input_output_schemas: ~typing.Annotated[bool, Doc("\n                Whether to generate separate OpenAPI schemas for request body and\n                response body when the results would be more precise.\n\n                This is particularly useful when automatically generating clients.\n\n                For example, if you have a model like:\n\n                ```python\n                from pydantic import BaseModel\n\n                class Item(BaseModel):\n                    name: str\n                    tags: list[str] = []\n                ```\n\n                When `Item` is used for input, a request body, `tags` is not required,\n                the client doesn't have to provide it.\n\n                But when using `Item` for output, for a response body, `tags` is always\n                available because it has a default value, even if it's just an empty\n                list. So, the client should be able to always expect it.\n\n                In this case, there would be two different schemas, one for input and\n                another one for output.\n\n                Read more about it in the\n                [FastAPI docs about how to separate schemas for input and output](https://fastapi.tiangolo.com/how-to/separate-openapi-schemas)\n                ")] = True, openapi_external_docs: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                This field allows you to provide additional external documentation links.\n                If provided, it must be a dictionary containing:\n\n                * `description`: A brief description of the external documentation.\n                * `url`: The URL pointing to the external documentation. The value **MUST**\n                be a valid URL format.\n\n                **Example**:\n\n                ```python\n                from fastapi import FastAPI\n\n                external_docs = {\n                    "description": "Detailed API Reference",\n                    "url": "https://example.com/api-docs",\n                }\n\n                app = FastAPI(openapi_external_docs=external_docs)\n                ```\n                ')] = None, strict_content_type: ~typing.Annotated[bool, Doc("\n                Enable strict checking for request Content-Type headers.\n\n                When `True` (the default), requests with a body that do not include\n                a `Content-Type` header will **not** be parsed as JSON.\n\n                This prevents potential cross-site request forgery (CSRF) attacks\n                that exploit the browser's ability to send requests without a\n                Content-Type header, bypassing CORS preflight checks. In particular\n                applicable for apps that need to be run locally (in localhost).\n\n                When `False`, requests without a `Content-Type` header will have\n                their body parsed as JSON, which maintains compatibility with\n                certain clients that don't send `Content-Type` headers.\n\n                Read more about it in the\n                [FastAPI docs for Strict Content-Type](https://fastapi.tiangolo.com/advanced/strict-content-type/).\n                ")] = True, **extra: ~typing.Annotated[~typing.Any, Doc('\n                Extra keyword arguments to be stored in the app, not used by FastAPI\n                anywhere.\n                ')])
+class a2a.server.apps.jsonrpc.fastapi_app.A2AFastAPI(*, debug: ~typing.Annotated[bool, Doc('\n                Boolean indicating if debug tracebacks should be returned on server\n                errors.\n\n                Read more in the\n                [Starlette docs for Applications](https://www.starlette.dev/applications/#instantiating-the-application).\n                ')] = False, routes: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc("\n                **Note**: you probably shouldn't use this parameter, it is inherited\n                from Starlette and supported for compatibility.\n\n                ---\n\n                A list of routes to serve incoming HTTP and WebSocket requests.\n                "), <warnings.deprecated object at 0x7f4d81120650>] = None, title: ~typing.Annotated[str, Doc('\n                The title of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(title="ChimichangApp")\n                ```\n                ')] = 'FastAPI', summary: ~typing.Annotated[str | None, Doc('\n                A short summary of the API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(summary="Deadpond\'s favorite app. Nuff said.")\n                ```\n                ')] = None, description: ~typing.Annotated[str, Doc('\n                A description of the API. Supports Markdown (using\n                [CommonMark syntax](https://commonmark.org/)).\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    description="""\n                                ChimichangApp API helps you do awesome stuff. 🚀\n\n                                ## Items\n\n                                You can **read items**.\n\n                                ## Users\n\n                                You will be able to:\n\n                                * **Create users** (_not implemented_).\n                                * **Read users** (_not implemented_).\n\n                                """\n                )\n                ```\n                ')] = '', version: ~typing.Annotated[str, Doc('\n                The version of the API.\n\n                **Note** This is the version of your application, not the version of\n                the OpenAPI specification nor the version of FastAPI being used.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(version="0.0.1")\n                ```\n                ')] = '0.1.0', openapi_url: ~typing.Annotated[str | None, Doc('\n                The URL where the OpenAPI schema will be served from.\n\n                If you set it to `None`, no OpenAPI schema will be served publicly, and\n                the default automatic endpoints `/docs` and `/redoc` will also be\n                disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#openapi-url).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(openapi_url="/api/v1/openapi.json")\n                ```\n                ')] = '/openapi.json', openapi_tags: ~typing.Annotated[list[dict[str, ~typing.Any]] | None, Doc('\n                A list of tags used by OpenAPI, these are the same `tags` you can set\n                in the *path operations*, like:\n\n                * `@app.get("/users/", tags=["users"])`\n                * `@app.get("/items/", tags=["items"])`\n\n                The order of the tags can be used to specify the order shown in\n                tools like Swagger UI, used in the automatic path `/docs`.\n\n                It\'s not required to specify all the tags used.\n\n                The tags that are not declared MAY be organized randomly or based\n                on the tools\' logic. Each tag name in the list MUST be unique.\n\n                The value of each item is a `dict` containing:\n\n                * `name`: The name of the tag.\n                * `description`: A short description of the tag.\n                    [CommonMark syntax](https://commonmark.org/) MAY be used for rich\n                    text representation.\n                * `externalDocs`: Additional external documentation for this tag. If\n                    provided, it would contain a `dict` with:\n                    * `description`: A short description of the target documentation.\n                        [CommonMark syntax](https://commonmark.org/) MAY be used for\n                        rich text representation.\n                    * `url`: The URL for the target documentation. Value MUST be in\n                        the form of a URL.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-tags).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                tags_metadata = [\n                    {\n                        "name": "users",\n                        "description": "Operations with users. The **login** logic is also here.",\n                    },\n                    {\n                        "name": "items",\n                        "description": "Manage items. So _fancy_ they have their own docs.",\n                        "externalDocs": {\n                            "description": "Items external docs",\n                            "url": "https://fastapi.tiangolo.com/",\n                        },\n                    },\n                ]\n\n                app = FastAPI(openapi_tags=tags_metadata)\n                ```\n                ')] = None, servers: ~typing.Annotated[list[dict[str, str | ~typing.Any]] | None, Doc('\n                A `list` of `dict`s with connectivity information to a target server.\n\n                You would use it, for example, if your application is served from\n                different domains and you want to use the same Swagger UI in the\n                browser to interact with each of them (instead of having multiple\n                browser tabs open). Or if you want to leave fixed the possible URLs.\n\n                If the servers `list` is not provided, or is an empty `list`, the\n                `servers` property in the generated OpenAPI will be:\n\n                * a `dict` with a `url` value of the application\'s mounting point\n                (`root_path`) if it\'s different from `/`.\n                * otherwise, the `servers` property will be omitted from the OpenAPI\n                schema.\n\n                Each item in the `list` is a `dict` containing:\n\n                * `url`: A URL to the target host. This URL supports Server Variables\n                and MAY be relative, to indicate that the host location is relative\n                to the location where the OpenAPI document is being served. Variable\n                substitutions will be made when a variable is named in `{`brackets`}`.\n                * `description`: An optional string describing the host designated by\n                the URL. [CommonMark syntax](https://commonmark.org/) MAY be used for\n                rich text representation.\n                * `variables`: A `dict` between a variable name and its value. The value\n                    is used for substitution in the server\'s URL template.\n\n                Read more in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#additional-servers).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(\n                    servers=[\n                        {"url": "https://stag.example.com", "description": "Staging environment"},\n                        {"url": "https://prod.example.com", "description": "Production environment"},\n                    ]\n                )\n                ```\n                ')] = None, dependencies: ~typing.Annotated[~collections.abc.Sequence[~fastapi.params.Depends] | None, Doc('\n                A list of global dependencies, they will be applied to each\n                *path operation*, including in sub-routers.\n\n                Read more about it in the\n                [FastAPI docs for Global Dependencies](https://fastapi.tiangolo.com/tutorial/dependencies/global-dependencies/).\n\n                **Example**\n\n                ```python\n                from fastapi import Depends, FastAPI\n\n                from .dependencies import func_dep_1, func_dep_2\n\n                app = FastAPI(dependencies=[Depends(func_dep_1), Depends(func_dep_2)])\n                ```\n                ')] = None, default_response_class: ~typing.Annotated[type[~starlette.responses.Response], Doc('\n                The default response class to be used.\n\n                Read more in the\n                [FastAPI docs for Custom Response - HTML, Stream, File, others](https://fastapi.tiangolo.com/advanced/custom-response/#default-response-class).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n                from fastapi.responses import ORJSONResponse\n\n                app = FastAPI(default_response_class=ORJSONResponse)\n                ```\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, redirect_slashes: ~typing.Annotated[bool, Doc('\n                Whether to detect and redirect slashes in URLs when the client doesn\'t\n                use the same format.\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(redirect_slashes=True)  # the default\n\n                @app.get("/items/")\n                async def read_items():\n                    return [{"item_id": "Foo"}]\n                ```\n\n                With this app, if a client goes to `/items` (without a trailing slash),\n                they will be automatically redirected with an HTTP status code of 307\n                to `/items/`.\n                ')] = True, docs_url: ~typing.Annotated[str | None, Doc('\n                The path to the automatic interactive API documentation.\n                It is handled in the browser by Swagger UI.\n\n                The default URL is `/docs`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url=None)\n                ```\n                ')] = '/docs', redoc_url: ~typing.Annotated[str | None, Doc('\n                The path to the alternative automatic interactive API documentation\n                provided by ReDoc.\n\n                The default URL is `/redoc`. You can disable it by setting it to `None`.\n\n                If `openapi_url` is set to `None`, this will be automatically disabled.\n\n                Read more in the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#docs-urls).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(docs_url="/documentation", redoc_url="redocumentation")\n                ```\n                ')] = '/redoc', swagger_ui_oauth2_redirect_url: ~typing.Annotated[str | None, Doc('\n                The OAuth2 redirect endpoint for the Swagger UI.\n\n                By default it is `/docs/oauth2-redirect`.\n\n                This is only used if you use OAuth2 (with the "Authorize" button)\n                with Swagger UI.\n                ')] = '/docs/oauth2-redirect', swagger_ui_init_oauth: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                OAuth2 configuration for the Swagger UI, by default shown at `/docs`.\n\n                Read more about the available configuration options in the\n                [Swagger UI docs](https://swagger.io/docs/open-source-tools/swagger-ui/usage/oauth2/).\n                ')] = None, middleware: ~typing.Annotated[~collections.abc.Sequence[~starlette.middleware.Middleware] | None, Doc('\n                List of middleware to be added when creating the application.\n\n                In FastAPI you would normally do this with `app.add_middleware()`\n                instead.\n\n                Read more in the\n                [FastAPI docs for Middleware](https://fastapi.tiangolo.com/tutorial/middleware/).\n                ')] = None, exception_handlers: ~typing.Annotated[dict[int | type[Exception], ~collections.abc.Callable[[~starlette.requests.Request, ~typing.Any], ~collections.abc.Coroutine[~typing.Any, ~typing.Any, ~starlette.responses.Response]]] | None, Doc('\n                A dictionary with handlers for exceptions.\n\n                In FastAPI, you would normally use the decorator\n                `@app.exception_handler()`.\n\n                Read more in the\n                [FastAPI docs for Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/).\n                ')] = None, on_startup: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of startup event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, on_shutdown: ~typing.Annotated[~collections.abc.Sequence[~collections.abc.Callable[[], ~typing.Any]] | None, Doc('\n                A list of shutdown event handler functions.\n\n                You should instead use the `lifespan` handlers.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, lifespan: ~typing.Annotated[~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[None]] | ~collections.abc.Callable[[~fastapi.applications.AppType], ~contextlib.AbstractAsyncContextManager[~collections.abc.Mapping[str, ~typing.Any]]] | None, Doc('\n                A `Lifespan` context manager handler. This replaces `startup` and\n                `shutdown` functions with a single context manager.\n\n                Read more in the\n                [FastAPI docs for `lifespan`](https://fastapi.tiangolo.com/advanced/events/).\n                ')] = None, terms_of_service: ~typing.Annotated[str | None, Doc('\n                A URL to the Terms of Service for your API.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(terms_of_service="http://example.com/terms/")\n                ```\n                ')] = None, contact: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the contact information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) The name of the contact person/organization.\n                * `url`: (`str`) A URL pointing to the contact information. MUST be in\n                    the format of a URL.\n                * `email`: (`str`) The email address of the contact person/organization.\n                    MUST be in the format of an email address.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    contact={\n                        "name": "Deadpoolio the Amazing",\n                        "url": "http://x-force.example.com/contact/",\n                        "email": "dp@x-force.example.com",\n                    }\n                )\n                ```\n                ')] = None, license_info: ~typing.Annotated[dict[str, str | ~typing.Any] | None, Doc('\n                A dictionary with the license information for the exposed API.\n\n                It can contain several fields.\n\n                * `name`: (`str`) **REQUIRED** (if a `license_info` is set). The\n                    license name used for the API.\n                * `identifier`: (`str`) An [SPDX](https://spdx.dev/) license expression\n                    for the API. The `identifier` field is mutually exclusive of the `url`\n                    field. Available since OpenAPI 3.1.0, FastAPI 0.99.0.\n                * `url`: (`str`) A URL to the license used for the API. This MUST be\n                    the format of a URL.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more at the\n                [FastAPI docs for Metadata and Docs URLs](https://fastapi.tiangolo.com/tutorial/metadata/#metadata-for-api).\n\n                **Example**\n\n                ```python\n                app = FastAPI(\n                    license_info={\n                        "name": "Apache 2.0",\n                        "url": "https://www.apache.org/licenses/LICENSE-2.0.html",\n                    }\n                )\n                ```\n                ')] = None, openapi_prefix: ~typing.Annotated[str, Doc('\n                A URL prefix for the OpenAPI URL.\n                '), <warnings.deprecated object at 0x7f4d81120ad0>] = '', root_path: ~typing.Annotated[str, Doc('\n                A path prefix handled by a proxy that is not seen by the application\n                but is seen by external clients, which affects things like Swagger UI.\n\n                Read more about it at the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path="/api/v1")\n                ```\n                ')] = '', root_path_in_servers: ~typing.Annotated[bool, Doc('\n                To disable automatically generating the URLs in the `servers` field\n                in the autogenerated OpenAPI using the `root_path`.\n\n                Read more about it in the\n                [FastAPI docs for Behind a Proxy](https://fastapi.tiangolo.com/advanced/behind-a-proxy/#disable-automatic-server-from-root-path).\n\n                **Example**\n\n                ```python\n                from fastapi import FastAPI\n\n                app = FastAPI(root_path_in_servers=False)\n                ```\n                ')] = True, responses: ~typing.Annotated[dict[int | str, dict[str, ~typing.Any]] | None, Doc('\n                Additional responses to be shown in OpenAPI.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Additional Responses in OpenAPI](https://fastapi.tiangolo.com/advanced/additional-responses/).\n\n                And in the\n                [FastAPI docs for Bigger Applications](https://fastapi.tiangolo.com/tutorial/bigger-applications/#include-an-apirouter-with-a-custom-prefix-tags-responses-and-dependencies).\n                ')] = None, callbacks: ~typing.Annotated[list[~starlette.routing.BaseRoute] | None, Doc('\n                OpenAPI callbacks that should apply to all *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Callbacks](https://fastapi.tiangolo.com/advanced/openapi-callbacks/).\n                ')] = None, webhooks: ~typing.Annotated[~fastapi.routing.APIRouter | None, Doc("\n                Add OpenAPI webhooks. This is similar to `callbacks` but it doesn't\n                depend on specific *path operations*.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                **Note**: This is available since OpenAPI 3.1.0, FastAPI 0.99.0.\n\n                Read more about it in the\n                [FastAPI docs for OpenAPI Webhooks](https://fastapi.tiangolo.com/advanced/openapi-webhooks/).\n                ")] = None, deprecated: ~typing.Annotated[bool | None, Doc("\n                Mark all *path operations* as deprecated. You probably don't need it,\n                but it's available.\n\n                It will be added to the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Path Operation Configuration](https://fastapi.tiangolo.com/tutorial/path-operation-configuration/#deprecate-a-path-operation).\n                ")] = None, include_in_schema: ~typing.Annotated[bool, Doc("\n                To include (or not) all the *path operations* in the generated OpenAPI.\n                You probably don't need it, but it's available.\n\n                This affects the generated OpenAPI (e.g. visible at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs for Query Parameters and String Validations](https://fastapi.tiangolo.com/tutorial/query-params-str-validations/#exclude-parameters-from-openapi).\n                ")] = True, swagger_ui_parameters: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                Parameters to configure Swagger UI, the autogenerated interactive API\n                documentation (by default at `/docs`).\n\n                Read more about it in the\n                [FastAPI docs about how to Configure Swagger UI](https://fastapi.tiangolo.com/how-to/configure-swagger-ui/).\n                ')] = None, generate_unique_id_function: ~typing.Annotated[~collections.abc.Callable[[~fastapi.routing.APIRoute], str], Doc('\n                Customize the function used to generate unique IDs for the *path\n                operations* shown in the generated OpenAPI.\n\n                This is particularly useful when automatically generating clients or\n                SDKs for your API.\n\n                Read more about it in the\n                [FastAPI docs about how to Generate Clients](https://fastapi.tiangolo.com/advanced/generate-clients/#custom-generate-unique-id-function).\n                ')] = <fastapi.datastructures.DefaultPlaceholder object>, separate_input_output_schemas: ~typing.Annotated[bool, Doc("\n                Whether to generate separate OpenAPI schemas for request body and\n                response body when the results would be more precise.\n\n                This is particularly useful when automatically generating clients.\n\n                For example, if you have a model like:\n\n                ```python\n                from pydantic import BaseModel\n\n                class Item(BaseModel):\n                    name: str\n                    tags: list[str] = []\n                ```\n\n                When `Item` is used for input, a request body, `tags` is not required,\n                the client doesn't have to provide it.\n\n                But when using `Item` for output, for a response body, `tags` is always\n                available because it has a default value, even if it's just an empty\n                list. So, the client should be able to always expect it.\n\n                In this case, there would be two different schemas, one for input and\n                another one for output.\n\n                Read more about it in the\n                [FastAPI docs about how to separate schemas for input and output](https://fastapi.tiangolo.com/how-to/separate-openapi-schemas)\n                ")] = True, openapi_external_docs: ~typing.Annotated[dict[str, ~typing.Any] | None, Doc('\n                This field allows you to provide additional external documentation links.\n                If provided, it must be a dictionary containing:\n\n                * `description`: A brief description of the external documentation.\n                * `url`: The URL pointing to the external documentation. The value **MUST**\n                be a valid URL format.\n\n                **Example**:\n\n                ```python\n                from fastapi import FastAPI\n\n                external_docs = {\n                    "description": "Detailed API Reference",\n                    "url": "https://example.com/api-docs",\n                }\n\n                app = FastAPI(openapi_external_docs=external_docs)\n                ```\n                ')] = None, strict_content_type: ~typing.Annotated[bool, Doc("\n                Enable strict checking for request Content-Type headers.\n\n                When `True` (the default), requests with a body that do not include\n                a `Content-Type` header will **not** be parsed as JSON.\n\n                This prevents potential cross-site request forgery (CSRF) attacks\n                that exploit the browser's ability to send requests without a\n                Content-Type header, bypassing CORS preflight checks. In particular\n                applicable for apps that need to be run locally (in localhost).\n\n                When `False`, requests without a `Content-Type` header will have\n                their body parsed as JSON, which maintains compatibility with\n                certain clients that don't send `Content-Type` headers.\n\n                Read more about it in the\n                [FastAPI docs for Strict Content-Type](https://fastapi.tiangolo.com/advanced/strict-content-type/).\n                ")] = True, **extra: ~typing.Annotated[~typing.Any, Doc('\n                Extra keyword arguments to be stored in the app, not used by FastAPI\n                anywhere.\n                ')])
 
    Bases: "FastAPI"
 
@@ -20709,7 +20695,7 @@ class a2a.utils.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f01e8ab2e50>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f4d82129450>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -20735,7 +20721,7 @@ class a2a.utils.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f01e8ab2d50>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f4d823db350>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -20779,7 +20765,7 @@ class a2a.utils.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f01e8ab2e50>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f4d82129450>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -20799,7 +20785,7 @@ class a2a.utils.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f01e8ab2d50>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f4d823db350>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
