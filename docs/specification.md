@@ -1346,11 +1346,11 @@ Authorization: Bearer token
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
-data: {"task": {"id": "task-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
+data: {"task": {"id": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
-data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
+data: {"artifactUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "artifact": {"artifactId": "artifact-uuid", "parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
+data: {"statusUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1438,7 +1438,7 @@ A2A-Version: 0.5
 
 ```http
 HTTP/1.1 400 Bad Request
-Content-Type: application/problem+json
+Content-Type: application/json
 
 {
   "type": "https://a2a-protocol.org/errors/version-not-supported",
@@ -1568,7 +1568,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 400 Bad Request
-Content-Type: application/problem+json
+Content-Type: application/json
 
 {
   "status": 400,
@@ -2207,7 +2207,7 @@ The JSON-RPC protocol binding provides a simple, HTTP-based interface using JSON
 ### 9.1. Protocol Requirements
 
 - **Protocol:** JSON-RPC 2.0 over HTTP(S)
-- **Content-Type:** `application/json` for requests and responses
+- **Content-Type:** `application/json` for requests and responses (including error bodies)
 - **Method Naming:** PascalCase method names matching gRPC conventions (e.g., `SendMessage`, `GetTask`)
 - **Streaming:** Server-Sent Events (`text/event-stream`)
 
@@ -2724,7 +2724,7 @@ The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP 
 ### 11.1. Protocol Requirements
 
 - **Protocol:** HTTP(S) with JSON payloads
-- **Content-Type:** `application/json` for requests and responses
+- **Content-Type:** `application/json` for requests and responses (including error bodies)
 - **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
 - **URL Patterns:** RESTful resource-based URLs
 - **Streaming:** Server-Sent Events for real-time updates
