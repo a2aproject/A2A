@@ -1287,7 +1287,7 @@ This section provides illustrative examples of common A2A interactions across di
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 
 {
@@ -1303,7 +1303,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "task": {
@@ -1328,7 +1328,7 @@ Content-Type: application/a2a+json
 ```http
 POST /message:stream HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 
 {
@@ -1362,7 +1362,7 @@ data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_C
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 
 {
@@ -1378,7 +1378,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "task": {
@@ -1399,7 +1399,7 @@ Content-Type: application/a2a+json
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 
 {
@@ -1421,7 +1421,7 @@ Authorization: Bearer token
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 A2A-Version: 0.5
 
@@ -1467,7 +1467,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "tasks": [
@@ -1500,7 +1500,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "tasks": [
@@ -1542,7 +1542,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "tasks": [
@@ -1599,7 +1599,7 @@ Content-Type: application/problem+json
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 
 {
@@ -1628,7 +1628,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "task": {
@@ -1648,7 +1648,7 @@ Content-Type: application/a2a+json
 POST /webhook/a2a-notifications HTTP/1.1
 Host: client.example.com
 Authorization: Bearer server-generated-jwt
-Content-Type: application/a2a+json
+Content-Type: application/json
 X-A2A-Notification-Token: secure-client-token-for-task-aaa
 
 {
@@ -1672,7 +1672,7 @@ X-A2A-Notification-Token: secure-client-token-for-task-aaa
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 
 {
@@ -1697,7 +1697,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "task": {
@@ -1733,7 +1733,7 @@ Content-Type: application/a2a+json
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 
 {
@@ -1766,7 +1766,7 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "task": {
@@ -1832,7 +1832,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "name": "Extended Agent with Additional Skills",
