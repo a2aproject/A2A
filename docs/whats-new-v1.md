@@ -421,6 +421,24 @@ if ("text" in part) { ... }        // v1.0
 
 ### AgentCapabilities Object
 
+**Added Fields:**
+
+- ✅ `bidiStreaming`: Indicates if the agent supports bidirectional streaming via `SendLiveMessage` (gRPC only)
+
+**Removed Fields:**
+
+- ⛔ `stateTransitionHistory` - Removed as no API implementation existed for this feature
+
+**Rationale:**
+
+The `stateTransitionHistory` capability flag was misleading as v1.0 has no corresponding API to:
+
+- Store status history in Task objects
+- Retrieve status history via Get/List operations
+- Query historical state transitions
+
+This capability may be reintroduced in a future version with proper implementation.
+
 **Modified Fields:**
 
 - ✅ `extendedAgentCard`: Moved from top-level `supportsAuthenticatedExtendedCard` field
