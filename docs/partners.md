@@ -109,6 +109,7 @@ collaborate effectively with each other and with users.
 - [Nisum](http://www.nisum.com)
 - [Noorle Inc](http://www.noorle.com)
 - [NTT DATA](https://www.nttdata.com)
+- [OIXA Protocol](https://oixa.io)
 - [Optimizely Inc](https://www.optimizely.com/)
 - [Oracle / NetSuite](https://www.oracle.com/netsuite)
 - [Palo Alto Networks](https://www.paloaltonetworks.com/)
