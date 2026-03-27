@@ -138,24 +138,36 @@ service A2AService {
     option (google.api.method_signature) = "task_id,id";
   }
   // Publish a message to a topic.
-  rpc Publish(PublishRequest) returns (google.protobuf.Empty) {
+  rpc PublishMessage(PublishMessageRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/publish"
+      post: "/message:publish"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:publish"
+        body: "*"
+      }
     };
   }
-  // Subscribe to a set of topics.
-  rpc Subscribe(SubscribeRequest) returns (google.protobuf.Empty) {
+  // Subscribe messages from a set of topics.
+  rpc SubscribeMessage(SubscribeMessageRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/subscribe"
+      post: "/message:subscribe"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:subscribe"
+        body: "*"
+      }
     };
   }
-  // Unsubscribe a set of topics.
-  rpc Unsubscribe(UnsubscribeRequest) returns (google.protobuf.Empty) {
+  // Unsubscribe messages from a set of topics.
+  rpc UnsubscribeMessage(UnsubscribeMessageRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/unsubscribe"
+      post: "/message:unsubscribe"
       body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:unsubscribe"
+        body: "*"
+      }
     };
   }
 }
@@ -783,8 +795,8 @@ message GetExtendedAgentCardRequest {
   string tenant = 1;
 }
 
-// Represents a request for the `publish` method.
-message PublishRequest {
+// Represents a request for the `PublishMessage` method.
+message PublishMessageRequest {
   // The target topic for the message.
   string topic = 1 [(google.api.field_behavior) = REQUIRED];
   // The content of the message. The structure of the payload is contractually defined by the topic itself and is opaque to the runtime.
@@ -794,17 +806,17 @@ message PublishRequest {
   google.protobuf.Struct metadata = 3;
 }
 
-// Represents a request for the `subscribe` method.
-message SubscribeRequest {
-  // The target topics to subscribe.
+// Represents a request for the `SubscribeMessage` method.
+message SubscribeMessageRequest {
+  // The target topics to subscribe messages from.
   repeated string topics = 1 [(google.api.field_behavior) = REQUIRED];
   // Optional metadata for extensions.
   google.protobuf.Struct metadata = 2;
 }
 
-// Represents a request for the `unsubscribe` method.
-message UnsubscribeRequest {
-  // The target topics to unsubscribe.
+// Represents a request for the `UnsubscribeMessage` method.
+message UnsubscribeMessageRequest {
+  // The target topics to unsubscribe messages from.
   repeated string topics = 1 [(google.api.field_behavior) = REQUIRED];
   // Optional metadata for extensions.
   google.protobuf.Struct metadata = 2;
