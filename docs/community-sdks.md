@@ -29,7 +29,20 @@ The A2A community builds and maintains SDKs for languages beyond the [official S
 [actioncard/a2a-elixir](https://github.com/actioncard/a2a-elixir) · A2A spec v0.2.0 · OTP-native with Agent behaviour, TaskStore, and supervision tree.
 
 !!! tip "Want to add your SDK?"
-    Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues) with a link to your repository and published package. See the [requirements below](#requirements-for-listing).
+    Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues) with a link to your repository and published package. See [Contributing an SDK](./contributing-sdk.md) for the full guide.
+
+## Verification *(coming soon)*
+
+Once the [A2A TCK](https://github.com/a2aproject/a2a-tck) v1.0 and [ITK](https://github.com/a2aproject/a2a-samples/tree/main/itk) stabilize, community SDKs will be able to earn verification badges:
+
+| Badge | Meaning |
+|-------|---------|
+| ✅ TCK Mandatory | Passes [TCK](https://github.com/a2aproject/a2a-tck) mandatory compliance tests |
+| 🟢 TCK Recommended | Production-ready compliance (mandatory + capabilities + quality) |
+| 🏆 TCK Full | Complete compliance across all TCK categories |
+| 🔗 ITK | Cross-SDK interop verified via [ITK](https://github.com/a2aproject/a2a-samples/tree/main/itk) multi-hop testing |
+
+See [Contributing an SDK](./contributing-sdk.md) for details on the verification process.
 
 ## Requirements for Listing
 
