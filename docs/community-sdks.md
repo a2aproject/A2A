@@ -7,7 +7,7 @@ The A2A community builds and maintains SDKs for languages beyond the [official S
 | Language | Repository | Package | Maintainer | Spec Version |
 |----------|-----------|---------|------------|-------------|
 | 🦀 Rust | [tomtom215/a2a-rust](https://github.com/tomtom215/a2a-rust) | [`a2a-protocol-sdk`](https://crates.io/crates/a2a-protocol-sdk) | [@tomtom215](https://github.com/tomtom215) | 1.0.0 |
-| 💧 Elixir | [zeroasterisk/a2a-elixir](https://github.com/zeroasterisk/a2a-elixir) | [`a2a`](https://hex.pm/packages/a2a) | [@zeroasterisk](https://github.com/zeroasterisk) | 1.0.0 |
+| 💧 Elixir | [actioncard/a2a-elixir](https://github.com/actioncard/a2a-elixir) | [`a2a`](https://hex.pm/packages/a2a) | [@actioncard](https://github.com/actioncard) | 0.2.0 |
 
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues) with a link to your repository and published package. See the [requirements below](#requirements-for-listing).
