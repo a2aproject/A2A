@@ -4,12 +4,12 @@ The A2A community builds and maintains SDKs for languages beyond the [official S
 
 ## SDK Directory
 
-| Language | Repository | Package | Maintainer | Spec Version |
-|----------|-----------|---------|------------|-------------|
-| 🦀 Rust | [tomtom215/a2a-rust](https://github.com/tomtom215/a2a-rust) | [`a2a-protocol-sdk`](https://crates.io/crates/a2a-protocol-sdk) | [@tomtom215](https://github.com/tomtom215) | 1.0.0 |
-| 🦀 Rust | [EmilLindfors/a2a-rs](https://github.com/EmilLindfors/a2a-rs) | [`a2a-rs`](https://crates.io/crates/a2a-rs) | [@EmilLindfors](https://github.com/EmilLindfors) | 0.3.0 |
-| 🍎 Swift | [tolgaki/a2a-client-swift](https://github.com/tolgaki/a2a-client-swift) | [SPM](https://github.com/tolgaki/a2a-client-swift) | [@tolgaki](https://github.com/tolgaki) | 1.0.0 |
-| 💧 Elixir | [actioncard/a2a-elixir](https://github.com/actioncard/a2a-elixir) | [`a2a`](https://hex.pm/packages/a2a) | [@actioncard](https://github.com/actioncard) | 0.2.0 |
+| Language | Repository | Stars | Package | Spec |
+|----------|-----------|-------|---------|------|
+| 🦀 Rust | [tomtom215/a2a-rust](https://github.com/tomtom215/a2a-rust) | ![Stars](https://img.shields.io/github/stars/tomtom215/a2a-rust?style=flat-square) | [![Crate](https://img.shields.io/crates/v/a2a-protocol-sdk?style=flat-square)](https://crates.io/crates/a2a-protocol-sdk) | 1.0.0 |
+| 🦀 Rust | [EmilLindfors/a2a-rs](https://github.com/EmilLindfors/a2a-rs) | ![Stars](https://img.shields.io/github/stars/EmilLindfors/a2a-rs?style=flat-square) | [![Crate](https://img.shields.io/crates/v/a2a-rs?style=flat-square)](https://crates.io/crates/a2a-rs) | 0.3.0 |
+| 🍎 Swift | [tolgaki/a2a-client-swift](https://github.com/tolgaki/a2a-client-swift) | ![Stars](https://img.shields.io/github/stars/tolgaki/a2a-client-swift?style=flat-square) | [SPM v1.0.5](https://github.com/tolgaki/a2a-client-swift) | 1.0.0 |
+| 💧 Elixir | [actioncard/a2a-elixir](https://github.com/actioncard/a2a-elixir) | ![Stars](https://img.shields.io/github/stars/actioncard/a2a-elixir?style=flat-square) | [![Hex](https://img.shields.io/hexpm/v/a2a?style=flat-square)](https://hex.pm/packages/a2a) | 0.2.0 |
 
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues) with a link to your repository and published package. See the [requirements below](#requirements-for-listing).
