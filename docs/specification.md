@@ -1181,7 +1181,7 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | :------------------------------------ | :------------ | :-------------------- | :--------------------------- |
 | `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              |
 | `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `PushNotificationNotSupportedError`   | `-32003`      | `UNIMPLEMENTED`       | `501 Not Implemented`        |
+| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
 | `UnsupportedOperationError`           | `-32004`      | `UNIMPLEMENTED`       | `501 Not Implemented`        |
 | `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`            |
 | `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error`  |
