@@ -140,6 +140,7 @@ collaborate effectively with each other and with users.
 - [Solace](https://solace.com/products/agent-mesh/)
 - [Solo.io](https://www.solo.io/)
 - [Stacklok, Inc](https://stacklok.com)
+- [Strale](https://strale.dev)
 - [Supertab](https://www.supertab.co/post/supertab-connect-partners-with-google-cloud-to-enable-ai-agents)
 - [Suzega](https://suzega.com/)
 - [TCS](https://www.tcs.com)
