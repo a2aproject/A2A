@@ -6,7 +6,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | :--- | :--- | :--- | :--- |
 | **Google** | Todd Segal | Principal Engineer | [@ToddSegal](https://github.com/ToddSegal) |
 | **Microsoft** | Darrel Miller | Partner API Architect | [@darrelmiller](https://github.com/darrelmiller) |
-| **Cisco** | Luca Muscariello | Principal Engineer | [@muscariello](https://github.com/muscariello) |
+| **Cisco** | Luca Muscariello | Distinguished Engineer | [@muscariello](https://github.com/muscariello) |
 | **Amazon Web Services** | Abhimanyu Siwach | Senior Software Engineer | [@siwachabhi](https://github.com/siwachabhi) |
 | **Salesforce** | Stephen Petschulat | Principal Architect | [@spetschulatSFDC](https://github.com/spetschulatSFDC) |
 | **ServiceNow** | Sean Hughes | Director of Open Science | [@hughesthe1st](https://github.com/hughesthe1st) |
@@ -32,11 +32,15 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
     a. **"Startup Phase."** At the inception of the Project, each organization listed in the [`GOVERNANCE`](GOVERNANCE.md) file in the governance repository of the Project will have the right to appoint (and remove and replace) one employee to serve as a voting member of the TSC.
 
+   Adding new organizations to the GOVERNANCE file will be determined through a proposal to the TSC GOVERNANCE.md file. Any new organization will be added through a majority vote of the TSC, and an employee of that organization will serve as a voting member of the TSC.
+
+   A voting member who has not attended a meeting of the TSC within the last six weeks (as measured by the LFX attendance tracking) shall be determined to be an inactive voting member. They will not be included in active votes, which means that they will not be counted for quorum, and the sponsoring organization may choose to replace the named TSC member within a reasonable timeframe. 
+
     b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, subproject technical leads, or other method as determined by the TSC), to take effect from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
 
     c. The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the GOVERNANCE file. Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
 
-3. TSC projects generally will involve Contributors and Maintainers. The TSC may adopt or modify roles so long as the roles are documented in the CONTRIBUTING file. Unless otherwise documented:
+4. TSC projects generally will involve Contributors and Maintainers. The TSC may adopt or modify roles so long as the roles are documented in the CONTRIBUTING file. Unless otherwise documented:
 
     a. **Contributors** include anyone in the technical community that contributes code, documentation, or other technical artifacts to the Project;
 
@@ -45,12 +49,12 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
     c. A Contributor may become a Maintainer by a vote of the TSC. A Maintainer may be removed by a vote of the TSC.
 
     d. Participation in the Project through becoming a Contributor and Maintainer is open to anyone so long as they abide by the terms of this Charter.
-4. The TSC may:
+5. The TSC may:
     1. establish work flow procedures for the submission, approval, and closure/archiving of projects,
     2. set requirements for the promotion of Contributors to Maintainer status, as applicable, and
     3. amend, adjust, refine and/or eliminate the roles of Contributors, and Maintainer, and create new roles, and publicly document any TSC roles, as it sees fit.
-5. The TSC may elect a TSC Chair, who will preside over meetings of the TSC and will serve until their resignation or replacement by the TSC.
-6. **Responsibilities:** The TSC will be responsible for all aspects of oversight relating to the Project, which may include:
+6. The TSC may elect a TSC Chair, who will preside over meetings of the TSC and will serve until their resignation or replacement by the TSC.
+7. **Responsibilities:** The TSC will be responsible for all aspects of oversight relating to the Project, which may include:
     1. coordinating the technical direction of the Project;
     2. approving project or system proposals (including, but not limited to, incubation, deprecation, and changes to a subproject's scope);
     3. organizing subprojects and removing subprojects;
