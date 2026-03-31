@@ -67,6 +67,10 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
 - [Strands Agents](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
+## Community SDKs
+
+Building an A2A agent in Rust, Elixir, or another language not covered by the official SDKs? Check out [Community SDKs](./community-sdks.md) for community-maintained implementations.
+
 ## The Future is Interoperable
 
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
