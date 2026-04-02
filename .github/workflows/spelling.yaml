@@ -1,21 +1,45 @@
 name: Check Spelling
 
+# Comment management is handled through a secondary job, for details see:
+# https://docs.check-spelling.dev/Feature:-Restricted-Permissions
+#
+# `jobs.comment-pr` runs when a pull_request is made to a repository and the
+# `jobs.spelling` job needs to make a comment or collapse a comment (in the
+# case where it had previously made a comment and now no longer needs to show
+# a comment). It needs `pull-requests: write` in order to manipulate those
+# comments.
+
+# Updating pull request branches is managed via comment handling.
+# For details, see: https://github.com/check-spelling/check-spelling/wiki/Feature:-Update-expect-list
+#
+# `on.issue_comment` listens to comments by users asking to update the metadata.
+# `jobs.update` runs in response and pushes a new commit to update spelling metadata.
+# `with.experimental_apply_changes_via_bot` enables this support.
+
 on:
-  pull_request:
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
+  pull_request_target:
     branches:
       - "**"
     types:
       - "opened"
       - "reopened"
       - "synchronize"
+  issue_comment:
+    types:
+      - "created"
 
 jobs:
   spelling:
     name: Check Spelling
     permissions:
       contents: read
+      pull-requests: read
       actions: read
-      security-events: write
     outputs:
       followup: ${{ steps.spelling.outputs.followup }}
     if: ${{ contains(github.event_name, 'pull_request') || github.event_name == 'push' }}
@@ -77,3 +101,58 @@ jobs:
           check_extra_dictionaries: ""
           only_check_changed_files: true
           longest_word: "10"
+
+  comment-push:
+    name: Report (Push)
+    runs-on: ubuntu-latest
+    needs: spelling
+    permissions:
+      contents: write
+    if: (success() || failure()) && needs.spelling.outputs.followup && github.event_name == 'push'
+    steps:
+      - name: comment
+        uses: check-spelling/check-spelling@main
+        with:
+          checkout: true
+          spell_check_this: check-spelling/spell-check-this@main
+          task: ${{ needs.spelling.outputs.followup }}
+
+  comment-pr:
+    name: Report (PR)
+    runs-on: ubuntu-latest
+    needs: spelling
+    permissions:
+      contents: read
+      pull-requests: write
+    if: (success() || failure()) && needs.spelling.outputs.followup && contains(github.event_name, 'pull_request')
+    steps:
+      - name: comment
+        uses: check-spelling/check-spelling@main
+        with:
+          checkout: true
+          spell_check_this: check-spelling/spell-check-this@main
+          task: ${{ needs.spelling.outputs.followup }}
+          experimental_apply_changes_via_bot: 1
+
+  update:
+    name: Update PR
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+    runs-on: ubuntu-latest
+    if: ${{
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        contains(github.event.comment.body, '@check-spelling-bot apply')
+      }}
+    concurrency:
+      group: spelling-update-${{ github.event.issue.number }}
+      cancel-in-progress: false
+    steps:
+      - name: apply spelling updates
+        uses: check-spelling/check-spelling@main
+        with:
+          experimental_apply_changes_via_bot: 1
+          checkout: true
+          ssh_key: "${{ secrets.CHECK_SPELLING }}"
