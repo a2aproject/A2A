@@ -2647,10 +2647,6 @@ Resource wrapper for push notification configurations. This is a gRPC-specific t
 
 {{ proto_to_table("TaskPushNotificationConfig") }}
 
-**Fields:**
-
-{{ proto_to_table("TaskPushNotificationConfig") }}
-
 ### 10.6. Error Handling
 
 gRPC error responses use the standard [gRPC status](https://grpc.io/docs/guides/error/) structure with [google.rpc.Status](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto), which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
