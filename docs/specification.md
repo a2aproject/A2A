@@ -263,7 +263,58 @@ Implementations MUST return tasks sorted by their status timestamp time in desce
 
 #### 3.1.5. Cancel Task
 
+
 Requests the cancellation of an ongoing task. The server will attempt to cancel the task, but success is not guaranteed (e.g., the task might have already completed or failed, or cancellation might not be supported at its current stage).
+
+**Delayed Cancellation Pattern:**
+
+If the cancellation cannot be completed immediately (for example, due to time-consuming operations such as rollback), the server **MUST** return the `Task` object synchronously with `status.state` set to `WORKING` and a `status.message` indicating that cancellation is in progress (e.g., "Start to cancel the task.").
+
+**Example synchronous response for a delayed cancel:**
+
+```json
+{
+  "task": {
+    "id": "...",
+    "contextId": "...",
+    "status": {
+      "state": "TASK_STATE_WORKING",
+      "message": {
+        "role": "ROLE_AGENT",
+        "parts": [{ "text": "Start to cancel the task." }],
+        "messageId": "..."
+      },
+      "timestamp": "..."
+    }
+  }
+}
+```
+
+Once cancellation is complete, the server **MUST** send a final status update (via webhook, stream, or polling) with `status.state` set to `CANCELED` and an appropriate message (e.g., "The task is canceled.").
+
+**Example final status update:**
+
+```json
+{
+  "statusUpdate": {
+    "taskId": "...",
+    "contextId": "...",
+    "status": {
+      "state": "TASK_STATE_CANCELED",
+      "message": {
+        "role": "ROLE_AGENT",
+        "parts": [{ "text": "The task is canceled." }],
+        "messageId": "..."
+      },
+      "timestamp": "..."
+    }
+  }
+}
+```
+
+Clients **SHOULD** monitor status updates via [Subscribe to Task](#316-subscribe-to-task) or push notifications to track cancellation progress.
+
+If the task is already in a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`), the server **MUST** return `TaskNotCancelableError`. If cancellation is not supported, the server **MUST** return `UnsupportedOperationError`. The Cancel Task operation is idempotent: repeated requests have the same effect as a single request.
 
 **Inputs:**
 

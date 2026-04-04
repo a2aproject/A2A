@@ -13,6 +13,44 @@ The `RequestContext` provides information about the incoming request, such as th
 
 ## Helloworld Agent Executor
 
+## Example: Long-Running Cancel Implementation
+
+For agents that support long-running or asynchronous cancellation, the `cancel` method should:
+
+1. Immediately enqueue a `TaskStatusUpdateEvent` with state `TASK_STATE_WORKING` and a message like "Start to cancel the task." This is returned to the client as the synchronous response.
+2. Perform the actual cancellation logic (which may take time).
+3. When cancellation is complete, enqueue a final `TaskStatusUpdateEvent` with state `TASK_STATE_CANCELED` and a message like "The task is canceled." This is delivered to the client via streaming or push notification.
+
+**Example code:**
+
+```python
+import asyncio
+from a2a.server.agent_execution import AgentExecutor, TaskStatusUpdateEvent, TaskState, Message, Role
+
+class LongRunningCancelAgentExecutor(AgentExecutor):
+    async def cancel(self, context, event_queue):
+        # Step 1: Notify client that cancellation has started
+        await event_queue.put(TaskStatusUpdateEvent(
+            state=TaskState.WORKING,
+            message=Message(
+                role=Role.AGENT,
+                parts=[{"text": "Start to cancel the task."}]
+            )
+        ))
+        # Step 2: Simulate long-running cancellation
+        await asyncio.sleep(5)  # Replace with real cancellation logic
+        # Step 3: Notify client that cancellation is complete
+        await event_queue.put(TaskStatusUpdateEvent(
+            state=TaskState.CANCELED,
+            message=Message(
+                role=Role.AGENT,
+                parts=[{"text": "The task is canceled."}]
+            )
+        ))
+```
+
+This pattern ensures the client receives immediate feedback and a final update when cancellation is done. See the [protocol specification](../../specification.md#315-cancel-task) for required behavior and example payloads.
+
 Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
 
 1. **The Agent (`HelloWorldAgent`)**:
