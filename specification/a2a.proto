@@ -61,6 +61,56 @@ service A2AService {
     };
   }
   // Cancels a task in progress.
+  //
+  // If the cancellation cannot be completed immediately (e.g., due to time-consuming operations such as rollback),
+  // the server MUST return the Task object synchronously with status.state set to TASK_STATE_WORKING and a status.message
+  // indicating that cancellation is in progress (e.g., "Start to cancel the task.").
+  //
+  // Example synchronous response for a delayed cancel:
+  // {
+  //   "task": {
+  //     "id": "...",
+  //     "contextId": "...",
+  //     "status": {
+  //       "state": "TASK_STATE_WORKING",
+  //       "message": {
+  //         "role": "ROLE_AGENT",
+  //         "parts": [{ "text": "Start to cancel the task." }],
+  //         "messageId": "..."
+  //       },
+  //       "timestamp": "..."
+  //     }
+  //   }
+  // }
+  //
+  // Once cancellation is complete, the server MUST send a final status update (via webhook, stream, or polling)
+  // with status.state set to TASK_STATE_CANCELED and an appropriate message (e.g., "The task is canceled.").
+  //
+  // Example final status update:
+  // {
+  //   "statusUpdate": {
+  //     "taskId": "...",
+  //     "contextId": "...",
+  //     "status": {
+  //       "state": "TASK_STATE_CANCELED",
+  //       "message": {
+  //         "role": "ROLE_AGENT",
+  //         "parts": [{ "text": "The task is canceled." }],
+  //         "messageId": "..."
+  //       },
+  //       "timestamp": "..."
+  //     }
+  //   }
+  // }
+  //
+  // Clients SHOULD monitor status updates via SubscribeToTask or push notifications to track cancellation progress.
+  //
+  // If the task is already in a terminal state (COMPLETED, FAILED, CANCELED, REJECTED),
+  // the server MUST return TaskNotCancelableError.
+  //
+  // If cancellation is not supported, the server MUST return UnsupportedOperationError.
+  //
+  // The CancelTask operation is idempotent: repeated requests have the same effect as a single request.
   rpc CancelTask(CancelTaskRequest) returns (Task) {
     option (google.api.http) = {
       post: "/tasks/{id=*}:cancel"
@@ -190,12 +240,18 @@ enum TaskState {
   // Indicates that a task has been successfully submitted and acknowledged.
   TASK_STATE_SUBMITTED = 1;
   // Indicates that a task is actively being processed by the agent.
+  //
+  // For long-running cancellation, a task that is being canceled but not yet fully canceled
+  // SHOULD remain in TASK_STATE_WORKING, with the status.message indicating that cancellation is in progress.
+  // When cancellation is complete, the state MUST transition to TASK_STATE_CANCELED.
   TASK_STATE_WORKING = 2;
   // Indicates that a task has finished successfully. This is a terminal state.
   TASK_STATE_COMPLETED = 3;
   // Indicates that a task has finished with an error. This is a terminal state.
   TASK_STATE_FAILED = 4;
   // Indicates that a task was canceled before completion. This is a terminal state.
+  //
+  // The server MUST send a final status update with this state when cancellation is complete.
   TASK_STATE_CANCELED = 5;
   // Indicates that the agent requires additional user input to proceed. This is an interrupted state.
   TASK_STATE_INPUT_REQUIRED = 6;

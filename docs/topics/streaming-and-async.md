@@ -1,4 +1,17 @@
 # Streaming and Asynchronous Operations for Long-Running Tasks
+#
+# ## Monitoring Cancellation Progress for Delayed CancelTask
+#
+# When a Cancel Task request cannot be completed immediately (for example, due to time-consuming rollback or cleanup), the server will return the Task in `WORKING` state with a message indicating cancellation is in progress. Clients **MUST** monitor the task's status using streaming (SSE/SubscribeToTask) or push notifications to receive the final update when the task is actually canceled (`CANCELED` state).
+#
+# **Example workflow:**
+#
+# 1. Client sends CancelTask request.
+# 2. Server responds with Task in `WORKING` state and a message like "Start to cancel the task." (see protocol and main spec for example JSON).
+# 3. Client subscribes to updates using `SubscribeToTask` or configures push notifications.
+# 4. When cancellation is complete, the server sends a final status update with state `CANCELED` and a message like "The task is canceled." (see protocol and main spec for example JSON).
+#
+# This pattern ensures clients are reliably informed of both the start and completion of cancellation, even for long-running or asynchronous operations. See the [Cancel Task section](../specification.md#315-cancel-task) for protocol-level requirements and example payloads.
 
 The Agent2Agent (A2A) protocol is explicitly designed to handle tasks that might not complete immediately. Many AI-driven operations are often long-running, involve multiple steps, produce incremental results, or require human intervention. A2A provides mechanisms for managing such asynchronous interactions, ensuring that clients receive updates effectively, whether they remain continuously connected or operate in a more disconnected fashion.
 
