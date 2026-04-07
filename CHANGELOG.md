@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/a2aproject/A2A/compare/v1.0.0...v1.0.1) (2026-04-07)
+
+
+### Bug Fixes
+
+* update OSPO action references to canonical org path ([#1705](https://github.com/a2aproject/A2A/issues/1705)) ([c1169f4](https://github.com/a2aproject/A2A/commit/c1169f45728ae5bf98d8ab0ab06e187f94002f15))
+
 ## [1.0.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v1.0.0) (2026-03-12)
 
 
