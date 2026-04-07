@@ -19,20 +19,20 @@ The A2A documentation is built using [MkDocs](https://www.mkdocs.org/) with the 
 
 ### Local Setup
 
-1.  **Create a virtual environment:**
+1. **Create a virtual environment:**
 
     ```bash
     uv venv .doc-venv
     ```
 
-2.  **Activate the virtual environment:**
+2. **Activate the virtual environment:**
 
     ```bash
     source .doc-venv/bin/activate  # Unix/macOS
     # .doc-venv\Scripts\activate  # Windows
     ```
 
-3.  **Install dependencies:**
+3. **Install dependencies:**
 
     ```bash
     uv pip install -r requirements-docs.txt
@@ -40,21 +40,21 @@ The A2A documentation is built using [MkDocs](https://www.mkdocs.org/) with the 
 
 ### Build and Serve
 
-1.  **Build the documentation:**
+1. **Build the documentation:**
     This script regenerates the JSON schema from the protocol definition, builds the SDK documentation, and then builds the MkDocs site.
 
     ```bash
     ./scripts/build_docs.sh
     ```
 
-2.  **Serve the documentation locally:**
+2. **Serve the documentation locally:**
     Run the following command to start a local server with live reloading:
 
     ```bash
     mkdocs serve
     ```
 
-3.  **View the documentation:**
+3. **View the documentation:**
     Open [http://localhost:8000](http://localhost:8000) in your browser.
 
 ## Code Standards
@@ -92,13 +92,13 @@ information on using pull requests.
 
 You may follow these steps to contribute:
 
-1.  **Fork the official repository.** This will create a copy of the official repository in your own account.
-2.  **Sync the branches.** This will ensure that your copy of the repository is up-to-date with the latest changes from the official repository.
-3.  **Work on your forked repository's feature branch.** This is where you will make your changes to the code.
-4.  **Test your changes.** Build and preview the documentation locally to ensure everything looks correct.
-5.  Format and lint your code. Run ./scripts/format.sh and ./scripts/lint.sh to ensure your changes meet our standards.
-6.  **Commit your updates.** Use conventional commit messages on your feature branch.
-7.  **Submit a pull request.** Submit a PR from your fork's feature branch to the official repository's `main` branch.
-8.  **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
+1. **Fork the official repository.** This will create a copy of the official repository in your own account.
+2. **Sync the branches.** This will ensure that your copy of the repository is up-to-date with the latest changes from the official repository.
+3. **Work on your forked repository's feature branch.** This is where you will make your changes to the code.
+4. **Test your changes.** Build and preview the documentation locally to ensure everything looks correct.
+5. Format and lint your code. Run ./scripts/format.sh and ./scripts/lint.sh to ensure your changes meet our standards.
+6. **Commit your updates.** Use conventional commit messages on your feature branch.
+7. **Submit a pull request.** Submit a PR from your fork's feature branch to the official repository's `main` branch.
+8. **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
 
 Be patient! It may take some time for your pull request to be reviewed and merged.
