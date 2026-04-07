@@ -28,7 +28,8 @@ The A2A documentation is built using [MkDocs](https://www.mkdocs.org/) with the 
 2.  **Activate the virtual environment:**
 
     ```bash
-    source .doc-venv/bin/activate
+    source .doc-venv/bin/activate  # Unix/macOS
+    # .doc-venv\Scripts\activate  # Windows
     ```
 
 3.  **Install dependencies:**
@@ -95,7 +96,7 @@ You may follow these steps to contribute:
 2.  **Sync the branches.** This will ensure that your copy of the repository is up-to-date with the latest changes from the official repository.
 3.  **Work on your forked repository's feature branch.** This is where you will make your changes to the code.
 4.  **Test your changes.** Build and preview the documentation locally to ensure everything looks correct.
-5.  **Lint and format your code.** Run `./scripts/lint.sh` and `./scripts/format.sh` to ensure your changes meet our standards.
+5.  Format and lint your code. Run ./scripts/format.sh and ./scripts/lint.sh to ensure your changes meet our standards.
 6.  **Commit your updates.** Use conventional commit messages on your feature branch.
 7.  **Submit a pull request.** Submit a PR from your fork's feature branch to the official repository's `main` branch.
 8.  **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
