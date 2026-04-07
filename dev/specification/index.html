@@ -11022,56 +11022,6 @@ so that clients can distinguish between incompatible versions:</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Fields:</strong></p>
-<p>A container associating a push notification configuration with a specific task.</p>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Required</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>tenant</code></td>
-<td><code>string</code></td>
-<td>No</td>
-<td>Optional. Tenant ID.</td>
-</tr>
-<tr>
-<td><code>id</code></td>
-<td><code>string</code></td>
-<td>No</td>
-<td>The push notification configuration details. A unique identifier (e.g. UUID) for this push notification configuration.</td>
-</tr>
-<tr>
-<td><code>taskId</code></td>
-<td><code>string</code></td>
-<td>No</td>
-<td>The ID of the task this configuration is associated with.</td>
-</tr>
-<tr>
-<td><code>url</code></td>
-<td><code>string</code></td>
-<td>Yes</td>
-<td>The URL where the notification should be sent.</td>
-</tr>
-<tr>
-<td><code>token</code></td>
-<td><code>string</code></td>
-<td>No</td>
-<td>A token unique for this task or session.</td>
-</tr>
-<tr>
-<td><code>authentication</code></td>
-<td><a href="#authenticationinfo"><code>AuthenticationInfo</code></a></td>
-<td>No</td>
-<td>Authentication information required to send the notification.</td>
-</tr>
-</tbody>
-</table>
 <h3 id="106-error-handling">10.6. Error Handling<a class="headerlink" href="#106-error-handling" title="Permanent link">&para;</a></h3>
 <p>gRPC error responses use the standard <a href="https://grpc.io/docs/guides/error/">gRPC status</a> structure with <a href="https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto">google.rpc.Status</a>, which maps to the generic A2A error model defined in <a href="#332-error-handling">Section 3.3.2</a> as follows:</p>
 <ul>
