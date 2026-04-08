@@ -3,7 +3,7 @@
 The following table lists the supported languages for official A2A SDKs and their repositories.
 
 | Language   | Repository                                               |
-|:-----------|:-------------------------------------------------|
+|------------|----------------------------------------------------------|
 | Python     | [`a2a-python`](https://github.com/a2aproject/a2a-python) |
 | Go         | [`a2a-go`](https://github.com/a2aproject/a2a-go)         |
 | Java       | [`a2a-java`](https://github.com/a2aproject/a2a-java)     |
