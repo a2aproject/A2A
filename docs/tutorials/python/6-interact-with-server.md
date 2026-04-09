@@ -48,7 +48,7 @@ Let's look at key parts of `test_client.py`:
 2. **Initializing the Client & Sending a Non-Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message/send"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_send"
     ```
 
     - A `ClientFactory` creates a non-streaming client based on the fetched card.
@@ -59,7 +59,7 @@ Let's look at key parts of `test_client.py`:
 3. **Initializing the Client & Sending a Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message/stream"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_stream"
     ```
 
     - A new streaming client is created via `ClientFactory` configured with `streaming=True`.
