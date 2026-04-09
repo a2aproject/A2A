@@ -1274,6 +1274,33 @@ The Protocol Buffer `optional` keyword is used to distinguish between a field be
 
 Implementations **SHOULD** ignore unrecognized fields in messages, allowing for forward compatibility as the protocol evolves.
 
+### 5.8. Custom Binding Identification
+
+Custom protocol bindings **SHOULD** be identified by a URI. Using a URI as the
+identifier provides globally unique identification across all implementers.
+
+The `protocolBinding` field in the Agent Card's `supportedInterfaces` entry
+**SHOULD** be a URI:
+
+```json
+{
+  "supportedInterfaces": [
+    {
+      "url": "wss://agent.example.com/a2a/websocket",
+      "protocolBinding": "https://example.com/bindings/websocket/v1",
+      "protocolVersion": "1.0"
+    }
+  ]
+}
+```
+
+When a breaking change is introduced to a binding, a new URI **MUST** be used
+so that clients can distinguish between incompatible versions:
+
+```text
+https://example.com/bindings/websocket/v1  →  https://example.com/bindings/websocket/v2
+```
+
 ## 6. Common Workflows & Examples
 
 This section provides illustrative examples of common A2A interactions across different bindings.
@@ -2631,10 +2658,6 @@ Resource wrapper for push notification configurations. This is a gRPC-specific t
 
 {{ proto_to_table("TaskPushNotificationConfig") }}
 
-**Fields:**
-
-{{ proto_to_table("TaskPushNotificationConfig") }}
-
 ### 10.6. Error Handling
 
 gRPC error responses use the standard [gRPC status](https://grpc.io/docs/guides/error/) structure with [google.rpc.Status](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto), which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
@@ -2999,9 +3022,8 @@ Custom bindings **MUST**:
 
 Custom bindings **MUST** be declared in the Agent Card:
 
-1. **Transport Identifier**: Use a clear, descriptive transport name
+1. **Transport Identifier**: Use a URI to identify the binding (see [Section 5.8](#58-custom-binding-identification))
 2. **Endpoint URL**: Provide the full URL where the binding is available
-3. **Documentation Link**: Include a URL to the complete binding specification
 
 **Example:**
 
@@ -3010,7 +3032,7 @@ Custom bindings **MUST** be declared in the Agent Card:
   "supportedInterfaces": [
     {
       "url": "wss://agent.example.com/a2a/websocket",
-      "protocolBinding": "WEBSOCKET"
+      "protocolBinding": "https://example.com/bindings/websocket/v1"
     }
   ]
 }
