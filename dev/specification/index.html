@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/a2a-logo-black.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
     
     
       
@@ -7587,7 +7587,7 @@
 <ol>
 <li><strong>Error Code</strong>: A machine-readable identifier for the error type (e.g., string code, numeric code, or protocol-specific status)</li>
 <li><strong>Error Message</strong>: A human-readable description of the error</li>
-<li><strong>Error Details</strong> (optional): Additional structured information about the error, such as:<ul>
+<li><strong>Error Details</strong> (optional): An array of objects providing additional structured information about the error. Each object in the array <strong>MUST</strong> include a <code>@type</code> key that identifies the object's type (using <a href="https://protobuf.dev/programming-guides/json">ProtoJSON <code>Any</code> representation</a>). Well-known types from the <a href="https://cloud.google.com/apis/design/errors#error_model"><code>google.rpc</code> error model</a> (e.g., <code>ErrorInfo</code>, <code>BadRequest</code>) <strong>SHOULD</strong> be used where applicable. Error details may be used for:<ul>
 <li>Affected fields or parameters</li>
 <li>Contextual information (e.g., task ID, timestamp)</li>
 <li>Suggestions for resolution</li>
@@ -9226,31 +9226,31 @@
 <td style="text-align: left;"><code>TaskNotCancelableError</code></td>
 <td style="text-align: left;"><code>-32002</code></td>
 <td style="text-align: left;"><code>FAILED_PRECONDITION</code></td>
-<td style="text-align: left;"><code>409 Conflict</code></td>
+<td style="text-align: left;"><code>400 Bad Request</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>PushNotificationNotSupportedError</code></td>
 <td style="text-align: left;"><code>-32003</code></td>
-<td style="text-align: left;"><code>UNIMPLEMENTED</code></td>
+<td style="text-align: left;"><code>FAILED_PRECONDITION</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>UnsupportedOperationError</code></td>
 <td style="text-align: left;"><code>-32004</code></td>
-<td style="text-align: left;"><code>UNIMPLEMENTED</code></td>
+<td style="text-align: left;"><code>FAILED_PRECONDITION</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ContentTypeNotSupportedError</code></td>
 <td style="text-align: left;"><code>-32005</code></td>
 <td style="text-align: left;"><code>INVALID_ARGUMENT</code></td>
-<td style="text-align: left;"><code>415 Unsupported Media Type</code></td>
+<td style="text-align: left;"><code>400 Bad Request</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>InvalidAgentResponseError</code></td>
 <td style="text-align: left;"><code>-32006</code></td>
 <td style="text-align: left;"><code>INTERNAL</code></td>
-<td style="text-align: left;"><code>502 Bad Gateway</code></td>
+<td style="text-align: left;"><code>500 Internal Server Error</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>ExtendedAgentCardNotConfiguredError</code></td>
@@ -9267,7 +9267,7 @@
 <tr>
 <td style="text-align: left;"><code>VersionNotSupportedError</code></td>
 <td style="text-align: left;"><code>-32009</code></td>
-<td style="text-align: left;"><code>UNIMPLEMENTED</code></td>
+<td style="text-align: left;"><code>FAILED_PRECONDITION</code></td>
 <td style="text-align: left;"><code>400 Bad Request</code></td>
 </tr>
 </tbody>
@@ -10292,7 +10292,7 @@ so that clients can distinguish between incompatible versions:</p>
 <ul>
 <li><strong>Error Code</strong>: Mapped to <code>error.code</code> (numeric JSON-RPC error code)</li>
 <li><strong>Error Message</strong>: Mapped to <code>error.message</code> (human-readable string)</li>
-<li><strong>Error Details</strong>: Mapped to <code>error.data</code> (array containing <code>google.protobuf.Any</code> messages, using ProtoJSON representation)</li>
+<li><strong>Error Details</strong>: Mapped to <code>error.data</code> (array of objects, each containing a <code>@type</code> key, using ProtoJSON <code>Any</code> representation)</li>
 </ul>
 <p><strong>Standard JSON-RPC Error Codes:</strong></p>
 <table>
@@ -10339,27 +10339,28 @@ so that clients can distinguish between incompatible versions:</p>
 </table>
 <p><strong>A2A-Specific Error Codes:</strong></p>
 <p>A2A-specific errors use codes in the range <code>-32001</code> to <code>-32099</code>. For the complete mapping of A2A error types to JSON-RPC error codes, see <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>.</p>
-<p><strong>A2A Error Representation:</strong></p>
-<p>For A2A-specific errors, implementations <strong>MUST</strong> include a <code>google.rpc.ErrorInfo</code> message in the <code>data</code> array with:</p>
-<ul>
-<li><code>@type</code>: Set to <code>"type.googleapis.com/google.rpc.ErrorInfo"</code></li>
-<li><code>reason</code>: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., <code>TASK_NOT_FOUND</code>)</li>
-<li><code>domain</code>: Set to <code>"a2a-protocol.org"</code></li>
-<li><code>metadata</code>: Optional map of additional error context</li>
-</ul>
-<p>Additional error context <strong>MAY</strong> be included in the <code>data</code> array.</p>
+<p><strong>Error Detail Objects:</strong></p>
+<p>Each object in the <code>data</code> array <strong>MUST</strong> include a <code>@type</code> key that identifies the object's type. Implementations <strong>SHOULD</strong> use well-known types such as <code>google.rpc.ErrorInfo</code> to refine error reporting, or <code>google.rpc.BadRequest</code> to attach structured data to validation errors. Additional error context <strong>MAY</strong> be included as further objects in the <code>data</code> array.</p>
 <p><strong>Error Response Structure:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="p">{</span>
 </span><span id="__span-53-2"><a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a><span class="w">  </span><span class="nt">&quot;jsonrpc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span>
 </span><span id="__span-53-3"><a id="__codelineno-53-3" name="__codelineno-53-3" href="#__codelineno-53-3"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 </span><span id="__span-53-4"><a id="__codelineno-53-4" name="__codelineno-53-4" href="#__codelineno-53-4"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-32601</span><span class="p">,</span>
-</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Method not found&quot;</span><span class="p">,</span>
-</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a><span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a><span class="w">      </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;invalid/method&quot;</span>
-</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-53-10"><a id="__codelineno-53-10" name="__codelineno-53-10" href="#__codelineno-53-10"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-53-11"><a id="__codelineno-53-11" name="__codelineno-53-11" href="#__codelineno-53-11"></a><span class="p">}</span>
+</span><span id="__span-53-5"><a id="__codelineno-53-5" name="__codelineno-53-5" href="#__codelineno-53-5"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-32602</span><span class="p">,</span>
+</span><span id="__span-53-6"><a id="__codelineno-53-6" name="__codelineno-53-6" href="#__codelineno-53-6"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invalid parameters&quot;</span><span class="p">,</span>
+</span><span id="__span-53-7"><a id="__codelineno-53-7" name="__codelineno-53-7" href="#__codelineno-53-7"></a><span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-53-8"><a id="__codelineno-53-8" name="__codelineno-53-8" href="#__codelineno-53-8"></a><span class="w">      </span><span class="p">{</span>
+</span><span id="__span-53-9"><a id="__codelineno-53-9" name="__codelineno-53-9" href="#__codelineno-53-9"></a><span class="w">        </span><span class="nt">&quot;@type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;type.googleapis.com/google.rpc.BadRequest&quot;</span><span class="p">,</span>
+</span><span id="__span-53-10"><a id="__codelineno-53-10" name="__codelineno-53-10" href="#__codelineno-53-10"></a><span class="w">        </span><span class="nt">&quot;fieldViolations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-53-11"><a id="__codelineno-53-11" name="__codelineno-53-11" href="#__codelineno-53-11"></a><span class="w">          </span><span class="p">{</span>
+</span><span id="__span-53-12"><a id="__codelineno-53-12" name="__codelineno-53-12" href="#__codelineno-53-12"></a><span class="w">            </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;message.parts&quot;</span><span class="p">,</span>
+</span><span id="__span-53-13"><a id="__codelineno-53-13" name="__codelineno-53-13" href="#__codelineno-53-13"></a><span class="w">            </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;At least one part is required&quot;</span>
+</span><span id="__span-53-14"><a id="__codelineno-53-14" name="__codelineno-53-14" href="#__codelineno-53-14"></a><span class="w">          </span><span class="p">}</span>
+</span><span id="__span-53-15"><a id="__codelineno-53-15" name="__codelineno-53-15" href="#__codelineno-53-15"></a><span class="w">        </span><span class="p">]</span>
+</span><span id="__span-53-16"><a id="__codelineno-53-16" name="__codelineno-53-16" href="#__codelineno-53-16"></a><span class="w">      </span><span class="p">}</span>
+</span><span id="__span-53-17"><a id="__codelineno-53-17" name="__codelineno-53-17" href="#__codelineno-53-17"></a><span class="w">    </span><span class="p">]</span>
+</span><span id="__span-53-18"><a id="__codelineno-53-18" name="__codelineno-53-18" href="#__codelineno-53-18"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-53-19"><a id="__codelineno-53-19" name="__codelineno-53-19" href="#__codelineno-53-19"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Example A2A-Specific Error Response:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="p">{</span>
@@ -11259,21 +11260,22 @@ so that clients can distinguish between incompatible versions:</p>
 <p><strong>URL Encoding:</strong></p>
 <p>All query parameter values <strong>MUST</strong> be properly URL-encoded per <a href="https://www.rfc-editor.org/rfc/rfc3986.html">RFC 3986</a>.</p>
 <h3 id="116-error-handling">11.6. Error Handling<a class="headerlink" href="#116-error-handling" title="Permanent link">&para;</a></h3>
-<p>HTTP error responses use the representation specified in <a href="https://google.aip.dev/193#http11json-representation">AIP-193</a> which maps to the generic A2A error model defined in <a href="#332-error-handling">Section 3.3.2</a> as follows:</p>
+<p>HTTP error responses use the <a href="https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto">google.rpc.Status</a> JSON representation, which maps to the generic A2A error model defined in <a href="#332-error-handling">Section 3.3.2</a> as follows:</p>
 <ul>
 <li><strong>Error Code</strong>: Mapped to the HTTP status code and the <code>error.code</code> field</li>
 <li><strong>Error Message</strong>: Mapped to the <code>error.message</code> field (human-readable string)</li>
-<li><strong>Error Details</strong>: Mapped to the <code>error.details</code> array (containing <code>google.protobuf.Any</code> messages)</li>
+<li><strong>Error Details</strong>: Mapped to the <code>error.details</code> array (array of objects, each containing a <code>@type</code> key, using ProtoJSON <code>Any</code> representation)</li>
 </ul>
+<p><strong>Error Detail Objects:</strong></p>
+<p>Each object in the <code>details</code> array <strong>MUST</strong> include a <code>@type</code> key that identifies the object's type. Implementations <strong>SHOULD</strong> use well-known types such as <code>google.rpc.BadRequest</code> to attach structured data to validation errors. Additional error context <strong>MAY</strong> be included as further objects in the <code>details</code> array.</p>
 <p><strong>A2A Error Representation:</strong></p>
-<p>For A2A-specific errors, implementations <strong>MUST</strong> include a <code>google.rpc.ErrorInfo</code> message in the <code>details</code> array with:</p>
+<p>Since multiple A2A error types may map to the same HTTP status code (e.g., <code>TaskNotCancelableError</code> and <code>PushNotificationNotSupportedError</code> both map to <code>400 Bad Request</code>), implementations <strong>MUST</strong> include a <code>google.rpc.ErrorInfo</code> object in the <code>details</code> array for A2A-specific errors with:</p>
 <ul>
 <li><code>@type</code>: Set to <code>"type.googleapis.com/google.rpc.ErrorInfo"</code></li>
-<li><code>reason</code>: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., <code>TASK_NOT_FOUND</code>)</li>
+<li><code>reason</code>: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., <code>TASK_NOT_FOUND</code>, <code>TASK_NOT_CANCELABLE</code>)</li>
 <li><code>domain</code>: Set to <code>"a2a-protocol.org"</code></li>
-<li><code>metadata</code>: Optional map of additional error context</li>
 </ul>
-<p>For the complete mapping of A2A error types to HTTP status codes, see <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>. Additional error context <strong>MAY</strong> be included in the <code>details</code> array of the Status object.</p>
+<p>For the complete mapping of A2A error types to HTTP status codes, see <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>.</p>
 <p><strong>Error Response Example:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">Not Found</span>
 </span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>

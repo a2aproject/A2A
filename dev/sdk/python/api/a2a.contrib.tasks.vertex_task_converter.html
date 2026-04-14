@@ -172,7 +172,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -349,13 +349,85 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="a2a-contrib-tasks-vertex-task-converter-module">
-<h1>a2a.contrib.tasks.vertex_task_converter module<a class="headerlink" href="#a2a-contrib-tasks-vertex-task-converter-module" title="Link to this heading">¶</a></h1>
+          <section id="module-a2a.contrib.tasks.vertex_task_converter">
+<span id="a2a-contrib-tasks-vertex-task-converter-module"></span><h1>a2a.contrib.tasks.vertex_task_converter module<a class="headerlink" href="#module-a2a.contrib.tasks.vertex_task_converter" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_sdk_artifact">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_sdk_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stored_artifact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TaskArtifact</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_artifact" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a proto TaskArtifact to a SDK Artifact.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_sdk_message">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_sdk_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stored_msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TaskMessage</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_message" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a proto Message to a SDK Message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_sdk_metadata">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_sdk_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stored_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_UnpackedMetadata</span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Unpacks metadata, extensions, and part types/metadata from a storage dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_sdk_part">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_sdk_part</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stored_part</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Part</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">part_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_part" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a proto Part to a SDK Part.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_sdk_task">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_sdk_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a2a_task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">A2aTask</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_task" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a proto A2aTask to a SDK Task.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_sdk_task_state">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_sdk_task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stored_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">A2aTaskState</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_task_state" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a proto A2aTask.State to a TaskState enum.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_stored_artifact">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_stored_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TaskArtifact</span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_artifact" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a SDK Artifact to a proto TaskArtifact.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_stored_message">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_stored_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TaskMessage</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_message" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a SDK Message to a proto Message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_stored_metadata">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_stored_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_task_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>Packs original metadata, extensions, and part types/metadata into a storage dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_stored_part">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_stored_part</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">part</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Part</span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_part" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a SDK Part to a proto Part.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_stored_task">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_stored_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A2aTask</span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_task" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a SDK Task to a proto A2aTask.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.contrib.tasks.vertex_task_converter.to_stored_task_state">
+<span class="sig-prename descclassname"><span class="pre">a2a.contrib.tasks.vertex_task_converter.</span></span><span class="sig-name descname"><span class="pre">to_stored_task_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.TaskState" title="a2a.types.TaskState"><span class="pre">TaskState</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">A2aTaskState</span></span></span><a class="headerlink" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_task_state" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a TaskState enum to a proto A2aTask.State enum value.</p>
+</dd></dl>
+
 </section>
 
         </article>
@@ -401,8 +473,38 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">a2a.contrib.tasks.vertex_task_converter module</a><ul>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_artifact"><code class="docutils literal notranslate"><span class="pre">to_sdk_artifact()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_message"><code class="docutils literal notranslate"><span class="pre">to_sdk_message()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_metadata"><code class="docutils literal notranslate"><span class="pre">to_sdk_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_part"><code class="docutils literal notranslate"><span class="pre">to_sdk_part()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_task"><code class="docutils literal notranslate"><span class="pre">to_sdk_task()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_sdk_task_state"><code class="docutils literal notranslate"><span class="pre">to_sdk_task_state()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_artifact"><code class="docutils literal notranslate"><span class="pre">to_stored_artifact()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_message"><code class="docutils literal notranslate"><span class="pre">to_stored_message()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_metadata"><code class="docutils literal notranslate"><span class="pre">to_stored_metadata()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_part"><code class="docutils literal notranslate"><span class="pre">to_stored_part()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_task"><code class="docutils literal notranslate"><span class="pre">to_stored_task()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.contrib.tasks.vertex_task_converter.to_stored_task_state"><code class="docutils literal notranslate"><span class="pre">to_stored_task_state()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
