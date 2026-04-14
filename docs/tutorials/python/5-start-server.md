@@ -22,15 +22,16 @@ Let's break this down:
 
 2. **`A2AStarletteApplication`**:
 
-    - The `A2AStarletteApplication` class is instantiated with the `agent_card` and the `request_handler` (referred to as `http_handler` in its constructor).
-    - The `agent_card` is crucial because the server will expose it at the `/.well-known/agent-card.json` endpoint (by default).
-    - The `request_handler` is responsible for processing all incoming A2A method calls by interacting with your `AgentExecutor`.
+    - The `A2AStarletteApplication` class is instantiated with the `agent_card`, `request_handler` (referred to as `http_handler` in its constructor), and an optional `extended_agent_card`.
+    - The `agent_card` is exposed at the `/.well-known/agent-card.json` endpoint for public discovery.
+    - The `request_handler` processes all incoming A2A method calls by interacting with your `AgentExecutor`.
+    - The `extended_agent_card` provides additional capabilities and skills for authenticated users and is exposed via the `GetExtendedAgentCard` RPC method.
 
 3. **`uvicorn.run(server_app_builder.build(), ...)`**:
     - The `A2AStarletteApplication` has a `build()` method that constructs the actual Starlette application.
     - This application is then run using `uvicorn.run()`, making your agent accessible over HTTP.
-    - `host='0.0.0.0'` makes the server accessible on all network interfaces on your machine.
-    - `port=9999` specifies the port to listen on. This matches the `url` in the `AgentCard`.
+    - `host='127.0.0.1'` makes the server accessible only from your local machine.
+    - `port=9999` specifies the port to listen on. This matches the endpoints defined in the `AgentCard`'s `supported_interfaces`.
 
 ## Running the Helloworld Server
 
@@ -49,7 +50,7 @@ You should see output similar to this, indicating the server is running:
 INFO:     Started server process [xxxxx]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:9999 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://127.0.0.1:9999 (Press CTRL+C to quit)
 ```
 
 Your A2A Helloworld agent is now live and listening for requests! In the next step, we'll interact with it.

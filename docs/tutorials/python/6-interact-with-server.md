@@ -37,58 +37,135 @@ python samples/python/agents/helloworld/test_client.py
 
 Let's look at key parts of `test_client.py`:
 
-1. **Fetching the Agent Card & Initializing the Client**:
+1. **Fetching the Agent Card**:
 
     ```python { .no-copy }
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:A2ACardResolver"
     ```
 
-    The `A2ACardResolver` class is a convenience. It first fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL) and then initializes the client with it.
+    The `A2ACardResolver` class is a convenience. It first fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL) which is then used to initialize the client.
 
-2. **Sending a Non-Streaming Message (`send_message`)**:
+2. **Initializing the Client & Sending a Non-Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_send"
     ```
 
-    - The `send_message_payload` constructs the data for `MessageSendParams`.
+    - A `ClientFactory` creates a non-streaming client based on the fetched card.
+    - We construct a `Message` object using `Role.ROLE_USER` and `Part` for the content.
     - This is wrapped in a `SendMessageRequest`.
-    - It includes a `message` object with the `role` set to "user" and the content in `parts`.
-    - The Helloworld agent's `execute` method will enqueue a single "Hello World" message. The `DefaultRequestHandler` will retrieve this and send it as the response.
-    - The `response` will be a `SendMessageResponse` object, which contains either a `SendMessageSuccessResponse` (with the agent's `Message` as the result) or a `JSONRPCErrorResponse`.
+    - The client's `send_message` method returns an async generator that yields a sequence of `Task` events from the agent.
 
-3. **Handling Task IDs (Illustrative Note for Helloworld)**:
-
-    The Helloworld client (`test_client.py`) doesn't attempt `get_task` or `cancel_task` directly because the simple Helloworld agent's `execute` method, when called via `message/send`, results in the `DefaultRequestHandler` returning a direct `Message` response rather than a `Task` object. More complex agents that explicitly manage tasks (like the LangGraph example) would return a `Task` object from `message/send`, and its `id` could then be used for `get_task` or `cancel_task`.
-
-4. **Sending a Streaming Message (`send_message_streaming`)**:
+3. **Initializing the Client & Sending a Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message_streaming"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_stream"
     ```
 
-    - This method calls the agent's `message/stream` endpoint. The `DefaultRequestHandler` will invoke the `HelloWorldAgentExecutor.execute` method.
-    - The `execute` method enqueues one "Hello World" message, and then the event queue is closed.
-    - The client will receive this single message as one `SendStreamingMessageResponse` event, and then the stream will terminate.
-    - The `stream_response` is an `AsyncGenerator`.
+    - A new streaming client is created via `ClientFactory` configured with `streaming=True`.
+    - We again call `send_message` (which now handles both streaming and non-streaming under the same method name, based on the `ClientConfig` and agent `capabilities`).
+    - The response dynamically yields `Task` events as they are streamed over the network.
 
 ## Expected Output
 
-When you run `test_client.py`, you'll see JSON outputs for:
+When you run `test_client.py`, you'll see in protobuf text format outputs for:
 
-- The non-streaming response (a single "Hello World" message).
-- The streaming response (a single "Hello World" message as one chunk, after which the stream ends).
+- The non-streaming response (a single final `task` log detailing the history, status, and the generated artifact containing the "Hello, World!" text).
+- The streaming response (multiple discrete events including the initial `task`, a `status_update`, and a final `artifact_update` containing the "Hello, World!" text).
 
 The `id` fields in the output will vary with each run.
 
 ```console { .no-copy }
 // Non-streaming response
-{"jsonrpc":"2.0","id":"xxxxxxxx","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"yyyyyyyy"}}}
-// Streaming response (one chunk)
-{"jsonrpc":"2.0","id":"zzzzzzzz","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"wwwwwwww"}}}
+task {
+  id: "xxxxxxxx"
+  context_id: "yyyyyyyy"
+  status {
+    state: TASK_STATE_COMPLETED
+  }
+  artifacts {
+    artifact_id: "zzzzzzzz"
+    name: "result"
+    parts {
+      text: "Hello, World!"
+    }
+  }
+  history {
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy"
+    task_id: "xxxxxxxx"
+    role: ROLE_USER
+    parts {
+      text: "Say hello."
+    }
+  }
+  history {
+    message_id: "wwwwwwww"
+    role: ROLE_AGENT
+    parts {
+      text: "Processing request..."
+    }
+  }
+}
+
+// Streaming response
+task {
+  id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_SUBMITTED
+  }
+  history {
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy-s"
+    task_id: "xxxxxxxx-s"
+    role: ROLE_USER
+    parts {
+      text: "Say hello."
+    }
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_WORKING
+    message {
+      message_id: "zzzzzzzz-s"
+      role: ROLE_AGENT
+      parts {
+        text: "Processing request..."
+      }
+    }
+  }
+}
+
+Response chunk:
+artifact_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  artifact {
+    artifact_id: "wwwwwwww-s"
+    name: "result"
+    parts {
+      text: "Hello, World!"
+    }
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_COMPLETED
+  }
+}
 ```
 
-_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww` will be different UUIDs/request IDs)_
+_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `vvvvvvvv`, `wwwwwwww` will be different UUIDs/request IDs)_
 
 This confirms your server is correctly handling basic A2A interactions with the updated SDK structure!
 
