@@ -1182,12 +1182,12 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              |
 | `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
 | `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `UnsupportedOperationError`           | `-32004`      | `UNIMPLEMENTED`       | `501 Not Implemented`        |
+| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
 | `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`            |
 | `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error`  |
 | `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
 | `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `VersionNotSupportedError`            | `-32009`      | `UNIMPLEMENTED`       | `501 Not Implemented`        |
+| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
 
 **Custom Binding Requirements:**
 
