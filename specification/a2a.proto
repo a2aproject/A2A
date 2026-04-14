@@ -99,6 +99,7 @@ service A2AService {
     option (google.api.method_signature) = "task_id,config";
   }
   // Gets a push notification config for a task.
+  // Security: response MUST redact `authentication.credentials`.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
       get: "/tasks/{task_id=*}/pushNotificationConfigs/{id=*}"
@@ -109,6 +110,7 @@ service A2AService {
     option (google.api.method_signature) = "task_id,id";
   }
   // Get a list of push notifications configured for a task.
+  // Security: each response item MUST redact `authentication.credentials`.
   rpc ListTaskPushNotificationConfigs(ListTaskPushNotificationConfigsRequest) returns (ListTaskPushNotificationConfigsResponse) {
     option (google.api.http) = {
       get: "/tasks/{task_id=*}/pushNotificationConfigs"
@@ -328,6 +330,9 @@ message AuthenticationInfo {
   // Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
   string scheme = 1 [(google.api.field_behavior) = REQUIRED];
   // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
+  // This field is write-only for push notification configuration reads and MUST
+  // be omitted or empty in `GetTaskPushNotificationConfig` and
+  // `ListTaskPushNotificationConfigs` responses.
   string credentials = 2;
 }
 
@@ -474,6 +479,8 @@ message TaskPushNotificationConfig {
   // A token unique for this task or session.
   string token = 5;
   // Authentication information required to send the notification.
+  // For security, `authentication.credentials` MUST NOT be returned by
+  // `GetTaskPushNotificationConfig` or `ListTaskPushNotificationConfigs`.
   AuthenticationInfo authentication = 6;
 }
 
@@ -790,6 +797,7 @@ message StreamResponse {
 // method.
 message ListTaskPushNotificationConfigsResponse {
   // The list of push notification configurations.
+  // Each item MUST redact `authentication.credentials`.
   repeated TaskPushNotificationConfig configs = 1;
   // A token to retrieve the next page of results, or empty if there are no more results in the list.
   string next_page_token = 2;
