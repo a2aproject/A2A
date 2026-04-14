@@ -2904,7 +2904,15 @@ HTTP error responses use the [google.rpc.Status](https://github.com/googleapis/g
 
 **Error Detail Objects:**
 
-Each object in the `details` array **MUST** include a `@type` key that identifies the object's type. Implementations **SHOULD** use well-known types such as `google.rpc.ErrorInfo` to refine error reporting, or `google.rpc.BadRequest` to attach structured data to validation errors. Additional error context **MAY** be included as further objects in the `details` array.
+Each object in the `details` array **MUST** include a `@type` key that identifies the object's type. Implementations **SHOULD** use well-known types such as `google.rpc.BadRequest` to attach structured data to validation errors. Additional error context **MAY** be included as further objects in the `details` array.
+
+**A2A Error Representation:**
+
+Since multiple A2A error types may map to the same HTTP status code (e.g., `TaskNotCancelableError` and `PushNotificationNotSupportedError` both map to `400 Bad Request`), implementations **MUST** include a `google.rpc.ErrorInfo` object in the `details` array for A2A-specific errors with:
+
+- `@type`: Set to `"type.googleapis.com/google.rpc.ErrorInfo"`
+- `reason`: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., `TASK_NOT_FOUND`, `TASK_NOT_CANCELABLE`)
+- `domain`: Set to `"a2a-protocol.org"`
 
 For the complete mapping of A2A error types to HTTP status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings).
 
