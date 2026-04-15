@@ -16,16 +16,8 @@ PROTO_TO_SCHEMA_SCRIPT="$ROOT_DIR/scripts/proto_to_json_schema.sh"
 regen_needed() {
   if [ ! -f "$SCHEMA_JSON" ]; then return 0; fi
 
-  local proto_mtime
-  local schema_mtime
-  if [[ "$(uname)" == "Darwin" ]]; then
-    proto_mtime=$(stat -f %m "$PROTO_SRC")
-    schema_mtime=$(stat -f %m "$SCHEMA_JSON")
-  else
-    proto_mtime=$(stat -c %Y "$PROTO_SRC")
-    schema_mtime=$(stat -c %Y "$SCHEMA_JSON")
-  fi
-  [ "$proto_mtime" -gt "$schema_mtime" ]
+  # ⚡ Bolt: Use bash built-in -nt operator to check file modification times instead of spawning external subshells and stat commands
+  [ "$PROTO_SRC" -nt "$SCHEMA_JSON" ]
 }
 
 echo "[build_docs] Checking schema freshness..." >&2
