@@ -357,7 +357,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Behavior:**
 
-The operation MUST return configuration details including webhook URL and notification settings. The operation MUST fail if the configuration does not exist or the client lacks access.
+The operation MUST return configuration details including webhook URL and notification settings. `authentication.credentials` MUST be omitted (absent) in the returned configuration. The operation MUST fail if the configuration does not exist or the client lacks access.
 
 #### 3.1.9. List Push Notification Configs
 
@@ -378,7 +378,7 @@ Retrieves all push notification configurations for a task.
 
 **Behavior:**
 
-The operation MUST return all active push notification configurations for the specified task and MAY support pagination for tasks with many configurations.
+The operation MUST return all active push notification configurations for the specified task and MAY support pagination for tasks with many configurations. In each returned configuration, `authentication.credentials` MUST be omitted (absent).
 
 #### 3.1.10. Delete Push Notification Config
 
@@ -839,6 +839,8 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 {{ proto_to_table("AuthenticationInfo") }}
 
+Security note: `AuthenticationInfo.credentials` is write-only for push notification configuration reads. Agents MUST omit (not return) `credentials` in responses for `GetTaskPushNotificationConfig` and `ListTaskPushNotificationConfigs`.
+
 #### 4.3.3. Push Notification Payload
 
 When a task update occurs, the agent sends an HTTP POST request to the configured webhook URL. The payload uses the same [`StreamResponse`](#323-stream-response) format as streaming operations, allowing push notifications to deliver the same event types as real-time streams.
@@ -1182,12 +1184,12 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              |
 | `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
 | `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
+| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
 | `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`            |
 | `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error`  |
 | `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
 | `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
+| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
 
 **Custom Binding Requirements:**
 
@@ -2633,7 +2635,7 @@ Retrieves an existing push notification configuration for a task.
 
 {{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
-**Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
+**Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition. `authentication.credentials` MUST be omitted (absent).
 
 #### 10.4.9. ListTaskPushNotificationConfigs
 
@@ -2646,6 +2648,8 @@ Lists all push notification configurations for a task.
 **Response:**
 
 {{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
+
+In every item in `configs`, `authentication.credentials` MUST be omitted (absent).
 
 #### 10.4.10. DeleteTaskPushNotificationConfig
 
@@ -3130,6 +3134,7 @@ When implementing push notifications, both agents (as webhook callers) and clien
 - Webhook URLs **SHOULD** use HTTPS to protect payload confidentiality in transit
 - Authentication tokens in [`PushNotificationConfig`](#431-pushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
 - Agents **SHOULD** securely store push notification configurations and credentials
+- Agents **MUST** omit `authentication.credentials` in `GetTaskPushNotificationConfig` and `ListTaskPushNotificationConfigs` responses
 - Clients **SHOULD** use unique, single-purpose tokens for each push notification configuration
 
 See also: [Section 4.3 Push Notification Objects](#43-push-notification-objects) and [Section 4.3.3 Push Notification Payload](#433-push-notification-payload).

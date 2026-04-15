@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased](https://github.com/a2aproject/A2A/compare/v1.0.0...HEAD)
+
+### Bug Fixes
+
+* **spec:** redact push notification credentials in `GetTaskPushNotificationConfig` and `ListTaskPushNotificationConfigs` responses ([#1681](https://github.com/a2aproject/A2A/issues/1681))
+
 ## [1.0.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v1.0.0) (2026-03-12)
 
 
