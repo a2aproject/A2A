@@ -2748,7 +2748,7 @@ The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP 
 ### 11.1. Protocol Requirements
 
 - **Protocol:** HTTP(S) with JSON payloads
-- **Content-Type:** `application/a2a+json` SHOULD be used for requests and responses
+- **Content-Type:** application/a2a+json **SHOULD** be used for requests and responses
 - **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
 - **URL Patterns:** RESTful resource-based URLs
 - **Streaming:** Server-Sent Events for real-time updates
