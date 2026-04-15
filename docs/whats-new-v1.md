@@ -436,10 +436,6 @@ if ("text" in part) { ... }        // v1.0
 
 - ✅ `authentication`: Enhanced PushNotificationAuthenticationInfo structure
 
-**Security Clarification:**
-
-- ✅ `GetTaskPushNotificationConfig` and `ListTaskPushNotificationConfigs` responses redact `authentication.credentials`
-
 ### Stream Event Objects
 
 **TaskStatusUpdateEvent:**
