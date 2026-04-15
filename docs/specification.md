@@ -357,7 +357,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Behavior:**
 
-The operation MUST return configuration details including webhook URL and notification settings. For security, the operation MUST redact `authentication.credentials` in the returned configuration. The operation MUST fail if the configuration does not exist or the client lacks access.
+The operation MUST return configuration details including webhook URL and notification settings. `authentication.credentials` MUST be omitted (absent) in the returned configuration. The operation MUST fail if the configuration does not exist or the client lacks access.
 
 #### 3.1.9. List Push Notification Configs
 
@@ -378,7 +378,7 @@ Retrieves all push notification configurations for a task.
 
 **Behavior:**
 
-The operation MUST return all active push notification configurations for the specified task and MAY support pagination for tasks with many configurations. For security, each returned configuration MUST redact `authentication.credentials`.
+The operation MUST return all active push notification configurations for the specified task and MAY support pagination for tasks with many configurations. In each returned configuration, `authentication.credentials` MUST be omitted (absent).
 
 #### 3.1.10. Delete Push Notification Config
 
@@ -839,7 +839,7 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 {{ proto_to_table("AuthenticationInfo") }}
 
-Security note: `AuthenticationInfo.credentials` is write-only for push notification configuration reads. Agents MUST NOT expose credentials in responses for `GetTaskPushNotificationConfig` and `ListTaskPushNotificationConfigs`.
+Security note: `AuthenticationInfo.credentials` is write-only for push notification configuration reads. Agents MUST omit (not return) `credentials` in responses for `GetTaskPushNotificationConfig` and `ListTaskPushNotificationConfigs`.
 
 #### 4.3.3. Push Notification Payload
 
@@ -2642,7 +2642,7 @@ Retrieves an existing push notification configuration for a task.
 
 {{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
-**Response:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition. Agents MUST redact `authentication.credentials`.
+**Response:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition. `authentication.credentials` MUST be omitted (absent).
 
 #### 10.4.9. ListTaskPushNotificationConfigs
 
@@ -2656,7 +2656,7 @@ Lists all push notification configurations for a task.
 
 {{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
-Agents MUST redact `authentication.credentials` in every item in `configs`.
+In every item in `configs`, `authentication.credentials` MUST be omitted (absent).
 
 #### 10.4.10. DeleteTaskPushNotificationConfig
 
@@ -3141,7 +3141,7 @@ When implementing push notifications, both agents (as webhook callers) and clien
 - Webhook URLs **SHOULD** use HTTPS to protect payload confidentiality in transit
 - Authentication tokens in [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
 - Agents **SHOULD** securely store push notification configurations and credentials
-- Agents **MUST NOT** expose push notification credentials in `GetTaskPushNotificationConfig` or `ListTaskPushNotificationConfigs` responses
+- Agents **MUST** omit `authentication.credentials` in `GetTaskPushNotificationConfig` and `ListTaskPushNotificationConfigs` responses
 - Clients **SHOULD** use unique, single-purpose tokens for each push notification configuration
 
 See also: [Section 4.3 Push Notification Objects](#43-push-notification-objects) and [Section 4.3.3 Push Notification Payload](#433-push-notification-payload).
