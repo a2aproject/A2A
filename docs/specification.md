@@ -848,7 +848,7 @@ When a task update occurs, the agent sends an HTTP POST request to the configure
 ```http
 POST {webhook_url}
 Authorization: {authentication_scheme} {credentials}
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   /* StreamResponse object - one of: */
@@ -1055,7 +1055,7 @@ Clients indicate their desire to opt into the use of specific extensions through
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/json
+Content-Type: application/a2a+json
 Authorization: Bearer token
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
 
@@ -1177,17 +1177,17 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST** be mapped to binding-specific error representations. The following table provides the canonical mappings for each standard protocol binding:
 
-| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  |
-| :------------------------------------ | :------------ | :-------------------- | :--------------------------- |
-| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              |
-| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
-| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`            |
-| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error`  |
-| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
+| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                 |
+| :------------------------------------ | :------------ | :-------------------- | :-------------------------- |
+| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`             |
+| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`           |
+| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error` |
+| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 
 **Custom Binding Requirements:**
 
@@ -2748,7 +2748,7 @@ The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP 
 ### 11.1. Protocol Requirements
 
 - **Protocol:** HTTP(S) with JSON payloads
-- **Content-Type:** `application/json` for requests and responses
+- **Content-Type:** `application/a2a+json` SHOULD be used for requests and responses
 - **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
 - **URL Patterns:** RESTful resource-based URLs
 - **Streaming:** Server-Sent Events for real-time updates
@@ -2768,7 +2768,7 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/json
+Content-Type: application/a2a+json
 Authorization: Bearer token
 A2A-Version: 0.3
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
@@ -2814,7 +2814,7 @@ All requests and responses use JSON objects structurally equivalent to the Proto
 
 ```http
 POST /message:send
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   "message": {
@@ -2834,7 +2834,7 @@ Content-Type: application/json
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   "task": {
@@ -2920,7 +2920,7 @@ For the complete mapping of A2A error types to HTTP status codes, see [Section 5
 
 ```http
 HTTP/1.1 404 Not Found
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   "error": {
@@ -2952,7 +2952,7 @@ REST streaming uses Server-Sent Events with the `data` field containing JSON ser
 
 ```http
 POST /message:stream
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 { /* SendMessageRequest object */ }
 ```
