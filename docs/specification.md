@@ -1465,14 +1465,25 @@ A2A-Version: 0.5
 
 ```http
 HTTP/1.1 400 Bad Request
-Content-Type: application/problem+json
+Content-Type: application/json
 
 {
-  "type": "https://a2a-protocol.org/errors/version-not-supported",
-  "title": "Protocol Version Not Supported",
-  "status": 400,
-  "detail": "The requested A2A protocol version 0.5 is not supported by this agent",
-  "supportedVersions": ["0.3"]
+  "error": {
+    "code": 400,
+    "status": "FAILED_PRECONDITION",
+    "message": "The requested A2A protocol version 0.5 is not supported by this agent",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "VERSION_NOT_SUPPORTED",
+        "domain": "a2a-protocol.org",
+        "metadata": {
+          "requestedVersion": "0.5",
+          "supportedVersions": "0.3"
+        }
+      }
+    ]
+  }
 }
 ```
 
@@ -1595,25 +1606,33 @@ Authorization: Bearer token
 
 ```http
 HTTP/1.1 400 Bad Request
-Content-Type: application/problem+json
+Content-Type: application/json
 
 {
-  "status": 400,
-  "detail": "Invalid parameters",
-  "errors": [
-    {
-      "field": "pageSize",
-      "message": "Must be between 1 and 100 inclusive, got 150"
-    },
-    {
-      "field": "historyLength",
-      "message": "Must be non-negative integer, got -5"
-    },
-    {
-      "field": "status",
-      "message": "Invalid status value 'TASK_STATE_RUNNING'. Must be one of: TASK_STATE_SUBMITTED, TASK_STATE_WORKING, TASK_STATE_COMPLETED, TASK_STATE_FAILED, TASK_STATE_CANCELED, TASK_STATE_INPUT_REQUIRED, TASK_STATE_REJECTED, TASK_STATE_AUTH_REQUIRED"
-    }
-  ]
+  "error": {
+    "code": 400,
+    "status": "INVALID_ARGUMENT",
+    "message": "Invalid parameters",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.BadRequest",
+        "fieldViolations": [
+          {
+            "field": "pageSize",
+            "description": "Must be between 1 and 100 inclusive, got 150"
+          },
+          {
+            "field": "historyLength",
+            "description": "Must be non-negative integer, got -5"
+          },
+          {
+            "field": "status",
+            "description": "Invalid status value 'TASK_STATE_RUNNING'. Must be one of: TASK_STATE_SUBMITTED, TASK_STATE_WORKING, TASK_STATE_COMPLETED, TASK_STATE_FAILED, TASK_STATE_CANCELED, TASK_STATE_INPUT_REQUIRED, TASK_STATE_REJECTED, TASK_STATE_AUTH_REQUIRED"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
