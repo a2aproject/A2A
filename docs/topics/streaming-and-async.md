@@ -52,7 +52,7 @@ The following key features detail how push notifications are implemented and man
     - Separately, using the `CreateTaskPushNotificationConfig` RPC method for an existing task.
     The `PushNotificationConfig` includes a `url` (the HTTPS webhook URL), an optional `token` (for client-side validation), and optional `authentication` details (for the A2A Server to authenticate to the webhook).
 - **Notification Trigger:** The A2A Server decides when to send a push notification, typically when a task reaches a significant state change (for example, terminal state, `input-required`, or `auth-required`).
-- **Notification Payload:** The A2A protocol defines the HTTP body payload as a [`StreamResponse`](../specification.md#323-stream-response) object, matching the format used in streaming operations. The payload contains one of: `task`, `message`, `statusUpdate`, or `artifactUpdate`. See [Push Notification Payload](../specification.md#pushnotificationpayload) for detailed structure.
+- **Notification Payload:** The A2A protocol defines the HTTP body payload as a [`StreamResponse`](../specification.md#423-stream-response) object, matching the format used in streaming operations. The payload contains one of: `task`, `message`, `statusUpdate`, or `artifactUpdate`. See [Push Notification Payload](../specification.md#pushnotificationpayload) for detailed structure.
 - **Client Action:** Upon receiving a push notification (and successfully verifying its authenticity), the client typically uses the `GetTask` RPC method with the `taskId` from the notification to retrieve the complete, updated `Task` object, including any new artifacts.
 
 ### When to Use Push Notifications
@@ -67,7 +67,7 @@ Push notifications are ideal for:
 
 Refer to the Protocol Specification for detailed structures:
 
-- [`CreateTaskPushNotificationConfig`](../specification.md#317-create-push-notification-config)
+- [`CreateTaskPushNotificationConfig`](../specification.md#417-create-push-notification-config)
 - [`GetTask`](../specification.md#76-taskspushnotificationconfigget)
 
 ### Client-Side Push Notification Service
