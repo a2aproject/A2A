@@ -521,7 +521,6 @@ Extensions **SHOULD** include version information in their URI identifier. This 
 
 If a client requests a versions of an extension that the agent does not support, the agent **SHOULD** ignore the extension for that interaction and proceed without it, unless the extension is marked as `required` in the AgentCard, in which case the agent **MUST** return an error indicating unsupported extension. It **MUST NOT** fall back to a previous version of the extension automatically.
 
-
 ## 4. Protocol Operations
 
 This section describes the core operations of the A2A protocol in a binding-independent manner. These operations define the fundamental capabilities that all A2A implementations must support, regardless of the underlying binding mechanism.
@@ -859,7 +858,7 @@ A key-value map for passing horizontally applicable context or parameters with c
 **Standard A2A Service Parameters:**
 
 | Name             | Description                                                                                                                                             | Example Value                                                                                 |
-| :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
+|:-----------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------|
 | `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
 | `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#432-error-handling) | `0.3`                                                                                         |
 
@@ -929,7 +928,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 **A2A-Specific Errors:**
 
 | Error Name                            | Description                                                                                                                                                       |
-| :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|:--------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
 | `TaskNotCancelableError`              | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`). |
 | `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
@@ -1140,6 +1139,7 @@ The Task History field contains Messages exchanged during task execution. Howeve
 Clients using streaming to retrieve task updates MAY not receive all status update messages if the client is disconnected and then reconnects. Messages MUST NOT be considered a reliable delivery mechanism for critical information.
 
 Agents MAY choose to persist all Messages that contain important information in the Task history to ensure clients can retrieve it later. However, clients MUST NOT rely on this behavior unless negotiated out-of-band.
+
 ## 5. Protocol Binding Requirements and Interoperability
 
 ### 5.1. Functional Equivalence Requirements
@@ -1160,7 +1160,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 ### 5.3. Method Mapping Reference
 
 | Functionality                   | JSON-RPC Method                    | gRPC Method                        | REST Endpoint                                           |
-| :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
+|:--------------------------------|:-----------------------------------|:-----------------------------------|:--------------------------------------------------------|
 | Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
 | Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
@@ -1177,17 +1177,17 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 All A2A-specific errors defined in [Section 4.3.2](#432-error-handling) **MUST** be mapped to binding-specific error representations. The following table provides the canonical mappings for each standard protocol binding:
 
-| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  |
-| :------------------------------------ | :------------ | :-------------------- | :--------------------------- |
-| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              |
-| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
-| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`            |
-| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error`  |
-| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
+| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                 |
+|:--------------------------------------|:--------------|:----------------------|:----------------------------|
+| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`             |
+| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`           |
+| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error` |
+| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 
 **Custom Binding Requirements:**
 
@@ -2440,7 +2440,7 @@ JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://ww
 **Standard JSON-RPC Error Codes:**
 
 | JSON-RPC Error Code | Error Name            | Standard Message                   | Description                                             |
-| :------------------ | :-------------------- | :--------------------------------- | :------------------------------------------------------ |
+|:--------------------|:----------------------|:-----------------------------------|:--------------------------------------------------------|
 | `-32700`            | `JSONParseError`      | "Invalid JSON payload"             | The server received invalid JSON                        |
 | `-32600`            | `InvalidRequestError` | "Request payload validation error" | The JSON sent is not a valid Request object             |
 | `-32601`            | `MethodNotFoundError` | "Method not found"                 | The requested method does not exist or is not available |
@@ -2860,7 +2860,7 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 **Example Mappings:**
 
 | Protocol Buffer Field | Query Parameter Name | Example Usage       |
-| --------------------- | -------------------- | ------------------- |
+|-----------------------|----------------------|---------------------|
 | `context_id`          | `contextId`          | `?contextId=uuid`   |
 | `page_size`           | `pageSize`           | `?pageSize=50`      |
 | `page_token`          | `pageToken`          | `?pageToken=cursor` |
@@ -2981,7 +2981,7 @@ While the A2A protocol provides three standard bindings (JSON-RPC, gRPC, and HTT
 
 Custom protocol bindings **MUST**:
 
-1. **Implement All Core Operations**: Support all operations defined in [Section 4 (A2A Protocol Operations)](#4-a2a-protocol-operations)
+1. **Implement All Core Operations**: Support all operations defined in [Section 4 (A2A Protocol Operations)](#4-protocol-operations)
 2. **Preserve Data Model**: Use data structures functionally equivalent to those defined in [Section 3 (Protocol Data Model)](#3-protocol-data-model)
 3. **Maintain Semantics**: Ensure operations behave consistently with the abstract operation definitions
 4. **Document Completely**: Provide comprehensive documentation of the binding specification
@@ -3077,7 +3077,7 @@ Implementations **MUST** ensure appropriate scope limitation based on the authen
 
 **Authorization Principles:**
 
-- Servers **MUST** implement authorization checks on every [A2A Protocol Operations](#4-a2a-protocol-operations) request
+- Servers **MUST** implement authorization checks on every [A2A Protocol Operations](#4-protocol-operations) request
 - Implementations **MUST** scope results to the caller's authorized access boundaries as defined by the agent's authorization model
 - Even when `contextId` or other filter parameters are not specified in requests, implementations **MUST** scope results to the caller's authorized access boundaries
 - Authorization models are agent-defined and **MAY** be based on:
@@ -3341,9 +3341,9 @@ The `.well-known/agent-card.json` URI provides a standardized location for disco
 
 - The Agent Card MAY contain public information about an agent's capabilities and SHOULD NOT include sensitive credentials or internal implementation details
 - Implementations SHOULD support HTTPS to ensure authenticity and integrity of the Agent Card
-- Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object ([Section 3.4.7](#347-agentcardsignature))
+- Agent Cards MAY be signed using JSON Web Signatures (JWS) as specified in the AgentCardSignature object (Section 3.4.7)
 - Clients SHOULD verify signatures when present to ensure the Agent Card has not been tampered with
-- Extended Agent Cards retrieved via authenticated endpoints ((Section 4.1.11)[#4111-get-extended-agent-card]) MAY contain additional information and MUST enforce appropriate access controls
+- Extended Agent Cards retrieved via authenticated endpoints (Section 4.1.11) MAY contain additional information and MUST enforce appropriate access controls
 
 **Example:**
 
@@ -3358,7 +3358,7 @@ https://agent.example.com/.well-known/agent-card.json
 This appendix catalogs renamed protocol messages and objects, their legacy identifiers, and the planned deprecation/removal schedule. All legacy names and anchors MUST remain resolvable until the stated earliest removal version.
 
 | Legacy Name                                     | Current Name                              | Earliest Removal Version | Notes                                                  |
-| ----------------------------------------------- | ----------------------------------------- | ------------------------ | ------------------------------------------------------ |
+|-------------------------------------------------|-------------------------------------------|--------------------------|--------------------------------------------------------|
 | `MessageSendParams`                             | `SendMessageRequest`                      | >= 0.5.0                 | Request payload rename for clarity (request vs params) |
 | `SendMessageSuccessResponse`                    | `SendMessageResponse`                     | >= 0.5.0                 | Unified success response naming                        |
 | `SendStreamingMessageSuccessResponse`           | `StreamResponse`                          | >= 0.5.0                 | Shorter, binding-agnostic streaming response           |
