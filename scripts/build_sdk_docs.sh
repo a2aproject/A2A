@@ -41,12 +41,12 @@ sphinx-apidoc -f -e -o "${DOCS_SOURCE_DIR}" "${PACKAGE_PATH}"
 echo "--- Building HTML documentation ---"
 
 # Build the HTML documentation
-sphinx-build -b html "${DOCS_SOURCE_DIR}" "${DOCS_BUILD_DIR}/html"
+sphinx-build -j auto -b html "${DOCS_SOURCE_DIR}" "${DOCS_BUILD_DIR}/html"
 
 echo "--- Building Text documentation ---"
 
 # Build the Text documentation
-sphinx-build -b text "${DOCS_SOURCE_DIR}" "${DOCS_BUILD_DIR}/text"
+sphinx-build -j auto -b text "${DOCS_SOURCE_DIR}" "${DOCS_BUILD_DIR}/text"
 
 echo "--- Copying SDK docs to MkDocs integration path ---"
 
