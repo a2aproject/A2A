@@ -4,6 +4,7 @@ This module provides macros for rendering Protocol Buffer definitions
 as markdown tables.
 """
 
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -48,6 +49,7 @@ TYPE_MAP = {
 def define_env(env):
     """Define custom macros for MkDocs."""
 
+    @lru_cache(maxsize=None)
     def _parse_proto(file_path: str):
         """Parses a .proto file and returns the AST with comments attached."""
         full_path = Path(env.conf['docs_dir']).parent / file_path
