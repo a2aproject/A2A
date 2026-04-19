@@ -45,9 +45,13 @@ TYPE_MAP = {
 # -----------------------------------------------------------------------------
 
 
+import functools
+
 def define_env(env):
     """Define custom macros for MkDocs."""
 
+    # Cache AST to prevent redundant parsing of the same file during build
+    @functools.lru_cache(maxsize=None)
     def _parse_proto(file_path: str):
         """Parses a .proto file and returns the AST with comments attached."""
         full_path = Path(env.conf['docs_dir']).parent / file_path
