@@ -1,0 +1,52 @@
+a2a.client.interceptors module
+******************************
+
+class a2a.client.interceptors.AfterArgs(result: Any, method: str, agent_card: AgentCard, context: ClientCallContext | None = None, early_return: bool = False)
+
+   Bases: "object"
+
+   Arguments passed to the interceptor after a method call completes.
+
+   agent_card: AgentCard
+
+   context: ClientCallContext | None = None
+
+   early_return: bool = False
+
+   method: str
+
+   result: Any
+
+class a2a.client.interceptors.BeforeArgs(input: Any, method: str, agent_card: AgentCard, context: ClientCallContext | None = None, early_return: Any | None = None)
+
+   Bases: "object"
+
+   Arguments passed to the interceptor before a method call.
+
+   agent_card: AgentCard
+
+   context: ClientCallContext | None = None
+
+   early_return: Any | None = None
+
+   input: Any
+
+   method: str
+
+class a2a.client.interceptors.ClientCallInterceptor
+
+   Bases: "ABC"
+
+   An abstract base class for client-side call interceptors.
+
+   Interceptors can inspect and modify requests before they are sent,
+   which is ideal for concerns like authentication, logging, or
+   tracing.
+
+   abstractmethod async after(args: AfterArgs) -> None
+
+      Invoked after transport method.
+
+   abstractmethod async before(args: BeforeArgs) -> None
+
+      Invoked before transport method.

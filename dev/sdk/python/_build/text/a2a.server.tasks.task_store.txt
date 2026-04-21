@@ -9,14 +9,18 @@ class a2a.server.tasks.task_store.TaskStore
 
    Defines the methods for persisting and retrieving *Task* objects.
 
-   abstractmethod async delete(task_id: str, context: ServerCallContext | None = None) -> None
+   abstractmethod async delete(task_id: str, context: ServerCallContext) -> None
 
       Deletes a task from the store by ID.
 
-   abstractmethod async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+   abstractmethod async get(task_id: str, context: ServerCallContext) -> Task | None
 
       Retrieves a task from the store by ID.
 
-   abstractmethod async save(task: Task, context: ServerCallContext | None = None) -> None
+   abstractmethod async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Retrieves a list of tasks from the store.
+
+   abstractmethod async save(task: Task, context: ServerCallContext) -> None
 
       Saves or updates a task in the store.

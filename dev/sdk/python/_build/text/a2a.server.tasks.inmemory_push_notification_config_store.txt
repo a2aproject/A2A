@@ -1,25 +1,29 @@
 a2a.server.tasks.inmemory_push_notification_config_store module
 ***************************************************************
 
-class a2a.server.tasks.inmemory_push_notification_config_store.InMemoryPushNotificationConfigStore
+class a2a.server.tasks.inmemory_push_notification_config_store.InMemoryPushNotificationConfigStore(owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>)
 
    Bases: "PushNotificationConfigStore"
 
    In-memory implementation of PushNotificationConfigStore interface.
 
-   Stores push notification configurations in memory
+   Stores push notification configurations in a nested dictionary in
+   memory, keyed by owner then task_id.
 
-   async delete_info(task_id: str, config_id: str | None = None) -> None
+   async delete_info(task_id: str, context: ServerCallContext, config_id: str | None = None) -> None
 
-      Deletes the push notification configuration for a task from
-      memory.
+      Deletes push notification configurations for a task from memory.
 
-   async get_info(task_id: str) -> list[PushNotificationConfig]
+      If config_id is provided, only that specific configuration is
+      deleted. If config_id is None, all configurations for the task
+      for the owner are deleted.
 
-      Retrieves the push notification configuration for a task from
-      memory.
+   async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-   async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+      Retrieves all push notification configurations for a task from
+      memory, for the given owner.
+
+   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task
       in memory.

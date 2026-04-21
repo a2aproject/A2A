@@ -7,7 +7,7 @@ class a2a.server.agent_execution.simple_request_context_builder.SimpleRequestCon
 
    Builds request context and populates referred tasks.
 
-   async build(params: MessageSendParams | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, context: ServerCallContext | None = None) -> RequestContext
+   async build(context: ServerCallContext, params: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None) -> RequestContext
 
       Builds the request context for an agent execution.
 
@@ -17,6 +17,9 @@ class a2a.server.agent_execution.simple_request_context_builder.SimpleRequestCon
       *params.message.reference_task_ids* from the *task_store*.
 
       Parameters:
+         * **context** -- The server call context, containing metadata
+           about the call.
+
          * **params** -- The parameters of the incoming message send
            request.
 
@@ -26,9 +29,6 @@ class a2a.server.agent_execution.simple_request_context_builder.SimpleRequestCon
 
          * **task** -- The primary task object associated with the
            request.
-
-         * **context** -- The server call context, containing metadata
-           about the call.
 
       Returns:
          An instance of RequestContext populated with the provided

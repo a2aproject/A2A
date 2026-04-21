@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.utils.helpers module" href="a2a.utils.helpers.html"><link rel="prev" title="a2a.utils.error_handlers module" href="a2a.utils.error_handlers.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.utils.proto_utils module" href="a2a.utils.proto_utils.html"><link rel="prev" title="a2a.utils.error_handlers module" href="a2a.utils.error_handlers.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>a2a.utils.errors module - a2a-sdk documentation</title>
@@ -206,27 +206,41 @@
 <li class="toctree-l4 has-children"><a class="reference internal" href="a2a.client.transports.html">a2a.client.transports package</a><input aria-label="Toggle navigation of a2a.client.transports package" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.base.html">a2a.client.transports.base module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.grpc.html">a2a.client.transports.grpc module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.http_helpers.html">a2a.client.transports.http_helpers module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.jsonrpc.html">a2a.client.transports.jsonrpc module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.rest.html">a2a.client.transports.rest module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.tenant_decorator.html">a2a.client.transports.tenant_decorator module</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.base_client.html">a2a.client.base_client module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.card_resolver.html">a2a.client.card_resolver module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.client.html">a2a.client.client module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.client_factory.html">a2a.client.client_factory module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.client_task_manager.html">a2a.client.client_task_manager module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.errors.html">a2a.client.errors module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.helpers.html">a2a.client.helpers module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.legacy.html">a2a.client.legacy module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.legacy_grpc.html">a2a.client.legacy_grpc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.middleware.html">a2a.client.middleware module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.client.interceptors.html">a2a.client.interceptors module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.optionals.html">a2a.client.optionals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.client.service_parameters.html">a2a.client.service_parameters module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.contrib.html">a2a.contrib package</a><input aria-label="Toggle navigation of a2a.contrib package" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.contrib.tasks.html">a2a.contrib.tasks package</a><input aria-label="Toggle navigation of a2a.contrib.tasks package" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="a2a.contrib.tasks.vertex_task_converter.html">a2a.contrib.tasks.vertex_task_converter module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="a2a.contrib.tasks.vertex_task_store.html">a2a.contrib.tasks.vertex_task_store module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.compat.html">a2a.compat package</a><input aria-label="Toggle navigation of a2a.compat package" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.compat.v0_3.html">a2a.compat.v0_3 package</a><input aria-label="Toggle navigation of a2a.compat.v0_3 package" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.a2a_v0_3_pb2.html">a2a.compat.v0_3.a2a_v0_3_pb2 module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.a2a_v0_3_pb2_grpc.html">a2a.compat.v0_3.a2a_v0_3_pb2_grpc module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.context_builders.html">a2a.compat.v0_3.context_builders module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.conversions.html">a2a.compat.v0_3.conversions module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.extension_headers.html">a2a.compat.v0_3.extension_headers module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.grpc_handler.html">a2a.compat.v0_3.grpc_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.grpc_transport.html">a2a.compat.v0_3.grpc_transport module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.jsonrpc_adapter.html">a2a.compat.v0_3.jsonrpc_adapter module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.jsonrpc_transport.html">a2a.compat.v0_3.jsonrpc_transport module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.model_conversions.html">a2a.compat.v0_3.model_conversions module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.proto_utils.html">a2a.compat.v0_3.proto_utils module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.request_handler.html">a2a.compat.v0_3.request_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.rest_adapter.html">a2a.compat.v0_3.rest_adapter module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.rest_handler.html">a2a.compat.v0_3.rest_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.rest_transport.html">a2a.compat.v0_3.rest_transport module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.types.html">a2a.compat.v0_3.types module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.versions.html">a2a.compat.v0_3.versions module</a></li>
 </ul>
 </li>
 </ul>
@@ -235,51 +249,59 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.extensions.common.html">a2a.extensions.common module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.grpc.html">a2a.grpc package</a><input aria-label="Toggle navigation of a2a.grpc package" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="a2a.grpc.a2a_pb2.html">a2a.grpc.a2a_pb2 module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.grpc.a2a_pb2_grpc.html">a2a.grpc.a2a_pb2_grpc module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.helpers.html">a2a.helpers package</a><input aria-label="Toggle navigation of a2a.helpers package" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="a2a.helpers.agent_card.html">a2a.helpers.agent_card module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.helpers.proto_helpers.html">a2a.helpers.proto_helpers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.server.html">a2a.server package</a><input aria-label="Toggle navigation of a2a.server package" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.agent_execution.html">a2a.server.agent_execution package</a><input aria-label="Toggle navigation of a2a.server.agent_execution package" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.migrations.html">a2a.migrations package</a><input aria-label="Toggle navigation of a2a.migrations package" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.migrations.versions.html">a2a.migrations.versions package</a><input aria-label="Toggle navigation of a2a.migrations.versions package" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.migrations.versions.38ce57e08137_add_column_protocol_version.html">a2a.migrations.versions.38ce57e08137_add_column_protocol_version module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated.html">a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.migrations.env.html">a2a.migrations.env module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.migrations.migration_utils.html">a2a.migrations.migration_utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.server.html">a2a.server package</a><input aria-label="Toggle navigation of a2a.server package" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.agent_execution.html">a2a.server.agent_execution package</a><input aria-label="Toggle navigation of a2a.server.agent_execution package" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.active_task.html">a2a.server.agent_execution.active_task module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.active_task_registry.html">a2a.server.agent_execution.active_task_registry module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.agent_executor.html">a2a.server.agent_execution.agent_executor module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.context.html">a2a.server.agent_execution.context module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.request_context_builder.html">a2a.server.agent_execution.request_context_builder module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.simple_request_context_builder.html">a2a.server.agent_execution.simple_request_context_builder module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.apps.html">a2a.server.apps package</a><input aria-label="Toggle navigation of a2a.server.apps package" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l5 has-children"><a class="reference internal" href="a2a.server.apps.jsonrpc.html">a2a.server.apps.jsonrpc package</a><input aria-label="Toggle navigation of a2a.server.apps.jsonrpc package" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.jsonrpc.fastapi_app.html">a2a.server.apps.jsonrpc.fastapi_app module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.jsonrpc.jsonrpc_app.html">a2a.server.apps.jsonrpc.jsonrpc_app module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.jsonrpc.starlette_app.html">a2a.server.apps.jsonrpc.starlette_app module</a></li>
-</ul>
-</li>
-<li class="toctree-l5 has-children"><a class="reference internal" href="a2a.server.apps.rest.html">a2a.server.apps.rest package</a><input aria-label="Toggle navigation of a2a.server.apps.rest package" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.rest.fastapi_app.html">a2a.server.apps.rest.fastapi_app module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.rest.rest_adapter.html">a2a.server.apps.rest.rest_adapter module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.events.html">a2a.server.events package</a><input aria-label="Toggle navigation of a2a.server.events package" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.events.html">a2a.server.events package</a><input aria-label="Toggle navigation of a2a.server.events package" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.event_consumer.html">a2a.server.events.event_consumer module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.event_queue.html">a2a.server.events.event_queue module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.events.event_queue_v2.html">a2a.server.events.event_queue_v2 module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.in_memory_queue_manager.html">a2a.server.events.in_memory_queue_manager module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.queue_manager.html">a2a.server.events.queue_manager module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.request_handlers.html">a2a.server.request_handlers package</a><input aria-label="Toggle navigation of a2a.server.request_handlers package" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.request_handlers.html">a2a.server.request_handlers package</a><input aria-label="Toggle navigation of a2a.server.request_handlers package" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.default_request_handler.html">a2a.server.request_handlers.default_request_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.default_request_handler_v2.html">a2a.server.request_handlers.default_request_handler_v2 module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.grpc_handler.html">a2a.server.request_handlers.grpc_handler module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.jsonrpc_handler.html">a2a.server.request_handlers.jsonrpc_handler module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.request_handler.html">a2a.server.request_handlers.request_handler module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.response_helpers.html">a2a.server.request_handlers.response_helpers module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.rest_handler.html">a2a.server.request_handlers.rest_handler module</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.routes.html">a2a.server.routes package</a><input aria-label="Toggle navigation of a2a.server.routes package" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.agent_card_routes.html">a2a.server.routes.agent_card_routes module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.common.html">a2a.server.routes.common module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_dispatcher.html">a2a.server.routes.jsonrpc_dispatcher module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_routes.html">a2a.server.routes.jsonrpc_routes module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.rest_dispatcher.html">a2a.server.routes.rest_dispatcher module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.rest_routes.html">a2a.server.routes.rest_routes module</a></li>
 </ul>
 </li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.tasks.html">a2a.server.tasks package</a><input aria-label="Toggle navigation of a2a.server.tasks package" class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.base_push_notification_sender.html">a2a.server.tasks.base_push_notification_sender module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.copying_task_store.html">a2a.server.tasks.copying_task_store module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.database_push_notification_config_store.html">a2a.server.tasks.database_push_notification_config_store module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.database_task_store.html">a2a.server.tasks.database_task_store module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.inmemory_push_notification_config_store.html">a2a.server.tasks.inmemory_push_notification_config_store module</a></li>
@@ -294,24 +316,28 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.server.context.html">a2a.server.context module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.server.id_generator.html">a2a.server.id_generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.server.jsonrpc_models.html">a2a.server.jsonrpc_models module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.server.models.html">a2a.server.models module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.server.owner_resolver.html">a2a.server.owner_resolver module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current has-children"><a class="reference internal" href="a2a.utils.html">a2a.utils package</a><input aria-label="Toggle navigation of a2a.utils package" checked="" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.artifact.html">a2a.utils.artifact module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.types.html">a2a.types package</a><input aria-label="Toggle navigation of a2a.types package" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="a2a.types.a2a_pb2.html">a2a.types.a2a_pb2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.types.a2a_pb2_grpc.html">a2a.types.a2a_pb2_grpc module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="a2a.utils.html">a2a.utils package</a><input aria-label="Toggle navigation of a2a.utils package" checked="" class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">a2a.utils.errors module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.helpers.html">a2a.utils.helpers module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.message.html">a2a.utils.message module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.parts.html">a2a.utils.parts module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.telemetry.html">a2a.utils.telemetry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.version_validator.html">a2a.utils.version_validator module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.types.html">a2a.types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.a2a_db_cli.html">a2a.a2a_db_cli module</a></li>
 </ul>
 </li>
 </ul>
@@ -356,28 +382,164 @@
         <article role="main" id="furo-main-content">
           <section id="module-a2a.utils.errors">
 <span id="a2a-utils-errors-module"></span><h1>a2a.utils.errors module<a class="headerlink" href="#module-a2a.utils.errors" title="Link to this heading">¶</a></h1>
-<p>Custom exceptions for A2A server-side errors.</p>
+<p>Custom exceptions and error types for A2A server-side errors.</p>
+<p>This module contains A2A-specific error codes,
+as well as server exception classes.</p>
 <dl class="py exception">
-<dt class="sig sig-object py" id="a2a.utils.errors.A2AServerError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">A2AServerError</span></span><a class="headerlink" href="#a2a.utils.errors.A2AServerError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Base exception for A2A Server errors.</p>
+<dt class="sig sig-object py" id="a2a.utils.errors.ExtensionSupportRequiredError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">ExtensionSupportRequiredError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.ExtensionSupportRequiredError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when extension support is required but not present.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.ExtensionSupportRequiredError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Extension</span> <span class="pre">support</span> <span class="pre">required'</span></span><a class="headerlink" href="#a2a.utils.errors.ExtensionSupportRequiredError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="a2a.utils.errors.MethodNotImplementedError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">MethodNotImplementedError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'This</span> <span class="pre">method</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">implemented</span> <span class="pre">by</span> <span class="pre">the</span> <span class="pre">server'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.MethodNotImplementedError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#a2a.utils.errors.A2AServerError" title="a2a.utils.errors.A2AServerError"><code class="xref py py-class docutils literal notranslate"><span class="pre">A2AServerError</span></code></a></p>
-<p>Exception raised for methods that are not implemented by the server handler.</p>
+<dt class="sig sig-object py" id="a2a.utils.errors.InternalError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">InternalError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.InternalError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised for internal server errors.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.InternalError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Internal</span> <span class="pre">error'</span></span><a class="headerlink" href="#a2a.utils.errors.InternalError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="a2a.utils.errors.ServerError">
-<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">ServerError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.JSONRPCError" title="a2a.types.JSONRPCError"><span class="pre">JSONRPCError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.JSONParseError" title="a2a.types.JSONParseError"><span class="pre">JSONParseError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.InvalidRequestError" title="a2a.types.InvalidRequestError"><span class="pre">InvalidRequestError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.MethodNotFoundError" title="a2a.types.MethodNotFoundError"><span class="pre">MethodNotFoundError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.InvalidParamsError" title="a2a.types.InvalidParamsError"><span class="pre">InvalidParamsError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.InternalError" title="a2a.types.InternalError"><span class="pre">InternalError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.TaskNotFoundError" title="a2a.types.TaskNotFoundError"><span class="pre">TaskNotFoundError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.TaskNotCancelableError" title="a2a.types.TaskNotCancelableError"><span class="pre">TaskNotCancelableError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.PushNotificationNotSupportedError" title="a2a.types.PushNotificationNotSupportedError"><span class="pre">PushNotificationNotSupportedError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.UnsupportedOperationError" title="a2a.types.UnsupportedOperationError"><span class="pre">UnsupportedOperationError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.ContentTypeNotSupportedError" title="a2a.types.ContentTypeNotSupportedError"><span class="pre">ContentTypeNotSupportedError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.InvalidAgentResponseError" title="a2a.types.InvalidAgentResponseError"><span class="pre">InvalidAgentResponseError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.AuthenticatedExtendedCardNotConfiguredError" title="a2a.types.AuthenticatedExtendedCardNotConfiguredError"><span class="pre">AuthenticatedExtendedCardNotConfiguredError</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.ServerError" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Wrapper exception for A2A or JSON-RPC errors originating from the server’s logic.</p>
-<p>This exception is used internally by request handlers and other server components
-to signal a specific error that should be formatted as a JSON-RPC error response.</p>
+<dt class="sig sig-object py" id="a2a.utils.errors.InvalidAgentResponseError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">InvalidAgentResponseError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.InvalidAgentResponseError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when the agent response is invalid.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.InvalidAgentResponseError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Invalid</span> <span class="pre">agent</span> <span class="pre">response'</span></span><a class="headerlink" href="#a2a.utils.errors.InvalidAgentResponseError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.InvalidParamsError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">InvalidParamsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.InvalidParamsError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when parameters are invalid.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.InvalidParamsError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Invalid</span> <span class="pre">params'</span></span><a class="headerlink" href="#a2a.utils.errors.InvalidParamsError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.InvalidRequestError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">InvalidRequestError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.InvalidRequestError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when the request is invalid.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.InvalidRequestError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Invalid</span> <span class="pre">Request'</span></span><a class="headerlink" href="#a2a.utils.errors.InvalidRequestError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.MethodNotFoundError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">MethodNotFoundError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.MethodNotFoundError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when a method is not found.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.MethodNotFoundError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Method</span> <span class="pre">not</span> <span class="pre">found'</span></span><a class="headerlink" href="#a2a.utils.errors.MethodNotFoundError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.PushNotificationNotSupportedError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">PushNotificationNotSupportedError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.PushNotificationNotSupportedError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when push notifications are not supported.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.PushNotificationNotSupportedError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Push</span> <span class="pre">Notification</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">supported'</span></span><a class="headerlink" href="#a2a.utils.errors.PushNotificationNotSupportedError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">RestErrorMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">http_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grpc_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Named tuple mapping HTTP status, gRPC status, and reason strings.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap.grpc_status">
+<span class="sig-name descname"><span class="pre">grpc_status</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap.grpc_status" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap.http_code">
+<span class="sig-name descname"><span class="pre">http_code</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap.http_code" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap.reason">
+<span class="sig-name descname"><span class="pre">reason</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap.reason" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.TaskNotCancelableError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">TaskNotCancelableError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.TaskNotCancelableError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when a task cannot be canceled.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.TaskNotCancelableError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Task</span> <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">canceled'</span></span><a class="headerlink" href="#a2a.utils.errors.TaskNotCancelableError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.TaskNotFoundError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">TaskNotFoundError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.TaskNotFoundError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when a task is not found.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.TaskNotFoundError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Task</span> <span class="pre">not</span> <span class="pre">found'</span></span><a class="headerlink" href="#a2a.utils.errors.TaskNotFoundError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.UnsupportedOperationError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOperationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.UnsupportedOperationError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when an operation is not supported.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.UnsupportedOperationError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'This</span> <span class="pre">operation</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">supported'</span></span><a class="headerlink" href="#a2a.utils.errors.UnsupportedOperationError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.VersionNotSupportedError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">VersionNotSupportedError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.VersionNotSupportedError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when the requested version is not supported.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.VersionNotSupportedError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Version</span> <span class="pre">not</span> <span class="pre">supported'</span></span><a class="headerlink" href="#a2a.utils.errors.VersionNotSupportedError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -387,12 +549,12 @@ to signal a specific error that should be formatted as a JSON-RPC error response
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="a2a.utils.helpers.html">
+          <a class="next-page" href="a2a.utils.proto_utils.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">a2a.utils.helpers module</div>
+                <div class="title">a2a.utils.proto_utils module</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -438,9 +600,56 @@ to signal a specific error that should be formatted as a JSON-RPC error response
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">a2a.utils.errors module</a><ul>
-<li><a class="reference internal" href="#a2a.utils.errors.A2AServerError"><code class="docutils literal notranslate"><span class="pre">A2AServerError</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.errors.MethodNotImplementedError"><code class="docutils literal notranslate"><span class="pre">MethodNotImplementedError</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.errors.ServerError"><code class="docutils literal notranslate"><span class="pre">ServerError</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.errors.ExtensionSupportRequiredError"><code class="docutils literal notranslate"><span class="pre">ExtensionSupportRequiredError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.ExtensionSupportRequiredError.message"><code class="docutils literal notranslate"><span class="pre">ExtensionSupportRequiredError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.InternalError"><code class="docutils literal notranslate"><span class="pre">InternalError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.InternalError.message"><code class="docutils literal notranslate"><span class="pre">InternalError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.InvalidAgentResponseError"><code class="docutils literal notranslate"><span class="pre">InvalidAgentResponseError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.InvalidAgentResponseError.message"><code class="docutils literal notranslate"><span class="pre">InvalidAgentResponseError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.InvalidParamsError"><code class="docutils literal notranslate"><span class="pre">InvalidParamsError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.InvalidParamsError.message"><code class="docutils literal notranslate"><span class="pre">InvalidParamsError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.InvalidRequestError"><code class="docutils literal notranslate"><span class="pre">InvalidRequestError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.InvalidRequestError.message"><code class="docutils literal notranslate"><span class="pre">InvalidRequestError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.MethodNotFoundError"><code class="docutils literal notranslate"><span class="pre">MethodNotFoundError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.MethodNotFoundError.message"><code class="docutils literal notranslate"><span class="pre">MethodNotFoundError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.PushNotificationNotSupportedError"><code class="docutils literal notranslate"><span class="pre">PushNotificationNotSupportedError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.PushNotificationNotSupportedError.message"><code class="docutils literal notranslate"><span class="pre">PushNotificationNotSupportedError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap"><code class="docutils literal notranslate"><span class="pre">RestErrorMap</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap.grpc_status"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.grpc_status</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap.http_code"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.http_code</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap.reason"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.reason</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.TaskNotCancelableError"><code class="docutils literal notranslate"><span class="pre">TaskNotCancelableError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.TaskNotCancelableError.message"><code class="docutils literal notranslate"><span class="pre">TaskNotCancelableError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.TaskNotFoundError"><code class="docutils literal notranslate"><span class="pre">TaskNotFoundError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.TaskNotFoundError.message"><code class="docutils literal notranslate"><span class="pre">TaskNotFoundError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.UnsupportedOperationError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOperationError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.UnsupportedOperationError.message"><code class="docutils literal notranslate"><span class="pre">UnsupportedOperationError.message</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.errors.VersionNotSupportedError"><code class="docutils literal notranslate"><span class="pre">VersionNotSupportedError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.VersionNotSupportedError.message"><code class="docutils literal notranslate"><span class="pre">VersionNotSupportedError.message</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

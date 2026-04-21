@@ -9,6 +9,14 @@ Subpackages
 
   * Submodules
 
+    * a2a.server.agent_execution.active_task module
+
+      * "ActiveTask"
+
+    * a2a.server.agent_execution.active_task_registry module
+
+      * "ActiveTaskRegistry"
+
     * a2a.server.agent_execution.agent_executor module
 
       * "AgentExecutor"
@@ -35,8 +43,6 @@ Subpackages
 
     * "RequestContext"
 
-      * "RequestContext.add_activated_extension()"
-
       * "RequestContext.attach_related_task()"
 
       * "RequestContext.call_context"
@@ -59,6 +65,8 @@ Subpackages
 
       * "RequestContext.task_id"
 
+      * "RequestContext.tenant"
+
     * "RequestContextBuilder"
 
       * "RequestContextBuilder.build()"
@@ -66,54 +74,6 @@ Subpackages
     * "SimpleRequestContextBuilder"
 
       * "SimpleRequestContextBuilder.build()"
-
-* a2a.server.apps package
-
-  * Subpackages
-
-    * a2a.server.apps.jsonrpc package
-
-      * Submodules
-
-      * Module contents
-
-    * a2a.server.apps.rest package
-
-      * Submodules
-
-      * Module contents
-
-  * Module contents
-
-    * "A2AFastAPIApplication"
-
-      * "A2AFastAPIApplication.add_routes_to_app()"
-
-      * "A2AFastAPIApplication.build()"
-
-    * "A2ARESTFastAPIApplication"
-
-      * "A2ARESTFastAPIApplication.build()"
-
-    * "A2AStarletteApplication"
-
-      * "A2AStarletteApplication.add_routes_to_app()"
-
-      * "A2AStarletteApplication.build()"
-
-      * "A2AStarletteApplication.routes()"
-
-    * "CallContextBuilder"
-
-      * "CallContextBuilder.build()"
-
-    * "JSONRPCApplication"
-
-      * "JSONRPCApplication.A2ARequestModel"
-
-      * "JSONRPCApplication.METHOD_TO_MODEL"
-
-      * "JSONRPCApplication.build()"
 
 * a2a.server.events package
 
@@ -128,6 +88,14 @@ Subpackages
       * "Event"
 
       * "EventQueue"
+
+      * "EventQueueLegacy"
+
+    * a2a.server.events.event_queue_v2 module
+
+      * "EventQueueSink"
+
+      * "EventQueueSource"
 
     * a2a.server.events.in_memory_queue_manager module
 
@@ -149,23 +117,25 @@ Subpackages
 
       * "EventConsumer.consume_all()"
 
-      * "EventConsumer.consume_one()"
-
     * "EventQueue"
-
-      * "EventQueue.clear_events()"
-
-      * "EventQueue.close()"
-
-      * "EventQueue.dequeue_event()"
 
       * "EventQueue.enqueue_event()"
 
-      * "EventQueue.is_closed()"
+    * "EventQueueLegacy"
 
-      * "EventQueue.tap()"
+      * "EventQueueLegacy.close()"
 
-      * "EventQueue.task_done()"
+      * "EventQueueLegacy.dequeue_event()"
+
+      * "EventQueueLegacy.enqueue_event()"
+
+      * "EventQueueLegacy.is_closed()"
+
+      * "EventQueueLegacy.queue"
+
+      * "EventQueueLegacy.tap()"
+
+      * "EventQueueLegacy.task_done()"
 
     * "InMemoryQueueManager"
 
@@ -201,63 +171,75 @@ Subpackages
 
     * a2a.server.request_handlers.default_request_handler module
 
-      * "DefaultRequestHandler"
+      * "LegacyRequestHandler"
+
+    * a2a.server.request_handlers.default_request_handler_v2 module
+
+      * "DefaultRequestHandlerV2"
 
     * a2a.server.request_handlers.grpc_handler module
 
-      * "CallContextBuilder"
-
-      * "DefaultCallContextBuilder"
+      * "DefaultGrpcServerCallContextBuilder"
 
       * "GrpcHandler"
 
-    * a2a.server.request_handlers.jsonrpc_handler module
-
-      * "JSONRPCHandler"
+      * "GrpcServerCallContextBuilder"
 
     * a2a.server.request_handlers.request_handler module
 
       * "RequestHandler"
 
+      * "validate()"
+
+      * "validate_request_params()"
+
     * a2a.server.request_handlers.response_helpers module
 
       * "EventTypes"
 
-      * "RT"
-
-      * "SPT"
+      * "agent_card_to_dict()"
 
       * "build_error_response()"
 
       * "prepare_response_object()"
 
-    * a2a.server.request_handlers.rest_handler module
-
-      * "RESTHandler"
-
   * Module contents
+
+    * "DefaultGrpcServerCallContextBuilder"
+
+      * "DefaultGrpcServerCallContextBuilder.build()"
+
+      * "DefaultGrpcServerCallContextBuilder.build_user()"
 
     * "DefaultRequestHandler"
 
-      * "DefaultRequestHandler.on_cancel_task()"
+    * "DefaultRequestHandlerV2"
 
-      * "DefaultRequestHandler.on_delete_task_push_notification_config
-        ()"
+      * "DefaultRequestHandlerV2.on_cancel_task()"
 
-      * "DefaultRequestHandler.on_get_task()"
+      * "DefaultRequestHandlerV2.on_create_task_push_notification_conf
+        ig()"
 
-      * "DefaultRequestHandler.on_get_task_push_notification_config()"
+      * "DefaultRequestHandlerV2.on_delete_task_push_notification_conf
+        ig()"
 
-      * "DefaultRequestHandler.on_list_task_push_notification_config()
-        "
+      * "DefaultRequestHandlerV2.on_get_extended_agent_card()"
 
-      * "DefaultRequestHandler.on_message_send()"
+      * "DefaultRequestHandlerV2.on_get_task()"
 
-      * "DefaultRequestHandler.on_message_send_stream()"
+      * "DefaultRequestHandlerV2.on_get_task_push_notification_config(
+        )"
 
-      * "DefaultRequestHandler.on_resubscribe_to_task()"
+      * "DefaultRequestHandlerV2.on_list_task_push_notification_config
+        s()"
 
-      * "DefaultRequestHandler.on_set_task_push_notification_config()"
+      * "DefaultRequestHandlerV2.on_list_tasks()"
+
+      * "DefaultRequestHandlerV2.on_message_send()"
+
+      * "DefaultRequestHandlerV2.on_message_send_stream()"
+
+      * "DefaultRequestHandlerV2.on_subscribe_to_task()"
 
     * "GrpcHandler"
 
@@ -265,85 +247,136 @@ Subpackages
 
       * "GrpcHandler.CreateTaskPushNotificationConfig()"
 
-      * "GrpcHandler.GetAgentCard()"
+      * "GrpcHandler.DeleteTaskPushNotificationConfig()"
+
+      * "GrpcHandler.GetExtendedAgentCard()"
 
       * "GrpcHandler.GetTask()"
 
       * "GrpcHandler.GetTaskPushNotificationConfig()"
 
+      * "GrpcHandler.ListTaskPushNotificationConfigs()"
+
+      * "GrpcHandler.ListTasks()"
+
       * "GrpcHandler.SendMessage()"
 
       * "GrpcHandler.SendStreamingMessage()"
 
-      * "GrpcHandler.TaskSubscription()"
+      * "GrpcHandler.SubscribeToTask()"
 
       * "GrpcHandler.abort_context()"
 
-    * "JSONRPCHandler"
+    * "GrpcServerCallContextBuilder"
 
-      * "JSONRPCHandler.delete_push_notification_config()"
+      * "GrpcServerCallContextBuilder.build()"
 
-      * "JSONRPCHandler.get_authenticated_extended_card()"
+    * "LegacyRequestHandler"
 
-      * "JSONRPCHandler.get_push_notification_config()"
+      * "LegacyRequestHandler.on_cancel_task()"
 
-      * "JSONRPCHandler.list_push_notification_config()"
+      * "LegacyRequestHandler.on_create_task_push_notification_config(
+        )"
 
-      * "JSONRPCHandler.on_cancel_task()"
+      * "LegacyRequestHandler.on_delete_task_push_notification_config(
+        )"
 
-      * "JSONRPCHandler.on_get_task()"
+      * "LegacyRequestHandler.on_get_extended_agent_card()"
 
-      * "JSONRPCHandler.on_message_send()"
+      * "LegacyRequestHandler.on_get_task()"
 
-      * "JSONRPCHandler.on_message_send_stream()"
+      * "LegacyRequestHandler.on_get_task_push_notification_config()"
 
-      * "JSONRPCHandler.on_resubscribe_to_task()"
+      * "LegacyRequestHandler.on_list_task_push_notification_configs()
+        "
 
-      * "JSONRPCHandler.set_push_notification_config()"
+      * "LegacyRequestHandler.on_list_tasks()"
 
-    * "RESTHandler"
+      * "LegacyRequestHandler.on_message_send()"
 
-      * "RESTHandler.get_push_notification()"
+      * "LegacyRequestHandler.on_message_send_stream()"
 
-      * "RESTHandler.list_push_notifications()"
-
-      * "RESTHandler.list_tasks()"
-
-      * "RESTHandler.on_cancel_task()"
-
-      * "RESTHandler.on_get_task()"
-
-      * "RESTHandler.on_message_send()"
-
-      * "RESTHandler.on_message_send_stream()"
-
-      * "RESTHandler.on_resubscribe_to_task()"
-
-      * "RESTHandler.set_push_notification()"
+      * "LegacyRequestHandler.on_subscribe_to_task()"
 
     * "RequestHandler"
 
       * "RequestHandler.on_cancel_task()"
 
+      * "RequestHandler.on_create_task_push_notification_config()"
+
       * "RequestHandler.on_delete_task_push_notification_config()"
+
+      * "RequestHandler.on_get_extended_agent_card()"
 
       * "RequestHandler.on_get_task()"
 
       * "RequestHandler.on_get_task_push_notification_config()"
 
-      * "RequestHandler.on_list_task_push_notification_config()"
+      * "RequestHandler.on_list_task_push_notification_configs()"
+
+      * "RequestHandler.on_list_tasks()"
 
       * "RequestHandler.on_message_send()"
 
       * "RequestHandler.on_message_send_stream()"
 
-      * "RequestHandler.on_resubscribe_to_task()"
-
-      * "RequestHandler.on_set_task_push_notification_config()"
+      * "RequestHandler.on_subscribe_to_task()"
 
     * "build_error_response()"
 
     * "prepare_response_object()"
+
+    * "validate_request_params()"
+
+* a2a.server.routes package
+
+  * Submodules
+
+    * a2a.server.routes.agent_card_routes module
+
+      * "create_agent_card_routes()"
+
+    * a2a.server.routes.common module
+
+      * "DefaultServerCallContextBuilder"
+
+      * "ServerCallContextBuilder"
+
+      * "StarletteUser"
+
+    * a2a.server.routes.jsonrpc_dispatcher module
+
+      * "JsonRpcDispatcher"
+
+    * a2a.server.routes.jsonrpc_routes module
+
+      * "create_jsonrpc_routes()"
+
+    * a2a.server.routes.rest_dispatcher module
+
+      * "RestDispatcher"
+
+    * a2a.server.routes.rest_routes module
+
+      * "create_rest_routes()"
+
+  * Module contents
+
+    * "DefaultServerCallContextBuilder"
+
+      * "DefaultServerCallContextBuilder.build()"
+
+      * "DefaultServerCallContextBuilder.build_user()"
+
+    * "ServerCallContextBuilder"
+
+      * "ServerCallContextBuilder.build()"
+
+    * "create_agent_card_routes()"
+
+    * "create_jsonrpc_routes()"
+
+    * "create_rest_routes()"
 
 * a2a.server.tasks package
 
@@ -352,6 +385,10 @@ Subpackages
     * a2a.server.tasks.base_push_notification_sender module
 
       * "BasePushNotificationSender"
+
+    * a2a.server.tasks.copying_task_store module
+
+      * "CopyingTaskStoreAdapter"
 
     * a2a.server.tasks.database_push_notification_config_store module
 
@@ -385,6 +422,8 @@ Subpackages
 
       * "TaskManager"
 
+      * "append_artifact_to_task()"
+
     * a2a.server.tasks.task_store module
 
       * "TaskStore"
@@ -405,6 +444,8 @@ Subpackages
 
       * "DatabasePushNotificationConfigStore.config_model"
 
+      * "DatabasePushNotificationConfigStore.core_to_model_conversion"
+
       * "DatabasePushNotificationConfigStore.create_table"
 
       * "DatabasePushNotificationConfigStore.delete_info()"
@@ -415,11 +456,17 @@ Subpackages
 
       * "DatabasePushNotificationConfigStore.initialize()"
 
+      * "DatabasePushNotificationConfigStore.model_to_core_conversion"
+
+      * "DatabasePushNotificationConfigStore.owner_resolver"
+
       * "DatabasePushNotificationConfigStore.set_info()"
 
     * "DatabaseTaskStore"
 
       * "DatabaseTaskStore.async_session_maker"
+
+      * "DatabaseTaskStore.core_to_model_conversion"
 
       * "DatabaseTaskStore.create_table"
 
@@ -430,6 +477,12 @@ Subpackages
       * "DatabaseTaskStore.get()"
 
       * "DatabaseTaskStore.initialize()"
+
+      * "DatabaseTaskStore.list()"
+
+      * "DatabaseTaskStore.model_to_core_conversion"
+
+      * "DatabaseTaskStore.owner_resolver"
 
       * "DatabaseTaskStore.save()"
 
@@ -448,6 +501,8 @@ Subpackages
       * "InMemoryTaskStore.delete()"
 
       * "InMemoryTaskStore.get()"
+
+      * "InMemoryTaskStore.list()"
 
       * "InMemoryTaskStore.save()"
 
@@ -477,6 +532,8 @@ Subpackages
 
       * "TaskManager.ensure_task()"
 
+      * "TaskManager.ensure_task_id()"
+
       * "TaskManager.get_task()"
 
       * "TaskManager.process()"
@@ -490,6 +547,8 @@ Subpackages
       * "TaskStore.delete()"
 
       * "TaskStore.get()"
+
+      * "TaskStore.list()"
 
       * "TaskStore.save()"
 
@@ -525,13 +584,13 @@ Submodules
 
   * "ServerCallContext"
 
-    * "ServerCallContext.activated_extensions"
-
     * "ServerCallContext.model_config"
 
     * "ServerCallContext.requested_extensions"
 
     * "ServerCallContext.state"
+
+    * "ServerCallContext.tenant"
 
     * "ServerCallContext.user"
 
@@ -553,6 +612,62 @@ Submodules
 
     * "UUIDGenerator.generate()"
 
+* a2a.server.jsonrpc_models module
+
+  * "InternalError"
+
+    * "InternalError.code"
+
+    * "InternalError.message"
+
+    * "InternalError.model_config"
+
+  * "InvalidParamsError"
+
+    * "InvalidParamsError.code"
+
+    * "InvalidParamsError.message"
+
+    * "InvalidParamsError.model_config"
+
+  * "InvalidRequestError"
+
+    * "InvalidRequestError.code"
+
+    * "InvalidRequestError.message"
+
+    * "InvalidRequestError.model_config"
+
+  * "JSONParseError"
+
+    * "JSONParseError.code"
+
+    * "JSONParseError.message"
+
+    * "JSONParseError.model_config"
+
+  * "JSONRPCBaseModel"
+
+    * "JSONRPCBaseModel.model_config"
+
+  * "JSONRPCError"
+
+    * "JSONRPCError.code"
+
+    * "JSONRPCError.data"
+
+    * "JSONRPCError.message"
+
+    * "JSONRPCError.model_config"
+
+  * "MethodNotFoundError"
+
+    * "MethodNotFoundError.code"
+
+    * "MethodNotFoundError.message"
+
+    * "MethodNotFoundError.model_config"
+
 * a2a.server.models module
 
   * "Base"
@@ -567,6 +682,10 @@ Submodules
 
     * "PushNotificationConfigMixin.config_id"
 
+    * "PushNotificationConfigMixin.owner"
+
+    * "PushNotificationConfigMixin.protocol_version"
+
     * "PushNotificationConfigMixin.task_id"
 
   * "PushNotificationConfigModel"
@@ -575,27 +694,11 @@ Submodules
 
     * "PushNotificationConfigModel.config_id"
 
+    * "PushNotificationConfigModel.owner"
+
+    * "PushNotificationConfigModel.protocol_version"
+
     * "PushNotificationConfigModel.task_id"
-
-  * "PydanticListType"
-
-    * "PydanticListType.cache_ok"
-
-    * "PydanticListType.impl"
-
-    * "PydanticListType.process_bind_param()"
-
-    * "PydanticListType.process_result_value()"
-
-  * "PydanticType"
-
-    * "PydanticType.cache_ok"
-
-    * "PydanticType.impl"
-
-    * "PydanticType.process_bind_param()"
-
-    * "PydanticType.process_result_value()"
 
   * "TaskMixin"
 
@@ -608,6 +711,12 @@ Submodules
     * "TaskMixin.id"
 
     * "TaskMixin.kind"
+
+    * "TaskMixin.last_updated"
+
+    * "TaskMixin.owner"
+
+    * "TaskMixin.protocol_version"
 
     * "TaskMixin.status"
 
@@ -625,6 +734,12 @@ Submodules
 
     * "TaskModel.kind"
 
+    * "TaskModel.last_updated"
+
+    * "TaskModel.owner"
+
+    * "TaskModel.protocol_version"
+
     * "TaskModel.status"
 
     * "TaskModel.task_metadata"
@@ -634,6 +749,10 @@ Submodules
   * "create_task_model()"
 
   * "override()"
+
+* a2a.server.owner_resolver module
+
+  * "resolve_user_scope()"
 
 
 Module contents

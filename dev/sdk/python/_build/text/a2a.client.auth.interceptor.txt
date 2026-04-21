@@ -10,7 +10,11 @@ class a2a.client.auth.interceptor.AuthInterceptor(credential_service: Credential
 
    Based on the agent's security schemes.
 
-   async intercept(method_name: str, request_payload: dict[str, Any], http_kwargs: dict[str, Any], agent_card: AgentCard | None, context: ClientCallContext | None) -> tuple[dict[str, Any], dict[str, Any]]
+   async after(args: AfterArgs) -> None
+
+      Invoked after the method is executed.
+
+   async before(args: BeforeArgs) -> None
 
       Applies authentication headers to the request if credentials are
       available.

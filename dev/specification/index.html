@@ -8258,7 +8258,7 @@
 <p><strong>Request Format:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="err">POST {webhook_url}</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="err">Authorization: {authentication_scheme} {credentials}</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="err">Content-Type: application/json</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="err">Content-Type: application/a2a+json</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="err">{</span>
 </span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="err">  /* StreamResponse object - one of: */</span>
@@ -9041,7 +9041,7 @@
 <p><em>Example: HTTP client opting into extensions using headers:</em></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="na">A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
@@ -11119,7 +11119,7 @@ so that clients can distinguish between incompatible versions:</p>
 <h3 id="111-protocol-requirements">11.1. Protocol Requirements<a class="headerlink" href="#111-protocol-requirements" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Protocol:</strong> HTTP(S) with JSON payloads</li>
-<li><strong>Content-Type:</strong> <code>application/json</code> for requests and responses</li>
+<li><strong>Content-Type:</strong> application/a2a+json <strong>SHOULD</strong> be used for requests and responses</li>
 <li><strong>Methods:</strong> Standard HTTP verbs (GET, POST, PUT, DELETE)</li>
 <li><strong>URL Patterns:</strong> RESTful resource-based URLs</li>
 <li><strong>Streaming:</strong> Server-Sent Events for real-time updates</li>
@@ -11135,7 +11135,7 @@ so that clients can distinguish between incompatible versions:</p>
 <p><strong>Example Request with A2A Service Parameters:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="nf">POST</span> <span class="nn">/message:send</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">agent.example.com</span>
-</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer token</span>
 </span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a><span class="na">A2A-Version</span><span class="o">:</span> <span class="l">0.3</span>
 </span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="na">A2A-Extensions</span><span class="o">:</span> <span class="l">https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1</span>
@@ -11175,7 +11175,7 @@ so that clients can distinguish between incompatible versions:</p>
 <p>All requests and responses use JSON objects structurally equivalent to the Protocol Buffer definitions.</p>
 <p><strong>Example Send Message:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a><span class="err">POST /message:send</span>
-</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a><span class="err">Content-Type: application/json</span>
+</span><span id="__span-59-2"><a id="__codelineno-59-2" name="__codelineno-59-2" href="#__codelineno-59-2"></a><span class="err">Content-Type: application/a2a+json</span>
 </span><span id="__span-59-3"><a id="__codelineno-59-3" name="__codelineno-59-3" href="#__codelineno-59-3"></a>
 </span><span id="__span-59-4"><a id="__codelineno-59-4" name="__codelineno-59-4" href="#__codelineno-59-4"></a><span class="err">{</span>
 </span><span id="__span-59-5"><a id="__codelineno-59-5" name="__codelineno-59-5" href="#__codelineno-59-5"></a><span class="err">  &quot;message&quot;: {</span>
@@ -11191,7 +11191,7 @@ so that clients can distinguish between incompatible versions:</p>
 <p><strong>Referenced Objects:</strong> <a href="#321-sendmessagerequest"><code>SendMessageRequest</code></a>, <a href="#414-message"><code>Message</code></a></p>
 <p><strong>Response:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-60-1"><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-</span><span id="__span-60-2"><a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-60-2"><a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-60-3"><a id="__codelineno-60-3" name="__codelineno-60-3" href="#__codelineno-60-3"></a>
 </span><span id="__span-60-4"><a id="__codelineno-60-4" name="__codelineno-60-4" href="#__codelineno-60-4"></a><span class="p">{</span>
 </span><span id="__span-60-5"><a id="__codelineno-60-5" name="__codelineno-60-5" href="#__codelineno-60-5"></a><span class="w">  </span><span class="nt">&quot;task&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -11278,7 +11278,7 @@ so that clients can distinguish between incompatible versions:</p>
 <p>For the complete mapping of A2A error types to HTTP status codes, see <a href="#54-error-code-mappings">Section 5.4 (Error Code Mappings)</a>.</p>
 <p><strong>Error Response Example:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-63-1"><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">Not Found</span>
-</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</span><span id="__span-63-2"><a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a><span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/a2a+json</span>
 </span><span id="__span-63-3"><a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a>
 </span><span id="__span-63-4"><a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a><span class="p">{</span>
 </span><span id="__span-63-5"><a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -11304,7 +11304,7 @@ so that clients can distinguish between incompatible versions:</p>
 <p><span id="stream-response"></span></p>
 <p>REST streaming uses Server-Sent Events with the <code>data</code> field containing JSON serializations of the protocol data objects:</p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-64-1"><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="err">POST /message:stream</span>
-</span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a><span class="err">Content-Type: application/json</span>
+</span><span id="__span-64-2"><a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a><span class="err">Content-Type: application/a2a+json</span>
 </span><span id="__span-64-3"><a id="__codelineno-64-3" name="__codelineno-64-3" href="#__codelineno-64-3"></a>
 </span><span id="__span-64-4"><a id="__codelineno-64-4" name="__codelineno-64-4" href="#__codelineno-64-4"></a><span class="err">{ /* SendMessageRequest object */ }</span>
 </span></code></pre></div>

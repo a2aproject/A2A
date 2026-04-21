@@ -1,0 +1,68 @@
+a2a.server.agent_execution.active_task module
+*********************************************
+
+class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None)
+
+   Bases: "object"
+
+   Manages the lifecycle and execution of an active A2A task.
+
+   It coordinates between the agent's execution (the producer), the
+   persistence and state management (the TaskManager), and the event
+   distribution to subscribers (the consumer).
+
+   Concurrency Guarantees: - This class is designed to be highly
+   concurrent. It manages an internal
+
+      producer-consumer model using >>`<<asyncio.Task`s.
+
+   * *self._lock* (asyncio.Lock) ensures mutually exclusive access for
+     critical lifecycle state changes, such as starting the task,
+     subscribing, and determining if cleanup is safe to trigger.
+
+     mutation to the observable result state (like *_exception*, or
+     *_is_finished*) notifies waiting coroutines (like *wait()*).
+
+   * *self._is_finished* (asyncio.Event) provides a thread-safe, non-
+     blocking way for external observers and internal loops to check
+     if the ActiveTask has permanently ceased execution and closed its
+     queues.
+
+   async cancel(call_context: ServerCallContext) -> Task
+
+      Cancels the running active task.
+
+      Concurrency Guarantee: Uses *_lock* to ensure we don't attempt
+      to cancel a producer that is already winding down or hasn't
+      started. It fires the cancellation signal and blocks until the
+      consumer processes the cancellation events.
+
+   async enqueue_request(request_context: RequestContext) -> UUID
+
+      Enqueues a request for the active task to process.
+
+   async get_task() -> Task
+
+      Get task from db.
+
+   async start(call_context: ServerCallContext, create_task_if_missing: bool = False) -> None
+
+      Starts the active task background processes.
+
+      Concurrency Guarantee: Uses *self._lock* to ensure the producer
+      and consumer tasks are strictly singleton instances for the
+      lifetime of this ActiveTask.
+
+   async subscribe(*, request: RequestContext | None = None, include_initial_task: bool = False, replace_status_update_with_task: bool = False) -> AsyncGenerator[Event, None]
+
+      Creates a queue tap and yields events as they are produced.
+
+      Concurrency Guarantee: Uses *_lock* to safely increment and
+      decrement *_reference_count*. Safely detaches its queue tap when
+      the client disconnects or the task finishes, triggering
+      *_maybe_cleanup()* to potentially garbage collect the
+      ActiveTask.
+
+   property task_id: str
+
+      The ID of the task.

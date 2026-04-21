@@ -1,28 +1,114 @@
 a2a.utils.errors module
 ***********************
 
-Custom exceptions for A2A server-side errors.
+Custom exceptions and error types for A2A server-side errors.
 
-exception a2a.utils.errors.A2AServerError
+This module contains A2A-specific error codes, as well as server
+exception classes.
 
-   Bases: "Exception"
+exception a2a.utils.errors.ExtensionSupportRequiredError(message: str | None = None, data: dict | None = None)
 
-   Base exception for A2A Server errors.
+   Bases: "A2AError"
 
-exception a2a.utils.errors.MethodNotImplementedError(message: str = 'This method is not implemented by the server')
+   Exception raised when extension support is required but not
+   present.
 
-   Bases: "A2AServerError"
+   message: str = 'Extension support required'
 
-   Exception raised for methods that are not implemented by the server
-   handler.
+exception a2a.utils.errors.InternalError(message: str | None = None, data: dict | None = None)
 
-exception a2a.utils.errors.ServerError(error: JSONRPCError | JSONParseError | InvalidRequestError | MethodNotFoundError | InvalidParamsError | InternalError | TaskNotFoundError | TaskNotCancelableError | PushNotificationNotSupportedError | UnsupportedOperationError | ContentTypeNotSupportedError | InvalidAgentResponseError | AuthenticatedExtendedCardNotConfiguredError | None)
+   Bases: "A2AError"
 
-   Bases: "Exception"
+   Exception raised for internal server errors.
 
-   Wrapper exception for A2A or JSON-RPC errors originating from the
-   server's logic.
+   message: str = 'Internal error'
 
-   This exception is used internally by request handlers and other
-   server components to signal a specific error that should be
-   formatted as a JSON-RPC error response.
+exception a2a.utils.errors.InvalidAgentResponseError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when the agent response is invalid.
+
+   message: str = 'Invalid agent response'
+
+exception a2a.utils.errors.InvalidParamsError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when parameters are invalid.
+
+   message: str = 'Invalid params'
+
+exception a2a.utils.errors.InvalidRequestError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when the request is invalid.
+
+   message: str = 'Invalid Request'
+
+exception a2a.utils.errors.MethodNotFoundError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when a method is not found.
+
+   message: str = 'Method not found'
+
+exception a2a.utils.errors.PushNotificationNotSupportedError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when push notifications are not supported.
+
+   message: str = 'Push Notification is not supported'
+
+class a2a.utils.errors.RestErrorMap(http_code: int, grpc_status: str, reason: str)
+
+   Bases: "NamedTuple"
+
+   Named tuple mapping HTTP status, gRPC status, and reason strings.
+
+   grpc_status: str
+
+      Alias for field number 1
+
+   http_code: int
+
+      Alias for field number 0
+
+   reason: str
+
+      Alias for field number 2
+
+exception a2a.utils.errors.TaskNotCancelableError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when a task cannot be canceled.
+
+   message: str = 'Task cannot be canceled'
+
+exception a2a.utils.errors.TaskNotFoundError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when a task is not found.
+
+   message: str = 'Task not found'
+
+exception a2a.utils.errors.UnsupportedOperationError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when an operation is not supported.
+
+   message: str = 'This operation is not supported'
+
+exception a2a.utils.errors.VersionNotSupportedError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Exception raised when the requested version is not supported.
+
+   message: str = 'Version not supported'

@@ -1,7 +1,7 @@
 a2a.server.request_handlers.default_request_handler module
 **********************************************************
 
-class a2a.server.request_handlers.default_request_handler.DefaultRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None)
+class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None)
 
    Bases: "RequestHandler"
 
@@ -11,57 +11,67 @@ class a2a.server.request_handlers.default_request_handler.DefaultRequestHandler(
    methods, coordinating between the *AgentExecutor*, *TaskStore*,
    *QueueManager*, and optional *PushNotifier*.
 
-   async on_cancel_task(params: TaskIdParams, context: ServerCallContext | None = None) -> Task | None
+   async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
       Default handler for 'tasks/cancel'.
 
       Attempts to cancel the task managed by the *AgentExecutor*.
 
-   async on_delete_task_push_notification_config(params: DeleteTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> None
+   async on_create_task_push_notification_config(params: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig
+
+      Default handler for 'tasks/pushNotificationConfig/create'.
+
+      Requires a *PushNotifier* to be configured.
+
+   async on_delete_task_push_notification_config(params: DeleteTaskPushNotificationConfigRequest, context: ServerCallContext) -> None
 
       Default handler for 'tasks/pushNotificationConfig/delete'.
 
       Requires a *PushConfigStore* to be configured.
 
-   async on_get_task(params: TaskQueryParams, context: ServerCallContext | None = None) -> Task | None
+   async on_get_extended_agent_card(params: GetExtendedAgentCardRequest, context: ServerCallContext) -> AgentCard
+
+      Default handler for 'GetExtendedAgentCard'.
+
+      Requires *capabilities.extended_agent_card* to be true.
+
+   async on_get_task(params: GetTaskRequest, context: ServerCallContext) -> Task | None
 
       Default handler for 'tasks/get'.
 
-   async on_get_task_push_notification_config(params: TaskIdParams | GetTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> TaskPushNotificationConfig
+   async on_get_task_push_notification_config(params: GetTaskPushNotificationConfigRequest, context: ServerCallContext) -> TaskPushNotificationConfig
 
       Default handler for 'tasks/pushNotificationConfig/get'.
 
       Requires a *PushConfigStore* to be configured.
 
-   async on_list_task_push_notification_config(params: ListTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> list[TaskPushNotificationConfig]
+   async on_list_task_push_notification_configs(params: ListTaskPushNotificationConfigsRequest, context: ServerCallContext) -> ListTaskPushNotificationConfigsResponse
 
-      Default handler for 'tasks/pushNotificationConfig/list'.
+      Default handler for 'ListTaskPushNotificationConfigs'.
 
       Requires a *PushConfigStore* to be configured.
 
-   async on_message_send(params: MessageSendParams, context: ServerCallContext | None = None) -> Message | Task
+   async on_list_tasks(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Default handler for 'tasks/list'.
+
+   async on_message_send(params: SendMessageRequest, context: ServerCallContext) -> Message | Task
 
       Default handler for 'message/send' interface (non-streaming).
 
       Starts the agent execution for the message and waits for the
       final result (Task or Message).
 
-   on_message_send_stream(params: MessageSendParams, context: ServerCallContext | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+   on_message_send_stream(params: SendMessageRequest, context: ServerCallContext) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
 
       Default handler for 'message/stream' (streaming).
 
       Starts the agent execution and yields events as they are
       produced by the agent.
 
-   on_resubscribe_to_task(params: TaskIdParams, context: ServerCallContext | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+   on_subscribe_to_task(params: SubscribeToTaskRequest, context: ServerCallContext) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent, None]
 
-      Default handler for 'tasks/resubscribe'.
+      Default handler for 'SubscribeToTask'.
 
       Allows a client to re-attach to a running streaming task's event
       stream. Requires the task and its queue to still be active.
-
-   async on_set_task_push_notification_config(params: TaskPushNotificationConfig, context: ServerCallContext | None = None) -> TaskPushNotificationConfig
-
-      Default handler for 'tasks/pushNotificationConfig/set'.
-
-      Requires a *PushNotifier* to be configured.

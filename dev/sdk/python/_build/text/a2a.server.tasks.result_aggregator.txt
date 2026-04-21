@@ -42,9 +42,9 @@ class a2a.server.tasks.result_aggregator.ResultAggregator(task_manager: TaskMana
          **BaseException** -- If the *EventConsumer* raises an
          exception during consumption.
 
-   async consume_and_break_on_interrupt(consumer: EventConsumer, blocking: bool = True, event_callback: Callable[[], Awaitable[None]] | None = None) -> tuple[Task | Message | None, bool, Task | None]
+   async consume_and_break_on_interrupt(consumer: EventConsumer, blocking: bool = True, event_callback: Callable[[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent], Awaitable[None]] | None = None) -> tuple[Task | Message | None, bool, Task | None]
 
-      Processes the event stream until completion or an interruptable
+      Processes the event stream until completion or an interruptible
       state is encountered.
 
       If *blocking* is False, it returns after the first event that

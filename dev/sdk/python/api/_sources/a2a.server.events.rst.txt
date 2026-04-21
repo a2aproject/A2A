@@ -9,6 +9,7 @@ Submodules
 
    a2a.server.events.event_consumer
    a2a.server.events.event_queue
+   a2a.server.events.event_queue_v2
    a2a.server.events.in_memory_queue_manager
    a2a.server.events.queue_manager
 

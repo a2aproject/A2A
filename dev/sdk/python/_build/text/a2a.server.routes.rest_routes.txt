@@ -1,0 +1,19 @@
+a2a.server.routes.rest_routes module
+************************************
+
+a2a.server.routes.rest_routes.create_rest_routes(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False, path_prefix: str = '') -> list[BaseRoute]
+
+   Creates the Starlette Routes for the A2A protocol REST endpoint.
+
+   Parameters:
+      * **request_handler** -- The handler instance responsible for
+        processing A2A requests via http.
+
+      * **context_builder** -- The ServerCallContextBuilder used to
+        construct the ServerCallContext passed to the request_handler.
+        If None the DefaultServerCallContextBuilder is used.
+
+      * **enable_v0_3_compat** -- If True, mounts backward-compatible
+        v0.3 protocol endpoints using REST03Adapter.
+
+      * **path_prefix** -- The URL prefix for the REST endpoints.

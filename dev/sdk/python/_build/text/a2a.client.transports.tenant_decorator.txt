@@ -1,0 +1,60 @@
+a2a.client.transports.tenant_decorator module
+*********************************************
+
+class a2a.client.transports.tenant_decorator.TenantTransportDecorator(base: ClientTransport, tenant: str)
+
+   Bases: "ClientTransport"
+
+   A transport decorator that attaches a tenant to all requests.
+
+   async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   async close() -> None
+
+      Closes the transport.
+
+   async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+   async delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> None
+
+      Deletes the push notification configuration for a specific task.
+
+   async get_extended_agent_card(request: GetExtendedAgentCardRequest, *, context: ClientCallContext | None = None) -> AgentCard
+
+      Retrieves the Extended AgentCard.
+
+   async get_task(request: GetTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   async get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   async list_task_push_notification_configs(request: ListTaskPushNotificationConfigsRequest, *, context: ClientCallContext | None = None) -> ListTaskPushNotificationConfigsResponse
+
+      Lists push notification configurations for a specific task.
+
+   async list_tasks(request: ListTasksRequest, *, context: ClientCallContext | None = None) -> ListTasksResponse
+
+      Retrieves tasks for an agent.
+
+   async send_message(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> SendMessageResponse
+
+      Sends a streaming message request to the agent and yields
+      responses as they arrive.
+
+   async send_message_streaming(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> AsyncGenerator[StreamResponse]
+
+      Sends a streaming message request to the agent and yields
+      responses.
+
+   async subscribe(request: SubscribeToTaskRequest, *, context: ClientCallContext | None = None) -> AsyncGenerator[StreamResponse]
+
+      Reconnects to get task updates.

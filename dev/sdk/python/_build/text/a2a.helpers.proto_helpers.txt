@@ -1,0 +1,52 @@
+a2a.helpers.proto_helpers module
+********************************
+
+Unified helper functions for creating and handling A2A types.
+
+a2a.helpers.proto_helpers.get_artifact_text(artifact: Artifact, delimiter: str = '\n') -> str
+
+   Extracts and joins all text content from an Artifact's parts.
+
+a2a.helpers.proto_helpers.get_message_text(message: Message, delimiter: str = '\n') -> str
+
+   Extracts and joins all text content from a Message's parts.
+
+a2a.helpers.proto_helpers.get_stream_response_text(response: StreamResponse, delimiter: str = '\n') -> str
+
+   Extracts text content from a StreamResponse.
+
+a2a.helpers.proto_helpers.get_text_parts(parts: Sequence[Part]) -> list[str]
+
+   Extracts text content from all text Parts.
+
+a2a.helpers.proto_helpers.new_artifact(parts: list[Part], name: str, description: str | None = None, artifact_id: str | None = None) -> Artifact
+
+   Creates a new Artifact object.
+
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7ff16231f650> = 2, context_id: str | None = None, task_id: str | None = None) -> Message
+
+   Creates a new message containing a list of Parts.
+
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7ff16231f450>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+
+   Creates a Task object with a specified status.
+
+a2a.helpers.proto_helpers.new_task_from_user_message(user_message: Message) -> Task
+
+   Creates a new Task object from an initial user message.
+
+a2a.helpers.proto_helpers.new_text_artifact(name: str, text: str, description: str | None = None, artifact_id: str | None = None) -> Artifact
+
+   Creates a new Artifact object containing only a single text Part.
+
+a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: str, text: str, append: bool = False, last_chunk: bool = False, artifact_id: str | None = None) -> TaskArtifactUpdateEvent
+
+   Creates a TaskArtifactUpdateEvent with a single text artifact.
+
+a2a.helpers.proto_helpers.new_text_message(text: str, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7ff16231f650> = 2) -> Message
+
+   Creates a new message containing a single text Part.
+
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7ff16231f450>, text: str) -> TaskStatusUpdateEvent
+
+   Creates a TaskStatusUpdateEvent with a single text message.

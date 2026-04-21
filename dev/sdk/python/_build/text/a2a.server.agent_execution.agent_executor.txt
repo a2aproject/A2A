@@ -17,7 +17,7 @@ class a2a.server.agent_execution.agent_executor.AgentExecutor
 
       The agent should attempt to stop the task identified by the
       task_id in the context and publish a *TaskStatusUpdateEvent*
-      with state *TaskState.canceled* to the *event_queue*.
+      with state *TaskState.TASK_STATE_CANCELED* to the *event_queue*.
 
       Parameters:
          * **context** -- The request context containing the task ID
@@ -36,6 +36,64 @@ class a2a.server.agent_execution.agent_executor.AgentExecutor
       *event_queue*. This method should return once the agent's
       execution for this request is complete or yields control (e.g.,
       enters an input-required state).
+
+      Request Lifecycle & AgentExecutor Responsibilities: -
+      **Concurrency**: The framework guarantees single execution per
+      request;
+
+         *execute()* will not be called concurrently for the same
+         request context.
+
+      * **Exception Handling**: Unhandled exceptions raised by
+        *execute()* will be caught by the framework and result in the
+        task transitioning to *TaskState.TASK_STATE_ERROR*.
+
+      * **Post-Completion**: Once *execute()* completes (returns or
+        raises), the executor must not access the *context* or
+        *event_queue* anymore.
+
+      * **Terminal States**: Before completing the call normally, the
+        executor SHOULD publish a *TaskStatusUpdateEvent* to
+        transition the task to a terminal state (e.g.,
+        *TASK_STATE_COMPLETED*) or an interrupted state
+        (*TASK_STATE_INPUT_REQUIRED* or *TASK_STATE_AUTH_REQUIRED*).
+
+      * **Interrupted Workflows**:
+           * *TASK_STATE_INPUT_REQUIRED*: The executor publishes a
+             *TaskStatusUpdateEvent* with
+             *TaskState.TASK_STATE_INPUT_REQUIRED* and returns to
+             yield control. The request will resume once user input is
+             provided.
+
+           * *TASK_STATE_AUTH_REQUIRED*: There are in-bound and out-
+             of-bound auth models. In both scenarios, the agent
+             publishes a *TaskStatusUpdateEvent* with
+             *TaskState.TASK_STATE_AUTH_REQUIRED*.
+
+                * In-bound: The agent should return from *execute()*.
+                  The framework will call *execute()* again once the
+                  user response is received.
+
+                * Out-of-bound: The agent should not return from
+                  *execute()*. It should wait for the out-of-band auth
+                  provider to complete the authentication and then
+                  continue execution.
+
+      * **Cancellation Workflow**: When a cancellation request is
+        received, the async task running *execute()* is cancelled
+        (raising an *asyncio.CancelledError*), and *cancel()* is
+        explicitly called by the framework.
+
+      Allowed Workflows: - Immediate response: Enqueue a SINGLE
+      *Message* object. - Asynchronous/Long-running: Enqueue a *Task*
+      object, perform work, and emit
+
+         multiple *TaskStatusUpdateEvent* / *TaskArtifactUpdateEvent*
+         objects over time.
+
+      Note that the framework waits with response to the send_message
+      request with *return_immediately=True* parameter until the first
+      event (Message or Task) is enqueued by AgentExecutor.
 
       Parameters:
          * **context** -- The request context containing the message,

@@ -1,0 +1,55 @@
+a2a.server.routes.common module
+*******************************
+
+class a2a.server.routes.common.DefaultServerCallContextBuilder
+
+   Bases: "ServerCallContextBuilder"
+
+   A default implementation of ServerCallContextBuilder.
+
+   build(request: Request) -> ServerCallContext
+
+      Builds a ServerCallContext from a Starlette Request.
+
+      Parameters:
+         **request** -- The incoming Starlette Request object.
+
+      Returns:
+         A ServerCallContext instance populated with user and state
+         information from the request.
+
+   build_user(request: Request) -> User
+
+      Builds a User from a Starlette Request.
+
+      Parameters:
+         **request** -- The incoming Starlette Request object.
+
+      Returns:
+         A User instance populated with user information from the
+         request.
+
+class a2a.server.routes.common.ServerCallContextBuilder
+
+   Bases: "ABC"
+
+   A class for building ServerCallContexts using the Starlette
+   Request.
+
+   abstractmethod build(request: Request) -> ServerCallContext
+
+      Builds a ServerCallContext from a Starlette Request.
+
+class a2a.server.routes.common.StarletteUser(user: BaseUser)
+
+   Bases: "User"
+
+   Adapts a Starlette BaseUser to the A2A User interface.
+
+   property is_authenticated: bool
+
+      Returns whether the current user is authenticated.
+
+   property user_name: str
+
+      Returns the user name of the current user.

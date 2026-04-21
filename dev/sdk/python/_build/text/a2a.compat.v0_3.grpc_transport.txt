@@ -1,0 +1,62 @@
+a2a.compat.v0_3.grpc_transport module
+*************************************
+
+class a2a.compat.v0_3.grpc_transport.CompatGrpcTransport(channel: Channel, agent_card: AgentCard | None)
+
+   Bases: "ClientTransport"
+
+   A backward compatible gRPC transport for A2A v0.3.
+
+   async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Requests the agent to cancel a specific task (v0.3).
+
+   async close() -> None
+
+      Closes the gRPC channel.
+
+   classmethod create(card: AgentCard, url: str, config: ClientConfig) -> CompatGrpcTransport
+
+      Creates a gRPC transport for the A2A client.
+
+   async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration (v0.3).
+
+   async delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> None
+
+      Deletes the push notification configuration (v0.3).
+
+   async get_extended_agent_card(request: GetExtendedAgentCardRequest, *, context: ClientCallContext | None = None) -> AgentCard
+
+      Retrieves the agent's card (v0.3).
+
+   async get_task(request: GetTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Retrieves the current state and history of a specific task
+      (v0.3).
+
+   async get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration (v0.3).
+
+   async list_task_push_notification_configs(request: ListTaskPushNotificationConfigsRequest, *, context: ClientCallContext | None = None) -> ListTaskPushNotificationConfigsResponse
+
+      Lists push notification configurations for a specific task
+      (v0.3).
+
+   async list_tasks(request: ListTasksRequest, *, context: ClientCallContext | None = None) -> ListTasksResponse
+
+      Retrieves tasks for an agent (v0.3 - NOT SUPPORTED in v0.3).
+
+   async send_message(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> SendMessageResponse
+
+      Sends a non-streaming message request to the agent (v0.3).
+
+   send_message_streaming(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> AsyncGenerator[StreamResponse]
+
+      Sends a streaming message request to the agent (v0.3).
+
+   subscribe(request: SubscribeToTaskRequest, *, context: ClientCallContext | None = None) -> AsyncGenerator[StreamResponse]
+
+      Reconnects to get task updates (v0.3).

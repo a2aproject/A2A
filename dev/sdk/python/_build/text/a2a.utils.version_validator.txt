@@ -1,0 +1,31 @@
+a2a.utils.version_validator module
+**********************************
+
+General utility functions for the A2A Python SDK.
+
+a2a.utils.version_validator.validate_version(expected_version: str) -> Callable[[F], F]
+
+   Decorator that validates the A2A-Version header in the request
+   context.
+
+   The header name is defined by *constants.VERSION_HEADER* ('A2A-
+   Version'). If the header is missing or empty, it is interpreted as
+   *constants.PROTOCOL_VERSION_0_3* ('0.3'). If the version in the
+   header does not match the *expected_version* (major and minor
+   parts), a *VersionNotSupportedError* is raised. Patch version is
+   ignored.
+
+   This decorator supports both async methods and async generator
+   methods. It expects a *ServerCallContext* to be present either in
+   the arguments or keyword arguments of the decorated method.
+
+   Parameters:
+      **expected_version** -- The A2A protocol version string expected
+      by the method.
+
+   Returns:
+      The decorated function.
+
+   Raises:
+      **VersionNotSupportedError** -- If the version in the request
+      does not match *expected_version*.

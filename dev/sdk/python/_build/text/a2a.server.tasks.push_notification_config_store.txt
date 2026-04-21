@@ -8,14 +8,14 @@ class a2a.server.tasks.push_notification_config_store.PushNotificationConfigStor
    Interface for storing and retrieving push notification
    configurations for tasks.
 
-   abstractmethod async delete_info(task_id: str, config_id: str | None = None) -> None
+   abstractmethod async delete_info(task_id: str, context: ServerCallContext, config_id: str | None = None) -> None
 
       Deletes the push notification configuration for a task.
 
-   abstractmethod async get_info(task_id: str) -> list[PushNotificationConfig]
+   abstractmethod async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
       Retrieves the push notification configuration for a task.
 
-   abstractmethod async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+   abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task.

@@ -20,13 +20,10 @@ Submodules
    a2a.client.card_resolver
    a2a.client.client
    a2a.client.client_factory
-   a2a.client.client_task_manager
    a2a.client.errors
-   a2a.client.helpers
-   a2a.client.legacy
-   a2a.client.legacy_grpc
-   a2a.client.middleware
+   a2a.client.interceptors
    a2a.client.optionals
+   a2a.client.service_parameters
 
 Module contents
 ---------------

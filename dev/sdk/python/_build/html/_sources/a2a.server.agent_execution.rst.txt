@@ -7,6 +7,8 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   a2a.server.agent_execution.active_task
+   a2a.server.agent_execution.active_task_registry
    a2a.server.agent_execution.agent_executor
    a2a.server.agent_execution.context
    a2a.server.agent_execution.request_context_builder

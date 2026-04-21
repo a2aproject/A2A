@@ -31,9 +31,11 @@ class a2a.client.card_resolver.A2ACardResolver(httpx_client: AsyncClient, base_u
          An *AgentCard* object representing the agent's capabilities.
 
       Raises:
-         * **A2AClientHTTPError** -- If an HTTP error occurs during
-           the request.
+         **AgentCardResolutionError** -- If an HTTP error occurs
+         during the request, if the     response body cannot be
+         decoded as JSON, or if it cannot be     validated against the
+         AgentCard schema.
 
-         * **A2AClientJSONError** -- If the response body cannot be
-           decoded as JSON     or validated against the AgentCard
-           schema.
+a2a.client.card_resolver.parse_agent_card(agent_card_data: dict[str, Any]) -> AgentCard
+
+   Parse AgentCard JSON dictionary and handle backward compatibility.

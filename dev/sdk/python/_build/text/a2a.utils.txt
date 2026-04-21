@@ -5,19 +5,23 @@ a2a.utils package
 Submodules
 ==========
 
-* a2a.utils.artifact module
-
-  * "get_artifact_text()"
-
-  * "new_artifact()"
-
-  * "new_data_artifact()"
-
-  * "new_text_artifact()"
-
 * a2a.utils.constants module
 
+  * "DEFAULT_LIST_TASKS_PAGE_SIZE"
+
+  * "MAX_LIST_TASKS_PAGE_SIZE"
+
+  * "TransportProtocol"
+
+    * "TransportProtocol.GRPC"
+
+    * "TransportProtocol.HTTP_JSON"
+
+    * "TransportProtocol.JSONRPC"
+
 * a2a.utils.error_handlers module
+
+  * "build_rest_error_payload()"
 
   * "rest_error_handler()"
 
@@ -25,185 +29,81 @@ Submodules
 
 * a2a.utils.errors module
 
-  * "A2AServerError"
+  * "ExtensionSupportRequiredError"
 
-  * "MethodNotImplementedError"
+    * "ExtensionSupportRequiredError.message"
 
-  * "ServerError"
+  * "InternalError"
 
-* a2a.utils.helpers module
+    * "InternalError.message"
 
-  * "append_artifact_to_task()"
+  * "InvalidAgentResponseError"
 
-  * "are_modalities_compatible()"
+    * "InvalidAgentResponseError.message"
 
-  * "build_text_artifact()"
+  * "InvalidParamsError"
 
-  * "canonicalize_agent_card()"
+    * "InvalidParamsError.message"
 
-  * "create_task_obj()"
+  * "InvalidRequestError"
 
-  * "maybe_await()"
+    * "InvalidRequestError.message"
 
-  * "validate()"
+  * "MethodNotFoundError"
 
-  * "validate_async_generator()"
+    * "MethodNotFoundError.message"
 
-* a2a.utils.message module
+  * "PushNotificationNotSupportedError"
 
-  * "get_message_text()"
+    * "PushNotificationNotSupportedError.message"
 
-  * "new_agent_parts_message()"
+  * "RestErrorMap"
 
-  * "new_agent_text_message()"
+    * "RestErrorMap.grpc_status"
 
-* a2a.utils.parts module
+    * "RestErrorMap.http_code"
 
-  * "get_data_parts()"
+    * "RestErrorMap.reason"
 
-  * "get_file_parts()"
+  * "TaskNotCancelableError"
 
-  * "get_text_parts()"
+    * "TaskNotCancelableError.message"
+
+  * "TaskNotFoundError"
+
+    * "TaskNotFoundError.message"
+
+  * "UnsupportedOperationError"
+
+    * "UnsupportedOperationError.message"
+
+  * "VersionNotSupportedError"
+
+    * "VersionNotSupportedError.message"
 
 * a2a.utils.proto_utils module
 
-  * "FromProto"
+  * "ValidationDetail"
 
-    * "FromProto.agent_card()"
+    * "ValidationDetail.field"
 
-    * "FromProto.agent_card_signature()"
+    * "ValidationDetail.message"
 
-    * "FromProto.agent_extension()"
-
-    * "FromProto.agent_interface()"
-
-    * "FromProto.artifact()"
-
-    * "FromProto.authentication_info()"
-
-    * "FromProto.capabilities()"
-
-    * "FromProto.data()"
-
-    * "FromProto.file()"
-
-    * "FromProto.message()"
-
-    * "FromProto.message_send_configuration()"
-
-    * "FromProto.message_send_params()"
-
-    * "FromProto.metadata()"
-
-    * "FromProto.oauth2_flows()"
-
-    * "FromProto.part()"
-
-    * "FromProto.provider()"
-
-    * "FromProto.push_notification_config()"
-
-    * "FromProto.role()"
-
-    * "FromProto.security()"
-
-    * "FromProto.security_scheme()"
-
-    * "FromProto.security_schemes()"
-
-    * "FromProto.skill()"
-
-    * "FromProto.stream_response()"
-
-    * "FromProto.task()"
-
-    * "FromProto.task_artifact_update_event()"
-
-    * "FromProto.task_id_params()"
-
-    * "FromProto.task_or_message()"
-
-    * "FromProto.task_push_notification_config()"
-
-    * "FromProto.task_push_notification_config_request()"
-
-    * "FromProto.task_query_params()"
-
-    * "FromProto.task_state()"
-
-    * "FromProto.task_status()"
-
-    * "FromProto.task_status_update_event()"
-
-  * "ToProto"
-
-    * "ToProto.agent_card()"
-
-    * "ToProto.agent_card_signature()"
-
-    * "ToProto.agent_interface()"
-
-    * "ToProto.artifact()"
-
-    * "ToProto.authentication_info()"
-
-    * "ToProto.capabilities()"
-
-    * "ToProto.data()"
-
-    * "ToProto.extension()"
-
-    * "ToProto.file()"
-
-    * "ToProto.message()"
-
-    * "ToProto.message_send_configuration()"
-
-    * "ToProto.metadata()"
-
-    * "ToProto.oauth2_flows()"
-
-    * "ToProto.part()"
-
-    * "ToProto.provider()"
-
-    * "ToProto.push_notification_config()"
-
-    * "ToProto.role()"
-
-    * "ToProto.security()"
-
-    * "ToProto.security_scheme()"
-
-    * "ToProto.security_schemes()"
-
-    * "ToProto.skill()"
-
-    * "ToProto.stream_response()"
-
-    * "ToProto.task()"
-
-    * "ToProto.task_artifact_update_event()"
-
-    * "ToProto.task_or_message()"
-
-    * "ToProto.task_push_notification_config()"
-
-    * "ToProto.task_state()"
-
-    * "ToProto.task_status()"
-
-    * "ToProto.task_status_update_event()"
-
-    * "ToProto.update_event()"
-
-  * "dict_to_struct()"
+  * "bad_request_to_validation_errors()"
 
   * "make_dict_serializable()"
 
   * "normalize_large_integers_to_strings()"
 
+  * "parse_params()"
+
   * "parse_string_integers_in_dict()"
+
+  * "to_stream_response()"
+
+  * "validate_proto_required_fields()"
+
+  * "validation_errors_to_bad_request()"
 
 * a2a.utils.signing module
 
@@ -229,11 +129,21 @@ Submodules
 
 * a2a.utils.task module
 
+  * "HistoryLengthConfig"
+
+    * "HistoryLengthConfig.HasField()"
+
+    * "HistoryLengthConfig.history_length"
+
   * "apply_history_length()"
 
-  * "completed_task()"
+  * "decode_page_token()"
 
-  * "new_task()"
+  * "encode_page_token()"
+
+  * "validate_history_length()"
+
+  * "validate_page_size()"
 
 * a2a.utils.telemetry module
 
@@ -249,247 +159,35 @@ Submodules
 
     * "SpanKind.SERVER"
 
+* a2a.utils.version_validator module
+
+  * "validate_version()"
+
 
 Module contents
 ===============
 
 Utility functions for the A2A Python SDK.
 
-a2a.utils.append_artifact_to_task(task: Task, event: TaskArtifactUpdateEvent) -> None
+class a2a.utils.TransportProtocol(*values)
 
-   Helper method for updating a Task object with new artifact data
-   from an event.
+   Bases: "str", "Enum"
 
-   Handles creating the artifacts list if it doesn't exist, adding new
-   artifacts, and appending parts to existing artifacts based on the
-   *append* flag in the event.
+   Transport protocol string constants.
 
-   Parameters:
-      * **task** -- The *Task* object to modify.
+   GRPC = 'GRPC'
 
-      * **event** -- The *TaskArtifactUpdateEvent* containing the
-        artifact data.
+   HTTP_JSON = 'HTTP+JSON'
 
-a2a.utils.are_modalities_compatible(server_output_modes: list[str] | None, client_output_modes: list[str] | None) -> bool
+   JSONRPC = 'JSONRPC'
 
-   Checks if server and client output modalities (MIME types) are
-   compatible.
+a2a.utils.to_stream_response(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> StreamResponse
 
-   Modalities are compatible if: 1. The client specifies no preferred
-   output modes (client_output_modes is None or empty). 2. The server
-   specifies no supported output modes (server_output_modes is None or
-   empty). 3. There is at least one common modality between the
-   server's supported list and the client's preferred list.
+   Convert internal Event to StreamResponse proto.
 
    Parameters:
-      * **server_output_modes** -- A list of MIME types supported by
-        the server/agent for output. Can be None or empty if the
-        server doesn't specify.
-
-      * **client_output_modes** -- A list of MIME types preferred by
-        the client for output. Can be None or empty if the client
-        accepts any.
+      **event** -- The event (Task, Message, TaskStatusUpdateEvent,
+      TaskArtifactUpdateEvent)
 
    Returns:
-      True if the modalities are compatible, False otherwise.
-
-a2a.utils.build_text_artifact(text: str, artifact_id: str) -> Artifact
-
-   Helper to create a text artifact.
-
-   Parameters:
-      * **text** -- The text content for the artifact.
-
-      * **artifact_id** -- The ID for the artifact.
-
-   Returns:
-      An *Artifact* object containing a single *TextPart*.
-
-a2a.utils.completed_task(task_id: str, context_id: str, artifacts: list[Artifact], history: list[Message] | None = None) -> Task
-
-   Creates a Task object in the 'completed' state.
-
-   Useful for constructing a final Task representation when the agent
-   finishes and produces artifacts.
-
-   Parameters:
-      * **task_id** -- The ID of the task.
-
-      * **context_id** -- The context ID of the task.
-
-      * **artifacts** -- A list of *Artifact* objects produced by the
-        task.
-
-      * **history** -- An optional list of *Message* objects
-        representing the task history.
-
-   Returns:
-      A *Task* object with status set to 'completed'.
-
-a2a.utils.create_task_obj(message_send_params: MessageSendParams) -> Task
-
-   Create a new task object from message send params.
-
-   Generates UUIDs for task and context IDs if they are not already
-   present in the message.
-
-   Parameters:
-      **message_send_params** -- The *MessageSendParams* object
-      containing the initial message.
-
-   Returns:
-      A new *Task* object initialized with 'submitted' status and the
-      input message in history.
-
-a2a.utils.get_artifact_text(artifact: Artifact, delimiter: str = '\n') -> str
-
-   Extracts and joins all text content from an Artifact's parts.
-
-   Parameters:
-      * **artifact** -- The *Artifact* object.
-
-      * **delimiter** -- The string to use when joining text from
-        multiple TextParts.
-
-   Returns:
-      A single string containing all text content, or an empty string
-      if no text parts are found.
-
-a2a.utils.get_data_parts(parts: list[Part]) -> list[dict[str, Any]]
-
-   Extracts dictionary data from all DataPart objects in a list of
-   Parts.
-
-   Parameters:
-      **parts** -- A list of *Part* objects.
-
-   Returns:
-      A list of dictionaries containing the data from any *DataPart*
-      objects found.
-
-a2a.utils.get_file_parts(parts: list[Part]) -> list[FileWithBytes | FileWithUri]
-
-   Extracts file data from all FilePart objects in a list of Parts.
-
-   Parameters:
-      **parts** -- A list of *Part* objects.
-
-   Returns:
-      A list of *FileWithBytes* or *FileWithUri* objects containing
-      the file data from any *FilePart* objects found.
-
-a2a.utils.get_message_text(message: Message, delimiter: str = '\n') -> str
-
-   Extracts and joins all text content from a Message's parts.
-
-   Parameters:
-      * **message** -- The *Message* object.
-
-      * **delimiter** -- The string to use when joining text from
-        multiple TextParts.
-
-   Returns:
-      A single string containing all text content, or an empty string
-      if no text parts are found.
-
-a2a.utils.get_text_parts(parts: list[Part]) -> list[str]
-
-   Extracts text content from all TextPart objects in a list of Parts.
-
-   Parameters:
-      **parts** -- A list of *Part* objects.
-
-   Returns:
-      A list of strings containing the text content from any
-      *TextPart* objects found.
-
-a2a.utils.new_agent_parts_message(parts: list[Part], context_id: str | None = None, task_id: str | None = None) -> Message
-
-   Creates a new agent message containing a list of Parts.
-
-   Parameters:
-      * **parts** -- The list of *Part* objects for the message
-        content.
-
-      * **context_id** -- The context ID for the message.
-
-      * **task_id** -- The task ID for the message.
-
-   Returns:
-      A new *Message* object with role 'agent'.
-
-a2a.utils.new_agent_text_message(text: str, context_id: str | None = None, task_id: str | None = None) -> Message
-
-   Creates a new agent message containing a single TextPart.
-
-   Parameters:
-      * **text** -- The text content of the message.
-
-      * **context_id** -- The context ID for the message.
-
-      * **task_id** -- The task ID for the message.
-
-   Returns:
-      A new *Message* object with role 'agent'.
-
-a2a.utils.new_artifact(parts: list[Part], name: str, description: str | None = None) -> Artifact
-
-   Creates a new Artifact object.
-
-   Parameters:
-      * **parts** -- The list of *Part* objects forming the artifact's
-        content.
-
-      * **name** -- The human-readable name of the artifact.
-
-      * **description** -- An optional description of the artifact.
-
-   Returns:
-      A new *Artifact* object with a generated artifact_id.
-
-a2a.utils.new_data_artifact(name: str, data: dict[str, Any], description: str | None = None) -> Artifact
-
-   Creates a new Artifact object containing only a single DataPart.
-
-   Parameters:
-      * **name** -- The human-readable name of the artifact.
-
-      * **data** -- The structured data content of the artifact.
-
-      * **description** -- An optional description of the artifact.
-
-   Returns:
-      A new *Artifact* object with a generated artifact_id.
-
-a2a.utils.new_task(request: Message) -> Task
-
-   Creates a new Task object from an initial user message.
-
-   Generates task and context IDs if not provided in the message.
-
-   Parameters:
-      **request** -- The initial *Message* object from the user.
-
-   Returns:
-      A new *Task* object initialized with 'submitted' status and the
-      input message in history.
-
-   Raises:
-      * **TypeError** -- If the message role is None.
-
-      * **ValueError** -- If the message parts are empty, if any part
-        has empty content, or if the provided context_id is invalid.
-
-a2a.utils.new_text_artifact(name: str, text: str, description: str | None = None) -> Artifact
-
-   Creates a new Artifact object containing only a single TextPart.
-
-   Parameters:
-      * **name** -- The human-readable name of the artifact.
-
-      * **text** -- The text content of the artifact.
-
-      * **description** -- An optional description of the artifact.
-
-   Returns:
-      A new *Artifact* object with a generated artifact_id.
+      A StreamResponse proto with the appropriate field set.

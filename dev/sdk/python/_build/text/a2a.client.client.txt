@@ -1,7 +1,7 @@
 a2a.client.client module
 ************************
 
-class a2a.client.client.Client(consumers: list[Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]] | None = None, middleware: list[ClientCallInterceptor] | None = None)
+class a2a.client.client.Client(interceptors: list[ClientCallInterceptor] | None = None)
 
    Bases: "ABC"
 
@@ -12,55 +12,82 @@ class a2a.client.client.Client(consumers: list[Callable[[tuple[Task, TaskStatusU
    (e.g., gRPC, JSON-RPC). It supports sending messages, managing
    tasks, and handling event streams.
 
-   async add_event_consumer(consumer: Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]) -> None
+   async add_interceptor(interceptor: ClientCallInterceptor) -> None
 
-      Attaches additional consumers to the *Client*.
+      Attaches additional interceptors to the *Client*.
 
-   async add_request_middleware(middleware: ClientCallInterceptor) -> None
-
-      Attaches additional middleware to the *Client*.
-
-   abstractmethod async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+   abstractmethod async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
       Requests the agent to cancel a specific task.
 
-   async consume(event: tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message | None, card: AgentCard) -> None
+   abstractmethod async close() -> None
 
-      Processes the event via all the registered >>`<<Consumer`s.
+      Closes the client and releases any underlying resources.
 
-   abstractmethod async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+   abstractmethod async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+   abstractmethod async delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> None
+
+      Deletes the push notification configuration for a specific task.
+
+   abstractmethod async get_extended_agent_card(request: GetExtendedAgentCardRequest, *, context: ClientCallContext | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
 
       Retrieves the agent's card.
 
-   abstractmethod async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+   abstractmethod async get_task(request: GetTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
       Retrieves the current state and history of a specific task.
 
-   abstractmethod async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+   abstractmethod async get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
       Retrieves the push notification configuration for a specific
       task.
 
-   abstractmethod async resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncIterator[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None]]
+   abstractmethod async list_task_push_notification_configs(request: ListTaskPushNotificationConfigsRequest, *, context: ClientCallContext | None = None) -> ListTaskPushNotificationConfigsResponse
 
-      Resubscribes to a task's event stream.
+      Lists push notification configurations for a specific task.
 
-   abstractmethod async send_message(request: Message, *, context: ClientCallContext | None = None, request_metadata: dict[str, Any] | None = None, extensions: list[str] | None = None) -> AsyncIterator[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message]
+   abstractmethod async list_tasks(request: ListTasksRequest, *, context: ClientCallContext | None = None) -> ListTasksResponse
+
+      Retrieves tasks for an agent.
+
+   abstractmethod async send_message(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
 
       Sends a message to the server.
 
       This will automatically use the streaming or non-streaming
       approach as supported by the server and the client config.
       Client will aggregate update events and return an iterator of
-      (*Task*,`Update`) pairs, or a *Message*. Client will also send
-      these values to any configured >>`<<Consumer`s in the client.
+      *StreamResponse*.
 
-   abstractmethod async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+   abstractmethod async subscribe(request: SubscribeToTaskRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
 
-      Sets or updates the push notification configuration for a
-      specific task.
+      Resubscribes to a task's event stream.
 
-class a2a.client.client.ClientConfig(streaming: bool = True, polling: bool = False, httpx_client: ~httpx.AsyncClient | None = None, grpc_channel_factory: ~collections.abc.Callable[[str], ~grpc.aio._base_channel.Channel] | None = None, supported_transports: list[~a2a.types.TransportProtocol | str] = <factory>, use_client_preference: bool = False, accepted_output_modes: list[str] = <factory>, push_notification_configs: list[~a2a.types.PushNotificationConfig] = <factory>, extensions: list[str] = <factory>)
+class a2a.client.client.ClientCallContext(*, state: MutableMapping[str, ~typing.Any]=<factory>, timeout: float | None = None, service_parameters: dict[str, str] | None=None)
+
+   Bases: "BaseModel"
+
+   A context passed with each client call, allowing for call-specific.
+
+   configuration and data passing. Such as authentication details or
+   request deadlines.
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   service_parameters: dict[str, str] | None
+
+   state: MutableMapping[str, Any]
+
+   timeout: float | None
+
+class a2a.client.client.ClientConfig(streaming: bool = True, polling: bool = False, httpx_client: ~httpx.AsyncClient | None = None, grpc_channel_factory: ~collections.abc.Callable[[str], ~grpc.aio._base_channel.Channel] | None = None, supported_protocol_bindings: list[str] = <factory>, use_client_preference: bool = False, accepted_output_modes: list[str] = <factory>, push_notification_config: ~a2a_pb2.TaskPushNotificationConfig | None = None)
 
    Bases: "object"
 
@@ -69,10 +96,6 @@ class a2a.client.client.ClientConfig(streaming: bool = True, polling: bool = Fal
    accepted_output_modes: list[str]
 
       The set of accepted output modes for the client.
-
-   extensions: list[str]
-
-      A list of extension URIs the client supports.
 
    grpc_channel_factory: Callable[[str], Channel] | None = None
 
@@ -90,15 +113,15 @@ class a2a.client.client.ClientConfig(streaming: bool = True, polling: bool = Fal
       Type:
          Whether client prefers to poll for updates from message
 
-   push_notification_configs: list[PushNotificationConfig]
+   push_notification_config: TaskPushNotificationConfig | None = None
 
-      Push notification callbacks to use for every request.
+      Push notification configuration to use for every request.
 
    streaming: bool = True
 
       Whether client supports streaming
 
-   supported_transports: list[TransportProtocol | str]
+   supported_protocol_bindings: list[str]
 
       Ordered list of transports for connecting to agent (in order of
       preference). Empty implies JSONRPC only.

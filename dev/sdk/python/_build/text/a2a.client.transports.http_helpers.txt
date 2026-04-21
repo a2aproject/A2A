@@ -1,0 +1,44 @@
+a2a.client.transports.http_helpers module
+*****************************************
+
+a2a.client.transports.http_helpers.get_http_args(context: ClientCallContext | None) -> dict[str, Any]
+
+   Extracts HTTP arguments from the client call context.
+
+a2a.client.transports.http_helpers.handle_http_exceptions(status_error_handler: Callable[[HTTPStatusError], NoReturn] | None = None) -> Iterator[None]
+
+   Handles common HTTP exceptions for REST and JSON-RPC transports.
+
+   Parameters:
+      **status_error_handler** -- Optional handler for
+      *httpx.HTTPStatusError*. If provided, this handler should raise
+      an appropriate domain-specific exception. If not provided, a
+      default *A2AClientError* will be raised.
+
+async a2a.client.transports.http_helpers.send_http_request(httpx_client: AsyncClient, request: Request, status_error_handler: Callable[[HTTPStatusError], NoReturn] | None = None) -> dict[str, Any]
+
+   Sends an HTTP request and parses the JSON response, handling common
+   exceptions.
+
+async a2a.client.transports.http_helpers.send_http_stream_request(httpx_client: ~httpx.AsyncClient, method: str, url: str, status_error_handler: ~collections.abc.Callable[[~httpx.HTTPStatusError], ~typing.NoReturn] | None = None, sse_error_handler: ~collections.abc.Callable[[str], ~typing.NoReturn] = <function _default_sse_error_handler>, **kwargs: ~typing.Any) -> AsyncGenerator[str]
+
+   Sends a streaming HTTP request, yielding SSE data strings and
+   handling exceptions.
+
+   Parameters:
+      * **httpx_client** -- The async HTTP client.
+
+      * **method** -- The HTTP method (e.g. 'POST', 'GET').
+
+      * **url** -- The URL to send the request to.
+
+      * **status_error_handler** -- Handler for HTTP status errors.
+        Should raise an appropriate domain-specific exception.
+
+      * **sse_error_handler** -- Handler for SSE error events. Called
+        with the raw SSE data string when an "event: error" SSE event
+        is received. Should raise an appropriate domain-specific
+        exception.
+
+      * ****kwargs** -- Additional keyword arguments forwarded to
+        "aconnect_sse".

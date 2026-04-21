@@ -1,0 +1,16 @@
+a2a.server.agent_execution.active_task_registry module
+******************************************************
+
+class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore, push_sender: PushNotificationSender | None = None)
+
+   Bases: "object"
+
+   A registry for active ActiveTask instances.
+
+   async get(task_id: str) -> ActiveTask | None
+
+      Retrieves an existing task.
+
+   async get_or_create(task_id: str, call_context: ServerCallContext, context_id: str | None = None, create_task_if_missing: bool = False) -> ActiveTask
+
+      Retrieves an existing ActiveTask or creates a new one.

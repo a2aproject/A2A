@@ -1,0 +1,110 @@
+a2a.compat.v0_3.rest_handler module
+***********************************
+
+class a2a.compat.v0_3.rest_handler.REST03Handler(request_handler: RequestHandler)
+
+   Bases: "object"
+
+   Maps incoming REST-like (JSON+HTTP) requests to the appropriate
+   request handler method and formats responses for v0.3
+   compatibility.
+
+   async get_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/get' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the config in v0.3 format.
+
+   async list_push_notifications(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/list' REST method.
+
+   async list_tasks(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/list' REST method.
+
+   async on_cancel_task(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/cancel' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the updated Task in v0.3 format.
+
+   async on_get_extended_agent_card(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'v1/agent/authenticatedExtendedAgentCard' REST
+      method.
+
+   async on_get_task(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'v1/tasks/{id}' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *Task* object containing the Task in v0.3 format.
+
+   async on_message_send(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'message/send' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the result (Task or Message) in v0.3
+         format.
+
+   on_message_send_stream(request: Request, context: ServerCallContext) -> AsyncIterator[dict[str, Any]]
+
+      Handles the 'message/stream' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         JSON serialized objects containing streaming events in v0.3
+         format.
+
+   on_subscribe_to_task(request: Request, context: ServerCallContext) -> AsyncIterator[dict[str, Any]]
+
+      Handles the 'tasks/{id}:subscribe' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         JSON serialized objects containing streaming events in v0.3
+         format.
+
+   async set_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/set' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         A *dict* containing the config object in v0.3 format.
