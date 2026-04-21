@@ -4,6 +4,8 @@ This module provides macros for rendering Protocol Buffer definitions
 as markdown tables.
 """
 
+import functools
+
 from pathlib import Path
 from typing import Any
 
@@ -48,6 +50,7 @@ TYPE_MAP = {
 def define_env(env):
     """Define custom macros for MkDocs."""
 
+    @functools.cache
     def _parse_proto(file_path: str):
         """Parses a .proto file and returns the AST with comments attached."""
         full_path = Path(env.conf['docs_dir']).parent / file_path
@@ -116,7 +119,8 @@ def define_env(env):
                 if len(fields) > 1:
                     field_list = ', '.join(f'`{f}`' for f in fields)
                     output.append(
-                        f'**Note:** A `{message_name}` MUST contain exactly one of the following: {field_list}'
+                        f'**Note:** A `{message_name}` MUST contain exactly '
+                        f'one of the following: {field_list}'
                     )
 
         return '\n'.join(output)
@@ -245,7 +249,9 @@ def _format_type_for_docs(
     """Formats the type name with Markdown links for non-primitive types."""
     # Handle fully qualified names by taking only the last part for the link label,
     # but keep it if it's a known google.protobuf type we mapped.
-    display_name = TYPE_MAP.get(proto_type, proto_type.split('.')[-1])
+    display_name = TYPE_MAP.get(
+        proto_type, proto_type.rsplit('.', maxsplit=1)[-1]
+    )
     is_primitive = proto_type in TYPE_MAP or proto_type.startswith(
         'google.protobuf'
     )

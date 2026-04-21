@@ -1,0 +1,3 @@
+## 2024-05-24 - MkDocs Protobuf Parser Bottleneck
+**Learning:** The MkDocs build process relies heavily on custom macros (in `.mkdocs/macros.py`) to parse and render protobuf definitions. These macros parse the `.proto` file into an Abstract Syntax Tree (AST) repeatedly for every element referenced in the documentation. Since parsing is I/O and CPU intensive, this causes a significant performance bottleneck during the build process, taking ~16s to build.
+**Action:** Always check if repetitive I/O or parsing operations in build scripts or custom macros can be safely cached. Applying `@functools.cache` to the `_parse_proto` function drastically reduced the build time from ~16s to ~4.6s.
