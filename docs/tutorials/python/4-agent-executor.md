@@ -43,15 +43,13 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
 
         When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor):
 
-        1. It calls `self.agent.invoke()` to get the "Hello World" string.
-        2. It creates an A2A `Message` object using the `new_agent_text_message` utility function.
-        3. It enqueues this message onto the `event_queue`. The underlying `DefaultRequestHandler` will then process this queue to send the response(s) to the client. For a single message like this, it will result in a single response for `message/send` or a single event for `message/stream` before the stream closes.
-
-    - **`cancel`**:
-        The Hello World example's `cancel` method simply raises an exception, indicating that cancellation is not supported for this basic agent.
-
-        ```python { .no-copy }
-        --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_cancel"
+        1. It retrieves the current task from the context or creates a new one via `new_task_from_user_message` helper (from `a2a.helpers`), enqueueing it as the first event.
+        2. It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing. The status message is built with the `new_text_message` helper.
+        3. It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
+        4. It enqueues a `TaskArtifactUpdateEvent` containing the result text, constructed with the `new_text_artifact` helper.
+        5. Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
         ```
 
 The `AgentExecutor` acts as the bridge between the A2A protocol (managed by the request handler and server application) and your agent's specific logic. It receives context about the request and uses an event queue to communicate results or updates back.
+
+For a deeper understanding of the rules governing valid outputs from agent execution, including which event types are allowed, ordering constraints, and terminal conditions, refer to the [`AgentExecutor` source code](https://github.com/a2aproject/a2a-python/blob/main/src/a2a/server/agent_execution/agent_executor.py).

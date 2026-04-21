@@ -1,13 +1,13 @@
 # 6. Interacting with the Server
 
-With the Helloworld A2A server running, let's send some requests to it. The SDK includes a client (`A2AClient`) that simplifies these interactions.
+With the Helloworld A2A server running, let's send some requests to it. The SDK includes a `create_client` factory function that returns a `Client` configured for interacting with an A2A agent.
 
 ## The Helloworld Test Client
 
 The `test_client.py` script demonstrates how to:
 
 1. Fetch the Agent Card from the server.
-2. Create an `A2AClient` instance.
+2. Create a client using `create_client`.
 3. Send both non-streaming (`message/send`) and streaming (`message/stream`) requests.
 
 Open a **new terminal window**, activate your virtual environment, and navigate to the `a2a-samples` directory.
@@ -43,7 +43,7 @@ Let's look at key parts of `test_client.py`:
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:A2ACardResolver"
     ```
 
-    The `A2ACardResolver` class is a convenience. It first fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL) and then initializes the client with it.
+    The `A2ACardResolver` class is a convenience. When `get_agent_card()` is called, it fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL), which is then used to initialize the client.
 
 2. **Sending a Non-Streaming Message (`send_message`)**:
 
@@ -51,44 +51,183 @@ Let's look at key parts of `test_client.py`:
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message"
     ```
 
-    - The `send_message_payload` constructs the data for `MessageSendParams`.
-    - This is wrapped in a `SendMessageRequest`.
-    - It includes a `message` object with the `role` set to "user" and the content in `parts`.
-    - The Helloworld agent's `execute` method will enqueue a single "Hello World" message. The `DefaultRequestHandler` will retrieve this and send it as the response.
-    - The `response` will be a `SendMessageResponse` object, which contains either a `SendMessageSuccessResponse` (with the agent's `Message` as the result) or a `JSONRPCErrorResponse`.
+    - `create_client` is an async factory function that creates a `Client` configured from the fetched `AgentCard` and a `ClientConfig`. Here `streaming=False` selects the non-streaming transport.
+    - We construct a `Message` using the `new_text_message` helper (passing `role=Role.ROLE_USER`), then wrap it in a `SendMessageRequest`.
+    - The client's `send_message` method returns an async iterable that yields a single final `Task` response from the agent.
 
-3. **Handling Task IDs (Illustrative Note for Helloworld)**:
-
-    The Helloworld client (`test_client.py`) doesn't attempt `get_task` or `cancel_task` directly because the simple Helloworld agent's `execute` method, when called via `message/send`, results in the `DefaultRequestHandler` returning a direct `Message` response rather than a `Task` object. More complex agents that explicitly manage tasks (like the LangGraph example) would return a `Task` object from `message/send`, and its `id` could then be used for `get_task` or `cancel_task`.
-
-4. **Sending a Streaming Message (`send_message_streaming`)**:
+3. **Initializing the Client & Sending a Streaming Message**:
 
     ```python { .no-copy }
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message_streaming"
     ```
 
-    - This method calls the agent's `message/stream` endpoint. The `DefaultRequestHandler` will invoke the `HelloWorldAgentExecutor.execute` method.
-    - The `execute` method enqueues one "Hello World" message, and then the event queue is closed.
-    - The client will receive this single message as one `SendStreamingMessageResponse` event, and then the stream will terminate.
-    - The `stream_response` is an `AsyncGenerator`.
+    - A separate streaming client is created via `create_client` with `streaming=True` in its `ClientConfig`.
+    - We again call `send_message`, which now streams events: each iteration of the loop prints a discrete chunk as it arrives over the network.
+    - Call `await streaming_client.close()` after the loop to release the underlying HTTP connection.
 
 ## Expected Output
 
-When you run `test_client.py`, you'll see JSON outputs for:
+When you run `test_client.py`, you'll see output for:
 
-- The non-streaming response (a single "Hello World" message).
-- The streaming response (a single "Hello World" message as one chunk, after which the stream ends).
+- The public agent card, displayed in a formatted summary.
+- The non-streaming response: a single `task` in protobuf text format containing the completed status, the generated artifact with "Hello, World!", and the agent's intermediate status message in history.
+- The streaming response: four chunks — the initial `task`, a `status_update` for WORKING, an `artifact_update` with the result, and a final `status_update` for COMPLETED.
+- The extended agent card, displayed in a formatted summary (with an additional `super_hello_world` skill).
 
 The `id` fields in the output will vary with each run.
 
 ```console { .no-copy }
-// Non-streaming response
-{"jsonrpc":"2.0","id":"xxxxxxxx","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"yyyyyyyy"}}}
-// Streaming response (one chunk)
-{"jsonrpc":"2.0","id":"zzzzzzzz","result":{"message":{"role":"ROLE_AGENT","parts":[{"text":"Hello World"}],"messageId":"wwwwwwww"}}}
+Attempting to fetch public agent card from: http://localhost:9999/.well-known/agent-card.json
+
+Successfully fetched public agent card:
+====================================================
+                     AgentCard
+====================================================
+--- General ---
+Name        : Hello World Agent
+Description : Just a hello world agent
+Version     : 0.0.1
+
+--- Interfaces ---
+  [0] http://localhost:9999  (JSONRPC)
+
+--- Capabilities ---
+Streaming           : True
+Push notifications  : False
+Extended agent card : True
+
+--- I/O Modes ---
+Input  : text/plain
+Output : text/plain
+
+--- Skills ---
+----------------------------------------------------
+  ID          : hello_world
+  Name        : Returns hello world
+  Description : just returns hello world
+  Tags        : hello world
+  Example     : hi
+  Example     : hello world
+====================================================
+
+--- Non-Streaming Call ---
+
+Non-streaming Client initialized.
+Response:
+task {
+  id: "xxxxxxxx"
+  context_id: "yyyyyyyy"
+  status {
+    state: TASK_STATE_COMPLETED
+  }
+  artifacts {
+    artifact_id: "zzzzzzzz"
+    name: "result"
+    parts {
+      text: "Hello, World!"
+    }
+  }
+  history {
+    message_id: "wwwwwwww"
+    role: ROLE_AGENT
+    parts {
+      text: "Processing request..."
+    }
+  }
+}
+
+--- Streaming Call ---
+
+Streaming Client initialized.
+Response chunk:
+task {
+  id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_SUBMITTED
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_WORKING
+    message {
+      message_id: "zzzzzzzz-s"
+      role: ROLE_AGENT
+      parts {
+        text: "Processing request..."
+      }
+    }
+  }
+}
+
+Response chunk:
+artifact_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  artifact {
+    artifact_id: "vvvvvvvv-s"
+    name: "result"
+    parts {
+      text: "Hello, World!"
+    }
+  }
+}
+
+Response chunk:
+status_update {
+  task_id: "xxxxxxxx-s"
+  context_id: "yyyyyyyy-s"
+  status {
+    state: TASK_STATE_COMPLETED
+  }
+}
+
+--- Extended Card Call ---
+
+Successfully fetched authenticated extended agent card:
+====================================================
+                     AgentCard
+====================================================
+--- General ---
+Name        : Hello World Agent - Extended Edition
+Description : The full-featured hello world agent for authenticated users.
+Version     : 0.0.2
+
+--- Interfaces ---
+  [0] http://localhost:9999  (JSONRPC)
+
+--- Capabilities ---
+Streaming           : True
+Push notifications  : False
+Extended agent card : True
+
+--- I/O Modes ---
+Input  : text/plain
+Output : text/plain
+
+--- Skills ---
+----------------------------------------------------
+  ID          : hello_world
+  Name        : Returns hello world
+  Description : just returns hello world
+  Tags        : hello world
+  Example     : hi
+  Example     : hello world
+----------------------------------------------------
+  ID          : super_hello_world
+  Name        : Returns a SUPER Hello World
+  Description : A more enthusiastic greeting, only for authenticated users.
+  Tags        : hello world, super, extended
+  Example     : super hi
+  Example     : give me a super hello
+====================================================
 ```
 
-_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww` will be different UUIDs/request IDs)_
+_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww`, `vvvvvvvv` will be different UUIDs)_
 
 This confirms your server is correctly handling basic A2A interactions with the updated SDK structure!
 

@@ -32,9 +32,9 @@ The **Agent Card** is a JSON document that an A2A Server makes available, typica
 Key attributes of an `AgentCard` (defined in `a2a.types`):
 
 - `name`, `description`, `version`: Basic identity information.
-- `url`: The endpoint where the A2A service can be reached.
-- `capabilities`: Specifies supported A2A features like `streaming` or `pushNotifications`.
-- `defaultInputModes` / `defaultOutputModes`: Default Media Types for the agent.
+- `supported_interfaces`: Ordered list of endpoints and protocols where the A2A service can be reached.
+- `capabilities`: Supported A2A features like `streaming` or `extended_agent_card`.
+- `default_input_modes` / `default_output_modes`: Default Media Types for the agent.
 - `skills`: A list of `AgentSkill` objects that the agent offers.
 
 The `helloworld` example defines its Agent Card like this:
