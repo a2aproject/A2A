@@ -41,15 +41,16 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_execute"
         ```
 
-        When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor):
+        When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor), the following steps occur:
 
-        1. It retrieves the current task from the context or creates a new one via `new_task_from_user_message` helper (from `a2a.helpers`), enqueueing it as the first event.
-        2. It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing. The status message is built with the `new_text_message` helper.
-        3. It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
-        4. It enqueues a `TaskArtifactUpdateEvent` containing the result text, constructed with the `new_text_artifact` helper.
-        5. Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
-        ```
+        **Step 1.** The `A2A instance` (server) retrieves the current task from the context. If there is no task in context, then it creates a new task and adds it to the `EventQueue`.
+
+        **Step 2.** It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing.
+
+        **Step 3.** It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
+
+        **Step 4.** It enqueues a `TaskArtifactUpdateEvent` containing the result text from the agent.
+
+        **Step 5.** Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
 
 The `AgentExecutor` acts as the bridge between the A2A protocol (managed by the request handler and server application) and your agent's specific logic. It receives context about the request and uses an event queue to communicate results or updates back.
-
-For a deeper understanding of the rules governing valid outputs from agent execution, including which event types are allowed, ordering constraints, and terminal conditions, refer to the [`AgentExecutor` source code](https://github.com/a2aproject/a2a-python/blob/main/src/a2a/server/agent_execution/agent_executor.py).

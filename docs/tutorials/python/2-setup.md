@@ -1,4 +1,4 @@
-# 2. Setup Your Environment
+# 2. Set Up Your Environment
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ We recommend using a virtual environment for Python projects. The A2A Python SDK
         .venv\Scripts\activate
         ```
 
-2. **Install needed Python dependencies along with the A2A SDK and its dependencies:**
+2. **Install the A2A SDK and its required Python dependencies:**
 
     ```bash
     pip install -r samples/python/requirements.txt

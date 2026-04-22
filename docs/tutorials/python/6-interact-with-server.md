@@ -12,7 +12,7 @@ The `test_client.py` script demonstrates how to:
 
 Open a **new terminal window**, activate your virtual environment, and navigate to the `a2a-samples` directory.
 
-Activate virtual environment (Be sure to do this in the same directory where you created the virtual environment):
+Activate the virtual environment (be sure to do this in the same directory where you created it):
 
 === "Mac/Linux"
 
@@ -51,9 +51,9 @@ Let's look at key parts of `test_client.py`:
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_send"
     ```
 
-    - `create_client` is an async factory function that creates a `Client` configured from the fetched `AgentCard` and a `ClientConfig`. Here `streaming=False` selects the non-streaming transport.
+    - The `create_client` function creates a `Client` based on the information provided by the `AgentCard` and a `ClientConfig`.
     - We construct a `Message` using the `new_text_message` helper (passing `role=Role.ROLE_USER`), then wrap it in a `SendMessageRequest`.
-    - The client's `send_message` method returns an async iterable that yields a single final `Task` response from the agent.
+    - The client's `send_message` method returns an async iterator that yields a single final `Task` or `Message` response from the agent. In this example, it is a `Task`.
 
 3. **Initializing the Client & Sending a Streaming Message**:
 
@@ -230,11 +230,8 @@ Output : text/plain
   Example     : give me a super hello
 ```
 
-_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww`, `vvvvvvvv` will be different UUIDs)_
-```
+_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww`, and `vvvvvvvv` will be different UUIDs in each run.)_
 
-_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `vvvvvvvv`, `wwwwwwww` will be different UUIDs/request IDs)_
+This confirms your server is correctly handling basic A2A interactions with the updated SDK structure.
 
-This confirms your server is correctly handling basic A2A interactions with the updated SDK structure!
-
-Now you can shut down the server by typing Ctrl+C in the terminal window where `__main__.py` is running.
+You can now shut down the server by pressing Ctrl+C in the terminal window where `__main__.py` is running.
