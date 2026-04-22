@@ -31,17 +31,23 @@ const BENCHMARK_URL   = 'https://hivecompute-g2g7.onrender.com/v1/compute/benchm
 const CARBON_URL      = 'https://hivecompute-g2g7.onrender.com/v1/witness/carbon';
 
 /**
+ * smsh_tier → trust_level mapping (0-4 scale).
+ * Hoisted to module scope — created once, not on every call.
+ * Mirrors the trust level progression used by APS and MolTrust.
+ */
+const TIER_TRUST_MAP = {
+  'unregistered':    0,
+  'smsh':            1,
+  'smsh_enterprise': 2,
+  'smsh_scale':      3,
+};
+
+/**
  * Map HiveCompute smsh_tier string to trust_level integer (0-4 scale).
  * Mirrors the trust level progression used by APS and MolTrust.
  */
 function tierToTrustLevel(smshTier) {
-  const map = {
-    'unregistered':    0,
-    'smsh':            1,
-    'smsh_enterprise': 2,
-    'smsh_scale':      3,
-  };
-  return map[smshTier] ?? 0;
+  return TIER_TRUST_MAP[smshTier] ?? 0;
 }
 
 /**
@@ -164,7 +170,7 @@ async function fetchCarbonWitnessFixture() {
     attestation_count:carbon.network?.jobs_measured ?? 0,
     last_verified:    carbon.timestamp,
     evidence_bundle:  `uri:${CARBON_URL}`,
-    delegation_chain_root: `uri:${VERIFY_URL}/did:hive:network-carbon-witness`,
+    delegation_chain_root: buildDelegationChainRoot('did:hive:network-carbon-witness'),
     _hivecompute: {
       smsh_name:             'HiveCompute-CarbonWitness.smsh',
       smsh_tier:             'smsh',
