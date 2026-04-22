@@ -44,6 +44,4 @@ The `helloworld` example defines its Agent Card like this:
 --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/__main__.py:AgentCard"
 ```
 
-This card tells us the agent is named "Hello World Agent", can be run at `http://localhost:9999/`, supports text interactions, and has the `hello_world` skill. It also indicates public authentication, meaning no specific credentials are required.
-
-Understanding the Agent Card is crucial because it's how a client discovers an agent and learns how to interact with it.
+This card tells us the agent is named "Hello World Agent", can be run at `http://localhost:9999/`, supports text interactions, and has the `hello_world` skill.
