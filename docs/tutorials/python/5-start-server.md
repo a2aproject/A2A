@@ -50,7 +50,7 @@ You should see output similar to this, indicating the server is running:
 INFO:     Started server process [xxxxx]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:9999 (Press CTRL+C to quit)
+INFO:     Uvicorn running on http://127.0.0.1:9999 (Press CTRL+C to quit)
 ```
 
 Your A2A Helloworld agent is now live and listening for requests! In the next step, we'll interact with it.

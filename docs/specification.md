@@ -541,7 +541,7 @@ All error responses in the A2A protocol, regardless of binding, **MUST** convey 
 
 1. **Error Code**: A machine-readable identifier for the error type (e.g., string code, numeric code, or protocol-specific status)
 2. **Error Message**: A human-readable description of the error
-3. **Error Details** (optional): Additional structured information about the error, such as:
+3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
     - Affected fields or parameters
     - Contextual information (e.g., task ID, timestamp)
     - Suggestions for resolution
@@ -848,7 +848,7 @@ When a task update occurs, the agent sends an HTTP POST request to the configure
 ```http
 POST {webhook_url}
 Authorization: {authentication_scheme} {credentials}
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   /* StreamResponse object - one of: */
@@ -1055,7 +1055,7 @@ Clients indicate their desire to opt into the use of specific extensions through
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/json
+Content-Type: application/a2a+json
 Authorization: Bearer token
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
 
@@ -1177,17 +1177,17 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST** be mapped to binding-specific error representations. The following table provides the canonical mappings for each standard protocol binding:
 
-| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  |
-| :------------------------------------ | :------------ | :-------------------- | :--------------------------- |
-| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              |
-| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `409 Conflict`               |
-| `PushNotificationNotSupportedError`   | `-32003`      | `UNIMPLEMENTED`       | `400 Bad Request`            |
-| `UnsupportedOperationError`           | `-32004`      | `UNIMPLEMENTED`       | `400 Bad Request`            |
-| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `415 Unsupported Media Type` |
-| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `502 Bad Gateway`            |
-| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
-| `VersionNotSupportedError`            | `-32009`      | `UNIMPLEMENTED`       | `400 Bad Request`            |
+| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                 |
+| :------------------------------------ | :------------ | :-------------------- | :-------------------------- |
+| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`             |
+| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`           |
+| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error` |
+| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 
 **Custom Binding Requirements:**
 
@@ -1273,6 +1273,33 @@ The Protocol Buffer `optional` keyword is used to distinguish between a field be
 **Unrecognized Fields:**
 
 Implementations **SHOULD** ignore unrecognized fields in messages, allowing for forward compatibility as the protocol evolves.
+
+### 5.8. Custom Binding Identification
+
+Custom protocol bindings **SHOULD** be identified by a URI. Using a URI as the
+identifier provides globally unique identification across all implementers.
+
+The `protocolBinding` field in the Agent Card's `supportedInterfaces` entry
+**SHOULD** be a URI:
+
+```json
+{
+  "supportedInterfaces": [
+    {
+      "url": "wss://agent.example.com/a2a/websocket",
+      "protocolBinding": "https://example.com/bindings/websocket/v1",
+      "protocolVersion": "1.0"
+    }
+  ]
+}
+```
+
+When a breaking change is introduced to a binding, a new URI **MUST** be used
+so that clients can distinguish between incompatible versions:
+
+```text
+https://example.com/bindings/websocket/v1  →  https://example.com/bindings/websocket/v2
+```
 
 ## 6. Common Workflows & Examples
 
@@ -2408,7 +2435,7 @@ JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://ww
 
 - **Error Code**: Mapped to `error.code` (numeric JSON-RPC error code)
 - **Error Message**: Mapped to `error.message` (human-readable string)
-- **Error Details**: Mapped to `error.data` (array containing `google.protobuf.Any` messages, using ProtoJSON representation)
+- **Error Details**: Mapped to `error.data` (array of objects, each containing a `@type` key, using ProtoJSON `Any` representation)
 
 **Standard JSON-RPC Error Codes:**
 
@@ -2424,16 +2451,9 @@ JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://ww
 
 A2A-specific errors use codes in the range `-32001` to `-32099`. For the complete mapping of A2A error types to JSON-RPC error codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings).
 
-**A2A Error Representation:**
+**Error Detail Objects:**
 
-For A2A-specific errors, implementations **MUST** include a `google.rpc.ErrorInfo` message in the `data` array with:
-
-- `@type`: Set to `"type.googleapis.com/google.rpc.ErrorInfo"`
-- `reason`: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., `TASK_NOT_FOUND`)
-- `domain`: Set to `"a2a-protocol.org"`
-- `metadata`: Optional map of additional error context
-
-Additional error context **MAY** be included in the `data` array.
+Each object in the `data` array **MUST** include a `@type` key that identifies the object's type. Implementations **SHOULD** use well-known types such as `google.rpc.ErrorInfo` to refine error reporting, or `google.rpc.BadRequest` to attach structured data to validation errors. Additional error context **MAY** be included as further objects in the `data` array.
 
 **Error Response Structure:**
 
@@ -2442,11 +2462,19 @@ Additional error context **MAY** be included in the `data` array.
   "jsonrpc": "2.0",
   "id": 1,
   "error": {
-    "code": -32601,
-    "message": "Method not found",
-    "data": {
-      "method": "invalid/method"
-    }
+    "code": -32602,
+    "message": "Invalid parameters",
+    "data": [
+      {
+        "@type": "type.googleapis.com/google.rpc.BadRequest",
+        "fieldViolations": [
+          {
+            "field": "message.parts",
+            "description": "At least one part is required"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -2647,10 +2675,6 @@ Resource wrapper for push notification configurations. This is a gRPC-specific t
 
 {{ proto_to_table("TaskPushNotificationConfig") }}
 
-**Fields:**
-
-{{ proto_to_table("TaskPushNotificationConfig") }}
-
 ### 10.6. Error Handling
 
 gRPC error responses use the standard [gRPC status](https://grpc.io/docs/guides/error/) structure with [google.rpc.Status](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto), which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
@@ -2724,7 +2748,7 @@ The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP 
 ### 11.1. Protocol Requirements
 
 - **Protocol:** HTTP(S) with JSON payloads
-- **Content-Type:** `application/json` for requests and responses
+- **Content-Type:** application/a2a+json **SHOULD** be used for requests and responses
 - **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
 - **URL Patterns:** RESTful resource-based URLs
 - **Streaming:** Server-Sent Events for real-time updates
@@ -2744,7 +2768,7 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/json
+Content-Type: application/a2a+json
 Authorization: Bearer token
 A2A-Version: 0.3
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
@@ -2790,7 +2814,7 @@ All requests and responses use JSON objects structurally equivalent to the Proto
 
 ```http
 POST /message:send
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   "message": {
@@ -2810,7 +2834,7 @@ Content-Type: application/json
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   "task": {
@@ -2872,28 +2896,31 @@ All query parameter values **MUST** be properly URL-encoded per [RFC 3986](https
 
 ### 11.6. Error Handling
 
-HTTP error responses use the representation specified in [AIP-193](https://google.aip.dev/193#http11json-representation) which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
+HTTP error responses use the [google.rpc.Status](https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto) JSON representation, which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
 
 - **Error Code**: Mapped to the HTTP status code and the `error.code` field
 - **Error Message**: Mapped to the `error.message` field (human-readable string)
-- **Error Details**: Mapped to the `error.details` array (containing `google.protobuf.Any` messages)
+- **Error Details**: Mapped to the `error.details` array (array of objects, each containing a `@type` key, using ProtoJSON `Any` representation)
+
+**Error Detail Objects:**
+
+Each object in the `details` array **MUST** include a `@type` key that identifies the object's type. Implementations **SHOULD** use well-known types such as `google.rpc.BadRequest` to attach structured data to validation errors. Additional error context **MAY** be included as further objects in the `details` array.
 
 **A2A Error Representation:**
 
-For A2A-specific errors, implementations **MUST** include a `google.rpc.ErrorInfo` message in the `details` array with:
+Since multiple A2A error types may map to the same HTTP status code (e.g., `TaskNotCancelableError` and `PushNotificationNotSupportedError` both map to `400 Bad Request`), implementations **MUST** include a `google.rpc.ErrorInfo` object in the `details` array for A2A-specific errors with:
 
 - `@type`: Set to `"type.googleapis.com/google.rpc.ErrorInfo"`
-- `reason`: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., `TASK_NOT_FOUND`)
+- `reason`: The A2A error type in UPPER_SNAKE_CASE without the "Error" suffix (e.g., `TASK_NOT_FOUND`, `TASK_NOT_CANCELABLE`)
 - `domain`: Set to `"a2a-protocol.org"`
-- `metadata`: Optional map of additional error context
 
-For the complete mapping of A2A error types to HTTP status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings). Additional error context **MAY** be included in the `details` array of the Status object.
+For the complete mapping of A2A error types to HTTP status codes, see [Section 5.4 (Error Code Mappings)](#54-error-code-mappings).
 
 **Error Response Example:**
 
 ```http
 HTTP/1.1 404 Not Found
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 {
   "error": {
@@ -2925,7 +2952,7 @@ REST streaming uses Server-Sent Events with the `data` field containing JSON ser
 
 ```http
 POST /message:stream
-Content-Type: application/json
+Content-Type: application/a2a+json
 
 { /* SendMessageRequest object */ }
 ```
@@ -3015,9 +3042,8 @@ Custom bindings **MUST**:
 
 Custom bindings **MUST** be declared in the Agent Card:
 
-1. **Transport Identifier**: Use a clear, descriptive transport name
+1. **Transport Identifier**: Use a URI to identify the binding (see [Section 5.8](#58-custom-binding-identification))
 2. **Endpoint URL**: Provide the full URL where the binding is available
-3. **Documentation Link**: Include a URL to the complete binding specification
 
 **Example:**
 
@@ -3026,7 +3052,7 @@ Custom bindings **MUST** be declared in the Agent Card:
   "supportedInterfaces": [
     {
       "url": "wss://agent.example.com/a2a/websocket",
-      "protocolBinding": "WEBSOCKET"
+      "protocolBinding": "https://example.com/bindings/websocket/v1"
     }
   ]
 }

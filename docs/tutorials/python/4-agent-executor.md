@@ -22,7 +22,7 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgent"
     ```
 
-    It has a simple `invoke` method that returns the string "Hello World".
+    It has a simple `invoke` method that returns the string "Hello, World!".
 
 2. **The Executor (`HelloWorldAgentExecutor`)**:
     This class implements the `AgentExecutor` interface.

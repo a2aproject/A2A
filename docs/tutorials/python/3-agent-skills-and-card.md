@@ -8,14 +8,15 @@ We'll use the `helloworld` example located in [`a2a-samples/samples/python/agent
 
 An **Agent Skill** describes a specific capability or function the agent can perform. It's a building block that tells clients what kinds of tasks the agent is good for.
 
-Key attributes of an `AgentSkill` (defined in `a2a.types`):
+Attributes of an `AgentSkill` (defined in `a2a.types`):
 
 - `id`: A unique identifier for the skill.
 - `name`: A human-readable name.
 - `description`: A more detailed explanation of what the skill does.
 - `tags`: Keywords for categorization and discovery.
 - `examples`: Sample prompts or use cases.
-- `inputModes` / `outputModes`: Supported Media Types for input and output (e.g., "text/plain", "application/json").
+- `input_modes` / `output_modes`: Supported Media Types for input and output (e.g., "text/plain", "application/json").
+- `security_requirements`: Security schemes necessary for this skill.
 
 In `__main__.py`, you can see how a skill for the Helloworld agent is defined:
 

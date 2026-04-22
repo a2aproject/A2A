@@ -37,7 +37,7 @@ python samples/python/agents/helloworld/test_client.py
 
 Let's look at key parts of `test_client.py`:
 
-1. **Fetching the Agent Card & Initializing the Client**:
+1. **Fetching the Agent Card**:
 
     ```python { .no-copy }
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:A2ACardResolver"
@@ -45,10 +45,10 @@ Let's look at key parts of `test_client.py`:
 
     The `A2ACardResolver` class is a convenience. When `get_agent_card()` is called, it fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL), which is then used to initialize the client.
 
-2. **Sending a Non-Streaming Message (`send_message`)**:
+2. **Initializing the Client & Sending a Non-Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_send"
     ```
 
     - `create_client` is an async factory function that creates a `Client` configured from the fetched `AgentCard` and a `ClientConfig`. Here `streaming=False` selects the non-streaming transport.
@@ -58,7 +58,7 @@ Let's look at key parts of `test_client.py`:
 3. **Initializing the Client & Sending a Streaming Message**:
 
     ```python { .no-copy }
-    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:send_message_streaming"
+    --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_stream"
     ```
 
     - A separate streaming client is created via `create_client` with `streaming=True` in its `ClientConfig`.
@@ -77,12 +77,7 @@ When you run `test_client.py`, you'll see output for:
 The `id` fields in the output will vary with each run.
 
 ```console { .no-copy }
-Attempting to fetch public agent card from: http://localhost:9999/.well-known/agent-card.json
-
-Successfully fetched public agent card:
-====================================================
                      AgentCard
-====================================================
 --- General ---
 Name        : Hello World Agent
 Description : Just a hello world agent
@@ -108,12 +103,12 @@ Output : text/plain
   Tags        : hello world
   Example     : hi
   Example     : hello world
-====================================================
 
 --- Non-Streaming Call ---
 
 Non-streaming Client initialized.
 Response:
+// Non-streaming response
 task {
   id: "xxxxxxxx"
   context_id: "yyyyyyyy"
@@ -128,6 +123,15 @@ task {
     }
   }
   history {
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy"
+    task_id: "xxxxxxxx"
+    role: ROLE_USER
+    parts {
+      text: "Say hello."
+    }
+  }
+  history {
     message_id: "wwwwwwww"
     role: ROLE_AGENT
     parts {
@@ -136,15 +140,21 @@ task {
   }
 }
 
---- Streaming Call ---
-
-Streaming Client initialized.
-Response chunk:
+// Streaming response
 task {
   id: "xxxxxxxx-s"
   context_id: "yyyyyyyy-s"
   status {
     state: TASK_STATE_SUBMITTED
+  }
+  history {
+    message_id: "vvvvvvvv"
+    context_id: "yyyyyyyy-s"
+    task_id: "xxxxxxxx-s"
+    role: ROLE_USER
+    parts {
+      text: "Say hello."
+    }
   }
 }
 
@@ -169,7 +179,7 @@ artifact_update {
   task_id: "xxxxxxxx-s"
   context_id: "yyyyyyyy-s"
   artifact {
-    artifact_id: "vvvvvvvv-s"
+    artifact_id: "wwwwwwww-s"
     name: "result"
     parts {
       text: "Hello, World!"
@@ -185,13 +195,7 @@ status_update {
     state: TASK_STATE_COMPLETED
   }
 }
-
---- Extended Card Call ---
-
-Successfully fetched authenticated extended agent card:
-====================================================
                      AgentCard
-====================================================
 --- General ---
 Name        : Hello World Agent - Extended Edition
 Description : The full-featured hello world agent for authenticated users.
@@ -224,10 +228,12 @@ Output : text/plain
   Tags        : hello world, super, extended
   Example     : super hi
   Example     : give me a super hello
-====================================================
 ```
 
 _(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww`, `vvvvvvvv` will be different UUIDs)_
+```
+
+_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `vvvvvvvv`, `wwwwwwww` will be different UUIDs/request IDs)_
 
 This confirms your server is correctly handling basic A2A interactions with the updated SDK structure!
 
