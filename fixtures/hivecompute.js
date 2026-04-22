@@ -195,7 +195,7 @@ async function fetchCarbonWitnessFixture() {
  *   https://github.com/srotzin/hivecompute/issues (JWKS endpoint roadmap)
  */
 
-export {
+module.exports = {
   fetchFixtures,
   fetchFixtureByDID,
   fetchCarbonWitnessFixture,

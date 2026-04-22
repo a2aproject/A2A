@@ -24,9 +24,9 @@ APS and MolTrust fixture files to follow per agreed fixture division (see [#1742
 ## Usage
 
 ```js
-import { fetchFixtures, fetchFixtureByDID, fetchCarbonWitnessFixture } from './fixtures/hivecompute.js';
+const { fetchFixtures, fetchFixtureByDID, fetchCarbonWitnessFixture } = require('./fixtures/hivecompute');
 
-// All registered agents (22+ in 48h window)
+// All registered agents (445+ in network)
 const fixtures = await fetchFixtures();
 
 // Single agent by DID
