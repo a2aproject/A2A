@@ -1,6 +1,6 @@
 # 6. Interacting with the Server
 
-With the Helloworld A2A server running, let's send some requests to it. The SDK includes a `create_client` factory function that returns a `Client` configured for interacting with an A2A agent.
+With the Helloworld A2A server running, let's send some requests to it.
 
 ## The Helloworld Test Client
 

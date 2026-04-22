@@ -2,7 +2,7 @@
 
 Now that we have an Agent Card and an Agent Executor, we can set up and start the A2A server.
 
-The A2A Python SDK provides route factory helpers (`create_agent_card_routes`, `create_jsonrpc_routes`, `create_rest_routes`) that return Starlette `Route` objects. These work natively with [Starlette](https://www.starlette.io/) and [FastAPI](https://fastapi.tiangolo.com/) (which is Starlette-based), and the resulting application is run with an ASGI server like [Uvicorn](https://www.uvicorn.org/). In this tutorial we use Starlette with `create_agent_card_routes` and `create_jsonrpc_routes`; `create_rest_routes` is available for REST-style endpoints but is not used in this sample.
+The A2A Python SDK provides route factory helpers (`create_agent_card_routes`, `create_jsonrpc_routes`, `create_rest_routes`) that return Starlette `Route` objects. These work natively with [Starlette](https://www.starlette.io/) and [FastAPI](https://fastapi.tiangolo.com/), and the resulting application is run with an ASGI server like [Uvicorn](https://www.uvicorn.org/). In this tutorial we use Starlette with `create_agent_card_routes` and `create_jsonrpc_routes`; `create_rest_routes` is available for REST-style endpoints but is not used in this sample.
 
 ## Server Setup in Helloworld
 
@@ -19,7 +19,7 @@ Let's break this down:
     - The SDK provides `DefaultRequestHandler`. This handler takes your `AgentExecutor` implementation (here, `HelloWorldAgentExecutor`), a `TaskStore` (here, `InMemoryTaskStore`), and the public and extended `AgentCard` objects.
     - It routes incoming A2A RPC calls to the appropriate methods on your executor (like `execute` or `cancel`).
     - The `TaskStore` is used by the `DefaultRequestHandler` to manage the lifecycle of tasks, especially for stateful interactions, streaming, and resubscription. Even if your agent executor is simple, the handler needs a task store.
-    - `agent_card` is passed to the handler so it can verify the agent's declared capabilities when processing incoming requests (for example, checking whether streaming or push notifications are supported before handling those request types).
+    - `agent_card` is passed to the handler so it can verify the agent's declared capabilities when processing incoming requests. For example, checking whether streaming or push notifications are supported before handling those request types.
     - `extended_agent_card` is passed so the handler can serve it via the `GetExtendedAgentCard` RPC method to authenticated clients.
 
 2. **`create_agent_card_routes` and `create_jsonrpc_routes`**:
