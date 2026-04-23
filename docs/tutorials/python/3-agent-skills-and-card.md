@@ -44,4 +44,4 @@ The `helloworld` example defines its Agent Card like this:
 --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/__main__.py:AgentCard"
 ```
 
-This card tells us the agent is named "Hello World Agent", can be run at `http://localhost:9999/`, supports text interactions, and has the `hello_world` skill.
+This card tells us the agent is named "Hello World Agent", can be run at `http://127.0.0.1:9999/`, supports text interactions, and has the `hello_world` skill.

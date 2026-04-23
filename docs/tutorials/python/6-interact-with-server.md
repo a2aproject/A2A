@@ -84,7 +84,7 @@ Description : Just a hello world agent
 Version     : 0.0.1
 
 --- Interfaces ---
-  [0] http://localhost:9999  (JSONRPC)
+  [0] http://127.0.0.1:9999  (JSONRPC)
 
 --- Capabilities ---
 Streaming           : True
@@ -202,7 +202,7 @@ Description : The full-featured hello world agent for authenticated users.
 Version     : 0.0.2
 
 --- Interfaces ---
-  [0] http://localhost:9999  (JSONRPC)
+  [0] http://127.0.0.1:9999  (JSONRPC)
 
 --- Capabilities ---
 Streaming           : True
