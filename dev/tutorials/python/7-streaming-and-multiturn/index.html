@@ -1757,7 +1757,7 @@
 <h2 id="setting-up-the-langgraph-example">Setting up the LangGraph Example<a class="headerlink" href="#setting-up-the-langgraph-example" title="Permanent link">&para;</a></h2>
 <ol>
 <li>
-<p>Create a <a href="https://ai.google.dev/gemini-api/docs/api-key">Gemini API Key</a>, if you don't already have one.</p>
+<p>Create a <a href="https://ai.google.dev/gemini-api/docs/api-key">Gemini API Key</a> if you don't already have one.</p>
 </li>
 <li>
 <p><strong>Environment Variable:</strong></p>
@@ -1827,7 +1827,7 @@
 <ul>
 <li>The <code>execute</code> method in <code>CurrencyAgentExecutor</code> is responsible for handling both non-streaming and streaming requests, orchestrated by the <code>DefaultRequestHandler</code>.</li>
 <li>As the LangGraph agent processes the request (which might involve calling tools like <code>get_exchange_rate</code>), the <code>CurrencyAgentExecutor</code> enqueues different types of events onto the <code>EventQueue</code>:<ul>
-<li><code>TaskStatusUpdateEvent</code>: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates..").</li>
+<li><code>TaskStatusUpdateEvent</code>: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates...").</li>
 <li><code>TaskArtifactUpdateEvent</code>: When the final answer is ready, it's enqueued as an artifact. The <code>lastChunk</code> flag is <code>True</code>.</li>
 <li>A final <code>TaskStatusUpdateEvent</code> with <code>state=TaskState.completed</code> is sent to signify the end of the task, closing the stream.</li>
 </ul>
