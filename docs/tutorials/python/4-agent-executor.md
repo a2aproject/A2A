@@ -41,7 +41,7 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_execute"
         ```
 
-        When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor), the following steps occur:
+        When a `SendMessage` or `SendStreamingMessage` request comes in (both are handled by `execute` in this simplified executor), the following steps occur:
 
         **Step 1.** The `A2A instance` (server) retrieves the current task from the context. If there is no task in context, then it creates a new task and adds it to the `EventQueue`.
 

@@ -213,7 +213,7 @@ The agent MAY return a `Task` for complex processing with status/artifact update
 
 #### 3.1.3. Get Task
 
-Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with message/send, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.
+Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with SendMessage, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.
 
 **Inputs:**
 
