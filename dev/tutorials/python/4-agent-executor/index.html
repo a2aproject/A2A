@@ -1764,7 +1764,7 @@
 </span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>        <span class="p">)</span>
 </span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>    <span class="p">)</span>
 </span></code></pre></div>
-<p>When a <code>message/send</code> or <code>message/stream</code> request comes in (both are handled by <code>execute</code> in this simplified executor), the following steps occur:</p>
+<p>When a <code>Send Message</code> or <code>Send Streaming Message</code> request comes in (both are handled by <code>execute</code> in this simplified executor), the following steps occur:</p>
 <p><strong>Step 1.</strong> The <code>A2A instance</code> (server) retrieves the current task from the context. If there is no task in context, then it creates a new task and adds it to the <code>EventQueue</code>.</p>
 <p><strong>Step 2.</strong> It enqueues a <code>TaskStatusUpdateEvent</code> with a state of <code>TASK_STATE_WORKING</code> to indicate the agent has begun processing.</p>
 <p><strong>Step 3.</strong> It calls <code>self.agent.invoke()</code> to execute the actual business logic (which simply returns "Hello, World!").</p>

@@ -6747,7 +6747,7 @@
 
     subgraph L2 ["A2A Operations"]
         direction LR
-        G[Send Message] ~~~ H[Stream Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
+        G[Send Message] ~~~ H[Send Streaming Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
     end
 
     subgraph L3 ["Protocol Bindings"]
@@ -6885,7 +6885,7 @@
 </ol>
 <p>The agent MAY return a <code>Task</code> for complex processing with status/artifact updates or MAY return a <code>Message</code> for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.</p>
 <h4 id="313-get-task">3.1.3. Get Task<a class="headerlink" href="#313-get-task" title="Permanent link">&para;</a></h4>
-<p>Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with message/send, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.</p>
+<p>Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with Send Message, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.</p>
 <p><strong>Inputs:</strong></p>
 <p>Represents a request for the <code>GetTask</code> method.</p>
 <table>
@@ -7724,7 +7724,7 @@
 <p><strong>Streaming:</strong></p>
 <ul>
 <li>Real-time delivery of events as they occur</li>
-<li>Operations: Stream Message (<a href="#312-send-streaming-message">Section 3.1.2</a>) and Subscribe to Task (<a href="#316-subscribe-to-task">Section 3.1.6</a>)</li>
+<li>Operations: Send Streaming Message (<a href="#312-send-streaming-message">Section 3.1.2</a>) and Subscribe to Task (<a href="#316-subscribe-to-task">Section 3.1.6</a>)</li>
 <li>Low latency, efficient for frequent updates</li>
 <li>Requires persistent connection support</li>
 <li>Best for: Interactive applications, real-time dashboards, live progress monitoring</li>
@@ -9143,7 +9143,7 @@
 <td style="text-align: left;"><code>POST /message:send</code></td>
 </tr>
 <tr>
-<td style="text-align: left;">Stream message</td>
+<td style="text-align: left;">Send streaming message</td>
 <td style="text-align: left;"><code>SendStreamingMessage</code></td>
 <td style="text-align: left;"><code>SendStreamingMessage</code></td>
 <td style="text-align: left;"><code>POST /message:stream</code></td>
