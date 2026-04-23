@@ -8,7 +8,7 @@ The `test_client.py` script demonstrates how to:
 
 1. Fetch the Agent Card from the server.
 2. Create a client using `create_client`.
-3. Send both non-streaming (`message/send`) and streaming (`message/stream`) requests.
+3. Send both `Send Message` and `Send Streaming Message` requests.
 
 Open a **new terminal window**, activate your virtual environment, and navigate to the `a2a-samples` directory.
 
@@ -84,7 +84,7 @@ Description : Just a hello world agent
 Version     : 0.0.1
 
 --- Interfaces ---
-  [0] http://localhost:9999  (JSONRPC)
+  [0] http://127.0.0.1:9999  (JSONRPC)
 
 --- Capabilities ---
 Streaming           : True
@@ -202,7 +202,7 @@ Description : The full-featured hello world agent for authenticated users.
 Version     : 0.0.2
 
 --- Interfaces ---
-  [0] http://localhost:9999  (JSONRPC)
+  [0] http://127.0.0.1:9999  (JSONRPC)
 
 --- Capabilities ---
 Streaming           : True

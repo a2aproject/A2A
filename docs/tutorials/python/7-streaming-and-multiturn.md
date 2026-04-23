@@ -64,7 +64,7 @@ The `langgraph` example showcases several important A2A concepts:
         ```
 
     - The `CurrencyAgentExecutor` (in `samples/langgraph/agent_executor.py`), when its `execute` method is called by the `DefaultRequestHandler`, interacts with the `RequestContext` which contains the current task (if any).
-    - For `message/send`, the `DefaultRequestHandler` uses the `TaskStore` to persist and retrieve task state across interactions. The response to `message/send` will be a full `Task` object if the agent's execution flow involves multiple steps or results in a persistent task.
+    - For `Send Message`, the `DefaultRequestHandler` uses the `TaskStore` to persist and retrieve task state across interactions. The response to `Send Message` will be a full `Task` object if the agent's execution flow involves multiple steps or results in a persistent task.
     - The `test_client.py`'s `run_single_turn_test` demonstrates getting a `Task` object back and then querying it using `get_task`.
 
 3. **Streaming with `TaskStatusUpdateEvent` and `TaskArtifactUpdateEvent`**:
