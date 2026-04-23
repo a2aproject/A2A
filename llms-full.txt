@@ -985,7 +985,7 @@ graph TB
 
     subgraph L2 ["A2A Operations"]
         direction LR
-        G[Send Message] ~~~ H[Stream Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
+        G[Send Message] ~~~ H[Send Streaming Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
     end
 
     subgraph L3 ["Protocol Bindings"]
@@ -1145,7 +1145,7 @@ The agent MAY return a `Task` for complex processing with status/artifact update
 
 #### 3.1.3. Get Task
 
-Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with message/send, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.
+Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with Send Message, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.
 
 **Inputs:**
 
@@ -1591,7 +1591,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -2094,7 +2094,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | Functionality                   | JSON-RPC Method                    | gRPC Method                        | REST Endpoint                                           |
 | :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
 | Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
-| Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
+| Send streaming message          | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
@@ -6468,7 +6468,7 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_execute"
         ```
 
-        When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor), the following steps occur:
+        When a `Send Message` or `Send Streaming Message` request comes in (both are handled by `execute` in this simplified executor), the following steps occur:
 
         **Step 1.** The `A2A instance` (server) retrieves the current task from the context. If there is no task in context, then it creates a new task and adds it to the `EventQueue`.
 
@@ -6555,7 +6555,7 @@ The `test_client.py` script demonstrates how to:
 
 1. Fetch the Agent Card from the server.
 2. Create a client using `create_client`.
-3. Send both non-streaming (`message/send`) and streaming (`message/stream`) requests.
+3. Send both `Send Message` and `Send Streaming Message` requests.
 
 Open a **new terminal window**, activate your virtual environment, and navigate to the `a2a-samples` directory.
 
@@ -6851,7 +6851,7 @@ The `langgraph` example showcases several important A2A concepts:
         ```
 
     - The `CurrencyAgentExecutor` (in `samples/langgraph/agent_executor.py`), when its `execute` method is called by the `DefaultRequestHandler`, interacts with the `RequestContext` which contains the current task (if any).
-    - For `message/send`, the `DefaultRequestHandler` uses the `TaskStore` to persist and retrieve task state across interactions. The response to `message/send` will be a full `Task` object if the agent's execution flow involves multiple steps or results in a persistent task.
+    - For `Send Message`, the `DefaultRequestHandler` uses the `TaskStore` to persist and retrieve task state across interactions. The response to `Send Message` will be a full `Task` object if the agent's execution flow involves multiple steps or results in a persistent task.
     - The `test_client.py`'s `run_single_turn_test` demonstrates getting a `Task` object back and then querying it using `get_task`.
 
 3. **Streaming with `TaskStatusUpdateEvent` and `TaskArtifactUpdateEvent`**:
@@ -11562,7 +11562,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a50228a0>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7980>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11588,7 +11588,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a50227b0>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7890>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -11632,7 +11632,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a50228a0>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7980>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -11652,7 +11652,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a50227b0>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7890>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16056,11 +16056,11 @@ a2a.helpers.proto_helpers.new_artifact(parts: list[Part], name: str, description
 
    Creates a new Artifact object.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3e50> = 2, context_id: str | None = None, task_id: str | None = None) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2, context_id: str | None = None, task_id: str | None = None) -> Message
 
    Creates a new message containing a list of Parts.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3c50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16076,11 +16076,11 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3e50> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3c50>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 </file>
@@ -16156,11 +16156,11 @@ a2a.helpers.new_artifact(parts: list[Part], name: str, description: str | None =
 
    Creates a new Artifact object.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3e50> = 2, context_id: str | None = None, task_id: str | None = None) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2, context_id: str | None = None, task_id: str | None = None) -> Message
 
    Creates a new message containing a list of Parts.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3c50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16176,11 +16176,11 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3e50> = 2) -> Message
+a2a.helpers.new_text_message(text: str, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3c50>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 </file>
@@ -20344,7 +20344,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3c50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -21044,7 +21044,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f25a68b3c50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
