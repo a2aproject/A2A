@@ -127,6 +127,18 @@ service A2AService {
       }
     };
   }
+  // Queries if the agent supports a specific skill dynamically.
+  rpc QuerySkill(SkillQueryRequest) returns (SkillQueryResult) {
+    option (google.api.http) = {
+      post: "/skills/{skill_id}/query"
+      body: "*"
+      additional_bindings: {
+        post: "/{tenant}/skills/{skill_id}/query"
+        body: "*"
+      }
+    };
+    option (google.api.method_signature) = "skill_id,context";
+  }
   // Deletes a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
@@ -412,6 +424,8 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 4;
+  // Indicates if the agent supports dynamic skill querying.
+  optional bool skill_query = 5;
 }
 
 // A declaration of a protocol extension supported by an Agent.
@@ -793,4 +807,30 @@ message ListTaskPushNotificationConfigsResponse {
   repeated TaskPushNotificationConfig configs = 1;
   // A token to retrieve the next page of results, or empty if there are no more results in the list.
   string next_page_token = 2;
+}
+
+// Support level for a requested skill.
+enum SkillSupportLevel {
+  SKILL_SUPPORT_LEVEL_UNSPECIFIED = 0;
+  SKILL_SUPPORT_LEVEL_SUPPORTED = 1;
+  SKILL_SUPPORT_LEVEL_PARTIAL = 2;
+  SKILL_SUPPORT_LEVEL_UNSUPPORTED = 3;
+}
+
+// Request to query if an agent supports a specific skill dynamically.
+message SkillQueryRequest {
+  string tenant   = 1;
+  string skill_id = 2;
+  google.protobuf.Struct context     = 3;  // runtime parameters
+  google.protobuf.Struct metadata    = 4;
+}
+
+// Result of a query for a specific skill's support level.
+message SkillQueryResult {
+  string             skill_id      = 1;
+  SkillSupportLevel  support_level = 2;
+  string             reason        = 3;
+  float              confidence    = 4;  // 0.0–1.0
+  int32              cache_ttl_seconds = 5;
+  google.protobuf.Struct constraints  = 6;  // for PARTIAL level
 }
