@@ -165,7 +165,7 @@ for TYPE_NAME in "${CORE_TYPES[@]}"; do
       "$id": "\($id_base)/\($type).json",
       title: $type
     }
-  ' "$OUTPUT" > "$SPLIT_DIR/${TYPE_NAME}.json" 2>/dev/null || true
+  ' "$OUTPUT" >"$SPLIT_DIR/${TYPE_NAME}.json" 2>/dev/null || true
 
   # Remove empty file if type was not found
   if [[ ! -s "$SPLIT_DIR/${TYPE_NAME}.json" ]]; then
@@ -183,7 +183,7 @@ jq --arg id_base "https://a2a-protocol.org/spec" '
       "$id": "\($id_base)/\($type).json",
       title: $type
     }
-  ' "$OUTPUT" > "$SPLIT_DIR/${TYPE_NAME}.json"
+  ' "$OUTPUT" >"$SPLIT_DIR/${TYPE_NAME}.json"
 done
 
 SPLIT_COUNT=$(find "$SPLIT_DIR" -maxdepth 1 -name '*.json' | wc -l | tr -d ' ')
