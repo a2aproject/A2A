@@ -56,8 +56,8 @@ if [ -f "$PROTO_SRC" ]; then
   cp "$PROTO_SRC" "$PROTO_SITE_FILE"
   echo "[build_docs] Published proto to $PROTO_SITE_FILE" >&2
 
-# Generate split schemas for per-type $schema referencing
-bash "$PROTO_TO_SCHEMA_SCRIPT" "$SCHEMA_JSON" "$SPEC_SITE_DIR" 2>/dev/null || true
+  # Generate split schemas for per-type $schema referencing
+  bash "$PROTO_TO_SCHEMA_SCRIPT" "$SCHEMA_JSON" "$SPEC_SITE_DIR" 2>/dev/null || true
 else
   echo "[build_docs] Warning: Proto file not found at $PROTO_SRC" >&2
 fi
