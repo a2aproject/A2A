@@ -6,11 +6,10 @@ set -euo pipefail
 #     to generate individual JSON Schema files for each core A2A type.
 #
 # Usage:
-#   proto_to_json_schema_v2.sh <output.json> [split_dir]
+#   proto_to_json_schema.sh <output.json> [split_dir]
 #
 #   <output.json>  — bundled schema file (always generated)
 #   [split_dir]    — optional directory for per-type JSON Schema files
-#                    (default: ./schemas/)
 #
 # When split_dir is provided, the script additionally writes one
 # {TypeName}.json file per core type under that directory.
@@ -161,20 +160,11 @@ CORE_TYPES=(
 
 for TYPE_NAME in "${CORE_TYPES[@]}"; do
   jq --arg type "$TYPE_NAME" --arg id_base "https://a2a-protocol.org/spec" '
-    if .definitions[$type] then
-      {
-        "$schema": "http://json-schema.org/draft-07/schema#",
-        "$id": "\($id_base)/\($type).json",
-        title: $type,
-        type: "object",
-        properties: (.definitions[$type].properties // {}),
-        required: (.definitions[$type].required // []),
-        additionalProperties: (.definitions[$type].additionalProperties // true),
-        description: (.definitions[$type].description // "Schema for \($type)")
-      }
-    else
-      empty
-    end
+    .definitions[$type] | select(.) | . + {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "\($id_base)/\($type).json",
+      title: $type
+    }
   ' "$OUTPUT" > "$SPLIT_DIR/${TYPE_NAME}.json" 2>/dev/null || true
 
   # Remove empty file if type was not found
@@ -188,15 +178,10 @@ jq --arg id_base "https://a2a-protocol.org/spec" '
   .definitions | keys[] | select(startswith("Security"))
 ' --raw-output "$OUTPUT" 2>/dev/null | while read -r TYPE_NAME; do
   jq --arg type "$TYPE_NAME" --arg id_base "https://a2a-protocol.org/spec" '
-    {
+    .definitions[$type] | select(.) | . + {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "$id": "\($id_base)/\($type).json",
-      title: $type,
-      type: "object",
-      properties: (.definitions[$type].properties // {}),
-      required: (.definitions[$type].required // []),
-      additionalProperties: (.definitions[$type].additionalProperties // true),
-      description: (.definitions[$type].description // "Schema for \($type)")
+      title: $type
     }
   ' "$OUTPUT" > "$SPLIT_DIR/${TYPE_NAME}.json"
 done
