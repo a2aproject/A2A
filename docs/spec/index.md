@@ -6,14 +6,14 @@ This page provides JSON Schema definitions for A2A protocol types. These schemas
 
 Download all schemas as a single file:
 
-```
+```text
 https://a2a-protocol.org/spec/a2a.json
 ```
 
 ## Individual Schemas
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | [AgentCard](https://a2a-protocol.org/spec/AgentCard.json) | Agent identity and capabilities |
 | [Task](https://a2a-protocol.org/spec/Task.json) | Async task state |
 | [TaskStatus](https://a2a-protocol.org/spec/TaskStatus.json) | Task status details |
