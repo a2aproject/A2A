@@ -1,11 +1,25 @@
 #!/bin/bash
 set -euo pipefail
 # Convert proto files to JSON Schema in a single operation.
-# Usage: proto_to_json_schema.sh <output_json_schema>
+#
+# v2: Added split-output mode — pass a second argument (output directory)
+#     to generate individual JSON Schema files for each core A2A type.
+#
+# Usage:
+#   proto_to_json_schema_v2.sh <output.json> [split_dir]
+#
+#   <output.json>  — bundled schema file (always generated)
+#   [split_dir]    — optional directory for per-type JSON Schema files
+#                    (default: ./schemas/)
+#
+# When split_dir is provided, the script additionally writes one
+# {TypeName}.json file per core type under that directory.
 
 OUTPUT=${1:-}
+SPLIT_DIR=${2:-}
+
 if [[ -z "$OUTPUT" ]]; then
-  echo "Usage: $0 <output.json>" >&2
+  echo "Usage: $0 <output.json> [split_dir]" >&2
   exit 1
 fi
 
@@ -27,8 +41,6 @@ check_command "protoc-gen-jsonschema"
 check_command "jq"
 
 # Verify protoc-gen-jsonschema is the correct implementation (bufbuild/protoschema-plugins)
-# The bufbuild implementation outputs a version string starting with "v" (e.g., "v0.5.2")
-# Other implementations (like chrusty/protoc-gen-jsonschema) typically output "protoc-gen-jsonschema version X.Y.Z"
 PLUGIN_VERSION=$(protoc-gen-jsonschema --version 2>&1 || true)
 if [[ ! "$PLUGIN_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Error: Incorrect protoc-gen-jsonschema plugin detected." >&2
@@ -71,16 +83,8 @@ fi
 # Step 0: Pre-process proto
 echo "→ Cleaning proto comments..." >&2
 
-# Define path for the cleaned proto in the temp directory
 CLEAN_PROTO_FILE="$TEMP_DIR/$(basename "$PROTO_FILE")"
-
-# Use grep to remove lines containing specific patterns:
-# 1. matches "// --8<--"
-# 2. matches "// protolint:"
 grep -v -e "// --8<--" -e "// protolint:" "$PROTO_FILE" >"$CLEAN_PROTO_FILE"
-
-# Add the temp dir to the include path so protoc finds the clean file context
-# We prepend it so it takes precedence over the original file
 INCLUDE_FLAGS=("-I$TEMP_DIR" "${INCLUDE_FLAGS[@]}")
 
 # Step 1: Generate individual JSON Schema files with JSON field names (camelCase)
@@ -96,7 +100,6 @@ fi
 # Step 2: Bundle all schemas into a single file with cleaned names
 echo "→ Creating JSON Schema bundle..." >&2
 
-# Check if any JSON files were generated
 JSON_FILES=("$TEMP_DIR"/*.json)
 if [ ! -f "${JSON_FILES[0]}" ]; then
   echo "Error: No JSON schema files generated" >&2
@@ -121,6 +124,82 @@ jq -s '
   }
 ' "$TEMP_DIR"/*.json >"$OUTPUT"
 
-# Count definitions
 DEF_COUNT=$(jq '.definitions | length' "$OUTPUT")
 echo "✓ Generated $OUTPUT with $DEF_COUNT definitions" >&2
+
+# ---------------------------------------------------------------------------
+# Step 3: Split — generate per-type JSON Schema files (only when SPLIT_DIR set)
+# ---------------------------------------------------------------------------
+if [[ -z "$SPLIT_DIR" ]]; then
+  exit 0
+fi
+
+echo "→ Splitting schemas into $SPLIT_DIR ..." >&2
+mkdir -p "$SPLIT_DIR"
+
+# Core types to extract as standalone schemas
+CORE_TYPES=(
+  AgentCard
+  Task
+  TaskStatus
+  Message
+  Artifact
+  Part
+  TaskStatusUpdateEvent
+  TaskArtifactUpdateEvent
+  AgentCapabilities
+  AgentSkill
+  AgentExtension
+  AuthenticationInfo
+  AgentInterface
+  AgentProvider
+)
+
+# Build a jq expression that, for each core type, emits a standalone schema.
+# Each file gets: $schema, $id, title, type:object, properties (from the def).
+# If a type is not found in definitions, it is skipped silently.
+
+for TYPE_NAME in "${CORE_TYPES[@]}"; do
+  jq --arg type "$TYPE_NAME" --arg id_base "https://a2a-protocol.org/spec" '
+    if .definitions[$type] then
+      {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "$id": "\($id_base)/\($type).json",
+        title: $type,
+        type: "object",
+        properties: (.definitions[$type].properties // {}),
+        required: (.definitions[$type].required // []),
+        additionalProperties: (.definitions[$type].additionalProperties // true),
+        description: (.definitions[$type].description // "Schema for \($type)")
+      }
+    else
+      empty
+    end
+  ' "$OUTPUT" > "$SPLIT_DIR/${TYPE_NAME}.json" 2>/dev/null || true
+
+  # Remove empty file if type was not found
+  if [[ ! -s "$SPLIT_DIR/${TYPE_NAME}.json" ]]; then
+    rm -f "$SPLIT_DIR/${TYPE_NAME}.json"
+  fi
+done
+
+# Also extract SecurityScheme and its sub-types (any definition containing "Security")
+jq --arg id_base "https://a2a-protocol.org/spec" '
+  .definitions | keys[] | select(startswith("Security"))
+' --raw-output "$OUTPUT" 2>/dev/null | while read -r TYPE_NAME; do
+  jq --arg type "$TYPE_NAME" --arg id_base "https://a2a-protocol.org/spec" '
+    {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "\($id_base)/\($type).json",
+      title: $type,
+      type: "object",
+      properties: (.definitions[$type].properties // {}),
+      required: (.definitions[$type].required // []),
+      additionalProperties: (.definitions[$type].additionalProperties // true),
+      description: (.definitions[$type].description // "Schema for \($type)")
+    }
+  ' "$OUTPUT" > "$SPLIT_DIR/${TYPE_NAME}.json"
+done
+
+SPLIT_COUNT=$(find "$SPLIT_DIR" -maxdepth 1 -name '*.json' | wc -l | tr -d ' ')
+echo "✓ Generated $SPLIT_COUNT split schema files in $SPLIT_DIR" >&2
