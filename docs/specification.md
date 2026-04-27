@@ -319,7 +319,7 @@ Creates a push notification configuration for a task to receive asynchronous upd
 
 **Inputs:**
 
-{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("CreateTaskPushNotificationConfig") }}
 
 **Outputs:**
 
