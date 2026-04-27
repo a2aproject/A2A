@@ -22,7 +22,7 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgent"
     ```
 
-    It has a simple `invoke` method that returns the string "Hello World".
+    It has a simple `invoke` method that returns the string "Hello, World!".
 
 2. **The Executor (`HelloWorldAgentExecutor`)**:
     This class implements the `AgentExecutor` interface.
@@ -41,17 +41,16 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_execute"
         ```
 
-        When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor):
+        When a `Send Message` or `Send Streaming Message` request comes in (both are handled by `execute` in this simplified executor), the following steps occur:
 
-        1. It calls `self.agent.invoke()` to get the "Hello World" string.
-        2. It creates an A2A `Message` object using the `new_agent_text_message` utility function.
-        3. It enqueues this message onto the `event_queue`. The underlying `DefaultRequestHandler` will then process this queue to send the response(s) to the client. For a single message like this, it will result in a single response for `message/send` or a single event for `message/stream` before the stream closes.
+        **Step 1.** The `A2A instance` (server) retrieves the current task from the context. If there is no task in context, then it creates a new task and adds it to the `EventQueue`.
 
-    - **`cancel`**:
-        The Hello World example's `cancel` method simply raises an exception, indicating that cancellation is not supported for this basic agent.
+        **Step 2.** It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing.
 
-        ```python { .no-copy }
-        --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_cancel"
-        ```
+        **Step 3.** It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
+
+        **Step 4.** It enqueues a `TaskArtifactUpdateEvent` containing the result text from the agent.
+
+        **Step 5.** Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
 
 The `AgentExecutor` acts as the bridge between the A2A protocol (managed by the request handler and server application) and your agent's specific logic. It receives context about the request and uses an event queue to communicate results or updates back.

@@ -6,8 +6,8 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | :--- | :--- | :--- | :--- |
 | **Google** | Todd Segal | Principal Engineer | [@ToddSegal](https://github.com/ToddSegal) |
 | **Microsoft** | Darrel Miller | Partner API Architect | [@darrelmiller](https://github.com/darrelmiller) |
-| **Cisco** | Luca Muscariello | Principal Engineer | [@muscariello](https://github.com/muscariello) |
-| **Amazon Web Services** | Nicholas Aldridge | Principal Engineer | [@000-000-000-000-000](https://github.com/000-000-000-000-000) |
+| **Cisco** | Luca Muscariello | Distinguished Engineer | [@muscariello](https://github.com/muscariello) |
+| **Amazon Web Services** | Abhimanyu Siwach | Senior Software Engineer | [@siwachabhi](https://github.com/siwachabhi) |
 | **Salesforce** | Stephen Petschulat | Principal Architect | [@spetschulatSFDC](https://github.com/spetschulatSFDC) |
 | **ServiceNow** | Sean Hughes | Director of Open Science | [@hughesthe1st](https://github.com/hughesthe1st) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
@@ -31,6 +31,8 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 2. **TSC Composition**
 
     a. **"Startup Phase."** At the inception of the Project, each organization listed in the [`GOVERNANCE`](GOVERNANCE.md) file in the governance repository of the Project will have the right to appoint (and remove and replace) one employee to serve as a voting member of the TSC.
+
+    Adding new organizations to the GOVERNANCE file will be determined through a proposal to the TSC GOVERNANCE.md file. Any new organization will be added through a majority vote of the TSC, and an employee of that organization will serve as a voting member of the TSC.
 
     b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, subproject technical leads, or other method as determined by the TSC), to take effect from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
 
@@ -66,6 +68,8 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 While the Project aims to operate as a consensus-based community, if any TSC decision requires a vote to move the Project forward, the voting members of the TSC will vote on a one vote per voting member basis. 
 
 Quorum for TSC meetings requires at least fifty percent of all voting members of the TSC to be present. The TSC may continue to meet if quorum is not met but will be prevented from making any decisions at the meeting. Except as provided in Section 7.c. and 8.a, decisions by vote at a meeting require a majority vote of those in attendance, provided quorum is met. Decisions made by electronic vote without a meeting require a majority vote of all voting members of the TSC.
+
+A voting member who has not attended a meeting of the TSC within the last six weeks (as measured by the LFX attendance tracking) shall be determined to be an inactive voting member. They will not be included in active votes, which means that they will not be counted for quorum, and the sponsoring organization may choose to replace the named TSC member within a reasonable timeframe.
 
 ### TSC Meetings
 TSC Meetings are held on the Linux Foundation's meeting platform. [https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent) has meeting details and recordings of past meetings. 

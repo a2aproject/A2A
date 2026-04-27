@@ -51,6 +51,19 @@ However, some foreseeable applications include:
 | [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |
 | [Agent Gateway Protocol (AGP) Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp) | A Core Protocol Layer or Routing Extension that introduces Autonomous Squads (ASq) and routes Intent payloads based on declared Capabilities, enhancing scalability (v1). |
 
+## Extension Governance
+
+The A2A organization uses a formal governance framework for how extensions are
+proposed, developed, promoted, and maintained. Official extensions use the
+`https://a2a-protocol.org/extensions/` URI prefix and are hosted under the
+`a2aproject` organization with the `ext-` repository prefix (experimental
+extensions use `experimental-ext-`).
+
+For the full governance process—including tiers, lifecycle, SDK support, and
+legal requirements—see the
+[Extension and Protocol Binding Governance](extension-and-binding-governance.md)
+page.
+
 ## Limitations
 
 There are some changes to the protocol that extensions don't allow, primarily
@@ -68,9 +81,7 @@ to prevent breaking core type validations:
 Agents declare their support for extensions in their Agent Card by including
 `AgentExtension` objects within their `AgentCapabilities` object.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentExtension"
-```
+{{ proto_to_table("AgentExtension") }}
 
 The following is an example of an Agent Card with an extension:
 
@@ -228,9 +239,10 @@ versioning, and distributing extension implementations.
     - **Permanent Identifiers**: Authors are encouraged to use a permanent
         identifier service, such as `w3id.org`, for their extension URIs to
         prevent broken links.
-    - **Community Registry (Future)**: The A2A community might establish a
-        central registry for discovering and browsing available extensions in
-        the future.
+    - **Community Registry**: The A2A [Extension Governance](#extension-governance)
+        framework defines a tiered system for official and experimental
+        extensions hosted under the `a2aproject` organization, including a
+        lifecycle for proposing and promoting extensions.
 - **Packaging and Reusability (A2A SDKs and Libraries)**:
     To promote adoption, extension logic should be packaged into reusable
         libraries that can be integrated into existing A2A client and

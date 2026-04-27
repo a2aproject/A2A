@@ -23,6 +23,11 @@ on:
     types:
       - published
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to deploy to (e.g., v1.0.0)'
+        required: true
+        default: 'dev'
 
 jobs:
   build_and_deploy:
@@ -51,7 +56,7 @@ jobs:
           python-version: 3.13
 
       - name: Setup uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
 
       - name: Restore pip cache
         uses: actions/cache@v5
@@ -67,7 +72,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: '1.24'
+          go-version: '1.25'
 
       - name: Install build tools
         run: |
@@ -128,3 +133,14 @@ jobs:
           bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
+
+      - name: Manually deploy specific version from main
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          mike deploy --push --update-aliases ${{ github.event.inputs.version }} latest
+
+          echo "Setting 'latest' as the default version for the site..."
+          mike set-default --push latest
+          
+          # Re-deploy 404 page
+          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
