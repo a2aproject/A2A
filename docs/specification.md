@@ -1640,11 +1640,11 @@ Authorization: Bearer token
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
   },
   "configuration": {
-    "pushNotificationConfig": {
+    "taskPushNotificationConfig": {
       "url": "https://client.example.com/webhook/a2a-notifications",
-      "token": "secure-client-token-for-task-aaa",
       "authentication": {
-        "schemes": ["Bearer"]
+        "scheme": "Bearer",
+        "credentials": "secure-client-token-for-task-aaa"
       }
     }
   }
@@ -1674,9 +1674,8 @@ Content-Type: application/a2a+json
 ```http
 POST /webhook/a2a-notifications HTTP/1.1
 Host: client.example.com
-Authorization: Bearer server-generated-jwt
+Authorization: Bearer secure-client-token-for-task-aaa
 Content-Type: application/a2a+json
-X-A2A-Notification-Token: secure-client-token-for-task-aaa
 
 {
   "statusUpdate": {
