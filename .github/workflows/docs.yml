@@ -28,6 +28,9 @@ on:
         description: 'Version to deploy to (e.g., v1.0.0)'
         required: true
         default: 'dev'
+      ref:
+        description: 'Git ref (branch, tag, or commit hash) to deploy'
+        required: false
 
 jobs:
   build_and_deploy:
@@ -44,6 +47,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Configure Git Credentials
         run: |
@@ -134,7 +138,7 @@ jobs:
         env:
           GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
 
-      - name: Manually deploy specific version from main
+      - name: Manually deploy specific version
         if: github.event_name == 'workflow_dispatch'
         run: |
           mike deploy --push --update-aliases ${{ github.event.inputs.version }} latest
