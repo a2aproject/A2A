@@ -3,45 +3,20 @@ a2a.client.errors module
 
 Custom exceptions for the A2A client.
 
-exception a2a.client.errors.A2AClientError
+exception a2a.client.errors.A2AClientError(message: str | None = None, data: dict | None = None)
 
-   Bases: "Exception"
+   Bases: "A2AError"
 
    Base exception for A2A Client errors.
 
-exception a2a.client.errors.A2AClientHTTPError(status_code: int, message: str)
+exception a2a.client.errors.A2AClientTimeoutError(message: str | None = None, data: dict | None = None)
 
    Bases: "A2AClientError"
 
-   Client exception for HTTP errors received from the server.
+   Exception for timeout errors during a request.
 
-exception a2a.client.errors.A2AClientInvalidArgsError(message: str)
-
-   Bases: "A2AClientError"
-
-   Client exception for invalid arguments passed to a method.
-
-exception a2a.client.errors.A2AClientInvalidStateError(message: str)
+exception a2a.client.errors.AgentCardResolutionError(message: str, status_code: int | None = None)
 
    Bases: "A2AClientError"
 
-   Client exception for an invalid client state.
-
-exception a2a.client.errors.A2AClientJSONError(message: str)
-
-   Bases: "A2AClientError"
-
-   Client exception for JSON errors during response parsing or
-   validation.
-
-exception a2a.client.errors.A2AClientJSONRPCError(error: JSONRPCErrorResponse)
-
-   Bases: "A2AClientError"
-
-   Client exception for JSON-RPC errors returned by the server.
-
-exception a2a.client.errors.A2AClientTimeoutError(message: str)
-
-   Bases: "A2AClientError"
-
-   Client exception for timeout errors during a request.
+   Exception raised when an agent card cannot be resolved.

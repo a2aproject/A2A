@@ -3,7 +3,22 @@ a2a.utils.task module
 
 Utility functions for creating A2A Task objects.
 
-a2a.utils.task.apply_history_length(task: Task, history_length: int | None) -> Task
+class a2a.utils.task.HistoryLengthConfig(*args, **kwargs)
+
+   Bases: "Protocol"
+
+   Protocol for configuration arguments containing history_length
+   field.
+
+   HasField(field_name: Literal['history_length']) -> bool
+
+      Checks if a field is set.
+
+      This method name matches the generated Protobuf code.
+
+   history_length: int
+
+a2a.utils.task.apply_history_length(task: Task, config: HistoryLengthConfig | None) -> Task
 
    Applies history_length parameter on task and returns a new task
    object.
@@ -11,47 +26,45 @@ a2a.utils.task.apply_history_length(task: Task, history_length: int | None) -> T
    Parameters:
       * **task** -- The original task object with complete history
 
-      * **history_length** -- History length configuration value
+      * **config** -- Configuration object containing 'history_length'
+        field and HasField method.
 
    Returns:
       A new task object with limited history
 
-a2a.utils.task.completed_task(task_id: str, context_id: str, artifacts: list[Artifact], history: list[Message] | None = None) -> Task
+   See also:
 
-   Creates a Task object in the 'completed' state.
+     https://a2a-protocol.org/latest/specification/#324-history-
+     length-semantics
 
-   Useful for constructing a final Task representation when the agent
-   finishes and produces artifacts.
+a2a.utils.task.decode_page_token(page_token: str) -> str
 
-   Parameters:
-      * **task_id** -- The ID of the task.
-
-      * **context_id** -- The context ID of the task.
-
-      * **artifacts** -- A list of *Artifact* objects produced by the
-        task.
-
-      * **history** -- An optional list of *Message* objects
-        representing the task history.
-
-   Returns:
-      A *Task* object with status set to 'completed'.
-
-a2a.utils.task.new_task(request: Message) -> Task
-
-   Creates a new Task object from an initial user message.
-
-   Generates task and context IDs if not provided in the message.
+   Decodes page token for tasks pagination.
 
    Parameters:
-      **request** -- The initial *Message* object from the user.
+      **page_token** -- The encoded page token.
 
    Returns:
-      A new *Task* object initialized with 'submitted' status and the
-      input message in history.
+      The decoded task ID.
 
-   Raises:
-      * **TypeError** -- If the message role is None.
+a2a.utils.task.encode_page_token(task_id: str) -> str
 
-      * **ValueError** -- If the message parts are empty, if any part
-        has empty content, or if the provided context_id is invalid.
+   Encodes page token for tasks pagination.
+
+   Parameters:
+      **task_id** -- The ID of the task.
+
+   Returns:
+      The encoded page token.
+
+a2a.utils.task.validate_history_length(config: HistoryLengthConfig | None) -> None
+
+   Validates that history_length is non-negative.
+
+a2a.utils.task.validate_page_size(page_size: int) -> None
+
+   Validates that page_size is in range [1, 100].
+
+   See also:
+
+     https://a2a-protocol.org/latest/specification/#314-list-tasks

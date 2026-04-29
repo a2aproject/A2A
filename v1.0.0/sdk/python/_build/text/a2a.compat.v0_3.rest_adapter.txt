@@ -1,0 +1,16 @@
+a2a.compat.v0_3.rest_adapter module
+***********************************
+
+class a2a.compat.v0_3.rest_adapter.REST03Adapter(http_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None)
+
+   Bases: "object"
+
+   Adapter to make RequestHandler work with v0.3 RESTful API.
+
+   Defines v0.3 REST request processors and their routes, as well as
+   managing response generation including Server-Sent Events (SSE).
+
+   routes() -> dict[tuple[str, str], Callable[[Request], Any]]
+
+      Constructs a dictionary of API routes and their corresponding
+      handlers.

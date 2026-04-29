@@ -1,7 +1,7 @@
 a2a.server.tasks.task_manager module
 ************************************
 
-class a2a.server.tasks.task_manager.TaskManager(task_id: str | None, context_id: str | None, task_store: TaskStore, initial_message: Message | None, context: ServerCallContext | None = None)
+class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
 
    Bases: "object"
 
@@ -18,6 +18,19 @@ class a2a.server.tasks.task_manager.TaskManager(task_id: str | None, context_id:
       Parameters:
          **event** -- The task-related event triggering the need for a
          Task object.
+
+      Returns:
+         An existing or newly created *Task* object.
+
+   async ensure_task_id(task_id: str, context_id: str) -> Task
+
+      Ensures a Task object exists in memory, loading from store or
+      creating new if needed.
+
+      Parameters:
+         * **task_id** -- The ID for the new task.
+
+         * **context_id** -- The context ID for the new task.
 
       Returns:
          An existing or newly created *Task* object.
@@ -63,9 +76,9 @@ class a2a.server.tasks.task_manager.TaskManager(task_id: str | None, context_id:
          The updated *Task* object after processing the event.
 
       Raises:
-         **ServerError** -- If the task ID in the event conflicts with
-         the TaskManager's ID     when the TaskManager's ID is already
-         set.
+         **InvalidParamsError** -- If the task ID in the event
+         conflicts with the TaskManager's ID     when the
+         TaskManager's ID is already set.
 
    update_with_message(message: Message, task: Task) -> Task
 
@@ -82,3 +95,18 @@ class a2a.server.tasks.task_manager.TaskManager(task_id: str | None, context_id:
 
       Returns:
          The updated *Task* object (updated in-place).
+
+a2a.server.tasks.task_manager.append_artifact_to_task(task: Task, event: TaskArtifactUpdateEvent) -> None
+
+   Helper method for updating a Task object with new artifact data
+   from an event.
+
+   Handles creating the artifacts list if it doesn't exist, adding new
+   artifacts, and appending parts to existing artifacts based on the
+   *append* flag in the event.
+
+   Parameters:
+      * **task** -- The *Task* object to modify.
+
+      * **event** -- The *TaskArtifactUpdateEvent* containing the
+        artifact data.

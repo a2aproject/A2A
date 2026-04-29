@@ -1,7 +1,7 @@
 a2a.server.events.event_consumer module
 ***************************************
 
-class a2a.server.events.event_consumer.EventConsumer(queue: EventQueue)
+class a2a.server.events.event_consumer.EventConsumer(queue: EventQueueLegacy)
 
    Bases: "object"
 
@@ -32,14 +32,3 @@ class a2a.server.events.event_consumer.EventConsumer(queue: EventQueue)
       Raises:
          **BaseException** -- If an exception was set by the
          *agent_task_callback*.
-
-   async consume_one() -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
-
-      Consume one event from the agent event queue non-blocking.
-
-      Returns:
-         The next event from the queue.
-
-      Raises:
-         **ServerError** -- If the queue is empty when attempting to
-         dequeue     immediately.

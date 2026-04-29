@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.utils.artifact module" href="a2a.utils.artifact.html"><link rel="prev" title="a2a.server.models module" href="a2a.server.models.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.utils.constants module" href="a2a.utils.constants.html"><link rel="prev" title="a2a.types.a2a_pb2_grpc module" href="a2a.types.a2a_pb2_grpc.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
         <title>a2a.utils package - a2a-sdk documentation</title>
@@ -206,27 +206,41 @@
 <li class="toctree-l4 has-children"><a class="reference internal" href="a2a.client.transports.html">a2a.client.transports package</a><input aria-label="Toggle navigation of a2a.client.transports package" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.base.html">a2a.client.transports.base module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.grpc.html">a2a.client.transports.grpc module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.http_helpers.html">a2a.client.transports.http_helpers module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.jsonrpc.html">a2a.client.transports.jsonrpc module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.rest.html">a2a.client.transports.rest module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.client.transports.tenant_decorator.html">a2a.client.transports.tenant_decorator module</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.base_client.html">a2a.client.base_client module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.card_resolver.html">a2a.client.card_resolver module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.client.html">a2a.client.client module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.client_factory.html">a2a.client.client_factory module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.client_task_manager.html">a2a.client.client_task_manager module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.errors.html">a2a.client.errors module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.helpers.html">a2a.client.helpers module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.legacy.html">a2a.client.legacy module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.legacy_grpc.html">a2a.client.legacy_grpc module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.client.middleware.html">a2a.client.middleware module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.client.interceptors.html">a2a.client.interceptors module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.client.optionals.html">a2a.client.optionals module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.client.service_parameters.html">a2a.client.service_parameters module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.contrib.html">a2a.contrib package</a><input aria-label="Toggle navigation of a2a.contrib package" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.contrib.tasks.html">a2a.contrib.tasks package</a><input aria-label="Toggle navigation of a2a.contrib.tasks package" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l5"><a class="reference internal" href="a2a.contrib.tasks.vertex_task_converter.html">a2a.contrib.tasks.vertex_task_converter module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="a2a.contrib.tasks.vertex_task_store.html">a2a.contrib.tasks.vertex_task_store module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.compat.html">a2a.compat package</a><input aria-label="Toggle navigation of a2a.compat package" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.compat.v0_3.html">a2a.compat.v0_3 package</a><input aria-label="Toggle navigation of a2a.compat.v0_3 package" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.a2a_v0_3_pb2.html">a2a.compat.v0_3.a2a_v0_3_pb2 module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.a2a_v0_3_pb2_grpc.html">a2a.compat.v0_3.a2a_v0_3_pb2_grpc module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.context_builders.html">a2a.compat.v0_3.context_builders module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.conversions.html">a2a.compat.v0_3.conversions module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.extension_headers.html">a2a.compat.v0_3.extension_headers module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.grpc_handler.html">a2a.compat.v0_3.grpc_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.grpc_transport.html">a2a.compat.v0_3.grpc_transport module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.jsonrpc_adapter.html">a2a.compat.v0_3.jsonrpc_adapter module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.jsonrpc_transport.html">a2a.compat.v0_3.jsonrpc_transport module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.model_conversions.html">a2a.compat.v0_3.model_conversions module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.proto_utils.html">a2a.compat.v0_3.proto_utils module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.request_handler.html">a2a.compat.v0_3.request_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.rest_adapter.html">a2a.compat.v0_3.rest_adapter module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.rest_handler.html">a2a.compat.v0_3.rest_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.rest_transport.html">a2a.compat.v0_3.rest_transport module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.types.html">a2a.compat.v0_3.types module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.compat.v0_3.versions.html">a2a.compat.v0_3.versions module</a></li>
 </ul>
 </li>
 </ul>
@@ -235,51 +249,59 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.extensions.common.html">a2a.extensions.common module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.grpc.html">a2a.grpc package</a><input aria-label="Toggle navigation of a2a.grpc package" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="a2a.grpc.a2a_pb2.html">a2a.grpc.a2a_pb2 module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.grpc.a2a_pb2_grpc.html">a2a.grpc.a2a_pb2_grpc module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.helpers.html">a2a.helpers package</a><input aria-label="Toggle navigation of a2a.helpers package" class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="a2a.helpers.agent_card.html">a2a.helpers.agent_card module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.helpers.proto_helpers.html">a2a.helpers.proto_helpers module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.server.html">a2a.server package</a><input aria-label="Toggle navigation of a2a.server package" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.agent_execution.html">a2a.server.agent_execution package</a><input aria-label="Toggle navigation of a2a.server.agent_execution package" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.migrations.html">a2a.migrations package</a><input aria-label="Toggle navigation of a2a.migrations package" class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.migrations.versions.html">a2a.migrations.versions package</a><input aria-label="Toggle navigation of a2a.migrations.versions package" class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.migrations.versions.38ce57e08137_add_column_protocol_version.html">a2a.migrations.versions.38ce57e08137_add_column_protocol_version module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated.html">a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated module</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.migrations.env.html">a2a.migrations.env module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.migrations.migration_utils.html">a2a.migrations.migration_utils module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.server.html">a2a.server package</a><input aria-label="Toggle navigation of a2a.server package" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.agent_execution.html">a2a.server.agent_execution package</a><input aria-label="Toggle navigation of a2a.server.agent_execution package" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.active_task.html">a2a.server.agent_execution.active_task module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.active_task_registry.html">a2a.server.agent_execution.active_task_registry module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.agent_executor.html">a2a.server.agent_execution.agent_executor module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.context.html">a2a.server.agent_execution.context module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.request_context_builder.html">a2a.server.agent_execution.request_context_builder module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.agent_execution.simple_request_context_builder.html">a2a.server.agent_execution.simple_request_context_builder module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.apps.html">a2a.server.apps package</a><input aria-label="Toggle navigation of a2a.server.apps package" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l5 has-children"><a class="reference internal" href="a2a.server.apps.jsonrpc.html">a2a.server.apps.jsonrpc package</a><input aria-label="Toggle navigation of a2a.server.apps.jsonrpc package" class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.jsonrpc.fastapi_app.html">a2a.server.apps.jsonrpc.fastapi_app module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.jsonrpc.jsonrpc_app.html">a2a.server.apps.jsonrpc.jsonrpc_app module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.jsonrpc.starlette_app.html">a2a.server.apps.jsonrpc.starlette_app module</a></li>
-</ul>
-</li>
-<li class="toctree-l5 has-children"><a class="reference internal" href="a2a.server.apps.rest.html">a2a.server.apps.rest package</a><input aria-label="Toggle navigation of a2a.server.apps.rest package" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.rest.fastapi_app.html">a2a.server.apps.rest.fastapi_app module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="a2a.server.apps.rest.rest_adapter.html">a2a.server.apps.rest.rest_adapter module</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.events.html">a2a.server.events package</a><input aria-label="Toggle navigation of a2a.server.events package" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.events.html">a2a.server.events package</a><input aria-label="Toggle navigation of a2a.server.events package" class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.event_consumer.html">a2a.server.events.event_consumer module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.event_queue.html">a2a.server.events.event_queue module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.events.event_queue_v2.html">a2a.server.events.event_queue_v2 module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.in_memory_queue_manager.html">a2a.server.events.in_memory_queue_manager module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.events.queue_manager.html">a2a.server.events.queue_manager module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.request_handlers.html">a2a.server.request_handlers package</a><input aria-label="Toggle navigation of a2a.server.request_handlers package" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.request_handlers.html">a2a.server.request_handlers package</a><input aria-label="Toggle navigation of a2a.server.request_handlers package" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.default_request_handler.html">a2a.server.request_handlers.default_request_handler module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.default_request_handler_v2.html">a2a.server.request_handlers.default_request_handler_v2 module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.grpc_handler.html">a2a.server.request_handlers.grpc_handler module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.jsonrpc_handler.html">a2a.server.request_handlers.jsonrpc_handler module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.request_handler.html">a2a.server.request_handlers.request_handler module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.response_helpers.html">a2a.server.request_handlers.response_helpers module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="a2a.server.request_handlers.rest_handler.html">a2a.server.request_handlers.rest_handler module</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.routes.html">a2a.server.routes package</a><input aria-label="Toggle navigation of a2a.server.routes package" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.agent_card_routes.html">a2a.server.routes.agent_card_routes module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.common.html">a2a.server.routes.common module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_dispatcher.html">a2a.server.routes.jsonrpc_dispatcher module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_routes.html">a2a.server.routes.jsonrpc_routes module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.rest_dispatcher.html">a2a.server.routes.rest_dispatcher module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.rest_routes.html">a2a.server.routes.rest_routes module</a></li>
 </ul>
 </li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.tasks.html">a2a.server.tasks package</a><input aria-label="Toggle navigation of a2a.server.tasks package" class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.base_push_notification_sender.html">a2a.server.tasks.base_push_notification_sender module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.copying_task_store.html">a2a.server.tasks.copying_task_store module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.database_push_notification_config_store.html">a2a.server.tasks.database_push_notification_config_store module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.database_task_store.html">a2a.server.tasks.database_task_store module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.tasks.inmemory_push_notification_config_store.html">a2a.server.tasks.inmemory_push_notification_config_store module</a></li>
@@ -294,24 +316,28 @@
 </li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.server.context.html">a2a.server.context module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.server.id_generator.html">a2a.server.id_generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.server.jsonrpc_models.html">a2a.server.jsonrpc_models module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.server.models.html">a2a.server.models module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.server.owner_resolver.html">a2a.server.owner_resolver module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">a2a.utils package</a><input aria-label="Toggle navigation of a2a.utils package" checked="" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.artifact.html">a2a.utils.artifact module</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="a2a.types.html">a2a.types package</a><input aria-label="Toggle navigation of a2a.types package" class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="a2a.types.a2a_pb2.html">a2a.types.a2a_pb2 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.types.a2a_pb2_grpc.html">a2a.types.a2a_pb2_grpc module</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current has-children current-page"><a class="current reference internal" href="#">a2a.utils package</a><input aria-label="Toggle navigation of a2a.utils package" checked="" class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.errors.html">a2a.utils.errors module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.helpers.html">a2a.utils.helpers module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.message.html">a2a.utils.message module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="a2a.utils.parts.html">a2a.utils.parts module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.telemetry.html">a2a.utils.telemetry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.version_validator.html">a2a.utils.version_validator module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.types.html">a2a.types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.a2a_db_cli.html">a2a.a2a_db_cli module</a></li>
 </ul>
 </li>
 </ul>
@@ -360,122 +386,90 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="a2a.utils.artifact.html">a2a.utils.artifact module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.artifact.html#a2a.utils.artifact.get_artifact_text"><code class="docutils literal notranslate"><span class="pre">get_artifact_text()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.artifact.html#a2a.utils.artifact.new_artifact"><code class="docutils literal notranslate"><span class="pre">new_artifact()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.artifact.html#a2a.utils.artifact.new_data_artifact"><code class="docutils literal notranslate"><span class="pre">new_data_artifact()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.artifact.html#a2a.utils.artifact.new_text_artifact"><code class="docutils literal notranslate"><span class="pre">new_text_artifact()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.constants.html#a2a.utils.constants.DEFAULT_LIST_TASKS_PAGE_SIZE"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LIST_TASKS_PAGE_SIZE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.constants.html#a2a.utils.constants.MAX_LIST_TASKS_PAGE_SIZE"><code class="docutils literal notranslate"><span class="pre">MAX_LIST_TASKS_PAGE_SIZE</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.constants.html#a2a.utils.constants.TransportProtocol"><code class="docutils literal notranslate"><span class="pre">TransportProtocol</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.constants.html#a2a.utils.constants.TransportProtocol.GRPC"><code class="docutils literal notranslate"><span class="pre">TransportProtocol.GRPC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.constants.html#a2a.utils.constants.TransportProtocol.HTTP_JSON"><code class="docutils literal notranslate"><span class="pre">TransportProtocol.HTTP_JSON</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.constants.html#a2a.utils.constants.TransportProtocol.JSONRPC"><code class="docutils literal notranslate"><span class="pre">TransportProtocol.JSONRPC</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.error_handlers.html#a2a.utils.error_handlers.build_rest_error_payload"><code class="docutils literal notranslate"><span class="pre">build_rest_error_payload()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.error_handlers.html#a2a.utils.error_handlers.rest_error_handler"><code class="docutils literal notranslate"><span class="pre">rest_error_handler()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.error_handlers.html#a2a.utils.error_handlers.rest_stream_error_handler"><code class="docutils literal notranslate"><span class="pre">rest_stream_error_handler()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="a2a.utils.errors.html">a2a.utils.errors module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.A2AServerError"><code class="docutils literal notranslate"><span class="pre">A2AServerError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.MethodNotImplementedError"><code class="docutils literal notranslate"><span class="pre">MethodNotImplementedError</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.ServerError"><code class="docutils literal notranslate"><span class="pre">ServerError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.ExtensionSupportRequiredError"><code class="docutils literal notranslate"><span class="pre">ExtensionSupportRequiredError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.ExtensionSupportRequiredError.message"><code class="docutils literal notranslate"><span class="pre">ExtensionSupportRequiredError.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="a2a.utils.helpers.html">a2a.utils.helpers module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.append_artifact_to_task"><code class="docutils literal notranslate"><span class="pre">append_artifact_to_task()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.are_modalities_compatible"><code class="docutils literal notranslate"><span class="pre">are_modalities_compatible()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.build_text_artifact"><code class="docutils literal notranslate"><span class="pre">build_text_artifact()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.canonicalize_agent_card"><code class="docutils literal notranslate"><span class="pre">canonicalize_agent_card()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.create_task_obj"><code class="docutils literal notranslate"><span class="pre">create_task_obj()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.maybe_await"><code class="docutils literal notranslate"><span class="pre">maybe_await()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.validate"><code class="docutils literal notranslate"><span class="pre">validate()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.helpers.html#a2a.utils.helpers.validate_async_generator"><code class="docutils literal notranslate"><span class="pre">validate_async_generator()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InternalError"><code class="docutils literal notranslate"><span class="pre">InternalError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InternalError.message"><code class="docutils literal notranslate"><span class="pre">InternalError.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="a2a.utils.message.html">a2a.utils.message module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.message.html#a2a.utils.message.get_message_text"><code class="docutils literal notranslate"><span class="pre">get_message_text()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.message.html#a2a.utils.message.new_agent_parts_message"><code class="docutils literal notranslate"><span class="pre">new_agent_parts_message()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.message.html#a2a.utils.message.new_agent_text_message"><code class="docutils literal notranslate"><span class="pre">new_agent_text_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InvalidAgentResponseError"><code class="docutils literal notranslate"><span class="pre">InvalidAgentResponseError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InvalidAgentResponseError.message"><code class="docutils literal notranslate"><span class="pre">InvalidAgentResponseError.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="a2a.utils.parts.html">a2a.utils.parts module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.parts.html#a2a.utils.parts.get_data_parts"><code class="docutils literal notranslate"><span class="pre">get_data_parts()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.parts.html#a2a.utils.parts.get_file_parts"><code class="docutils literal notranslate"><span class="pre">get_file_parts()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.parts.html#a2a.utils.parts.get_text_parts"><code class="docutils literal notranslate"><span class="pre">get_text_parts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InvalidParamsError"><code class="docutils literal notranslate"><span class="pre">InvalidParamsError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InvalidParamsError.message"><code class="docutils literal notranslate"><span class="pre">InvalidParamsError.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InvalidRequestError"><code class="docutils literal notranslate"><span class="pre">InvalidRequestError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.InvalidRequestError.message"><code class="docutils literal notranslate"><span class="pre">InvalidRequestError.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.MethodNotFoundError"><code class="docutils literal notranslate"><span class="pre">MethodNotFoundError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.MethodNotFoundError.message"><code class="docutils literal notranslate"><span class="pre">MethodNotFoundError.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.PushNotificationNotSupportedError"><code class="docutils literal notranslate"><span class="pre">PushNotificationNotSupportedError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.PushNotificationNotSupportedError.message"><code class="docutils literal notranslate"><span class="pre">PushNotificationNotSupportedError.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.RestErrorMap"><code class="docutils literal notranslate"><span class="pre">RestErrorMap</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.RestErrorMap.grpc_status"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.grpc_status</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.RestErrorMap.http_code"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.http_code</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.RestErrorMap.reason"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.reason</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.TaskNotCancelableError"><code class="docutils literal notranslate"><span class="pre">TaskNotCancelableError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.TaskNotCancelableError.message"><code class="docutils literal notranslate"><span class="pre">TaskNotCancelableError.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.TaskNotFoundError"><code class="docutils literal notranslate"><span class="pre">TaskNotFoundError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.TaskNotFoundError.message"><code class="docutils literal notranslate"><span class="pre">TaskNotFoundError.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.UnsupportedOperationError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOperationError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.UnsupportedOperationError.message"><code class="docutils literal notranslate"><span class="pre">UnsupportedOperationError.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.VersionNotSupportedError"><code class="docutils literal notranslate"><span class="pre">VersionNotSupportedError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.errors.html#a2a.utils.errors.VersionNotSupportedError.message"><code class="docutils literal notranslate"><span class="pre">VersionNotSupportedError.message</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto"><code class="docutils literal notranslate"><span class="pre">FromProto</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.agent_card"><code class="docutils literal notranslate"><span class="pre">FromProto.agent_card()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.agent_card_signature"><code class="docutils literal notranslate"><span class="pre">FromProto.agent_card_signature()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.agent_extension"><code class="docutils literal notranslate"><span class="pre">FromProto.agent_extension()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.agent_interface"><code class="docutils literal notranslate"><span class="pre">FromProto.agent_interface()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.artifact"><code class="docutils literal notranslate"><span class="pre">FromProto.artifact()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.authentication_info"><code class="docutils literal notranslate"><span class="pre">FromProto.authentication_info()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.capabilities"><code class="docutils literal notranslate"><span class="pre">FromProto.capabilities()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.data"><code class="docutils literal notranslate"><span class="pre">FromProto.data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.file"><code class="docutils literal notranslate"><span class="pre">FromProto.file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.message"><code class="docutils literal notranslate"><span class="pre">FromProto.message()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.message_send_configuration"><code class="docutils literal notranslate"><span class="pre">FromProto.message_send_configuration()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.message_send_params"><code class="docutils literal notranslate"><span class="pre">FromProto.message_send_params()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.metadata"><code class="docutils literal notranslate"><span class="pre">FromProto.metadata()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.oauth2_flows"><code class="docutils literal notranslate"><span class="pre">FromProto.oauth2_flows()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.part"><code class="docutils literal notranslate"><span class="pre">FromProto.part()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.provider"><code class="docutils literal notranslate"><span class="pre">FromProto.provider()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.push_notification_config"><code class="docutils literal notranslate"><span class="pre">FromProto.push_notification_config()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.role"><code class="docutils literal notranslate"><span class="pre">FromProto.role()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.security"><code class="docutils literal notranslate"><span class="pre">FromProto.security()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.security_scheme"><code class="docutils literal notranslate"><span class="pre">FromProto.security_scheme()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.security_schemes"><code class="docutils literal notranslate"><span class="pre">FromProto.security_schemes()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.skill"><code class="docutils literal notranslate"><span class="pre">FromProto.skill()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.stream_response"><code class="docutils literal notranslate"><span class="pre">FromProto.stream_response()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task"><code class="docutils literal notranslate"><span class="pre">FromProto.task()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_artifact_update_event"><code class="docutils literal notranslate"><span class="pre">FromProto.task_artifact_update_event()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_id_params"><code class="docutils literal notranslate"><span class="pre">FromProto.task_id_params()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_or_message"><code class="docutils literal notranslate"><span class="pre">FromProto.task_or_message()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_push_notification_config"><code class="docutils literal notranslate"><span class="pre">FromProto.task_push_notification_config()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_push_notification_config_request"><code class="docutils literal notranslate"><span class="pre">FromProto.task_push_notification_config_request()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_query_params"><code class="docutils literal notranslate"><span class="pre">FromProto.task_query_params()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_state"><code class="docutils literal notranslate"><span class="pre">FromProto.task_state()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_status"><code class="docutils literal notranslate"><span class="pre">FromProto.task_status()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.FromProto.task_status_update_event"><code class="docutils literal notranslate"><span class="pre">FromProto.task_status_update_event()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ValidationDetail"><code class="docutils literal notranslate"><span class="pre">ValidationDetail</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ValidationDetail.field"><code class="docutils literal notranslate"><span class="pre">ValidationDetail.field</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ValidationDetail.message"><code class="docutils literal notranslate"><span class="pre">ValidationDetail.message</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto"><code class="docutils literal notranslate"><span class="pre">ToProto</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.agent_card"><code class="docutils literal notranslate"><span class="pre">ToProto.agent_card()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.agent_card_signature"><code class="docutils literal notranslate"><span class="pre">ToProto.agent_card_signature()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.agent_interface"><code class="docutils literal notranslate"><span class="pre">ToProto.agent_interface()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.artifact"><code class="docutils literal notranslate"><span class="pre">ToProto.artifact()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.authentication_info"><code class="docutils literal notranslate"><span class="pre">ToProto.authentication_info()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.capabilities"><code class="docutils literal notranslate"><span class="pre">ToProto.capabilities()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.data"><code class="docutils literal notranslate"><span class="pre">ToProto.data()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.extension"><code class="docutils literal notranslate"><span class="pre">ToProto.extension()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.file"><code class="docutils literal notranslate"><span class="pre">ToProto.file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.message"><code class="docutils literal notranslate"><span class="pre">ToProto.message()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.message_send_configuration"><code class="docutils literal notranslate"><span class="pre">ToProto.message_send_configuration()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.metadata"><code class="docutils literal notranslate"><span class="pre">ToProto.metadata()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.oauth2_flows"><code class="docutils literal notranslate"><span class="pre">ToProto.oauth2_flows()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.part"><code class="docutils literal notranslate"><span class="pre">ToProto.part()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.provider"><code class="docutils literal notranslate"><span class="pre">ToProto.provider()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.push_notification_config"><code class="docutils literal notranslate"><span class="pre">ToProto.push_notification_config()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.role"><code class="docutils literal notranslate"><span class="pre">ToProto.role()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.security"><code class="docutils literal notranslate"><span class="pre">ToProto.security()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.security_scheme"><code class="docutils literal notranslate"><span class="pre">ToProto.security_scheme()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.security_schemes"><code class="docutils literal notranslate"><span class="pre">ToProto.security_schemes()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.skill"><code class="docutils literal notranslate"><span class="pre">ToProto.skill()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.stream_response"><code class="docutils literal notranslate"><span class="pre">ToProto.stream_response()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.task"><code class="docutils literal notranslate"><span class="pre">ToProto.task()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.task_artifact_update_event"><code class="docutils literal notranslate"><span class="pre">ToProto.task_artifact_update_event()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.task_or_message"><code class="docutils literal notranslate"><span class="pre">ToProto.task_or_message()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.task_push_notification_config"><code class="docutils literal notranslate"><span class="pre">ToProto.task_push_notification_config()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.task_state"><code class="docutils literal notranslate"><span class="pre">ToProto.task_state()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.task_status"><code class="docutils literal notranslate"><span class="pre">ToProto.task_status()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.task_status_update_event"><code class="docutils literal notranslate"><span class="pre">ToProto.task_status_update_event()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.ToProto.update_event"><code class="docutils literal notranslate"><span class="pre">ToProto.update_event()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.dict_to_struct"><code class="docutils literal notranslate"><span class="pre">dict_to_struct()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.bad_request_to_validation_errors"><code class="docutils literal notranslate"><span class="pre">bad_request_to_validation_errors()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.make_dict_serializable"><code class="docutils literal notranslate"><span class="pre">make_dict_serializable()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.normalize_large_integers_to_strings"><code class="docutils literal notranslate"><span class="pre">normalize_large_integers_to_strings()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.parse_params"><code class="docutils literal notranslate"><span class="pre">parse_params()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.parse_string_integers_in_dict"><code class="docutils literal notranslate"><span class="pre">parse_string_integers_in_dict()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.to_stream_response"><code class="docutils literal notranslate"><span class="pre">to_stream_response()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.validate_proto_required_fields"><code class="docutils literal notranslate"><span class="pre">validate_proto_required_fields()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.validation_errors_to_bad_request"><code class="docutils literal notranslate"><span class="pre">validation_errors_to_bad_request()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a><ul>
@@ -494,9 +488,16 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.HistoryLengthConfig"><code class="docutils literal notranslate"><span class="pre">HistoryLengthConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.HistoryLengthConfig.HasField"><code class="docutils literal notranslate"><span class="pre">HistoryLengthConfig.HasField()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.HistoryLengthConfig.history_length"><code class="docutils literal notranslate"><span class="pre">HistoryLengthConfig.history_length</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.apply_history_length"><code class="docutils literal notranslate"><span class="pre">apply_history_length()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.completed_task"><code class="docutils literal notranslate"><span class="pre">completed_task()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.new_task"><code class="docutils literal notranslate"><span class="pre">new_task()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.decode_page_token"><code class="docutils literal notranslate"><span class="pre">decode_page_token()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.encode_page_token"><code class="docutils literal notranslate"><span class="pre">encode_page_token()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.validate_history_length"><code class="docutils literal notranslate"><span class="pre">validate_history_length()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.task.html#a2a.utils.task.validate_page_size"><code class="docutils literal notranslate"><span class="pre">validate_page_size()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="a2a.utils.telemetry.html">a2a.utils.telemetry module</a><ul>
@@ -510,287 +511,48 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="a2a.utils.version_validator.html">a2a.utils.version_validator module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="a2a.utils.version_validator.html#a2a.utils.version_validator.validate_version"><code class="docutils literal notranslate"><span class="pre">validate_version()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
 <section id="module-a2a.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-a2a.utils" title="Link to this heading">¶</a></h2>
 <p>Utility functions for the A2A Python SDK.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.append_artifact_to_task">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">append_artifact_to_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.TaskArtifactUpdateEvent" title="a2a.types.TaskArtifactUpdateEvent"><span class="pre">TaskArtifactUpdateEvent</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.utils.append_artifact_to_task" title="Link to this definition">¶</a></dt>
-<dd><p>Helper method for updating a Task object with new artifact data from an event.</p>
-<p>Handles creating the artifacts list if it doesn’t exist, adding new artifacts,
-and appending parts to existing artifacts based on the <cite>append</cite> flag in the event.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>task</strong> – The <cite>Task</cite> object to modify.</p></li>
-<li><p><strong>event</strong> – The <cite>TaskArtifactUpdateEvent</cite> containing the artifact data.</p></li>
-</ul>
-</dd>
-</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.utils.TransportProtocol">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">TransportProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.TransportProtocol" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Transport protocol string constants.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.TransportProtocol.GRPC">
+<span class="sig-name descname"><span class="pre">GRPC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'GRPC'</span></span><a class="headerlink" href="#a2a.utils.TransportProtocol.GRPC" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.TransportProtocol.HTTP_JSON">
+<span class="sig-name descname"><span class="pre">HTTP_JSON</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HTTP+JSON'</span></span><a class="headerlink" href="#a2a.utils.TransportProtocol.HTTP_JSON" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.TransportProtocol.JSONRPC">
+<span class="sig-name descname"><span class="pre">JSONRPC</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'JSONRPC'</span></span><a class="headerlink" href="#a2a.utils.TransportProtocol.JSONRPC" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.are_modalities_compatible">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">are_modalities_compatible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_output_modes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_output_modes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#a2a.utils.are_modalities_compatible" title="Link to this definition">¶</a></dt>
-<dd><p>Checks if server and client output modalities (MIME types) are compatible.</p>
-<p>Modalities are compatible if:
-1. The client specifies no preferred output modes (client_output_modes is None or empty).
-2. The server specifies no supported output modes (server_output_modes is None or empty).
-3. There is at least one common modality between the server’s supported list and the client’s preferred list.</p>
+<dt class="sig sig-object py" id="a2a.utils.to_stream_response">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">to_stream_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a_pb2.Message"><span class="pre">Message</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a_pb2.Task"><span class="pre">Task</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.TaskStatusUpdateEvent" title="a2a_pb2.TaskStatusUpdateEvent"><span class="pre">TaskStatusUpdateEvent</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.TaskArtifactUpdateEvent" title="a2a_pb2.TaskArtifactUpdateEvent"><span class="pre">TaskArtifactUpdateEvent</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.StreamResponse" title="a2a_pb2.StreamResponse"><span class="pre">StreamResponse</span></a></span></span><a class="headerlink" href="#a2a.utils.to_stream_response" title="Link to this definition">¶</a></dt>
+<dd><p>Convert internal Event to StreamResponse proto.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>server_output_modes</strong> – A list of MIME types supported by the server/agent for output.
-Can be None or empty if the server doesn’t specify.</p></li>
-<li><p><strong>client_output_modes</strong> – A list of MIME types preferred by the client for output.
-Can be None or empty if the client accepts any.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>event</strong> – The event (Task, Message, TaskStatusUpdateEvent, TaskArtifactUpdateEvent)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the modalities are compatible, False otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.build_text_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">build_text_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifact_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.build_text_artifact" title="Link to this definition">¶</a></dt>
-<dd><p>Helper to create a text artifact.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>text</strong> – The text content for the artifact.</p></li>
-<li><p><strong>artifact_id</strong> – The ID for the artifact.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An <cite>Artifact</cite> object containing a single <cite>TextPart</cite>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.completed_task">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">completed_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></span><a class="headerlink" href="#a2a.utils.completed_task" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a Task object in the ‘completed’ state.</p>
-<p>Useful for constructing a final Task representation when the agent
-finishes and produces artifacts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>task_id</strong> – The ID of the task.</p></li>
-<li><p><strong>context_id</strong> – The context ID of the task.</p></li>
-<li><p><strong>artifacts</strong> – A list of <cite>Artifact</cite> objects produced by the task.</p></li>
-<li><p><strong>history</strong> – An optional list of <cite>Message</cite> objects representing the task history.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A <cite>Task</cite> object with status set to ‘completed’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.create_task_obj">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">create_task_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message_send_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.MessageSendParams" title="a2a.types.MessageSendParams"><span class="pre">MessageSendParams</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></span><a class="headerlink" href="#a2a.utils.create_task_obj" title="Link to this definition">¶</a></dt>
-<dd><p>Create a new task object from message send params.</p>
-<p>Generates UUIDs for task and context IDs if they are not already present in the message.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>message_send_params</strong> – The <cite>MessageSendParams</cite> object containing the initial message.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <cite>Task</cite> object initialized with ‘submitted’ status and the input message in history.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.get_artifact_text">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">get_artifact_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifact</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'\n'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.utils.get_artifact_text" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts and joins all text content from an Artifact’s parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>artifact</strong> – The <cite>Artifact</cite> object.</p></li>
-<li><p><strong>delimiter</strong> – The string to use when joining text from multiple TextParts.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A single string containing all text content, or an empty string if no text parts are found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.get_data_parts">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">get_data_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.get_data_parts" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts dictionary data from all DataPart objects in a list of Parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of dictionaries containing the data from any <cite>DataPart</cite> objects found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.get_file_parts">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.FileWithBytes" title="a2a.types.FileWithBytes"><span class="pre">FileWithBytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.FileWithUri" title="a2a.types.FileWithUri"><span class="pre">FileWithUri</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.get_file_parts" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts file data from all FilePart objects in a list of Parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of <cite>FileWithBytes</cite> or <cite>FileWithUri</cite> objects containing the file data from any <cite>FilePart</cite> objects found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.get_message_text">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">get_message_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'\n'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.utils.get_message_text" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts and joins all text content from a Message’s parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message</strong> – The <cite>Message</cite> object.</p></li>
-<li><p><strong>delimiter</strong> – The string to use when joining text from multiple TextParts.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A single string containing all text content, or an empty string if no text parts are found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.get_text_parts">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">get_text_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.get_text_parts" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts text content from all TextPart objects in a list of Parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>parts</strong> – A list of <cite>Part</cite> objects.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A list of strings containing the text content from any <cite>TextPart</cite> objects found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.new_agent_parts_message">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_agent_parts_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a></span></span><a class="headerlink" href="#a2a.utils.new_agent_parts_message" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new agent message containing a list of Parts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parts</strong> – The list of <cite>Part</cite> objects for the message content.</p></li>
-<li><p><strong>context_id</strong> – The context ID for the message.</p></li>
-<li><p><strong>task_id</strong> – The task ID for the message.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <cite>Message</cite> object with role ‘agent’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.new_agent_text_message">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_agent_text_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a></span></span><a class="headerlink" href="#a2a.utils.new_agent_text_message" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new agent message containing a single TextPart.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>text</strong> – The text content of the message.</p></li>
-<li><p><strong>context_id</strong> – The context ID for the message.</p></li>
-<li><p><strong>task_id</strong> – The task ID for the message.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <cite>Message</cite> object with role ‘agent’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.new_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.Part" title="a2a.types.Part"><span class="pre">Part</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_artifact" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new Artifact object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parts</strong> – The list of <cite>Part</cite> objects forming the artifact’s content.</p></li>
-<li><p><strong>name</strong> – The human-readable name of the artifact.</p></li>
-<li><p><strong>description</strong> – An optional description of the artifact.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <cite>Artifact</cite> object with a generated artifact_id.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.new_data_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_data_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_data_artifact" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new Artifact object containing only a single DataPart.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – The human-readable name of the artifact.</p></li>
-<li><p><strong>data</strong> – The structured data content of the artifact.</p></li>
-<li><p><strong>description</strong> – An optional description of the artifact.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <cite>Artifact</cite> object with a generated artifact_id.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.new_task">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a.types.Message"><span class="pre">Message</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a.types.Task"><span class="pre">Task</span></a></span></span><a class="headerlink" href="#a2a.utils.new_task" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new Task object from an initial user message.</p>
-<p>Generates task and context IDs if not provided in the message.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>request</strong> – The initial <cite>Message</cite> object from the user.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <cite>Task</cite> object initialized with ‘submitted’ status and the input message in history.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>TypeError</strong> – If the message role is None.</p></li>
-<li><p><strong>ValueError</strong> – If the message parts are empty, if any part has empty content, or if the provided context_id is invalid.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="a2a.utils.new_text_artifact">
-<span class="sig-prename descclassname"><span class="pre">a2a.utils.</span></span><span class="sig-name descname"><span class="pre">new_text_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Artifact" title="a2a.types.Artifact"><span class="pre">Artifact</span></a></span></span><a class="headerlink" href="#a2a.utils.new_text_artifact" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new Artifact object containing only a single TextPart.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – The human-readable name of the artifact.</p></li>
-<li><p><strong>text</strong> – The text content of the artifact.</p></li>
-<li><p><strong>description</strong> – An optional description of the artifact.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A new <cite>Artifact</cite> object with a generated artifact_id.</p>
+<dd class="field-even"><p>A StreamResponse proto with the appropriate field set.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -803,23 +565,23 @@ finishes and produces artifacts.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="a2a.utils.artifact.html">
+          <a class="next-page" href="a2a.utils.constants.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">a2a.utils.artifact module</div>
+                <div class="title">a2a.utils.constants module</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="a2a.server.models.html">
+          <a class="prev-page" href="a2a.types.a2a_pb2_grpc.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">a2a.server.models module</div>
+                <div class="title">a2a.types.a2a_pb2_grpc module</div>
                 
               </div>
             </a>
@@ -856,22 +618,13 @@ finishes and produces artifacts.</p>
 <li><a class="reference internal" href="#">a2a.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-a2a.utils">Module contents</a><ul>
-<li><a class="reference internal" href="#a2a.utils.append_artifact_to_task"><code class="docutils literal notranslate"><span class="pre">append_artifact_to_task()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.are_modalities_compatible"><code class="docutils literal notranslate"><span class="pre">are_modalities_compatible()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.build_text_artifact"><code class="docutils literal notranslate"><span class="pre">build_text_artifact()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.completed_task"><code class="docutils literal notranslate"><span class="pre">completed_task()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.create_task_obj"><code class="docutils literal notranslate"><span class="pre">create_task_obj()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.get_artifact_text"><code class="docutils literal notranslate"><span class="pre">get_artifact_text()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.get_data_parts"><code class="docutils literal notranslate"><span class="pre">get_data_parts()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.get_file_parts"><code class="docutils literal notranslate"><span class="pre">get_file_parts()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.get_message_text"><code class="docutils literal notranslate"><span class="pre">get_message_text()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.get_text_parts"><code class="docutils literal notranslate"><span class="pre">get_text_parts()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.new_agent_parts_message"><code class="docutils literal notranslate"><span class="pre">new_agent_parts_message()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.new_agent_text_message"><code class="docutils literal notranslate"><span class="pre">new_agent_text_message()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.new_artifact"><code class="docutils literal notranslate"><span class="pre">new_artifact()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.new_data_artifact"><code class="docutils literal notranslate"><span class="pre">new_data_artifact()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.new_task"><code class="docutils literal notranslate"><span class="pre">new_task()</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.new_text_artifact"><code class="docutils literal notranslate"><span class="pre">new_text_artifact()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.TransportProtocol"><code class="docutils literal notranslate"><span class="pre">TransportProtocol</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.TransportProtocol.GRPC"><code class="docutils literal notranslate"><span class="pre">TransportProtocol.GRPC</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.TransportProtocol.HTTP_JSON"><code class="docutils literal notranslate"><span class="pre">TransportProtocol.HTTP_JSON</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.TransportProtocol.JSONRPC"><code class="docutils literal notranslate"><span class="pre">TransportProtocol.JSONRPC</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.utils.to_stream_response"><code class="docutils literal notranslate"><span class="pre">to_stream_response()</span></code></a></li>
 </ul>
 </li>
 </ul>

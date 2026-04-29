@@ -1,0 +1,18 @@
+a2a.compat.v0_3.extension_headers module
+****************************************
+
+Shared header name constants for v0.3 extension compatibility.
+
+The current spec uses "A2A-Extensions". v0.3 used the "X-" prefixed "X
+-A2A-Extensions" form. v0.3 compat servers and clients accept/emit
+both names so they can interoperate with peers that only know the
+legacy one.
+
+a2a.compat.v0_3.extension_headers.add_legacy_extension_header(parameters: dict[str, str]) -> None
+
+   Mirrors the "A2A-Extensions" parameter under its legacy name in-
+   place.
+
+   Used by v0.3 compat client transports so that requests can be
+   understood by older v0.3 servers that only recognize "X-A2A-
+   Extensions".

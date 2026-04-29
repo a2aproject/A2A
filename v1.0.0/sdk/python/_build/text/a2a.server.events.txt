@@ -13,29 +13,67 @@ Submodules
 
     * "EventConsumer.consume_all()"
 
-    * "EventConsumer.consume_one()"
-
 * a2a.server.events.event_queue module
 
   * "Event"
 
   * "EventQueue"
 
-    * "EventQueue.clear_events()"
-
-    * "EventQueue.close()"
-
-    * "EventQueue.dequeue_event()"
-
     * "EventQueue.enqueue_event()"
 
-    * "EventQueue.is_closed()"
+  * "EventQueueLegacy"
 
-    * "EventQueue.queue"
+    * "EventQueueLegacy.close()"
 
-    * "EventQueue.tap()"
+    * "EventQueueLegacy.dequeue_event()"
 
-    * "EventQueue.task_done()"
+    * "EventQueueLegacy.enqueue_event()"
+
+    * "EventQueueLegacy.is_closed()"
+
+    * "EventQueueLegacy.queue"
+
+    * "EventQueueLegacy.tap()"
+
+    * "EventQueueLegacy.task_done()"
+
+* a2a.server.events.event_queue_v2 module
+
+  * "EventQueueSink"
+
+    * "EventQueueSink.close()"
+
+    * "EventQueueSink.dequeue_event()"
+
+    * "EventQueueSink.enqueue_event()"
+
+    * "EventQueueSink.is_closed()"
+
+    * "EventQueueSink.queue"
+
+    * "EventQueueSink.tap()"
+
+    * "EventQueueSink.task_done()"
+
+  * "EventQueueSource"
+
+    * "EventQueueSource.close()"
+
+    * "EventQueueSource.dequeue_event()"
+
+    * "EventQueueSource.enqueue_event()"
+
+    * "EventQueueSource.is_closed()"
+
+    * "EventQueueSource.queue"
+
+    * "EventQueueSource.remove_sink()"
+
+    * "EventQueueSource.tap()"
+
+    * "EventQueueSource.task_done()"
+
+    * "EventQueueSource.test_only_join_incoming_queue()"
 
 * a2a.server.events.in_memory_queue_manager module
 
@@ -75,7 +113,7 @@ Module contents
 
 Event handling components for the A2A server.
 
-class a2a.server.events.EventConsumer(queue: EventQueue)
+class a2a.server.events.EventConsumer(queue: EventQueueLegacy)
 
    Bases: "object"
 
@@ -107,20 +145,48 @@ class a2a.server.events.EventConsumer(queue: EventQueue)
          **BaseException** -- If an exception was set by the
          *agent_task_callback*.
 
-   async consume_one() -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+class a2a.server.events.EventQueue(*args: Any, **kwargs: Any)
 
-      Consume one event from the agent event queue non-blocking.
+   Bases: "ABC"
 
-      Returns:
-         The next event from the queue.
+   Base class and factory for EventQueueSource.
 
-      Raises:
-         **ServerError** -- If the queue is empty when attempting to
-         dequeue     immediately.
+   EventQueue provides an abstraction for a queue of events that can
+   be tapped by multiple consumers. EventQueue maintain main queue and
+   source and maintain child queues in sync. GUARANTEE: All sinks
+   (including the default one) will receive events in the exact same
+   order.
 
-class a2a.server.events.EventQueue(max_queue_size: int = 1024)
+   WARNING (Concurrency): All events from all sinks (both the default
+   queue and any tapped child queues) must be regularly consumed and
+   marked as done. If any single consumer stops processing and its
+   queue reaches capacity, it can block the event dispatcher and stall
+   the entire system, causing a widespread deadlock.
 
-   Bases: "object"
+   WARNING (Memory Leak): Event queues spawn background tasks. To
+   prevent memory and task leaks, all queue objects (both source and
+   sinks) MUST be explicitly closed via *await queue.close()* or by
+   using the async context manager (*async with queue:*). Child queues
+   are automatically closed when parent queue is closed, but you
+   should still close them explicitly to prevent queues from reaching
+   capacity by unconsumed events.
+
+   Typical usage: queue = EventQueue() child_queue1 = await
+   queue.tap() child_queue2 = await queue.tap()
+
+   async for event in child_queue1:
+      do_some_work(event) child_queue1.task_done()
+
+   abstractmethod async enqueue_event(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
+
+      Pushes an event into the queue.
+
+      Only main queue can enqueue events. Child queues can only
+      dequeue events.
+
+class a2a.server.events.EventQueueLegacy(*args: Any, **kwargs: Any)
+
+   Bases: "EventQueue"
 
    Event queue for A2A responses from agent.
 
@@ -128,55 +194,20 @@ class a2a.server.events.EventQueue(max_queue_size: int = 1024)
    server's response handling (e.g., streaming via SSE). Supports
    tapping to create child queues that receive the same events.
 
-   async clear_events(clear_child_queues: bool = True) -> None
-
-      Clears all events from the current queue and optionally all
-      child queues.
-
-      This method removes all pending events from the queue without
-      processing them. Child queues can be optionally cleared based on
-      the clear_child_queues parameter.
-
-      Parameters:
-         **clear_child_queues** -- If True (default), clear all child
-         queues as well. If False, only clear the current queue,
-         leaving child queues untouched.
-
    async close(immediate: bool = False) -> None
 
       Closes the queue for future push events and also closes all
       child queues.
 
-      Once closed, no new events can be enqueued. Behavior is
-      consistent across Python versions: - Python >= 3.13: Uses
-      *asyncio.Queue.shutdown* to stop the queue. With
-
-         *immediate=True* the queue is shut down and pending events
-         are cleared; with *immediate=False* the queue is shut down
-         and we wait for it to drain via *queue.join()*.
-
-      * Python < 3.13: Emulates the same semantics by clearing on
-        *immediate=True* or awaiting *queue.join()* on
-        *immediate=False*.
-
-      Consumers attempting to dequeue after close on an empty queue
-      will observe *asyncio.QueueShutDown* on Python >= 3.13 and
-      *asyncio.QueueEmpty* on Python < 3.13.
-
       Parameters:
-         **immediate** (*bool*) --
+         **immediate** -- If True, immediately flushes the queue,
+         discarding all pending events, and causes any currently
+         blocked *dequeue_event* calls to raise *QueueShutDown*. If
+         False (default), the queue is marked as closed to new events,
+         but existing events can still be dequeued and processed until
+         the queue is fully drained.
 
-         * True: Immediately closes the queue and clears all
-           unprocessed events without waiting for them to be consumed.
-           This is suitable for scenarios where you need to forcefully
-           interrupt and quickly release resources.
-
-         * False (default): Gracefully closes the queue, waiting for
-           all queued events to be processed (i.e., the queue is
-           drained) before closing. This is suitable when you want to
-           ensure all events are handled.
-
-   async dequeue_event(no_wait: bool = False) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+   async dequeue_event() -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
 
       Dequeues an event from the queue.
 
@@ -187,29 +218,19 @@ class a2a.server.events.EventQueue(max_queue_size: int = 1024)
       method. Python<=3.12 this needs to manage this lifecycle itself.
       The current implementation can lead to blocking if the
       dequeue_event is called before the EventQueue has been closed
-      but when there are no events on the queue. Two ways to avoid
-      this are to call this with no_wait = True which won't block, but
-      is the callers responsibility to retry as appropriate.
-      Alternatively, one can use an async Task management solution to
-      cancel the get task if the queue has closed or some other
-      condition is met. The implementation of the EventConsumer uses
-      an async.wait with a timeout to abort the dequeue_event call and
-      retry, when it will return with a closed error.
-
-      Parameters:
-         **no_wait** -- If True, retrieve an event immediately or
-         raise *asyncio.QueueEmpty*. If False (default), wait until an
-         event is available.
+      but when there are no events on the queue. One way to avoid this
+      is to use an async Task management solution to cancel the get
+      task if the queue has closed or some other condition is met. The
+      implementation of the EventConsumer uses an async.wait with a
+      timeout to abort the dequeue_event call and retry, when it will
+      return with a closed error.
 
       Returns:
          The next event from the queue.
 
       Raises:
-         * **asyncio.QueueEmpty** -- If *no_wait* is True and the
-           queue is empty.
-
-         * **asyncio.QueueShutDown** -- If the queue has been closed
-           and is empty.
+         **asyncio.QueueShutDown** -- If the queue has been closed and
+         is empty.
 
    async enqueue_event(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
@@ -222,10 +243,14 @@ class a2a.server.events.EventQueue(max_queue_size: int = 1024)
 
       Checks if the queue is closed.
 
-   tap() -> EventQueue
+   property queue: Queue[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      [DEPRECATED] Returns the underlying asyncio.Queue.
+
+   async tap(max_queue_size: int = 1024) -> EventQueueLegacy
 
       Taps the event queue to create a new child queue that receives
-      all future events.
+      future events.
 
       Returns:
          A new *EventQueue* instance that will receive all events
@@ -251,7 +276,7 @@ class a2a.server.events.InMemoryQueueManager
    This implementation is suitable for single-instance deployments but
    needs a distributed approach for scalable deployments.
 
-   async add(task_id: str, queue: EventQueue) -> None
+   async add(task_id: str, queue: EventQueueLegacy) -> None
 
       Adds a new event queue for a task ID.
 
@@ -267,29 +292,29 @@ class a2a.server.events.InMemoryQueueManager
          **NoTaskQueue** -- If no queue exists for the given
          *task_id*.
 
-   async create_or_tap(task_id: str) -> EventQueue
+   async create_or_tap(task_id: str) -> EventQueueLegacy
 
       Creates a new event queue for a task ID if one doesn't exist,
       otherwise taps the existing one.
 
       Returns:
-         A new or child *EventQueue* instance for the *task_id*.
+         A new or child *EventQueueLegacy* instance for the *task_id*.
 
-   async get(task_id: str) -> EventQueue | None
+   async get(task_id: str) -> EventQueueLegacy | None
 
       Retrieves the event queue for a task ID.
 
       Returns:
-         The *EventQueue* instance for the *task_id*, or *None* if not
-         found.
+         The *EventQueueLegacy* instance for the *task_id*, or *None*
+         if not found.
 
-   async tap(task_id: str) -> EventQueue | None
+   async tap(task_id: str) -> EventQueueLegacy | None
 
       Taps the event queue for a task ID to create a child queue.
 
       Returns:
-         A new child *EventQueue* instance, or *None* if the task ID
-         is not found.
+         A new child *EventQueueLegacy* instance, or *None* if the
+         task ID is not found.
 
 exception a2a.server.events.NoTaskQueue
 
@@ -304,7 +329,7 @@ class a2a.server.events.QueueManager
 
    Interface for managing the event queue lifecycles per task.
 
-   abstractmethod async add(task_id: str, queue: EventQueue) -> None
+   abstractmethod async add(task_id: str, queue: EventQueueLegacy) -> None
 
       Adds a new event queue associated with a task ID.
 
@@ -312,16 +337,16 @@ class a2a.server.events.QueueManager
 
       Closes and removes the event queue for a task ID.
 
-   abstractmethod async create_or_tap(task_id: str) -> EventQueue
+   abstractmethod async create_or_tap(task_id: str) -> EventQueueLegacy
 
       Creates a queue if one doesn't exist, otherwise taps the
       existing one.
 
-   abstractmethod async get(task_id: str) -> EventQueue | None
+   abstractmethod async get(task_id: str) -> EventQueueLegacy | None
 
       Retrieves the event queue for a task ID.
 
-   abstractmethod async tap(task_id: str) -> EventQueue | None
+   abstractmethod async tap(task_id: str) -> EventQueueLegacy | None
 
       Creates a child event queue (tap) for an existing task ID.
 

@@ -8,9 +8,10 @@ class a2a.server.request_handlers.request_handler.RequestHandler
    A2A request handler interface.
 
    This interface defines the methods that an A2A server
-   implementation must provide to handle incoming JSON-RPC requests.
+   implementation must provide to handle incoming A2A requests from
+   any transport (gRPC, REST, JSON-RPC).
 
-   abstractmethod async on_cancel_task(params: TaskIdParams, context: ServerCallContext | None = None) -> Task | None
+   abstractmethod async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
       Handles the 'tasks/cancel' method.
 
@@ -25,7 +26,22 @@ class a2a.server.request_handlers.request_handler.RequestHandler
          The *Task* object with its status updated to canceled, or
          *None* if the task was not found.
 
-   abstractmethod async on_delete_task_push_notification_config(params: DeleteTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> None
+   abstractmethod async on_create_task_push_notification_config(params: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig
+
+      Handles the 'tasks/pushNotificationConfig/create' method.
+
+      Sets or updates the push notification configuration for a task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID and push
+           notification configuration.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The provided *TaskPushNotificationConfig* upon success.
+
+   abstractmethod async on_delete_task_push_notification_config(params: DeleteTaskPushNotificationConfigRequest, context: ServerCallContext) -> None
 
       Handles the 'tasks/pushNotificationConfig/delete' method.
 
@@ -40,7 +56,22 @@ class a2a.server.request_handlers.request_handler.RequestHandler
       Returns:
          None
 
-   abstractmethod async on_get_task(params: TaskQueryParams, context: ServerCallContext | None = None) -> Task | None
+   abstractmethod async on_get_extended_agent_card(params: GetExtendedAgentCardRequest, context: ServerCallContext) -> AgentCard
+
+      Handles the 'GetExtendedAgentCard' method.
+
+      Retrieves the extended agent card for the agent.
+
+      Parameters:
+         * **params** -- Parameters for the request.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *AgentCard* object representing the extended properties
+         of the agent.
+
+   abstractmethod async on_get_task(params: GetTaskRequest, context: ServerCallContext) -> Task | None
 
       Handles the 'tasks/get' method.
 
@@ -55,7 +86,7 @@ class a2a.server.request_handlers.request_handler.RequestHandler
       Returns:
          The *Task* object if found, otherwise *None*.
 
-   abstractmethod async on_get_task_push_notification_config(params: TaskIdParams | GetTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> TaskPushNotificationConfig
+   abstractmethod async on_get_task_push_notification_config(params: GetTaskPushNotificationConfigRequest, context: ServerCallContext) -> TaskPushNotificationConfig
 
       Handles the 'tasks/pushNotificationConfig/get' method.
 
@@ -70,9 +101,9 @@ class a2a.server.request_handlers.request_handler.RequestHandler
       Returns:
          The *TaskPushNotificationConfig* for the task.
 
-   abstractmethod async on_list_task_push_notification_config(params: ListTaskPushNotificationConfigParams, context: ServerCallContext | None = None) -> list[TaskPushNotificationConfig]
+   abstractmethod async on_list_task_push_notification_configs(params: ListTaskPushNotificationConfigsRequest, context: ServerCallContext) -> ListTaskPushNotificationConfigsResponse
 
-      Handles the 'tasks/pushNotificationConfig/list' method.
+      Handles the 'ListTaskPushNotificationConfigs' method.
 
       Retrieves the current push notification configurations for a
       task.
@@ -85,7 +116,23 @@ class a2a.server.request_handlers.request_handler.RequestHandler
       Returns:
          The *list[TaskPushNotificationConfig]* for the task.
 
-   abstractmethod async on_message_send(params: MessageSendParams, context: ServerCallContext | None = None) -> Task | Message
+   abstractmethod async on_list_tasks(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Handles the tasks/list method.
+
+      Retrieves all tasks for an agent. Supports filtering,
+      pagination, ordering, limiting the history length, excluding
+      artifacts, etc.
+
+      Parameters:
+         * **params** -- Parameters with filtering criteria.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *ListTasksResponse* containing the tasks.
+
+   abstractmethod async on_message_send(params: SendMessageRequest, context: ServerCallContext) -> Task | Message
 
       Handles the 'message/send' method (non-streaming).
 
@@ -101,7 +148,7 @@ class a2a.server.request_handlers.request_handler.RequestHandler
       Returns:
          The final *Task* object or a final *Message* object.
 
-   abstractmethod async on_message_send_stream(params: MessageSendParams, context: ServerCallContext | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+   abstractmethod async on_message_send_stream(params: SendMessageRequest, context: ServerCallContext) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
 
       Handles the 'message/stream' method (streaming).
 
@@ -117,16 +164,12 @@ class a2a.server.request_handlers.request_handler.RequestHandler
       Yields:
          *Event* objects from the agent's execution.
 
-      Raises:
-         **ServerError****(****UnsupportedOperationError****)** -- By
-         default, if not implemented.
+   abstractmethod async on_subscribe_to_task(params: SubscribeToTaskRequest, context: ServerCallContext) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
 
-   abstractmethod async on_resubscribe_to_task(params: TaskIdParams, context: ServerCallContext | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+      Handles the 'SubscribeToTask' method.
 
-      Handles the 'tasks/resubscribe' method.
-
-      Allows a client to re-subscribe to a running streaming task's
-      event stream.
+      Allows a client to subscribe to a running streaming task's event
+      stream.
 
       Parameters:
          * **params** -- Parameters including the task ID.
@@ -137,21 +180,64 @@ class a2a.server.request_handlers.request_handler.RequestHandler
          *Event* objects from the agent's ongoing execution for the
          specified task.
 
-      Raises:
-         **ServerError****(****UnsupportedOperationError****)** -- By
-         default, if not implemented.
+a2a.server.request_handlers.request_handler.validate(expression: ~collections.abc.Callable[[~typing.Any], bool], error_message: str | None = None, error_type: type[Exception] = <class 'a2a.utils.errors.UnsupportedOperationError'>) -> Callable
 
-   abstractmethod async on_set_task_push_notification_config(params: TaskPushNotificationConfig, context: ServerCallContext | None = None) -> TaskPushNotificationConfig
+   Decorator that validates if a given expression evaluates to True.
 
-      Handles the 'tasks/pushNotificationConfig/set' method.
+   Typically used on class methods to check capabilities or
+   configuration before executing the method's logic. If the
+   expression is False, the specified *error_type* (defaults to
+   *UnsupportedOperationError*) is raised.
 
-      Sets or updates the push notification configuration for a task.
+   Parameters:
+      * **expression** -- A callable that takes the instance (*self*)
+        as its argument and returns a boolean.
 
-      Parameters:
-         * **params** -- Parameters including the task ID and push
-           notification configuration.
+      * **error_message** -- An optional custom error message for the
+        error raised. If None, the string representation of the
+        expression will be used.
 
-         * **context** -- Context provided by the server.
+      * **error_type** -- The exception class to raise on validation
+        failure. Must take a *message* keyword argument (inherited
+        from A2AError).
 
-      Returns:
-         The provided *TaskPushNotificationConfig* upon success.
+   -[ Examples ]-
+
+   Demonstrating with an async method: >>> import asyncio >>> from
+   a2a.utils.errors import UnsupportedOperationError >>> >>> class
+   MyAgent: ...     def __init__(self, streaming_enabled: bool): ...
+   self.streaming_enabled = streaming_enabled ... ...     @validate(
+   ...         lambda self: self.streaming_enabled, ...
+   'Streaming is not enabled for this agent', ...     ) ...     async
+   def stream_response(self, message: str): ...         return
+   f'Streaming: {message}' >>> >>> async def run_async_test(): ...
+   # Successful call ...     agent_ok =
+   MyAgent(streaming_enabled=True) ...     result = await
+   agent_ok.stream_response('hello') ...     print(result) ... ...
+   # Call that fails validation ...     agent_fail =
+   MyAgent(streaming_enabled=False) ...     try: ...         await
+   agent_fail.stream_response('world') ...     except
+   UnsupportedOperationError as e: ...         print(e.message) >>>
+   >>> asyncio.run(run_async_test()) Streaming: hello Streaming is not
+   enabled for this agent
+
+   Demonstrating with a sync method: >>> class SecureAgent: ...
+   def __init__(self): ...         self.auth_enabled = False ... ...
+   @validate( ...         lambda self: self.auth_enabled, ...
+   'Authentication must be enabled for this operation', ...     ) ...
+   def secure_operation(self, data: str): ...         return
+   f'Processing secure data: {data}' >>> >>> # Error case example >>>
+   agent = SecureAgent() >>> try: ...
+   agent.secure_operation('secret') ... except
+   UnsupportedOperationError as e: ...     print(e.message)
+   Authentication must be enabled for this operation
+
+   Note:
+
+     This decorator works with both sync and async methods
+     automatically.
+
+a2a.server.request_handlers.request_handler.validate_request_params(method: Callable) -> Callable
+
+   Decorator for RequestHandler methods to validate required fields on
+   incoming requests.

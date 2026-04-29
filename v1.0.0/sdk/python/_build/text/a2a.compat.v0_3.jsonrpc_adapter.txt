@@ -1,0 +1,18 @@
+a2a.compat.v0_3.jsonrpc_adapter module
+**************************************
+
+class a2a.compat.v0_3.jsonrpc_adapter.JSONRPC03Adapter(http_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None)
+
+   Bases: "object"
+
+   Adapter to make RequestHandler work with v0.3 JSONRPC API.
+
+   METHOD_TO_MODEL = {'agent/getAuthenticatedExtendedCard': <class 'a2a.compat.v0_3.types.GetAuthenticatedExtendedCardRequest'>, 'message/send': <class 'a2a.compat.v0_3.types.SendMessageRequest'>, 'message/stream': <class 'a2a.compat.v0_3.types.SendStreamingMessageRequest'>, 'tasks/cancel': <class 'a2a.compat.v0_3.types.CancelTaskRequest'>, 'tasks/get': <class 'a2a.compat.v0_3.types.GetTaskRequest'>, 'tasks/pushNotificationConfig/delete': <class 'a2a.compat.v0_3.types.DeleteTaskPushNotificationConfigRequest'>, 'tasks/pushNotificationConfig/get': <class 'a2a.compat.v0_3.types.GetTaskPushNotificationConfigRequest'>, 'tasks/pushNotificationConfig/list': <class 'a2a.compat.v0_3.types.ListTaskPushNotificationConfigRequest'>, 'tasks/pushNotificationConfig/set': <class 'a2a.compat.v0_3.types.SetTaskPushNotificationConfigRequest'>, 'tasks/resubscribe': <class 'a2a.compat.v0_3.types.TaskResubscriptionRequest'>}
+
+   async handle_request(request_id: str | int | None, method: str, body: dict, request: Request) -> JSONResponse | EventSourceResponse
+
+      Handles v0.3 specific JSON-RPC requests.
+
+   supports_method(method: str) -> bool
+
+      Returns True if the v0.3 adapter supports the given method name.

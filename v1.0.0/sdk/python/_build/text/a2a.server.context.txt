@@ -3,7 +3,7 @@ a2a.server.context module
 
 Defines the ServerCallContext class.
 
-class a2a.server.context.ServerCallContext(*, state: MutableMapping[str, ~typing.Any]=<factory>, user: User = <factory>, requested_extensions: set[str] = <factory>, activated_extensions: set[str] = <factory>)
+class a2a.server.context.ServerCallContext(*, state: MutableMapping[str, ~typing.Any]=<factory>, user: User = <factory>, tenant: str = '', requested_extensions: set[str] = <factory>)
 
    Bases: "BaseModel"
 
@@ -11,8 +11,6 @@ class a2a.server.context.ServerCallContext(*, state: MutableMapping[str, ~typing
 
    This class allows storing arbitrary user data in the state
    attribute.
-
-   activated_extensions: set[str]
 
    model_config = {'arbitrary_types_allowed': True}
 
@@ -22,5 +20,7 @@ class a2a.server.context.ServerCallContext(*, state: MutableMapping[str, ~typing
    requested_extensions: set[str]
 
    state: MutableMapping[str, Any]
+
+   tenant: str
 
    user: User

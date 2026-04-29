@@ -1,0 +1,159 @@
+a2a.server.routes package
+*************************
+
+
+Submodules
+==========
+
+* a2a.server.routes.agent_card_routes module
+
+  * "create_agent_card_routes()"
+
+* a2a.server.routes.common module
+
+  * "DefaultServerCallContextBuilder"
+
+    * "DefaultServerCallContextBuilder.build()"
+
+    * "DefaultServerCallContextBuilder.build_user()"
+
+  * "ServerCallContextBuilder"
+
+    * "ServerCallContextBuilder.build()"
+
+  * "StarletteUser"
+
+    * "StarletteUser.is_authenticated"
+
+    * "StarletteUser.user_name"
+
+* a2a.server.routes.jsonrpc_dispatcher module
+
+  * "JsonRpcDispatcher"
+
+    * "JsonRpcDispatcher.METHOD_TO_MODEL"
+
+    * "JsonRpcDispatcher.handle_requests()"
+
+* a2a.server.routes.jsonrpc_routes module
+
+  * "create_jsonrpc_routes()"
+
+* a2a.server.routes.rest_dispatcher module
+
+  * "RestDispatcher"
+
+    * "RestDispatcher.delete_push_notification()"
+
+    * "RestDispatcher.get_push_notification()"
+
+    * "RestDispatcher.handle_authenticated_agent_card()"
+
+    * "RestDispatcher.list_push_notifications()"
+
+    * "RestDispatcher.list_tasks()"
+
+    * "RestDispatcher.on_cancel_task()"
+
+    * "RestDispatcher.on_get_task()"
+
+    * "RestDispatcher.on_message_send()"
+
+    * "RestDispatcher.on_message_send_stream()"
+
+    * "RestDispatcher.on_subscribe_to_task()"
+
+    * "RestDispatcher.set_push_notification()"
+
+* a2a.server.routes.rest_routes module
+
+  * "create_rest_routes()"
+
+
+Module contents
+===============
+
+A2A Routes.
+
+class a2a.server.routes.DefaultServerCallContextBuilder
+
+   Bases: "ServerCallContextBuilder"
+
+   A default implementation of ServerCallContextBuilder.
+
+   build(request: Request) -> ServerCallContext
+
+      Builds a ServerCallContext from a Starlette Request.
+
+      Parameters:
+         **request** -- The incoming Starlette Request object.
+
+      Returns:
+         A ServerCallContext instance populated with user and state
+         information from the request.
+
+   build_user(request: Request) -> User
+
+      Builds a User from a Starlette Request.
+
+      Parameters:
+         **request** -- The incoming Starlette Request object.
+
+      Returns:
+         A User instance populated with user information from the
+         request.
+
+class a2a.server.routes.ServerCallContextBuilder
+
+   Bases: "ABC"
+
+   A class for building ServerCallContexts using the Starlette
+   Request.
+
+   abstractmethod build(request: Request) -> ServerCallContext
+
+      Builds a ServerCallContext from a Starlette Request.
+
+a2a.server.routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json') -> list[Route]
+
+   Creates the Starlette Route for the A2A protocol agent card
+   endpoint.
+
+a2a.server.routes.create_jsonrpc_routes(request_handler: RequestHandler, rpc_url: str, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False) -> list[Route]
+
+   Creates the Starlette Route for the A2A protocol JSON-RPC endpoint.
+
+   Handles incoming JSON-RPC requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   Parameters:
+      * **request_handler** -- The handler instance responsible for
+        processing A2A requests via http.
+
+      * **rpc_url** -- The URL prefix for the RPC endpoints. Should
+        start with a leading slash '/'.
+
+      * **context_builder** -- The ServerCallContextBuilder used to
+        construct the ServerCallContext passed to the request_handler.
+        If None the DefaultServerCallContextBuilder is used.
+
+      * **enable_v0_3_compat** -- Whether to enable v0.3 backward
+        compatibility on the same endpoint.
+
+a2a.server.routes.create_rest_routes(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False, path_prefix: str = '') -> list[BaseRoute]
+
+   Creates the Starlette Routes for the A2A protocol REST endpoint.
+
+   Parameters:
+      * **request_handler** -- The handler instance responsible for
+        processing A2A requests via http.
+
+      * **context_builder** -- The ServerCallContextBuilder used to
+        construct the ServerCallContext passed to the request_handler.
+        If None the DefaultServerCallContextBuilder is used.
+
+      * **enable_v0_3_compat** -- If True, mounts backward-compatible
+        v0.3 protocol endpoints using REST03Adapter.
+
+      * **path_prefix** -- The URL prefix for the REST endpoints.

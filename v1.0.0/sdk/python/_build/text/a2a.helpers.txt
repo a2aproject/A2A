@@ -1,0 +1,117 @@
+a2a.helpers package
+*******************
+
+
+Submodules
+==========
+
+* a2a.helpers.agent_card module
+
+  * "display_agent_card()"
+
+* a2a.helpers.proto_helpers module
+
+  * "get_artifact_text()"
+
+  * "get_message_text()"
+
+  * "get_stream_response_text()"
+
+  * "get_text_parts()"
+
+  * "new_artifact()"
+
+  * "new_data_artifact()"
+
+  * "new_data_message()"
+
+  * "new_data_part()"
+
+  * "new_message()"
+
+  * "new_raw_artifact()"
+
+  * "new_raw_message()"
+
+  * "new_raw_part()"
+
+  * "new_task()"
+
+  * "new_task_from_user_message()"
+
+  * "new_text_artifact()"
+
+  * "new_text_artifact_update_event()"
+
+  * "new_text_message()"
+
+  * "new_text_part()"
+
+  * "new_text_status_update_event()"
+
+  * "new_url_artifact()"
+
+  * "new_url_message()"
+
+  * "new_url_part()"
+
+
+Module contents
+===============
+
+Helper functions for the A2A Python SDK.
+
+a2a.helpers.display_agent_card(card: AgentCard) -> None
+
+   Print a human-readable summary of an AgentCard to stdout.
+
+   Parameters:
+      **card** -- The AgentCard proto message to display.
+
+a2a.helpers.get_artifact_text(artifact: Artifact, delimiter: str = '\n') -> str
+
+   Extracts and joins all text content from an Artifact's parts.
+
+a2a.helpers.get_message_text(message: Message, delimiter: str = '\n') -> str
+
+   Extracts and joins all text content from a Message's parts.
+
+a2a.helpers.get_stream_response_text(response: StreamResponse, delimiter: str = '\n') -> str
+
+   Extracts text content from a StreamResponse.
+
+a2a.helpers.get_text_parts(parts: Sequence[Part]) -> list[str]
+
+   Extracts text content from all text Parts.
+
+a2a.helpers.new_artifact(parts: list[Part], name: str, description: str | None = None, artifact_id: str | None = None) -> Artifact
+
+   Creates a new Artifact object.
+
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
+
+   Creates a new message containing a list of Parts.
+
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+
+   Creates a Task object with a specified status.
+
+a2a.helpers.new_task_from_user_message(user_message: Message) -> Task
+
+   Creates a new Task object from an initial user message.
+
+a2a.helpers.new_text_artifact(name: str, text: str, media_type: str | None = None, description: str | None = None, artifact_id: str | None = None) -> Artifact
+
+   Creates a new Artifact object containing only a single text Part.
+
+a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: str, text: str, append: bool = False, last_chunk: bool = False, artifact_id: str | None = None) -> TaskArtifactUpdateEvent
+
+   Creates a TaskArtifactUpdateEvent with a single text artifact.
+
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
+
+   Creates a new message containing a single text Part.
+
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, text: str) -> TaskStatusUpdateEvent
+
+   Creates a TaskStatusUpdateEvent with a single text message.

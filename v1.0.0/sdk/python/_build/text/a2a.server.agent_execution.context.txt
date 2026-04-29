@@ -1,7 +1,7 @@
 a2a.server.agent_execution.context module
 *****************************************
 
-class a2a.server.agent_execution.context.RequestContext(request: MessageSendParams | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, call_context: ServerCallContext | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
+class a2a.server.agent_execution.context.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
 
    Bases: "object"
 
@@ -10,14 +10,6 @@ class a2a.server.agent_execution.context.RequestContext(request: MessageSendPara
    Holds information about the current request being processed by the
    server, including the incoming message, task and context
    identifiers, and related tasks.
-
-   add_activated_extension(uri: str) -> None
-
-      Add an extension to the set of activated extensions for this
-      request.
-
-      This causes the extension to be indicated back to the client in
-      the response.
 
    attach_related_task(task: Task) -> None
 
@@ -29,13 +21,13 @@ class a2a.server.agent_execution.context.RequestContext(request: MessageSendPara
       Parameters:
          **task** -- The *Task* object to attach.
 
-   property call_context: ServerCallContext | None
+   property call_context: ServerCallContext
 
       The server call context associated with this request.
 
-   property configuration: MessageSendConfiguration | None
+   property configuration: SendMessageConfiguration | None
 
-      The *MessageSendConfiguration* from the request, if available.
+      The *SendMessageConfiguration* from the request, if available.
 
    property context_id: str | None
 
@@ -73,8 +65,12 @@ class a2a.server.agent_execution.context.RequestContext(request: MessageSendPara
 
    property requested_extensions: set[str]
 
-      Extensions that the client requested to activate.
+      Extensions that the client requested for this interaction.
 
    property task_id: str | None
 
       The ID of the task associated with this context.
+
+   property tenant: str
+
+      The tenant associated with this request.

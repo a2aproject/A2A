@@ -14,7 +14,7 @@ class a2a.server.events.in_memory_queue_manager.InMemoryQueueManager
    This implementation is suitable for single-instance deployments but
    needs a distributed approach for scalable deployments.
 
-   async add(task_id: str, queue: EventQueue) -> None
+   async add(task_id: str, queue: EventQueueLegacy) -> None
 
       Adds a new event queue for a task ID.
 
@@ -30,26 +30,26 @@ class a2a.server.events.in_memory_queue_manager.InMemoryQueueManager
          **NoTaskQueue** -- If no queue exists for the given
          *task_id*.
 
-   async create_or_tap(task_id: str) -> EventQueue
+   async create_or_tap(task_id: str) -> EventQueueLegacy
 
       Creates a new event queue for a task ID if one doesn't exist,
       otherwise taps the existing one.
 
       Returns:
-         A new or child *EventQueue* instance for the *task_id*.
+         A new or child *EventQueueLegacy* instance for the *task_id*.
 
-   async get(task_id: str) -> EventQueue | None
+   async get(task_id: str) -> EventQueueLegacy | None
 
       Retrieves the event queue for a task ID.
 
       Returns:
-         The *EventQueue* instance for the *task_id*, or *None* if not
-         found.
+         The *EventQueueLegacy* instance for the *task_id*, or *None*
+         if not found.
 
-   async tap(task_id: str) -> EventQueue | None
+   async tap(task_id: str) -> EventQueueLegacy | None
 
       Taps the event queue for a task ID to create a child queue.
 
       Returns:
-         A new child *EventQueue* instance, or *None* if the task ID
-         is not found.
+         A new child *EventQueueLegacy* instance, or *None* if the
+         task ID is not found.

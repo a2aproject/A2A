@@ -7,6 +7,6 @@ class a2a.server.tasks.push_notification_sender.PushNotificationSender
 
    Interface for sending push notifications for tasks.
 
-   abstractmethod async send_notification(task: Task) -> None
+   abstractmethod async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification containing the latest task state.

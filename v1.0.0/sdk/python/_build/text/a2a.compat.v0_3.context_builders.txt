@@ -1,0 +1,36 @@
+a2a.compat.v0_3.context_builders module
+***************************************
+
+Context builders that add v0.3 backwards-compatibility for extensions.
+
+The current spec uses "A2A-Extensions" (RFC 6648, no "X-" prefix).
+v0.3 clients still send the old "X-A2A-Extensions" name, so the v0.3
+compat adapters wrap the default builders with these classes to
+recognize both names.
+
+class a2a.compat.v0_3.context_builders.V03GrpcServerCallContextBuilder(inner: GrpcServerCallContextBuilder)
+
+   Bases: "object"
+
+   Wraps a GrpcServerCallContextBuilder to also accept the legacy
+   metadata.
+
+   Recognizes the v0.3 "X-A2A-Extensions" gRPC metadata key in
+   addition to the spec "A2A-Extensions".
+
+   build(context: grpc.aio.ServicerContext) -> ServerCallContext
+
+      Builds a ServerCallContext, merging legacy extension metadata.
+
+class a2a.compat.v0_3.context_builders.V03ServerCallContextBuilder(inner: ServerCallContextBuilder)
+
+   Bases: "object"
+
+   Wraps a ServerCallContextBuilder to also accept the legacy header.
+
+   Recognizes the v0.3 "X-A2A-Extensions" HTTP header in addition to
+   the spec "A2A-Extensions".
+
+   build(request: Request) -> ServerCallContext
+
+      Builds a ServerCallContext, merging legacy extension headers.

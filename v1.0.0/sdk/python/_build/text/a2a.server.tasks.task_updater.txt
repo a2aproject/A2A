@@ -68,11 +68,11 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as rejected and publishes a final status update.
 
-   async requires_auth(message: Message | None = None, final: bool = False) -> None
+   async requires_auth(message: Message | None = None) -> None
 
       Marks the task as auth required and publishes a status update.
 
-   async requires_input(message: Message | None = None, final: bool = False) -> None
+   async requires_input(message: Message | None = None) -> None
 
       Marks the task as input required and publishes a status update.
 
@@ -84,7 +84,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: TaskState, message: Message | None = None, final: bool = False, timestamp: str | None = None, metadata: dict[str, Any] | None = None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -94,9 +94,6 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
          * **message** -- An optional message associated with the
            status update.
-
-         * **final** -- If True, indicates this is the final status
-           update for the task.
 
          * **timestamp** -- Optional ISO 8601 datetime string.
            Defaults to current time.

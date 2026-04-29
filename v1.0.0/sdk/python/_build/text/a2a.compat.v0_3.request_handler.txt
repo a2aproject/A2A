@@ -1,0 +1,50 @@
+a2a.compat.v0_3.request_handler module
+**************************************
+
+class a2a.compat.v0_3.request_handler.RequestHandler03(request_handler: RequestHandler)
+
+   Bases: "object"
+
+   A protocol-agnostic v0.3 RequestHandler that delegates to the v1.0
+   RequestHandler.
+
+   async on_cancel_task(request: CancelTaskRequest, context: ServerCallContext) -> Task
+
+      Cancels a task using v0.3 protocol types.
+
+   async on_create_task_push_notification_config(request: SetTaskPushNotificationConfigRequest, context: ServerCallContext) -> TaskPushNotificationConfig
+
+      Creates a push notification config using v0.3 protocol types.
+
+   async on_delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, context: ServerCallContext) -> None
+
+      Deletes a push notification config using v0.3 protocol types.
+
+   async on_get_extended_agent_card(request: GetAuthenticatedExtendedCardRequest, context: ServerCallContext) -> AgentCard
+
+      Gets the authenticated extended agent card using v0.3 protocol
+      types.
+
+   async on_get_task(request: GetTaskRequest, context: ServerCallContext) -> Task
+
+      Gets a task using v0.3 protocol types.
+
+   async on_get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, context: ServerCallContext) -> TaskPushNotificationConfig
+
+      Gets a push notification config using v0.3 protocol types.
+
+   async on_list_task_push_notification_configs(request: ListTaskPushNotificationConfigRequest, context: ServerCallContext) -> list[TaskPushNotificationConfig]
+
+      Lists push notification configs using v0.3 protocol types.
+
+   async on_message_send(request: SendMessageRequest, context: ServerCallContext) -> Task | Message
+
+      Sends a message using v0.3 protocol types.
+
+   async on_message_send_stream(request: SendMessageRequest, context: ServerCallContext) -> AsyncIterable[SendStreamingMessageSuccessResponse]
+
+      Sends a message stream using v0.3 protocol types.
+
+   async on_subscribe_to_task(request: TaskResubscriptionRequest, context: ServerCallContext) -> AsyncIterable[SendStreamingMessageSuccessResponse]
+
+      Subscribes to a task using v0.3 protocol types.

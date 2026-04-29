@@ -1,0 +1,168 @@
+a2a.server.request_handlers.default_request_handler_v2 module
+*************************************************************
+
+class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None)
+
+   Bases: "RequestHandler"
+
+   Default request handler for all incoming requests.
+
+   async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
+
+      Handles the 'tasks/cancel' method.
+
+      Requests the agent to cancel an ongoing task.
+
+      Parameters:
+         * **params** -- Parameters specifying the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *Task* object with its status updated to canceled, or
+         *None* if the task was not found.
+
+   async on_create_task_push_notification_config(params: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig
+
+      Handles the 'tasks/pushNotificationConfig/create' method.
+
+      Sets or updates the push notification configuration for a task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID and push
+           notification configuration.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The provided *TaskPushNotificationConfig* upon success.
+
+   async on_delete_task_push_notification_config(params: DeleteTaskPushNotificationConfigRequest, context: ServerCallContext) -> None
+
+      Handles the 'tasks/pushNotificationConfig/delete' method.
+
+      Deletes a push notification configuration associated with a
+      task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         None
+
+   async on_get_extended_agent_card(params: GetExtendedAgentCardRequest, context: ServerCallContext) -> AgentCard
+
+      Default handler for 'GetExtendedAgentCard'.
+
+      Requires *capabilities.extended_agent_card* to be true.
+
+   async on_get_task(params: GetTaskRequest, context: ServerCallContext) -> Task | None
+
+      Handles the 'tasks/get' method.
+
+      Retrieves the state and history of a specific task.
+
+      Parameters:
+         * **params** -- Parameters specifying the task ID and
+           optionally history length.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *Task* object if found, otherwise *None*.
+
+   async on_get_task_push_notification_config(params: GetTaskPushNotificationConfigRequest, context: ServerCallContext) -> TaskPushNotificationConfig
+
+      Handles the 'tasks/pushNotificationConfig/get' method.
+
+      Retrieves the current push notification configuration for a
+      task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *TaskPushNotificationConfig* for the task.
+
+   async on_list_task_push_notification_configs(params: ListTaskPushNotificationConfigsRequest, context: ServerCallContext) -> ListTaskPushNotificationConfigsResponse
+
+      Handles the 'ListTaskPushNotificationConfigs' method.
+
+      Retrieves the current push notification configurations for a
+      task.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *list[TaskPushNotificationConfig]* for the task.
+
+   async on_list_tasks(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Handles the tasks/list method.
+
+      Retrieves all tasks for an agent. Supports filtering,
+      pagination, ordering, limiting the history length, excluding
+      artifacts, etc.
+
+      Parameters:
+         * **params** -- Parameters with filtering criteria.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The *ListTasksResponse* containing the tasks.
+
+   async on_message_send(params: SendMessageRequest, context: ServerCallContext) -> Message | Task
+
+      Handles the 'message/send' method (non-streaming).
+
+      Sends a message to the agent to create, continue, or restart a
+      task, and waits for the final result (Task or Message).
+
+      Parameters:
+         * **params** -- Parameters including the message and
+           configuration.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         The final *Task* object or a final *Message* object.
+
+   on_message_send_stream(params: SendMessageRequest, context: ServerCallContext) -> AsyncGenerator[Event, None]
+
+      Handles the 'message/stream' method (streaming).
+
+      Sends a message to the agent and yields stream events as they
+      are produced (Task updates, Message chunks, Artifact updates).
+
+      Parameters:
+         * **params** -- Parameters including the message and
+           configuration.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *Event* objects from the agent's execution.
+
+   on_subscribe_to_task(params: SubscribeToTaskRequest, context: ServerCallContext) -> AsyncGenerator[Event, None]
+
+      Handles the 'SubscribeToTask' method.
+
+      Allows a client to subscribe to a running streaming task's event
+      stream.
+
+      Parameters:
+         * **params** -- Parameters including the task ID.
+
+         * **context** -- Context provided by the server.
+
+      Yields:
+         *Event* objects from the agent's ongoing execution for the
+         specified task.

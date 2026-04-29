@@ -1,7 +1,7 @@
 a2a.server.tasks.database_push_notification_config_store module
 ***************************************************************
 
-class a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore(engine: AsyncEngine, create_table: bool = True, table_name: str = 'push_notification_configs', encryption_key: str | bytes | None = None)
+class a2a.server.tasks.database_push_notification_config_store.DatabasePushNotificationConfigStore(engine: ~sqlalchemy.ext.asyncio.engine.AsyncEngine, create_table: bool = True, table_name: str = 'push_notification_configs', encryption_key: str | bytes | None = None, owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, core_to_model_conversion: ~collections.abc.Callable[[str, ~a2a_pb2.TaskPushNotificationConfig, str, Fernet | None], ~a2a.server.models.PushNotificationConfigModel] | None = None, model_to_core_conversion: ~collections.abc.Callable[[~a2a.server.models.PushNotificationConfigModel], ~a2a_pb2.TaskPushNotificationConfig] | None = None)
 
    Bases: "PushNotificationConfigStore"
 
@@ -14,26 +14,42 @@ class a2a.server.tasks.database_push_notification_config_store.DatabasePushNotif
 
    config_model: type[PushNotificationConfigModel]
 
+   core_to_model_conversion: Callable[[str, TaskPushNotificationConfig, str, Fernet | None], PushNotificationConfigModel] | None
+
    create_table: bool
 
-   async delete_info(task_id: str, config_id: str | None = None) -> None
+   async delete_info(task_id: str, context: ServerCallContext, config_id: str | None = None) -> None
 
       Deletes push notification configurations for a task.
 
       If config_id is provided, only that specific configuration is
       deleted. If config_id is None, all configurations for the task
-      are deleted.
+      for the owner are deleted.
 
    engine: AsyncEngine
 
-   async get_info(task_id: str) -> list[PushNotificationConfig]
+   async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-      Retrieves all push notification configurations for a task.
+      Retrieves all push notification configurations for a task, for
+      the given owner.
+
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      Used by the push-notification dispatch path.
 
    async initialize() -> None
 
       Initialize the database and create the table if needed.
 
-   async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+   model_to_core_conversion: Callable[[PushNotificationConfigModel], TaskPushNotificationConfig] | None
+
+   owner_resolver: Callable[[ServerCallContext], str]
+
+   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task.

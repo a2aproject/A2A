@@ -7,7 +7,7 @@ class a2a.client.transports.base.ClientTransport
 
    Abstract base class for a client transport.
 
-   abstractmethod async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+   abstractmethod async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
       Requests the agent to cancel a specific task.
 
@@ -15,33 +15,45 @@ class a2a.client.transports.base.ClientTransport
 
       Closes the transport.
 
-   abstractmethod async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+   abstractmethod async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
-      Retrieves the AgentCard.
+      Sets or updates the push notification configuration for a
+      specific task.
 
-   abstractmethod async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+   abstractmethod async delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> None
+
+      Deletes the push notification configuration for a specific task.
+
+   abstractmethod async get_extended_agent_card(request: GetExtendedAgentCardRequest, *, context: ClientCallContext | None = None) -> AgentCard
+
+      Retrieves the Extended AgentCard.
+
+   abstractmethod async get_task(request: GetTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
       Retrieves the current state and history of a specific task.
 
-   abstractmethod async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+   abstractmethod async get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
       Retrieves the push notification configuration for a specific
       task.
 
-   abstractmethod async resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Task | Message | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+   abstractmethod async list_task_push_notification_configs(request: ListTaskPushNotificationConfigsRequest, *, context: ClientCallContext | None = None) -> ListTaskPushNotificationConfigsResponse
 
-      Reconnects to get task updates.
+      Lists push notification configurations for a specific task.
 
-   abstractmethod async send_message(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task | Message
+   abstractmethod async list_tasks(request: ListTasksRequest, *, context: ClientCallContext | None = None) -> ListTasksResponse
+
+      Retrieves tasks for an agent.
+
+   abstractmethod async send_message(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> SendMessageResponse
 
       Sends a non-streaming message request to the agent.
 
-   abstractmethod async send_message_streaming(request: MessageSendParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncGenerator[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+   abstractmethod async send_message_streaming(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> AsyncGenerator[StreamResponse]
 
       Sends a streaming message request to the agent and yields
       responses as they arrive.
 
-   abstractmethod async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+   abstractmethod async subscribe(request: SubscribeToTaskRequest, *, context: ClientCallContext | None = None) -> AsyncGenerator[StreamResponse]
 
-      Sets or updates the push notification configuration for a
-      specific task.
+      Reconnects to get task updates.

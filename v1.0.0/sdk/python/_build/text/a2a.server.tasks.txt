@@ -11,6 +11,18 @@ Submodules
 
     * "BasePushNotificationSender.send_notification()"
 
+* a2a.server.tasks.copying_task_store module
+
+  * "CopyingTaskStoreAdapter"
+
+    * "CopyingTaskStoreAdapter.delete()"
+
+    * "CopyingTaskStoreAdapter.get()"
+
+    * "CopyingTaskStoreAdapter.list()"
+
+    * "CopyingTaskStoreAdapter.save()"
+
 * a2a.server.tasks.database_push_notification_config_store module
 
   * "DatabasePushNotificationConfigStore"
@@ -18,6 +30,8 @@ Submodules
     * "DatabasePushNotificationConfigStore.async_session_maker"
 
     * "DatabasePushNotificationConfigStore.config_model"
+
+    * "DatabasePushNotificationConfigStore.core_to_model_conversion"
 
     * "DatabasePushNotificationConfigStore.create_table"
 
@@ -27,7 +41,13 @@ Submodules
 
     * "DatabasePushNotificationConfigStore.get_info()"
 
+    * "DatabasePushNotificationConfigStore.get_info_for_dispatch()"
+
     * "DatabasePushNotificationConfigStore.initialize()"
+
+    * "DatabasePushNotificationConfigStore.model_to_core_conversion"
+
+    * "DatabasePushNotificationConfigStore.owner_resolver"
 
     * "DatabasePushNotificationConfigStore.set_info()"
 
@@ -36,6 +56,8 @@ Submodules
   * "DatabaseTaskStore"
 
     * "DatabaseTaskStore.async_session_maker"
+
+    * "DatabaseTaskStore.core_to_model_conversion"
 
     * "DatabaseTaskStore.create_table"
 
@@ -46,6 +68,12 @@ Submodules
     * "DatabaseTaskStore.get()"
 
     * "DatabaseTaskStore.initialize()"
+
+    * "DatabaseTaskStore.list()"
+
+    * "DatabaseTaskStore.model_to_core_conversion"
+
+    * "DatabaseTaskStore.owner_resolver"
 
     * "DatabaseTaskStore.save()"
 
@@ -59,6 +87,8 @@ Submodules
 
     * "InMemoryPushNotificationConfigStore.get_info()"
 
+    * "InMemoryPushNotificationConfigStore.get_info_for_dispatch()"
+
     * "InMemoryPushNotificationConfigStore.set_info()"
 
 * a2a.server.tasks.inmemory_task_store module
@@ -69,6 +99,8 @@ Submodules
 
     * "InMemoryTaskStore.get()"
 
+    * "InMemoryTaskStore.list()"
+
     * "InMemoryTaskStore.save()"
 
 * a2a.server.tasks.push_notification_config_store module
@@ -78,6 +110,8 @@ Submodules
     * "PushNotificationConfigStore.delete_info()"
 
     * "PushNotificationConfigStore.get_info()"
+
+    * "PushNotificationConfigStore.get_info_for_dispatch()"
 
     * "PushNotificationConfigStore.set_info()"
 
@@ -105,6 +139,8 @@ Submodules
 
     * "TaskManager.ensure_task()"
 
+    * "TaskManager.ensure_task_id()"
+
     * "TaskManager.get_task()"
 
     * "TaskManager.process()"
@@ -113,6 +149,8 @@ Submodules
 
     * "TaskManager.update_with_message()"
 
+  * "append_artifact_to_task()"
+
 * a2a.server.tasks.task_store module
 
   * "TaskStore"
@@ -120,6 +158,8 @@ Submodules
     * "TaskStore.delete()"
 
     * "TaskStore.get()"
+
+    * "TaskStore.list()"
 
     * "TaskStore.save()"
 
@@ -155,17 +195,17 @@ Module contents
 
 Components for managing tasks within the A2A server.
 
-class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore)
+class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None)
 
    Bases: "PushNotificationSender"
 
    Base implementation of PushNotificationSender interface.
 
-   async send_notification(task: Task) -> None
+   async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
-      Sends a push notification for a task if configuration exists.
+      Sends a push notification for an event if configuration exists.
 
-class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: AsyncEngine, create_table: bool = True, table_name: str = 'push_notification_configs', encryption_key: str | bytes | None = None)
+class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: ~sqlalchemy.ext.asyncio.engine.AsyncEngine, create_table: bool = True, table_name: str = 'push_notification_configs', encryption_key: str | bytes | None = None, owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, core_to_model_conversion: ~collections.abc.Callable[[str, ~a2a_pb2.TaskPushNotificationConfig, str, Fernet | None], ~a2a.server.models.PushNotificationConfigModel] | None = None, model_to_core_conversion: ~collections.abc.Callable[[~a2a.server.models.PushNotificationConfigModel], ~a2a_pb2.TaskPushNotificationConfig] | None = None)
 
    Bases: "PushNotificationConfigStore"
 
@@ -178,31 +218,47 @@ class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: AsyncEngine, 
 
    config_model: type[PushNotificationConfigModel]
 
+   core_to_model_conversion: Callable[[str, TaskPushNotificationConfig, str, Fernet | None], PushNotificationConfigModel] | None
+
    create_table: bool
 
-   async delete_info(task_id: str, config_id: str | None = None) -> None
+   async delete_info(task_id: str, context: ServerCallContext, config_id: str | None = None) -> None
 
       Deletes push notification configurations for a task.
 
       If config_id is provided, only that specific configuration is
       deleted. If config_id is None, all configurations for the task
-      are deleted.
+      for the owner are deleted.
 
    engine: AsyncEngine
 
-   async get_info(task_id: str) -> list[PushNotificationConfig]
+   async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-      Retrieves all push notification configurations for a task.
+      Retrieves all push notification configurations for a task, for
+      the given owner.
+
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      Used by the push-notification dispatch path.
 
    async initialize() -> None
 
       Initialize the database and create the table if needed.
 
-   async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+   model_to_core_conversion: Callable[[PushNotificationConfigModel], TaskPushNotificationConfig] | None
+
+   owner_resolver: Callable[[ServerCallContext], str]
+
+   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task.
 
-class a2a.server.tasks.DatabaseTaskStore(engine: AsyncEngine, create_table: bool = True, table_name: str = 'tasks')
+class a2a.server.tasks.DatabaseTaskStore(engine: ~sqlalchemy.ext.asyncio.engine.AsyncEngine, create_table: bool = True, table_name: str = 'tasks', owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, core_to_model_conversion: ~collections.abc.Callable[[~a2a_pb2.Task, str], ~a2a.server.models.TaskModel] | None = None, model_to_core_conversion: ~collections.abc.Callable[[~a2a.server.models.TaskModel], ~a2a_pb2.Task] | None = None)
 
    Bases: "TaskStore"
 
@@ -212,71 +268,100 @@ class a2a.server.tasks.DatabaseTaskStore(engine: AsyncEngine, create_table: bool
 
    async_session_maker: async_sessionmaker[AsyncSession]
 
+   core_to_model_conversion: Callable[[Task, str], TaskModel] | None = None
+
    create_table: bool
 
-   async delete(task_id: str, context: ServerCallContext | None = None) -> None
+   async delete(task_id: str, context: ServerCallContext) -> None
 
-      Deletes a task from the database by ID.
+      Deletes a task from the database by ID, for the given owner.
 
    engine: AsyncEngine
 
-   async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+   async get(task_id: str, context: ServerCallContext) -> Task | None
 
-      Retrieves a task from the database by ID.
+      Retrieves a task from the database by ID, for the given owner.
 
    async initialize() -> None
 
       Initialize the database and create the table if needed.
 
-   async save(task: Task, context: ServerCallContext | None = None) -> None
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
 
-      Saves or updates a task in the database.
+      Retrieves tasks from the database based on provided parameters,
+      for the given owner.
+
+   model_to_core_conversion: Callable[[TaskModel], Task] | None = None
+
+   owner_resolver: Callable[[ServerCallContext], str]
+
+   async save(task: Task, context: ServerCallContext) -> None
+
+      Saves or updates a task in the database for the resolved owner.
 
    task_model: type[TaskModel]
 
-class a2a.server.tasks.InMemoryPushNotificationConfigStore
+class a2a.server.tasks.InMemoryPushNotificationConfigStore(owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>)
 
    Bases: "PushNotificationConfigStore"
 
    In-memory implementation of PushNotificationConfigStore interface.
 
-   Stores push notification configurations in memory
+   Stores push notification configurations in a nested dictionary in
+   memory, keyed by owner then task_id.
 
-   async delete_info(task_id: str, config_id: str | None = None) -> None
+   async delete_info(task_id: str, context: ServerCallContext, config_id: str | None = None) -> None
 
-      Deletes the push notification configuration for a task from
-      memory.
+      Deletes push notification configurations for a task from memory.
 
-   async get_info(task_id: str) -> list[PushNotificationConfig]
+      If config_id is provided, only that specific configuration is
+      deleted. If config_id is None, all configurations for the task
+      for the owner are deleted.
 
-      Retrieves the push notification configuration for a task from
-      memory.
+   async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-   async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+      Retrieves all push notification configurations for a task from
+      memory, for the given owner.
+
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task across
+      all owners.
+
+      Used by the push-notification dispatch path.
+
+   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task
       in memory.
 
-class a2a.server.tasks.InMemoryTaskStore
+class a2a.server.tasks.InMemoryTaskStore(owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, use_copying: bool = True)
 
    Bases: "TaskStore"
 
    In-memory implementation of TaskStore.
 
-   Stores task objects in a dictionary in memory. Task data is lost
-   when the server process stops.
+   Can optionally use CopyingTaskStoreAdapter to wrap the internal
+   dictionary-based implementation, preventing shared mutable state
+   issues by always returning and storing deep copies.
 
-   async delete(task_id: str, context: ServerCallContext | None = None) -> None
+   async delete(task_id: str, context: ServerCallContext) -> None
 
-      Deletes a task from the in-memory store by ID.
+      Deletes a task from the store by ID.
 
-   async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+   async get(task_id: str, context: ServerCallContext) -> Task | None
 
-      Retrieves a task from the in-memory store by ID.
+      Retrieves a task from the store by ID.
 
-   async save(task: Task, context: ServerCallContext | None = None) -> None
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
 
-      Saves or updates a task in the in-memory store.
+      Retrieves a list of tasks from the store.
+
+   async save(task: Task, context: ServerCallContext) -> None
+
+      Saves or updates a task in the store.
 
 class a2a.server.tasks.PushNotificationConfigStore
 
@@ -285,15 +370,42 @@ class a2a.server.tasks.PushNotificationConfigStore
    Interface for storing and retrieving push notification
    configurations for tasks.
 
-   abstractmethod async delete_info(task_id: str, config_id: str | None = None) -> None
+   abstractmethod async delete_info(task_id: str, context: ServerCallContext, config_id: str | None = None) -> None
 
       Deletes the push notification configuration for a task.
 
-   abstractmethod async get_info(task_id: str) -> list[PushNotificationConfig]
+   abstractmethod async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-      Retrieves the push notification configuration for a task.
+      Retrieves push notification configurations for a task, scoped to
+      the caller.
 
-   abstractmethod async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+      This is the user-callable read path. Implementations MUST return
+      only configurations owned by the caller (as resolved from
+      context).
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      This is the internal read path used by the push-notification
+      dispatch loop. Implementations SHOULD override this method to
+      return every configuration registered for task_id regardless of
+      which user registered it. Authorization already happened at
+      registration time and the dispatch path fires every registered
+      webhook for the task.
+
+      The default implementation falls back to calling get_info with a
+      synthetic empty ServerCallContext. This preserves 1.0 behavior
+      for subclasses that have not implemented the override but is
+      INCORRECT for any deployment with multiple owners: the empty
+      context resolves to the empty-string owner partition and returns
+      no configs (silently dropping every notification). A warning is
+      logged on every call to flag the misconfiguration. Custom
+      subclasses MUST override this method to deliver notifications
+      correctly in multi-owner deployments.
+
+   abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task.
 
@@ -303,7 +415,7 @@ class a2a.server.tasks.PushNotificationSender
 
    Interface for sending push notifications for tasks.
 
-   abstractmethod async send_notification(task: Task) -> None
+   abstractmethod async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification containing the latest task state.
 
@@ -348,9 +460,9 @@ class a2a.server.tasks.ResultAggregator(task_manager: TaskManager)
          **BaseException** -- If the *EventConsumer* raises an
          exception during consumption.
 
-   async consume_and_break_on_interrupt(consumer: EventConsumer, blocking: bool = True, event_callback: Callable[[], Awaitable[None]] | None = None) -> tuple[Task | Message | None, bool, Task | None]
+   async consume_and_break_on_interrupt(consumer: EventConsumer, blocking: bool = True, event_callback: Callable[[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent], Awaitable[None]] | None = None) -> tuple[Task | Message | None, bool, Task | None]
 
-      Processes the event stream until completion or an interruptable
+      Processes the event stream until completion or an interruptible
       state is encountered.
 
       If *blocking* is False, it returns after the first event that
@@ -417,7 +529,7 @@ class a2a.server.tasks.ResultAggregator(task_manager: TaskManager)
          the final *Message* if one was received, or *None* if no
          result has been produced yet.
 
-class a2a.server.tasks.TaskManager(task_id: str | None, context_id: str | None, task_store: TaskStore, initial_message: Message | None, context: ServerCallContext | None = None)
+class a2a.server.tasks.TaskManager(task_store: TaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
 
    Bases: "object"
 
@@ -434,6 +546,19 @@ class a2a.server.tasks.TaskManager(task_id: str | None, context_id: str | None, 
       Parameters:
          **event** -- The task-related event triggering the need for a
          Task object.
+
+      Returns:
+         An existing or newly created *Task* object.
+
+   async ensure_task_id(task_id: str, context_id: str) -> Task
+
+      Ensures a Task object exists in memory, loading from store or
+      creating new if needed.
+
+      Parameters:
+         * **task_id** -- The ID for the new task.
+
+         * **context_id** -- The context ID for the new task.
 
       Returns:
          An existing or newly created *Task* object.
@@ -479,9 +604,9 @@ class a2a.server.tasks.TaskManager(task_id: str | None, context_id: str | None, 
          The updated *Task* object after processing the event.
 
       Raises:
-         **ServerError** -- If the task ID in the event conflicts with
-         the TaskManager's ID     when the TaskManager's ID is already
-         set.
+         **InvalidParamsError** -- If the task ID in the event
+         conflicts with the TaskManager's ID     when the
+         TaskManager's ID is already set.
 
    update_with_message(message: Message, task: Task) -> Task
 
@@ -507,15 +632,19 @@ class a2a.server.tasks.TaskStore
 
    Defines the methods for persisting and retrieving *Task* objects.
 
-   abstractmethod async delete(task_id: str, context: ServerCallContext | None = None) -> None
+   abstractmethod async delete(task_id: str, context: ServerCallContext) -> None
 
       Deletes a task from the store by ID.
 
-   abstractmethod async get(task_id: str, context: ServerCallContext | None = None) -> Task | None
+   abstractmethod async get(task_id: str, context: ServerCallContext) -> Task | None
 
       Retrieves a task from the store by ID.
 
-   abstractmethod async save(task: Task, context: ServerCallContext | None = None) -> None
+   abstractmethod async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Retrieves a list of tasks from the store.
+
+   abstractmethod async save(task: Task, context: ServerCallContext) -> None
 
       Saves or updates a task in the store.
 
@@ -586,11 +715,11 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as rejected and publishes a final status update.
 
-   async requires_auth(message: Message | None = None, final: bool = False) -> None
+   async requires_auth(message: Message | None = None) -> None
 
       Marks the task as auth required and publishes a status update.
 
-   async requires_input(message: Message | None = None, final: bool = False) -> None
+   async requires_input(message: Message | None = None) -> None
 
       Marks the task as input required and publishes a status update.
 
@@ -602,7 +731,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: TaskState, message: Message | None = None, final: bool = False, timestamp: str | None = None, metadata: dict[str, Any] | None = None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -612,9 +741,6 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
          * **message** -- An optional message associated with the
            status update.
-
-         * **final** -- If True, indicates this is the final status
-           update for the task.
 
          * **timestamp** -- Optional ISO 8601 datetime string.
            Defaults to current time.

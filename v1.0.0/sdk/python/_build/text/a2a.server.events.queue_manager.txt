@@ -14,7 +14,7 @@ class a2a.server.events.queue_manager.QueueManager
 
    Interface for managing the event queue lifecycles per task.
 
-   abstractmethod async add(task_id: str, queue: EventQueue) -> None
+   abstractmethod async add(task_id: str, queue: EventQueueLegacy) -> None
 
       Adds a new event queue associated with a task ID.
 
@@ -22,16 +22,16 @@ class a2a.server.events.queue_manager.QueueManager
 
       Closes and removes the event queue for a task ID.
 
-   abstractmethod async create_or_tap(task_id: str) -> EventQueue
+   abstractmethod async create_or_tap(task_id: str) -> EventQueueLegacy
 
       Creates a queue if one doesn't exist, otherwise taps the
       existing one.
 
-   abstractmethod async get(task_id: str) -> EventQueue | None
+   abstractmethod async get(task_id: str) -> EventQueueLegacy | None
 
       Retrieves the event queue for a task ID.
 
-   abstractmethod async tap(task_id: str) -> EventQueue | None
+   abstractmethod async tap(task_id: str) -> EventQueueLegacy | None
 
       Creates a child event queue (tap) for an existing task ID.
 

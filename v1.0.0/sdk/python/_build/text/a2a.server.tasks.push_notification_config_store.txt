@@ -8,14 +8,41 @@ class a2a.server.tasks.push_notification_config_store.PushNotificationConfigStor
    Interface for storing and retrieving push notification
    configurations for tasks.
 
-   abstractmethod async delete_info(task_id: str, config_id: str | None = None) -> None
+   abstractmethod async delete_info(task_id: str, context: ServerCallContext, config_id: str | None = None) -> None
 
       Deletes the push notification configuration for a task.
 
-   abstractmethod async get_info(task_id: str) -> list[PushNotificationConfig]
+   abstractmethod async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-      Retrieves the push notification configuration for a task.
+      Retrieves push notification configurations for a task, scoped to
+      the caller.
 
-   abstractmethod async set_info(task_id: str, notification_config: PushNotificationConfig) -> None
+      This is the user-callable read path. Implementations MUST return
+      only configurations owned by the caller (as resolved from
+      context).
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      This is the internal read path used by the push-notification
+      dispatch loop. Implementations SHOULD override this method to
+      return every configuration registered for task_id regardless of
+      which user registered it. Authorization already happened at
+      registration time and the dispatch path fires every registered
+      webhook for the task.
+
+      The default implementation falls back to calling get_info with a
+      synthetic empty ServerCallContext. This preserves 1.0 behavior
+      for subclasses that have not implemented the override but is
+      INCORRECT for any deployment with multiple owners: the empty
+      context resolves to the empty-string owner partition and returns
+      no configs (silently dropping every notification). A warning is
+      logged on every call to flag the misconfiguration. Custom
+      subclasses MUST override this method to deliver notifications
+      correctly in multi-owner deployments.
+
+   abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task.

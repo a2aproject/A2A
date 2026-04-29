@@ -5,6 +5,30 @@ a2a.server.agent_execution package
 Submodules
 ==========
 
+* a2a.server.agent_execution.active_task module
+
+  * "ActiveTask"
+
+    * "ActiveTask.cancel()"
+
+    * "ActiveTask.enqueue_request()"
+
+    * "ActiveTask.get_task()"
+
+    * "ActiveTask.start()"
+
+    * "ActiveTask.subscribe()"
+
+    * "ActiveTask.task_id"
+
+* a2a.server.agent_execution.active_task_registry module
+
+  * "ActiveTaskRegistry"
+
+    * "ActiveTaskRegistry.get()"
+
+    * "ActiveTaskRegistry.get_or_create()"
+
 * a2a.server.agent_execution.agent_executor module
 
   * "AgentExecutor"
@@ -16,8 +40,6 @@ Submodules
 * a2a.server.agent_execution.context module
 
   * "RequestContext"
-
-    * "RequestContext.add_activated_extension()"
 
     * "RequestContext.attach_related_task()"
 
@@ -40,6 +62,8 @@ Submodules
     * "RequestContext.requested_extensions"
 
     * "RequestContext.task_id"
+
+    * "RequestContext.tenant"
 
 * a2a.server.agent_execution.request_context_builder module
 
@@ -75,7 +99,7 @@ class a2a.server.agent_execution.AgentExecutor
 
       The agent should attempt to stop the task identified by the
       task_id in the context and publish a *TaskStatusUpdateEvent*
-      with state *TaskState.canceled* to the *event_queue*.
+      with state *TaskState.TASK_STATE_CANCELED* to the *event_queue*.
 
       Parameters:
          * **context** -- The request context containing the task ID
@@ -95,13 +119,71 @@ class a2a.server.agent_execution.AgentExecutor
       execution for this request is complete or yields control (e.g.,
       enters an input-required state).
 
+      Request Lifecycle & AgentExecutor Responsibilities: -
+      **Concurrency**: The framework guarantees single execution per
+      request;
+
+         *execute()* will not be called concurrently for the same
+         request context.
+
+      * **Exception Handling**: Unhandled exceptions raised by
+        *execute()* will be caught by the framework and result in the
+        task transitioning to *TaskState.TASK_STATE_ERROR*.
+
+      * **Post-Completion**: Once *execute()* completes (returns or
+        raises), the executor must not access the *context* or
+        *event_queue* anymore.
+
+      * **Terminal States**: Before completing the call normally, the
+        executor SHOULD publish a *TaskStatusUpdateEvent* to
+        transition the task to a terminal state (e.g.,
+        *TASK_STATE_COMPLETED*) or an interrupted state
+        (*TASK_STATE_INPUT_REQUIRED* or *TASK_STATE_AUTH_REQUIRED*).
+
+      * **Interrupted Workflows**:
+           * *TASK_STATE_INPUT_REQUIRED*: The executor publishes a
+             *TaskStatusUpdateEvent* with
+             *TaskState.TASK_STATE_INPUT_REQUIRED* and returns to
+             yield control. The request will resume once user input is
+             provided.
+
+           * *TASK_STATE_AUTH_REQUIRED*: There are in-bound and out-
+             of-bound auth models. In both scenarios, the agent
+             publishes a *TaskStatusUpdateEvent* with
+             *TaskState.TASK_STATE_AUTH_REQUIRED*.
+
+                * In-bound: The agent should return from *execute()*.
+                  The framework will call *execute()* again once the
+                  user response is received.
+
+                * Out-of-bound: The agent should not return from
+                  *execute()*. It should wait for the out-of-band auth
+                  provider to complete the authentication and then
+                  continue execution.
+
+      * **Cancellation Workflow**: When a cancellation request is
+        received, the async task running *execute()* is cancelled
+        (raising an *asyncio.CancelledError*), and *cancel()* is
+        explicitly called by the framework.
+
+      Allowed Workflows: - Immediate response: Enqueue a SINGLE
+      *Message* object. - Asynchronous/Long-running: Enqueue a *Task*
+      object, perform work, and emit
+
+         multiple *TaskStatusUpdateEvent* / *TaskArtifactUpdateEvent*
+         objects over time.
+
+      Note that the framework waits with response to the send_message
+      request with *return_immediately=True* parameter until the first
+      event (Message or Task) is enqueued by AgentExecutor.
+
       Parameters:
          * **context** -- The request context containing the message,
            task ID, etc.
 
          * **event_queue** -- The queue to publish events to.
 
-class a2a.server.agent_execution.RequestContext(request: MessageSendParams | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, call_context: ServerCallContext | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
+class a2a.server.agent_execution.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
 
    Bases: "object"
 
@@ -110,14 +192,6 @@ class a2a.server.agent_execution.RequestContext(request: MessageSendParams | Non
    Holds information about the current request being processed by the
    server, including the incoming message, task and context
    identifiers, and related tasks.
-
-   add_activated_extension(uri: str) -> None
-
-      Add an extension to the set of activated extensions for this
-      request.
-
-      This causes the extension to be indicated back to the client in
-      the response.
 
    attach_related_task(task: Task) -> None
 
@@ -129,13 +203,13 @@ class a2a.server.agent_execution.RequestContext(request: MessageSendParams | Non
       Parameters:
          **task** -- The *Task* object to attach.
 
-   property call_context: ServerCallContext | None
+   property call_context: ServerCallContext
 
       The server call context associated with this request.
 
-   property configuration: MessageSendConfiguration | None
+   property configuration: SendMessageConfiguration | None
 
-      The *MessageSendConfiguration* from the request, if available.
+      The *SendMessageConfiguration* from the request, if available.
 
    property context_id: str | None
 
@@ -173,11 +247,15 @@ class a2a.server.agent_execution.RequestContext(request: MessageSendParams | Non
 
    property requested_extensions: set[str]
 
-      Extensions that the client requested to activate.
+      Extensions that the client requested for this interaction.
 
    property task_id: str | None
 
       The ID of the task associated with this context.
+
+   property tenant: str
+
+      The tenant associated with this request.
 
 class a2a.server.agent_execution.RequestContextBuilder
 
@@ -185,7 +263,7 @@ class a2a.server.agent_execution.RequestContextBuilder
 
    Builds request context to be supplied to agent executor.
 
-   abstractmethod async build(params: MessageSendParams | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, context: ServerCallContext | None = None) -> RequestContext
+   abstractmethod async build(context: ServerCallContext, params: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None) -> RequestContext
 
 class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_referred_tasks: bool = False, task_store: TaskStore | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
 
@@ -193,7 +271,7 @@ class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_ref
 
    Builds request context and populates referred tasks.
 
-   async build(params: MessageSendParams | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, context: ServerCallContext | None = None) -> RequestContext
+   async build(context: ServerCallContext, params: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None) -> RequestContext
 
       Builds the request context for an agent execution.
 
@@ -203,6 +281,9 @@ class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_ref
       *params.message.reference_task_ids* from the *task_store*.
 
       Parameters:
+         * **context** -- The server call context, containing metadata
+           about the call.
+
          * **params** -- The parameters of the incoming message send
            request.
 
@@ -212,9 +293,6 @@ class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_ref
 
          * **task** -- The primary task object associated with the
            request.
-
-         * **context** -- The server call context, containing metadata
-           about the call.
 
       Returns:
          An instance of RequestContext populated with the provided

@@ -1,24 +1,22 @@
 a2a.client.base_client module
 *****************************
 
-class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, consumers: list[Callable[[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message, AgentCard], Coroutine[None, Any, Any]]], middleware: list[ClientCallInterceptor])
+class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor])
 
    Bases: "Client"
 
    Base implementation of the A2A client, containing transport-
    independent logic.
 
-   async cancel_task(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+   async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
       Requests the agent to cancel a specific task.
 
       Parameters:
-         * **request** -- The *TaskIdParams* object specifying the
-           task ID.
+         * **request** -- The *CancelTaskRequest* object specifying
+           the task ID.
 
-         * **context** -- The client call context.
-
-         * **extensions** -- List of extensions to be activated.
+         * **context** -- Optional client call context.
 
       Returns:
          A *Task* object containing the updated task status.
@@ -27,7 +25,32 @@ class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, t
 
       Closes the underlying transport.
 
-   async get_card(*, context: ClientCallContext | None = None, extensions: list[str] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+   async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+      Parameters:
+         * **request** -- The *TaskPushNotificationConfig* object with
+           the new configuration.
+
+         * **context** -- Optional client call context.
+
+      Returns:
+         The created or updated *TaskPushNotificationConfig* object.
+
+   async delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> None
+
+      Deletes the push notification configuration for a specific task.
+
+      Parameters:
+         * **request** -- The
+           *DeleteTaskPushNotificationConfigRequest* object specifying
+           the request.
+
+         * **context** -- Optional client call context.
+
+   async get_extended_agent_card(request: GetExtendedAgentCardRequest, *, context: ClientCallContext | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
 
       Retrieves the agent's card.
 
@@ -35,9 +58,10 @@ class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, t
       the client's internal state with the new card.
 
       Parameters:
-         * **context** -- The client call context.
+         * **request** -- The *GetExtendedAgentCardRequest* object
+           specifying the request.
 
-         * **extensions** -- List of extensions to be activated.
+         * **context** -- Optional client call context.
 
          * **signature_verifier** -- A callable used to verify the
            agent card's signatures.
@@ -45,22 +69,20 @@ class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, t
       Returns:
          The *AgentCard* for the agent.
 
-   async get_task(request: TaskQueryParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> Task
+   async get_task(request: GetTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
       Retrieves the current state and history of a specific task.
 
       Parameters:
-         * **request** -- The *TaskQueryParams* object specifying the
+         * **request** -- The *GetTaskRequest* object specifying the
            task ID.
 
-         * **context** -- The client call context.
-
-         * **extensions** -- List of extensions to be activated.
+         * **context** -- Optional client call context.
 
       Returns:
          A *Task* object representing the current state of the task.
 
-   async get_task_callback(request: GetTaskPushNotificationConfigParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+   async get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
       Retrieves the push notification configuration for a specific
       task.
@@ -69,37 +91,30 @@ class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, t
          * **request** -- The *GetTaskPushNotificationConfigParams*
            object specifying the task.
 
-         * **context** -- The client call context.
-
-         * **extensions** -- List of extensions to be activated.
+         * **context** -- Optional client call context.
 
       Returns:
          A *TaskPushNotificationConfig* object containing the
          configuration.
 
-   async resubscribe(request: TaskIdParams, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> AsyncIterator[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None]]
+   async list_task_push_notification_configs(request: ListTaskPushNotificationConfigsRequest, *, context: ClientCallContext | None = None) -> ListTaskPushNotificationConfigsResponse
 
-      Resubscribes to a task's event stream.
-
-      This is only available if both the client and server support
-      streaming.
+      Lists push notification configurations for a specific task.
 
       Parameters:
-         * **request** -- Parameters to identify the task to
-           resubscribe to.
+         * **request** -- The *ListTaskPushNotificationConfigsRequest*
+           object specifying the request.
 
-         * **context** -- The client call context.
+         * **context** -- Optional client call context.
 
-         * **extensions** -- List of extensions to be activated.
+      Returns:
+         A *ListTaskPushNotificationConfigsResponse* object.
 
-      Yields:
-         An async iterator of *ClientEvent* objects.
+   async list_tasks(request: ListTasksRequest, *, context: ClientCallContext | None = None) -> ListTasksResponse
 
-      Raises:
-         **NotImplementedError** -- If streaming is not supported by
-         the client or server.
+      Retrieves tasks for an agent.
 
-   async send_message(request: Message, *, configuration: MessageSendConfiguration | None = None, context: ClientCallContext | None = None, request_metadata: dict[str, Any] | None = None, extensions: list[str] | None = None) -> AsyncIterator[tuple[Task, TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None] | Message]
+   async send_message(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
 
       Sends a message to the agent.
 
@@ -111,32 +126,27 @@ class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, t
       Parameters:
          * **request** -- The message to send to the agent.
 
-         * **configuration** -- Optional per-call overrides for
-           message sending behavior.
-
-         * **context** -- The client call context.
-
-         * **request_metadata** -- Extensions Metadata attached to the
-           request.
-
-         * **extensions** -- List of extensions to be activated.
+         * **context** -- Optional client call context.
 
       Yields:
-         An async iterator of *ClientEvent* or a final *Message*
-         response.
+         An async iterator of *StreamResponse*
 
-   async set_task_callback(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None, extensions: list[str] | None = None) -> TaskPushNotificationConfig
+   async subscribe(request: SubscribeToTaskRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
 
-      Sets or updates the push notification configuration for a
-      specific task.
+      Resubscribes to a task's event stream.
+
+      This is only available if both the client and server support
+      streaming.
 
       Parameters:
-         * **request** -- The *TaskPushNotificationConfig* object with
-           the new configuration.
+         * **request** -- Parameters to identify the task to
+           resubscribe to.
 
-         * **context** -- The client call context.
+         * **context** -- Optional client call context.
 
-         * **extensions** -- List of extensions to be activated.
+      Yields:
+         An async iterator of *StreamResponse* objects.
 
-      Returns:
-         The created or updated *TaskPushNotificationConfig* object.
+      Raises:
+         **NotImplementedError** -- If streaming is not supported by
+         the client or server.
