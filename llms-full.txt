@@ -985,7 +985,7 @@ graph TB
 
     subgraph L2 ["A2A Operations"]
         direction LR
-        G[Send Message] ~~~ H[Send Streaming Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
+        G[Send Message] ~~~ H[Stream Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
     end
 
     subgraph L3 ["Protocol Bindings"]
@@ -1145,7 +1145,7 @@ The agent MAY return a `Task` for complex processing with status/artifact update
 
 #### 3.1.3. Get Task
 
-Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with Send Message, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.
+Retrieves the current state (including status, artifacts, and optionally history) of a previously initiated task. This is typically used for polling the status of a task initiated with message/send, or for fetching the final state of a task after being notified via a push notification or after a stream has ended.
 
 **Inputs:**
 
@@ -1591,7 +1591,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Stream Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -1780,7 +1780,7 @@ When a task update occurs, the agent sends an HTTP POST request to the configure
 ```http
 POST {webhook_url}
 Authorization: {authentication_scheme} {credentials}
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   /* StreamResponse object - one of: */
@@ -1987,7 +1987,7 @@ Clients indicate their desire to opt into the use of specific extensions through
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
 
@@ -2094,7 +2094,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | Functionality                   | JSON-RPC Method                    | gRPC Method                        | REST Endpoint                                           |
 | :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
 | Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
-| Send streaming message          | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
+| Stream message                  | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
@@ -2109,17 +2109,17 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 
 All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST** be mapped to binding-specific error representations. The following table provides the canonical mappings for each standard protocol binding:
 
-| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                 |
-| :------------------------------------ | :------------ | :-------------------- | :-------------------------- |
-| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`             |
-| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
-| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
-| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
-| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`           |
-| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error` |
-| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
-| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
-| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| A2A Error Type                        | JSON-RPC Code | gRPC Status           | HTTP Status                  |
+| :------------------------------------ | :------------ | :-------------------- | :--------------------------- |
+| `TaskNotFoundError`                   | `-32001`      | `NOT_FOUND`           | `404 Not Found`              |
+| `TaskNotCancelableError`              | `-32002`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
+| `PushNotificationNotSupportedError`   | `-32003`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
+| `UnsupportedOperationError`           | `-32004`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
+| `ContentTypeNotSupportedError`        | `-32005`      | `INVALID_ARGUMENT`    | `400 Bad Request`            |
+| `InvalidAgentResponseError`           | `-32006`      | `INTERNAL`            | `500 Internal Server Error`  |
+| `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
+| `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`            |
+| `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION`       | `400 Bad Request`        |
 
 **Custom Binding Requirements:**
 
@@ -3680,7 +3680,7 @@ The HTTP+JSON protocol binding provides a RESTful interface using standard HTTP 
 ### 11.1. Protocol Requirements
 
 - **Protocol:** HTTP(S) with JSON payloads
-- **Content-Type:** application/a2a+json **SHOULD** be used for requests and responses
+- **Content-Type:** `application/json` for requests and responses
 - **Methods:** Standard HTTP verbs (GET, POST, PUT, DELETE)
 - **URL Patterns:** RESTful resource-based URLs
 - **Streaming:** Server-Sent Events for real-time updates
@@ -3700,7 +3700,7 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 ```http
 POST /message:send HTTP/1.1
 Host: agent.example.com
-Content-Type: application/a2a+json
+Content-Type: application/json
 Authorization: Bearer token
 A2A-Version: 0.3
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
@@ -3746,7 +3746,7 @@ All requests and responses use JSON objects structurally equivalent to the Proto
 
 ```http
 POST /message:send
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "message": {
@@ -3766,7 +3766,7 @@ Content-Type: application/a2a+json
 
 ```http
 HTTP/1.1 200 OK
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "task": {
@@ -3852,7 +3852,7 @@ For the complete mapping of A2A error types to HTTP status codes, see [Section 5
 
 ```http
 HTTP/1.1 404 Not Found
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 {
   "error": {
@@ -3884,7 +3884,7 @@ REST streaming uses Server-Sent Events with the `data` field containing JSON ser
 
 ```http
 POST /message:stream
-Content-Type: application/a2a+json
+Content-Type: application/json
 
 { /* SendMessageRequest object */ }
 ```
@@ -6317,7 +6317,7 @@ Let's get started!
 </file>
 
 <file path="docs/tutorials/python/2-setup.md">
-# 2. Set Up Your Environment
+# 2. Setup Your Environment
 
 ## Prerequisites
 
@@ -6357,7 +6357,7 @@ We recommend using a virtual environment for Python projects. The A2A Python SDK
         .venv\Scripts\activate
         ```
 
-2. **Install the A2A SDK and its required Python dependencies:**
+2. **Install needed Python dependencies along with the A2A SDK and its dependencies:**
 
     ```bash
     pip install -r samples/python/requirements.txt
@@ -6410,6 +6410,7 @@ The **Agent Card** is a JSON document that an A2A Server makes available, typica
 Key attributes of an `AgentCard` (defined in `a2a.types`):
 
 - `name`, `description`, `version`: Basic identity information.
+- `icon_url`: A URL to an icon representing the agent.
 - `supported_interfaces`: Ordered list of endpoints and protocols where the A2A service can be reached.
 - `capabilities`: Supported A2A features like `streaming` or `extended_agent_card`.
 - `default_input_modes` / `default_output_modes`: Default Media Types for the agent.
@@ -6421,7 +6422,9 @@ The `helloworld` example defines its Agent Card like this:
 --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/__main__.py:AgentCard"
 ```
 
-This card tells us the agent is named "Hello World Agent", can be run at `http://127.0.0.1:9999/`, supports text interactions, and has the `hello_world` skill.
+This card tells us the agent is named "Hello World Agent", runs at `http://localhost:9999` using `JSONRPC`, supports text interactions, and has the `hello_world` skill. Its capabilities also indicate support for streaming and an extended authenticated configuration.
+
+Understanding the Agent Card is crucial because it's how a client discovers an agent and learns how to interact with it.
 </file>
 
 <file path="docs/tutorials/python/4-agent-executor.md">
@@ -6468,17 +6471,20 @@ Let's look at `agent_executor.py`. It defines `HelloWorldAgentExecutor`.
         --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_execute"
         ```
 
-        When a `Send Message` or `Send Streaming Message` request comes in (both are handled by `execute` in this simplified executor), the following steps occur:
+        When a `message/send` or `message/stream` request comes in (both are handled by `execute` in this simplified executor):
 
-        **Step 1.** The `A2A instance` (server) retrieves the current task from the context. If there is no task in context, then it creates a new task and adds it to the `EventQueue`.
+        1. It retrieves the current task from the context or creates a new one, enqueueing it as the first event.
+        2. It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing.
+        3. It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
+        4. It enqueues a `TaskArtifactUpdateEvent` containing the result text.
+        5. Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
 
-        **Step 2.** It enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_WORKING` to indicate the agent has begun processing.
+    - **`cancel`**:
+        The Hello World example's `cancel` method simply raises an exception, indicating that cancellation is not supported for this basic agent.
 
-        **Step 3.** It calls `self.agent.invoke()` to execute the actual business logic (which simply returns "Hello, World!").
-
-        **Step 4.** It enqueues a `TaskArtifactUpdateEvent` containing the result text from the agent.
-
-        **Step 5.** Finally, it enqueues a `TaskStatusUpdateEvent` with a state of `TASK_STATE_COMPLETED` to conclude the task.
+        ```python { .no-copy }
+        --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/agent_executor.py:HelloWorldAgentExecutor_cancel"
+        ```
 
 The `AgentExecutor` acts as the bridge between the A2A protocol (managed by the request handler and server application) and your agent's specific logic. It receives context about the request and uses an event queue to communicate results or updates back.
 </file>
@@ -6488,9 +6494,7 @@ The `AgentExecutor` acts as the bridge between the A2A protocol (managed by the 
 
 Now that we have an Agent Card and an Agent Executor, we can set up and start the A2A server.
 
-To set up an A2A server, the Python SDK provides a route factory and helper functions (`create_agent_card_routes`, `create_jsonrpc_routes`, `create_rest_routes`). Use the route factory to create routes for the A2A server's services. These routes can be attached natively to popular frameworks like [Starlette](https://www.starlette.io/) and [FastAPI](https://fastapi.tiangolo.com/), which give you better control over authentication, logging, and other features.
-
-In this tutorial, we will use Starlette with [Uvicorn](https://www.uvicorn.org/).
+The A2A Python SDK provides an `A2AStarletteApplication` class that simplifies running an A2A-compliant HTTP server. It uses [Starlette](https://www.starlette.io/) for the web framework and is typically run with an ASGI server like [Uvicorn](https://www.uvicorn.org/).
 
 ## Server Setup in Helloworld
 
@@ -6504,20 +6508,20 @@ Let's break this down:
 
 1. **`DefaultRequestHandler`**:
 
-    - The SDK provides `DefaultRequestHandler`. This handler takes your `AgentExecutor` implementation (`HelloWorldAgentExecutor`), a `TaskStore` (`InMemoryTaskStore`), and the public and extended `AgentCard` objects.
+    - The SDK provides `DefaultRequestHandler`. This handler takes your `AgentExecutor` implementation (here, `HelloWorldAgentExecutor`) and a `TaskStore` (here, `InMemoryTaskStore`).
     - It routes incoming A2A RPC calls to the appropriate methods on your executor (like `execute` or `cancel`).
     - The `TaskStore` is used by the `DefaultRequestHandler` to manage the lifecycle of tasks, especially for stateful interactions, streaming, and resubscription. Even if your agent executor is simple, the handler needs a task store.
-    - `agent_card` is passed to the handler so it can verify the agent's declared capabilities when processing incoming requests. For example, it checks whether streaming or push notifications are supported before handling those request types.
-    - `extended_agent_card` is passed so the handler can serve it via the `GetExtendedAgentCard` RPC method to authenticated clients.
 
-2. **`create_agent_card_routes` and `create_jsonrpc_routes`**:
+2. **`A2AStarletteApplication`**:
 
-    - `create_agent_card_routes(public_agent_card)` returns Starlette routes that expose the Agent Card at the `/.well-known/agent-card.json` endpoint for public discovery.
-    - `create_jsonrpc_routes(request_handler, '/')` returns Starlette routes that handle all incoming A2A JSON-RPC method calls by delegating to the `request_handler`.
-    - These route lists are combined and passed to a standard `Starlette` application.
+    - The `A2AStarletteApplication` class is instantiated with the `agent_card`, `request_handler` (referred to as `http_handler` in its constructor), and an optional `extended_agent_card`.
+    - The `agent_card` is exposed at the `/.well-known/agent-card.json` endpoint for public discovery.
+    - The `request_handler` processes all incoming A2A method calls by interacting with your `AgentExecutor`.
+    - The `extended_agent_card` provides additional capabilities and skills for authenticated users and is exposed via the `GetExtendedAgentCard` RPC method.
 
-3. **`uvicorn.run(app, ...)`**:
-    - The constructed `Starlette` app is run using `uvicorn.run()`, making your agent accessible over HTTP.
+3. **`uvicorn.run(server_app_builder.build(), ...)`**:
+    - The `A2AStarletteApplication` has a `build()` method that constructs the actual Starlette application.
+    - This application is then run using `uvicorn.run()`, making your agent accessible over HTTP.
     - `host='127.0.0.1'` makes the server accessible only from your local machine.
     - `port=9999` specifies the port to listen on. This matches the endpoints defined in the `AgentCard`'s `supported_interfaces`.
 
@@ -6547,19 +6551,19 @@ Your A2A Helloworld agent is now live and listening for requests! In the next st
 <file path="docs/tutorials/python/6-interact-with-server.md">
 # 6. Interacting with the Server
 
-With the Helloworld A2A server running, let's send some requests to it.
+With the Helloworld A2A server running, let's send some requests to it. The SDK includes a client (`A2AClient`) that simplifies these interactions.
 
 ## The Helloworld Test Client
 
 The `test_client.py` script demonstrates how to:
 
 1. Fetch the Agent Card from the server.
-2. Create a client using `create_client`.
-3. Send both `Send Message` and `Send Streaming Message` requests.
+2. Create an `A2AClient` instance.
+3. Send both non-streaming (`message/send`) and streaming (`message/stream`) requests.
 
 Open a **new terminal window**, activate your virtual environment, and navigate to the `a2a-samples` directory.
 
-Activate the virtual environment (be sure to do this in the same directory where you created it):
+Activate virtual environment (Be sure to do this in the same directory where you created the virtual environment):
 
 === "Mac/Linux"
 
@@ -6590,7 +6594,7 @@ Let's look at key parts of `test_client.py`:
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:A2ACardResolver"
     ```
 
-    The `A2ACardResolver` class is a convenience. When `get_agent_card()` is called, it fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL), which is then used to initialize the client.
+    The `A2ACardResolver` class is a convenience. It first fetches the `AgentCard` from the server's `/.well-known/agent-card.json` endpoint (based on the provided base URL) which is then used to initialize the client.
 
 2. **Initializing the Client & Sending a Non-Streaming Message**:
 
@@ -6598,9 +6602,10 @@ Let's look at key parts of `test_client.py`:
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_send"
     ```
 
-    - The `create_client` function creates a `Client` based on the information provided by the `AgentCard` and a `ClientConfig`.
-    - We construct a `Message` using the `new_text_message` helper (passing `role=Role.ROLE_USER`), then wrap it in a `SendMessageRequest`.
-    - The client's `send_message` method returns an async iterator that yields a single final `Task` or `Message` response from the agent. In this example, it is a `Task`.
+    - A `ClientFactory` creates a non-streaming client based on the fetched card.
+    - We construct a `Message` object using `Role.ROLE_USER` and `Part` for the content.
+    - This is wrapped in a `SendMessageRequest`.
+    - The client's `send_message` method returns an async generator that yields a sequence of `Task` events from the agent.
 
 3. **Initializing the Client & Sending a Streaming Message**:
 
@@ -6608,53 +6613,20 @@ Let's look at key parts of `test_client.py`:
     --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/helloworld/test_client.py:message_stream"
     ```
 
-    - A separate streaming client is created via `create_client` with `streaming=True` in its `ClientConfig`.
-    - We again call `send_message`, which now streams events: each iteration of the loop prints a discrete chunk as it arrives over the network.
-    - Call `await streaming_client.close()` after the loop to release the underlying HTTP connection.
+    - A new streaming client is created via `ClientFactory` configured with `streaming=True`.
+    - We again call `send_message` (which now handles both streaming and non-streaming under the same method name, based on the `ClientConfig` and agent `capabilities`).
+    - The response dynamically yields `Task` events as they are streamed over the network.
 
 ## Expected Output
 
-When you run `test_client.py`, you'll see output for:
+When you run `test_client.py`, you'll see in protobuf text format outputs for:
 
-- The public agent card, displayed in a formatted summary.
-- The non-streaming response: a single `task` in protobuf text format containing the completed status, the generated artifact with "Hello, World!", and the agent's intermediate status message in history.
-- The streaming response: four chunks — the initial `task`, a `status_update` for WORKING, an `artifact_update` with the result, and a final `status_update` for COMPLETED.
-- The extended agent card, displayed in a formatted summary (with an additional `super_hello_world` skill).
+- The non-streaming response (a single final `task` log detailing the history, status, and the generated artifact containing the "Hello, World!" text).
+- The streaming response (multiple discrete events including the initial `task`, a `status_update`, and a final `artifact_update` containing the "Hello, World!" text).
 
 The `id` fields in the output will vary with each run.
 
 ```console { .no-copy }
-                     AgentCard
---- General ---
-Name        : Hello World Agent
-Description : Just a hello world agent
-Version     : 0.0.1
-
---- Interfaces ---
-  [0] http://127.0.0.1:9999  (JSONRPC)
-
---- Capabilities ---
-Streaming           : True
-Push notifications  : False
-Extended agent card : True
-
---- I/O Modes ---
-Input  : text/plain
-Output : text/plain
-
---- Skills ---
-----------------------------------------------------
-  ID          : hello_world
-  Name        : Returns hello world
-  Description : just returns hello world
-  Tags        : hello world
-  Example     : hi
-  Example     : hello world
-
---- Non-Streaming Call ---
-
-Non-streaming Client initialized.
-Response:
 // Non-streaming response
 task {
   id: "xxxxxxxx"
@@ -6742,46 +6714,13 @@ status_update {
     state: TASK_STATE_COMPLETED
   }
 }
-                     AgentCard
---- General ---
-Name        : Hello World Agent - Extended Edition
-Description : The full-featured hello world agent for authenticated users.
-Version     : 0.0.2
-
---- Interfaces ---
-  [0] http://127.0.0.1:9999  (JSONRPC)
-
---- Capabilities ---
-Streaming           : True
-Push notifications  : False
-Extended agent card : True
-
---- I/O Modes ---
-Input  : text/plain
-Output : text/plain
-
---- Skills ---
-----------------------------------------------------
-  ID          : hello_world
-  Name        : Returns hello world
-  Description : just returns hello world
-  Tags        : hello world
-  Example     : hi
-  Example     : hello world
-----------------------------------------------------
-  ID          : super_hello_world
-  Name        : Returns a SUPER Hello World
-  Description : A more enthusiastic greeting, only for authenticated users.
-  Tags        : hello world, super, extended
-  Example     : super hi
-  Example     : give me a super hello
 ```
 
-_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `wwwwwwww`, and `vvvvvvvv` will be different UUIDs in each run.)_
+_(Actual IDs like `xxxxxxxx`, `yyyyyyyy`, `zzzzzzzz`, `vvvvvvvv`, `wwwwwwww` will be different UUIDs/request IDs)_
 
-This confirms your server is correctly handling basic A2A interactions with the updated SDK structure.
+This confirms your server is correctly handling basic A2A interactions with the updated SDK structure!
 
-You can now shut down the server by pressing Ctrl+C in the terminal window where `__main__.py` is running.
+Now you can shut down the server by typing Ctrl+C in the terminal window where `__main__.py` is running.
 </file>
 
 <file path="docs/tutorials/python/7-streaming-and-multiturn.md">
@@ -6793,7 +6732,7 @@ This example features a "Currency Agent" that uses the Gemini model via LangChai
 
 ## Setting up the LangGraph Example
 
-1. Create a [Gemini API Key](https://ai.google.dev/gemini-api/docs/api-key) if you don't already have one.
+1. Create a [Gemini API Key](https://ai.google.dev/gemini-api/docs/api-key), if you don't already have one.
 
 2. **Environment Variable:**
 
@@ -6851,14 +6790,14 @@ The `langgraph` example showcases several important A2A concepts:
         ```
 
     - The `CurrencyAgentExecutor` (in `samples/langgraph/agent_executor.py`), when its `execute` method is called by the `DefaultRequestHandler`, interacts with the `RequestContext` which contains the current task (if any).
-    - For `Send Message`, the `DefaultRequestHandler` uses the `TaskStore` to persist and retrieve task state across interactions. The response to `Send Message` will be a full `Task` object if the agent's execution flow involves multiple steps or results in a persistent task.
+    - For `message/send`, the `DefaultRequestHandler` uses the `TaskStore` to persist and retrieve task state across interactions. The response to `message/send` will be a full `Task` object if the agent's execution flow involves multiple steps or results in a persistent task.
     - The `test_client.py`'s `run_single_turn_test` demonstrates getting a `Task` object back and then querying it using `get_task`.
 
 3. **Streaming with `TaskStatusUpdateEvent` and `TaskArtifactUpdateEvent`**:
 
     - The `execute` method in `CurrencyAgentExecutor` is responsible for handling both non-streaming and streaming requests, orchestrated by the `DefaultRequestHandler`.
     - As the LangGraph agent processes the request (which might involve calling tools like `get_exchange_rate`), the `CurrencyAgentExecutor` enqueues different types of events onto the `EventQueue`:
-        - `TaskStatusUpdateEvent`: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates...").
+        - `TaskStatusUpdateEvent`: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates..").
         - `TaskArtifactUpdateEvent`: When the final answer is ready, it's enqueued as an artifact. The `lastChunk` flag is `True`.
         - A final `TaskStatusUpdateEvent` with `state=TaskState.completed` is sent to signify the end of the task, closing the stream.
     - The `test_client.py`'s `run_streaming_test` function will print these individual event chunks as they are received from the server.
@@ -11562,7 +11501,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7980>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840aac55e0>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11588,7 +11527,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7890>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840aac54f0>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -11632,7 +11571,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7980>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840aac55e0>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -11652,7 +11591,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d77a7890>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840aac54f0>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16056,11 +15995,124 @@ a2a.helpers.proto_helpers.new_artifact(parts: list[Part], name: str, description
 
    Creates a new Artifact object.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2, context_id: str | None = None, task_id: str | None = None) -> Message
+a2a.helpers.proto_helpers.new_data_artifact(name: str, data: Any, media_type: str | None = None, description: str | None = None, artifact_id: str | None = None) -> Artifact
+
+   Creates a new Artifact object containing only a single data Part.
+
+   Parameters:
+      * **name** -- The name of the artifact.
+
+      * **data** -- JSON-serializable data to embed (dict, list, str,
+        etc.).
+
+      * **media_type** -- Optional MIME type of the part content
+        (e.g., "text/plain", "application/json", "image/png").
+
+      * **description** -- Optional description.
+
+      * **artifact_id** -- Optional artifact ID (auto-generated if not
+        provided).
+
+   Returns:
+      An Artifact with a single data Part.
+
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
+
+   Creates a new message containing a single data Part.
+
+   Parameters:
+      * **data** -- JSON-serializable data to embed (dict, list, str,
+        etc.).
+
+      * **media_type** -- Optional MIME type of the part content
+        (e.g., "text/plain", "application/json", "image/png").
+
+      * **context_id** -- Optional context ID.
+
+      * **task_id** -- Optional task ID.
+
+      * **role** -- The role of the message sender (default:
+        ROLE_AGENT).
+
+   Returns:
+      A Message with a single data Part.
+
+a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
+
+   Creates a Part with structured data (google.protobuf.Value).
+
+   Parameters:
+      * **data** -- JSON-serializable data to embed (dict, list, str,
+        etc.).
+
+      * **media_type** -- Optional MIME type of the part content
+        (e.g., "text/plain", "application/json", "image/png").
+
+   Returns:
+      A Part with the data field set.
+
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_raw_artifact(name: str, raw: bytes, media_type: str | None = None, filename: str | None = None, description: str | None = None, artifact_id: str | None = None) -> Artifact
+
+   Creates a new Artifact object containing only a single raw bytes
+   Part.
+
+   Parameters:
+      * **name** -- The name of the artifact.
+
+      * **raw** -- The raw bytes content.
+
+      * **media_type** -- Optional MIME type (e.g. 'image/png').
+
+      * **filename** -- Optional filename.
+
+      * **description** -- Optional description.
+
+      * **artifact_id** -- Optional artifact ID (auto-generated if not
+        provided).
+
+   Returns:
+      An Artifact with a single raw Part.
+
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
+
+   Creates a new message containing a single raw bytes Part.
+
+   Parameters:
+      * **raw** -- The raw bytes content.
+
+      * **media_type** -- Optional MIME type (e.g. 'image/png').
+
+      * **filename** -- Optional filename.
+
+      * **context_id** -- Optional context ID.
+
+      * **task_id** -- Optional task ID.
+
+      * **role** -- The role of the message sender (default:
+        ROLE_AGENT).
+
+   Returns:
+      A Message with a single raw Part.
+
+a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: str | None = None) -> Part
+
+   Creates a Part with raw bytes content.
+
+   Parameters:
+      * **raw** -- The raw bytes content.
+
+      * **media_type** -- Optional MIME type (e.g. 'image/png').
+
+      * **filename** -- Optional filename.
+
+   Returns:
+      A Part with the raw field set.
+
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16068,7 +16120,7 @@ a2a.helpers.proto_helpers.new_task_from_user_message(user_message: Message) -> T
 
    Creates a new Task object from an initial user message.
 
-a2a.helpers.proto_helpers.new_text_artifact(name: str, text: str, description: str | None = None, artifact_id: str | None = None) -> Artifact
+a2a.helpers.proto_helpers.new_text_artifact(name: str, text: str, media_type: str | None = None, description: str | None = None, artifact_id: str | None = None) -> Artifact
 
    Creates a new Artifact object containing only a single text Part.
 
@@ -16076,13 +16128,82 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None) -> Part
+
+   Creates a Part with text content.
+
+   Parameters:
+      * **text** -- The text content.
+
+      * **media_type** -- Optional MIME type (e.g. 'text/plain',
+        'text/markdown').
+
+   Returns:
+      A Part with the text field set.
+
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
+
+a2a.helpers.proto_helpers.new_url_artifact(name: str, url: str, media_type: str | None = None, filename: str | None = None, description: str | None = None, artifact_id: str | None = None) -> Artifact
+
+   Creates a new Artifact object containing only a single URL Part.
+
+   Parameters:
+      * **name** -- The name of the artifact.
+
+      * **url** -- The URL pointing to the file content.
+
+      * **media_type** -- Optional MIME type (e.g. 'image/png').
+
+      * **filename** -- Optional filename.
+
+      * **description** -- Optional description.
+
+      * **artifact_id** -- Optional artifact ID (auto-generated if not
+        provided).
+
+   Returns:
+      An Artifact with a single URL Part.
+
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
+
+   Creates a new message containing a single URL Part.
+
+   Parameters:
+      * **url** -- The URL pointing to the file content.
+
+      * **media_type** -- Optional MIME type (e.g. 'image/png').
+
+      * **filename** -- Optional filename.
+
+      * **context_id** -- Optional context ID.
+
+      * **task_id** -- Optional task ID.
+
+      * **role** -- The role of the message sender (default:
+        ROLE_AGENT).
+
+   Returns:
+      A Message with a single URL Part.
+
+a2a.helpers.proto_helpers.new_url_part(url: str, media_type: str | None = None, filename: str | None = None) -> Part
+
+   Creates a Part with a URL pointing to file content.
+
+   Parameters:
+      * **url** -- The URL to the file content.
+
+      * **media_type** -- Optional MIME type (e.g. 'image/png').
+
+      * **filename** -- Optional filename.
+
+   Returns:
+      A Part with the url field set.
 </file>
 
 <file path="sdk/python/a2a.helpers.txt">
@@ -16109,7 +16230,19 @@ Submodules
 
   * "new_artifact()"
 
+  * "new_data_artifact()"
+
+  * "new_data_message()"
+
+  * "new_data_part()"
+
   * "new_message()"
+
+  * "new_raw_artifact()"
+
+  * "new_raw_message()"
+
+  * "new_raw_part()"
 
   * "new_task()"
 
@@ -16121,7 +16254,15 @@ Submodules
 
   * "new_text_message()"
 
+  * "new_text_part()"
+
   * "new_text_status_update_event()"
+
+  * "new_url_artifact()"
+
+  * "new_url_message()"
+
+  * "new_url_part()"
 
 
 Module contents
@@ -16156,11 +16297,11 @@ a2a.helpers.new_artifact(parts: list[Part], name: str, description: str | None =
 
    Creates a new Artifact object.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2, context_id: str | None = None, task_id: str | None = None) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16168,7 +16309,7 @@ a2a.helpers.new_task_from_user_message(user_message: Message) -> Task
 
    Creates a new Task object from an initial user message.
 
-a2a.helpers.new_text_artifact(name: str, text: str, description: str | None = None, artifact_id: str | None = None) -> Artifact
+a2a.helpers.new_text_artifact(name: str, text: str, media_type: str | None = None, description: str | None = None, artifact_id: str | None = None) -> Artifact
 
    Creates a new Artifact object containing only a single text Part.
 
@@ -16176,11 +16317,11 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9950> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f840901fe50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 </file>
@@ -19755,7 +19896,7 @@ a2a.server.routes.create_rest_routes(request_handler: RequestHandler, context_bu
 a2a.server.tasks.base_push_notification_sender module
 *****************************************************
 
-class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext)
+class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None)
 
    Bases: "PushNotificationSender"
 
@@ -19834,6 +19975,15 @@ class a2a.server.tasks.database_push_notification_config_store.DatabasePushNotif
 
       Retrieves all push notification configurations for a task, for
       the given owner.
+
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      Used by the push-notification dispatch path.
 
    async initialize() -> None
 
@@ -19922,6 +20072,15 @@ class a2a.server.tasks.inmemory_push_notification_config_store.InMemoryPushNotif
       Retrieves all push notification configurations for a task from
       memory, for the given owner.
 
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task across
+      all owners.
+
+      Used by the push-notification dispatch path.
+
    async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task
@@ -19976,7 +20135,34 @@ class a2a.server.tasks.push_notification_config_store.PushNotificationConfigStor
 
    abstractmethod async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-      Retrieves the push notification configuration for a task.
+      Retrieves push notification configurations for a task, scoped to
+      the caller.
+
+      This is the user-callable read path. Implementations MUST return
+      only configurations owned by the caller (as resolved from
+      context).
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      This is the internal read path used by the push-notification
+      dispatch loop. Implementations SHOULD override this method to
+      return every configuration registered for task_id regardless of
+      which user registered it. Authorization already happened at
+      registration time and the dispatch path fires every registered
+      webhook for the task.
+
+      The default implementation falls back to calling get_info with a
+      synthetic empty ServerCallContext. This preserves 1.0 behavior
+      for subclasses that have not implemented the override but is
+      INCORRECT for any deployment with multiple owners: the empty
+      context resolves to the empty-string owner partition and returns
+      no configs (silently dropping every notification). A warning is
+      logged on every call to flag the misconfiguration. Custom
+      subclasses MUST override this method to deliver notifications
+      correctly in multi-owner deployments.
 
    abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
@@ -20344,7 +20530,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -20405,6 +20591,8 @@ Submodules
 
     * "DatabasePushNotificationConfigStore.get_info()"
 
+    * "DatabasePushNotificationConfigStore.get_info_for_dispatch()"
+
     * "DatabasePushNotificationConfigStore.initialize()"
 
     * "DatabasePushNotificationConfigStore.model_to_core_conversion"
@@ -20449,6 +20637,8 @@ Submodules
 
     * "InMemoryPushNotificationConfigStore.get_info()"
 
+    * "InMemoryPushNotificationConfigStore.get_info_for_dispatch()"
+
     * "InMemoryPushNotificationConfigStore.set_info()"
 
 * a2a.server.tasks.inmemory_task_store module
@@ -20470,6 +20660,8 @@ Submodules
     * "PushNotificationConfigStore.delete_info()"
 
     * "PushNotificationConfigStore.get_info()"
+
+    * "PushNotificationConfigStore.get_info_for_dispatch()"
 
     * "PushNotificationConfigStore.set_info()"
 
@@ -20553,7 +20745,7 @@ Module contents
 
 Components for managing tasks within the A2A server.
 
-class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext)
+class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None)
 
    Bases: "PushNotificationSender"
 
@@ -20594,6 +20786,15 @@ class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: ~sqlalchemy.e
 
       Retrieves all push notification configurations for a task, for
       the given owner.
+
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      Used by the push-notification dispatch path.
 
    async initialize() -> None
 
@@ -20672,6 +20873,15 @@ class a2a.server.tasks.InMemoryPushNotificationConfigStore(owner_resolver: ~coll
       Retrieves all push notification configurations for a task from
       memory, for the given owner.
 
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task across
+      all owners.
+
+      Used by the push-notification dispatch path.
+
    async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task
@@ -20716,7 +20926,34 @@ class a2a.server.tasks.PushNotificationConfigStore
 
    abstractmethod async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-      Retrieves the push notification configuration for a task.
+      Retrieves push notification configurations for a task, scoped to
+      the caller.
+
+      This is the user-callable read path. Implementations MUST return
+      only configurations owned by the caller (as resolved from
+      context).
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      This is the internal read path used by the push-notification
+      dispatch loop. Implementations SHOULD override this method to
+      return every configuration registered for task_id regardless of
+      which user registered it. Authorization already happened at
+      registration time and the dispatch path fires every registered
+      webhook for the task.
+
+      The default implementation falls back to calling get_info with a
+      synthetic empty ServerCallContext. This preserves 1.0 behavior
+      for subclasses that have not implemented the override but is
+      INCORRECT for any deployment with multiple owners: the empty
+      context resolves to the empty-string owner partition and returns
+      no configs (silently dropping every notification). A warning is
+      logged on every call to flag the misconfiguration. Custom
+      subclasses MUST override this method to deliver notifications
+      correctly in multi-owner deployments.
 
    abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
@@ -21044,7 +21281,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f8409125750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -21518,6 +21755,8 @@ Subpackages
 
       * "DatabasePushNotificationConfigStore.get_info()"
 
+      * "DatabasePushNotificationConfigStore.get_info_for_dispatch()"
+
       * "DatabasePushNotificationConfigStore.initialize()"
 
       * "DatabasePushNotificationConfigStore.model_to_core_conversion"
@@ -21558,6 +21797,8 @@ Subpackages
 
       * "InMemoryPushNotificationConfigStore.get_info()"
 
+      * "InMemoryPushNotificationConfigStore.get_info_for_dispatch()"
+
       * "InMemoryPushNotificationConfigStore.set_info()"
 
     * "InMemoryTaskStore"
@@ -21575,6 +21816,8 @@ Subpackages
       * "PushNotificationConfigStore.delete_info()"
 
       * "PushNotificationConfigStore.get_info()"
+
+      * "PushNotificationConfigStore.get_info_for_dispatch()"
 
       * "PushNotificationConfigStore.set_info()"
 
@@ -22081,7 +22324,19 @@ Subpackages
 
       * "new_artifact()"
 
+      * "new_data_artifact()"
+
+      * "new_data_message()"
+
+      * "new_data_part()"
+
       * "new_message()"
+
+      * "new_raw_artifact()"
+
+      * "new_raw_message()"
+
+      * "new_raw_part()"
 
       * "new_task()"
 
@@ -22093,7 +22348,15 @@ Subpackages
 
       * "new_text_message()"
 
+      * "new_text_part()"
+
       * "new_text_status_update_event()"
+
+      * "new_url_artifact()"
+
+      * "new_url_message()"
+
+      * "new_url_part()"
 
   * Module contents
 
