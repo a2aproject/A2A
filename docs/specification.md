@@ -457,7 +457,7 @@ The `return_immediately` field has no effect:
 
 **Optimistic Concurrency with `ifGenerationMatch`:**
 
-The `ifGenerationMatch` field enables optimistic concurrency control when sending a follow-up message to an existing task. If set, the server **MUST** compare the provided value against the task's current `generation` at the time the message is processed. If the values do not match, the server **MUST** reject the request with [`TaskGenerationMismatchError`](#332-error-handling) (HTTP `412 Precondition Failed` / gRPC `ABORTED`). If the task referenced by the message does not yet exist (i.e., a new task will be created), this field **MUST** be ignored.
+The `ifGenerationMatch` field enables optimistic concurrency control when sending a follow-up message to an existing task. If set, the server **MUST** compare the provided value against the task's current `generation` at the time the message is processed. If the values do not match, the server **MUST** reject the request with [`TaskGenerationMismatchError`](#332-error-handling) (HTTP `409 Conflict` / gRPC `ABORTED`). If the task referenced by the message does not yet exist (i.e., a new task will be created), this field **MUST** be ignored.
 
 See [Task Generation Semantics](#327-task-generation-semantics) for the full description of the `generation` field.
 
@@ -510,6 +510,8 @@ The `generation` value is included in [`TaskStatusUpdateEvent`](#421-taskstatusu
 
 A client that tracks the last seen `generation` can detect missed events by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, it knows at least one event was not delivered and **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
 
+A correctly-implemented server **MUST NOT** emit two events for the same task with the same `generation` value. If a client observes two consecutive events carrying identical `generation` values (including two events both carrying `0`), it **MUST** conclude that the server does not implement the `generation` field and **MUST NOT** use `generation` for ordering, long-polling, or precondition checks for the remainder of that interaction. The client **SHOULD** fall back to stream ordering or timestamps for sequencing.
+
 **Long-Polling:**
 
 The optional `currentGeneration` field on [`GetTaskRequest`](#313-get-task) enables efficient long-polling:
@@ -536,7 +538,7 @@ The `ifGenerationMatch` field in [`SendMessageConfiguration`](#322-sendmessageco
 
 **Backwards Compatibility:**
 
-The `generation` field was introduced in version **1.1** of this specification. The field defaults to `0` in the Protocol Buffer encoding (proto3 default for `int64`). Clients that do not read or send `generation` continue to interoperate correctly with servers that support it. Servers that have not yet implemented `generation` will always return `0`, which clients **SHOULD** treat as "generation unknown" and **MUST NOT** use for ordering, long-polling, or precondition checks.
+The `generation` field was introduced in version **1.1** of this specification. The field defaults to `0` in the Protocol Buffer encoding (proto3 default for `int64`). Clients that do not read or send `generation` continue to interoperate correctly with servers that support it. Servers that have not yet implemented `generation` will return `0` on all events and responses; clients will detect this via the duplicate-generation rule above and gracefully fall back.
 
 ### 3.3. Operation Semantics
 
@@ -1250,7 +1252,7 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 | `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 | `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
-| `TaskGenerationMismatchError`         | `-32010`      | `ABORTED`             | `412 Precondition Failed`   |
+| `TaskGenerationMismatchError`         | `-32010`      | `ABORTED`             | `409 Conflict`              |
 
 **Custom Binding Requirements:**
 
@@ -3016,15 +3018,15 @@ Extension fields like `taskId` and `timestamp` provide additional context to hel
 
 **Generation Mismatch Error Example (`ifGenerationMatch`):**
 
-When a `SendMessage` request includes `configuration.ifGenerationMatch` and the task's current generation does not match, the server **MUST** return HTTP `412 Precondition Failed`:
+When a `SendMessage` request includes `configuration.ifGenerationMatch` and the task's current generation does not match, the server **MUST** return HTTP `409 Conflict`:
 
 ```http
-HTTP/1.1 412 Precondition Failed
+HTTP/1.1 409 Conflict
 Content-Type: application/a2a+json
 
 {
   "error": {
-    "code": 412,
+    "code": 409,
     "status": "ABORTED",
     "message": "Task generation mismatch: expected 3 but current generation is 5",
     "details": [
