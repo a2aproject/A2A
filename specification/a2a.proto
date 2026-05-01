@@ -158,6 +158,12 @@ message SendMessageConfiguration {
   // terminal (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or interrupted
   // (`INPUT_REQUIRED`, `AUTH_REQUIRED`) state before returning.
   bool return_immediately = 4;
+  // Optional. If set, the server MUST reject the request with an appropriate
+  // error (HTTP 409 Conflict / gRPC ABORTED) if the task's
+  // current generation does not equal this value at the time the message is
+  // processed. Use this to implement optimistic concurrency control and
+  // prevent lost-update races when multiple clients interact with the same task.
+  optional int64 if_generation_match = 5;
 }
 
 // `Task` is the core unit of action for A2A. It has a current status
@@ -181,6 +187,11 @@ message Task {
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
   google.protobuf.Struct metadata = 6;
+  // Monotonically increasing counter incremented by the server on every
+  // state-changing mutation to this task (TaskState transition or
+  // Artifact addition/update). Starts at 0 when the task is created.
+  // May be used for event ordering, long-polling, and optimistic concurrency.
+  int64 generation = 7;
 }
 
 // Defines the possible lifecycle states of a `Task`.
@@ -302,6 +313,10 @@ message TaskStatusUpdateEvent {
   TaskStatus status = 3 [(google.api.field_behavior) = REQUIRED];
   // Optional. Metadata associated with the task update.
   google.protobuf.Struct metadata = 4;
+  // The task's generation after this update was applied. Clients can use this
+  // to detect missed events (a gap in generation values) and to correlate
+  // events with a specific task snapshot.
+  int64 generation = 5;
 }
 
 // A task delta where an artifact has been generated.
@@ -319,6 +334,10 @@ message TaskArtifactUpdateEvent {
   bool last_chunk = 5;
   // Optional. Metadata associated with the artifact update.
   google.protobuf.Struct metadata = 6;
+  // The task's generation after this artifact update was applied. Clients can
+  // use this to detect missed events (a gap in generation values) and to
+  // correlate events with a specific task snapshot.
+  int64 generation = 7;
 }
 
 // Defines authentication details, used for push notifications.
@@ -661,6 +680,12 @@ message GetTaskRequest {
   // a request to not include any messages. The server MUST NOT return more
   // messages than the provided value, but MAY apply a lower limit.
   optional int32 history_length = 3;
+  // Optional. If set, the server SHOULD NOT return until the task's generation
+  // is strictly greater than this value, enabling efficient long-polling.
+  // The server MAY return earlier (e.g. on timeout) with the current task state.
+  // If the task's current generation already exceeds this value the server
+  // MUST return immediately.
+  optional int64 current_generation = 4;
 }
 
 // Parameters for listing tasks with optional filtering criteria.

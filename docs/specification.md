@@ -221,6 +221,8 @@ Retrieves the current state (including status, artifacts, and optionally history
 
 See [History Length Semantics](#324-history-length-semantics) for details about `historyLength`.
 
+See [Task Generation Semantics](#327-task-generation-semantics) for details about `currentGeneration` and long-polling.
+
 **Outputs:**
 
 - [`Task`](#411-task): Current state and artifacts of the requested task
@@ -453,6 +455,12 @@ The `return_immediately` field has no effect:
 - for streaming operations, which always return updates in real-time.
 - on configured push notification configurations, which operates independently of execution mode.
 
+**Optimistic Concurrency with `ifGenerationMatch`:**
+
+The `ifGenerationMatch` field enables optimistic concurrency control when sending a follow-up message to an existing task. If set, the server **MUST** compare the provided value against the task's current `generation` at the time the message is processed. If the values do not match, the server **MUST** reject the request with [`TaskGenerationMismatchError`](#332-error-handling) (HTTP `409 Conflict` / gRPC `ABORTED`). If the task referenced by the message does not yet exist (i.e., a new task will be created), this field **MUST** be ignored.
+
+See [Task Generation Semantics](#327-task-generation-semantics) for the full description of the `generation` field.
+
 #### 3.2.3. Stream Response
 
 <span id="323-stream-response"></span>
@@ -486,6 +494,51 @@ A key-value map for passing horizontally applicable context or parameters with c
 | `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
+
+#### 3.2.7. Task Generation Semantics
+
+<span id="327-task-generation-semantics"></span>
+
+The `generation` field on [`Task`](#411-task) is a monotonically increasing integer maintained by the server. It is initialised to `0` when a task is created and **MUST** be incremented by the server on every state-changing mutation:
+
+- A `TaskState` transition (any change to `Task.status.state`).
+- An Artifact addition or update (any change to `Task.artifacts`).
+
+The `generation` value is included in [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) to reflect the task's generation **after** the mutation that produced the event.
+
+**Event Ordering and Missed-Event Detection:**
+
+A client that tracks the last seen `generation` can detect missed events by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, it knows at least one event was not delivered and **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
+
+A correctly-implemented server **MUST NOT** emit two events for the same task with the same `generation` value. If a client observes two consecutive events carrying identical `generation` values (including two events both carrying `0`), it **MUST** conclude that the server does not implement the `generation` field and **MUST NOT** use `generation` for ordering, long-polling, or precondition checks for the remainder of that interaction. The client **SHOULD** fall back to stream ordering or timestamps for sequencing.
+
+**Long-Polling:**
+
+The optional `currentGeneration` field on [`GetTaskRequest`](#313-get-task) enables efficient long-polling:
+
+- If `currentGeneration` is **not set**, the server **MUST** return the task's current state immediately (standard behaviour).
+- If `currentGeneration` is **set** and the task's current `generation` is **already greater** than the supplied value, the server **MUST** return the current state immediately.
+- If `currentGeneration` is **set** and the task's current `generation` is **equal to or less than** the supplied value, the server **SHOULD** hold the request open and return only once the task's `generation` advances beyond the supplied value. The server **MAY** return earlier (for example, on an implementation-defined timeout) with the current task state.
+
+This allows clients to avoid repeated unconditional polling while still working correctly when a connection times out or when the server does not support the hold-open behaviour.
+
+**HTTP/REST long-poll example:**
+
+```http
+GET /tasks/task-abc?currentGeneration=3 HTTP/1.1
+Host: agent.example.com
+A2A-Version: 1.0
+```
+
+The server returns when the task's `generation` exceeds `3`, or on timeout.
+
+**Optimistic Concurrency:**
+
+The `ifGenerationMatch` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) provides an optimistic concurrency guard for multi-turn interactions. See that section for details.
+
+**Backwards Compatibility:**
+
+The `generation` field was introduced in version **1.1** of this specification. The field defaults to `0` in the Protocol Buffer encoding (proto3 default for `int64`). Clients that do not read or send `generation` continue to interoperate correctly with servers that support it. Servers that have not yet implemented `generation` will return `0` on all events and responses; clients will detect this via the duplicate-generation rule above and gracefully fall back.
 
 ### 3.3. Operation Semantics
 
@@ -561,6 +614,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 | `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
 | `ExtensionSupportRequiredError`       | Server requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
 | `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
+| `TaskGenerationMismatchError`         | The `ifGenerationMatch` value supplied in `SendMessageConfiguration` does not match the task's current `generation`. The client should re-fetch the task and retry if appropriate. |
 
 #### 3.3.3. Asynchronous Processing
 
@@ -656,6 +710,14 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Higher latency, potential for unnecessary requests
 - Best for: Simple integrations, infrequent updates, clients behind restrictive firewalls
 
+**Long-Polling (Get Task with `currentGeneration`):**
+
+- Client calls Get Task with a `currentGeneration` value; the server holds the request until the task's generation advances
+- Eliminates unnecessary round-trips while retaining the simplicity of polling
+- Requires server support; falls back to normal polling if the server returns immediately regardless
+- Best for: Clients that cannot use streaming or push notifications but want lower latency than plain polling
+- See [Task Generation Semantics](#327-task-generation-semantics) for details
+
 **Streaming:**
 
 - Real-time delivery of events as they occur
@@ -681,6 +743,8 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Event Ordering:**
 
 All implementations MUST deliver events in the order they were generated. Events MUST NOT be reordered during transmission, regardless of protocol binding.
+
+Each [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) carries the task's `generation` value after the mutation that produced it. Clients **SHOULD** use this value to verify that no events were missed (a gap in generation values indicates a missed event) and to establish a total ordering of events that is independent of wall-clock time. See [Task Generation Semantics](#327-task-generation-semantics) for details.
 
 **Multiple Streams Per Task:**
 
@@ -1188,6 +1252,7 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 | `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 | `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `TaskGenerationMismatchError`         | `-32010`      | `ABORTED`             | `409 Conflict`              |
 
 **Custom Binding Requirements:**
 
@@ -2859,12 +2924,13 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 
 **Example Mappings:**
 
-| Protocol Buffer Field | Query Parameter Name | Example Usage       |
-| --------------------- | -------------------- | ------------------- |
-| `context_id`          | `contextId`          | `?contextId=uuid`   |
-| `page_size`           | `pageSize`           | `?pageSize=50`      |
-| `page_token`          | `pageToken`          | `?pageToken=cursor` |
-| `task_id`             | `taskId`             | `?taskId=uuid`      |
+| Protocol Buffer Field | Query Parameter Name | Example Usage                    |
+| --------------------- | -------------------- | -------------------------------- |
+| `context_id`          | `contextId`          | `?contextId=uuid`                |
+| `page_size`           | `pageSize`           | `?pageSize=50`                   |
+| `page_token`          | `pageToken`          | `?pageToken=cursor`              |
+| `task_id`             | `taskId`             | `?taskId=uuid`                   |
+| `current_generation`  | `currentGeneration`  | `?currentGeneration=5`           |
 
 **Usage Examples:**
 
@@ -2878,6 +2944,12 @@ Get task with history:
 
 ```http
 GET /tasks/{id}?historyLength=10
+```
+
+Get task with long-polling (wait until generation advances beyond 5):
+
+```http
+GET /tasks/{id}?currentGeneration=5
 ```
 
 **Field Type Handling:**
@@ -2943,6 +3015,37 @@ Content-Type: application/a2a+json
 ```
 
 Extension fields like `taskId` and `timestamp` provide additional context to help diagnose the error.
+
+**Generation Mismatch Error Example (`ifGenerationMatch`):**
+
+When a `SendMessage` request includes `configuration.ifGenerationMatch` and the task's current generation does not match, the server **MUST** return HTTP `409 Conflict`:
+
+```http
+HTTP/1.1 409 Conflict
+Content-Type: application/a2a+json
+
+{
+  "error": {
+    "code": 409,
+    "status": "ABORTED",
+    "message": "Task generation mismatch: expected 3 but current generation is 5",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "TASK_GENERATION_MISMATCH",
+        "domain": "a2a-protocol.org",
+        "metadata": {
+          "taskId": "task-abc",
+          "expectedGeneration": "3",
+          "currentGeneration": "5"
+        }
+      }
+    ]
+  }
+}
+```
+
+The client **SHOULD** re-fetch the task via [Get Task](#313-get-task) to inspect the current state before deciding whether to retry the send.
 
 ### 11.7. Streaming
 
