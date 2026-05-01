@@ -159,7 +159,7 @@ message SendMessageConfiguration {
   // (`INPUT_REQUIRED`, `AUTH_REQUIRED`) state before returning.
   bool return_immediately = 4;
   // Optional. If set, the server MUST reject the request with an appropriate
-  // error (HTTP 412 Precondition Failed / gRPC ABORTED) if the task's
+  // error (HTTP 409 Conflict / gRPC ABORTED) if the task's
   // current generation does not equal this value at the time the message is
   // processed. Use this to implement optimistic concurrency control and
   // prevent lost-update races when multiple clients interact with the same task.
