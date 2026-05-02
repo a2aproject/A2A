@@ -50,7 +50,7 @@ However, some foreseeable applications include:
 | [Hello World or Timestamp Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/timestamp) | A simple extension demonstrating how to augment base A2A types by adding timestamps to the `metadata` field of `Message` and `Artifact` objects (v1). |
 | [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |
 | [Agent Gateway Protocol (AGP) Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp) | A Core Protocol Layer or Routing Extension that introduces Autonomous Squads (ASq) and routes Intent payloads based on declared Capabilities, enhancing scalability (v1). |
-| [TDIP Binding Extension](https://tenzro.com/a2a/extensions/tdip-binding/v1) | Binds an A2A agent's identity to a Tenzro Decentralized Identity Protocol (TDIP) DID with delegation-scope and runtime spending-policy enforcement, enabling verifiable agent autonomy and per-message authorization for autonomous commerce (v1). |
+| [TDIP Binding Extension](https://tenzro.com/a2a/extensions/tdip-binding/v1) | A Profile Extension that binds an agent's identity to a Tenzro Decentralized Identity Protocol (TDIP) DID with delegation scope and spending policy enforcement, enabling verifiable autonomy and per-message authorization for autonomous commerce (v1). |
 
 ## Extension Governance
 
