@@ -190,7 +190,7 @@ message Task {
   // Sequentially increasing counter incremented by exactly 1 by the server
   // on every state-changing mutation to this task (TaskState transition or
   // Artifact addition/update), with each mutation mapping 1:1 to one event.
-  // Starts at 0 when the task is created.
+  // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
 }

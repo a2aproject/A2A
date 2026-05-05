@@ -499,7 +499,7 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 <span id="327-task-generation-semantics"></span>
 
-The `generation` field on [`Task`](#411-task) is a sequentially increasing integer maintained by the server. It is initialised to `0` when a task is created and **MUST** be incremented by exactly `1` by the server on every state-changing mutation:
+The `generation` field on [`Task`](#411-task) is a sequentially increasing integer maintained by the server. It is initialised to `1` when a task is created and **MUST** be incremented by exactly `1` by the server on every state-changing mutation:
 
 - A `TaskState` transition (any change to `Task.status.state`).
 - An Artifact addition or update (any change to `Task.artifacts`).
@@ -510,7 +510,7 @@ Each mutation **MUST** map 1:1 to exactly one emitted event. The `generation` va
 
 Because the server increments `generation` by exactly `1` per mutation, a client that tracks the last seen `generation` can detect missed events by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, it knows at least one event was not delivered and **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
 
-A correctly-implemented server **MUST NOT** emit two events for the same task with the same `generation` value. If a client observes two consecutive events carrying identical `generation` values (including two events both carrying `0`), it **MUST** conclude that the server does not implement the `generation` field and **MUST NOT** use `generation` for ordering, long-polling, or precondition checks for the remainder of that interaction. The client **SHOULD** fall back to stream ordering or timestamps for sequencing.
+A correctly-implemented server **MUST NOT** emit two events for the same task with the same `generation` value. If a client observes any event carrying `generation = 0`, or observes two consecutive events for the same task carrying identical `generation` values, it **MUST** conclude that the server does not implement the `generation` field and **MUST NOT** use `generation` for ordering, long-polling, or precondition checks for the remainder of that interaction. The client **SHOULD** fall back to stream ordering or timestamps for sequencing.
 
 **Long-Polling:**
 
@@ -538,7 +538,7 @@ The `ifGenerationMatch` field in [`SendMessageConfiguration`](#322-sendmessageco
 
 **Backwards Compatibility:**
 
-The `generation` field was introduced in version **1.1** of this specification. The field defaults to `0` in the Protocol Buffer encoding (proto3 default for `int64`). Clients that do not read or send `generation` continue to interoperate correctly with servers that support it. Servers that have not yet implemented `generation` will return `0` on all events and responses; clients will detect this via the duplicate-generation rule above and gracefully fall back.
+The `generation` field was introduced in version **1.1** of this specification. The field defaults to `0` in the Protocol Buffer encoding (proto3 default for `int64`). Clients that do not read or send `generation` continue to interoperate correctly with servers that support it. Servers that have not yet implemented `generation` will return `0` on all events and responses; since a correctly-implemented server always returns `generation ≥ 1`, clients will detect a `0` value as a signal that the server does not support the field and gracefully fall back.
 
 ### 3.3. Operation Semantics
 
