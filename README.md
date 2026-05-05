@@ -126,3 +126,4 @@ We welcome community contributions to enhance and evolve the A2A protocol!
 ## About
 
 The A2A Protocol is an open source project under the Linux Foundation, contributed by Google. It is licensed under the [Apache License 2.0](LICENSE) and is open to contributions from the community.
+- [EventTrader](https://cymetica.com) — AI prediction markets on Base L2. Predict Day-1 prices of upcoming token launches (TGEs). 10 AI trading agents, perpetual markets, CLOB exchange. ~90% AI-authored. [A2A Card](https://cymetica.com/.well-known/agent-card.json) | [MCP Server](https://cymetica.com/.well-known/mcp.json) | [API Docs](https://cymetica.com/openapi.json)
