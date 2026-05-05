@@ -499,16 +499,16 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 <span id="327-task-generation-semantics"></span>
 
-The `generation` field on [`Task`](#411-task) is a monotonically increasing integer maintained by the server. It is initialised to `0` when a task is created and **MUST** be incremented by the server on every state-changing mutation:
+The `generation` field on [`Task`](#411-task) is a sequentially increasing integer maintained by the server. It is initialised to `0` when a task is created and **MUST** be incremented by exactly `1` by the server on every state-changing mutation:
 
 - A `TaskState` transition (any change to `Task.status.state`).
 - An Artifact addition or update (any change to `Task.artifacts`).
 
-The `generation` value is included in [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) to reflect the task's generation **after** the mutation that produced the event.
+Each mutation **MUST** map 1:1 to exactly one emitted event. The `generation` value carried in [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) **MUST** reflect the task's generation **after** the mutation that produced the event.
 
 **Event Ordering and Missed-Event Detection:**
 
-A client that tracks the last seen `generation` can detect missed events by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, it knows at least one event was not delivered and **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
+Because the server increments `generation` by exactly `1` per mutation, a client that tracks the last seen `generation` can detect missed events by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, it knows at least one event was not delivered and **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
 
 A correctly-implemented server **MUST NOT** emit two events for the same task with the same `generation` value. If a client observes two consecutive events carrying identical `generation` values (including two events both carrying `0`), it **MUST** conclude that the server does not implement the `generation` field and **MUST NOT** use `generation` for ordering, long-polling, or precondition checks for the remainder of that interaction. The client **SHOULD** fall back to stream ordering or timestamps for sequencing.
 

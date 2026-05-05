@@ -187,9 +187,10 @@ message Task {
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
   google.protobuf.Struct metadata = 6;
-  // Monotonically increasing counter incremented by the server on every
-  // state-changing mutation to this task (TaskState transition or
-  // Artifact addition/update). Starts at 0 when the task is created.
+  // Sequentially increasing counter incremented by exactly 1 by the server
+  // on every state-changing mutation to this task (TaskState transition or
+  // Artifact addition/update), with each mutation mapping 1:1 to one event.
+  // Starts at 0 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
 }
