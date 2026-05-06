@@ -101,6 +101,7 @@ As AI agents become more prevalent, their ability to interoperate is crucial for
 
 ## Contributing
 
+- [x711](https://x711.io) — Universal pay-per-call tool API for AI agents. A2A agent card at `/.well-known/agent-card.json`. Provides web_search, price_feed, hive_memory, and LLM routing via simple POST API. Free tier (10 calls/day).
 We welcome community contributions to enhance and evolve the A2A protocol!
 
 - **Questions & Discussions:** Join our [GitHub Discussions](https://github.com/a2aproject/A2A/discussions).
