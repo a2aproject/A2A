@@ -196,7 +196,7 @@ Define standardized trust signals that agents can declare and clients can evalua
 | `dataResidency` | `array` of `string` | Geographic regions where data is processed |
 | `auditLogAvailable` | `boolean` | Whether the agent provides audit logs |
 
-Trust signals are self-asserted unless accompanied by a third-party attestation. Clients **SHOULD** weight attested signals higher than self-asserted ones.
+Trust signals are self-asserted unless accompanied by a third-party attestation. Clients making authorization decisions based on a trust signal **SHOULD** require third-party attestation for that signal; self-asserted signals **MAY** be used for informational display only. The threshold for requiring attestation is a client-side policy decision and varies by use case (a weather query and a wire transfer have different bars).
 
 ### 3. Mandatory Signing for Production
 
@@ -229,7 +229,7 @@ Agents that publish a JWKS endpoint (via the `jku` field in the JWS protected he
 
 #### Revocation via DNS
 
-For `DOMAIN_VERIFIED` agents, the domain owner removes or updates the `_a2a-identity` DNS TXT record. Clients that cache DNS results **SHOULD** respect TTL values.
+For `DOMAIN_VERIFIED` agents, the domain owner removes or updates the `_a2a-identity` DNS TXT record. Domains publishing `_a2a-identity` TXT records **SHOULD** use TTL ≤ 300 seconds; longer TTLs delay revocation propagation by the same amount, undermining the revocation mechanism. Clients that cache DNS results **SHOULD** respect TTL values.
 
 #### Revocation Notification
 
@@ -341,9 +341,46 @@ Including the previous entry's signature in each subsequent signing payload cryp
 
 ### 6. Message Signing
 
-Add application-layer message integrity to complement TLS transport security.
+Application-layer message integrity uses the RFC 9421 HTTP Message Signatures format, aligning with the wire format proposed in [#1829](https://github.com/a2aproject/A2A/issues/1829). This complements TLS transport security and provides cryptographic verification that a specific request originated from the declared agent, surviving proxies and load balancers that terminate TLS.
 
-Messages containing sensitive data or delegation contexts **SHOULD** include a JWS signature in the message `metadata`:
+#### Wire format
+
+Signatures use:
+
+- **Algorithm:** Ed25519 (RFC 8410 SubjectPublicKeyInfo)
+- **Components:** `("@method" "@path" "content-digest")` per RFC 9421
+- **Content digest:** SHA-256 of request body, encoded per RFC 9530 (`Content-Digest: sha-256=:<base64>:`)
+- **Parameters:** `created` (Unix timestamp), `nonce` (base64url-encoded 16-byte random value), `keyid` (HTTPS URL, see Key Resolution below)
+
+#### Key resolution
+
+The `keyid` parameter is a self-resolving HTTPS URL. `GET <keyid>` **MUST** return a public-key document. Verifiers **MUST** accept either of the following response formats:
+
+- A W3C DID Document with an Ed25519 verification method (`type: Ed25519VerificationKey2020`, `publicKeyMultibase`), per [W3C DID Core](https://www.w3.org/TR/did-core/)
+- The compact form `{ "address": "<agent-identifier>", "public_key": "<PEM-encoded Ed25519 public key>" }` defined in [#1829](https://github.com/a2aproject/A2A/issues/1829)
+
+Content-type negotiation (`Accept: application/did+ld+json` for DID Documents, `application/json` for the compact form) is **RECOMMENDED** for servers supporting both shapes. There is no central registry coupling — the verifier follows whatever URL appears in the `keyid` parameter on the wire.
+
+#### Request signing (HTTP-layer, preferred)
+
+A2A requests over HTTP/JSON-RPC **SHOULD** include `Signature-Input`, `Signature`, and `Content-Digest` HTTP headers per RFC 9421:
+
+```http
+POST /a2a/message/send HTTP/1.1
+Host: agent.example.com
+Content-Type: application/json
+Content-Digest: sha-256=:<base64-encoded SHA-256 digest>:
+Signature-Input: sig1=("@method" "@path" "content-digest");created=<unix-timestamp>;nonce=:<base64url-encoded nonce>:;keyid="https://agent.example.com/.well-known/agent-key"
+Signature: sig1=:<base64-encoded Ed25519 signature>:
+
+{ "jsonrpc": "2.0", "method": "message/send", "params": { ... } }
+```
+
+The signature is computed over the RFC 9421 signature base string built from the listed components and parameters.
+
+#### Message-layer signing (streaming and asynchronous transports)
+
+For Server-Sent Events, WebSocket frames, or asynchronous message delivery where HTTP-layer signatures do not cover individual messages, the same RFC 9421 components and parameters **MAY** be carried in the message `metadata`:
 
 ```json
 {
@@ -354,28 +391,31 @@ Messages containing sensitive data or delegation contexts **SHOULD** include a J
   ],
   "metadata": {
     "a2a:signature": {
-      "protected": "<base64url: {\"alg\":\"EdDSA\",\"kid\":\"agent-a1b2c3d4\"}>",
-      "signature": "<base64url-encoded signature over canonicalized message>",
-      "timestamp": "2026-02-17T00:00:00Z",
-      "nonce": "<base64url-encoded 32-byte random value>"
+      "signatureInput": "sig1=(\"@method\" \"@path\" \"content-digest\");created=<unix-timestamp>;nonce=:<base64url-encoded nonce>:;keyid=\"https://agent.example.com/.well-known/agent-key\"",
+      "signature": "sig1=:<base64-encoded Ed25519 signature>:",
+      "contentDigest": "sha-256=:<base64-encoded SHA-256 digest>:"
     }
   }
 }
 ```
 
-**Signature payload:** The signature is computed over the RFC 8785 canonicalization of the message object with the `metadata["a2a:signature"]` field excluded.
+For the message-layer carrier, the `@method` and `@path` component values are taken from the enclosing HTTP request context; `content-digest` is computed over the canonicalized message body using RFC 8785 JCS prior to digest computation. Both carriers produce the same signature base string for the same logical message, so verifier implementations can share the underlying RFC 9421 verification routine.
 
-**Replay protection:**
+#### When to sign
 
-- Messages with signatures **MUST** include a `timestamp` and `nonce`.
-- Receivers **SHOULD** reject messages with timestamps older than 5 minutes.
-- Receivers **SHOULD** reject messages with previously-seen nonces.
-
-**When to sign:**
-
-- Messages containing delegation contexts **MUST** be signed.
+- Messages containing delegation contexts (§5) **MUST** be signed.
 - Messages containing financial, health, or personally identifiable data **SHOULD** be signed.
 - Messages in development/testing environments **MAY** omit signatures.
+
+#### Replay protection
+
+- Receivers **SHOULD** reject signatures with `created` timestamps older than 5 minutes.
+- Receivers **SHOULD** reject previously-seen `nonce` values within the 5-minute window.
+- Receivers **SHOULD** maintain a time-bounded nonce cache (purge entries older than 10 minutes).
+
+#### Coordination
+
+This section aligns with the wire format proposed in [#1829](https://github.com/a2aproject/A2A/issues/1829) at the v1.4.0 spec revision. If #1829 refines the component set, parameter shape, or keyid resolution format in v1.5 or beyond, this section will be updated in coordination with the CTEF v0.3.3 cycle ([#1786](https://github.com/a2aproject/A2A/issues/1786)). The extension URI, identity-level taxonomy, attestation array, and delegation chain (§§1, 2, 4, 5) are unaffected by wire-format refinements.
 
 ## Backward Compatibility
 
@@ -459,7 +499,14 @@ All overheads are negligible relative to the LLM inference latency that dominate
 - [A2A Protocol Specification v1.0 RC, Section 8.4: Agent Card Signing](https://github.com/a2aproject/A2A/blob/main/specification/json/README.md)
 - [A2A Protocol Specification v1.0 RC, Section 13: Security Considerations](https://github.com/a2aproject/A2A/blob/main/specification/json/README.md)
 - [RFC 7515: JSON Web Signature (JWS)](https://tools.ietf.org/html/rfc7515)
+- [RFC 8410: Algorithm Identifiers for Ed25519, Ed448, X25519, and X448](https://tools.ietf.org/html/rfc8410)
 - [RFC 8785: JSON Canonicalization Scheme (JCS)](https://tools.ietf.org/html/rfc8785)
 - [RFC 8615: Well-Known URIs](https://tools.ietf.org/html/rfc8615)
+- [RFC 9421: HTTP Message Signatures](https://tools.ietf.org/html/rfc9421)
+- [RFC 9530: Digest Fields](https://tools.ietf.org/html/rfc9530)
+- [W3C DID Core](https://www.w3.org/TR/did-core/)
+- [A2A Issue #1829: Minimal Ed25519 + RFC 9421 signing extension for A2A messages](https://github.com/a2aproject/A2A/issues/1829)
+- [A2A Issue #1786: Cryptographic Agent Identity extension (CTEF v0.3.1-aligned)](https://github.com/a2aproject/A2A/issues/1786)
+- [A2A Issue #1575: Agent Passport System](https://github.com/a2aproject/A2A/issues/1575)
 - [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [Tomasev, N., Franklin, M., & Osindero, S. "Intelligent AI Delegation." arXiv:2602.11865, February 2026](https://arxiv.org/abs/2602.11865)
