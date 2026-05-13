@@ -467,8 +467,8 @@ message AgentCardSignature {
 
 // A container associating a push notification configuration with a specific task.
 message TaskPushNotificationConfig {
-  // Optional. Opaque routing identifier matching the `tenant` from the
-  // selected `AgentInterface` in the Agent Card.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The push notification configuration details.
   // A unique identifier (e.g. UUID) for this push notification configuration.

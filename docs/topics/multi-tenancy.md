@@ -9,7 +9,7 @@ when a routing identifier is advertised in an Agent Card.
 ## Overview
 
 A common deployment pattern is to place several agents behind a single host or
-reverse-proxy. From the outside the agents are reachable at the same base URL,
+reverse-proxy. From the outside the agents are reachable at the same domain,
 but each individual agent needs to be distinguished so that requests are
 delivered to the right backend.
 
@@ -21,8 +21,9 @@ Each agent is assigned a distinct URL prefix. The Agent Card for each agent
 advertises its own `url` in `supportedInterfaces`, so clients automatically
 send requests to the correct path.
 
+Agent Card for the "billing" agent:
+
 ```json
-// Agent Card for the "billing" agent
 {
   "name": "Billing Agent",
   "supportedInterfaces": [
@@ -35,8 +36,9 @@ send requests to the correct path.
 }
 ```
 
+Agent Card for the "support" agent:
+
 ```json
-// Agent Card for the "support" agent
 {
   "name": "Support Agent",
   "supportedInterfaces": [
@@ -50,9 +52,8 @@ send requests to the correct path.
 ```
 
 The gateway or reverse-proxy routes `/billing/*` and `/support/*` to the
-appropriate backend without any changes to the A2A protocol messages themselves.
-This is the simplest approach and requires no special client awareness beyond
-reading the Agent Card.
+appropriate backend. This is the simplest approach and requires no special
+client awareness beyond reading the Agent Card.
 
 ### 2. Header-Based Routing
 
@@ -62,7 +63,7 @@ the standard `Authorization` header.
 
 Examples:
 
-- A bearer token whose claims identify the target agent or organisation.
+- A bearer token whose claims identify the target agent or organization.
 - An API key that maps to a particular tenant in the gateway's configuration.
 - A proprietary header such as `X-Agent-ID: billing`.
 
@@ -72,6 +73,13 @@ gateway resolves the target based on the header value. Authentication headers
 are already declared in the Agent Card's `securitySchemes` and `security`
 fields; custom routing headers can be documented as an extension or as
 operator-specific configuration.
+
+!!! note
+    Header-based routing requirements are not discoverable from the Agent Card
+    alone. Clients must obtain the required header values through out-of-band
+    means such as operator documentation or an OAuth token issued during
+    authentication. When routing information needs to be communicated to clients
+    via the Agent Card, prefer the `tenant` field approach described below.
 
 ### 3. Body-Based Routing Using the `tenant` Field
 
@@ -98,14 +106,15 @@ in the `AgentInterface` entry inside `supportedInterfaces`:
 }
 ```
 
-**Client requirement**: If a selected `AgentInterface` entry has a non-empty
-`tenant` field, the client **MUST** include that value in the `tenant` field of
-every request message body sent to that interface. See
+**Client requirement**: The client **MUST** always echo the `tenant` value
+from the selected `AgentInterface` entry back in every request message. If
+the `AgentInterface` does not set `tenant`, the field **MUST** be omitted
+from the request. See
 [Section 8.3.2](../specification.md#832-client-protocol-selection) of the
 specification for the normative rule.
 
 A server MAY use the `tenant` field to represent any routing key that suits its
-deployment — agent identifiers, workspace slugs, organisation IDs, or any other
+deployment — agent identifiers, workspace slugs, organization IDs, or any other
 opaque discriminator.
 
 ## Combining Approaches
@@ -118,7 +127,7 @@ capabilities of the gateway in use.
 
 ## Discovering Multiple Agents
 
-When multiple agents are deployed behind a shared host, each agent **SHOULD**
+When multiple agents are deployed behind a shared domain, each agent **SHOULD**
 have its own Agent Card published at an appropriate location (see
 [Agent Discovery](./agent-discovery.md)). Clients retrieve each agent's card
 independently and use the `supportedInterfaces` information it contains — including
