@@ -385,6 +385,31 @@
 <p>Custom exceptions and error types for A2A server-side errors.</p>
 <p>This module contains A2A-specific error codes,
 as well as server exception classes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.utils.errors.ErrorMapping">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">ErrorMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">http_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grpc_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.ErrorMapping" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
+<p>Named tuple mapping HTTP status, gRPC status, and reason strings.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.ErrorMapping.grpc_status">
+<span class="sig-name descname"><span class="pre">grpc_status</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.utils.errors.ErrorMapping.grpc_status" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.ErrorMapping.http_code">
+<span class="sig-name descname"><span class="pre">http_code</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#a2a.utils.errors.ErrorMapping.http_code" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.ErrorMapping.reason">
+<span class="sig-name descname"><span class="pre">reason</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.utils.errors.ErrorMapping.reason" title="Link to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py exception">
 <dt class="sig sig-object py" id="a2a.utils.errors.ExtensionSupportRequiredError">
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">ExtensionSupportRequiredError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.ExtensionSupportRequiredError" title="Link to this definition">¶</a></dt>
@@ -446,6 +471,18 @@ as well as server exception classes.</p>
 </dd></dl>
 
 <dl class="py exception">
+<dt class="sig sig-object py" id="a2a.utils.errors.JSONParseError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">JSONParseError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.JSONParseError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
+<p>Exception raised when invalid JSON was received by the server.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.errors.JSONParseError.message">
+<span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Invalid</span> <span class="pre">JSON</span> <span class="pre">payload'</span></span><a class="headerlink" href="#a2a.utils.errors.JSONParseError.message" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
 <dt class="sig sig-object py" id="a2a.utils.errors.MethodNotFoundError">
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">MethodNotFoundError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.MethodNotFoundError" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code></p>
@@ -466,31 +503,6 @@ as well as server exception classes.</p>
 <dt class="sig sig-object py" id="a2a.utils.errors.PushNotificationNotSupportedError.message">
 <span class="sig-name descname"><span class="pre">message</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Push</span> <span class="pre">Notification</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">supported'</span></span><a class="headerlink" href="#a2a.utils.errors.PushNotificationNotSupportedError.message" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.errors.</span></span><span class="sig-name descname"><span class="pre">RestErrorMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">http_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grpc_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
-<p>Named tuple mapping HTTP status, gRPC status, and reason strings.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap.grpc_status">
-<span class="sig-name descname"><span class="pre">grpc_status</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap.grpc_status" title="Link to this definition">¶</a></dt>
-<dd><p>Alias for field number 1</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap.http_code">
-<span class="sig-name descname"><span class="pre">http_code</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap.http_code" title="Link to this definition">¶</a></dt>
-<dd><p>Alias for field number 0</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="a2a.utils.errors.RestErrorMap.reason">
-<span class="sig-name descname"><span class="pre">reason</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.utils.errors.RestErrorMap.reason" title="Link to this definition">¶</a></dt>
-<dd><p>Alias for field number 2</p>
-</dd></dl>
 
 </dd></dl>
 
@@ -600,6 +612,12 @@ as well as server exception classes.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">a2a.utils.errors module</a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.ErrorMapping"><code class="docutils literal notranslate"><span class="pre">ErrorMapping</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.ErrorMapping.grpc_status"><code class="docutils literal notranslate"><span class="pre">ErrorMapping.grpc_status</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.errors.ErrorMapping.http_code"><code class="docutils literal notranslate"><span class="pre">ErrorMapping.http_code</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.errors.ErrorMapping.reason"><code class="docutils literal notranslate"><span class="pre">ErrorMapping.reason</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#a2a.utils.errors.ExtensionSupportRequiredError"><code class="docutils literal notranslate"><span class="pre">ExtensionSupportRequiredError</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.utils.errors.ExtensionSupportRequiredError.message"><code class="docutils literal notranslate"><span class="pre">ExtensionSupportRequiredError.message</span></code></a></li>
 </ul>
@@ -620,18 +638,16 @@ as well as server exception classes.</p>
 <li><a class="reference internal" href="#a2a.utils.errors.InvalidRequestError.message"><code class="docutils literal notranslate"><span class="pre">InvalidRequestError.message</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#a2a.utils.errors.JSONParseError"><code class="docutils literal notranslate"><span class="pre">JSONParseError</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.errors.JSONParseError.message"><code class="docutils literal notranslate"><span class="pre">JSONParseError.message</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#a2a.utils.errors.MethodNotFoundError"><code class="docutils literal notranslate"><span class="pre">MethodNotFoundError</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.utils.errors.MethodNotFoundError.message"><code class="docutils literal notranslate"><span class="pre">MethodNotFoundError.message</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#a2a.utils.errors.PushNotificationNotSupportedError"><code class="docutils literal notranslate"><span class="pre">PushNotificationNotSupportedError</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.utils.errors.PushNotificationNotSupportedError.message"><code class="docutils literal notranslate"><span class="pre">PushNotificationNotSupportedError.message</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap"><code class="docutils literal notranslate"><span class="pre">RestErrorMap</span></code></a><ul>
-<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap.grpc_status"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.grpc_status</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap.http_code"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.http_code</span></code></a></li>
-<li><a class="reference internal" href="#a2a.utils.errors.RestErrorMap.reason"><code class="docutils literal notranslate"><span class="pre">RestErrorMap.reason</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#a2a.utils.errors.TaskNotCancelableError"><code class="docutils literal notranslate"><span class="pre">TaskNotCancelableError</span></code></a><ul>

@@ -33,6 +33,15 @@ class a2a.server.tasks.database_push_notification_config_store.DatabasePushNotif
       Retrieves all push notification configurations for a task, for
       the given owner.
 
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      Used by the push-notification dispatch path.
+
    async initialize() -> None
 
       Initialize the database and create the table if needed.

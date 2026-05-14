@@ -41,6 +41,8 @@ Submodules
 
     * "DatabasePushNotificationConfigStore.get_info()"
 
+    * "DatabasePushNotificationConfigStore.get_info_for_dispatch()"
+
     * "DatabasePushNotificationConfigStore.initialize()"
 
     * "DatabasePushNotificationConfigStore.model_to_core_conversion"
@@ -85,6 +87,8 @@ Submodules
 
     * "InMemoryPushNotificationConfigStore.get_info()"
 
+    * "InMemoryPushNotificationConfigStore.get_info_for_dispatch()"
+
     * "InMemoryPushNotificationConfigStore.set_info()"
 
 * a2a.server.tasks.inmemory_task_store module
@@ -106,6 +110,8 @@ Submodules
     * "PushNotificationConfigStore.delete_info()"
 
     * "PushNotificationConfigStore.get_info()"
+
+    * "PushNotificationConfigStore.get_info_for_dispatch()"
 
     * "PushNotificationConfigStore.set_info()"
 
@@ -189,7 +195,7 @@ Module contents
 
 Components for managing tasks within the A2A server.
 
-class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext)
+class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None)
 
    Bases: "PushNotificationSender"
 
@@ -230,6 +236,15 @@ class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: ~sqlalchemy.e
 
       Retrieves all push notification configurations for a task, for
       the given owner.
+
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      Used by the push-notification dispatch path.
 
    async initialize() -> None
 
@@ -308,6 +323,15 @@ class a2a.server.tasks.InMemoryPushNotificationConfigStore(owner_resolver: ~coll
       Retrieves all push notification configurations for a task from
       memory, for the given owner.
 
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task across
+      all owners.
+
+      Used by the push-notification dispatch path.
+
    async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task
@@ -352,7 +376,34 @@ class a2a.server.tasks.PushNotificationConfigStore
 
    abstractmethod async get_info(task_id: str, context: ServerCallContext) -> list[TaskPushNotificationConfig]
 
-      Retrieves the push notification configuration for a task.
+      Retrieves push notification configurations for a task, scoped to
+      the caller.
+
+      This is the user-callable read path. Implementations MUST return
+      only configurations owned by the caller (as resolved from
+      context).
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task,
+      across all owners.
+
+      This is the internal read path used by the push-notification
+      dispatch loop. Implementations SHOULD override this method to
+      return every configuration registered for task_id regardless of
+      which user registered it. Authorization already happened at
+      registration time and the dispatch path fires every registered
+      webhook for the task.
+
+      The default implementation falls back to calling get_info with a
+      synthetic empty ServerCallContext. This preserves 1.0 behavior
+      for subclasses that have not implemented the override but is
+      INCORRECT for any deployment with multiple owners: the empty
+      context resolves to the empty-string owner partition and returns
+      no configs (silently dropping every notification). A warning is
+      logged on every call to flag the misconfiguration. Custom
+      subclasses MUST override this method to deliver notifications
+      correctly in multi-owner deployments.
 
    abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
@@ -680,7 +731,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f97d90e9750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7ef350b950>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.

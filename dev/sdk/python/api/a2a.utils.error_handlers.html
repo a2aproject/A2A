@@ -383,6 +383,17 @@
           <section id="module-a2a.utils.error_handlers">
 <span id="a2a-utils-error-handlers-module"></span><h1>a2a.utils.error_handlers module<a class="headerlink" href="#module-a2a.utils.error_handlers" title="Link to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.error_handlers.build_error_details">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.error_handlers.</span></span><span class="sig-name descname"><span class="pre">build_error_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">A2AError</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.error_handlers.build_error_details" title="Link to this definition">¶</a></dt>
+<dd><p>Build the typed-details array for an <code class="xref py py-class docutils literal notranslate"><span class="pre">A2AError</span></code>.</p>
+<p>Always emits a leading <code class="docutils literal notranslate"><span class="pre">google.rpc.ErrorInfo</span></code> carrying the A2A reason
+and <code class="docutils literal notranslate"><span class="pre">error.data</span></code> as <code class="docutils literal notranslate"><span class="pre">metadata</span></code>. For <cite>InvalidParamsError</cite> whose <code class="docutils literal notranslate"><span class="pre">data</span></code>
+contains an <code class="docutils literal notranslate"><span class="pre">errors</span></code> list of validation details, also appends
+a <code class="docutils literal notranslate"><span class="pre">google.rpc.BadRequest</span></code> so all transports surface field-level
+violations identically.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.error_handlers.build_rest_error_payload">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.error_handlers.</span></span><span class="sig-name descname"><span class="pre">build_rest_error_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.error_handlers.build_rest_error_payload" title="Link to this definition">¶</a></dt>
 <dd><p>Build a REST error payload dict from an exception.</p>
@@ -463,6 +474,7 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">a2a.utils.error_handlers module</a><ul>
+<li><a class="reference internal" href="#a2a.utils.error_handlers.build_error_details"><code class="docutils literal notranslate"><span class="pre">build_error_details()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.error_handlers.build_rest_error_payload"><code class="docutils literal notranslate"><span class="pre">build_rest_error_payload()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.error_handlers.rest_error_handler"><code class="docutils literal notranslate"><span class="pre">rest_error_handler()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.error_handlers.rest_stream_error_handler"><code class="docutils literal notranslate"><span class="pre">rest_stream_error_handler()</span></code></a></li>

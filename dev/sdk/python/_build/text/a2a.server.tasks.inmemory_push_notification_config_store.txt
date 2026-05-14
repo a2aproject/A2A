@@ -23,6 +23,15 @@ class a2a.server.tasks.inmemory_push_notification_config_store.InMemoryPushNotif
       Retrieves all push notification configurations for a task from
       memory, for the given owner.
 
+      Used by the user-callable read endpoints.
+
+   async get_info_for_dispatch(task_id: str) -> list[TaskPushNotificationConfig]
+
+      Retrieves all push notification configurations for a task across
+      all owners.
+
+      Used by the push-notification dispatch path.
+
    async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
 
       Sets or updates the push notification configuration for a task

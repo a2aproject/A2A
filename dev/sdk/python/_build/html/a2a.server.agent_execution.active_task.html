@@ -382,6 +382,53 @@
         <article role="main" id="furo-main-content">
           <section id="module-a2a.server.agent_execution.active_task">
 <span id="a2a-server-agent-execution-active-task-module"></span><h1>a2a.server.agent_execution.active_task module<a class="headerlink" href="#module-a2a.server.agent_execution.active_task" title="Link to this heading">¶</a></h1>
+<p>Active Task execution and data flow architecture.</p>
+<p>This module manages the lifecycle, execution, and data flow of an active A2A task.</p>
+<p>High-Level Architecture:
+- <cite>AgentExecutor</cite>: An interface with two main methods, <cite>execute(…)</cite> and <cite>cancel(…)</cite>,</p>
+<blockquote>
+<div><p>responsible for running the core agent logic.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><cite>ActiveTask</cite>: Coordinates the execution. It runs a main agent loop in <cite>ActiveTask._run_producer()</cite>.</p></li>
+</ul>
+<p>Data Flow and Event Handling:
+1. Producer (<cite>ActiveTask._run_producer</cite>):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Listens for incoming requests from <cite>ActiveTask._request_queue</cite>.</p></li>
+<li><p>Acquires <cite>ActiveTask._request_lock</cite> to ensure requests are processed sequentially.</p></li>
+<li><p>Calls <cite>AgentExecutor.execute()</cite> passing <cite>ActiveTask._event_queue_agent</cite> as the primary communication channel.</p></li>
+<li><p>Enqueues internal lifecycle events (e.g., <cite>_RequestStarted</cite>, <cite>_RequestCompleted</cite>) and
+exceptions to the same <cite>ActiveTask._event_queue_agent</cite>.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic" start="2">
+<li><p>Consumer (<cite>EventConsumer</cite>):
+- Consumes events from <cite>ActiveTask._event_queue_agent</cite>.
+- Processes all events, updating task state and the database (<cite>TaskManager</cite>).
+- Upon receiving <cite>_RequestCompleted</cite>, it releases <cite>ActiveTask._request_lock</cite>, making the producer</p>
+<blockquote>
+<div><p>ready to process the next queued request.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Propagates relevant agent updates and state changes to <cite>ActiveTask._event_queue_subscribers</cite>.</p></li>
+<li><p>Exception Handling: Re-raises exceptions dequeued from the agent queue, or raises its own validation
+errors (e.g., ‘Received Message object in task mode.’). In case of failure, it updates the task
+state to failed and propagates the exception to <cite>ActiveTask._event_queue_subscribers</cite>.</p></li>
+</ul>
+</li>
+<li><p>Subscribers (<cite>ActiveTask.subscribe</cite>):
+- <cite>ActiveTask._event_queue_subscribers</cite> is not consumed directly. Instead, it is consumed by tapped</p>
+<blockquote>
+<div><p>queues created within the <cite>ActiveTask.subscribe()</cite> method.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>The <cite>ActiveTask.subscribe()</cite> method is also used to actively run requests, creating a temporary
+subscription that yields events and automatically finishes once the request is completed.</p></li>
+</ul>
+</li>
+</ol>
 <dl class="py class">
 <dt class="sig sig-object py" id="a2a.server.agent_execution.active_task.ActiveTask">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.server.agent_execution.active_task.</span></span><span class="sig-name descname"><span class="pre">ActiveTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">agent_executor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.agent_execution.html#a2a.server.agent_execution.AgentExecutor" title="a2a.server.agent_execution.AgentExecutor"><span class="pre">AgentExecutor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_manager</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.tasks.html#a2a.server.tasks.TaskManager" title="a2a.server.tasks.TaskManager"><span class="pre">TaskManager</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">push_sender</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.tasks.html#a2a.server.tasks.PushNotificationSender" title="a2a.server.tasks.PushNotificationSender"><span class="pre">PushNotificationSender</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_cleanup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask" title="a2a.server.agent_execution.active_task.ActiveTask"><span class="pre">ActiveTask</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.agent_execution.active_task.ActiveTask" title="Link to this definition">¶</a></dt>
@@ -395,13 +442,10 @@ distribution to subscribers (the consumer).</p>
 <blockquote>
 <div><p>producer-consumer model using <a href="#id1"><span class="problematic" id="id2">`</span></a>asyncio.Task`s.</p>
 </div></blockquote>
-<ul>
+<ul class="simple">
 <li><p><cite>self._lock</cite> (asyncio.Lock) ensures mutually exclusive access for critical
 lifecycle state changes, such as starting the task, subscribing, and
-determining if cleanup is safe to trigger.</p>
-<p>mutation to the observable result state (like <cite>_exception</cite>,
-or <cite>_is_finished</cite>) notifies waiting coroutines (like <cite>wait()</cite>).</p>
-</li>
+determining if cleanup is safe to trigger.</p></li>
 <li><p><cite>self._is_finished</cite> (asyncio.Event) provides a thread-safe, non-blocking way
 for external observers and internal loops to check if the ActiveTask has
 permanently ceased execution and closed its queues.</p></li>
@@ -451,6 +495,19 @@ triggering <cite>_maybe_cleanup()</cite> to potentially garbage collect the Acti
 <dt class="sig sig-object py" id="a2a.server.agent_execution.active_task.ActiveTask.task_id">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">task_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.server.agent_execution.active_task.ActiveTask.task_id" title="Link to this definition">¶</a></dt>
 <dd><p>The ID of the task.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.server.agent_execution.active_task.EventConsumer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.server.agent_execution.active_task.</span></span><span class="sig-name descname"><span class="pre">EventConsumer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">active_task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask" title="a2a.server.agent_execution.active_task.ActiveTask"><span class="pre">ActiveTask</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.agent_execution.active_task.EventConsumer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Consumes events from the agent and updates system state.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.agent_execution.active_task.EventConsumer.run">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.agent_execution.active_task.EventConsumer.run" title="Link to this definition">¶</a></dt>
+<dd><p>Consumes events from the agent and updates system state.</p>
 </dd></dl>
 
 </dd></dl>
@@ -520,6 +577,10 @@ triggering <cite>_maybe_cleanup()</cite> to potentially garbage collect the Acti
 <li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask.start"><code class="docutils literal notranslate"><span class="pre">ActiveTask.start()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask.subscribe"><code class="docutils literal notranslate"><span class="pre">ActiveTask.subscribe()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask.task_id"><code class="docutils literal notranslate"><span class="pre">ActiveTask.task_id</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#a2a.server.agent_execution.active_task.EventConsumer"><code class="docutils literal notranslate"><span class="pre">EventConsumer</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.agent_execution.active_task.EventConsumer.run"><code class="docutils literal notranslate"><span class="pre">EventConsumer.run()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -1,6 +1,16 @@
 a2a.utils.error_handlers module
 *******************************
 
+a2a.utils.error_handlers.build_error_details(error: A2AError) -> list[dict[str, Any]]
+
+   Build the typed-details array for an "A2AError".
+
+   Always emits a leading "google.rpc.ErrorInfo" carrying the A2A
+   reason and "error.data" as "metadata". For *InvalidParamsError*
+   whose "data" contains an "errors" list of validation details, also
+   appends a "google.rpc.BadRequest" so all transports surface field-
+   level violations identically.
+
 a2a.utils.error_handlers.build_rest_error_payload(error: Exception) -> dict[str, Any]
 
    Build a REST error payload dict from an exception.

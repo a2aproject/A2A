@@ -396,7 +396,31 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.get_info">
 <span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.context.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.TaskPushNotificationConfig" title="a2a_pb2.TaskPushNotificationConfig"><span class="pre">TaskPushNotificationConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.get_info" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves the push notification configuration for a task.</p>
+<dd><p>Retrieves push notification configurations for a task, scoped to the caller.</p>
+<p>This is the user-callable read path. Implementations MUST return
+only configurations owned by the caller (as resolved from
+context).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.get_info_for_dispatch">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_info_for_dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.types.html#a2a.types.TaskPushNotificationConfig" title="a2a_pb2.TaskPushNotificationConfig"><span class="pre">TaskPushNotificationConfig</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.get_info_for_dispatch" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all push notification configurations for a task, across all owners.</p>
+<p>This is the internal read path used by the push-notification
+dispatch loop. Implementations SHOULD override this method to
+return every configuration registered for task_id regardless of
+which user registered it. Authorization already happened at
+registration time and the dispatch path fires every registered
+webhook for the task.</p>
+<p>The default implementation falls back to calling get_info with
+a synthetic empty ServerCallContext. This preserves 1.0
+behavior for subclasses that have not implemented the override
+but is INCORRECT for any deployment with multiple owners: the
+empty context resolves to the empty-string owner partition and
+returns no configs (silently dropping every notification). A
+warning is logged on every call to flag the misconfiguration.
+Custom subclasses MUST override this method to deliver
+notifications correctly in multi-owner deployments.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -468,6 +492,7 @@
 <li><a class="reference internal" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore"><code class="docutils literal notranslate"><span class="pre">PushNotificationConfigStore</span></code></a><ul>
 <li><a class="reference internal" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.delete_info"><code class="docutils literal notranslate"><span class="pre">PushNotificationConfigStore.delete_info()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.get_info"><code class="docutils literal notranslate"><span class="pre">PushNotificationConfigStore.get_info()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.get_info_for_dispatch"><code class="docutils literal notranslate"><span class="pre">PushNotificationConfigStore.get_info_for_dispatch()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.tasks.push_notification_config_store.PushNotificationConfigStore.set_info"><code class="docutils literal notranslate"><span class="pre">PushNotificationConfigStore.set_info()</span></code></a></li>
 </ul>
 </li>
