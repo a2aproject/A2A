@@ -98,13 +98,26 @@ Versions are additive within a major. Within v1.x, all v1.0 shapes remain valid;
 
 ## Coordination map
 
+Per-release pinning is the convergent practice across the companion specs in this map: each project pins byte-stable conformance vectors per SDK release, and verifiers compose against known vector sets rather than a moving `HEAD`. Cross-spec references below carry version pins and content hashes in the corresponding conformance fixture sets.
+
 | Companion spec | Owner | Layer | Interaction with A2A-IDF |
 | -------------- | ----- | ----- | ----------------------- |
 | [Envoys signature/v1 (issue #1829)](https://github.com/a2aproject/A2A/issues/1829) | @jschoemaker | Wire (per-message RFC 9421 + Ed25519) | A2A-IDF §6 dual-shape resolution interoperates with Envoys §6 compact form. Conformance fixtures byte-match Envoys §13 vectors. |
 | [CTEF claim envelopes (issue #1786)](https://github.com/a2aproject/A2A/issues/1786) | @aeoess | Identity claims | A2A-IDF attestation envelopes and CTEF claim envelopes are orthogonal layers. If CTEF stabilizes a generic envelope shape, A2A-IDF attestation types ship as content within it. |
-| [APS payments / receipts / delegation (issue #1575)](https://github.com/a2aproject/A2A/issues/1575) | @aeoess | Delegation and continuity | A2A-IDF delegation chain structure composes with APS bilateral receipts and delegation chains. Conformance fixtures demonstrate composition without re-signing the wire layer. |
+| [APS, Agent Passport System (issue #1575)](https://github.com/a2aproject/A2A/issues/1575) | @aeoess | Delegation and continuity | APS composes with A2A-IDF at the identity, scoped-authority, and mutual-authentication surfaces; it does not replace the A2A-IDF wire signature. APS treats that signature as the transport layer and carries delegation and receipt structure above it. Per-version composition detail in the sub-section below. |
 | [Hippo Ed25519 reference (lawcontinue/hippo-auth)](https://github.com/lawcontinue/hippo-auth) | @lawcontinue | Wire reference implementation | Hippo's Ed25519 reference library is a peer implementation against Envoys §1-§4. A2A-IDF §6 follow-up planned to incorporate Hippo's `tag` parameter and SHA-512 acceptance work. |
 | [CTEF v0.3.x release schedule](https://github.com/a2aproject/A2A/issues/1786) | @kenneives | Cross-thread release coordination | A2A-IDF aligns minor-version timing with CTEF cycles to share review cycles for envelope shape changes. |
+
+### APS per-version composition
+
+Source: [`aeoess/agent-passport-system`](https://github.com/aeoess/agent-passport-system) (Apache-2.0, npm, IETF Internet-Draft `draft-pidlisnyi-aps-01`). Per-version detail contributed by @aeoess.
+
+- **v1.0**. APS signed agent identity and scoped delegation with monotonic narrowing align with A2A-IDF §1–§4. Mutual authentication composes with §6 wire signature.
+- **v1.1**. APS delegation chains can express issuer / vouchee / scope / expiry assertions as delegation grants without re-signing the A2A-IDF envelope.
+- **v1.2**. APS cascade revocation composes with an external append-only revocation registry by reference, not replacement.
+- **v2.0**. APS signatures are JOSE-tagged and profile-defined, so an Ed25519 to ML-DSA-65 transition can be handled as a profile update rather than a protocol rewrite.
+
+APS pins byte-stable conformance vectors per SDK release at [`aeoess/aps-conformance-suite`](https://github.com/aeoess/aps-conformance-suite). Downstream implementers verify against the pinned fixtures for a given release even when the SDK moves, so composition stays reproducible across version boundaries.
 
 ## Non-goals (across all versions)
 
