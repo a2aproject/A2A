@@ -2153,7 +2153,6 @@ Clients verifying Agent Card signatures **MUST**:
   "capabilities": {
     "streaming": true,
     "pushNotifications": true,
-    "stateTransitionHistory": false,
     "extendedAgentCard": true
   },
   "securitySchemes": {
@@ -3585,7 +3584,7 @@ For **SDK Developers**:
 
 **Rationale:**
 
-All optional features enabling specific operations (`streaming`, `pushNotifications`, `stateTransitionHistory`) reside in `AgentCapabilities`. Moving `extendedAgentCard` achieves:
+All optional features enabling specific operations (`streaming`, `pushNotifications`) reside in `AgentCapabilities`. Moving `extendedAgentCard` achieves:
 
 - Architectural consistency
 - Improved discoverability
