@@ -55,31 +55,20 @@ The gateway or reverse-proxy routes `/billing/*` and `/support/*` to the
 appropriate backend. This is the simplest approach and requires no special
 client awareness beyond reading the Agent Card.
 
-### 2. Header-Based Routing
+### 2. Authentication Header-Based Routing
 
-When sub-paths are not convenient (for example, when all agents share the same
-base URL), the gateway can route on a custom HTTP header or on the contents of
-the standard `Authorization` header.
+When multiple agents share the same URL, a gateway can use the authentication
+credentials already present in the request to determine which agent to route to.
+Authentication requirements are declared in the Agent Card's `securitySchemes`
+and `security` fields, making this approach fully discoverable by clients.
 
 Examples:
 
-- A bearer token whose claims identify the target agent or organization.
-- An API key that maps to a particular tenant in the gateway's configuration.
-- A proprietary header such as `X-Agent-ID: billing`.
+- A bearer token whose claims (such as audience or scope) identify the target agent.
+- An API key that maps to a particular agent in the gateway's configuration.
 
-Header-based routing is transparent to the A2A protocol — the agent's
-`supportedInterfaces` entries declare the same URL for each agent, and the
-gateway resolves the target based on the header value. Authentication headers
-are already declared in the Agent Card's `securitySchemes` and `security`
-fields; custom routing headers can be documented as an extension or as
-operator-specific configuration.
-
-!!! note
-    Header-based routing requirements are not discoverable from the Agent Card
-    alone. Clients must obtain the required header values through out-of-band
-    means such as operator documentation or an OAuth token issued during
-    authentication. When routing information needs to be communicated to clients
-    via the Agent Card, prefer the `tenant` field approach described below.
+The gateway inspects the credential and forwards the request to the appropriate
+backend without any changes to the A2A protocol messages themselves.
 
 ### 3. Body-Based Routing Using the `tenant` Field
 
