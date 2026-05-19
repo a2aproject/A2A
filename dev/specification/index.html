@@ -6846,7 +6846,7 @@
 <p><strong>Errors:</strong></p>
 <ul>
 <li><a href="#332-error-handling"><code>ContentTypeNotSupportedError</code></a>: A Media Type provided in the request's message parts is not supported by the agent.</li>
-<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.</li>
+<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Messages sent to Tasks that are in a terminal state (<code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, <code>TASK_STATE_REJECTED</code>) cannot accept further messages.</li>
 <li><a href="#332-error-handling"><code>TaskNotFoundError</code></a>: The task ID does not exist or is not accessible.</li>
 </ul>
 <p><strong>Behavior:</strong></p>
@@ -6869,7 +6869,7 @@
 <p><strong>Errors:</strong></p>
 <ul>
 <li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Streaming is not supported by the agent (see <a href="#334-capability-validation">Capability Validation</a>).</li>
-<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.</li>
+<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Messages sent to Tasks that are in a terminal state (<code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, <code>TASK_STATE_REJECTED</code>) cannot accept further messages.</li>
 <li><a href="#332-error-handling"><code>ContentTypeNotSupportedError</code></a>: A Media Type provided in the request's message parts is not supported by the agent.</li>
 <li><a href="#332-error-handling"><code>TaskNotFoundError</code></a>: The task ID does not exist or is not accessible.</li>
 </ul>
@@ -6880,7 +6880,7 @@
 <p><strong>Message-only stream:</strong> If the agent returns a <a href="#414-message"><code>Message</code></a>, the stream MUST contain exactly one <code>Message</code> object and then close immediately. No task tracking or updates are provided.</p>
 </li>
 <li>
-<p><strong>Task lifecycle stream:</strong> If the agent returns a <a href="#411-task"><code>Task</code></a>, the stream MUST begin with the Task object, followed by zero or more <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a> or <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, canceled, rejected).</p>
+<p><strong>Task lifecycle stream:</strong> If the agent returns a <a href="#411-task"><code>Task</code></a>, the stream MUST begin with the Task object, followed by zero or more <a href="#421-taskstatusupdateevent"><code>TaskStatusUpdateEvent</code></a> or <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> objects. The stream MUST close when the task reaches a terminal state (<code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, <code>TASK_STATE_REJECTED</code>).</p>
 </li>
 </ol>
 <p>The agent MAY return a <code>Task</code> for complex processing with status/artifact updates or MAY return a <code>Message</code> for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.</p>
@@ -7125,10 +7125,10 @@
 <ul>
 <li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: Streaming is not supported by the agent (see <a href="#334-capability-validation">Capability Validation</a>).</li>
 <li><a href="#332-error-handling"><code>TaskNotFoundError</code></a>: The task ID does not exist or is not accessible.</li>
-<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: The operation is attempted on a task that is in a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, or <code>rejected</code>).</li>
+<li><a href="#332-error-handling"><code>UnsupportedOperationError</code></a>: The operation is attempted on a task that is in a terminal state (<code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, <code>TASK_STATE_REJECTED</code>).</li>
 </ul>
 <p><strong>Behavior:</strong></p>
-<p>The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, or <code>rejected</code>).</p>
+<p>The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (<code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, <code>TASK_STATE_REJECTED</code>).</p>
 <p>The operation MUST return a <code>Task</code> object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to <code>GetTask</code> and calling <code>SubscribeToTask</code>.</p>
 <h4 id="317-create-push-notification-config">3.1.7. Create Push Notification Config<a class="headerlink" href="#317-create-push-notification-config" title="Permanent link">&para;</a></h4>
 <p><span id="75-taskspushnotificationconfigset"></span>
@@ -7433,10 +7433,10 @@
 <p>The <code>return_immediately</code> field in <a href="#322-sendmessageconfiguration"><code>SendMessageConfiguration</code></a> controls whether the operation returns immediately or waits for task completion. Operations are blocking by default:</p>
 <ul>
 <li>
-<p><strong>Blocking (<code>return_immediately: false</code> or unset)</strong>: The operation MUST wait until the task reaches a terminal state (<code>COMPLETED</code>, <code>FAILED</code>, <code>CANCELED</code>, <code>REJECTED</code>) or an interrupted state (<code>INPUT_REQUIRED</code>, <code>AUTH_REQUIRED</code>) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.</p>
+<p><strong>Blocking (<code>return_immediately: false</code> or unset)</strong>: The operation MUST wait until the task reaches a terminal state (<code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, <code>TASK_STATE_REJECTED</code>) or an interrupted state (<code>TASK_STATE_INPUT_REQUIRED</code>, <code>TASK_STATE_AUTH_REQUIRED</code>) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.</p>
 </li>
 <li>
-<p><strong>Non-Blocking (<code>return_immediately: true</code>)</strong>: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., <code>working</code>, <code>input_required</code>). It is the caller's responsibility to poll for updates using <a href="#313-get-task">Get Task</a>, subscribe via <a href="#316-subscribe-to-task">Subscribe to Task</a>, or receive updates via push notifications.</p>
+<p><strong>Non-Blocking (<code>return_immediately: true</code>)</strong>: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., <code>TASK_STATE_WORKING</code>, <code>TASK_STATE_INPUT_REQUIRED</code>). It is the caller's responsibility to poll for updates using <a href="#313-get-task">Get Task</a>, subscribe via <a href="#316-subscribe-to-task">Subscribe to Task</a>, or receive updates via push notifications.</p>
 </li>
 </ul>
 <p>The <code>return_immediately</code> field has no effect:</p>
@@ -7610,7 +7610,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>TaskNotCancelableError</code></td>
-<td style="text-align: left;">An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like <code>completed</code>, <code>failed</code>, or <code>canceled</code>).</td>
+<td style="text-align: left;">An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like <code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, <code>TASK_STATE_REJECTED</code>).</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>PushNotificationNotSupportedError</code></td>
@@ -9604,7 +9604,7 @@ so that clients can distinguish between incompatible versions:</p>
 </span><span id="__span-26-15"><a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="w">    </span><span class="p">},</span>
 </span><span id="__span-26-16"><a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a><span class="w">    </span><span class="p">{</span>
 </span><span id="__span-26-17"><a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a><span class="w">      </span><span class="nt">&quot;field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;status&quot;</span><span class="p">,</span>
-</span><span id="__span-26-18"><a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a><span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invalid status value &#39;running&#39;. Must be one of: pending, working, completed, failed, canceled&quot;</span>
+</span><span id="__span-26-18"><a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a><span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invalid status value &#39;TASK_STATE_RUNNING&#39;. Must be one of: TASK_STATE_SUBMITTED, TASK_STATE_WORKING, TASK_STATE_COMPLETED, TASK_STATE_FAILED, TASK_STATE_CANCELED, TASK_STATE_REJECTED, TASK_STATE_INPUT_REQUIRED, TASK_STATE_AUTH_REQUIRED&quot;</span>
 </span><span id="__span-26-19"><a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-26-20"><a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="w">  </span><span class="p">]</span>
 </span><span id="__span-26-21"><a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a><span class="p">}</span>
@@ -9647,7 +9647,7 @@ so that clients can distinguish between incompatible versions:</p>
 </span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;43667960-d455-4453-b0cf-1bae4955270d&quot;</span><span class="p">,</span>
 </span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c295ea44-7543-4f78-b524-7a38915ad6e4&quot;</span><span class="p">,</span>
 </span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;submitted&quot;</span><span class="p">,</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TASK_STATE_SUBMITTED&quot;</span><span class="p">,</span>
 </span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="w">      </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-03-15T11:00:00Z&quot;</span>
 </span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="w">    </span><span class="p">}</span>
 </span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="w">  </span><span class="p">}</span>
@@ -10269,7 +10269,7 @@ so that clients can distinguish between incompatible versions:</p>
 </span><span id="__span-51-8"><a id="__codelineno-51-8" name="__codelineno-51-8" href="#__codelineno-51-8"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Response:</strong> SSE stream (same format as <code>SendStreamingMessage</code>)</p>
-<p><strong>Error:</strong> Returns <code>UnsupportedOperationError</code> if the task is in a terminal state (<code>completed</code>, <code>failed</code>, <code>canceled</code>, or <code>rejected</code>).</p>
+<p><strong>Error:</strong> Returns <code>UnsupportedOperationError</code> if the task is in a terminal state (<code>TASK_STATE_COMPLETED</code>, <code>TASK_STATE_FAILED</code>, <code>TASK_STATE_CANCELED</code>, or <code>TASK_STATE_REJECTED</code>).</p>
 <h4 id="947-push-notification-configuration-methods">9.4.7. Push Notification Configuration Methods<a class="headerlink" href="#947-push-notification-configuration-methods" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>CreateTaskPushNotificationConfig</code> - Create push notification configuration</li>
@@ -11241,7 +11241,7 @@ so that clients can distinguish between incompatible versions:</p>
 </table>
 <p><strong>Usage Examples:</strong></p>
 <p>List tasks with filtering:</p>
-<div class="language-http highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="err">GET /tasks?contextId=uuid&amp;status=working&amp;pageSize=50&amp;pageToken=cursor</span>
+<div class="language-http highlight"><pre><span></span><code><span id="__span-61-1"><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="err">GET /tasks?contextId=uuid&amp;status=TASK_STATE_WORKING&amp;pageSize=50&amp;pageToken=cursor</span>
 </span></code></pre></div>
 <p>Get task with history:</p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-62-1"><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="err">GET /tasks/{id}?historyLength=10</span>
@@ -11251,7 +11251,7 @@ so that clients can distinguish between incompatible versions:</p>
 <li><strong>Strings</strong>: Passed directly as query parameter values</li>
 <li><strong>Booleans</strong>: Represented as lowercase strings (<code>true</code>, <code>false</code>)</li>
 <li><strong>Numbers</strong>: Represented as decimal strings</li>
-<li><strong>Enums</strong>: Represented using their string values (e.g., <code>status=working</code>)</li>
+<li><strong>Enums</strong>: Represented using their string values (e.g., <code>status=TASK_STATE_WORKING</code>)</li>
 <li><strong>Repeated Fields</strong>: Multiple values <strong>MAY</strong> be passed by repeating the parameter name (e.g., <code>?tag=value1&amp;tag=value2</code>) or as comma-separated values (e.g., <code>?tag=value1,value2</code>)</li>
 <li><strong>Nested Objects</strong>: Not supported in query parameters; operations requiring nested objects <strong>MUST</strong> use POST with a request body</li>
 <li><strong>Datetimes/Timestamps</strong>: Represented as ISO 8601 strings (e.g., <code>2025-11-09T10:30:00Z</code>)</li>
