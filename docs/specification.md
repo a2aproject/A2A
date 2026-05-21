@@ -1013,7 +1013,7 @@ Agents declare their supported extensions in the [`AgentCard`](#441-agentcard) u
     {
       "url": "https://research-agent.example.com/a2a/v1",
       "protocolBinding": "HTTP+JSON",
-      "protocolVersion": "0.3",
+      "protocolVersion": "0.3"
     }
   ],
   "capabilities": {
@@ -1640,11 +1640,11 @@ Authorization: Bearer token
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
   },
   "configuration": {
-    "pushNotificationConfig": {
+    "taskPushNotificationConfig": {
       "url": "https://client.example.com/webhook/a2a-notifications",
       "token": "secure-client-token-for-task-aaa",
       "authentication": {
-        "schemes": ["Bearer"]
+        "scheme": "Bearer"
       }
     }
   }
@@ -1710,9 +1710,9 @@ Authorization: Bearer token
         "text": "Analyze this image and highlight any faces."
       },
       {
-        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+        "raw": "iVBORw0KGgoAAAANSUhEUgAAAAUA...",
         "filename": "input_image.png",
-        "mediaType": "image/png",
+        "mediaType": "image/png"
       }
     ],
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"

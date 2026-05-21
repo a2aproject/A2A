@@ -64,7 +64,7 @@ def define_env(env):
         """Parses a .proto file and renders a message table."""
         try:
             elements = _parse_proto(proto_file)
-        except FileNotFoundError as e:
+        except Exception as e:
             return f'**Error:** {e}'
 
         # Find the specific message object
