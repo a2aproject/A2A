@@ -1845,9 +1845,9 @@ Host: example.com
 }
 ```
 
-### Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow)
+**Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow)**
 
-### Step 3: Client fetches authenticated extended Agent Card
+**Step 3: Client fetches authenticated extended Agent Card**
 
 ```http
 GET /extendedAgentCard HTTP/1.1
