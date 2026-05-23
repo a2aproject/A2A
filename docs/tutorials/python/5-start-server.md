@@ -2,7 +2,9 @@
 
 Now that we have an Agent Card and an Agent Executor, we can set up and start the A2A server.
 
-The A2A Python SDK provides an `A2AStarletteApplication` class that simplifies running an A2A-compliant HTTP server. It uses [Starlette](https://www.starlette.io/) for the web framework and is typically run with an ASGI server like [Uvicorn](https://www.uvicorn.org/).
+To set up an A2A server, the Python SDK provides a route factory and helper functions (`create_agent_card_routes`, `create_jsonrpc_routes`, `create_rest_routes`). Use the route factory to create routes for the A2A server's services. These routes can be attached natively to popular frameworks like [Starlette](https://www.starlette.io/) and [FastAPI](https://fastapi.tiangolo.com/), which give you better control over authentication, logging, and other features.
+
+In this tutorial, we will use Starlette with [Uvicorn](https://www.uvicorn.org/).
 
 ## Server Setup in Helloworld
 
@@ -16,20 +18,20 @@ Let's break this down:
 
 1. **`DefaultRequestHandler`**:
 
-    - The SDK provides `DefaultRequestHandler`. This handler takes your `AgentExecutor` implementation (here, `HelloWorldAgentExecutor`) and a `TaskStore` (here, `InMemoryTaskStore`).
+    - The SDK provides `DefaultRequestHandler`. This handler takes your `AgentExecutor` implementation (`HelloWorldAgentExecutor`), a `TaskStore` (`InMemoryTaskStore`), and the public and extended `AgentCard` objects.
     - It routes incoming A2A RPC calls to the appropriate methods on your executor (like `execute` or `cancel`).
     - The `TaskStore` is used by the `DefaultRequestHandler` to manage the lifecycle of tasks, especially for stateful interactions, streaming, and resubscription. Even if your agent executor is simple, the handler needs a task store.
+    - `agent_card` is passed to the handler so it can verify the agent's declared capabilities when processing incoming requests. For example, it checks whether streaming or push notifications are supported before handling those request types.
+    - `extended_agent_card` is passed so the handler can serve it via the `GetExtendedAgentCard` RPC method to authenticated clients.
 
-2. **`A2AStarletteApplication`**:
+2. **`create_agent_card_routes` and `create_jsonrpc_routes`**:
 
-    - The `A2AStarletteApplication` class is instantiated with the `agent_card`, `request_handler` (referred to as `http_handler` in its constructor), and an optional `extended_agent_card`.
-    - The `agent_card` is exposed at the `/.well-known/agent-card.json` endpoint for public discovery.
-    - The `request_handler` processes all incoming A2A method calls by interacting with your `AgentExecutor`.
-    - The `extended_agent_card` provides additional capabilities and skills for authenticated users and is exposed via the `GetExtendedAgentCard` RPC method.
+    - `create_agent_card_routes(public_agent_card)` returns Starlette routes that expose the Agent Card at the `/.well-known/agent-card.json` endpoint for public discovery.
+    - `create_jsonrpc_routes(request_handler, '/')` returns Starlette routes that handle all incoming A2A JSON-RPC method calls by delegating to the `request_handler`.
+    - These route lists are combined and passed to a standard `Starlette` application.
 
-3. **`uvicorn.run(server_app_builder.build(), ...)`**:
-    - The `A2AStarletteApplication` has a `build()` method that constructs the actual Starlette application.
-    - This application is then run using `uvicorn.run()`, making your agent accessible over HTTP.
+3. **`uvicorn.run(app, ...)`**:
+    - The constructed `Starlette` app is run using `uvicorn.run()`, making your agent accessible over HTTP.
     - `host='127.0.0.1'` makes the server accessible only from your local machine.
     - `port=9999` specifies the port to listen on. This matches the endpoints defined in the `AgentCard`'s `supported_interfaces`.
 
