@@ -18,10 +18,11 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Load Super Linter Environment Variables into GITHUB_ENV
         run: |
-          grep -v '^\\(#.*\\|\\s\\?\\)$' .github/super-linter.env >> "${GITHUB_ENV}"
+          grep -v '^\(#.*\|\s\?\)$' .github/super-linter.env >> "${GITHUB_ENV}"
 
       - name: GitHub Super Linter
         uses: super-linter/super-linter/slim@v8
