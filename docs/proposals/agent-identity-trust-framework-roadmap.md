@@ -73,7 +73,7 @@ Versions are additive within a major. Within v1.x, all v1.0 shapes remain valid;
 
 **Coordination dependencies.**
 - v1.1 vouching shape (this proposal): revocation log records vouching attestations and primary attestations identically; the type field distinguishes.
-- Witness governance: needs an A2A working group resolution on which issuers operate witnesses. Candidate witness set is the agreed conformance suite operators (OpenA2A, aeoess, jschoemaker, kenneives, lawcontinue).
+- Witness governance: needs an A2A working group resolution on which issuers operate witnesses. Candidate witness set is the agreed conformance suite operators (OpenA2A, @aeoess, @jschoemaker, @kenneives, @lawcontinue).
 
 **Target merge window.** A2A Protocol v1.2.x cycle, candidate Q4 2026 through Q1 2027.
 
@@ -106,7 +106,7 @@ Per-release pinning is the convergent practice across the companion specs in thi
 | [CTEF claim envelopes (issue #1786)](https://github.com/a2aproject/A2A/issues/1786) | @aeoess | Identity claims | A2A-IDF attestation envelopes and CTEF claim envelopes are orthogonal layers. If CTEF stabilizes a generic envelope shape, A2A-IDF attestation types ship as content within it. |
 | [APS, Agent Passport System (issue #1575)](https://github.com/a2aproject/A2A/issues/1575) | @aeoess | Delegation and continuity | APS composes with A2A-IDF at the identity, scoped-authority, and mutual-authentication surfaces; it does not replace the A2A-IDF wire signature. APS treats that signature as the transport layer and carries delegation and receipt structure above it. Per-version composition detail in the sub-section below. |
 | [Hippo Ed25519 reference (lawcontinue/hippo-auth)](https://github.com/lawcontinue/hippo-auth) | @lawcontinue | Wire reference implementation | Hippo's Ed25519 reference library is a peer implementation against Envoys §1-§4. A2A-IDF §6 follow-up planned to incorporate Hippo's `tag` parameter and SHA-512 acceptance work. |
-| [CTEF v0.3.x release schedule](https://github.com/a2aproject/A2A/issues/1786) | @kenneives | Cross-thread release coordination | A2A-IDF aligns minor-version timing with CTEF cycles to share review cycles for envelope shape changes. |
+| [CTEF v0.3.x release coordination (v0.3.3 working doc)](https://github.com/agentgraph-co/agentgraph/blob/main/docs/standards/v0.3.3-working-doc.md) | @kenneives | Cross-thread release coordination | A2A-IDF aligns minor-version timing with CTEF cycles to share review cycles for envelope shape changes. The substrate envelope work on the same issue is tracked separately in the row above. |
 
 ### APS per-version composition
 
