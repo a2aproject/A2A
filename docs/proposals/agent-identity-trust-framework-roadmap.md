@@ -119,6 +119,10 @@ Source: [`aeoess/agent-passport-system`](https://github.com/aeoess/agent-passpor
 
 APS pins byte-stable conformance vectors per SDK release at [`aeoess/aps-conformance-suite`](https://github.com/aeoess/aps-conformance-suite). Downstream implementers verify against the pinned fixtures for a given release even when the SDK moves, so composition stays reproducible across version boundaries.
 
+### Related substrate work (not in this map)
+
+OpenA2A's identity and trust spec set ([AIP](https://github.com/opena2a-org/agent-identity-protocol), [ATP](https://github.com/opena2a-org/agent-trust-protocol), [ATX](https://github.com/opena2a-org/atx-spec)) is tracked separately on [`a2aproject/A2A#1876`](https://github.com/a2aproject/A2A/issues/1876) for coordination visibility. That set does not yet meet the maturity bar this map applies (single implementation today, reference build plugin not yet shipped, no peer-cosigned conformance fixtures comparable to APS or CTEF), so it is not in the table above. The cross-link is here so peers tracking the four-layer split know the work exists and is on path.
+
 ## Non-goals (across all versions)
 
 - **No required hosted infrastructure.** A2A-IDF does not require any specific registry, attestation issuer, or hosted service. Reference implementations exist but are not normative.
