@@ -1,0 +1,175 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "Streaming operations ACTS suite"
+  description: "Streaming conformance scenarios derived from TCK STREAM-*, CSIT task-streaming, and agentbin spec-streaming."
+
+suites:
+  - id: streaming
+    name: "Streaming operations"
+    description: "Covers send_streaming_message and subscribe_to_task behaviors."
+    tags:
+      - streaming
+      - sse
+      - subscribe
+    tests:
+      - id: STREAM-SSE-001
+        name: "SendStreamingMessage produces events ending in terminal state"
+        level: must
+        requires_behaviors:
+          - tck-stream-basic
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic generate output"
+            expect_stream:
+              min_count: 2
+              ordering: monotonic_state
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+
+      - id: STREAM-SSE-002
+        name: "Stream includes at least one artifact update"
+        level: must
+        requires_behaviors:
+          - tck-stream-basic
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic with artifact"
+            expect_stream:
+              events:
+                - description: "At least one streamed event includes an artifact payload"
+                  match: any_position
+                  artifact:
+                    exists: true
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-SSE-003
+        name: "Chunked streaming delivers multiple artifact events"
+        level: should
+        requires_behaviors:
+          - tck-stream-chunked
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-chunked multi-part"
+            expect_stream:
+              min_count: 3
+              ordering: monotonic_state
+
+      - id: STREAM-SUB-001
+        name: "SubscribeToTask receives updates for existing task"
+        level: should
+        requires_behaviors:
+          - tck-long-running
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              task:
+                id:
+                  type: string
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_SUBMITTED
+                      - TASK_STATE_WORKING
+            capture:
+              taskId: task.id
+          - id: subscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+                      - TASK_STATE_CANCELED
+                      - TASK_STATE_REJECTED
+
+      - id: STREAM-SUB-002
+        name: "Subscribe stream terminates at terminal state"
+        description: "The stream must close after emitting the terminal state event."
+        level: must
+        requires_behaviors:
+          - tck-stream-basic
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic test"
+            expect_stream:
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+                      - TASK_STATE_CANCELED
+
+      - id: STREAM-SUB-003
+        name: "Subscribe to terminal task returns error"
+        level: must
+        requires_behaviors:
+          - tck-complete-task
+        steps:
+          - id: setup
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task setup"
+            expect:
+              task:
+                id:
+                  type: string
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+                      - TASK_STATE_CANCELED
+                      - TASK_STATE_REJECTED
+            capture:
+              taskId: task.id
+          - id: subscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{setup.taskId}}"
+            expect:
+              error:
+                exists: true

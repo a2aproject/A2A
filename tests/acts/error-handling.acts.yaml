@@ -1,0 +1,170 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "A2A Error Handling Conformance Tests"
+  description: "Error handling coverage derived from TCK CORE-ERR, agentbin error cases, and CSIT."
+
+suites:
+  - id: error-handling
+    name: "Error Handling"
+    tests:
+      - id: CORE-ERR-001
+        name: "GetTask with non-existent ID returns TaskNotFoundError"
+        level: must
+        tags: [error, get-task, task-not-found]
+        steps:
+          - id: get-missing
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+              message:
+                type: string
+
+      - id: CORE-ERR-002
+        name: "CancelTask on non-existent task returns error"
+        level: must
+        tags: [error, cancel-task]
+        steps:
+          - id: cancel-missing
+            operation: cancel_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code:
+                one_of: [TaskNotFoundError, TaskNotCancelableError]
+
+      - id: CORE-ERR-003
+        name: "CancelTask on completed task returns TaskNotCancelableError"
+        level: must
+        tags: [error, cancel-task, completed-task]
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: setup-completed-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task setup"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId: "task.id"
+
+          - id: cancel-completed-task
+            operation: cancel_task
+            params:
+              id: "{{setup-completed-task.taskId}}"
+            expect_error:
+              code: TaskNotCancelableError
+
+      - id: CORE-ERR-004
+        name: "SendMessage to terminal task returns UnsupportedOperationError"
+        level: must
+        tags: [error, send-message, terminal-task]
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: create-terminal-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task first"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId: "task.id"
+
+          - id: resend-terminal-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{create-terminal-task.taskId}}"
+                parts:
+                  - text: "tck-complete-task second"
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: JSONRPC-ERR-001
+        name: "Unknown method returns MethodNotFoundError"
+        level: must
+        tags: [error, jsonrpc, raw]
+        transport: [jsonrpc]
+        steps:
+          - id: bad-method
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: 1
+                method: "DoSomethingUnsupported"
+                params: {}
+            expect:
+              status: 200
+              body:
+                error:
+                  code: -32601
+                  message:
+                    type: string
+
+      - id: JSONRPC-ERR-002
+        name: "Invalid JSON returns ParseError"
+        level: must
+        tags: [error, jsonrpc, raw, parse]
+        transport: [jsonrpc]
+        steps:
+          - id: bad-json
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body_raw: "{this is not valid json"
+            expect:
+              status: 200
+              body:
+                error:
+                  code: -32700
+
+      - id: CORE-ERR-005
+        name: "Error responses include actionable message"
+        level: should
+        tags: [error, message-quality]
+        steps:
+          - id: get-missing-actionable
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+              message:
+                all_of:
+                  - type: string
+                  - matches: ".{12,}"
+                  - any_of:
+                      - contains: "task"
+                      - contains: "Task"
+                      - contains: "not found"
+                      - contains: "does not exist"

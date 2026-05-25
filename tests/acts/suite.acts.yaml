@@ -1,0 +1,24 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "A2A Conformance Test Suite"
+  description: >
+    Official ACTS test suite for A2A protocol conformance. SDKs that pass
+    all must-level tests in this suite are considered A2A conformant and
+    can interoperate with other conformant SDKs.
+
+variables:
+  baseUrl: "{{SUT_BASE_URL}}"
+
+include:
+  - discovery.acts.yaml
+  - core-operations.acts.yaml
+  - multi-turn.acts.yaml
+  - streaming.acts.yaml
+  - polling.acts.yaml
+  - error-handling.acts.yaml
+  - wire-format.acts.yaml
+  - data-types.acts.yaml
+  - push-notifications.acts.yaml
+  - client-parsing.acts.yaml

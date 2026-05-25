@@ -1,0 +1,250 @@
+acts_version: "1.0"
+spec_version: "1.0"
+spec_ref: "docs/specification.md"
+
+metadata:
+  title: "Core A2A Operations ACTS"
+  description: "Core operation conformance tests synthesized from TCK, CSIT task lifecycle, and agentbin scenarios."
+
+suites:
+  - id: core-operations
+    name: "Core A2A operations"
+    description: "SendMessage, GetTask, and CancelTask conformance coverage for core lifecycle flows."
+    tests:
+      - id: CORE-SEND-001
+        name: "SendMessage returns a completed task"
+        description: "Verifies that SendMessage can return a completed task for the complete-task TCK behavior."
+        spec_ref: "docs/specification.md#311-send-message"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task hello world"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+      - id: CORE-SEND-002
+        name: "SendMessage to a terminal task returns error"
+        description: "Verifies that sending a follow-up message to a terminal task returns the protocol error for unsupported operation."
+        spec_ref: "docs/specification.md#311-send-message"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: setup
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task setup"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: resend
+            operation: send_message
+            params:
+              taskId: "{{setup.taskId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task terminal follow-up"
+            expect_error:
+              error_type: UnsupportedOperationError
+              message:
+                type: string
+
+      - id: CORE-SEND-003
+        name: "SendMessage returns a message response (no task)"
+        description: "Verifies that SendMessage may return a direct agent message response without creating a task."
+        spec_ref: "docs/specification.md#311-send-message"
+        level: must
+        requires_behaviors:
+          - "tck-message-response"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-message-response hello"
+            expect:
+              status: 200
+              body:
+                message:
+                  role: ROLE_AGENT
+                task:
+                  absent: true
+
+      - id: CORE-GET-001
+        name: "GetTask returns current state of existing task"
+        description: "Verifies that GetTask returns the current state for an existing completed task."
+        spec_ref: "docs/specification.md#313-get-task"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for get"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{send.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{send.taskId}}"
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: CORE-GET-002
+        name: "GetTask with historyLength 0 omits history"
+        description: "Verifies that GetTask omits task history, or returns it as an empty array, when historyLength is zero."
+        spec_ref: "docs/specification.md#313-get-task"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task history zero"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{send.taskId}}"
+              historyLength: 0
+            expect:
+              status: 200
+              body:
+                id: "{{send.taskId}}"
+                history:
+                  any_of:
+                    - absent: true
+                    - type: array
+                      count: 0
+
+      - id: CORE-CANCEL-001
+        name: "CancelTask returns updated state"
+        description: "Verifies that CancelTask returns the updated canceled task state for a task started in return-immediately mode."
+        spec_ref: "docs/specification.md#315-cancel-task"
+        level: must
+        requires_behaviors:
+          - "tck-cancel"
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-cancel start"
+              configuration:
+                returnImmediately: true
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_SUBMITTED
+                        - TASK_STATE_WORKING
+          - id: cancel
+            operation: cancel_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                status:
+                  state: TASK_STATE_CANCELED
+
+      - id: CORE-CANCEL-002
+        name: "CancelTask on terminal task returns error"
+        description: "Verifies that CancelTask on a terminal task fails with TaskNotCancelableError."
+        spec_ref: "docs/specification.md#315-cancel-task"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: setup
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task setup"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: cancel
+            operation: cancel_task
+            params:
+              id: "{{setup.taskId}}"
+            expect_error:
+              error_type: TaskNotCancelableError
+              message:
+                type: string

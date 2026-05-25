@@ -1,0 +1,144 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "Artifact Data Types"
+  description: "Tests for mixed artifact data types — text, structured data, file, and file URL"
+
+suites:
+  - id: data-types
+    name: "Artifact Data Types"
+    tests:
+      - id: DM-ART-001
+        name: "Text artifact"
+        description: >
+          Sends a request that should produce at least one text artifact and
+          verifies a returned artifact part includes a text field.
+        spec_ref: "specification.md#4.1.7"
+        level: must
+        requires_behaviors: ["tck-artifact-text"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-artifact-text hello"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+                  artifacts:
+                    count_gte: 1
+            assertions:
+              - source: "{{send.response}}"
+                any:
+                  path: "task.artifacts[*].parts[*]"
+                  match:
+                    text:
+                      type: string
+
+      - id: DM-ART-002
+        name: "Data artifact (structured JSON)"
+        description: >
+          Sends a request that should produce a structured JSON artifact and
+          verifies a returned artifact part includes an object-valued data field.
+        spec_ref: "specification.md#4.1.7"
+        level: should
+        requires_behaviors: ["tck-artifact-data"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-artifact-data structured"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+                  artifacts:
+                    count_gte: 1
+            assertions:
+              - source: "{{send.response}}"
+                any:
+                  path: "task.artifacts[*].parts[*]"
+                  match:
+                    data:
+                      type: object
+
+      - id: DM-ART-003
+        name: "File artifact (inline)"
+        description: >
+          Sends a request that should produce an inline file artifact and
+          verifies a returned artifact part includes file metadata.
+        spec_ref: "specification.md#4.1.7"
+        level: should
+        requires_behaviors: ["tck-artifact-file"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-artifact-file document"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+                  artifacts:
+                    count_gte: 1
+            assertions:
+              - source: "{{send.response}}"
+                any:
+                  path: "task.artifacts[*].parts[*]"
+                  match:
+                    file:
+                      name:
+                        type: string
+                      mediaType:
+                        type: string
+
+      - id: DM-ART-004
+        name: "File URL artifact"
+        description: >
+          Sends a request that should produce a file URL artifact and verifies
+          a returned artifact part includes fileUrl metadata.
+        spec_ref: "specification.md#4.1.7"
+        level: may
+        requires_behaviors: ["tck-artifact-file-url"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-artifact-file-url document"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+                  artifacts:
+                    count_gte: 1
+            assertions:
+              - source: "{{send.response}}"
+                any:
+                  path: "task.artifacts[*].parts[*]"
+                  match:
+                    fileUrl:
+                      url:
+                        type: string
+                      name:
+                        type: string

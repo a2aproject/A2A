@@ -1,0 +1,226 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "Client Parsing (Golden Response) Tests"
+  description: >
+    These tests verify that SDK clients can correctly parse canonical A2A
+    wire payloads. Each test provides a golden JSON response and asserts
+    that the client SDK parses it into the expected object structure.
+
+suites:
+  - id: client-parsing
+    name: "Client Parsing (Golden Responses)"
+    tests:
+      - id: CLIENT-PARSE-001
+        name: "Parse SendMessage response with completed task"
+        description: >
+          Verifies the SDK client can parse a SendMessage response containing
+          a completed task with artifacts.
+        level: must
+        tags: [client, parsing, task]
+        steps:
+          - id: parse
+            client_response:
+              operation: send_message
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-001"
+                result:
+                  task:
+                    id: "task-abc-123"
+                    contextId: "ctx-001"
+                    status:
+                      state: TASK_STATE_COMPLETED
+                      timestamp: "2025-05-25T20:00:00Z"
+                    artifacts:
+                      - artifactId: "art-1"
+                        parts:
+                          - text: "hello world"
+            expect_parsed:
+              task:
+                id: "task-abc-123"
+                contextId: "ctx-001"
+                status:
+                  state: TASK_STATE_COMPLETED
+                artifacts:
+                  count_gte: 1
+
+      - id: CLIENT-PARSE-002
+        name: "Parse SendMessage response with message (no task)"
+        description: >
+          Verifies the SDK client can parse a SendMessage response containing
+          a direct message (no task created).
+        level: must
+        tags: [client, parsing, message]
+        steps:
+          - id: parse
+            client_response:
+              operation: send_message
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-002"
+                result:
+                  message:
+                    messageId: "msg-001"
+                    role: ROLE_AGENT
+                    parts:
+                      - text: "I can help with that"
+            expect_parsed:
+              message:
+                messageId: "msg-001"
+                role: ROLE_AGENT
+                parts:
+                  count_gte: 1
+
+      - id: CLIENT-PARSE-003
+        name: "Parse GetTask response"
+        description: >
+          Verifies the SDK client can parse a GetTask response with full
+          task state including history and artifacts.
+        level: must
+        tags: [client, parsing, get-task]
+        steps:
+          - id: parse
+            client_response:
+              operation: get_task
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-003"
+                result:
+                  id: "task-xyz-789"
+                  contextId: "ctx-002"
+                  status:
+                    state: TASK_STATE_COMPLETED
+                    timestamp: "2025-05-25T20:05:00Z"
+                  artifacts:
+                    - artifactId: "art-1"
+                      parts:
+                        - text: "result text"
+                    - artifactId: "art-2"
+                      parts:
+                        - data:
+                            key: value
+                  history:
+                    - role: ROLE_USER
+                      parts:
+                        - text: "original request"
+                    - role: ROLE_AGENT
+                      parts:
+                        - text: "processing..."
+            expect_parsed:
+              id: "task-xyz-789"
+              contextId: "ctx-002"
+              status:
+                state: TASK_STATE_COMPLETED
+              artifacts:
+                count_gte: 2
+              history:
+                count_gte: 2
+
+      - id: CLIENT-PARSE-004
+        name: "Parse error response"
+        description: >
+          Verifies the SDK client can parse a JSON-RPC error response and
+          surface the A2A error code and message.
+        level: must
+        tags: [client, parsing, error]
+        steps:
+          - id: parse
+            client_response:
+              operation: get_task
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-004"
+                error:
+                  code: -32001
+                  message: "Task not found"
+                  data:
+                    taskId: "nonexistent-task-id"
+            expect_parsed:
+              error:
+                code: -32001
+                message:
+                  contains: "not found"
+
+      - id: CLIENT-PARSE-005
+        name: "Parse task with INPUT_REQUIRED state"
+        description: >
+          Verifies the SDK client correctly parses a task in INPUT_REQUIRED
+          state with a status message prompting for more input.
+        level: must
+        tags: [client, parsing, input-required]
+        steps:
+          - id: parse
+            client_response:
+              operation: send_message
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-005"
+                result:
+                  task:
+                    id: "task-multi-001"
+                    contextId: "ctx-multi-001"
+                    status:
+                      state: TASK_STATE_INPUT_REQUIRED
+                      timestamp: "2025-05-25T20:10:00Z"
+                      message:
+                        messageId: "status-msg-001"
+                        role: ROLE_AGENT
+                        parts:
+                          - text: "Please provide more details"
+            expect_parsed:
+              task:
+                id: "task-multi-001"
+                status:
+                  state: TASK_STATE_INPUT_REQUIRED
+                  message:
+                    role: ROLE_AGENT
+                    parts:
+                      count_gte: 1
+
+      - id: CLIENT-PARSE-006
+        name: "Parse task with mixed artifact types"
+        description: >
+          Verifies the SDK client can parse artifacts containing text, data,
+          file, and fileUrl parts in a single response.
+        level: should
+        tags: [client, parsing, artifacts, data-types]
+        steps:
+          - id: parse
+            client_response:
+              operation: get_task
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-006"
+                result:
+                  id: "task-mixed-001"
+                  contextId: "ctx-mixed-001"
+                  status:
+                    state: TASK_STATE_COMPLETED
+                    timestamp: "2025-05-25T20:15:00Z"
+                  artifacts:
+                    - artifactId: "art-text"
+                      parts:
+                        - text: "Plain text result"
+                    - artifactId: "art-data"
+                      parts:
+                        - data:
+                            temperature: 72.5
+                            unit: "fahrenheit"
+                    - artifactId: "art-file"
+                      parts:
+                        - file:
+                            name: "report.pdf"
+                            mediaType: "application/pdf"
+                            bytes: "JVBERi0xLjQ="
+                    - artifactId: "art-url"
+                      parts:
+                        - fileUrl:
+                            url: "https://example.com/report.pdf"
+                            name: "report.pdf"
+                            mediaType: "application/pdf"
+            expect_parsed:
+              id: "task-mixed-001"
+              artifacts:
+                count_gte: 4

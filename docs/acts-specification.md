@@ -1041,7 +1041,173 @@ An implementation is considered **A2A conformant** if and only if all `must`-lev
 
 ---
 
-## 13. Requirement ID Scheme
+## 13. Report Format
+
+Runners MUST be capable of producing a **JSON report** conforming to the schema below. This enables dashboards, CI systems, and certification portals to consume results from any runner implementation.
+
+### 13.1. Report Document
+
+```cddl
+acts-report = {
+  acts_version: text,                ; ACTS format version used
+  spec_version: text,                ; A2A protocol version tested
+  generated_at: text,                ; ISO 8601 timestamp
+  sdk: sdk-info,
+  transport: transport-binding,
+  ? environment: { * text => text }, ; OS, runtime version, etc.
+  summary: summary,
+  suites: [+ suite-result]
+}
+
+sdk-info = {
+  name: text,                        ; e.g., "a2a-python", "a2a-dotnet"
+  version: text,                     ; SDK version string
+  language: text,                    ; e.g., "python", "csharp", "go"
+  ? repository: text                 ; URL to SDK source
+}
+
+transport-binding = "jsonrpc" / "grpc" / "rest"
+```
+
+### 13.2. Summary
+
+```cddl
+summary = {
+  total: int,
+  passed: int,
+  failed: int,
+  skipped: int,
+  errors: int,                       ; Runner errors (not test failures)
+  duration_ms: int,
+  by_level: {
+    must: level-summary,
+    should: level-summary,
+    may: level-summary
+  }
+}
+
+level-summary = {
+  total: int,
+  passed: int,
+  failed: int,
+  skipped: int,
+  errors: int
+}
+```
+
+### 13.3. Suite and Test Results
+
+```cddl
+suite-result = {
+  id: text,
+  name: text,
+  tests: [+ test-result]
+}
+
+test-result = {
+  id: text,                          ; Matches the test id from the ACTS file
+  name: text,
+  level: "must" / "should" / "may",
+  result: "pass" / "fail" / "skip" / "error",
+  duration_ms: int,
+  ? skip_reason: text,               ; Why the test was skipped
+  ? failure: failure-detail,
+  ? steps: [+ step-result]           ; Optional per-step breakdown
+}
+
+failure-detail = {
+  message: text,                     ; Human-readable failure description
+  ? step_id: text,                   ; Which step failed
+  ? expected: text,                  ; Expected value (stringified)
+  ? actual: text,                    ; Actual value (stringified)
+  ? assertion_path: text             ; Dot-path to the failed field
+}
+
+step-result = {
+  id: text,
+  result: "pass" / "fail" / "skip" / "error",
+  duration_ms: int,
+  ? failure: failure-detail
+}
+```
+
+### 13.4. Example Report
+
+```json
+{
+  "acts_version": "1.0",
+  "spec_version": "1.0",
+  "generated_at": "2025-05-25T21:00:00Z",
+  "sdk": {
+    "name": "a2a-python",
+    "version": "0.3.1",
+    "language": "python",
+    "repository": "https://github.com/a2aproject/a2a-python"
+  },
+  "transport": "jsonrpc",
+  "environment": {
+    "os": "ubuntu-24.04",
+    "runtime": "python 3.12.3",
+    "ci": "github-actions"
+  },
+  "summary": {
+    "total": 42,
+    "passed": 39,
+    "failed": 2,
+    "skipped": 1,
+    "errors": 0,
+    "duration_ms": 12345,
+    "by_level": {
+      "must": { "total": 30, "passed": 28, "failed": 2, "skipped": 0, "errors": 0 },
+      "should": { "total": 8, "passed": 8, "failed": 0, "skipped": 0, "errors": 0 },
+      "may": { "total": 4, "passed": 3, "failed": 0, "skipped": 1, "errors": 0 }
+    }
+  },
+  "suites": [
+    {
+      "id": "core-operations",
+      "name": "Core Operations",
+      "tests": [
+        {
+          "id": "CORE-SEND-001",
+          "name": "SendMessage returns a completed task",
+          "level": "must",
+          "result": "pass",
+          "duration_ms": 234
+        },
+        {
+          "id": "CORE-GET-001",
+          "name": "GetTask returns current state",
+          "level": "must",
+          "result": "fail",
+          "duration_ms": 156,
+          "failure": {
+            "message": "Expected state TASK_STATE_COMPLETED but got TASK_STATE_WORKING",
+            "step_id": "verify",
+            "expected": "TASK_STATE_COMPLETED",
+            "actual": "TASK_STATE_WORKING",
+            "assertion_path": "status.state"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 13.5. Report File Naming
+
+Report files SHOULD follow the naming convention:
+
+```
+acts-report-{sdk}-{transport}-{timestamp}.json
+```
+
+For example: `acts-report-a2a-python-jsonrpc-20250525T210000Z.json`
+
+---
+
+## 14. Requirement ID Scheme
 
 Every test MUST have a unique `id` that serves as its requirement identifier. IDs follow the pattern:
 
@@ -1069,7 +1235,7 @@ The `AREA` component provides finer grouping within a category (e.g., `SEND`, `G
 
 ---
 
-## 14. Complete Example
+## 15. Complete Example
 
 The following is a complete, minimal ACTS file demonstrating the key features.
 
@@ -1368,7 +1534,7 @@ suites:
 
 ---
 
-## 15. File Organization
+## 16. File Organization
 
 The official A2A conformance test suite SHOULD be organized as follows:
 
@@ -1420,7 +1586,7 @@ include:
 
 ---
 
-## 16. Versioning
+## 17. Versioning
 
 The ACTS format itself is versioned independently of the A2A protocol. The `acts_version` field in each document identifies the format version. The `spec_version` field identifies which A2A protocol version the tests target.
 
@@ -1719,6 +1885,79 @@ artifact-spec = {
   ? data: any,
   ? file: { name: text, mediaType: text },
   ? fileUrl: { url: text, name: text, mediaType: text }
+}
+
+; ── Report Format ─────────────────────────────────────────────────
+acts-report = {
+  acts_version: text,
+  spec_version: text,
+  generated_at: text,
+  sdk: sdk-info,
+  transport: transport-binding,
+  ? environment: { * text => text },
+  summary: summary,
+  suites: [+ suite-result]
+}
+
+sdk-info = {
+  name: text,
+  version: text,
+  language: text,
+  ? repository: text
+}
+
+summary = {
+  total: int,
+  passed: int,
+  failed: int,
+  skipped: int,
+  errors: int,
+  duration_ms: int,
+  by_level: {
+    must: level-summary,
+    should: level-summary,
+    may: level-summary
+  }
+}
+
+level-summary = {
+  total: int,
+  passed: int,
+  failed: int,
+  skipped: int,
+  errors: int
+}
+
+suite-result = {
+  id: text,
+  name: text,
+  tests: [+ test-result]
+}
+
+test-result = {
+  id: text,
+  name: text,
+  level: "must" / "should" / "may",
+  result: "pass" / "fail" / "skip" / "error",
+  duration_ms: int,
+  ? skip_reason: text,
+  ? failure: failure-detail,
+  ? steps: [+ step-result]
+}
+
+failure-detail = {
+  message: text,
+  ? step_id: text,
+  ? expected: text,
+  ? actual: text,
+  ? assertion_path: text
+}
+
+step-result = {
+  id: text,
+  result: "pass" / "fail" / "skip" / "error",
+  duration_ms: int,
+  ? failure: failure-detail
 }
 ```
 

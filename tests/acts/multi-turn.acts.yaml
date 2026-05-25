@@ -1,0 +1,156 @@
+acts_version: "1.0"
+spec_version: "1.0"
+metadata:
+  title: "Multi-turn Conversations"
+  description: "ACTS tests for multi-turn conversations, INPUT_REQUIRED flows, and context inference"
+
+suites:
+  - id: multi-turn
+    name: Multi-turn Conversations
+    tests:
+      - id: CORE-MULTI-001
+        name: Multi-turn with INPUT_REQUIRED
+        description: Covers TCK CORE-MULTI-001, CSIT scenario-parity input-required, and agentbin spec-multi-turn behavior.
+        spec_ref: CORE-MULTI-001
+        level: must
+        requires_behaviors:
+          - tck-multi-turn
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn start conversation"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+
+          - id: turn3
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+      - id: CORE-MULTI-005
+        name: SendMessage with only taskId infers contextId
+        description: Verifies follow-up SendMessage can omit contextId and still remain on the original task context.
+        spec_ref: CORE-MULTI-005
+        level: must
+        requires_behaviors:
+          - tck-multi-turn
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn start"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  contextId: "{{turn1.contextId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+      - id: CORE-MULTI-006
+        name: SendMessage with taskId and wrong contextId returns error
+        description: Verifies mismatched contextId is rejected for a follow-up turn.
+        spec_ref: CORE-MULTI-006
+        level: must
+        requires_behaviors:
+          - tck-multi-turn
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn start"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: "task.id"
+
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "wrong-context-id-12345"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "should fail"
+            expect:
+              status: error
+              error:
+                exists: true
