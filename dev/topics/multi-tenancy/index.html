@@ -12,31 +12,31 @@
         <meta name="author" content="The Linux Foundation">
       
       
-        <link rel="canonical" href="https://a2a-protocol.org/latest/tutorials/python/5-start-server/">
+        <link rel="canonical" href="https://a2a-protocol.org/latest/topics/multi-tenancy/">
       
       
-        <link rel="prev" href="../4-agent-executor/">
+        <link rel="prev" href="../streaming-and-async/">
       
       
-        <link rel="next" href="../6-interact-with-server/">
+        <link rel="next" href="../a2a-and-mcp/">
       
       
         
       
       
-      <link rel="icon" href="../../../assets/a2a-logo-black.svg">
+      <link rel="icon" href="../../assets/a2a-logo-black.svg">
       <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
     
     
       
-        <title>Start Server - A2A Protocol</title>
+        <title>Multi-Tenancy - A2A Protocol</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
   
@@ -120,9 +120,9 @@
       
     
     
-      <link rel="stylesheet" href="../../../stylesheets/custom.css">
+      <link rel="stylesheet" href="../../stylesheets/custom.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
   
@@ -157,7 +157,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#5-starting-the-server" class="md-skip">
+        <a href="#multi-tenancy-and-multi-agent-routing" class="md-skip">
           Skip to content
         </a>
       
@@ -193,9 +193,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="A2A Protocol" class="md-header__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+    <a href="../.." title="A2A Protocol" class="md-header__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
       
-  <img src="../../../assets/a2a-logo-white.svg" alt="logo">
+  <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -212,7 +212,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Start Server
+              Multi-Tenancy
             
           </span>
         </div>
@@ -314,9 +314,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="A2A Protocol" class="md-nav__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
+    <a href="../.." title="A2A Protocol" class="md-nav__button md-logo" aria-label="A2A Protocol" data-md-component="logo">
       
-  <img src="../../../assets/a2a-logo-white.svg" alt="logo">
+  <img src="../../assets/a2a-logo-white.svg" alt="logo">
 
     </a>
     A2A Protocol
@@ -343,7 +343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -370,7 +370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../announcing-1.0/" class="md-nav__link">
+      <a href="../../announcing-1.0/" class="md-nav__link">
         
   
   
@@ -394,8 +394,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -425,11 +427,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
@@ -450,7 +452,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -468,7 +470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/what-is-a2a/" class="md-nav__link">
+      <a href="../what-is-a2a/" class="md-nav__link">
         
   
   
@@ -496,7 +498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/key-concepts/" class="md-nav__link">
+      <a href="../key-concepts/" class="md-nav__link">
         
   
   
@@ -524,7 +526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/agent-discovery/" class="md-nav__link">
+      <a href="../agent-discovery/" class="md-nav__link">
         
   
   
@@ -552,7 +554,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/enterprise-ready/" class="md-nav__link">
+      <a href="../enterprise-ready/" class="md-nav__link">
         
   
   
@@ -580,7 +582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/life-of-a-task/" class="md-nav__link">
+      <a href="../life-of-a-task/" class="md-nav__link">
         
   
   
@@ -608,7 +610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/extensions/" class="md-nav__link">
+      <a href="../extensions/" class="md-nav__link">
         
   
   
@@ -636,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/custom-protocol-bindings/" class="md-nav__link">
+      <a href="../custom-protocol-bindings/" class="md-nav__link">
         
   
   
@@ -664,7 +666,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/extension-and-binding-governance/" class="md-nav__link">
+      <a href="../extension-and-binding-governance/" class="md-nav__link">
         
   
   
@@ -692,7 +694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../topics/streaming-and-async/" class="md-nav__link">
+      <a href="../streaming-and-async/" class="md-nav__link">
         
   
   
@@ -700,316 +702,6 @@
     
   
     Streaming & Asynchronous Operations
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../topics/multi-tenancy/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Multi-Tenancy
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../../topics/a2a-and-mcp/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    A2A and MCP
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tutorials and Samples
-  
-
-    
-  </span>
-  
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Tutorials and Samples
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-        
-      
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Quickstart (Python)
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4_2">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Quickstart (Python)
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../1-introduction/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Introduction
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../2-setup/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Setup
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../3-agent-skills-and-card/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agent Skills & Agent Card
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../4-agent-executor/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Agent Executor
   
 
     
@@ -1046,7 +738,7 @@
   <span class="md-ellipsis">
     
   
-    Start Server
+    Multi-Tenancy
   
 
     
@@ -1064,7 +756,7 @@
   <span class="md-ellipsis">
     
   
-    Start Server
+    Multi-Tenancy
   
 
     
@@ -1090,10 +782,60 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#server-setup-in-helloworld" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Server Setup in Helloworld
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-url-based-routing-sub-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. URL-Based Routing (Sub-Path)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-authentication-header-based-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Authentication Header-Based Routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-body-based-routing-using-the-tenant-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Body-Based Routing Using the tenant Field
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combining-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combining Approaches
       
     </span>
   </a>
@@ -1101,10 +843,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-the-helloworld-server" class="md-nav__link">
+  <a href="#discovering-multiple-agents" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running the Helloworld Server
+        Discovering Multiple Agents
       
     </span>
   </a>
@@ -1127,7 +869,313 @@
   
   
     <li class="md-nav__item">
-      <a href="../6-interact-with-server/" class="md-nav__link">
+      <a href="../a2a-and-mcp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    A2A and MCP
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorials/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials and Samples
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials and Samples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart (Python)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quickstart (Python)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/python/1-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/python/2-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/python/3-agent-skills-and-card/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Skills & Agent Card
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/python/4-agent-executor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Executor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/python/5-start-server/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start Server
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/python/6-interact-with-server/" class="md-nav__link">
         
   
   
@@ -1155,7 +1203,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../7-streaming-and-multiturn/" class="md-nav__link">
+      <a href="../../tutorials/python/7-streaming-and-multiturn/" class="md-nav__link">
         
   
   
@@ -1183,7 +1231,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../8-next-steps/" class="md-nav__link">
+      <a href="../../tutorials/python/8-next-steps/" class="md-nav__link">
         
   
   
@@ -1309,7 +1357,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../specification/" class="md-nav__link">
+      <a href="../../specification/" class="md-nav__link">
         
   
   
@@ -1337,7 +1385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../whats-new-v1/" class="md-nav__link">
+      <a href="../../whats-new-v1/" class="md-nav__link">
         
   
   
@@ -1365,7 +1413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../definitions/" class="md-nav__link">
+      <a href="../../definitions/" class="md-nav__link">
         
   
   
@@ -1420,7 +1468,7 @@
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../sdk/" class="md-nav__link ">
+            <a href="../../sdk/" class="md-nav__link ">
               
   
   
@@ -1464,7 +1512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../sdk/python/api/" class="md-nav__link">
+      <a href="../../sdk/python/api/" class="md-nav__link">
         
   
   
@@ -1499,7 +1547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../community/" class="md-nav__link">
+      <a href="../../community/" class="md-nav__link">
         
   
   
@@ -1526,7 +1574,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../partners/" class="md-nav__link">
+      <a href="../../partners/" class="md-nav__link">
         
   
   
@@ -1553,7 +1601,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../roadmap/" class="md-nav__link">
+      <a href="../../roadmap/" class="md-nav__link">
         
   
   
@@ -1600,10 +1648,60 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#server-setup-in-helloworld" class="md-nav__link">
+  <a href="#overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Server Setup in Helloworld
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-url-based-routing-sub-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. URL-Based Routing (Sub-Path)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-authentication-header-based-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Authentication Header-Based Routing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-body-based-routing-using-the-tenant-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Body-Based Routing Using the tenant Field
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combining-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Combining Approaches
       
     </span>
   </a>
@@ -1611,10 +1709,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#running-the-helloworld-server" class="md-nav__link">
+  <a href="#discovering-multiple-agents" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running the Helloworld Server
+        Discovering Multiple Agents
       
     </span>
   </a>
@@ -1646,7 +1744,7 @@
   
   
     <li class="md-path__item">
-      <a href="../../.." class="md-path__link">
+      <a href="../.." class="md-path__link">
         
   <span class="md-ellipsis">
     Home
@@ -1664,28 +1762,10 @@
     
     
       <li class="md-path__item">
-        <a href="../../" class="md-path__link">
+        <a href="../what-is-a2a/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Tutorials and Samples
-  </span>
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-    
-    
-      <li class="md-path__item">
-        <a href="../1-introduction/" class="md-path__link">
-          
-  <span class="md-ellipsis">
-    Quickstart (Python)
+    Documentation
   </span>
 
         </a>
@@ -1708,178 +1788,109 @@
     
       
     
-    <a href="https://github.com/a2aproject/A2A/raw/main/docs/tutorials/python/5-start-server.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/a2aproject/A2A/raw/main/docs/topics/multi-tenancy.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.22 2H7.78C6.8 2 6 2.8 6 3.78v12.44C6 17.2 6.8 18 7.78 18h12.44c.98 0 1.78-.79 1.78-1.78V3.78C22 2.8 21.2 2 20.22 2m-9.16 13H9v-2.06l6.06-6.06 2.06 2.06zm7.64-7.65-1 1-2.05-2.05 1-1c.21-.22.56-.22.77 0l1.28 1.28c.22.21.22.56 0 .77M4 6H2v14a2 2 0 0 0 2 2h14v-2H4z"/></svg>
     </a>
   
 
 
-<h1 id="5-starting-the-server">5. Starting the Server<a class="headerlink" href="#5-starting-the-server" title="Permanent link">&para;</a></h1>
-<p>Now that we have an Agent Card and an Agent Executor, we can set up and start the A2A server.</p>
-<p>To set up an A2A server, the Python SDK provides a route factory and helper functions (<code>create_agent_card_routes</code>, <code>create_jsonrpc_routes</code>, <code>create_rest_routes</code>). Use the route factory to create routes for the A2A server's services. These routes can be attached natively to popular frameworks like <a href="https://www.starlette.io/">Starlette</a> and <a href="https://fastapi.tiangolo.com/">FastAPI</a>, which give you better control over authentication, logging, and other features.</p>
-<p>In this tutorial, we will use Starlette with <a href="https://www.uvicorn.org/">Uvicorn</a>.</p>
-<h2 id="server-setup-in-helloworld">Server Setup in Helloworld<a class="headerlink" href="#server-setup-in-helloworld" title="Permanent link">&para;</a></h2>
-<p>Let's look at <code>__main__.py</code> again to see how the server is initialized and started.</p>
-<div class="language-python no-copy highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">a2a.server.request_handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefaultRequestHandler</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">a2a.server.routes</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">create_agent_card_routes</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">create_jsonrpc_routes</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">a2a.server.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">InMemoryTaskStore</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">a2a.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">AgentCapabilities</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">AgentCard</span><span class="p">,</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">AgentInterface</span><span class="p">,</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">AgentSkill</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">)</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="kn">from</span><span class="w"> </span><span class="nn">agent_executor</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">HelloWorldAgentExecutor</span><span class="p">,</span>  <span class="c1"># type: ignore[import-untyped]</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">)</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="kn">from</span><span class="w"> </span><span class="nn">starlette.applications</span><span class="w"> </span><span class="kn">import</span> <span class="n">Starlette</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="c1"># Defines the abilities or functions that agent can perform.</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">skill</span> <span class="o">=</span> <span class="n">AgentSkill</span><span class="p">(</span>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;echo_bot&#39;</span><span class="p">,</span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Echo Bot&#39;</span><span class="p">,</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;An example agent that acknowledges client request and responds with a &quot;Hello World&quot; message.&#39;</span><span class="p">,</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>        <span class="n">input_modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text/plain&#39;</span><span class="p">],</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>        <span class="n">output_modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text/plain&#39;</span><span class="p">],</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a2a&#39;</span><span class="p">,</span> <span class="s1">&#39;echo-example&#39;</span><span class="p">],</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;hi&#39;</span><span class="p">,</span> <span class="s1">&#39;how are you&#39;</span><span class="p">],</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="p">)</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="c1"># Defines an optional additional skill for the agent that is not visible in the public card.</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="n">extended_skill</span> <span class="o">=</span> <span class="n">AgentSkill</span><span class="p">(</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;echo_bot_super_mode&#39;</span><span class="p">,</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Echo Bot (Super Mode)&#39;</span><span class="p">,</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;An extended version of Echo Bot that responds with extra enthusiasm!&#39;</span><span class="p">,</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a2a&#39;</span><span class="p">,</span> <span class="s1">&#39;echo-example&#39;</span><span class="p">,</span> <span class="s1">&#39;extended&#39;</span><span class="p">],</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>        <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;super hi&#39;</span><span class="p">,</span> <span class="s1">&#39;give me a super hello&#39;</span><span class="p">],</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    <span class="p">)</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="c1"># Define a public-facing agent card that allows clients to discover your agent&#39;s capabilities.</span>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="n">public_agent_card</span> <span class="o">=</span> <span class="n">AgentCard</span><span class="p">(</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>        <span class="c1"># Basic identity information of A2A server</span>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Hello World Agent&#39;</span><span class="p">,</span>  <span class="c1"># Identity</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Just a hello world agent&#39;</span><span class="p">,</span>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>        <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.1&#39;</span><span class="p">,</span>
-</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>        <span class="c1"># Default Media Types for the agent&#39;s interactions</span>
-</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>        <span class="n">default_input_modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text/plain&#39;</span><span class="p">],</span>  <span class="c1"># Supported media types</span>
-</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>        <span class="n">default_output_modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text/plain&#39;</span><span class="p">],</span>
-</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>        <span class="c1"># Supported A2A features (like streaming or extended config)</span>
-</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>        <span class="n">capabilities</span><span class="o">=</span><span class="n">AgentCapabilities</span><span class="p">(</span><span class="n">streaming</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">extended_agent_card</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>        <span class="c1"># Ordered list of endpoints and protocols where the service can be reached</span>
-</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="n">supported_interfaces</span><span class="o">=</span><span class="p">[</span>
-</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>            <span class="n">AgentInterface</span><span class="p">(</span>
-</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>                <span class="n">protocol_binding</span><span class="o">=</span><span class="s1">&#39;JSONRPC&#39;</span><span class="p">,</span>
-</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>                <span class="n">url</span><span class="o">=</span><span class="s1">&#39;http://127.0.0.1:9999&#39;</span><span class="p">,</span>
-</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>            <span class="p">)</span>
-</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>        <span class="p">],</span>
-</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>        <span class="c1"># The list of AgentSkill objects that this agent offers</span>
-</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>        <span class="n">skills</span><span class="o">=</span><span class="p">[</span><span class="n">skill</span><span class="p">],</span>
-</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>        <span class="c1"># Optional attributes (omitted here for simplicity):</span>
-</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>        <span class="c1"># icon_url                         -&gt; A URL to an icon representing the agent</span>
-</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>    <span class="p">)</span>
-</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>
-</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>    <span class="c1"># Defines the authenticated extended agent card with</span>
-</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>    <span class="c1"># extended skills that are visible only to authenticated users</span>
-</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>    <span class="n">extended_agent_card</span> <span class="o">=</span> <span class="n">AgentCard</span><span class="p">(</span>
-</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Hello World Agent - Extended Edition&#39;</span><span class="p">,</span>
-</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The full-featured hello world agent for authenticated users.&#39;</span><span class="p">,</span>
-</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>        <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.2&#39;</span><span class="p">,</span>
-</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>        <span class="n">default_input_modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text/plain&#39;</span><span class="p">],</span>
-</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>        <span class="n">default_output_modes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;text/plain&#39;</span><span class="p">],</span>
-</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>        <span class="n">capabilities</span><span class="o">=</span><span class="n">AgentCapabilities</span><span class="p">(</span><span class="n">streaming</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">extended_agent_card</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>        <span class="n">supported_interfaces</span><span class="o">=</span><span class="p">[</span>
-</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>            <span class="n">AgentInterface</span><span class="p">(</span>
-</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>                <span class="n">protocol_binding</span><span class="o">=</span><span class="s1">&#39;JSONRPC&#39;</span><span class="p">,</span>
-</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>                <span class="n">url</span><span class="o">=</span><span class="s1">&#39;http://127.0.0.1:9999&#39;</span><span class="p">,</span>
-</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>            <span class="p">)</span>
-</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>        <span class="p">],</span>
-</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>        <span class="n">skills</span><span class="o">=</span><span class="p">[</span>
-</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>            <span class="n">skill</span><span class="p">,</span>
-</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>            <span class="n">extended_skill</span><span class="p">,</span>
-</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>        <span class="p">],</span>  <span class="c1"># Both skills for the extended card</span>
-</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>    <span class="p">)</span>
-</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>    <span class="c1"># The RequestHandler processes incoming requests and manages tasks</span>
-</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>    <span class="n">request_handler</span> <span class="o">=</span> <span class="n">DefaultRequestHandler</span><span class="p">(</span>
-</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>        <span class="c1"># Agent executor handles the execution of the client requests</span>
-</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>        <span class="n">agent_executor</span><span class="o">=</span><span class="n">HelloWorldAgentExecutor</span><span class="p">(),</span>
-</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>        <span class="c1"># The task_store is used to store and manage tasks</span>
-</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>        <span class="n">task_store</span><span class="o">=</span><span class="n">InMemoryTaskStore</span><span class="p">(),</span>
-</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>        <span class="c1"># Public agent card for unauthenticated users</span>
-</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>        <span class="n">agent_card</span><span class="o">=</span><span class="n">public_agent_card</span><span class="p">,</span>
-</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>        <span class="c1"># Extended agent card for authenticated users</span>
-</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>        <span class="n">extended_agent_card</span><span class="o">=</span><span class="n">extended_agent_card</span><span class="p">,</span>
-</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    <span class="p">)</span>
-</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>    <span class="c1"># Creating the routes for the A2A server</span>
-</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>    <span class="c1"># These routes handle the incoming requests from the clients</span>
-</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>    <span class="c1"># and the outgoing responses to the clients</span>
-</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>    <span class="n">routes</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>
-</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>    <span class="c1"># Create routes for the agent card</span>
-</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>    <span class="n">routes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">create_agent_card_routes</span><span class="p">(</span><span class="n">public_agent_card</span><span class="p">))</span>
-</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>
-</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>    <span class="c1"># Create routes for the JSONRPC protocol</span>
-</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>    <span class="c1"># Alternatively, you can choose GRPC or HTTP_JSON as protocol bindings</span>
-</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>    <span class="c1"># based on your requirements</span>
-</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>    <span class="n">routes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">create_jsonrpc_routes</span><span class="p">(</span><span class="n">request_handler</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">))</span>
-</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>
-</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>    <span class="c1"># Create a web app with the defined routes</span>
-</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>    <span class="c1"># Here we are using Starlette, a lightweight ASGI web framework to serve the agent</span>
-</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>    <span class="c1"># Alternatively, you can choose FastAPI or other ASGI frameworks</span>
-</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a>    <span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="n">routes</span><span class="p">)</span>
-</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a>
-</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a>    <span class="c1"># Run the app</span>
-</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a>    <span class="c1"># Uvicorn is a production-ready ASGI HTTP server</span>
-</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a>    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9999</span><span class="p">)</span>
+<h1 id="multi-tenancy-and-multi-agent-routing">Multi-Tenancy and Multi-Agent Routing<a class="headerlink" href="#multi-tenancy-and-multi-agent-routing" title="Permanent link">&para;</a></h1>
+<p>A single A2A endpoint can serve multiple agents or tenants. The A2A protocol
+does not prescribe a specific routing implementation — operators are free to
+choose the approach that best fits their infrastructure. This document describes
+the routing mechanisms the protocol supports and the rules clients must follow
+when a routing identifier is advertised in an Agent Card.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>A common deployment pattern is to place several agents behind a single host or
+reverse-proxy. From the outside the agents are reachable at the same domain,
+but each individual agent needs to be distinguished so that requests are
+delivered to the right backend.</p>
+<p>Three complementary approaches are available:</p>
+<h3 id="1-url-based-routing-sub-path">1. URL-Based Routing (Sub-Path)<a class="headerlink" href="#1-url-based-routing-sub-path" title="Permanent link">&para;</a></h3>
+<p>Each agent is assigned a distinct URL prefix. The Agent Card for each agent
+advertises its own <code>url</code> in <code>supportedInterfaces</code>, so clients automatically
+send requests to the correct path.</p>
+<p>Agent Card for the "billing" agent:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Billing Agent&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;supportedInterfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://agents.example.com/billing&quot;</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">      </span><span class="nt">&quot;protocolBinding&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HTTP+JSON&quot;</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">      </span><span class="nt">&quot;protocolVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>Let's break this down:</p>
-<ol>
-<li>
-<p><strong><code>DefaultRequestHandler</code></strong>:</p>
-<ul>
-<li>The SDK provides <code>DefaultRequestHandler</code>. This handler takes your <code>AgentExecutor</code> implementation (<code>HelloWorldAgentExecutor</code>), a <code>TaskStore</code> (<code>InMemoryTaskStore</code>), and the public and extended <code>AgentCard</code> objects.</li>
-<li>It routes incoming A2A RPC calls to the appropriate methods on your executor (like <code>execute</code> or <code>cancel</code>).</li>
-<li>The <code>TaskStore</code> is used by the <code>DefaultRequestHandler</code> to manage the lifecycle of tasks, especially for stateful interactions, streaming, and resubscription. Even if your agent executor is simple, the handler needs a task store.</li>
-<li><code>agent_card</code> is passed to the handler so it can verify the agent's declared capabilities when processing incoming requests. For example, it checks whether streaming or push notifications are supported before handling those request types.</li>
-<li><code>extended_agent_card</code> is passed so the handler can serve it via the <code>GetExtendedAgentCard</code> RPC method to authenticated clients.</li>
-</ul>
-</li>
-<li>
-<p><strong><code>create_agent_card_routes</code> and <code>create_jsonrpc_routes</code></strong>:</p>
-<ul>
-<li><code>create_agent_card_routes(public_agent_card)</code> returns Starlette routes that expose the Agent Card at the <code>/.well-known/agent-card.json</code> endpoint for public discovery.</li>
-<li><code>create_jsonrpc_routes(request_handler, '/')</code> returns Starlette routes that handle all incoming A2A JSON-RPC method calls by delegating to the <code>request_handler</code>.</li>
-<li>These route lists are combined and passed to a standard <code>Starlette</code> application.</li>
-</ul>
-</li>
-<li>
-<p><strong><code>uvicorn.run(app, ...)</code></strong>:</p>
-<ul>
-<li>The constructed <code>Starlette</code> app is run using <code>uvicorn.run()</code>, making your agent accessible over HTTP.</li>
-<li><code>host='127.0.0.1'</code> makes the server accessible only from your local machine.</li>
-<li><code>port=9999</code> specifies the port to listen on. This matches the endpoints defined in the <code>AgentCard</code>'s <code>supported_interfaces</code>.</li>
-</ul>
-</li>
-</ol>
-<h2 id="running-the-helloworld-server">Running the Helloworld Server<a class="headerlink" href="#running-the-helloworld-server" title="Permanent link">&para;</a></h2>
-<p>Navigate to the <code>a2a-samples</code> directory in your terminal (if you're not already there) and ensure your virtual environment is activated.</p>
-<p>To run the Helloworld server:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># from the a2a-samples directory</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>python<span class="w"> </span>samples/python/agents/helloworld/__main__.py
+<p>Agent Card for the "support" agent:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Support Agent&quot;</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;supportedInterfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://agents.example.com/support&quot;</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">&quot;protocolBinding&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HTTP+JSON&quot;</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">&quot;protocolVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>You should see output similar to this, indicating the server is running:</p>
-<div class="language-console no-copy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="go">INFO:     Started server process [xxxxx]</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="go">INFO:     Waiting for application startup.</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="go">INFO:     Application startup complete.</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="go">INFO:     Uvicorn running on http://127.0.0.1:9999 (Press CTRL+C to quit)</span>
+<p>The gateway or reverse-proxy routes <code>/billing/*</code> and <code>/support/*</code> to the
+appropriate backend. This is the simplest approach and requires no special
+client awareness beyond reading the Agent Card.</p>
+<h3 id="2-authentication-header-based-routing">2. Authentication Header-Based Routing<a class="headerlink" href="#2-authentication-header-based-routing" title="Permanent link">&para;</a></h3>
+<p>When multiple agents share the same URL, a gateway can use the authentication
+credentials already present in the request to determine which agent to route to.
+Authentication requirements are declared in the Agent Card's <code>securitySchemes</code>
+and <code>security</code> fields, making this approach fully discoverable by clients.</p>
+<p>Examples:</p>
+<ul>
+<li>A bearer token whose claims (such as audience or scope) identify the target agent.</li>
+<li>An API key that maps to a particular agent in the gateway's configuration.</li>
+</ul>
+<p>The gateway inspects the credential and forwards the request to the appropriate
+backend without any changes to the A2A protocol messages themselves.</p>
+<h3 id="3-body-based-routing-using-the-tenant-field">3. Body-Based Routing Using the <code>tenant</code> Field<a class="headerlink" href="#3-body-based-routing-using-the-tenant-field" title="Permanent link">&para;</a></h3>
+<p>Every A2A request message contains an optional <code>tenant</code> field. This is an
+<strong>opaque string</strong> whose value is defined entirely by the server operator; the
+protocol does not impose any format or semantics on it. A gateway or agent
+implementation can inspect this field and forward the request to the appropriate
+backend.</p>
+<p>The <code>tenant</code> value that a client should use for a particular agent is advertised
+in the <code>AgentInterface</code> entry inside <code>supportedInterfaces</code>:</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Billing Agent&quot;</span><span class="p">,</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;supportedInterfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://agents.example.com/a2a&quot;</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="nt">&quot;protocolBinding&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HTTP+JSON&quot;</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">      </span><span class="nt">&quot;protocolVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="nt">&quot;tenant&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;billing&quot;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>Your A2A Helloworld agent is now live and listening for requests! In the next step, we'll interact with it.</p>
+<p><strong>Client requirement</strong>: The client <strong>MUST</strong> always echo the <code>tenant</code> value
+from the selected <code>AgentInterface</code> entry back in every request message. If
+the <code>AgentInterface</code> does not set <code>tenant</code>, the field <strong>MUST</strong> be omitted
+from the request. See
+<a href="../../specification/#832-client-protocol-selection">Section 8.3.2</a> of the
+specification for the normative rule.</p>
+<p>A server MAY use the <code>tenant</code> field to represent any routing key that suits its
+deployment — agent identifiers, workspace slugs, organization IDs, or any other
+opaque discriminator.</p>
+<h2 id="combining-approaches">Combining Approaches<a class="headerlink" href="#combining-approaches" title="Permanent link">&para;</a></h2>
+<p>The three approaches are not mutually exclusive. For example, a deployment could
+use URL-based routing to distinguish between major product lines and rely on the
+<code>tenant</code> field to distinguish individual customers within each product line. The
+appropriate combination depends on the operator's architecture and the
+capabilities of the gateway in use.</p>
+<h2 id="discovering-multiple-agents">Discovering Multiple Agents<a class="headerlink" href="#discovering-multiple-agents" title="Permanent link">&para;</a></h2>
+<p>When multiple agents are deployed behind a shared domain, each agent <strong>SHOULD</strong>
+have its own Agent Card published at an appropriate location (see
+<a href="../agent-discovery/">Agent Discovery</a>). Clients retrieve each agent's card
+independently and use the <code>supportedInterfaces</code> information it contains — including
+any <code>tenant</code> value — to communicate with the correct agent.</p>
 
 
 
@@ -1919,7 +1930,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../4-agent-executor/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Agent Executor">
+          <a href="../streaming-and-async/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Streaming &amp; Asynchronous Operations">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1929,20 +1940,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Agent Executor
+                Streaming & Asynchronous Operations
               </div>
             </div>
           </a>
         
         
           
-          <a href="../6-interact-with-server/" class="md-footer__link md-footer__link--next" aria-label="Next: Interact with Server">
+          <a href="../a2a-and-mcp/" class="md-footer__link md-footer__link--next" aria-label="Next: A2A and MCP">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Interact with Server
+                A2A and MCP
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -1985,10 +1996,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["announce.dismiss", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["announce.dismiss", "content.action.view", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.progress", "navigation.path", "navigation.top", "navigation.tracking", "toc.follow", {"versioning": {"provider": "mike"}}], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

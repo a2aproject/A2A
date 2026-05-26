@@ -419,6 +419,8 @@
       
         
       
+        
+      
     
     
     
@@ -698,6 +700,34 @@
     
   
     Streaming & Asynchronous Operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topics/multi-tenancy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Tenancy
   
 
     
@@ -6902,7 +6932,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
@@ -6945,7 +6975,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>contextId</code></td>
@@ -7057,7 +7087,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
@@ -7103,7 +7133,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
@@ -7150,7 +7180,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
@@ -7215,7 +7245,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
@@ -7260,7 +7290,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
@@ -7333,7 +7363,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
@@ -7378,7 +7408,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 </tbody>
 </table>
@@ -7417,7 +7447,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
@@ -8638,7 +8668,7 @@
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Tenant ID to be used in the request when calling the agent.</td>
+<td>Optional. An opaque string used for routing requests to a specific agent or tenant when multiple agents are served behind a single A2A endpoint. When set, clients MUST include this value in the <code>tenant</code> field of all request messages sent to this interface. The server is responsible for interpreting the value and routing requests accordingly; the protocol does not define its format or semantics.</td>
 </tr>
 <tr>
 <td><code>protocolVersion</code></td>
@@ -9963,6 +9993,7 @@ so that clients can distinguish between incompatible versions:</p>
 <li>Parse <code>supportedInterfaces</code> if present, and select the first supported transport</li>
 <li>Prefer earlier entries in the ordered list when multiple options are supported</li>
 <li>Use the correct URL for the selected transport</li>
+<li>Set the <code>tenant</code> field in every request message to exactly the value declared in the selected <code>AgentInterface</code> entry (omit the field if <code>tenant</code> is not set in that entry)</li>
 </ol>
 <h3 id="84-agent-card-signing">8.4. Agent Card Signing<a class="headerlink" href="#84-agent-card-signing" title="Permanent link">&para;</a></h3>
 <p>Agent Cards <strong>MAY</strong> be digitally signed using JSON Web Signature (JWS) as defined in <a href="https://tools.ietf.org/html/rfc7515">RFC 7515</a> to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.</p>
@@ -10562,7 +10593,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
@@ -10629,7 +10660,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>message</code></td>
@@ -10670,7 +10701,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
@@ -10705,7 +10736,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>contextId</code></td>
@@ -10807,7 +10838,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
@@ -10842,7 +10873,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
@@ -10876,7 +10907,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
@@ -10911,7 +10942,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
@@ -10977,7 +11008,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>taskId</code></td>
@@ -11012,7 +11043,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID, provided as a path parameter.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 </tbody>
 </table>
@@ -11035,7 +11066,7 @@ so that clients can distinguish between incompatible versions:</p>
 <td><code>tenant</code></td>
 <td><code>string</code></td>
 <td>No</td>
-<td>Optional. Tenant ID.</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
 </tr>
 <tr>
 <td><code>id</code></td>
