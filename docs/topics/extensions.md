@@ -8,7 +8,7 @@ base protocol.
 
 Extensions allow for extending the A2A protocol with new data, requirements,
 RPC methods, and state machines. Agents declare their support for specific
-extensions in their Agent Card, and clients can then opt-in to the behavior
+extensions in their Agent Card, and clients can then opt in to the behavior
 offered by an extension as part of requests they make to the agent. Extensions
 are identified by a URI and defined by their own specification. Anyone is able to define, publish, and implement an extension.
 
@@ -30,7 +30,7 @@ However, some foreseeable applications include:
     values (for example, requiring all messages to use `DataParts` adhering to
     a specific schema). This can also include augmenting existing states in the
     task state machine by using metadata. For example, an extension could define
-    a 'generating-image' sub-state when `TaskStatus.state` is 'working' and
+    a 'generating-image' substate when `TaskStatus.state` is 'working' and
     `TaskStatus.message.metadata["generating-image"]` is true.
 - **Method Extensions (Extended Skills)**: Adding entirely new RPC methods
     beyond the core set defined by the protocol. An Extended Skill refers to a
@@ -51,13 +51,26 @@ However, some foreseeable applications include:
 | [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |
 | [Agent Gateway Protocol (AGP) Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp) | A Core Protocol Layer or Routing Extension that introduces Autonomous Squads (ASq) and routes Intent payloads based on declared Capabilities, enhancing scalability (v1). |
 
+## Extension Governance
+
+The A2A organization uses a formal governance framework for how extensions are
+proposed, developed, promoted, and maintained. Official extensions use the
+`https://a2a-protocol.org/extensions/` URI prefix and are hosted under the
+`a2aproject` organization with the `ext-` repository prefix (experimental
+extensions use `experimental-ext-`).
+
+For the full governance process—including tiers, lifecycle, SDK support, and
+legal requirements—see the
+[Extension and Protocol Binding Governance](extension-and-binding-governance.md)
+page.
+
 ## Limitations
 
 There are some changes to the protocol that extensions don't allow, primarily
 to prevent breaking core type validations:
 
 - **Changing the Definition of Core Data Structures**: For example, adding new
-    fields or removing required fields to protocol-defined data structures).
+    fields or removing required fields to protocol-defined data structures.
     Extensions should place custom attributes in the `metadata` map present on
     core data structures.
 - **Adding New Values to Enum Types**: Extensions should use existing enum values
@@ -68,9 +81,7 @@ to prevent breaking core type validations:
 Agents declare their support for extensions in their Agent Card by including
 `AgentExtension` objects within their `AgentCapabilities` object.
 
-```ts { .no-copy }
---8<-- "types/src/types.ts:AgentExtension"
-```
+{{ proto_to_table("AgentExtension") }}
 
 The following is an example of an Agent Card with an extension:
 
@@ -123,7 +134,7 @@ the agent should reject the incoming request with an appropriate error.
 
 The detailed behavior and structure of an extension are defined by its
 **specification**. While the exact format is not mandated, it should contain at
-at least:
+least:
 
 - The specific URI(s) that identify the extension.
 - The schema and meaning of objects specified in the `params` field of the
@@ -170,14 +181,13 @@ A2A-Extensions: https://example.com/ext/konami-code/v1
 Content-Length: 519
 {
   "jsonrpc": "2.0",
-  "method": "message/send",
+  "method": "SendMessage",
   "id": "1",
   "params": {
     "message": {
-      "kind": "message",
       "messageId": "1",
-      "role": "user",
-      "parts": [{"kind": "text", "text": "Oh magic 8-ball, will it rain today?"}]
+      "role": "ROLE_USER",
+      "parts": [{"text": "Oh magic 8-ball, will it rain today?"}]
     },
     "metadata": {
       "https://example.com/ext/konami-code/v1/code": "motherlode"
@@ -197,10 +207,11 @@ Content-Length: 338
   "jsonrpc": "2.0",
   "id": "1",
   "result": {
-    "kind": "message",
-    "messageId": "2",
-    "role": "agent",
-    "parts": [{"kind": "text", "text": "That's a bingo!"}]
+    "message": {
+      "messageId": "2",
+      "role": "ROLE_AGENT",
+      "parts": [{"text": "That's a bingo!"}]
+    }
   }
 }
 ```
@@ -228,9 +239,10 @@ versioning, and distributing extension implementations.
     - **Permanent Identifiers**: Authors are encouraged to use a permanent
         identifier service, such as `w3id.org`, for their extension URIs to
         prevent broken links.
-    - **Community Registry (Future)**: The A2A community might establish a
-        central registry for discovering and browsing available extensions in
-        the future.
+    - **Community Registry**: The A2A [Extension Governance](#extension-governance)
+        framework defines a tiered system for official and experimental
+        extensions hosted under the `a2aproject` organization, including a
+        lifecycle for proposing and promoting extensions.
 - **Packaging and Reusability (A2A SDKs and Libraries)**:
     To promote adoption, extension logic should be packaged into reusable
         libraries that can be integrated into existing A2A client and

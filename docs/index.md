@@ -31,7 +31,11 @@ Originally developed by Google and now donated to the Linux Foundation, A2A prov
 
 - :material-play-circle:{ .lg .middle } **Video** Intro in <8 min
 
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://deeplearning.ai) - Intro to A2A
+
+    [![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
 
 - :material-book-open:{ .lg .middle } **Read the Introduction**
 
@@ -52,6 +56,8 @@ Originally developed by Google and now donated to the Linux Foundation, A2A prov
     Build your first A2A-compliant agent with our step-by-step Python quickstart.
 
     [:octicons-arrow-right-24: Python Tutorial](./tutorials/python/1-introduction.md)
+
+    [:octicons-arrow-right-24: Walkthrough with AI Agent Frameworks](https://github.com/holtskinner/A2AWalkthrough)
 
 - :material-code-braces:{ .lg .middle } **Explore Code Samples**
 

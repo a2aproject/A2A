@@ -81,7 +81,7 @@ Agent Cards include sensitive information, such as:
 
 To mitigate risks, the following protection mechanisms should be considered:
 
-- **Authenticated Agent Cards:** We recommend the use of [authenticated extended agent cards](../specification.md#710-agentgetauthenticatedextendedcard) for sensitive information or for serving a more detailed version of the card.
+- **Authenticated Agent Cards:** We recommend the use of [authenticated extended agent cards](../specification.md#3111-get-extended-agent-card) for sensitive information or for serving a more detailed version of the card.
 - **Secure Endpoints:** Implement access controls on the HTTP endpoint serving the Agent Card (e.g., `/.well-known/agent-card.json` or registry API). The methods include:
     - Mutual TLS (mTLS)
     - Network restrictions (e.g., IP ranges)
@@ -90,6 +90,22 @@ To mitigate risks, the following protection mechanisms should be considered:
 - **Registry Selective Disclosure:** Registries return different Agent Cards based on the client's identity and permissions.
 
 Any Agent Card containing sensitive data must be protected with authentication and authorization mechanisms. The A2A specification strongly recommends the use of out-of-band dynamic credentials rather than embedding static secrets within the Agent Card.
+
+## Caching Considerations
+
+Agent Cards describe an agent's capabilities and typically change infrequently — for example, when skills are added or authentication requirements are updated. Applying standard HTTP caching practices to Agent Card endpoints reduces unnecessary network requests while ensuring clients eventually receive updated information.
+
+### Server Guidance
+
+Servers hosting Agent Card endpoints should include HTTP caching headers in their responses. The `Cache-Control` header with an appropriate `max-age` directive allows clients and intermediaries to cache the card for a specified duration. Including an `ETag` header — derived from the card's `version` field or a content hash — enables clients to make conditional requests and avoid re-downloading unchanged cards.
+
+### Client Guidance
+
+Clients fetching Agent Cards should honor standard HTTP caching semantics. When a cached card expires, clients should use conditional requests (for example, `If-None-Match` with the stored `ETag` or `If-Modified-Since`) rather than unconditionally re-fetching the full card. When the server does not provide caching headers, clients may apply a reasonable default cache duration.
+
+For Extended Agent Cards, clients should also follow the session-scoped caching guidance described in the [specification](../specification.md#133-extended-agent-card-access-control).
+
+For normative requirements, see [Section 8.6](../specification.md#86-caching) of the specification.
 
 ## Future Considerations
 

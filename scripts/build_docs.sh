@@ -7,7 +7,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 SCHEMA_JSON="$ROOT_DIR/specification/json/a2a.json"
-PROTO_SRC="$ROOT_DIR/specification/grpc/a2a.proto"
+PROTO_SRC="$ROOT_DIR/specification/a2a.proto"
 SPEC_SITE_DIR="$ROOT_DIR/docs/spec"
 SCHEMA_JSON_SITE_FILE="$SPEC_SITE_DIR/a2a.json"
 PROTO_SITE_FILE="$SPEC_SITE_DIR/a2a.proto"
@@ -68,6 +68,17 @@ else
   echo "[build_docs] SDK docs script not found or not executable: $SDK_DOCS_SCRIPT" >&2
 fi
 
-echo "[build_docs] Building MkDocs site..." >&2
-mkdocs build "$@"
+# Add venv bin to PATH to ensure mike finds mkdocs and plugins
+if [ -d "$ROOT_DIR/.doc-venv/bin" ]; then
+  export PATH="$ROOT_DIR/.doc-venv/bin:$PATH"
+fi
+
+if [ "${1:-}" = "deploy" ]; then
+  shift
+  echo "[build_docs] Deploying with mike..." >&2
+  mike deploy "$@"
+else
+  echo "[build_docs] Building MkDocs site..." >&2
+  mkdocs build "$@"
+fi
 echo "[build_docs] Done." >&2

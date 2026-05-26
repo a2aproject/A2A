@@ -10,4 +10,4 @@ This page contains the SDK documentation for the ``a2a-sdk`` Python package.
 .. toctree::
    :maxdepth: 4
 
-   a2a
+   modules

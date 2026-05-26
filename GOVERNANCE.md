@@ -6,9 +6,9 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | :--- | :--- | :--- | :--- |
 | **Google** | Todd Segal | Principal Engineer | [@ToddSegal](https://github.com/ToddSegal) |
 | **Microsoft** | Darrel Miller | Partner API Architect | [@darrelmiller](https://github.com/darrelmiller) |
-| **Cisco** | Luca Muscariello | Principal Engineer | [@muscariello](https://github.com/muscariello) |
-| **Amazon Web Services** | Nicholas Aldridge | Principal Engineer | [@000-000-000-000-000](https://github.com/000-000-000-000-000) |
-| **Salesforce** | Gary Lerhaupt | VP, Product Architecture | [@lerhaupt](https://github.com/lerhaupt) |
+| **Cisco** | Luca Muscariello | Distinguished Engineer | [@muscariello](https://github.com/muscariello) |
+| **Amazon Web Services** | Abhimanyu Siwach | Senior Software Engineer | [@siwachabhi](https://github.com/siwachabhi) |
+| **Salesforce** | Stephen Petschulat | Principal Architect | [@spetschulatSFDC](https://github.com/spetschulatSFDC) |
 | **ServiceNow** | Sean Hughes | Director of Open Science | [@hughesthe1st](https://github.com/hughesthe1st) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
 | **IBM Research** | Kate Blair | Director of Incubation | [@geneknit](https://github.com/geneknit) |
@@ -32,7 +32,9 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
     a. **"Startup Phase."** At the inception of the Project, each organization listed in the [`GOVERNANCE`](GOVERNANCE.md) file in the governance repository of the Project will have the right to appoint (and remove and replace) one employee to serve as a voting member of the TSC.
 
-    b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, sub-project technical leads, or other method as determined by the TSC) for composition of the TSC from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
+    Adding new organizations to the GOVERNANCE file will be determined through a proposal to the TSC GOVERNANCE.md file. Any new organization will be added through a majority vote of the TSC, and an employee of that organization will serve as a voting member of the TSC.
+
+    b. **"Steady State."** The TSC will decide upon a "steady state" composition of the TSC (whether by election, subproject technical leads, or other method as determined by the TSC), to take effect from the date that is 18 months following the inception of the Project, or at such other point as determined by the TSC.
 
     c. The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the GOVERNANCE file. Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
 
@@ -52,9 +54,9 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 5. The TSC may elect a TSC Chair, who will preside over meetings of the TSC and will serve until their resignation or replacement by the TSC.
 6. **Responsibilities:** The TSC will be responsible for all aspects of oversight relating to the Project, which may include:
     1. coordinating the technical direction of the Project;
-    2. approving project or system proposals (including, but not limited to, incubation, deprecation, and changes to a sub-project's scope);
-    3. organizing sub-projects and removing sub-projects;
-    4. creating sub-committees or working groups to focus on cross-project technical issues and requirements;
+    2. approving project or system proposals (including, but not limited to, incubation, deprecation, and changes to a subproject's scope);
+    3. organizing subprojects and removing subprojects;
+    4. creating subcommittees or working groups to focus on cross-project technical issues and requirements;
     5. appointing representatives to work with other open source or open standards communities;
     6. establishing community norms, workflows, issuing releases, and security issue reporting policies;
     7. approving and implementing policies and processes for contributing (to be published in the [`CONTRIBUTING`](CONTRIBUTING.md) file) and coordinating with the series manager of the Project (as provided for in the Series Agreement, the "Series Manager") to resolve matters or concerns that may arise as set forth in Section 7 of this Charter;
@@ -63,13 +65,15 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
 ### TSC Voting
 
-While the Project aims to operate as a consensus-based community, if any TSC decision requires a vote to move the Project forward, the voting members of the TSC will vote on a one vote per voting member basis.
+While the Project aims to operate as a consensus-based community, if any TSC decision requires a vote to move the Project forward, the voting members of the TSC will vote on a one vote per voting member basis. 
 
 Quorum for TSC meetings requires at least fifty percent of all voting members of the TSC to be present. The TSC may continue to meet if quorum is not met but will be prevented from making any decisions at the meeting. Except as provided in Section 7.c. and 8.a, decisions by vote at a meeting require a majority vote of those in attendance, provided quorum is met. Decisions made by electronic vote without a meeting require a majority vote of all voting members of the TSC.
 
-### TSC Meetings
+A voting member who has not attended a meeting of the TSC within the last six weeks (as measured by the LFX attendance tracking) shall be determined to be an inactive voting member. They will not be included in active votes, which means that they will not be counted for quorum, and the sponsoring organization may choose to replace the named TSC member within a reasonable timeframe.
 
-Our hope is that the first TSC meeting will be held in August 2025. Once the TSC representatives are finalized, scheduling will begin. In the interim we have drafted a [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view).
+### TSC Meetings
+TSC Meetings are held on the Linux Foundation's meeting platform. [https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent) has meeting details and recordings of past meetings. 
+Our [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view) is in Google Docs.
 
 ## Project Communications
 

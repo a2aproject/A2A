@@ -14,17 +14,16 @@ echo "--- Setting up documentation build environment ---"
 if [ -d "$VENV_DIR" ]; then
   rm -rf "$VENV_DIR"
 fi
-python3 -m venv "$VENV_DIR"
+uv venv "$VENV_DIR"
 source "$VENV_DIR/bin/activate"
 
 echo "--- Installing package and dependencies ---"
 
-# Upgrade pip and install documentation requirements
-pip install -U pip
-pip install -r "requirements-docs.txt"
+# Install documentation requirements
+uv pip install -r "requirements-docs.txt"
 
 # Install the package itself
-pip install "${PYPI_PACKAGE_NAME}"
+uv pip install "${PYPI_PACKAGE_NAME}"
 
 echo "--- Finding installed package path ---"
 
@@ -43,6 +42,11 @@ echo "--- Building HTML documentation ---"
 
 # Build the HTML documentation
 sphinx-build -b html "${DOCS_SOURCE_DIR}" "${DOCS_BUILD_DIR}/html"
+
+echo "--- Building Text documentation ---"
+
+# Build the Text documentation
+sphinx-build -b text "${DOCS_SOURCE_DIR}" "${DOCS_BUILD_DIR}/text"
 
 echo "--- Copying SDK docs to MkDocs integration path ---"
 
