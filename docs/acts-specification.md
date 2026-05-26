@@ -1062,7 +1062,7 @@ A runner SHOULD produce a structured report containing, for each test:
 - For failures: which step failed, which assertion failed, expected vs. actual values
 - Execution time
 
-The report format is not prescribed by this specification. Runners MAY produce JSON, JUnit XML, HTML, or any other format.
+Runners MUST support the structured JSON report format defined in §13. Runners MAY additionally produce other formats (JUnit XML, HTML, TAP, etc.).
 
 ### 12.7. Conformance Summary
 
