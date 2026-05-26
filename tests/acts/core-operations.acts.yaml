@@ -341,3 +341,96 @@ suites:
                   match:
                     id: "{{send.taskId}}"
                     contextId: "{{send.contextId}}"
+
+      - id: CORE-LIST-002
+        name: "ListTasks with includeArtifacts false omits artifacts"
+        description: "Verifies that ListTasks omits artifacts, or returns them as null, when includeArtifacts is false."
+        spec_ref: "REQ-TASK-LIST-001"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for list artifacts test"
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: list
+            operation: list_tasks
+            params:
+              contextId: "{{send.contextId}}"
+              includeArtifacts: false
+            expect:
+              status: 200
+              body:
+                tasks:
+                  type: array
+                  count_gte: 1
+                  items:
+                    - id: "{{send.taskId}}"
+                      contextId: "{{send.contextId}}"
+                      artifacts:
+                        any_of:
+                          - absent: true
+                          - type: "null"
+
+      - id: CORE-LIST-003
+        name: "ListTasks response includes nextPageToken"
+        description: "Verifies that ListTasks responses always include nextPageToken, using an empty string for the final page."
+        spec_ref: "REQ-TASK-LIST-002"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for list next page token test"
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+          - id: list
+            operation: list_tasks
+            params:
+              contextId: "{{send.contextId}}"
+            expect:
+              status: 200
+              body:
+                tasks:
+                  type: array
+                  count_gte: 1
+                nextPageToken:
+                  type: string
+            assertions:
+              - source: "{{list.response}}"
+                any:
+                  path: "tasks[*]"
+                  match:
+                    id: "{{send.taskId}}"
+                    contextId: "{{send.contextId}}"

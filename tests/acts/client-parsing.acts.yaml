@@ -224,3 +224,75 @@ suites:
               id: "task-mixed-001"
               artifacts:
                 count_gte: 4
+
+      - id: CLIENT-AUTH-001
+        name: "Client replaces cached public card with extended card"
+        description: "Runner SHOULD verify that after fetching an extended Agent Card, the client uses the extended capabilities for the authenticated session."
+        spec_ref: "REQ-AGENTCARD-EXT-002"
+        level: should
+        tags: [client, discovery, runner-special]
+        steps:
+          - id: parse-public-card
+            client_response:
+              operation: get_agent_card
+              wire_payload:
+                name: "Example Agent"
+                version: "1.0.0"
+                capabilities:
+                  streaming: false
+                  extendedAgentCard: true
+                supportedInterfaces:
+                  - url: "https://example.com/.well-known/agent-card.json"
+                    protocolBinding: REST
+                    protocolVersion: "1.0"
+            expect_parsed:
+              capabilities:
+                extendedAgentCard: true
+
+          - id: parse-extended-card
+            client_response:
+              operation: get_extended_agent_card
+              wire_payload:
+                name: "Example Agent"
+                version: "1.0.0"
+                capabilities:
+                  streaming: true
+                  extendedAgentCard: true
+                skills:
+                  - id: "extended-skill"
+                    name: "Extended Skill"
+                supportedInterfaces:
+                  - url: "https://example.com/extendedAgentCard"
+                    protocolBinding: REST
+                    protocolVersion: "1.0"
+            expect_parsed:
+              capabilities:
+                streaming: true
+                extendedAgentCard: true
+              skills:
+                count_gte: 1
+
+      - id: CLIENT-CAP-001
+        name: "Client checks Agent Card before using optional capabilities"
+        description: "Runner SHOULD verify that the client checks Agent Card capabilities before calling optional operations."
+        spec_ref: "REQ-CAP-002"
+        level: should
+        tags: [client, capabilities, runner-special]
+        steps:
+          - id: parse-card
+            client_response:
+              operation: get_agent_card
+              wire_payload:
+                name: "Capability Gated Agent"
+                version: "1.0.0"
+                capabilities:
+                  streaming: false
+                  pushNotifications: false
+                supportedInterfaces:
+                  - url: "https://example.com/.well-known/agent-card.json"
+                    protocolBinding: REST
+                    protocolVersion: "1.0"
+            expect_parsed:
+              capabilities:
+                streaming: false
+                pushNotifications: false

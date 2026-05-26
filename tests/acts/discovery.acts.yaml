@@ -189,3 +189,23 @@ suites:
                   count_gte: 1
                 description:
                   matches: ".+"
+
+      - id: CARD-DISC-007
+        name: Agent card declares all supported protocols
+        description: Verifies that the public Agent Card declares at least one protocol endpoint through supportedInterfaces or a direct url field.
+        spec_ref: REQ-BIND-002
+        level: must
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                any_of:
+                  - supportedInterfaces:
+                      type: array
+                      count_gte: 1
+                  - url:
+                      type: string

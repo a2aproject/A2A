@@ -145,6 +145,30 @@ suites:
                 status:
                   type: number
 
+      - id: REST-CT-001
+        name: "REST responses use application/a2a+json content type"
+        description: "Runner SHOULD verify the Content-Type response header is application/a2a+json for REST responses."
+        level: should
+        tags: [transport, content-type, runner-special]
+        transport: [rest]
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task verify rest content type"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+
   - id: grpc-transport
     name: "gRPC transport bindings"
     tests:

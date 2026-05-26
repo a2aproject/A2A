@@ -154,3 +154,87 @@ suites:
               status: error
               error:
                 exists: true
+
+      - id: CORE-MULTI-003
+        name: Mismatched contextId and taskId is rejected
+        description: Verifies that SendMessage rejects a taskId and contextId pair from different conversations.
+        spec_ref: REQ-MULTI-002
+        level: must
+        requires_behaviors:
+          - tck-complete-task
+        steps:
+          - id: first
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task first"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId1: "task.id"
+              contextId1: "task.contextId"
+
+          - id: second
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId2: "task.id"
+              contextId2: "task.contextId"
+
+          - id: mismatch
+            operation: send_message
+            params:
+              taskId: "{{first.taskId1}}"
+              contextId: "{{second.contextId2}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "mismatched context and task"
+            expect_error:
+              message:
+                type: string
+
+      - id: CORE-CTX-001
+        name: Rejected client contextId returns an error
+        description: Runner SHOULD use a client-generated contextId that the server rejects and verify the server errors instead of minting a new contextId.
+        spec_ref: REQ-CTX-002
+        level: must
+        tags: [context, identity, runner-special]
+        requires_behaviors:
+          - tck-complete-task
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              contextId: "client-generated-context-that-should-be-rejected"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task reject client context id"
+            expect_error:
+              message:
+                type: string

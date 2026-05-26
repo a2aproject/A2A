@@ -255,3 +255,93 @@ suites:
               code: TaskNotFoundError
               data:
                 type: object
+
+      - id: CORE-ERR-008
+        name: "Error details include @type field"
+        description: "Verifies that JSON-RPC error details include a google.rpc Any type discriminator."
+        spec_ref: "REQ-ERR-009"
+        level: must
+        transport: [jsonrpc]
+        steps:
+          - id: send-missing-task
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "core-err-008"
+                method: SendMessage
+                params:
+                  taskId: "00000000-0000-0000-0000-000000000000"
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "missing task should return error details"
+            expect:
+              status: 200
+              body:
+                error:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    count_gte: 1
+                    items:
+                      - "@type":
+                          type: string
+
+      - id: CORE-ERR-009
+        name: "Error response should not distinguish missing vs unauthorized"
+        description: "Runner SHOULD verify that the error response for a missing resource is indistinguishable from one for an unauthorized resource. This requires auth infrastructure."
+        spec_ref: "REQ-ERR-007"
+        level: should
+        tags: [security, error-handling, runner-special]
+        steps:
+          - id: get-missing
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              message:
+                type: string
+
+      - id: JSONRPC-ERR-003
+        name: "JSON-RPC error details include google.rpc.ErrorInfo"
+        description: "Verifies that A2A-specific JSON-RPC errors include google.rpc.ErrorInfo in error.data."
+        spec_ref: "REQ-RPC-006"
+        level: must
+        tags: [error, jsonrpc, raw]
+        transport: [jsonrpc]
+        steps:
+          - id: get-missing-error-info
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-err-003"
+                method: GetTask
+                params:
+                  id: "00000000-0000-0000-0000-000000000000"
+            expect:
+              status: 200
+              body:
+                error:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    count_gte: 1
+            assertions:
+              - source: "{{get-missing-error-info.response}}"
+                any:
+                  path: "error.data[*]"
+                  match:
+                    "@type":
+                      contains: "ErrorInfo"
