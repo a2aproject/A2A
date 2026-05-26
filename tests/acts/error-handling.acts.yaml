@@ -168,3 +168,90 @@ suites:
                       - contains: "Task"
                       - contains: "not found"
                       - contains: "does not exist"
+
+      - id: CORE-ERR-006
+        name: "Malformed request returns InvalidRequestError"
+        level: must
+        transport: [jsonrpc]
+        steps:
+          - id: malformed-jsonrpc
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: 1
+                params: {}
+            expect:
+              status: 200
+              body:
+                error:
+                  code:
+                    one_of: [-32600, -32602]
+
+      - id: CORE-CAP-001
+        name: "Push not supported returns UnsupportedOperationError"
+        description: "Overlaps with PUSH-CFG-004 but verifies the capability error at the error-handling suite level."
+        level: must
+        preconditions:
+          capabilities:
+            pushNotifications: false
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: create-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create-task.taskId}}"
+              pushNotificationConfig:
+                url: "https://example.com/webhooks/a2a-tests"
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: CORE-CAP-002
+        name: "Streaming not supported returns error"
+        level: should
+        preconditions:
+          capabilities:
+            streaming: false
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task streaming unsupported"
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: CORE-ERR-007
+        name: "Error data contains structured error info"
+        level: should
+        steps:
+          - id: get-missing-structured
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+              data:
+                type: object

@@ -248,3 +248,96 @@ suites:
               error_type: TaskNotCancelableError
               message:
                 type: string
+
+      - id: CORE-FAIL-001
+        name: "Task completes with failed state"
+        description: "Verifies that SendMessage can return a failed task with an explanatory status message."
+        spec_ref: "docs/specification.md#311-send-message"
+        level: must
+        requires_behaviors:
+          - "tck-task-failure"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-task-failure trigger error"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_FAILED
+                    message:
+                      exists: true
+
+      - id: CORE-SEND-004
+        name: "SendMessage rejects unsupported content type"
+        description: "Verifies that SendMessage fails with ContentTypeNotSupportedError when a message part uses an unsupported content type."
+        spec_ref: "docs/specification.md#311-send-message"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - data:
+                      value: "unsupported"
+                    metadata:
+                      contentType: "application/x-unsupported-type-12345"
+            expect_error:
+              code: ContentTypeNotSupportedError
+
+      - id: CORE-LIST-001
+        name: "ListTasks returns tasks for a context"
+        description: "Verifies that ListTasks can return at least one task for an existing context."
+        spec_ref: "docs/specification.md#314-list-tasks"
+        level: should
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for list test"
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: list
+            operation: list_tasks
+            params:
+              contextId: "{{send.contextId}}"
+            expect:
+              status: 200
+              body:
+                tasks:
+                  type: array
+                  count_gte: 1
+            assertions:
+              - source: "{{list.response}}"
+                any:
+                  path: "tasks[*]"
+                  match:
+                    id: "{{send.taskId}}"
+                    contextId: "{{send.contextId}}"

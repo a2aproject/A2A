@@ -130,3 +130,62 @@ suites:
                   items:
                     - protocolVersion:
                         starts_with: "1."
+
+      - id: CARD-CACHE-001
+        name: Agent card caching headers
+        description: Runner SHOULD verify Cache-Control or ETag headers are present.
+        spec_ref: Agent Card Discovery
+        level: should
+        tags: [discovery, caching, runner-special]
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                name:
+                  exists: true
+
+      - id: CARD-SCHEMA-001
+        name: Agent card validates against schema
+        description: Runner MUST validate response against A2A AgentCard JSON Schema.
+        spec_ref: Agent Card Discovery
+        level: should
+        tags: [discovery, schema-validation]
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                name:
+                  exists: true
+                capabilities:
+                  type: object
+
+      - id: CARD-EXT-001
+        name: Extended agent card
+        description: Retrieves the extended agent card when the capability is advertised.
+        spec_ref: Get Extended Agent Card
+        level: may
+        preconditions:
+          capabilities:
+            extendedAgentCard: true
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params:
+              extended: true
+            expect:
+              status: 200
+              body:
+                skills:
+                  type: array
+                  count_gte: 1
+                description:
+                  matches: ".+"

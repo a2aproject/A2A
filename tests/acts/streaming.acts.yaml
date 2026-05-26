@@ -173,3 +173,129 @@ suites:
             expect:
               error:
                 exists: true
+
+      - id: STREAM-SSE-004
+        name: "First event on subscribe is current task state"
+        level: must
+        requires_behaviors:
+          - tck-long-running
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+          - id: subscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              events:
+                - description: "First event represents the current task state"
+                  index: 0
+                  one_of:
+                    - task:
+                        status:
+                          exists: true
+                    - status_update:
+                        status:
+                          exists: true
+
+      - id: STREAM-MSG-001
+        name: "Streaming message-only response"
+        level: should
+        requires_behaviors:
+          - tck-message-response
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-message-response streaming"
+            expect_stream:
+              min_count: 1
+              final_event:
+                message:
+                  exists: true
+
+      - id: STREAM-MULTI-001
+        name: "Multiple concurrent streams receive same events"
+        description: "Runner MUST open two concurrent streams and verify both receive the same events. This test may require special runner support."
+        level: should
+        tags: [streaming, concurrent, runner-special]
+        requires_behaviors:
+          - tck-stream-basic
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic generate output"
+            expect_stream:
+              min_count: 2
+
+      - id: STREAM-MULTI-002
+        name: "Closing one stream doesn't affect others"
+        description: "Runner MUST open two concurrent streams, close one of them mid-stream, and verify the other continues receiving events. This test may require special runner support."
+        level: should
+        tags: [streaming, concurrent, runner-special]
+        requires_behaviors:
+          - tck-stream-basic
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic generate output"
+            expect_stream:
+              min_count: 2
+
+      - id: STREAM-RESUB-001
+        name: "Resubscribe after disconnect"
+        description: "Runner MUST disconnect from stream mid-flight and resubscribe. This test may require special runner support."
+        level: should
+        tags: [streaming, resubscribe, runner-special]
+        requires_behaviors:
+          - tck-long-running
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+          - id: subscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              min_count: 1

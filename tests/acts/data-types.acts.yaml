@@ -142,3 +142,77 @@ suites:
                         type: string
                       name:
                         type: string
+
+      - id: DM-SERIAL-001
+        name: "Timestamps are ISO 8601 UTC"
+        level: must
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task timestamp"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+                    timestamp:
+                      matches: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+
+      - id: DM-SERIAL-002
+        name: "Response validates against A2A schema"
+        description: "Runner SHOULD validate full response against A2A JSON Schema."
+        level: should
+        tags: [data-model, schema-validation, runner-special]
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task schema"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      type: string
+
+      - id: DM-EXTRA-001
+        name: "Extra fields accepted (tolerance)"
+        level: should
+        transport: [jsonrpc]
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send-extra-field
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: 1
+                method: "SendMessage"
+                params:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-complete-task extra field"
+                  x_custom_field: "test"
+            expect:
+              status: 200
+              body:
+                result:
+                  exists: true
