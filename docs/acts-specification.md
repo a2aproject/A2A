@@ -135,12 +135,21 @@ test = {
   ? preconditions: preconditions,
   ? requires_behaviors: [+ text],  ; SUT behavior prefixes this test depends on (see §11)
   ? origin: text,                  ; URL to issue/PR where this test originated
-  steps: [+ step]
+  ? runner_requirements: [+ runner-requirement],
+  steps: [+ step],
+  ? assertions: [+ named-assertion]
 }
 
 conformance-level = "must" / "should" / "may"
 
 transport-binding = "jsonrpc" / "grpc" / "rest"
+
+runner-requirement =
+  "webhook_endpoint" /         ; Runner must set up a webhook to receive push notifications
+  "concurrent_streams" /       ; Runner must open multiple simultaneous streams
+  "stream_disconnect" /        ; Runner must disconnect and reconnect mid-stream
+  "auth_credentials" /         ; Runner must provide valid/invalid auth credentials
+  "header_inspection"          ; Runner must inspect HTTP response headers
 ```
 
 **Conformance levels** map to RFC 2119 keywords:
@@ -150,6 +159,10 @@ transport-binding = "jsonrpc" / "grpc" / "rest"
 | `must` | Absolute requirement. Failure means the implementation is non-conformant. |
 | `should` | Recommended behavior. Failure means the implementation is conformant but may have reduced interoperability. |
 | `may` | Optional behavior. Passing provides additional interoperability. |
+
+Tests MAY declare `runner_requirements` when execution depends on runner-managed capabilities that are not visible from the SUT alone, such as webhook provisioning, concurrent streams, reconnection behavior, injected credentials, or HTTP header inspection. Runners that cannot satisfy a declared requirement SHOULD skip the test with a clear reason.
+
+Tests MAY also define a top-level `assertions` array for validations that run after all `steps` complete. This is useful for cross-step checks without adding a separate trailing `assertion-step`.
 
 ### 3.3. Preconditions
 
@@ -197,12 +210,13 @@ step = server-step / client-step / assertion-step / raw-step
 server-step = {
   id: text,                         ; Unique within the test
   ? description: text,
-  action: abstract-operation,       ; Abstract A2A operation name
-  request: request-params,          ; Parameters for the operation
+  operation: abstract-operation,    ; Abstract A2A operation name
+  params: request-params,           ; Parameters for the operation
   ? expect: expect-block,           ; Expected response assertions
   ? expect_error: expect-error,     ; Expected error (mutually exclusive with expect)
   ? expect_stream: expect-stream,   ; Streaming assertions (for streaming operations)
   ? capture: { + text => text },    ; Variable capture: varName => response.path
+  ? assertions: [+ named-assertion], ; Post-step assertions on the step result
   ? repeat: repeat-config,          ; Polling/retry configuration
   ? delay_ms: int                   ; Delay before executing this step
 }
@@ -210,15 +224,20 @@ server-step = {
 client-step = {
   id: text,
   ? description: text,
-  type: "client_test",
-  golden_response: golden-response, ; A canonical wire response for the client to parse
-  expect_parsed: { * text => assertion } ; Assertions on the parsed result
+  client_response: client-response, ; Canonical wire payload for the client to parse
+  expect_parsed: { * text => assertion }, ; Assertions on the parsed result
+  ? assertions: [+ named-assertion]
 }
 
 assertion-step = {
   id: text,
   ? description: text,
   assertion: inline-assertion       ; Assert against a prior step's response
+}
+
+client-response = {
+  operation: abstract-operation,    ; Abstract operation represented by the payload
+  wire_payload: any                 ; Canonical transport payload for the client to parse
 }
 ```
 
@@ -284,33 +303,37 @@ For operations that return a wrapper (like `SendMessageResponse`), assertions re
 ```yaml
 # send_message returns SendMessageResponse → root includes task/message discriminator
 - id: send
-  action: send_message
+  operation: send_message
   expect:
-    task:                           # SendMessageResponse.task
-      id: {type: string}
-      status:
-        state: TASK_STATE_COMPLETED
+    status: 200
+    body:
+      task:                         # SendMessageResponse.task
+        id: {type: string}
+        status:
+          state: TASK_STATE_COMPLETED
   capture:
     taskId: task.id                 # path from SendMessageResponse root
 
 # get_task returns Task directly → root IS the Task
 - id: get
-  action: get_task
-  request:
+  operation: get_task
+  params:
     id: "{{send.taskId}}"
   expect:
-    id: "{{send.taskId}}"           # Task.id — no "task." prefix needed
-    status:
-      state: TASK_STATE_COMPLETED
+    status: 200
+    body:
+      id: "{{send.taskId}}"        # Task.id — no "task." prefix needed
+      status:
+        state: TASK_STATE_COMPLETED
 ```
 
 The runner MUST unwrap transport-level framing (JSON-RPC envelope, gRPC message wrapper, HTTP response) before applying assertions. The assertion root is always the **A2A domain object**, not the transport wrapper.
 
-### 4.3. Request Parameters
+### 4.3. Operation Parameters
 
-Request parameters use the abstract A2A data model — not the wire format. The runner handles serialization.
+Step `params` use the abstract A2A data model — not the wire format. The runner handles serialization.
 
-If the request includes a `message` and no `messageId` is specified, the runner MUST auto-generate a unique `messageId` (e.g., a UUID) for the message. The A2A specification requires every message to have a `messageId`.
+If the `params` object includes a `message` and no `messageId` is specified, the runner MUST auto-generate a unique `messageId` (e.g., a UUID) for the message. The A2A specification requires every message to have a `messageId`.
 
 ```cddl
 request-params = {
@@ -361,25 +384,23 @@ part = {
 
 ### 4.4. Raw Wire Steps
 
-For transport-specific tests that must assert exact wire-level behavior, steps MAY use `raw_request` and `raw_expect` instead of `action`/`request`/`expect`:
+For transport-specific tests that must assert exact wire-level behavior, steps MAY use `raw` and `expect` instead of `operation`/`params`/`expect`:
 
 ```cddl
 raw-step = {
   id: text,
   ? description: text,
-  raw_request: {
+  raw: {
     method: "GET" / "POST" / "PUT" / "DELETE",
     path: text,
     ? headers: { * text => text },
-    ? body: any,                    ; Exact body to send
-    ? rawBody: text                 ; Raw string body (for malformed JSON tests)
+    ? body: any,
+    ? body_raw: text                ; Raw string body (for malformed JSON tests)
   },
-  ? raw_expect: {
-    ? status: int,                  ; HTTP status code
-    ? headers: { * text => assertion },
-    ? body: { * text => assertion }
-  },
-  ? capture: { + text => text }
+  ? expect: expect-block,           ; Reuses the standard expect-block
+  ? expect_error: expect-error,     ; Can also expect errors from raw steps
+  ? capture: { + text => text },
+  ? assertions: [+ named-assertion]
 }
 ```
 
@@ -466,12 +487,13 @@ For **array access** in assertions, use YAML array syntax:
 
 ```yaml
 expect:
-  artifacts:
-    - parts:                         # First artifact's parts
-        - text: {type: string}       # First part is a text part
+  body:
+    artifacts:
+      - parts:                       # First artifact's parts
+          - text: {type: string}     # First part is a text part
 ```
 
-For assertions that must apply to **any element** in an array (rather than a specific index), use `assertion-step` with collection assertions (see §5.5).
+For assertions that must apply to **any element** in an array (rather than a specific index), use `assertion-step` or an `assertions` block with collection assertions (see §5.5).
 
 When a path appears in a `capture` value, `repeat.until` expression, or `collection-match.path`, it uses dot-path notation with bracket indexing:
 
@@ -487,9 +509,10 @@ A bare scalar value asserts exact equality:
 
 ```yaml
 expect:
-  task:
-    status:
-      state: TASK_STATE_COMPLETED     # exact string match
+  body:
+    task:
+      status:
+        state: TASK_STATE_COMPLETED   # exact string match
 ```
 
 ### 5.4. Operator Assertions
@@ -498,11 +521,12 @@ An assertion map applies one or more operators:
 
 ```yaml
 expect:
-  task:
-    id: {type: string}                       # type check
-    status:
-      state: {one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]}
-    artifacts: {type: array, count_gte: 1}   # combined operators
+  body:
+    task:
+      id: {type: string}                     # type check
+      status:
+        state: {one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]}
+      artifacts: {type: array, count_gte: 1} # combined operators
 ```
 
 When multiple operators appear in one assertion map, they are combined with AND semantics — all operators must pass.
@@ -519,11 +543,24 @@ inline-assertion = {
   ? none: collection-match          ; No element matches
 }
 
+named-assertion = {
+  ? id: text,
+  ? description: text,
+  source: text,                     ; Dot-path to a captured variable or prior step result
+  ? path: text,                     ; Optional sub-path within the source
+  ? match: assertion,               ; Direct assertion applied at source/path
+  ? any: collection-match,          ; At least one element matches
+  ? all: collection-match,          ; Every element matches
+  ? none: collection-match          ; No element matches
+}
+
 collection-match = {
-  path: text,                       ; Dot-path with wildcards (e.g., "result.task.artifacts[*].parts[*]")
+  path: text,                       ; Dot-path with wildcards (e.g., "task.artifacts[*].parts[*]")
   match: { * text => assertion }    ; Assertions each matching element must satisfy
 }
 ```
+
+A step MAY include an `assertions` array of `named-assertion` values that runs immediately after that step completes. Tests MAY also include a top-level `assertions` array evaluated after all steps complete. These forms are useful for cross-step validation and collection checks without introducing a separate trailing `assertion-step`.
 
 ### Example
 
@@ -532,7 +569,7 @@ collection-match = {
   assertion:
     source: "{{send.response}}"
     any:
-      path: result.task.artifacts[*].parts[*]
+      path: task.artifacts[*].parts[*]
       match:
         text: {type: string}
 ```
@@ -547,14 +584,12 @@ For non-streaming operations, `expect` describes the expected response.
 
 ```cddl
 expect-block = {
-  ? result_type: "task" / "message",  ; Which oneof field must be present
-  ? task: { * text => assertion },    ; Assertions on the task (if result_type is "task")
-  ? message: { * text => assertion }, ; Assertions on the message (if result_type is "message")
-  * text => assertion                 ; Dot-path assertions on the full response
+  ? status: assertion,               ; Expected HTTP status (default: 200 for success)
+  ? body: { * text => assertion }    ; Response body assertions
 }
 ```
 
-When `result_type` is specified, the runner MUST verify that the response contains the corresponding field and does NOT contain the alternative. For example, `result_type: task` means the response must contain a `task` field and must not contain a `message` field at the result level.
+For abstract operations, assertions in `expect.body` apply to the unwrapped A2A response object described in §4.2. For raw steps, `expect.body` applies to the raw transport response body.
 
 ### 6.2. Error Expect
 
@@ -609,8 +644,8 @@ The runner MUST map each abstract error type to the transport-specific represent
   level: must
   steps:
     - id: get-missing
-      action: get_task
-      request:
+      operation: get_task
+      params:
         id: "00000000-0000-0000-0000-000000000000"
       expect_error:
         error_type: TaskNotFoundError
@@ -694,8 +729,8 @@ Note that `INPUT_REQUIRED → WORKING` and `AUTH_REQUIRED → WORKING` are valid
       streaming: true
   steps:
     - id: stream
-      action: send_streaming_message
-      request:
+      operation: send_streaming_message
+      params:
         message:
           role: ROLE_USER
           parts:
@@ -759,8 +794,8 @@ capture = { + text => text }
 ```yaml
 steps:
   - id: create
-    action: send_message
-    request:
+    operation: send_message
+    params:
       message:
         role: ROLE_USER
         parts:
@@ -770,13 +805,15 @@ steps:
       contextId: task.contextId
 
   - id: retrieve
-    action: get_task
-    request:
+    operation: get_task
+    params:
       id: "{{create.taskId}}"
     expect:
-      id: "{{create.taskId}}"
-      status:
-        state: TASK_STATE_COMPLETED
+      status: 200
+      body:
+        id: "{{create.taskId}}"
+        status:
+          state: TASK_STATE_COMPLETED
 ```
 
 When the runner resolves `{{create.taskId}}`, it substitutes the value captured from the `create` step's response at the path `task.id`.
@@ -814,12 +851,14 @@ If `max_attempts` is exhausted without the condition becoming true, the step MUS
 
 ```yaml
 - id: poll
-  action: get_task
-  request:
+  operation: get_task
+  params:
     id: "{{start.taskId}}"
   expect:
-    status:
-      state: {type: string}
+    status: 200
+    body:
+      status:
+        state: {type: string}
   repeat:
     until: status.state in [TASK_STATE_COMPLETED, TASK_STATE_FAILED]
     max_attempts: 15
@@ -829,25 +868,26 @@ If `max_attempts` is exhausted without the condition becoming true, the step MUS
 
 ---
 
-## 10. Client Tests (Golden Responses)
+## 10. Client Tests
 
-Most ACTS tests verify server behavior: send a request, check the response. Client tests invert this: they provide a canonical wire response and assert that the client (SDK) parses it correctly.
+Most ACTS tests verify server behavior: send a request, check the response. Client tests invert this: they provide a canonical wire payload and assert that the client (SDK) parses it correctly.
 
 ```cddl
 client-step = {
   id: text,
   ? description: text,
-  type: "client_test",
-  golden_response: {
-    ? status: int,                  ; HTTP status code
-    ? headers: { * text => text },
-    body: any                       ; The exact response body
-  },
-  expect_parsed: { * text => assertion }
+  client_response: client-response,
+  expect_parsed: { * text => assertion },
+  ? assertions: [+ named-assertion]
+}
+
+client-response = {
+  operation: abstract-operation,
+  wire_payload: any
 }
 ```
 
-Client tests are valuable for catching interop bugs: they ensure that every SDK can parse responses produced by any other conformant SDK. The golden responses in the official test suite represent the canonical wire format.
+Client tests are valuable for catching interop bugs: they ensure that every SDK can parse responses produced by any other conformant SDK. The `client_response` payloads in the official test suite represent the canonical wire format for each abstract operation.
 
 ### Example
 
@@ -857,12 +897,9 @@ Client tests are valuable for catching interop bugs: they ensure that every SDK 
   level: must
   steps:
     - id: parse
-      type: client_test
-      golden_response:
-        status: 200
-        headers:
-          Content-Type: application/json
-        body:
+      client_response:
+        operation: send_message
+        wire_payload:
           jsonrpc: "2.0"
           id: "1"
           result:
@@ -1229,7 +1266,7 @@ Where:
 | `REST` | HTTP+JSON/REST binding-specific behavior |
 | `VER` | Version negotiation |
 | `INTEROP` | Tests derived from cross-SDK interop bugs |
-| `CLIENT` | Client-side parsing tests (golden responses) |
+| `CLIENT` | Client-side parsing tests (`client_response` payloads) |
 
 The `AREA` component provides finer grouping within a category (e.g., `SEND`, `GET`, `CANCEL`, `ERR`, `HIST`, `SSE`, `FMT`).
 
@@ -1266,30 +1303,33 @@ suites:
         requires_behaviors: [tck-complete-task]
         steps:
           - id: send
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
                   - text: "tck-complete-task hello"
             expect:
-              result_type: task
-              task:
-                id: {type: string}
-                status:
-                  state: TASK_STATE_COMPLETED
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_COMPLETED
             capture:
               taskId: task.id
               contextId: task.contextId
 
           - id: get
-            action: get_task
-            request:
+            operation: get_task
+            params:
               id: "{{send.taskId}}"
             expect:
-              id: "{{send.taskId}}"
-              status:
-                state: TASK_STATE_COMPLETED
+              status: 200
+              body:
+                id: "{{send.taskId}}"
+                status:
+                  state: TASK_STATE_COMPLETED
 
       # ── SendMessage: message-only response ──────────────────────
       - id: CORE-SEND-003
@@ -1303,17 +1343,18 @@ suites:
         requires_behaviors: [tck-message-response]
         steps:
           - id: send
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
                   - text: "tck-message-response hello"
             expect:
-              result_type: message
-              message:
-                role: ROLE_AGENT
-                parts: {count_gte: 1}
+              status: 200
+              body:
+                message:
+                  role: ROLE_AGENT
+                  parts: {count_gte: 1}
 
       # ── CancelTask ─────────────────────────────────────────────
       - id: CORE-CANCEL-001
@@ -1324,8 +1365,8 @@ suites:
         requires_behaviors: [tck-cancel]
         steps:
           - id: start
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
@@ -1333,21 +1374,24 @@ suites:
               configuration:
                 returnImmediately: true
             expect:
-              result_type: task
-              task:
-                status:
-                  state: {one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]}
+              status: 200
+              body:
+                task:
+                  status:
+                    state: {one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]}
             capture:
               taskId: task.id
 
           - id: cancel
-            action: cancel_task
-            request:
+            operation: cancel_task
+            params:
               id: "{{start.taskId}}"
             expect:
-              id: "{{start.taskId}}"
-              status:
-                state: TASK_STATE_CANCELED
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                status:
+                  state: TASK_STATE_CANCELED
 
       # ── Error: TaskNotFound ─────────────────────────────────────
       - id: CORE-ERR-001
@@ -1357,8 +1401,8 @@ suites:
         tags: [error, task-not-found]
         steps:
           - id: get-missing
-            action: get_task
-            request:
+            operation: get_task
+            params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
               error_type: TaskNotFoundError
@@ -1376,8 +1420,8 @@ suites:
             streaming: true
         steps:
           - id: stream
-            action: send_streaming_message
-            request:
+            operation: send_streaming_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
@@ -1399,24 +1443,25 @@ suites:
         requires_behaviors: [tck-multi-turn]
         steps:
           - id: turn1
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
                   - text: "tck-multi-turn start"
             expect:
-              result_type: task
-              task:
-                status:
-                  state: TASK_STATE_INPUT_REQUIRED
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
             capture:
               taskId: task.id
               contextId: task.contextId
 
           - id: turn2
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 taskId: "{{turn1.taskId}}"
@@ -1424,11 +1469,12 @@ suites:
                 parts:
                   - text: "done"
             expect:
-              result_type: task
-              task:
-                id: "{{turn1.taskId}}"
-                status:
-                  state: TASK_STATE_COMPLETED
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
 
       # ── Polling ─────────────────────────────────────────────────
       - id: CORE-EXEC-001
@@ -1439,8 +1485,8 @@ suites:
         requires_behaviors: [tck-long-running]
         steps:
           - id: start
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
@@ -1448,20 +1494,23 @@ suites:
               configuration:
                 returnImmediately: true
             expect:
-              result_type: task
-              task:
-                status:
-                  state: {one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]}
+              status: 200
+              body:
+                task:
+                  status:
+                    state: {one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]}
             capture:
               taskId: task.id
 
           - id: poll
-            action: get_task
-            request:
+            operation: get_task
+            params:
               id: "{{start.taskId}}"
             expect:
-              status:
-                state: {type: string}
+              status: 200
+              body:
+                status:
+                  state: {type: string}
             repeat:
               until: status.state in [TASK_STATE_COMPLETED, TASK_STATE_FAILED]
               max_attempts: 15
@@ -1478,12 +1527,14 @@ suites:
         tags: [discovery, agent-card]
         steps:
           - id: get-card
-            action: get_agent_card
-            request: {}
+            operation: get_agent_card
+            params: {}
             expect:
-              name: {type: string}
-              supportedInterfaces: {type: array, count_gte: 1}
-              skills: {type: array}
+              status: 200
+              body:
+                name: {type: string}
+                supportedInterfaces: {type: array, count_gte: 1}
+                skills: {type: array}
 
   - id: data-model
     name: "Data Model & Serialization"
@@ -1497,16 +1548,17 @@ suites:
         tags: [serialization, wire-format]
         steps:
           - id: send
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
                   - text: "tck-complete-task camelCase test"
             expect:
-              result_type: task
-              task:
-                id: {type: string}
+              status: 200
+              body:
+                task:
+                  id: {type: string}
             # Runner must additionally verify raw response keys are camelCase
 
       - id: DM-SERIAL-005
@@ -1516,8 +1568,8 @@ suites:
         tags: [serialization, tolerance]
         steps:
           - id: send
-            action: send_message
-            request:
+            operation: send_message
+            params:
               message:
                 role: ROLE_USER
                 parts:
@@ -1526,10 +1578,11 @@ suites:
                 extraNested:
                   foo: "bar"
             expect:
-              result_type: task
-              task:
-                status:
-                  state: TASK_STATE_COMPLETED
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
 ```
 
 ---
@@ -1555,7 +1608,7 @@ a2a-conformance/
 │   ├── transport-jsonrpc.yaml     # JSONRPC-* tests
 │   ├── transport-grpc.yaml        # GRPC-* tests
 │   ├── transport-rest.yaml        # REST-* tests
-│   ├── client-parsing.yaml        # CLIENT-* golden response tests
+│   ├── client-parsing.yaml        # CLIENT-* client response tests
 │   ├── interop.yaml               # INTEROP-* tests (from cross-SDK bugs)
 │   └── sut-behaviors.yaml         # Standard SUT behavior contract
 └── v0.3/                          # Backward compatibility tests (if needed)
@@ -1644,11 +1697,20 @@ test = {
   ? preconditions: preconditions,
   ? requires_behaviors: [+ text],  ; SUT behavior prefixes this test depends on
   ? origin: text,
-  steps: [+ step]
+  ? runner_requirements: [+ runner-requirement],
+  steps: [+ step],
+  ? assertions: [+ named-assertion]
 }
 
 conformance-level = "must" / "should" / "may"
 transport-binding = "jsonrpc" / "grpc" / "rest"
+
+runner-requirement =
+  "webhook_endpoint" /
+  "concurrent_streams" /
+  "stream_disconnect" /
+  "auth_credentials" /
+  "header_inspection"
 
 preconditions = {
   ? capabilities: { * text => any },
@@ -1664,12 +1726,13 @@ step = server-step / client-step / assertion-step / raw-step
 server-step = {
   id: text,
   ? description: text,
-  action: abstract-operation,
-  request: request-params,
+  operation: abstract-operation,
+  params: request-params,
   ? expect: expect-block,
   ? expect_error: expect-error,
   ? expect_stream: expect-stream,
   ? capture: { + text => text },
+  ? assertions: [+ named-assertion],
   ? repeat: repeat-config,
   ? delay_ms: int
 }
@@ -1677,13 +1740,14 @@ server-step = {
 client-step = {
   id: text,
   ? description: text,
-  type: "client_test",
-  golden_response: {
-    ? status: int,
-    ? headers: { * text => text },
-    body: any
-  },
-  expect_parsed: { * text => assertion }
+  client_response: client-response,
+  expect_parsed: { * text => assertion },
+  ? assertions: [+ named-assertion]
+}
+
+client-response = {
+  operation: abstract-operation,
+  wire_payload: any
 }
 
 assertion-step = {
@@ -1695,19 +1759,17 @@ assertion-step = {
 raw-step = {
   id: text,
   ? description: text,
-  raw_request: {
+  raw: {
     method: "GET" / "POST" / "PUT" / "DELETE",
     path: text,
     ? headers: { * text => text },
     ? body: any,
-    ? rawBody: text
+    ? body_raw: text
   },
-  ? raw_expect: {
-    ? status: int,
-    ? headers: { * text => assertion },
-    ? body: { * text => assertion }
-  },
-  ? capture: { + text => text }
+  ? expect: expect-block,
+  ? expect_error: expect-error,
+  ? capture: { + text => text },
+  ? assertions: [+ named-assertion]
 }
 
 ; ── Operations ────────────────────────────────────────────────────
@@ -1725,7 +1787,7 @@ abstract-operation =
   "list_push_configs" /
   "delete_push_config"
 
-; ── Request ───────────────────────────────────────────────────────
+; ── Params ────────────────────────────────────────────────────────
 request-params = {
   ? message: {
       role: text,
@@ -1764,10 +1826,8 @@ part = {
 
 ; ── Expect ────────────────────────────────────────────────────────
 expect-block = {
-  ? result_type: "task" / "message",
-  ? task: { * text => assertion },
-  ? message: { * text => assertion },
-  * text => assertion
+  ? status: assertion,
+  ? body: { * text => assertion }
 }
 
 expect-error = {
@@ -1846,6 +1906,17 @@ number = int / float
 ; ── Collection Assertions ─────────────────────────────────────────
 inline-assertion = {
   source: text,
+  ? any: collection-match,
+  ? all: collection-match,
+  ? none: collection-match
+}
+
+named-assertion = {
+  ? id: text,
+  ? description: text,
+  source: text,
+  ? path: text,
+  ? match: assertion,
   ? any: collection-match,
   ? all: collection-match,
   ? none: collection-match
