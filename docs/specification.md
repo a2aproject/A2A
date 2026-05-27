@@ -1997,6 +1997,7 @@ Clients **MUST** follow these rules:
 1. Parse `supportedInterfaces` if present, and select the first supported transport
 2. Prefer earlier entries in the ordered list when multiple options are supported
 3. Use the correct URL for the selected transport
+4. Set the `tenant` field in every request message to exactly the value declared in the selected `AgentInterface` entry (omit the field if `tenant` is not set in that entry)
 
 ### 8.4. Agent Card Signing
 
