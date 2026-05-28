@@ -57,17 +57,14 @@ jobs:
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
-
-      - name: Restore pip cache
-        uses: actions/cache@v5
         with:
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-docs.txt') }}
-          path: ~/.cache/pip
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          enable-cache: true
 
       - name: Install documentation dependencies
-        run: pip install --upgrade -r requirements-docs.txt
+        run: uv pip install --system --upgrade -r requirements-docs.txt
+
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1
 
       - name: Setup Go
         uses: actions/setup-go@v6
@@ -86,10 +83,6 @@ jobs:
           # Install protoc-gen-jsonschema
           go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
           sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
-
-          # Install buf CLI
-          go install github.com/bufbuild/buf/cmd/buf@latest
-          sudo cp "$(go env GOPATH)/bin/buf" /usr/local/bin/
 
           # Clone googleapis
           mkdir -p third_party
