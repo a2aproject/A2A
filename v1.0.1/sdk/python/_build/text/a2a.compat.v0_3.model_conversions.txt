@@ -1,0 +1,22 @@
+a2a.compat.v0_3.model_conversions module
+****************************************
+
+Database model conversions for v0.3 compatibility.
+
+a2a.compat.v0_3.model_conversions.compat_push_notification_config_model_to_core(model_instance: str, task_id: str) -> TaskPushNotificationConfig
+
+   Converts a PushNotificationConfigModel with v0.3 structure back to
+   a 1.0 core TaskPushNotificationConfig.
+
+a2a.compat.v0_3.model_conversions.compat_task_model_to_core(task_model: TaskModel) -> Task
+
+   Converts a TaskModel with v0.3 structure to a 1.0 core Task.
+
+a2a.compat.v0_3.model_conversions.core_to_compat_push_notification_config_model(task_id: str, config: TaskPushNotificationConfig, owner: str, fernet: Fernet | None = None) -> PushNotificationConfigModel
+
+   Converts a 1.0 core TaskPushNotificationConfig to a
+   PushNotificationConfigModel using v0.3 JSON structure.
+
+a2a.compat.v0_3.model_conversions.core_to_compat_task_model(task: Task, owner: str) -> TaskModel
+
+   Converts a 1.0 core Task to a TaskModel using v0.3 JSON structure.

@@ -1,0 +1,39 @@
+a2a.server.routes.jsonrpc_dispatcher module
+*******************************************
+
+JSON-RPC application for A2A server.
+
+class a2a.server.routes.jsonrpc_dispatcher.JsonRpcDispatcher(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False)
+
+   Bases: "object"
+
+   Base class for A2A JSONRPC applications.
+
+   Handles incoming JSON-RPC requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   METHOD_TO_MODEL: dict[str, type] = {'CancelTask': <class 'a2a_pb2.CancelTaskRequest'>, 'CreateTaskPushNotificationConfig': <class 'a2a_pb2.TaskPushNotificationConfig'>, 'DeleteTaskPushNotificationConfig': <class 'a2a_pb2.DeleteTaskPushNotificationConfigRequest'>, 'GetExtendedAgentCard': <class 'a2a_pb2.GetExtendedAgentCardRequest'>, 'GetTask': <class 'a2a_pb2.GetTaskRequest'>, 'GetTaskPushNotificationConfig': <class 'a2a_pb2.GetTaskPushNotificationConfigRequest'>, 'ListTaskPushNotificationConfigs': <class 'a2a_pb2.ListTaskPushNotificationConfigsRequest'>, 'ListTasks': <class 'a2a_pb2.ListTasksRequest'>, 'SendMessage': <class 'a2a_pb2.SendMessageRequest'>, 'SendStreamingMessage': <class 'a2a_pb2.SendMessageRequest'>, 'SubscribeToTask': <class 'a2a_pb2.SubscribeToTaskRequest'>}
+
+   async handle_requests(request: Request) -> Response
+
+      Handles incoming POST requests to the main A2A endpoint.
+
+      Parses the request body as JSON, validates it against A2A
+      request types, dispatches it to the appropriate handler method,
+      and returns the response. Handles JSON parsing errors,
+      validation errors, and other exceptions, returning appropriate
+      JSON-RPC error responses.
+
+      Parameters:
+         **request** -- The incoming Starlette Request object.
+
+      Returns:
+         A Starlette Response object (JSONResponse or
+         EventSourceResponse).
+
+      Raises:
+         * **(****Implicitly handled****)** -- Various exceptions are
+           caught and converted
+
+         * **into JSON-RPC error responses by this method.** --

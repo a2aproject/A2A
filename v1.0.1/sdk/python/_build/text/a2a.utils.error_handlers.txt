@@ -1,0 +1,29 @@
+a2a.utils.error_handlers module
+*******************************
+
+a2a.utils.error_handlers.build_error_details(error: A2AError) -> list[dict[str, Any]]
+
+   Build the typed-details array for an "A2AError".
+
+   Always emits a leading "google.rpc.ErrorInfo" carrying the A2A
+   reason and "error.data" as "metadata". For *InvalidParamsError*
+   whose "data" contains an "errors" list of validation details, also
+   appends a "google.rpc.BadRequest" so all transports surface field-
+   level violations identically.
+
+a2a.utils.error_handlers.build_rest_error_payload(error: Exception) -> dict[str, Any]
+
+   Build a REST error payload dict from an exception.
+
+   Returns:
+      A dict with the error payload in the standard REST error format.
+
+a2a.utils.error_handlers.rest_error_handler(func: Callable[[...], Awaitable[Response]]) -> Callable[[...], Awaitable[Response]]
+
+   Decorator to catch A2AError and map it to an appropriate
+   JSONResponse.
+
+a2a.utils.error_handlers.rest_stream_error_handler(func: Callable[[...], Coroutine[Any, Any, Any]]) -> Callable[[...], Coroutine[Any, Any, Any]]
+
+   Decorator to catch A2AError for a streaming method. Maps
+   synchronous errors to JSONResponse and logs streaming errors.

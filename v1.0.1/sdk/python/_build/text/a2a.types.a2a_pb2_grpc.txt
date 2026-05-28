@@ -1,0 +1,101 @@
+a2a.types.a2a_pb2_grpc module
+*****************************
+
+Client and server classes corresponding to protobuf-defined services.
+
+class a2a.types.a2a_pb2_grpc.A2AService
+
+   Bases: "object"
+
+   Provides operations for interacting with agents using the A2A
+   protocol.
+
+   static CancelTask(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static CreateTaskPushNotificationConfig(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static DeleteTaskPushNotificationConfig(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static GetExtendedAgentCard(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static GetTask(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static GetTaskPushNotificationConfig(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static ListTaskPushNotificationConfigs(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static ListTasks(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static SendMessage(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static SendStreamingMessage(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+   static SubscribeToTask(request, target, options=(), channel_credentials=None, call_credentials=None, insecure=False, compression=None, wait_for_ready=None, timeout=None, metadata=None)
+
+class a2a.types.a2a_pb2_grpc.A2AServiceServicer
+
+   Bases: "object"
+
+   Provides operations for interacting with agents using the A2A
+   protocol.
+
+   CancelTask(request, context)
+
+      Cancels a task in progress.
+
+   CreateTaskPushNotificationConfig(request, context)
+
+      (-- api-linter: client-libraries::4232::required-fields=disabled
+      api-linter: core::0133::method-signature=disabled api-linter:
+      core::0133::request-message-name=disabled aip.dev/not-precedent:
+      method_signature preserved for backwards compatibility --)
+      Creates a push notification config for a task.
+
+   DeleteTaskPushNotificationConfig(request, context)
+
+      Deletes a push notification config for a task.
+
+   GetExtendedAgentCard(request, context)
+
+      Gets the extended agent card for the authenticated agent.
+
+   GetTask(request, context)
+
+      Gets the latest state of a task.
+
+   GetTaskPushNotificationConfig(request, context)
+
+      Gets a push notification config for a task.
+
+   ListTaskPushNotificationConfigs(request, context)
+
+      Get a list of push notifications configured for a task.
+
+   ListTasks(request, context)
+
+      Lists tasks that match the specified filter.
+
+   SendMessage(request, context)
+
+      Sends a message to an agent.
+
+   SendStreamingMessage(request, context)
+
+      Sends a streaming message to an agent, allowing for real-time
+      interaction and status updates. Streaming version of
+      *SendMessage*
+
+   SubscribeToTask(request, context)
+
+      Subscribes to task updates for tasks not in a terminal state.
+      Returns *UnsupportedOperationError* if the task is already in a
+      terminal state (completed, failed, canceled, rejected).
+
+class a2a.types.a2a_pb2_grpc.A2AServiceStub(channel)
+
+   Bases: "object"
+
+   Provides operations for interacting with agents using the A2A
+   protocol.
+
+a2a.types.a2a_pb2_grpc.add_A2AServiceServicer_to_server(servicer, server)

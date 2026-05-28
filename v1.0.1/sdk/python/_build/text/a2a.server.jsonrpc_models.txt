@@ -1,0 +1,105 @@
+a2a.server.jsonrpc_models module
+********************************
+
+class a2a.server.jsonrpc_models.InternalError(*, code: Literal[-32603] = -32603, message: str = 'Internal error', data: Any | None = None, **extra_data: Any)
+
+   Bases: "JSONRPCError"
+
+   Error raised when internal JSON-RPC error.
+
+   code: Literal[-32603]
+
+   message: str
+
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.server.jsonrpc_models.InvalidParamsError(*, code: Literal[-32602] = -32602, message: str = 'Invalid params', data: Any | None = None, **extra_data: Any)
+
+   Bases: "JSONRPCError"
+
+   Error raised when invalid method parameter(s).
+
+   code: Literal[-32602]
+
+   message: str
+
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.server.jsonrpc_models.InvalidRequestError(*, code: Literal[-32600] = -32600, message: str = 'Invalid Request', data: Any | None = None, **extra_data: Any)
+
+   Bases: "JSONRPCError"
+
+   Error raised when the JSON sent is not a valid Request object.
+
+   code: Literal[-32600]
+
+   message: str
+
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.server.jsonrpc_models.JSONParseError(*, code: Literal[-32700] = -32700, message: str = 'Parse error', data: Any | None = None, **extra_data: Any)
+
+   Bases: "JSONRPCError"
+
+   Error raised when invalid JSON was received by the server.
+
+   code: Literal[-32700]
+
+   message: str
+
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.server.jsonrpc_models.JSONRPCBaseModel(**extra_data: Any)
+
+   Bases: "BaseModel"
+
+   Base model for JSON-RPC objects.
+
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.server.jsonrpc_models.JSONRPCError(*, code: int, message: str, data: Any | None = None, **extra_data: Any)
+
+   Bases: "JSONRPCBaseModel"
+
+   Base model for JSON-RPC error objects.
+
+   code: int
+
+   data: Any | None
+
+   message: str
+
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+class a2a.server.jsonrpc_models.MethodNotFoundError(*, code: Literal[-32601] = -32601, message: str = 'Method not found', data: Any | None = None, **extra_data: Any)
+
+   Bases: "JSONRPCError"
+
+   Error raised when the method does not exist / is not available.
+
+   code: Literal[-32601]
+
+   message: str
+
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].

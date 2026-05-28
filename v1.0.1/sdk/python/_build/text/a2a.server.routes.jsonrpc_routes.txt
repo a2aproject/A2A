@@ -1,0 +1,24 @@
+a2a.server.routes.jsonrpc_routes module
+***************************************
+
+a2a.server.routes.jsonrpc_routes.create_jsonrpc_routes(request_handler: RequestHandler, rpc_url: str, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False) -> list[Route]
+
+   Creates the Starlette Route for the A2A protocol JSON-RPC endpoint.
+
+   Handles incoming JSON-RPC requests, routes them to the appropriate
+   handler methods, and manages response generation including Server-
+   Sent Events (SSE).
+
+   Parameters:
+      * **request_handler** -- The handler instance responsible for
+        processing A2A requests via http.
+
+      * **rpc_url** -- The URL prefix for the RPC endpoints. Should
+        start with a leading slash '/'.
+
+      * **context_builder** -- The ServerCallContextBuilder used to
+        construct the ServerCallContext passed to the request_handler.
+        If None the DefaultServerCallContextBuilder is used.
+
+      * **enable_v0_3_compat** -- Whether to enable v0.3 backward
+        compatibility on the same endpoint.

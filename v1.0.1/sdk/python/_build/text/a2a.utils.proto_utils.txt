@@ -1,0 +1,109 @@
+a2a.utils.proto_utils module
+****************************
+
+Utilities for working with proto types.
+
+This module provides helper functions for common proto type
+operations.
+
+class a2a.utils.proto_utils.ValidationDetail
+
+   Bases: "TypedDict"
+
+   Structured validation error detail.
+
+   field: str
+
+   message: str
+
+a2a.utils.proto_utils.bad_request_to_validation_errors(bad_request: BadRequest) -> list[ValidationDetail]
+
+   Convert a gRPC BadRequest proto to validation error details.
+
+a2a.utils.proto_utils.make_dict_serializable(value: Any) -> Any
+
+   Dict pre-processing utility: converts non-serializable values to
+   serializable form.
+
+   Use this when you want to normalize a dictionary before
+   dict->Struct conversion.
+
+   Parameters:
+      **value** -- The value to convert.
+
+   Returns:
+      A serializable value.
+
+a2a.utils.proto_utils.normalize_large_integers_to_strings(value: Any, max_safe_digits: int = 15) -> Any
+
+   Integer preprocessing utility: converts large integers to strings.
+
+   Use this when you want to convert large integers to strings
+   considering JavaScript's MAX_SAFE_INTEGER (2^53 - 1) limitation.
+
+   Parameters:
+      * **value** -- The value to convert.
+
+      * **max_safe_digits** -- Maximum safe integer digits (default:
+        15).
+
+   Returns:
+      A normalized value.
+
+a2a.utils.proto_utils.parse_params(params: QueryParams, message: Message) -> None
+
+   Converts REST query parameters back into a Protobuf message.
+
+   Handles A2A-specific pre-processing before calling ParseDict: -
+   Booleans: 'true'/'false' -> True/False - Repeated: Supports BOTH
+   repeated keys and comma-separated values. - Others: Handles
+   string->enum/timestamp/number conversion via ParseDict.
+
+   See also:
+
+     https://a2a-protocol.org/latest/specification/#115-query-
+     parameter-naming-for-request-parameters
+
+a2a.utils.proto_utils.parse_string_integers_in_dict(value: Any, max_safe_digits: int = 15) -> Any
+
+   String post-processing utility: converts large integer strings back
+   to integers.
+
+   Use this when you want to restore large integer strings to integers
+   after Struct->dict conversion.
+
+   Parameters:
+      * **value** -- The value to convert.
+
+      * **max_safe_digits** -- Maximum safe integer digits (default:
+        15).
+
+   Returns:
+      A parsed value.
+
+a2a.utils.proto_utils.to_stream_response(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> StreamResponse
+
+   Convert internal Event to StreamResponse proto.
+
+   Parameters:
+      **event** -- The event (Task, Message, TaskStatusUpdateEvent,
+      TaskArtifactUpdateEvent)
+
+   Returns:
+      A StreamResponse proto with the appropriate field set.
+
+a2a.utils.proto_utils.validate_proto_required_fields(msg: Message) -> None
+
+   Validate that all fields marked as REQUIRED are present on the
+   proto message.
+
+   Parameters:
+      **msg** -- The Protobuf message to validate.
+
+   Raises:
+      **InvalidParamsError** -- If a required field is missing or
+      empty.
+
+a2a.utils.proto_utils.validation_errors_to_bad_request(errors: list[ValidationDetail]) -> BadRequest
+
+   Convert validation error details to a gRPC BadRequest proto.

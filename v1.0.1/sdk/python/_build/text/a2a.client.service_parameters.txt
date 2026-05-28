@@ -1,0 +1,40 @@
+a2a.client.service_parameters module
+************************************
+
+class a2a.client.service_parameters.ServiceParametersFactory
+
+   Bases: "object"
+
+   Factory for creating ServiceParameters.
+
+   static create(updates: list[Callable[[dict[str, str]], None]]) -> dict[str, str]
+
+      Create ServiceParameters from a list of updates.
+
+      Parameters:
+         **updates** -- List of update functions to apply.
+
+      Returns:
+         The created ServiceParameters dictionary.
+
+   static create_from(service_parameters: dict[str, str] | None, updates: list[Callable[[dict[str, str]], None]]) -> dict[str, str]
+
+      Create new ServiceParameters from existing ones and apply
+      updates.
+
+      Parameters:
+         * **service_parameters** -- Optional existing
+           ServiceParameters to start from.
+
+         * **updates** -- List of update functions to apply.
+
+      Returns:
+         New ServiceParameters dictionary.
+
+a2a.client.service_parameters.with_a2a_extensions(extensions: list[str]) -> Callable[[dict[str, str]], None]
+
+   Create a ServiceParametersUpdate that merges A2A extension URIs.
+
+   Unions the supplied URIs with any already present in the A2A-
+   Extensions parameter, deduplicating and emitting them in sorted
+   order. Repeated calls accumulate rather than overwrite.

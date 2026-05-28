@@ -1,0 +1,874 @@
+a2a package
+***********
+
+
+Subpackages
+===========
+
+* a2a.auth package
+
+  * Submodules
+
+    * a2a.auth.user module
+
+      * "UnauthenticatedUser"
+
+      * "User"
+
+  * Module contents
+
+* a2a.client package
+
+  * Subpackages
+
+    * a2a.client.auth package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.client.transports package
+
+      * Submodules
+
+      * Module contents
+
+  * Submodules
+
+    * a2a.client.base_client module
+
+      * "BaseClient"
+
+    * a2a.client.card_resolver module
+
+      * "A2ACardResolver"
+
+      * "parse_agent_card()"
+
+    * a2a.client.client module
+
+      * "Client"
+
+      * "ClientCallContext"
+
+      * "ClientConfig"
+
+    * a2a.client.client_factory module
+
+      * "ClientFactory"
+
+      * "create_client()"
+
+      * "minimal_agent_card()"
+
+    * a2a.client.errors module
+
+      * "A2AClientError"
+
+      * "A2AClientTimeoutError"
+
+      * "AgentCardResolutionError"
+
+    * a2a.client.interceptors module
+
+      * "AfterArgs"
+
+      * "BeforeArgs"
+
+      * "ClientCallInterceptor"
+
+    * a2a.client.optionals module
+
+    * a2a.client.service_parameters module
+
+      * "ServiceParametersFactory"
+
+      * "with_a2a_extensions()"
+
+  * Module contents
+
+    * "A2ACardResolver"
+
+      * "A2ACardResolver.get_agent_card()"
+
+    * "A2AClientError"
+
+    * "A2AClientTimeoutError"
+
+    * "AgentCardResolutionError"
+
+    * "AuthInterceptor"
+
+      * "AuthInterceptor.after()"
+
+      * "AuthInterceptor.before()"
+
+    * "BaseClient"
+
+      * "BaseClient.cancel_task()"
+
+      * "BaseClient.close()"
+
+      * "BaseClient.create_task_push_notification_config()"
+
+      * "BaseClient.delete_task_push_notification_config()"
+
+      * "BaseClient.get_extended_agent_card()"
+
+      * "BaseClient.get_task()"
+
+      * "BaseClient.get_task_push_notification_config()"
+
+      * "BaseClient.list_task_push_notification_configs()"
+
+      * "BaseClient.list_tasks()"
+
+      * "BaseClient.send_message()"
+
+      * "BaseClient.subscribe()"
+
+    * "Client"
+
+      * "Client.add_interceptor()"
+
+      * "Client.cancel_task()"
+
+      * "Client.close()"
+
+      * "Client.create_task_push_notification_config()"
+
+      * "Client.delete_task_push_notification_config()"
+
+      * "Client.get_extended_agent_card()"
+
+      * "Client.get_task()"
+
+      * "Client.get_task_push_notification_config()"
+
+      * "Client.list_task_push_notification_configs()"
+
+      * "Client.list_tasks()"
+
+      * "Client.send_message()"
+
+      * "Client.subscribe()"
+
+    * "ClientCallContext"
+
+      * "ClientCallContext.model_config"
+
+      * "ClientCallContext.service_parameters"
+
+      * "ClientCallContext.state"
+
+      * "ClientCallContext.timeout"
+
+    * "ClientCallInterceptor"
+
+      * "ClientCallInterceptor.after()"
+
+      * "ClientCallInterceptor.before()"
+
+    * "ClientConfig"
+
+      * "ClientConfig.accepted_output_modes"
+
+      * "ClientConfig.grpc_channel_factory"
+
+      * "ClientConfig.httpx_client"
+
+      * "ClientConfig.polling"
+
+      * "ClientConfig.push_notification_config"
+
+      * "ClientConfig.streaming"
+
+      * "ClientConfig.supported_protocol_bindings"
+
+      * "ClientConfig.use_client_preference"
+
+    * "ClientFactory"
+
+      * "ClientFactory.create()"
+
+      * "ClientFactory.create_from_url()"
+
+      * "ClientFactory.register()"
+
+    * "CredentialService"
+
+      * "CredentialService.get_credentials()"
+
+    * "InMemoryContextCredentialStore"
+
+      * "InMemoryContextCredentialStore.get_credentials()"
+
+      * "InMemoryContextCredentialStore.set_credentials()"
+
+    * "create_client()"
+
+    * "minimal_agent_card()"
+
+* a2a.compat package
+
+  * Subpackages
+
+    * a2a.compat.v0_3 package
+
+      * Submodules
+
+      * Module contents
+
+  * Module contents
+
+* a2a.extensions package
+
+  * Submodules
+
+    * a2a.extensions.common module
+
+      * "find_extension_by_uri()"
+
+      * "get_requested_extensions()"
+
+  * Module contents
+
+* a2a.helpers package
+
+  * Submodules
+
+    * a2a.helpers.agent_card module
+
+      * "display_agent_card()"
+
+    * a2a.helpers.proto_helpers module
+
+      * "get_artifact_text()"
+
+      * "get_data_parts()"
+
+      * "get_message_text()"
+
+      * "get_raw_parts()"
+
+      * "get_stream_response_text()"
+
+      * "get_text_parts()"
+
+      * "get_url_parts()"
+
+      * "new_artifact()"
+
+      * "new_data_artifact()"
+
+      * "new_data_artifact_update_event()"
+
+      * "new_data_message()"
+
+      * "new_data_part()"
+
+      * "new_message()"
+
+      * "new_raw_artifact()"
+
+      * "new_raw_artifact_update_event()"
+
+      * "new_raw_message()"
+
+      * "new_raw_part()"
+
+      * "new_task()"
+
+      * "new_task_from_user_message()"
+
+      * "new_text_artifact()"
+
+      * "new_text_artifact_update_event()"
+
+      * "new_text_message()"
+
+      * "new_text_part()"
+
+      * "new_text_status_update_event()"
+
+      * "new_url_artifact()"
+
+      * "new_url_artifact_update_event()"
+
+      * "new_url_message()"
+
+      * "new_url_part()"
+
+  * Module contents
+
+    * "display_agent_card()"
+
+    * "get_artifact_text()"
+
+    * "get_data_parts()"
+
+    * "get_message_text()"
+
+    * "get_raw_parts()"
+
+    * "get_stream_response_text()"
+
+    * "get_text_parts()"
+
+    * "get_url_parts()"
+
+    * "new_artifact()"
+
+    * "new_data_artifact()"
+
+    * "new_data_artifact_update_event()"
+
+    * "new_data_message()"
+
+    * "new_data_part()"
+
+    * "new_message()"
+
+    * "new_raw_artifact()"
+
+    * "new_raw_artifact_update_event()"
+
+    * "new_raw_message()"
+
+    * "new_raw_part()"
+
+    * "new_task()"
+
+    * "new_task_from_user_message()"
+
+    * "new_text_artifact()"
+
+    * "new_text_artifact_update_event()"
+
+    * "new_text_message()"
+
+    * "new_text_part()"
+
+    * "new_text_status_update_event()"
+
+    * "new_url_artifact()"
+
+    * "new_url_artifact_update_event()"
+
+    * "new_url_message()"
+
+    * "new_url_part()"
+
+* a2a.migrations package
+
+  * Subpackages
+
+    * a2a.migrations.versions package
+
+      * Submodules
+
+      * Module contents
+
+  * Submodules
+
+    * a2a.migrations.env module
+
+    * a2a.migrations.migration_utils module
+
+      * "add_column()"
+
+      * "add_index()"
+
+      * "column_exists()"
+
+      * "drop_column()"
+
+      * "drop_index()"
+
+      * "index_exists()"
+
+      * "table_exists()"
+
+  * Module contents
+
+* a2a.server package
+
+  * Subpackages
+
+    * a2a.server.agent_execution package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.server.events package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.server.request_handlers package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.server.routes package
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.server.tasks package
+
+      * Submodules
+
+      * Module contents
+
+  * Submodules
+
+    * a2a.server.context module
+
+      * "ServerCallContext"
+
+    * a2a.server.id_generator module
+
+      * "IDGenerator"
+
+      * "IDGeneratorContext"
+
+      * "UUIDGenerator"
+
+    * a2a.server.jsonrpc_models module
+
+      * "InternalError"
+
+      * "InvalidParamsError"
+
+      * "InvalidRequestError"
+
+      * "JSONParseError"
+
+      * "JSONRPCBaseModel"
+
+      * "JSONRPCError"
+
+      * "MethodNotFoundError"
+
+    * a2a.server.models module
+
+      * "Base"
+
+      * "PushNotificationConfigMixin"
+
+      * "PushNotificationConfigModel"
+
+      * "TaskMixin"
+
+      * "TaskModel"
+
+      * "create_push_notification_config_model()"
+
+      * "create_task_model()"
+
+      * "override()"
+
+    * a2a.server.owner_resolver module
+
+      * "resolve_user_scope()"
+
+  * Module contents
+
+* a2a.types package
+
+  * Submodules
+
+    * a2a.types.a2a_pb2 module
+
+    * a2a.types.a2a_pb2_grpc module
+
+      * "A2AService"
+
+      * "A2AServiceServicer"
+
+      * "A2AServiceStub"
+
+      * "add_A2AServiceServicer_to_server()"
+
+  * Module contents
+
+    * "APIKeySecurityScheme"
+
+      * "APIKeySecurityScheme.DESCRIPTOR"
+
+    * "AgentCapabilities"
+
+      * "AgentCapabilities.DESCRIPTOR"
+
+    * "AgentCard"
+
+      * "AgentCard.DESCRIPTOR"
+
+      * "AgentCard.SecuritySchemesEntry"
+
+    * "AgentCardSignature"
+
+      * "AgentCardSignature.DESCRIPTOR"
+
+    * "AgentExtension"
+
+      * "AgentExtension.DESCRIPTOR"
+
+    * "AgentInterface"
+
+      * "AgentInterface.DESCRIPTOR"
+
+    * "AgentProvider"
+
+      * "AgentProvider.DESCRIPTOR"
+
+    * "AgentSkill"
+
+      * "AgentSkill.DESCRIPTOR"
+
+    * "Artifact"
+
+      * "Artifact.DESCRIPTOR"
+
+    * "AuthenticationInfo"
+
+      * "AuthenticationInfo.DESCRIPTOR"
+
+    * "AuthorizationCodeOAuthFlow"
+
+      * "AuthorizationCodeOAuthFlow.DESCRIPTOR"
+
+      * "AuthorizationCodeOAuthFlow.ScopesEntry"
+
+    * "CancelTaskRequest"
+
+      * "CancelTaskRequest.DESCRIPTOR"
+
+    * "ClientCredentialsOAuthFlow"
+
+      * "ClientCredentialsOAuthFlow.DESCRIPTOR"
+
+      * "ClientCredentialsOAuthFlow.ScopesEntry"
+
+    * "ContentTypeNotSupportedError"
+
+      * "ContentTypeNotSupportedError.message"
+
+    * "DeleteTaskPushNotificationConfigRequest"
+
+      * "DeleteTaskPushNotificationConfigRequest.DESCRIPTOR"
+
+    * "DeviceCodeOAuthFlow"
+
+      * "DeviceCodeOAuthFlow.DESCRIPTOR"
+
+      * "DeviceCodeOAuthFlow.ScopesEntry"
+
+    * "ExtendedAgentCardNotConfiguredError"
+
+      * "ExtendedAgentCardNotConfiguredError.message"
+
+    * "ExtensionSupportRequiredError"
+
+      * "ExtensionSupportRequiredError.message"
+
+    * "GetExtendedAgentCardRequest"
+
+      * "GetExtendedAgentCardRequest.DESCRIPTOR"
+
+    * "GetTaskPushNotificationConfigRequest"
+
+      * "GetTaskPushNotificationConfigRequest.DESCRIPTOR"
+
+    * "GetTaskRequest"
+
+      * "GetTaskRequest.DESCRIPTOR"
+
+    * "HTTPAuthSecurityScheme"
+
+      * "HTTPAuthSecurityScheme.DESCRIPTOR"
+
+    * "ImplicitOAuthFlow"
+
+      * "ImplicitOAuthFlow.DESCRIPTOR"
+
+      * "ImplicitOAuthFlow.ScopesEntry"
+
+    * "InternalError"
+
+      * "InternalError.message"
+
+    * "InvalidAgentResponseError"
+
+      * "InvalidAgentResponseError.message"
+
+    * "InvalidParamsError"
+
+      * "InvalidParamsError.message"
+
+    * "InvalidRequestError"
+
+      * "InvalidRequestError.message"
+
+    * "ListTaskPushNotificationConfigsRequest"
+
+      * "ListTaskPushNotificationConfigsRequest.DESCRIPTOR"
+
+    * "ListTaskPushNotificationConfigsResponse"
+
+      * "ListTaskPushNotificationConfigsResponse.DESCRIPTOR"
+
+    * "ListTasksRequest"
+
+      * "ListTasksRequest.DESCRIPTOR"
+
+    * "ListTasksResponse"
+
+      * "ListTasksResponse.DESCRIPTOR"
+
+    * "Message"
+
+      * "Message.DESCRIPTOR"
+
+    * "MethodNotFoundError"
+
+      * "MethodNotFoundError.message"
+
+    * "MutualTlsSecurityScheme"
+
+      * "MutualTlsSecurityScheme.DESCRIPTOR"
+
+    * "OAuth2SecurityScheme"
+
+      * "OAuth2SecurityScheme.DESCRIPTOR"
+
+    * "OAuthFlows"
+
+      * "OAuthFlows.DESCRIPTOR"
+
+    * "OpenIdConnectSecurityScheme"
+
+      * "OpenIdConnectSecurityScheme.DESCRIPTOR"
+
+    * "Part"
+
+      * "Part.DESCRIPTOR"
+
+    * "PasswordOAuthFlow"
+
+      * "PasswordOAuthFlow.DESCRIPTOR"
+
+      * "PasswordOAuthFlow.ScopesEntry"
+
+    * "PushNotificationNotSupportedError"
+
+      * "PushNotificationNotSupportedError.message"
+
+    * "SecurityRequirement"
+
+      * "SecurityRequirement.DESCRIPTOR"
+
+      * "SecurityRequirement.SchemesEntry"
+
+    * "SecurityScheme"
+
+      * "SecurityScheme.DESCRIPTOR"
+
+    * "SendMessageConfiguration"
+
+      * "SendMessageConfiguration.DESCRIPTOR"
+
+    * "SendMessageRequest"
+
+      * "SendMessageRequest.DESCRIPTOR"
+
+    * "SendMessageResponse"
+
+      * "SendMessageResponse.DESCRIPTOR"
+
+    * "StreamResponse"
+
+      * "StreamResponse.DESCRIPTOR"
+
+    * "StringList"
+
+      * "StringList.DESCRIPTOR"
+
+    * "SubscribeToTaskRequest"
+
+      * "SubscribeToTaskRequest.DESCRIPTOR"
+
+    * "Task"
+
+      * "Task.DESCRIPTOR"
+
+    * "TaskArtifactUpdateEvent"
+
+      * "TaskArtifactUpdateEvent.DESCRIPTOR"
+
+    * "TaskNotCancelableError"
+
+      * "TaskNotCancelableError.message"
+
+    * "TaskNotFoundError"
+
+      * "TaskNotFoundError.message"
+
+    * "TaskPushNotificationConfig"
+
+      * "TaskPushNotificationConfig.DESCRIPTOR"
+
+    * "TaskStatus"
+
+      * "TaskStatus.DESCRIPTOR"
+
+    * "TaskStatusUpdateEvent"
+
+      * "TaskStatusUpdateEvent.DESCRIPTOR"
+
+    * "UnsupportedOperationError"
+
+      * "UnsupportedOperationError.message"
+
+    * "VersionNotSupportedError"
+
+      * "VersionNotSupportedError.message"
+
+* a2a.utils package
+
+  * Submodules
+
+    * a2a.utils.constants module
+
+      * "DEFAULT_LIST_TASKS_PAGE_SIZE"
+
+      * "MAX_LIST_TASKS_PAGE_SIZE"
+
+      * "TransportProtocol"
+
+    * a2a.utils.error_handlers module
+
+      * "build_error_details()"
+
+      * "build_rest_error_payload()"
+
+      * "rest_error_handler()"
+
+      * "rest_stream_error_handler()"
+
+    * a2a.utils.errors module
+
+      * "ErrorMapping"
+
+      * "ExtensionSupportRequiredError"
+
+      * "InternalError"
+
+      * "InvalidAgentResponseError"
+
+      * "InvalidParamsError"
+
+      * "InvalidRequestError"
+
+      * "JSONParseError"
+
+      * "MethodNotFoundError"
+
+      * "PushNotificationNotSupportedError"
+
+      * "TaskNotCancelableError"
+
+      * "TaskNotFoundError"
+
+      * "UnsupportedOperationError"
+
+      * "VersionNotSupportedError"
+
+    * a2a.utils.proto_utils module
+
+      * "ValidationDetail"
+
+      * "bad_request_to_validation_errors()"
+
+      * "make_dict_serializable()"
+
+      * "normalize_large_integers_to_strings()"
+
+      * "parse_params()"
+
+      * "parse_string_integers_in_dict()"
+
+      * "to_stream_response()"
+
+      * "validate_proto_required_fields()"
+
+      * "validation_errors_to_bad_request()"
+
+    * a2a.utils.signing module
+
+      * "InvalidSignaturesError"
+
+      * "NoSignatureError"
+
+      * "ProtectedHeader"
+
+      * "SignatureVerificationError"
+
+      * "create_agent_card_signer()"
+
+      * "create_signature_verifier()"
+
+    * a2a.utils.task module
+
+      * "HistoryLengthConfig"
+
+      * "apply_history_length()"
+
+      * "decode_page_token()"
+
+      * "encode_page_token()"
+
+      * "validate_history_length()"
+
+      * "validate_page_size()"
+
+    * a2a.utils.telemetry module
+
+      * "SpanKind"
+
+    * a2a.utils.version_validator module
+
+      * "validate_version()"
+
+  * Module contents
+
+    * "TransportProtocol"
+
+      * "TransportProtocol.GRPC"
+
+      * "TransportProtocol.HTTP_JSON"
+
+      * "TransportProtocol.JSONRPC"
+
+    * "to_stream_response()"
+
+
+Submodules
+==========
+
+* a2a.a2a_db_cli module
+
+  * "create_parser()"
+
+  * "run_migrations()"
+
+
+Module contents
+===============
+
+The A2A Python SDK.

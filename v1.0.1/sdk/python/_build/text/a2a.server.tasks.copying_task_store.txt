@@ -1,0 +1,30 @@
+a2a.server.tasks.copying_task_store module
+******************************************
+
+class a2a.server.tasks.copying_task_store.CopyingTaskStoreAdapter(underlying_store: TaskStore)
+
+   Bases: "TaskStore"
+
+   An adapter that ensures deep copies of tasks are passed to and
+   returned from the underlying TaskStore.
+
+   This prevents accidental shared mutable state bugs where code
+   modifies a Task object retrieved from the store without explicitly
+   saving it, which hides missing save calls.
+
+   async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task from the underlying store.
+
+   async get(task_id: str, context: ServerCallContext) -> Task | None
+
+      Retrieves a task from the underlying store and returns a copy.
+
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Retrieves a list of tasks from the underlying store and returns
+      a copy.
+
+   async save(task: Task, context: ServerCallContext) -> None
+
+      Saves a copy of the task to the underlying store.

@@ -1,0 +1,81 @@
+a2a.server.request_handlers.grpc_handler module
+***********************************************
+
+class a2a.server.request_handlers.grpc_handler.DefaultGrpcServerCallContextBuilder
+
+   Bases: "GrpcServerCallContextBuilder"
+
+   Default implementation of GrpcServerCallContextBuilder.
+
+   build(context: ServicerContext) -> ServerCallContext
+
+      Builds a ServerCallContext from a gRPC ServicerContext.
+
+   build_user(context: ServicerContext) -> User
+
+      Builds a User from a gRPC ServicerContext.
+
+class a2a.server.request_handlers.grpc_handler.GrpcHandler(request_handler: RequestHandler, context_builder: GrpcServerCallContextBuilder | None = None)
+
+   Bases: "A2AServiceServicer"
+
+   Maps incoming gRPC requests to the appropriate request handler
+   method.
+
+   async CancelTask(request: CancelTaskRequest, context: ServicerContext) -> Task
+
+      Handles the 'CancelTask' gRPC method.
+
+   async CreateTaskPushNotificationConfig(request: TaskPushNotificationConfig, context: ServicerContext) -> TaskPushNotificationConfig
+
+      Handles the 'CreateTaskPushNotificationConfig' gRPC method.
+
+   async DeleteTaskPushNotificationConfig(request: DeleteTaskPushNotificationConfigRequest, context: ServicerContext) -> Empty
+
+      Handles the 'DeleteTaskPushNotificationConfig' gRPC method.
+
+   async GetExtendedAgentCard(request: GetExtendedAgentCardRequest, context: ServicerContext) -> AgentCard
+
+      Get the extended agent card for the agent served.
+
+   async GetTask(request: GetTaskRequest, context: ServicerContext) -> Task
+
+      Handles the 'GetTask' gRPC method.
+
+   async GetTaskPushNotificationConfig(request: GetTaskPushNotificationConfigRequest, context: ServicerContext) -> TaskPushNotificationConfig
+
+      Handles the 'GetTaskPushNotificationConfig' gRPC method.
+
+   async ListTaskPushNotificationConfigs(request: ListTaskPushNotificationConfigsRequest, context: ServicerContext) -> ListTaskPushNotificationConfigsResponse
+
+      Handles the 'ListTaskPushNotificationConfig' gRPC method.
+
+   async ListTasks(request: ListTasksRequest, context: ServicerContext) -> ListTasksResponse
+
+      Handles the 'ListTasks' gRPC method.
+
+   async SendMessage(request: SendMessageRequest, context: ServicerContext) -> SendMessageResponse
+
+      Handles the 'SendMessage' gRPC method.
+
+   async SendStreamingMessage(request: SendMessageRequest, context: ServicerContext) -> AsyncIterable[StreamResponse]
+
+      Handles the 'StreamMessage' gRPC method.
+
+   async SubscribeToTask(request: SubscribeToTaskRequest, context: ServicerContext) -> AsyncIterable[StreamResponse]
+
+      Handles the 'SubscribeToTask' gRPC method.
+
+   async abort_context(error: A2AError, context: ServicerContext) -> None
+
+      Sets the grpc errors appropriately in the context.
+
+class a2a.server.request_handlers.grpc_handler.GrpcServerCallContextBuilder
+
+   Bases: "ABC"
+
+   Interface for building ServerCallContext from gRPC context.
+
+   abstractmethod build(context: ServicerContext) -> ServerCallContext
+
+      Builds a ServerCallContext from a gRPC ServicerContext.

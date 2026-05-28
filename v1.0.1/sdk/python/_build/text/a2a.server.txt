@@ -1,0 +1,769 @@
+a2a.server package
+******************
+
+
+Subpackages
+===========
+
+* a2a.server.agent_execution package
+
+  * Submodules
+
+    * a2a.server.agent_execution.active_task module
+
+      * "ActiveTask"
+
+      * "EventConsumer"
+
+    * a2a.server.agent_execution.active_task_registry module
+
+      * "ActiveTaskRegistry"
+
+    * a2a.server.agent_execution.agent_executor module
+
+      * "AgentExecutor"
+
+    * a2a.server.agent_execution.context module
+
+      * "RequestContext"
+
+    * a2a.server.agent_execution.request_context_builder module
+
+      * "RequestContextBuilder"
+
+    * a2a.server.agent_execution.simple_request_context_builder module
+
+      * "SimpleRequestContextBuilder"
+
+  * Module contents
+
+    * "AgentExecutor"
+
+      * "AgentExecutor.cancel()"
+
+      * "AgentExecutor.execute()"
+
+    * "RequestContext"
+
+      * "RequestContext.attach_related_task()"
+
+      * "RequestContext.call_context"
+
+      * "RequestContext.configuration"
+
+      * "RequestContext.context_id"
+
+      * "RequestContext.current_task"
+
+      * "RequestContext.get_user_input()"
+
+      * "RequestContext.message"
+
+      * "RequestContext.metadata"
+
+      * "RequestContext.related_tasks"
+
+      * "RequestContext.requested_extensions"
+
+      * "RequestContext.task_id"
+
+      * "RequestContext.tenant"
+
+    * "RequestContextBuilder"
+
+      * "RequestContextBuilder.build()"
+
+    * "SimpleRequestContextBuilder"
+
+      * "SimpleRequestContextBuilder.build()"
+
+* a2a.server.events package
+
+  * Submodules
+
+    * a2a.server.events.event_consumer module
+
+      * "EventConsumer"
+
+    * a2a.server.events.event_queue module
+
+      * "Event"
+
+      * "EventQueue"
+
+      * "EventQueueLegacy"
+
+    * a2a.server.events.event_queue_v2 module
+
+      * "EventQueueSink"
+
+      * "EventQueueSource"
+
+    * a2a.server.events.in_memory_queue_manager module
+
+      * "InMemoryQueueManager"
+
+    * a2a.server.events.queue_manager module
+
+      * "NoTaskQueue"
+
+      * "QueueManager"
+
+      * "TaskQueueExists"
+
+  * Module contents
+
+    * "EventConsumer"
+
+      * "EventConsumer.agent_task_callback()"
+
+      * "EventConsumer.consume_all()"
+
+    * "EventQueue"
+
+      * "EventQueue.enqueue_event()"
+
+    * "EventQueueLegacy"
+
+      * "EventQueueLegacy.close()"
+
+      * "EventQueueLegacy.dequeue_event()"
+
+      * "EventQueueLegacy.enqueue_event()"
+
+      * "EventQueueLegacy.is_closed()"
+
+      * "EventQueueLegacy.queue"
+
+      * "EventQueueLegacy.tap()"
+
+      * "EventQueueLegacy.task_done()"
+
+    * "InMemoryQueueManager"
+
+      * "InMemoryQueueManager.add()"
+
+      * "InMemoryQueueManager.close()"
+
+      * "InMemoryQueueManager.create_or_tap()"
+
+      * "InMemoryQueueManager.get()"
+
+      * "InMemoryQueueManager.tap()"
+
+    * "NoTaskQueue"
+
+    * "QueueManager"
+
+      * "QueueManager.add()"
+
+      * "QueueManager.close()"
+
+      * "QueueManager.create_or_tap()"
+
+      * "QueueManager.get()"
+
+      * "QueueManager.tap()"
+
+    * "TaskQueueExists"
+
+* a2a.server.request_handlers package
+
+  * Submodules
+
+    * a2a.server.request_handlers.default_request_handler module
+
+      * "LegacyRequestHandler"
+
+    * a2a.server.request_handlers.default_request_handler_v2 module
+
+      * "DefaultRequestHandlerV2"
+
+    * a2a.server.request_handlers.grpc_handler module
+
+      * "DefaultGrpcServerCallContextBuilder"
+
+      * "GrpcHandler"
+
+      * "GrpcServerCallContextBuilder"
+
+    * a2a.server.request_handlers.request_handler module
+
+      * "RequestHandler"
+
+      * "validate()"
+
+      * "validate_request_params()"
+
+    * a2a.server.request_handlers.response_helpers module
+
+      * "EventTypes"
+
+      * "agent_card_to_dict()"
+
+      * "build_error_response()"
+
+      * "prepare_response_object()"
+
+  * Module contents
+
+    * "DefaultGrpcServerCallContextBuilder"
+
+      * "DefaultGrpcServerCallContextBuilder.build()"
+
+      * "DefaultGrpcServerCallContextBuilder.build_user()"
+
+    * "DefaultRequestHandler"
+
+    * "DefaultRequestHandlerV2"
+
+      * "DefaultRequestHandlerV2.on_cancel_task()"
+
+      * "DefaultRequestHandlerV2.on_create_task_push_notification_conf
+        ig()"
+
+      * "DefaultRequestHandlerV2.on_delete_task_push_notification_conf
+        ig()"
+
+      * "DefaultRequestHandlerV2.on_get_extended_agent_card()"
+
+      * "DefaultRequestHandlerV2.on_get_task()"
+
+      * "DefaultRequestHandlerV2.on_get_task_push_notification_config(
+        )"
+
+      * "DefaultRequestHandlerV2.on_list_task_push_notification_config
+        s()"
+
+      * "DefaultRequestHandlerV2.on_list_tasks()"
+
+      * "DefaultRequestHandlerV2.on_message_send()"
+
+      * "DefaultRequestHandlerV2.on_message_send_stream()"
+
+      * "DefaultRequestHandlerV2.on_subscribe_to_task()"
+
+    * "GrpcHandler"
+
+      * "GrpcHandler.CancelTask()"
+
+      * "GrpcHandler.CreateTaskPushNotificationConfig()"
+
+      * "GrpcHandler.DeleteTaskPushNotificationConfig()"
+
+      * "GrpcHandler.GetExtendedAgentCard()"
+
+      * "GrpcHandler.GetTask()"
+
+      * "GrpcHandler.GetTaskPushNotificationConfig()"
+
+      * "GrpcHandler.ListTaskPushNotificationConfigs()"
+
+      * "GrpcHandler.ListTasks()"
+
+      * "GrpcHandler.SendMessage()"
+
+      * "GrpcHandler.SendStreamingMessage()"
+
+      * "GrpcHandler.SubscribeToTask()"
+
+      * "GrpcHandler.abort_context()"
+
+    * "GrpcServerCallContextBuilder"
+
+      * "GrpcServerCallContextBuilder.build()"
+
+    * "LegacyRequestHandler"
+
+      * "LegacyRequestHandler.on_cancel_task()"
+
+      * "LegacyRequestHandler.on_create_task_push_notification_config(
+        )"
+
+      * "LegacyRequestHandler.on_delete_task_push_notification_config(
+        )"
+
+      * "LegacyRequestHandler.on_get_extended_agent_card()"
+
+      * "LegacyRequestHandler.on_get_task()"
+
+      * "LegacyRequestHandler.on_get_task_push_notification_config()"
+
+      * "LegacyRequestHandler.on_list_task_push_notification_configs()
+        "
+
+      * "LegacyRequestHandler.on_list_tasks()"
+
+      * "LegacyRequestHandler.on_message_send()"
+
+      * "LegacyRequestHandler.on_message_send_stream()"
+
+      * "LegacyRequestHandler.on_subscribe_to_task()"
+
+    * "RequestHandler"
+
+      * "RequestHandler.on_cancel_task()"
+
+      * "RequestHandler.on_create_task_push_notification_config()"
+
+      * "RequestHandler.on_delete_task_push_notification_config()"
+
+      * "RequestHandler.on_get_extended_agent_card()"
+
+      * "RequestHandler.on_get_task()"
+
+      * "RequestHandler.on_get_task_push_notification_config()"
+
+      * "RequestHandler.on_list_task_push_notification_configs()"
+
+      * "RequestHandler.on_list_tasks()"
+
+      * "RequestHandler.on_message_send()"
+
+      * "RequestHandler.on_message_send_stream()"
+
+      * "RequestHandler.on_subscribe_to_task()"
+
+    * "build_error_response()"
+
+    * "prepare_response_object()"
+
+    * "validate_request_params()"
+
+* a2a.server.routes package
+
+  * Submodules
+
+    * a2a.server.routes.agent_card_routes module
+
+      * "create_agent_card_routes()"
+
+    * a2a.server.routes.common module
+
+      * "DefaultServerCallContextBuilder"
+
+      * "ServerCallContextBuilder"
+
+      * "StarletteUser"
+
+    * a2a.server.routes.jsonrpc_dispatcher module
+
+      * "JsonRpcDispatcher"
+
+    * a2a.server.routes.jsonrpc_routes module
+
+      * "create_jsonrpc_routes()"
+
+    * a2a.server.routes.rest_dispatcher module
+
+      * "RestDispatcher"
+
+    * a2a.server.routes.rest_routes module
+
+      * "create_rest_routes()"
+
+  * Module contents
+
+    * "DefaultServerCallContextBuilder"
+
+      * "DefaultServerCallContextBuilder.build()"
+
+      * "DefaultServerCallContextBuilder.build_user()"
+
+    * "ServerCallContextBuilder"
+
+      * "ServerCallContextBuilder.build()"
+
+    * "create_agent_card_routes()"
+
+    * "create_jsonrpc_routes()"
+
+    * "create_rest_routes()"
+
+* a2a.server.tasks package
+
+  * Submodules
+
+    * a2a.server.tasks.base_push_notification_sender module
+
+      * "BasePushNotificationSender"
+
+    * a2a.server.tasks.copying_task_store module
+
+      * "CopyingTaskStoreAdapter"
+
+    * a2a.server.tasks.database_push_notification_config_store module
+
+      * "DatabasePushNotificationConfigStore"
+
+    * a2a.server.tasks.database_task_store module
+
+      * "DatabaseTaskStore"
+
+    * a2a.server.tasks.inmemory_push_notification_config_store module
+
+      * "InMemoryPushNotificationConfigStore"
+
+    * a2a.server.tasks.inmemory_task_store module
+
+      * "InMemoryTaskStore"
+
+    * a2a.server.tasks.push_notification_config_store module
+
+      * "PushNotificationConfigStore"
+
+    * a2a.server.tasks.push_notification_sender module
+
+      * "PushNotificationSender"
+
+    * a2a.server.tasks.result_aggregator module
+
+      * "ResultAggregator"
+
+    * a2a.server.tasks.task_manager module
+
+      * "TaskManager"
+
+      * "append_artifact_to_task()"
+
+    * a2a.server.tasks.task_store module
+
+      * "TaskStore"
+
+    * a2a.server.tasks.task_updater module
+
+      * "TaskUpdater"
+
+  * Module contents
+
+    * "BasePushNotificationSender"
+
+      * "BasePushNotificationSender.send_notification()"
+
+    * "DatabasePushNotificationConfigStore"
+
+      * "DatabasePushNotificationConfigStore.async_session_maker"
+
+      * "DatabasePushNotificationConfigStore.config_model"
+
+      * "DatabasePushNotificationConfigStore.core_to_model_conversion"
+
+      * "DatabasePushNotificationConfigStore.create_table"
+
+      * "DatabasePushNotificationConfigStore.delete_info()"
+
+      * "DatabasePushNotificationConfigStore.engine"
+
+      * "DatabasePushNotificationConfigStore.get_info()"
+
+      * "DatabasePushNotificationConfigStore.get_info_for_dispatch()"
+
+      * "DatabasePushNotificationConfigStore.initialize()"
+
+      * "DatabasePushNotificationConfigStore.model_to_core_conversion"
+
+      * "DatabasePushNotificationConfigStore.owner_resolver"
+
+      * "DatabasePushNotificationConfigStore.set_info()"
+
+    * "DatabaseTaskStore"
+
+      * "DatabaseTaskStore.async_session_maker"
+
+      * "DatabaseTaskStore.core_to_model_conversion"
+
+      * "DatabaseTaskStore.create_table"
+
+      * "DatabaseTaskStore.delete()"
+
+      * "DatabaseTaskStore.engine"
+
+      * "DatabaseTaskStore.get()"
+
+      * "DatabaseTaskStore.initialize()"
+
+      * "DatabaseTaskStore.list()"
+
+      * "DatabaseTaskStore.model_to_core_conversion"
+
+      * "DatabaseTaskStore.owner_resolver"
+
+      * "DatabaseTaskStore.save()"
+
+      * "DatabaseTaskStore.task_model"
+
+    * "InMemoryPushNotificationConfigStore"
+
+      * "InMemoryPushNotificationConfigStore.delete_info()"
+
+      * "InMemoryPushNotificationConfigStore.get_info()"
+
+      * "InMemoryPushNotificationConfigStore.get_info_for_dispatch()"
+
+      * "InMemoryPushNotificationConfigStore.set_info()"
+
+    * "InMemoryTaskStore"
+
+      * "InMemoryTaskStore.delete()"
+
+      * "InMemoryTaskStore.get()"
+
+      * "InMemoryTaskStore.list()"
+
+      * "InMemoryTaskStore.save()"
+
+    * "PushNotificationConfigStore"
+
+      * "PushNotificationConfigStore.delete_info()"
+
+      * "PushNotificationConfigStore.get_info()"
+
+      * "PushNotificationConfigStore.get_info_for_dispatch()"
+
+      * "PushNotificationConfigStore.set_info()"
+
+    * "PushNotificationSender"
+
+      * "PushNotificationSender.send_notification()"
+
+    * "ResultAggregator"
+
+      * "ResultAggregator.consume_all()"
+
+      * "ResultAggregator.consume_and_break_on_interrupt()"
+
+      * "ResultAggregator.consume_and_emit()"
+
+      * "ResultAggregator.current_result"
+
+    * "TaskManager"
+
+      * "TaskManager.ensure_task()"
+
+      * "TaskManager.ensure_task_id()"
+
+      * "TaskManager.get_task()"
+
+      * "TaskManager.process()"
+
+      * "TaskManager.save_task_event()"
+
+      * "TaskManager.update_with_message()"
+
+    * "TaskStore"
+
+      * "TaskStore.delete()"
+
+      * "TaskStore.get()"
+
+      * "TaskStore.list()"
+
+      * "TaskStore.save()"
+
+    * "TaskUpdater"
+
+      * "TaskUpdater.add_artifact()"
+
+      * "TaskUpdater.cancel()"
+
+      * "TaskUpdater.complete()"
+
+      * "TaskUpdater.failed()"
+
+      * "TaskUpdater.new_agent_message()"
+
+      * "TaskUpdater.reject()"
+
+      * "TaskUpdater.requires_auth()"
+
+      * "TaskUpdater.requires_input()"
+
+      * "TaskUpdater.start_work()"
+
+      * "TaskUpdater.submit()"
+
+      * "TaskUpdater.update_status()"
+
+
+Submodules
+==========
+
+* a2a.server.context module
+
+  * "ServerCallContext"
+
+    * "ServerCallContext.model_config"
+
+    * "ServerCallContext.requested_extensions"
+
+    * "ServerCallContext.state"
+
+    * "ServerCallContext.tenant"
+
+    * "ServerCallContext.user"
+
+* a2a.server.id_generator module
+
+  * "IDGenerator"
+
+    * "IDGenerator.generate()"
+
+  * "IDGeneratorContext"
+
+    * "IDGeneratorContext.context_id"
+
+    * "IDGeneratorContext.model_config"
+
+    * "IDGeneratorContext.task_id"
+
+  * "UUIDGenerator"
+
+    * "UUIDGenerator.generate()"
+
+* a2a.server.jsonrpc_models module
+
+  * "InternalError"
+
+    * "InternalError.code"
+
+    * "InternalError.message"
+
+    * "InternalError.model_config"
+
+  * "InvalidParamsError"
+
+    * "InvalidParamsError.code"
+
+    * "InvalidParamsError.message"
+
+    * "InvalidParamsError.model_config"
+
+  * "InvalidRequestError"
+
+    * "InvalidRequestError.code"
+
+    * "InvalidRequestError.message"
+
+    * "InvalidRequestError.model_config"
+
+  * "JSONParseError"
+
+    * "JSONParseError.code"
+
+    * "JSONParseError.message"
+
+    * "JSONParseError.model_config"
+
+  * "JSONRPCBaseModel"
+
+    * "JSONRPCBaseModel.model_config"
+
+  * "JSONRPCError"
+
+    * "JSONRPCError.code"
+
+    * "JSONRPCError.data"
+
+    * "JSONRPCError.message"
+
+    * "JSONRPCError.model_config"
+
+  * "MethodNotFoundError"
+
+    * "MethodNotFoundError.code"
+
+    * "MethodNotFoundError.message"
+
+    * "MethodNotFoundError.model_config"
+
+* a2a.server.models module
+
+  * "Base"
+
+    * "Base.metadata"
+
+    * "Base.registry"
+
+  * "PushNotificationConfigMixin"
+
+    * "PushNotificationConfigMixin.config_data"
+
+    * "PushNotificationConfigMixin.config_id"
+
+    * "PushNotificationConfigMixin.owner"
+
+    * "PushNotificationConfigMixin.protocol_version"
+
+    * "PushNotificationConfigMixin.task_id"
+
+  * "PushNotificationConfigModel"
+
+    * "PushNotificationConfigModel.config_data"
+
+    * "PushNotificationConfigModel.config_id"
+
+    * "PushNotificationConfigModel.owner"
+
+    * "PushNotificationConfigModel.protocol_version"
+
+    * "PushNotificationConfigModel.task_id"
+
+  * "TaskMixin"
+
+    * "TaskMixin.artifacts"
+
+    * "TaskMixin.context_id"
+
+    * "TaskMixin.history"
+
+    * "TaskMixin.id"
+
+    * "TaskMixin.kind"
+
+    * "TaskMixin.last_updated"
+
+    * "TaskMixin.owner"
+
+    * "TaskMixin.protocol_version"
+
+    * "TaskMixin.status"
+
+    * "TaskMixin.task_metadata"
+
+  * "TaskModel"
+
+    * "TaskModel.artifacts"
+
+    * "TaskModel.context_id"
+
+    * "TaskModel.history"
+
+    * "TaskModel.id"
+
+    * "TaskModel.kind"
+
+    * "TaskModel.last_updated"
+
+    * "TaskModel.owner"
+
+    * "TaskModel.protocol_version"
+
+    * "TaskModel.status"
+
+    * "TaskModel.task_metadata"
+
+  * "create_push_notification_config_model()"
+
+  * "create_task_model()"
+
+  * "override()"
+
+* a2a.server.owner_resolver module
+
+  * "resolve_user_scope()"
+
+
+Module contents
+===============
+
+Server-side components for implementing an A2A agent.

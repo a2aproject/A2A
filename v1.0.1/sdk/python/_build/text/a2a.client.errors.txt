@@ -1,0 +1,22 @@
+a2a.client.errors module
+************************
+
+Custom exceptions for the A2A client.
+
+exception a2a.client.errors.A2AClientError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Base exception for A2A Client errors.
+
+exception a2a.client.errors.A2AClientTimeoutError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AClientError"
+
+   Exception for timeout errors during a request.
+
+exception a2a.client.errors.AgentCardResolutionError(message: str, status_code: int | None = None)
+
+   Bases: "A2AClientError"
+
+   Exception raised when an agent card cannot be resolved.

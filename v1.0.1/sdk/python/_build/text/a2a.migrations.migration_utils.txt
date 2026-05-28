@@ -1,0 +1,32 @@
+a2a.migrations.migration_utils module
+*************************************
+
+Utility functions for Alembic migrations.
+
+a2a.migrations.migration_utils.add_column(table: str, column_name: str, nullable: bool, type_: TypeEngine, default: Any | None = None) -> None
+
+   Add a column to a table if it doesn't already exist.
+
+a2a.migrations.migration_utils.add_index(table: str, index_name: str, columns: list[str]) -> None
+
+   Create an index on a table if it doesn't already exist.
+
+a2a.migrations.migration_utils.column_exists(table_name: str, column_name: str, downgrade_mode: bool = False) -> bool
+
+   Check if a column exists in a table.
+
+a2a.migrations.migration_utils.drop_column(table: str, column_name: str) -> None
+
+   Drop a column from a table if it exists.
+
+a2a.migrations.migration_utils.drop_index(table: str, index_name: str) -> None
+
+   Drop an index from a table if it exists.
+
+a2a.migrations.migration_utils.index_exists(table_name: str, index_name: str, downgrade_mode: bool = False) -> bool
+
+   Check if an index exists on a table.
+
+a2a.migrations.migration_utils.table_exists(table_name: str) -> bool
+
+   Check if a table exists in the database.

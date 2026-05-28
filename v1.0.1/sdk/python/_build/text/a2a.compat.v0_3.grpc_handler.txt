@@ -1,0 +1,54 @@
+a2a.compat.v0_3.grpc_handler module
+***********************************
+
+class a2a.compat.v0_3.grpc_handler.CompatGrpcHandler(request_handler: RequestHandler, context_builder: GrpcServerCallContextBuilder | None = None)
+
+   Bases: "A2AServiceServicer"
+
+   Backward compatible gRPC handler for A2A v0.3.
+
+   async CancelTask(request: CancelTaskRequest, context: ServicerContext) -> Task
+
+      Handles the 'CancelTask' gRPC method (v0.3).
+
+   async CreateTaskPushNotificationConfig(request: CreateTaskPushNotificationConfigRequest, context: ServicerContext) -> TaskPushNotificationConfig
+
+      Handles the 'CreateTaskPushNotificationConfig' gRPC method
+      (v0.3).
+
+   async DeleteTaskPushNotificationConfig(request: DeleteTaskPushNotificationConfigRequest, context: ServicerContext) -> Empty
+
+      Handles the 'DeleteTaskPushNotificationConfig' gRPC method
+      (v0.3).
+
+   async GetAgentCard(request: GetAgentCardRequest, context: ServicerContext) -> AgentCard
+
+      Get the extended agent card for the agent served (v0.3).
+
+   async GetTask(request: GetTaskRequest, context: ServicerContext) -> Task
+
+      Handles the 'GetTask' gRPC method (v0.3).
+
+   async GetTaskPushNotificationConfig(request: GetTaskPushNotificationConfigRequest, context: ServicerContext) -> TaskPushNotificationConfig
+
+      Handles the 'GetTaskPushNotificationConfig' gRPC method (v0.3).
+
+   async ListTaskPushNotificationConfig(request: ListTaskPushNotificationConfigRequest, context: ServicerContext) -> ListTaskPushNotificationConfigResponse
+
+      Handles the 'ListTaskPushNotificationConfig' gRPC method (v0.3).
+
+   async SendMessage(request: SendMessageRequest, context: ServicerContext) -> SendMessageResponse
+
+      Handles the 'SendMessage' gRPC method (v0.3).
+
+   async SendStreamingMessage(request: SendMessageRequest, context: ServicerContext) -> AsyncIterable[StreamResponse]
+
+      Handles the 'SendStreamingMessage' gRPC method (v0.3).
+
+   async TaskSubscription(request: TaskSubscriptionRequest, context: ServicerContext) -> AsyncIterable[StreamResponse]
+
+      Handles the 'TaskSubscription' gRPC method (v0.3).
+
+   async abort_context(error: A2AError, context: ServicerContext) -> None
+
+      Sets the grpc errors appropriately in the context.

@@ -1,0 +1,199 @@
+a2a.utils package
+*****************
+
+
+Submodules
+==========
+
+* a2a.utils.constants module
+
+  * "DEFAULT_LIST_TASKS_PAGE_SIZE"
+
+  * "MAX_LIST_TASKS_PAGE_SIZE"
+
+  * "TransportProtocol"
+
+    * "TransportProtocol.GRPC"
+
+    * "TransportProtocol.HTTP_JSON"
+
+    * "TransportProtocol.JSONRPC"
+
+* a2a.utils.error_handlers module
+
+  * "build_error_details()"
+
+  * "build_rest_error_payload()"
+
+  * "rest_error_handler()"
+
+  * "rest_stream_error_handler()"
+
+* a2a.utils.errors module
+
+  * "ErrorMapping"
+
+    * "ErrorMapping.grpc_status"
+
+    * "ErrorMapping.http_code"
+
+    * "ErrorMapping.reason"
+
+  * "ExtensionSupportRequiredError"
+
+    * "ExtensionSupportRequiredError.message"
+
+  * "InternalError"
+
+    * "InternalError.message"
+
+  * "InvalidAgentResponseError"
+
+    * "InvalidAgentResponseError.message"
+
+  * "InvalidParamsError"
+
+    * "InvalidParamsError.message"
+
+  * "InvalidRequestError"
+
+    * "InvalidRequestError.message"
+
+  * "JSONParseError"
+
+    * "JSONParseError.message"
+
+  * "MethodNotFoundError"
+
+    * "MethodNotFoundError.message"
+
+  * "PushNotificationNotSupportedError"
+
+    * "PushNotificationNotSupportedError.message"
+
+  * "TaskNotCancelableError"
+
+    * "TaskNotCancelableError.message"
+
+  * "TaskNotFoundError"
+
+    * "TaskNotFoundError.message"
+
+  * "UnsupportedOperationError"
+
+    * "UnsupportedOperationError.message"
+
+  * "VersionNotSupportedError"
+
+    * "VersionNotSupportedError.message"
+
+* a2a.utils.proto_utils module
+
+  * "ValidationDetail"
+
+    * "ValidationDetail.field"
+
+    * "ValidationDetail.message"
+
+  * "bad_request_to_validation_errors()"
+
+  * "make_dict_serializable()"
+
+  * "normalize_large_integers_to_strings()"
+
+  * "parse_params()"
+
+  * "parse_string_integers_in_dict()"
+
+  * "to_stream_response()"
+
+  * "validate_proto_required_fields()"
+
+  * "validation_errors_to_bad_request()"
+
+* a2a.utils.signing module
+
+  * "InvalidSignaturesError"
+
+  * "NoSignatureError"
+
+  * "ProtectedHeader"
+
+    * "ProtectedHeader.alg"
+
+    * "ProtectedHeader.jku"
+
+    * "ProtectedHeader.kid"
+
+    * "ProtectedHeader.typ"
+
+  * "SignatureVerificationError"
+
+  * "create_agent_card_signer()"
+
+  * "create_signature_verifier()"
+
+* a2a.utils.task module
+
+  * "HistoryLengthConfig"
+
+    * "HistoryLengthConfig.HasField()"
+
+    * "HistoryLengthConfig.history_length"
+
+  * "apply_history_length()"
+
+  * "decode_page_token()"
+
+  * "encode_page_token()"
+
+  * "validate_history_length()"
+
+  * "validate_page_size()"
+
+* a2a.utils.telemetry module
+
+  * "SpanKind"
+
+    * "SpanKind.CLIENT"
+
+    * "SpanKind.CONSUMER"
+
+    * "SpanKind.INTERNAL"
+
+    * "SpanKind.PRODUCER"
+
+    * "SpanKind.SERVER"
+
+* a2a.utils.version_validator module
+
+  * "validate_version()"
+
+
+Module contents
+===============
+
+Utility functions for the A2A Python SDK.
+
+class a2a.utils.TransportProtocol(*values)
+
+   Bases: "str", "Enum"
+
+   Transport protocol string constants.
+
+   GRPC = 'GRPC'
+
+   HTTP_JSON = 'HTTP+JSON'
+
+   JSONRPC = 'JSONRPC'
+
+a2a.utils.to_stream_response(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> StreamResponse
+
+   Convert internal Event to StreamResponse proto.
+
+   Parameters:
+      **event** -- The event (Task, Message, TaskStatusUpdateEvent,
+      TaskArtifactUpdateEvent)
+
+   Returns:
+      A StreamResponse proto with the appropriate field set.

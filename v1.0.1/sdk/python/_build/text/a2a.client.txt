@@ -1,0 +1,876 @@
+a2a.client package
+******************
+
+
+Subpackages
+===========
+
+* a2a.client.auth package
+
+  * Submodules
+
+    * a2a.client.auth.credentials module
+
+      * "CredentialService"
+
+      * "InMemoryContextCredentialStore"
+
+    * a2a.client.auth.interceptor module
+
+      * "AuthInterceptor"
+
+  * Module contents
+
+    * "AuthInterceptor"
+
+      * "AuthInterceptor.after()"
+
+      * "AuthInterceptor.before()"
+
+    * "CredentialService"
+
+      * "CredentialService.get_credentials()"
+
+    * "InMemoryContextCredentialStore"
+
+      * "InMemoryContextCredentialStore.get_credentials()"
+
+      * "InMemoryContextCredentialStore.set_credentials()"
+
+* a2a.client.transports package
+
+  * Submodules
+
+    * a2a.client.transports.base module
+
+      * "ClientTransport"
+
+    * a2a.client.transports.grpc module
+
+      * "GrpcTransport"
+
+    * a2a.client.transports.http_helpers module
+
+      * "get_http_args()"
+
+      * "handle_http_exceptions()"
+
+      * "send_http_request()"
+
+      * "send_http_stream_request()"
+
+    * a2a.client.transports.jsonrpc module
+
+      * "JsonRpcTransport"
+
+    * a2a.client.transports.rest module
+
+      * "RestTransport"
+
+    * a2a.client.transports.tenant_decorator module
+
+      * "TenantTransportDecorator"
+
+  * Module contents
+
+    * "ClientTransport"
+
+      * "ClientTransport.cancel_task()"
+
+      * "ClientTransport.close()"
+
+      * "ClientTransport.create_task_push_notification_config()"
+
+      * "ClientTransport.delete_task_push_notification_config()"
+
+      * "ClientTransport.get_extended_agent_card()"
+
+      * "ClientTransport.get_task()"
+
+      * "ClientTransport.get_task_push_notification_config()"
+
+      * "ClientTransport.list_task_push_notification_configs()"
+
+      * "ClientTransport.list_tasks()"
+
+      * "ClientTransport.send_message()"
+
+      * "ClientTransport.send_message_streaming()"
+
+      * "ClientTransport.subscribe()"
+
+    * "GrpcTransport"
+
+      * "GrpcTransport.cancel_task()"
+
+      * "GrpcTransport.close()"
+
+      * "GrpcTransport.create()"
+
+      * "GrpcTransport.create_task_push_notification_config()"
+
+      * "GrpcTransport.delete_task_push_notification_config()"
+
+      * "GrpcTransport.get_extended_agent_card()"
+
+      * "GrpcTransport.get_task()"
+
+      * "GrpcTransport.get_task_push_notification_config()"
+
+      * "GrpcTransport.list_task_push_notification_configs()"
+
+      * "GrpcTransport.list_tasks()"
+
+      * "GrpcTransport.send_message()"
+
+      * "GrpcTransport.send_message_streaming()"
+
+      * "GrpcTransport.subscribe()"
+
+    * "JsonRpcTransport"
+
+      * "JsonRpcTransport.cancel_task()"
+
+      * "JsonRpcTransport.close()"
+
+      * "JsonRpcTransport.create_task_push_notification_config()"
+
+      * "JsonRpcTransport.delete_task_push_notification_config()"
+
+      * "JsonRpcTransport.get_extended_agent_card()"
+
+      * "JsonRpcTransport.get_task()"
+
+      * "JsonRpcTransport.get_task_push_notification_config()"
+
+      * "JsonRpcTransport.list_task_push_notification_configs()"
+
+      * "JsonRpcTransport.list_tasks()"
+
+      * "JsonRpcTransport.send_message()"
+
+      * "JsonRpcTransport.send_message_streaming()"
+
+      * "JsonRpcTransport.subscribe()"
+
+    * "RestTransport"
+
+      * "RestTransport.cancel_task()"
+
+      * "RestTransport.close()"
+
+      * "RestTransport.create_task_push_notification_config()"
+
+      * "RestTransport.delete_task_push_notification_config()"
+
+      * "RestTransport.get_extended_agent_card()"
+
+      * "RestTransport.get_task()"
+
+      * "RestTransport.get_task_push_notification_config()"
+
+      * "RestTransport.list_task_push_notification_configs()"
+
+      * "RestTransport.list_tasks()"
+
+      * "RestTransport.send_message()"
+
+      * "RestTransport.send_message_streaming()"
+
+      * "RestTransport.subscribe()"
+
+
+Submodules
+==========
+
+* a2a.client.base_client module
+
+  * "BaseClient"
+
+    * "BaseClient.cancel_task()"
+
+    * "BaseClient.close()"
+
+    * "BaseClient.create_task_push_notification_config()"
+
+    * "BaseClient.delete_task_push_notification_config()"
+
+    * "BaseClient.get_extended_agent_card()"
+
+    * "BaseClient.get_task()"
+
+    * "BaseClient.get_task_push_notification_config()"
+
+    * "BaseClient.list_task_push_notification_configs()"
+
+    * "BaseClient.list_tasks()"
+
+    * "BaseClient.send_message()"
+
+    * "BaseClient.subscribe()"
+
+* a2a.client.card_resolver module
+
+  * "A2ACardResolver"
+
+    * "A2ACardResolver.get_agent_card()"
+
+  * "parse_agent_card()"
+
+* a2a.client.client module
+
+  * "Client"
+
+    * "Client.add_interceptor()"
+
+    * "Client.cancel_task()"
+
+    * "Client.close()"
+
+    * "Client.create_task_push_notification_config()"
+
+    * "Client.delete_task_push_notification_config()"
+
+    * "Client.get_extended_agent_card()"
+
+    * "Client.get_task()"
+
+    * "Client.get_task_push_notification_config()"
+
+    * "Client.list_task_push_notification_configs()"
+
+    * "Client.list_tasks()"
+
+    * "Client.send_message()"
+
+    * "Client.subscribe()"
+
+  * "ClientCallContext"
+
+    * "ClientCallContext.model_config"
+
+    * "ClientCallContext.service_parameters"
+
+    * "ClientCallContext.state"
+
+    * "ClientCallContext.timeout"
+
+  * "ClientConfig"
+
+    * "ClientConfig.accepted_output_modes"
+
+    * "ClientConfig.grpc_channel_factory"
+
+    * "ClientConfig.httpx_client"
+
+    * "ClientConfig.polling"
+
+    * "ClientConfig.push_notification_config"
+
+    * "ClientConfig.streaming"
+
+    * "ClientConfig.supported_protocol_bindings"
+
+    * "ClientConfig.use_client_preference"
+
+* a2a.client.client_factory module
+
+  * "ClientFactory"
+
+    * "ClientFactory.create()"
+
+    * "ClientFactory.create_from_url()"
+
+    * "ClientFactory.register()"
+
+  * "create_client()"
+
+  * "minimal_agent_card()"
+
+* a2a.client.errors module
+
+  * "A2AClientError"
+
+  * "A2AClientTimeoutError"
+
+  * "AgentCardResolutionError"
+
+* a2a.client.interceptors module
+
+  * "AfterArgs"
+
+    * "AfterArgs.agent_card"
+
+    * "AfterArgs.context"
+
+    * "AfterArgs.early_return"
+
+    * "AfterArgs.method"
+
+    * "AfterArgs.result"
+
+  * "BeforeArgs"
+
+    * "BeforeArgs.agent_card"
+
+    * "BeforeArgs.context"
+
+    * "BeforeArgs.early_return"
+
+    * "BeforeArgs.input"
+
+    * "BeforeArgs.method"
+
+  * "ClientCallInterceptor"
+
+    * "ClientCallInterceptor.after()"
+
+    * "ClientCallInterceptor.before()"
+
+* a2a.client.optionals module
+
+* a2a.client.service_parameters module
+
+  * "ServiceParametersFactory"
+
+    * "ServiceParametersFactory.create()"
+
+    * "ServiceParametersFactory.create_from()"
+
+  * "with_a2a_extensions()"
+
+
+Module contents
+===============
+
+Client-side components for interacting with an A2A agent.
+
+class a2a.client.A2ACardResolver(httpx_client: AsyncClient, base_url: str, agent_card_path: str = '/.well-known/agent-card.json')
+
+   Bases: "object"
+
+   Agent Card resolver.
+
+   async get_agent_card(relative_card_path: str | None = None, http_kwargs: dict[str, Any] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Fetches an agent card from a specified path relative to the
+      base_url.
+
+      If relative_card_path is None, it defaults to the resolver's
+      configured agent_card_path (for the public agent card).
+
+      Parameters:
+         * **relative_card_path** -- Optional path to the agent card
+           endpoint, relative to the base URL. If None, uses the
+           default public agent card path. Use *'/'* for an empty
+           path.
+
+         * **http_kwargs** -- Optional dictionary of keyword arguments
+           to pass to the underlying httpx.get request.
+
+         * **signature_verifier** -- A callable used to verify the
+           agent card's signatures.
+
+      Returns:
+         An *AgentCard* object representing the agent's capabilities.
+
+      Raises:
+         **AgentCardResolutionError** -- If an HTTP error occurs
+         during the request, if the     response body cannot be
+         decoded as JSON, or if it cannot be     validated against the
+         AgentCard schema.
+
+exception a2a.client.A2AClientError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AError"
+
+   Base exception for A2A Client errors.
+
+exception a2a.client.A2AClientTimeoutError(message: str | None = None, data: dict | None = None)
+
+   Bases: "A2AClientError"
+
+   Exception for timeout errors during a request.
+
+exception a2a.client.AgentCardResolutionError(message: str, status_code: int | None = None)
+
+   Bases: "A2AClientError"
+
+   Exception raised when an agent card cannot be resolved.
+
+class a2a.client.AuthInterceptor(credential_service: CredentialService)
+
+   Bases: "ClientCallInterceptor"
+
+   An interceptor that automatically adds authentication details to
+   requests.
+
+   Based on the agent's security schemes.
+
+   async after(args: AfterArgs) -> None
+
+      Invoked after the method is executed.
+
+   async before(args: BeforeArgs) -> None
+
+      Applies authentication headers to the request if credentials are
+      available.
+
+class a2a.client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor])
+
+   Bases: "Client"
+
+   Base implementation of the A2A client, containing transport-
+   independent logic.
+
+   async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+      Parameters:
+         * **request** -- The *CancelTaskRequest* object specifying
+           the task ID.
+
+         * **context** -- Optional client call context.
+
+      Returns:
+         A *Task* object containing the updated task status.
+
+   async close() -> None
+
+      Closes the underlying transport.
+
+   async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+      Parameters:
+         * **request** -- The *TaskPushNotificationConfig* object with
+           the new configuration.
+
+         * **context** -- Optional client call context.
+
+      Returns:
+         The created or updated *TaskPushNotificationConfig* object.
+
+   async delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> None
+
+      Deletes the push notification configuration for a specific task.
+
+      Parameters:
+         * **request** -- The
+           *DeleteTaskPushNotificationConfigRequest* object specifying
+           the request.
+
+         * **context** -- Optional client call context.
+
+   async get_extended_agent_card(request: GetExtendedAgentCardRequest, *, context: ClientCallContext | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the agent's card.
+
+      This will fetch the authenticated card if necessary and update
+      the client's internal state with the new card.
+
+      Parameters:
+         * **request** -- The *GetExtendedAgentCardRequest* object
+           specifying the request.
+
+         * **context** -- Optional client call context.
+
+         * **signature_verifier** -- A callable used to verify the
+           agent card's signatures.
+
+      Returns:
+         The *AgentCard* for the agent.
+
+   async get_task(request: GetTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+      Parameters:
+         * **request** -- The *GetTaskRequest* object specifying the
+           task ID.
+
+         * **context** -- Optional client call context.
+
+      Returns:
+         A *Task* object representing the current state of the task.
+
+   async get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+      Parameters:
+         * **request** -- The *GetTaskPushNotificationConfigParams*
+           object specifying the task.
+
+         * **context** -- Optional client call context.
+
+      Returns:
+         A *TaskPushNotificationConfig* object containing the
+         configuration.
+
+   async list_task_push_notification_configs(request: ListTaskPushNotificationConfigsRequest, *, context: ClientCallContext | None = None) -> ListTaskPushNotificationConfigsResponse
+
+      Lists push notification configurations for a specific task.
+
+      Parameters:
+         * **request** -- The *ListTaskPushNotificationConfigsRequest*
+           object specifying the request.
+
+         * **context** -- Optional client call context.
+
+      Returns:
+         A *ListTaskPushNotificationConfigsResponse* object.
+
+   async list_tasks(request: ListTasksRequest, *, context: ClientCallContext | None = None) -> ListTasksResponse
+
+      Retrieves tasks for an agent.
+
+   async send_message(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
+
+      Sends a message to the agent.
+
+      This method handles both streaming and non-streaming (polling)
+      interactions based on the client configuration and agent
+      capabilities. It will yield events as they are received from the
+      agent.
+
+      Parameters:
+         * **request** -- The message to send to the agent.
+
+         * **context** -- Optional client call context.
+
+      Yields:
+         An async iterator of *StreamResponse*
+
+   async subscribe(request: SubscribeToTaskRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
+
+      Resubscribes to a task's event stream.
+
+      This is only available if both the client and server support
+      streaming.
+
+      Parameters:
+         * **request** -- Parameters to identify the task to
+           resubscribe to.
+
+         * **context** -- Optional client call context.
+
+      Yields:
+         An async iterator of *StreamResponse* objects.
+
+      Raises:
+         **NotImplementedError** -- If streaming is not supported by
+         the client or server.
+
+class a2a.client.Client(interceptors: list[ClientCallInterceptor] | None = None)
+
+   Bases: "ABC"
+
+   Abstract base class defining the interface for an A2A client.
+
+   This class provides a standard set of methods for interacting with
+   an A2A agent, regardless of the underlying transport protocol
+   (e.g., gRPC, JSON-RPC). It supports sending messages, managing
+   tasks, and handling event streams.
+
+   async add_interceptor(interceptor: ClientCallInterceptor) -> None
+
+      Attaches additional interceptors to the *Client*.
+
+   abstractmethod async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Requests the agent to cancel a specific task.
+
+   abstractmethod async close() -> None
+
+      Closes the client and releases any underlying resources.
+
+   abstractmethod async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Sets or updates the push notification configuration for a
+      specific task.
+
+   abstractmethod async delete_task_push_notification_config(request: DeleteTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> None
+
+      Deletes the push notification configuration for a specific task.
+
+   abstractmethod async get_extended_agent_card(request: GetExtendedAgentCardRequest, *, context: ClientCallContext | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> AgentCard
+
+      Retrieves the agent's card.
+
+   abstractmethod async get_task(request: GetTaskRequest, *, context: ClientCallContext | None = None) -> Task
+
+      Retrieves the current state and history of a specific task.
+
+   abstractmethod async get_task_push_notification_config(request: GetTaskPushNotificationConfigRequest, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
+
+      Retrieves the push notification configuration for a specific
+      task.
+
+   abstractmethod async list_task_push_notification_configs(request: ListTaskPushNotificationConfigsRequest, *, context: ClientCallContext | None = None) -> ListTaskPushNotificationConfigsResponse
+
+      Lists push notification configurations for a specific task.
+
+   abstractmethod async list_tasks(request: ListTasksRequest, *, context: ClientCallContext | None = None) -> ListTasksResponse
+
+      Retrieves tasks for an agent.
+
+   abstractmethod async send_message(request: SendMessageRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
+
+      Sends a message to the server.
+
+      This will automatically use the streaming or non-streaming
+      approach as supported by the server and the client config.
+      Client will aggregate update events and return an iterator of
+      *StreamResponse*.
+
+   abstractmethod async subscribe(request: SubscribeToTaskRequest, *, context: ClientCallContext | None = None) -> AsyncIterator[StreamResponse]
+
+      Resubscribes to a task's event stream.
+
+class a2a.client.ClientCallContext(*, state: MutableMapping[str, ~typing.Any]=<factory>, timeout: float | None = None, service_parameters: dict[str, str] | None=None)
+
+   Bases: "BaseModel"
+
+   A context passed with each client call, allowing for call-specific.
+
+   configuration and data passing. Such as authentication details or
+   request deadlines.
+
+   model_config = {}
+
+      Configuration for the model, should be a dictionary conforming
+      to [*ConfigDict*][pydantic.config.ConfigDict].
+
+   service_parameters: dict[str, str] | None
+
+   state: MutableMapping[str, Any]
+
+   timeout: float | None
+
+class a2a.client.ClientCallInterceptor
+
+   Bases: "ABC"
+
+   An abstract base class for client-side call interceptors.
+
+   Interceptors can inspect and modify requests before they are sent,
+   which is ideal for concerns like authentication, logging, or
+   tracing.
+
+   abstractmethod async after(args: AfterArgs) -> None
+
+      Invoked after transport method.
+
+   abstractmethod async before(args: BeforeArgs) -> None
+
+      Invoked before transport method.
+
+class a2a.client.ClientConfig(streaming: bool = True, polling: bool = False, httpx_client: ~httpx.AsyncClient | None = None, grpc_channel_factory: ~collections.abc.Callable[[str], ~grpc.aio._base_channel.Channel] | None = None, supported_protocol_bindings: list[str] = <factory>, use_client_preference: bool = False, accepted_output_modes: list[str] = <factory>, push_notification_config: ~a2a_pb2.TaskPushNotificationConfig | None = None)
+
+   Bases: "object"
+
+   Configuration class for the A2AClient Factory.
+
+   accepted_output_modes: list[str]
+
+      The set of accepted output modes for the client.
+
+   grpc_channel_factory: Callable[[str], Channel] | None = None
+
+      Generates a grpc connection channel for a given url.
+
+   httpx_client: AsyncClient | None = None
+
+      Http client to use to connect to agent.
+
+   polling: bool = False
+
+      send. It is the callers job to check if the response is
+      completed and if not run a polling loop.
+
+      Type:
+         Whether client prefers to poll for updates from message
+
+   push_notification_config: TaskPushNotificationConfig | None = None
+
+      Push notification configuration to use for every request.
+
+   streaming: bool = True
+
+      Whether client supports streaming
+
+   supported_protocol_bindings: list[str]
+
+      Ordered list of transports for connecting to agent (in order of
+      preference). Empty implies JSONRPC only.
+
+      This is a string type to allow custom transports to exist in
+      closed ecosystems.
+
+   use_client_preference: bool = False
+
+      Whether to use client transport preferences over server
+      preferences. Recommended to use server preferences in most
+      situations.
+
+class a2a.client.ClientFactory(config: ClientConfig | None = None)
+
+   Bases: "object"
+
+   Factory for creating clients that communicate with A2A agents.
+
+   The factory is configured with a *ClientConfig* and optionally
+   custom transport producers registered via *register*. Example
+   usage:
+
+      factory = ClientFactory(config) # Optionally register custom
+      transport implementations
+      factory.register('my_custom_transport',
+      custom_transport_producer) # Create a client from an AgentCard
+      client = factory.create(card, interceptors) # Or resolve an
+      AgentCard from a URL and create a client client = await
+      factory.create_from_url('https://example.com')
+
+   The client can be used consistently regardless of the transport.
+   This aligns the client configuration with the server's
+   capabilities.
+
+   create(card: AgentCard, interceptors: list[ClientCallInterceptor] | None = None) -> Client
+
+      Create a new *Client* for the provided *AgentCard*.
+
+      Parameters:
+         * **card** -- An *AgentCard* defining the characteristics of
+           the agent.
+
+         * **interceptors** -- A list of interceptors to use for each
+           request. These are used for things like attaching
+           credentials or http headers to all outbound requests.
+
+      Returns:
+         A *Client* object.
+
+      Raises:
+         * **If there is no valid matching**** of ****the client
+           configuration with the** --
+
+         * **server configuration****, ****a ValueError is raised.**
+           --
+
+   async create_from_url(url: str, interceptors: list[ClientCallInterceptor] | None = None, relative_card_path: str | None = None, resolver_http_kwargs: dict[str, Any] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> Client
+
+      Create a *Client* by resolving an *AgentCard* from a URL.
+
+      Resolves the agent card from the given URL using the factory's
+      configured httpx client, then creates a client via *create*.
+
+      If the agent card is already available, use *create* directly
+      instead.
+
+      Parameters:
+         * **url** -- The base URL of the agent. The agent card will
+           be fetched from *<url>/.well-known/agent-card.json* by
+           default.
+
+         * **interceptors** -- A list of interceptors to use for each
+           request. These are used for things like attaching
+           credentials or http headers to all outbound requests.
+
+         * **relative_card_path** -- The relative path when resolving
+           the agent card. See *A2ACardResolver.get_agent_card* for
+           details.
+
+         * **resolver_http_kwargs** -- Dictionary of arguments to
+           provide to the httpx client when resolving the agent card.
+
+         * **signature_verifier** -- A callable used to verify the
+           agent card's signatures.
+
+      Returns:
+         A *Client* object.
+
+   register(label: str, generator: Callable[[AgentCard, str, ClientConfig], ClientTransport]) -> None
+
+      Register a new transport producer for a given transport label.
+
+class a2a.client.CredentialService
+
+   Bases: "ABC"
+
+   An abstract service for retrieving credentials.
+
+   abstractmethod async get_credentials(security_scheme_name: str, context: ClientCallContext | None) -> str | None
+
+      Retrieves a credential (e.g., token) for a security scheme.
+
+class a2a.client.InMemoryContextCredentialStore
+
+   Bases: "CredentialService"
+
+   A simple in-memory store for session-keyed credentials.
+
+   This class uses the 'sessionId' from the ClientCallContext state to
+   store and retrieve credentials...
+
+   async get_credentials(security_scheme_name: str, context: ClientCallContext | None) -> str | None
+
+      Retrieves credentials from the in-memory store.
+
+      Parameters:
+         * **security_scheme_name** -- The name of the security
+           scheme.
+
+         * **context** -- The client call context.
+
+      Returns:
+         The credential string, or None if not found.
+
+   async set_credentials(session_id: str, security_scheme_name: str, credential: str) -> None
+
+      Method to populate the store.
+
+async a2a.client.create_client(agent: str | AgentCard, client_config: ClientConfig | None = None, interceptors: list[ClientCallInterceptor] | None = None, relative_card_path: str | None = None, resolver_http_kwargs: dict[str, Any] | None = None, signature_verifier: Callable[[AgentCard], None] | None = None) -> Client
+
+   Create a *Client* for an agent from a URL or *AgentCard*.
+
+   Convenience function that constructs a *ClientFactory* internally.
+   For reusing a factory across multiple agents or registering custom
+   transports, use *ClientFactory* directly instead.
+
+   Parameters:
+      * **agent** -- The base URL of the agent, or an *AgentCard* to
+        use directly.
+
+      * **client_config** -- Optional *ClientConfig*. A default config
+        is created if not provided.
+
+      * **interceptors** -- A list of interceptors to use for each
+        request.
+
+      * **relative_card_path** -- The relative path when resolving the
+        agent card. Only used when *agent* is a URL.
+
+      * **resolver_http_kwargs** -- Dictionary of arguments to provide
+        to the httpx client when resolving the agent card.
+
+      * **signature_verifier** -- A callable used to verify the agent
+        card's signatures.
+
+   Returns:
+      A *Client* object.
+
+a2a.client.minimal_agent_card(url: str, transports: list[str] | None = None) -> AgentCard
+
+   Generates a minimal card to simplify bootstrapping client creation.
+
+   This minimal card is not viable itself to interact with the remote
+   agent. Instead this is a shorthand way to take a known url and
+   transport option and interact with the get card endpoint of the
+   agent server to get the correct agent card. This pattern is
+   necessary for gRPC based card access as typically these servers
+   won't expose a well known path card.

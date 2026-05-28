@@ -1,0 +1,124 @@
+a2a.server.events.event_queue_v2 module
+***************************************
+
+class a2a.server.events.event_queue_v2.EventQueueSink(*args: Any, **kwargs: Any)
+
+   Bases: "EventQueue"
+
+   The Child EventQueue.
+
+   Acts as a read-only consumer endpoint. Events are pushed here
+   exclusively by the parent EventQueueSource's dispatcher task.
+
+   async close(immediate: bool = False) -> None
+
+      Closes the child sink queue.
+
+      It is safe to call it multiple times. If immediate is True, the
+      queue will be closed without waiting for all events to be
+      processed. If immediate is False, the queue will be closed after
+      all events are processed (and confirmed with task_done() calls).
+
+   async dequeue_event() -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+      Pulls an event from the sink queue.
+
+   async enqueue_event(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
+
+      Sinks are read-only and cannot have events directly enqueued to
+      them.
+
+   is_closed() -> bool
+
+      [DEPRECATED] Checks if the queue is closed.
+
+      NOTE: Relying on this for enqueue logic introduces race
+      conditions. It is maintained primarily for backwards
+      compatibility, workarounds for Python 3.10/3.12 async queues in
+      consumers, and for the test suite.
+
+   property queue: Queue[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Returns the underlying asyncio.Queue of this sink.
+
+   async tap(max_queue_size: int = 1024) -> EventQueueSink
+
+      Creates a child queue that receives future events.
+
+      Note: The tapped queue may receive some old events if the
+      incoming event queue is lagging behind and hasn't dispatched
+      them yet.
+
+   task_done() -> None
+
+      Signals that a work on dequeued event is complete in this sink
+      queue.
+
+class a2a.server.events.event_queue_v2.EventQueueSource(*args: Any, **kwargs: Any)
+
+   Bases: "EventQueue"
+
+   The Parent EventQueue.
+
+   Acts as the single entry point for producers. Events pushed here
+   are buffered in *_incoming_queue* and distributed to all child
+   Sinks by a background dispatcher task.
+
+   async close(immediate: bool = False) -> None
+
+      Closes the queue and all its child sinks.
+
+      It is safe to call it multiple times. If immediate is True, the
+      queue will be closed without waiting for all events to be
+      processed. If immediate is False, the queue will be closed after
+      all events are processed (and confirmed with task_done() calls).
+
+      WARNING: Closing the parent queue with immediate=False is a
+      deadlock risk if there are unconsumed events in any of the child
+      sinks and the consumer has crashed without draining its queue.
+      It is highly recommended to wrap graceful shutdowns with a
+      timeout, e.g., *asyncio.wait_for(queue.close(immediate=False),
+      timeout=...)*.
+
+   async dequeue_event() -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+      Pulls an event from the default internal sink queue.
+
+   async enqueue_event(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
+
+      Enqueues an event to this queue and all its children.
+
+   is_closed() -> bool
+
+      [DEPRECATED] Checks if the queue is closed.
+
+      NOTE: Relying on this for enqueue logic introduces race
+      conditions. It is maintained primarily for backwards
+      compatibility, workarounds for Python 3.10/3.12 async queues in
+      consumers, and for the test suite.
+
+   property queue: Queue[Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent]
+
+      Returns the underlying asyncio.Queue of the default sink.
+
+   async remove_sink(sink: EventQueueSink) -> None
+
+      Removes a sink from the source's internal list.
+
+   async tap(max_queue_size: int = 1024) -> EventQueueSink
+
+      Taps the event queue to create a new child queue that receives
+      future events.
+
+      Note: The tapped queue may receive some old events if the
+      incoming event queue is lagging behind and hasn't dispatched
+      them yet.
+
+   task_done() -> None
+
+      Signals that a work on dequeued event is complete via the
+      default internal sink queue.
+
+   async test_only_join_incoming_queue() -> None
+
+      Wait for incoming queue to be fully processed.

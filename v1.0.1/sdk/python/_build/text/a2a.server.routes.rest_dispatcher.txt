@@ -1,0 +1,56 @@
+a2a.server.routes.rest_dispatcher module
+****************************************
+
+class a2a.server.routes.rest_dispatcher.RestDispatcher(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None)
+
+   Bases: "object"
+
+   Dispatches incoming REST requests to the appropriate handler
+   methods.
+
+   Handles context building, routing to RequestHandler directly, and
+   response formatting (JSON/SSE).
+
+   async delete_push_notification(request: Request) -> Response
+
+      Handles the 'tasks/pushNotificationConfig/delete' REST method.
+
+   async get_push_notification(request: Request) -> Response
+
+      Handles the 'tasks/pushNotificationConfig/get' REST method.
+
+   async handle_authenticated_agent_card(request: Request) -> Response
+
+      Handles the 'agentCard' REST method.
+
+   async list_push_notifications(request: Request) -> Response
+
+      Handles the 'tasks/pushNotificationConfig/list' REST method.
+
+   async list_tasks(request: Request) -> Response
+
+      Handles the 'tasks/list' REST method.
+
+   async on_cancel_task(request: Request) -> Response
+
+      Handles the 'tasks/cancel' REST method.
+
+   async on_get_task(request: Request) -> Response
+
+      Handles the 'tasks/{id}' REST method.
+
+   async on_message_send(request: Request) -> Response
+
+      Handles the 'message/send' REST method.
+
+   async on_message_send_stream(request: Request) -> EventSourceResponse
+
+      Handles the 'message/stream' REST method.
+
+   async on_subscribe_to_task(request: Request) -> EventSourceResponse
+
+      Handles the 'SubscribeToTask' REST method.
+
+   async set_push_notification(request: Request) -> Response
+
+      Handles the 'tasks/pushNotificationConfig/set' REST method.

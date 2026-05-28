@@ -1,0 +1,140 @@
+a2a.server.models module
+************************
+
+class a2a.server.models.Base(**kwargs: Any)
+
+   Bases: "DeclarativeBase"
+
+   Base class for declarative models in A2A SDK.
+
+   metadata: ClassVar[MetaData] = MetaData()
+
+      Refers to the "_schema.MetaData" collection that will be used
+      for new "_schema.Table" objects.
+
+      See also: *orm_declarative_metadata*
+
+   registry: ClassVar[registry] = <sqlalchemy.orm.decl_api.registry object>
+
+      Refers to the "_orm.registry" in use where new "_orm.Mapper"
+      objects will be associated.
+
+class a2a.server.models.PushNotificationConfigMixin
+
+   Bases: "object"
+
+   Mixin providing standard push notification config columns.
+
+   config_data: Mapped[bytes] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   config_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   owner: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   protocol_version: Mapped[str | None] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.PushNotificationConfigModel(**kwargs)
+
+   Bases: "PushNotificationConfigMixin", "Base"
+
+   Default push notification config model with standard table name.
+
+   config_data: Mapped[bytes]
+
+   config_id: Mapped[str]
+
+   owner: Mapped[str]
+
+   protocol_version: Mapped[str | None]
+
+   task_id: Mapped[str]
+
+class a2a.server.models.TaskMixin
+
+   Bases: "object"
+
+   Mixin providing standard task columns with proper type handling.
+
+   artifacts: Mapped[list[Artifact] | None] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   context_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   history: Mapped[list[Message] | None] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   kind: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   last_updated: Mapped[datetime | None] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   owner: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   protocol_version: Mapped[str | None] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   status: Mapped[TaskStatus] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_metadata = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.TaskModel(**kwargs)
+
+   Bases: "TaskMixin", "Base"
+
+   Default task model with standard table name.
+
+   artifacts: Mapped[list[Artifact] | None]
+
+   context_id: Mapped[str]
+
+   history: Mapped[list[Message] | None]
+
+   id: Mapped[str]
+
+   kind: Mapped[str]
+
+   last_updated: Mapped[datetime | None]
+
+   owner: Mapped[str]
+
+   protocol_version: Mapped[str | None]
+
+   status: Mapped[TaskStatus]
+
+   task_metadata
+
+a2a.server.models.create_push_notification_config_model(table_name: str = 'push_notification_configs', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a PushNotificationConfigModel class with a configurable
+   table name.
+
+a2a.server.models.create_task_model(table_name: str = 'tasks', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a TaskModel class with a configurable table name.
+
+   Parameters:
+      * **table_name** -- Name of the database table. Defaults to
+        'tasks'.
+
+      * **base** -- Base declarative class to use. Defaults to the
+        SDK's Base class.
+
+   Returns:
+      TaskModel class with the specified table name.
+
+   -[ Example ]-
+
+      # Create a task model with default table name
+      TaskModel = create_task_model()
+
+      # Create a task model with custom table name
+      CustomTaskModel = create_task_model('my_tasks')
+
+      # Use with a custom base
+      from myapp.database import Base as MyBase
+
+      TaskModel = create_task_model('tasks', MyBase)
+
+a2a.server.models.override(func)
+
+   Override decorator.

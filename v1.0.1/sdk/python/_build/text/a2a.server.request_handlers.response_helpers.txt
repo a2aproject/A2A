@@ -1,0 +1,43 @@
+a2a.server.request_handlers.response_helpers module
+***************************************************
+
+Helper functions for building A2A JSON-RPC responses.
+
+a2a.server.request_handlers.response_helpers.EventTypes = a2a_pb2.Task | a2a_pb2.Message | a2a_pb2.TaskArtifactUpdateEvent | a2a_pb2.TaskStatusUpdateEvent | a2a_pb2.TaskPushNotificationConfig | a2a_pb2.StreamResponse | a2a_pb2.SendMessageResponse | a2a.utils.errors.A2AError | a2a.server.jsonrpc_models.JSONRPCError | list[a2a_pb2.TaskPushNotificationConfig] | a2a_pb2.ListTasksResponse
+
+   Type alias for possible event types produced by handlers.
+
+a2a.server.request_handlers.response_helpers.agent_card_to_dict(card: AgentCard) -> dict[str, Any]
+
+   Convert AgentCard to dict and inject backward compatibility fields.
+
+a2a.server.request_handlers.response_helpers.build_error_response(request_id: str | int | None, error: A2AError | JSONRPCError) -> dict[str, Any]
+
+   Build a JSON-RPC error response dict.
+
+   Parameters:
+      * **request_id** -- The ID of the request that caused the error.
+
+      * **error** -- The A2AError or JSONRPCError object.
+
+   Returns:
+      A dict representing the JSON-RPC error response.
+
+a2a.server.request_handlers.response_helpers.prepare_response_object(request_id: str | int | None, response: Task | Message | TaskArtifactUpdateEvent | TaskStatusUpdateEvent | TaskPushNotificationConfig | StreamResponse | SendMessageResponse | A2AError | JSONRPCError | list[TaskPushNotificationConfig] | ListTasksResponse, success_response_types: tuple[type, ...]) -> dict[str, Any]
+
+   Build a JSON-RPC response dict from handler output.
+
+   Based on the type of the *response* object received from the
+   handler, it constructs either a success response or an error
+   response.
+
+   Parameters:
+      * **request_id** -- The ID of the request.
+
+      * **response** -- The object received from the request handler.
+
+      * **success_response_types** -- A tuple of expected types for a
+        successful result.
+
+   Returns:
+      A dict representing the JSON-RPC response (success or error).
