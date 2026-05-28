@@ -245,7 +245,7 @@ def _format_type_for_docs(
     """Formats the type name with Markdown links for non-primitive types."""
     # Handle fully qualified names by taking only the last part for the link label,
     # but keep it if it's a known google.protobuf type we mapped.
-    display_name = TYPE_MAP.get(proto_type, proto_type.rsplit('.', maxsplit=1)[-1])
+    display_name = TYPE_MAP.get(proto_type) or proto_type.rsplit('.', 1)[-1]
     is_primitive = proto_type in TYPE_MAP or proto_type.startswith(
         'google.protobuf'
     )
