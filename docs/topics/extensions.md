@@ -50,7 +50,7 @@ However, some foreseeable applications include:
 | [Hello World or Timestamp Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/timestamp) | A simple extension demonstrating how to augment base A2A types by adding timestamps to the `metadata` field of `Message` and `Artifact` objects (v1). |
 | [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |
 | [Agent Gateway Protocol (AGP) Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp) | A Core Protocol Layer or Routing Extension that introduces Autonomous Squads (ASq) and routes Intent payloads based on declared Capabilities, enhancing scalability (v1). |
-| [Compliance Gate Extension](https://docs.algovoi.co.uk/compliance-gate-v1) | An AlgoVoi-authored Method Extension adding the `compliance/gate` RPC method. Returns a categorical admission-time sanctions/KYC verdict (`ALLOW` / `REFER` / `DENY`) as a seven-field Compliance Receipt canonicalised under RFC 8785 (JCS). Companion IETF I-D: [`draft-hopley-x402-compliance-receipt`](https://datatracker.ietf.org/doc/draft-hopley-x402-compliance-receipt/) (v1). |
+| [Compliance Gate Extension](https://docs.algovoi.co.uk/compliance-gate-v1) | An AlgoVoi-authored Method Extension adding the `compliance/gate` RPC method. Returns a categorical admission-time sanctions/KYC verdict (`ALLOW` / `REFER` / `DENY`) as a seven-field Compliance Receipt canonicalized under RFC 8785 (JCS). Companion IETF I-D: [`draft-hopley-x402-compliance-receipt`](https://datatracker.ietf.org/doc/draft-hopley-x402-compliance-receipt/) (v1). |
 
 ## Extension Governance
 
