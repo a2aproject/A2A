@@ -77,7 +77,27 @@ We use [markdownlint](https://github.com/igorshubovych/markdownlint-cli) for for
 
 ### Conventional Commits
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages. This helps us automate our release process and maintain a clear changelog.
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages and Pull Request titles. This helps us automate our release process, generate changelogs, and maintain high standards.
+
+To align with how our releases are automated, we enforce the following rules for PR titles and commit prefixes depending on which files are modified:
+
+1. **Core Specification Edits (`docs(spec):`)**
+   - **Target**: Modifications to the human-readable core specification document (`docs/specification.md`).
+   - **Prefix**: Must use the `docs(spec):` prefix (e.g., `docs(spec): clarify handshake sequence`).
+   - **Rationale**: Since these changes clarify or refine the specification text without modifying the machine-readable protocol definition, they should be clearly marked as specification changes but must not trigger a new release.
+
+2. **General Documentation (`docs:`)**
+   - **Target**: General docs files under the `docs/` directory other than the core specification (e.g., guides, definitions, FAQs).
+   - **Prefix**: Must use the `docs:` prefix without the `spec` scope (e.g., `docs: update setup instructions`).
+   - **Rationale**: Keeps documentation changes separate from specification and code updates, preventing unnecessary release bumps.
+
+3. **Protocol updates (`feat:` / `fix:`)**
+   - **Target**: Functional updates to the machine-readable protocol definition (`specification/a2a.proto`).
+   - **Prefix**: Reserved exclusively for changes that include modifications to `specification/a2a.proto` (e.g., `feat: add encryption handshake fields` or `fix: correct typo in service error codes`).
+   - **Rationale**: Commits starting with `feat:` or `fix:` trigger automated protocol releases and version bumps (via `release-please`). Pure documentation edits must not use these prefixes to avoid accidental protocol releases.
+
+> [!NOTE]
+> If a documentation edit defines a change in how the protocol is actually used, **it must be accompanied by a corresponding update in the protocol definition** (even if it's just updating comments/descriptions in `specification/a2a.proto`). This ensures that the machine-readable schema and human-readable documentation remain synchronized, and correctly triggers a new package release.
 
 ## Contribution Process
 
