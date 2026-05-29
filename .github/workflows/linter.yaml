@@ -38,11 +38,8 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v6
 
-      - name: Install buf
-        run: |
-          curl -sSL "https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64" -o buf
-          sudo mv buf /usr/local/bin/buf
-          sudo chmod +x /usr/local/bin/buf
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1
 
       - name: Download proto dependencies
         working-directory: specification
