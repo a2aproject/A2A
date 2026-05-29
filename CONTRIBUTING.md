@@ -77,7 +77,14 @@ We use [markdownlint](https://github.com/igorshubovych/markdownlint-cli) for for
 
 ### Conventional Commits
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages. This helps us automate our release process and maintain a clear changelog.
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages and PR titles to automate releases. We enforce the following rules depending on which files are changed:
+
+- **Core Specification (`docs(spec):`)**: Use for changes to the core specification (`docs/specification.md`).
+- **General Documentation (`docs:`)**: Use for other files under `docs/` (without the `spec` scope).
+- **Protocol Updates (`feat:` / `fix:`)**: Reserved exclusively for changes to the protocol definition (`specification/a2a.proto`).
+
+> [!TIP]
+> If a documentation change alters how the protocol should be used, update the `.proto` file as well (even just its comments) so that a new protocol release is triggered.
 
 ## Contribution Process
 
