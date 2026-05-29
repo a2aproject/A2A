@@ -27,6 +27,10 @@ Submodules
 
     * "StarletteUser.user_name"
 
+* a2a.server.routes.fastapi_routes module
+
+  * "add_a2a_routes_to_fastapi()"
+
 * a2a.server.routes.jsonrpc_dispatcher module
 
   * "JsonRpcDispatcher"
@@ -113,6 +117,35 @@ class a2a.server.routes.ServerCallContextBuilder
    abstractmethod build(request: Request) -> ServerCallContext
 
       Builds a ServerCallContext from a Starlette Request.
+
+a2a.server.routes.add_a2a_routes_to_fastapi(app: FastAPI, *, agent_card_routes: Sequence[BaseRoute] | None = None, jsonrpc_routes: Sequence[BaseRoute] | None = None, rest_routes: Sequence[BaseRoute] | None = None) -> None
+
+   Mounts A2A routes on a FastAPI app and enriches them for "/docs".
+
+   Re-registers Starlette routes as "APIRoute" instances so they
+   appear in the auto-generated OpenAPI schema, tagged and annotated
+   with proto-derived request-body schemas.
+
+   Usage:
+
+      app = FastAPI()
+      add_a2a_routes_to_fastapi(
+          app,
+          agent_card_routes=create_agent_card_routes(agent_card),
+          jsonrpc_routes=create_jsonrpc_routes(request_handler, rpc_url='/'),
+          rest_routes=create_rest_routes(request_handler),
+      )
+
+   Parameters:
+      * **app** -- The FastAPI application to mount the routes on.
+
+      * **agent_card_routes** -- Routes returned by
+        "create_agent_card_routes".
+
+      * **jsonrpc_routes** -- Routes returned by
+        "create_jsonrpc_routes".
+
+      * **rest_routes** -- Routes returned by "create_rest_routes".
 
 a2a.server.routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json') -> list[Route]
 

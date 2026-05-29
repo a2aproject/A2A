@@ -10,6 +10,7 @@ Submodules
    a2a.utils.constants
    a2a.utils.error_handlers
    a2a.utils.errors
+   a2a.utils.json_utils
    a2a.utils.proto_utils
    a2a.utils.signing
    a2a.utils.task

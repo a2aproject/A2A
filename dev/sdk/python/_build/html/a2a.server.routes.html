@@ -293,6 +293,7 @@
 <li class="toctree-l4 current has-children current-page"><a class="current reference internal" href="#">a2a.server.routes package</a><input aria-label="Toggle navigation of a2a.server.routes package" checked="" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.agent_card_routes.html">a2a.server.routes.agent_card_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.common.html">a2a.server.routes.common module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.fastapi_routes.html">a2a.server.routes.fastapi_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_dispatcher.html">a2a.server.routes.jsonrpc_dispatcher module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_routes.html">a2a.server.routes.jsonrpc_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.rest_dispatcher.html">a2a.server.routes.rest_dispatcher module</a></li>
@@ -330,6 +331,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.errors.html">a2a.utils.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
@@ -405,6 +407,10 @@
 <li class="toctree-l3"><a class="reference internal" href="a2a.server.routes.common.html#a2a.server.routes.common.StarletteUser.user_name"><code class="docutils literal notranslate"><span class="pre">StarletteUser.user_name</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="a2a.server.routes.fastapi_routes.html">a2a.server.routes.fastapi_routes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="a2a.server.routes.fastapi_routes.html#a2a.server.routes.fastapi_routes.add_a2a_routes_to_fastapi"><code class="docutils literal notranslate"><span class="pre">add_a2a_routes_to_fastapi()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="a2a.server.routes.jsonrpc_dispatcher.html">a2a.server.routes.jsonrpc_dispatcher module</a><ul>
@@ -493,6 +499,35 @@ information from the request.</p>
 <dd><p>Builds a ServerCallContext from a Starlette Request.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.server.routes.add_a2a_routes_to_fastapi">
+<span class="sig-prename descclassname"><span class="pre">a2a.server.routes.</span></span><span class="sig-name descname"><span class="pre">add_a2a_routes_to_fastapi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FastAPI</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">agent_card_routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseRoute</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jsonrpc_routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseRoute</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rest_routes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">BaseRoute</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.routes.add_a2a_routes_to_fastapi" title="Link to this definition">¶</a></dt>
+<dd><p>Mounts A2A routes on a FastAPI app and enriches them for <code class="docutils literal notranslate"><span class="pre">/docs</span></code>.</p>
+<p>Re-registers Starlette routes as <code class="docutils literal notranslate"><span class="pre">APIRoute</span></code> instances so they appear in
+the auto-generated OpenAPI schema, tagged and annotated with proto-derived
+request-body schemas.</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+<span class="n">add_a2a_routes_to_fastapi</span><span class="p">(</span>
+    <span class="n">app</span><span class="p">,</span>
+    <span class="n">agent_card_routes</span><span class="o">=</span><span class="n">create_agent_card_routes</span><span class="p">(</span><span class="n">agent_card</span><span class="p">),</span>
+    <span class="n">jsonrpc_routes</span><span class="o">=</span><span class="n">create_jsonrpc_routes</span><span class="p">(</span><span class="n">request_handler</span><span class="p">,</span> <span class="n">rpc_url</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">),</span>
+    <span class="n">rest_routes</span><span class="o">=</span><span class="n">create_rest_routes</span><span class="p">(</span><span class="n">request_handler</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app</strong> – The FastAPI application to mount the routes on.</p></li>
+<li><p><strong>agent_card_routes</strong> – Routes returned by <code class="docutils literal notranslate"><span class="pre">create_agent_card_routes</span></code>.</p></li>
+<li><p><strong>jsonrpc_routes</strong> – Routes returned by <code class="docutils literal notranslate"><span class="pre">create_jsonrpc_routes</span></code>.</p></li>
+<li><p><strong>rest_routes</strong> – Routes returned by <code class="docutils literal notranslate"><span class="pre">create_rest_routes</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -613,6 +648,7 @@ endpoints using REST03Adapter.</p></li>
 <li><a class="reference internal" href="#a2a.server.routes.ServerCallContextBuilder.build"><code class="docutils literal notranslate"><span class="pre">ServerCallContextBuilder.build()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#a2a.server.routes.add_a2a_routes_to_fastapi"><code class="docutils literal notranslate"><span class="pre">add_a2a_routes_to_fastapi()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.routes.create_agent_card_routes"><code class="docutils literal notranslate"><span class="pre">create_agent_card_routes()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.routes.create_jsonrpc_routes"><code class="docutils literal notranslate"><span class="pre">create_jsonrpc_routes()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.routes.create_rest_routes"><code class="docutils literal notranslate"><span class="pre">create_rest_routes()</span></code></a></li>

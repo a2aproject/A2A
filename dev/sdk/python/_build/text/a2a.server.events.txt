@@ -149,33 +149,16 @@ class a2a.server.events.EventQueue(*args: Any, **kwargs: Any)
 
    Bases: "ABC"
 
-   Base class and factory for EventQueueSource.
+   Producer-side interface passed to *AgentExecutor.execute*/*cancel*.
 
-   EventQueue provides an abstraction for a queue of events that can
-   be tapped by multiple consumers. EventQueue maintain main queue and
-   source and maintain child queues in sync. GUARANTEE: All sinks
-   (including the default one) will receive events in the exact same
-   order.
+   Exposes only *enqueue_event*. The consumer is framework-managed and
+   not part of the public surface.
 
-   WARNING (Concurrency): All events from all sinks (both the default
-   queue and any tapped child queues) must be regularly consumed and
-   marked as done. If any single consumer stops processing and its
-   queue reaches capacity, it can block the event dispatcher and stall
-   the entire system, causing a widespread deadlock.
-
-   WARNING (Memory Leak): Event queues spawn background tasks. To
-   prevent memory and task leaks, all queue objects (both source and
-   sinks) MUST be explicitly closed via *await queue.close()* or by
-   using the async context manager (*async with queue:*). Child queues
-   are automatically closed when parent queue is closed, but you
-   should still close them explicitly to prevent queues from reaching
-   capacity by unconsumed events.
-
-   Typical usage: queue = EventQueue() child_queue1 = await
-   queue.tap() child_queue2 = await queue.tap()
-
-   async for event in child_queue1:
-      do_some_work(event) child_queue1.task_done()
+   Default request handlers construct the queue and pass it in;
+   executors should accept it and not construct one. To run an
+   executor outside the framework, write a custom subclass or use
+   *EventQueueLegacy* (deprecated, will be removed in a future
+   release).
 
    abstractmethod async enqueue_event(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 

@@ -291,6 +291,7 @@
 <li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.routes.html">a2a.server.routes package</a><input aria-label="Toggle navigation of a2a.server.routes package" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.agent_card_routes.html">a2a.server.routes.agent_card_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.common.html">a2a.server.routes.common module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.fastapi_routes.html">a2a.server.routes.fastapi_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_dispatcher.html">a2a.server.routes.jsonrpc_dispatcher module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_routes.html">a2a.server.routes.jsonrpc_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.rest_dispatcher.html">a2a.server.routes.rest_dispatcher module</a></li>
@@ -328,6 +329,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.errors.html">a2a.utils.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
@@ -944,14 +946,19 @@
 </li>
         </ul></li>
         <li>
+    a2a.server.routes.fastapi_routes
+
+        <ul>
+          <li><a href="a2a.server.routes.fastapi_routes.html#module-a2a.server.routes.fastapi_routes">module</a>
+</li>
+        </ul></li>
+        <li>
     a2a.server.routes.jsonrpc_dispatcher
 
         <ul>
           <li><a href="a2a.server.routes.jsonrpc_dispatcher.html#module-a2a.server.routes.jsonrpc_dispatcher">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     a2a.server.routes.jsonrpc_routes
 
@@ -959,6 +966,8 @@
           <li><a href="a2a.server.routes.jsonrpc_routes.html#module-a2a.server.routes.jsonrpc_routes">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     a2a.server.routes.rest_dispatcher
 
@@ -1114,6 +1123,13 @@
 </li>
         </ul></li>
         <li>
+    a2a.utils.json_utils
+
+        <ul>
+          <li><a href="a2a.utils.json_utils.html#module-a2a.utils.json_utils">module</a>
+</li>
+        </ul></li>
+        <li>
     a2a.utils.proto_utils
 
         <ul>
@@ -1208,6 +1224,12 @@
           <li><a href="a2a.server.events.queue_manager.html#a2a.server.events.queue_manager.QueueManager.add">(a2a.server.events.queue_manager.QueueManager method)</a>
 </li>
           <li><a href="a2a.server.events.html#a2a.server.events.QueueManager.add">(a2a.server.events.QueueManager method)</a>
+</li>
+        </ul></li>
+        <li><a href="a2a.server.routes.html#a2a.server.routes.add_a2a_routes_to_fastapi">add_a2a_routes_to_fastapi() (in module a2a.server.routes)</a>
+
+        <ul>
+          <li><a href="a2a.server.routes.fastapi_routes.html#a2a.server.routes.fastapi_routes.add_a2a_routes_to_fastapi">(in module a2a.server.routes.fastapi_routes)</a>
 </li>
         </ul></li>
         <li><a href="a2a.compat.v0_3.a2a_v0_3_pb2_grpc.html#a2a.compat.v0_3.a2a_v0_3_pb2_grpc.add_A2AServiceServicer_to_server">add_A2AServiceServicer_to_server() (in module a2a.compat.v0_3.a2a_v0_3_pb2_grpc)</a>
@@ -2376,6 +2398,8 @@
 </li>
         <li><a href="a2a.migrations.migration_utils.html#a2a.migrations.migration_utils.drop_index">drop_index() (in module a2a.migrations.migration_utils)</a>
 </li>
+        <li><a href="a2a.utils.json_utils.html#a2a.utils.json_utils.dumps">dumps() (in module a2a.utils.json_utils)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -3409,8 +3433,6 @@
 </li>
           <li><a href="a2a.compat.v0_3.jsonrpc_transport.html#a2a.compat.v0_3.jsonrpc_transport.CompatJsonRpcTransport.list_tasks">(a2a.compat.v0_3.jsonrpc_transport.CompatJsonRpcTransport method)</a>
 </li>
-          <li><a href="a2a.compat.v0_3.rest_handler.html#a2a.compat.v0_3.rest_handler.REST03Handler.list_tasks">(a2a.compat.v0_3.rest_handler.REST03Handler method)</a>
-</li>
           <li><a href="a2a.compat.v0_3.rest_transport.html#a2a.compat.v0_3.rest_transport.CompatRestTransport.list_tasks">(a2a.compat.v0_3.rest_transport.CompatRestTransport method)</a>
 </li>
           <li><a href="a2a.server.routes.rest_dispatcher.html#a2a.server.routes.rest_dispatcher.RestDispatcher.list_tasks">(a2a.server.routes.rest_dispatcher.RestDispatcher method)</a>
@@ -4088,6 +4110,8 @@
 </li>
           <li><a href="a2a.server.routes.common.html#module-a2a.server.routes.common">a2a.server.routes.common</a>
 </li>
+          <li><a href="a2a.server.routes.fastapi_routes.html#module-a2a.server.routes.fastapi_routes">a2a.server.routes.fastapi_routes</a>
+</li>
           <li><a href="a2a.server.routes.jsonrpc_dispatcher.html#module-a2a.server.routes.jsonrpc_dispatcher">a2a.server.routes.jsonrpc_dispatcher</a>
 </li>
           <li><a href="a2a.server.routes.jsonrpc_routes.html#module-a2a.server.routes.jsonrpc_routes">a2a.server.routes.jsonrpc_routes</a>
@@ -4135,6 +4159,8 @@
           <li><a href="a2a.utils.error_handlers.html#module-a2a.utils.error_handlers">a2a.utils.error_handlers</a>
 </li>
           <li><a href="a2a.utils.errors.html#module-a2a.utils.errors">a2a.utils.errors</a>
+</li>
+          <li><a href="a2a.utils.json_utils.html#module-a2a.utils.json_utils">a2a.utils.json_utils</a>
 </li>
           <li><a href="a2a.utils.proto_utils.html#module-a2a.utils.proto_utils">a2a.utils.proto_utils</a>
 </li>

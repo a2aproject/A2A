@@ -293,6 +293,7 @@
 <li class="toctree-l4 has-children"><a class="reference internal" href="a2a.server.routes.html">a2a.server.routes package</a><input aria-label="Toggle navigation of a2a.server.routes package" class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.agent_card_routes.html">a2a.server.routes.agent_card_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.common.html">a2a.server.routes.common module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.fastapi_routes.html">a2a.server.routes.fastapi_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_dispatcher.html">a2a.server.routes.jsonrpc_dispatcher module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.jsonrpc_routes.html">a2a.server.routes.jsonrpc_routes module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="a2a.server.routes.rest_dispatcher.html">a2a.server.routes.rest_dispatcher module</a></li>
@@ -330,6 +331,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.errors.html">a2a.utils.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
@@ -392,30 +394,13 @@
 <dt class="sig sig-object py" id="a2a.server.events.event_queue.EventQueue">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.server.events.event_queue.</span></span><span class="sig-name descname"><span class="pre">EventQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.server.events.event_queue.EventQueue" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<p>Base class and factory for EventQueueSource.</p>
-<p>EventQueue provides an abstraction for a queue of events that can be tapped
-by multiple consumers.
-EventQueue maintain main queue and source and maintain child queues in sync.
-GUARANTEE: All sinks (including the default one) will receive events in the exact same order.</p>
-<p>WARNING (Concurrency): All events from all sinks (both the default queue and any
-tapped child queues) must be regularly consumed and marked as done. If any single
-consumer stops processing and its queue reaches capacity, it can block the event
-dispatcher and stall the entire system, causing a widespread deadlock.</p>
-<p>WARNING (Memory Leak): Event queues spawn background tasks. To prevent memory
-and task leaks, all queue objects (both source and sinks) MUST be explicitly
-closed via <cite>await queue.close()</cite> or by using the async context manager (<cite>async with queue:</cite>).
-Child queues are automatically closed when parent queue is closed, but you
-should still close them explicitly to prevent queues from reaching capacity by
-unconsumed events.</p>
-<p>Typical usage:
-queue = EventQueue()
-child_queue1 = await queue.tap()
-child_queue2 = await queue.tap()</p>
-<dl class="simple">
-<dt>async for event in child_queue1:</dt><dd><p>do_some_work(event)
-child_queue1.task_done()</p>
-</dd>
-</dl>
+<p>Producer-side interface passed to <cite>AgentExecutor.execute</cite>/<cite>cancel</cite>.</p>
+<p>Exposes only <cite>enqueue_event</cite>. The consumer is framework-managed
+and not part of the public surface.</p>
+<p>Default request handlers construct the queue and pass it in; executors
+should accept it and not construct one. To run an executor outside the
+framework, write a custom subclass or use <cite>EventQueueLegacy</cite> (deprecated,
+will be removed in a future release).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.event_queue.EventQueue.enqueue_event">
 <span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">enqueue_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Message" title="a2a_pb2.Message"><span class="pre">Message</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a_pb2.Task"><span class="pre">Task</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.TaskStatusUpdateEvent" title="a2a_pb2.TaskStatusUpdateEvent"><span class="pre">TaskStatusUpdateEvent</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.types.html#a2a.types.TaskArtifactUpdateEvent" title="a2a_pb2.TaskArtifactUpdateEvent"><span class="pre">TaskArtifactUpdateEvent</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.event_queue.EventQueue.enqueue_event" title="Link to this definition">¶</a></dt>

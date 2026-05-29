@@ -9,6 +9,7 @@ Submodules
 
    a2a.server.routes.agent_card_routes
    a2a.server.routes.common
+   a2a.server.routes.fastapi_routes
    a2a.server.routes.jsonrpc_dispatcher
    a2a.server.routes.jsonrpc_routes
    a2a.server.routes.rest_dispatcher
