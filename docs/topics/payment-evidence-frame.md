@@ -36,13 +36,13 @@ remains the authoritative domain record.
 The `claim_type` field is a closed string enum. Each value corresponds to a
 distinct payment lifecycle event.
 
-| `claim_type`            | Lifecycle stage                      | Typical inner format                        |
-| :---------------------- | :----------------------------------- | :------------------------------------------ |
-| `payment_admission`     | Compliance screen result             | `compliance-receipt-v1`                     |
-| `payment_settlement`    | Settlement confirmation              | `settlement-attestation-v1`                 |
-| `payment_cancellation`  | Mandate or order termination         | `cancellation-receipt-v1`                   |
-| `payment_refund`        | Post-settlement refund               | `refund-receipt-v1`                         |
-| `composite_verdict`     | Verifier-of-verifier trust conclusion | `composite-trust-query-v1`                 |
+| `claim_type`           | Lifecycle stage                       | Typical inner format            |
+| :--------------------- | :------------------------------------ | :------------------------------ |
+| `payment_admission`    | Compliance screen result              | `compliance-receipt-v1`         |
+| `payment_settlement`   | Settlement confirmation               | `settlement-attestation-v1`     |
+| `payment_cancellation` | Mandate or order termination          | `cancellation-receipt-v1`       |
+| `payment_refund`       | Post-settlement refund                | `refund-receipt-v1`             |
+| `composite_verdict`    | Verifier-of-verifier trust conclusion | `composite-trust-query-v1`      |
 
 An orchestrator that does not recognise a `claim_type` value SHOULD treat the
 frame as opaque and forward it without modification.
@@ -82,7 +82,7 @@ Derivation steps:
 3. Compute SHA-256 over the canonical byte sequence.
 4. Encode as the lowercase hex string prefixed with `sha256:`.
 
-```
+```text
 frame_id = "sha256:" + hex( sha256( JCS( frame_without_frame_id_and_signature ) ) )
 ```
 
