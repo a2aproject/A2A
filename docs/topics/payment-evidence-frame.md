@@ -51,18 +51,18 @@ frame as opaque and forward it without modification.
 
 ## Frame Fields
 
-| Field                | Type    | Required | Description |
-| :------------------- | :------ | :------- | :---------- |
-| `pef_version`        | string  | yes      | Specification version. Currently `"1"`. |
-| `claim_type`         | string  | yes      | Closed enum; see taxonomy above. |
-| `receipt_format`     | string  | yes      | Inner receipt format identifier, e.g. `"compliance-receipt-v1"`. |
-| `receipt`            | object  | yes      | The inner receipt verbatim. |
-| `receipt_hash`       | string  | yes      | `sha256:<hex>` of the JCS-canonical form of `receipt`. |
-| `frame_id`           | string  | yes      | `sha256:<hex>` of the JCS-canonical form of the frame preimage (see below). |
-| `frame_provider_did` | string  | yes      | DID URI of the party that issued this frame. |
-| `frame_timestamp_ms` | integer | yes      | Frame creation time as Unix epoch milliseconds. |
+| Field                | Type    | Required | Description                                                                           |
+| :------------------- | :------ | :------- | :------------------------------------------------------------------------------------ |
+| `pef_version`        | string  | yes      | Specification version. Currently `"1"`.                                               |
+| `claim_type`         | string  | yes      | Closed enum; see taxonomy above.                                                      |
+| `receipt_format`     | string  | yes      | Inner receipt format identifier, e.g. `"compliance-receipt-v1"`.                      |
+| `receipt`            | object  | yes      | The inner receipt verbatim.                                                           |
+| `receipt_hash`       | string  | yes      | `sha256:<hex>` of the JCS-canonical form of `receipt`.                                |
+| `frame_id`           | string  | yes      | `sha256:<hex>` of the JCS-canonical form of the frame preimage (see below).           |
+| `frame_provider_did` | string  | yes      | DID URI of the party that issued this frame.                                          |
+| `frame_timestamp_ms` | integer | yes      | Frame creation time as Unix epoch milliseconds.                                       |
 | `canon_version`      | string  | yes      | Canonicalisation algorithm URI. MUST be `"urn:x402:canonicalisation:jcs-rfc8785-v1"`. |
-| `signature`          | string  | no       | RFC 9421 HTTP message signature string, covering the frame preimage. |
+| `signature`          | string  | no       | RFC 9421 HTTP message signature string, covering the frame preimage.                  |
 
 All string values are UTF-8. Integer values are JSON numbers with no fractional
 part.
