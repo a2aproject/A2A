@@ -94,32 +94,37 @@ after the fact does not change the identifier. Orchestrators may record or index
 
 ## Usage as a Task Artifact
 
-A payment agent attaches a PEF as an A2A task artifact with
-`type: "payment_evidence"` and `mimeType: "application/json"`. The `data` field
-carries the complete frame object.
+A payment agent attaches a PEF as an A2A task artifact. The artifact contains a
+single part with `mediaType: "application/json"`, where the `data` field carries
+the complete frame object.
 
 Example artifact for a settlement confirmation:
 
 ```json
 {
-  "type": "payment_evidence",
-  "mimeType": "application/json",
-  "data": {
-    "pef_version": "1",
-    "claim_type": "payment_settlement",
-    "receipt_format": "settlement-attestation-v1",
-    "frame_provider_did": "did:web:payments.example.com",
-    "frame_timestamp_ms": 1748563200000,
-    "canon_version": "urn:x402:canonicalisation:jcs-rfc8785-v1",
-    "receipt": {
-      "status": "SETTLED",
-      "chain": "base",
-      "tx_hash": "0x3c4f1e2a...",
-      "settled_at_ms": 1748563195000
-    },
-    "receipt_hash": "sha256:a1b2c3d4e5f6...",
-    "frame_id": "sha256:3c4f1e2a9b8d..."
-  }
+  "artifactId": "artifact-uuid-123",
+  "name": "Payment Evidence",
+  "parts": [
+    {
+      "mediaType": "application/json",
+      "data": {
+        "pef_version": "1",
+        "claim_type": "payment_settlement",
+        "receipt_format": "settlement-attestation-v1",
+        "frame_provider_did": "did:web:payments.example.com",
+        "frame_timestamp_ms": 1748563200000,
+        "canon_version": "urn:x402:canonicalisation:jcs-rfc8785-v1",
+        "receipt": {
+          "status": "SETTLED",
+          "chain": "base",
+          "tx_hash": "0x3c4f1e2a...",
+          "settled_at_ms": 1748563195000
+        },
+        "receipt_hash": "sha256:a1b2c3d4e5f6...",
+        "frame_id": "sha256:3c4f1e2a9b8d..."
+      }
+    }
+  ]
 }
 ```
 
