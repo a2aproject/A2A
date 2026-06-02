@@ -18,9 +18,66 @@ jobs:
     name: Validate PR Title
     runs-on: ubuntu-latest
     steps:
-      - name: semantic-pull-request
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Filter Changed Files
+        uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            proto:
+              - 'specification/a2a.proto'
+            spec:
+              - 'docs/specification.md'
+
+      # Step 1: If docs/specification.md is modified (and proto is not), require docs(spec):
+      - name: Validate PR Title for Core Spec Changes
+        if: steps.filter.outputs.spec == 'true' && steps.filter.outputs.proto == 'false'
         uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           validateSingleCommit: false
+          types: |
+            docs
+          scopes: |
+            spec
+          requireScope: true
+
+      # Step 2: If protocol definition (proto) is modified, require feat/fix/chore/refactor
+      - name: Validate PR Title for Protocol Changes
+        if: steps.filter.outputs.proto == 'true'
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          validateSingleCommit: false
+          types: |
+            feat
+            fix
+            chore
+            refactor
+          disallowScopes: |
+            spec
+
+      # Step 3: General fallback for all other changes (non-core docs, CI, scripts, tools, etc.)
+      - name: Validate PR Title for General Changes
+        if: steps.filter.outputs.proto == 'false' && steps.filter.outputs.spec == 'false'
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          validateSingleCommit: false
+          types: |
+            docs
+            chore
+            ci
+            test
+            refactor
+            style
+            perf
+            build
+            revert
+          disallowScopes: |
+            spec
