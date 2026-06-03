@@ -70,10 +70,30 @@
   line-height: 1.4;
 }
 
-.announce .md-button {
-  font-size: 0.8em;
-  padding: 0.3em 1em;
-  margin-left: 0.5em;
+.md-banner__inner:has(.md-banner__hackathon) {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 0.8em;
+  align-items: center;
+}
+
+.md-banner__hackathon {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin: 0;
+}
+
+.md-banner__hackathon .md-button {
+  margin-left: auto;
+  padding: 0.2em 0.6em;
+}
+
+.md-banner__inner:has(.md-banner__hackathon) .md-banner__button {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  align-self: center;
 }
 
 h1#agent2agent-a2a-protocol {
