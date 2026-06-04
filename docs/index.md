@@ -71,9 +71,11 @@ Welcome to the **official documentation** for the **Agent2Agent (A2A) Protocol**
 
     [:fontawesome-brands-java: Java](https://github.com/a2aproject/a2a-java)
 
-    [:octicons-code-24: C#/.NET](https://github.com/a2aproject/a2a-dotnet)
+    [:material-language-csharp: C#/.NET](https://github.com/a2aproject/a2a-dotnet)
 
     [:fontawesome-brands-golang: Golang](https://github.com/a2aproject/a2a-go)
+
+    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rust)
 
 </div>
 
