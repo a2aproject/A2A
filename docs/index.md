@@ -13,9 +13,7 @@ hide:
 
 ## What is A2A Protocol?
 
-Welcome to the **official documentation** for the **Agent2Agent (A2A) Protocol**, an open standard designed to enable seamless communication and collaboration between AI agents.
-
-Originally developed by Google and now donated to the Linux Foundation, A2A provides the definitive common language for agent interoperability in a world where agents are built using diverse frameworks and by different vendors.
+Welcome to the **official documentation** for the **Agent2Agent (A2A) Protocol** — an open standard for seamless communication and collaboration between AI agents. In a world where agents are built using diverse frameworks and by different vendors, A2A provides the definitive common language for agent interoperability.
 
 !!! abstract ""
     Build with
@@ -29,7 +27,7 @@ Originally developed by Google and now donated to the Linux Foundation, A2A prov
 
 <div class="grid cards" markdown>
 
-- :material-play-circle:{ .lg .middle } **Video** Intro in <8 min
+- :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
 
     <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -79,7 +77,23 @@ Originally developed by Google and now donated to the Linux Foundation, A2A prov
 
 </div>
 
-## Why use the A2A Protocol
+## How A2A Works with MCP
+
+![A2A MCP Graphic](assets/a2a-mcp-readme.png){width="60%"}
+{style="text-align: center; margin-bottom:1em; margin-top:1em;"}
+
+The Model Context Protocol (MCP) and the A2A Protocol are not competitors — they are highly complementary. They solve two different problems and are designed to work together.
+
+- **MCP is for agent-to-tool communication:** it standardizes how an agent connects to its tools, APIs, and resources to get information. See [Model Context Protocol](https://modelcontextprotocol.io/).
+- **A2A is for agent-to-agent communication:** as a universal, decentralized standard, A2A lets independent agents — including those using MCP — discover each other, delegate tasks, and share results.
+
+Use MCP to equip an individual agent with the specific tools it needs to do its job (e.g., access to a GitHub repository or a SQL database). Use A2A to let that specialized agent securely collaborate with other agents across different frameworks.
+
+> Equip the agent with MCP; build the agent's network with A2A.
+
+[:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
+
+## Key Features
 
 <div style="text-align:center">
 
@@ -113,18 +127,27 @@ graph LR
 
     Agents interact without needing to share internal memory, tools, or proprietary logic, ensuring security and preserving intellectual property.
 
+- :material-puzzle-outline:{ .lg .middle } **Extensible**
+
+    Add capabilities through formal protocol [extensions and custom bindings](./topics/extension-and-binding-governance.md), governed by a tiered promotion process so the core stays stable.
+
 </div>
 
----
+## What A2A Is Not
 
-## How does A2A work with MCP?
+A2A is a focused protocol. To set expectations, here is what it explicitly does not try to be:
 
-![A2A MCP Graphic](assets/a2a-mcp-readme.png){width="60%"}
-{style="text-align: center; margin-bottom:1em; margin-top:1em;"}
+- **Not an agent development kit** like LangGraph, CrewAI, or ADK for building agentic applications. A2A is the communication layer between agents built with any of these.
+- **Not a sub-agent or tool-call protocol.** A2A does not specify how an agent talks to its own sub-agents or how it invokes tools — use your framework's native primitives, or MCP, for those.
+- **Not a replacement for [MCP](https://modelcontextprotocol.io/).** MCP standardizes agent-to-tool communication; A2A standardizes agent-to-agent communication. They are complementary (see [above](#how-a2a-works-with-mcp)).
+- **Not an interactive messaging app** like Slack, Discord, WhatsApp, or Telegram. A2A is a machine-to-machine protocol for autonomous agents.
 
-A2A and [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) are complementary standards for building robust agentic applications:
+## Governance & Open Source
 
-- **Model Context Protocol (MCP)**: Provides [agent-to-tool communication](https://cloud.google.com/discover/what-is-model-context-protocol). It's a complementary standard that standardizes how an agent connects to its tools, APIs, and resources to get information.
-- **IBM ACP**: [Incorporated into the A2A Protocol](https://github.com/orgs/i-am-bee/discussions/5)
-- **Cisco agntcy**: A framework that provides components to the Internet of Agents with discovery, group communication, identity and observability and leverages A2A and MCP for agent communication and tool calling.
-- **A2A**: Provides agent-to-agent communication. As a universal, decentralized standard, A2A acts as the public internet that allows [ai agents](https://cloud.google.com/discover/what-are-ai-agents)—including those using MCP, or built with frameworks like agntcy—to interoperate, collaborate, and share their findings.
+A2A was originally developed by Google and donated to the Linux Foundation. It is maintained by a Technical Steering Committee with representatives from AWS, Cisco, Google, IBM Research, Microsoft, Salesforce, SAP, and ServiceNow, and supported by a broad community of [partners](./partners.md).
+
+For details on how the project is run, see [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md) and [`MAINTAINERS.md`](https://github.com/a2aproject/A2A/blob/main/MAINTAINERS.md).
+
+## License
+
+The A2A Protocol is licensed under the [Apache License 2.0](https://github.com/a2aproject/A2A/blob/main/LICENSE) and welcomes [contributions](https://github.com/a2aproject/A2A/blob/main/CONTRIBUTING.md) from the community.
