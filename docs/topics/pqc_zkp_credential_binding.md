@@ -105,8 +105,8 @@ Specified in [`draft-hopley-x402-composite-trust-query`](https://datatracker.iet
 
 | Reference | Subject |
 | --- | --- |
-| [`draft-hopley-x402-pqc-credential-binding-00`](https://datatracker.ietf.org/doc/draft-hopley-x402-pqc-credential-binding-00/) | Falcon-1024 / ML-DSA-65 (NIST FIPS 204/206) credential binding to A2A payment authorization |
-| [`draft-hopley-x402-federation-zkp-00`](https://datatracker.ietf.org/doc/draft-hopley-x402-federation-zkp-00/) | Cross-issuer ZKP composition; composite commitment: `SHA-256(domain ‖ comm_0 ‖ … ‖ nonce)` |
+| [`draft-hopley-x402-pqc-credential-binding-00`](https://datatracker.ietf.org/doc/draft-hopley-x402-pqc-credential-binding-00/) | Falcon-1024 / ML-DSA-65 (NIST FIPS 204/206) credential binding to A2A payment authorization — under IETF review |
+| [`draft-hopley-x402-federation-zkp-00`](https://datatracker.ietf.org/doc/draft-hopley-x402-federation-zkp-00/) | Cross-issuer ZKP composition; composite commitment: `SHA-256(domain ‖ comm_0 ‖ … ‖ nonce)` — under IETF review |
 | [`draft-hopley-x402-composite-trust-query`](https://datatracker.ietf.org/doc/draft-hopley-x402-composite-trust-query/) | Composite trust verdict — open PR #1896 |
 | [IACR ePrint 2026/109852](https://eprint.iacr.org/2026/109852) | *"Agent Trust Bench: Adversarial Payment Profiling for Autonomous Agents with Post-Quantum Credential Binding and Cross-Issuer Federation"* — under IACR editor review |
 
