@@ -214,7 +214,7 @@ The v1.0 release focuses on four major themes:
 - ✅ `state`: **BREAKING** - Enum values changed from lowercase to `SCREAMING_SNAKE_CASE` with `TASK_STATE_` prefix
     - v0.3.0: `"submitted"`, `"working"`, `"completed"`, `"failed"`, `"canceled"`, `"rejected"`, `"input-required"`, `"auth-required"`
     - v1.0: `"TASK_STATE_SUBMITTED"`, `"TASK_STATE_WORKING"`, `"TASK_STATE_COMPLETED"`, `"TASK_STATE_FAILED"`, `"TASK_STATE_CANCELED"`, `"TASK_STATE_REJECTED"`, `"TASK_STATE_INPUT_REQUIRED"`, `"TASK_STATE_AUTH_REQUIRED"`
-- ✅ `timestamp`: Now explicitly ISO 8601 UTC with millisecond precision (YYYY-MM-DDTHH:mm:ss.sssZ)
+- ✅ `timestamp`: Now explicitly ISO 8601 UTC with millisecond precision (`YYYY-MM-DDTHH:mm:ss.sssZ`)
 
 **Removed Fields:**
 
@@ -586,7 +586,7 @@ v1.0 introduces several new formal dependencies on industry-standard specificati
 
 - **Purpose:** Timestamp format standard
 - **Usage:** All timestamp fields (createdAt, lastModified, timestamp)
-- **Impact:** Explicit format requirement: UTC with millisecond precision (YYYY-MM-DDTHH:mm:ss.sssZ)
+- **Impact:** Explicit format requirement: UTC with millisecond precision (`YYYY-MM-DDTHH:mm:ss.sssZ`)
 
 ### Existing Dependencies (Retained from v0.3.0)
 
