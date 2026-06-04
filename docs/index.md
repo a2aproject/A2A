@@ -1,39 +1,58 @@
 ---
 hide:
   - toc
+  - navigation
 ---
 
 <!-- markdownlint-disable MD041 -->
-<div style="text-align: center;">
+<div style="text-align: center;" markdown>
   <div class="centered-logo-text-group">
-    <img src="assets/a2a-logo-black.svg" alt="Agent2Agent Protocol Logo" width="100">
-    <h1>Agent2Agent (A2A) Protocol</h1>
+    <h1><img src="assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="500"></h1>
   </div>
+
+  <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
+
+  [Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
+  [Read the spec](./specification.md){ .md-button }
 </div>
 
 ## What is A2A Protocol?
 
-Welcome to the **official documentation** for the **Agent2Agent (A2A) Protocol** — an open standard for seamless communication and collaboration between AI agents. In a world where agents are built using diverse frameworks and by different vendors, A2A provides the definitive common language for agent interoperability.
+The **Agent2Agent (A2A) Protocol** is an open standard for seamless communication and collaboration between AI agents. In a world where agents are built using diverse frameworks and by different vendors, A2A provides the definitive common language for agent interoperability.
 
 !!! abstract ""
     Build with
     **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
     equip with **[![MCP Logo](https://modelcontextprotocol.io/mcp.png){class="twemoji lg middle"} MCP](https://modelcontextprotocol.io)** _(or any tool)_,
     and communicate with
-    **![A2A Logo](./assets/a2a-logo-black.svg){class="twemoji lg middle"} A2A**,
+    **![A2A Logo](./assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg){class="twemoji lg middle"} A2A**,
     to remote agents, local agents, and humans.
+
+## Key Features
+
+<div class="grid cards" markdown>
+
+- :material-account-group-outline:{ .lg .middle } **Interoperability**
+
+    Connect agents built on different platforms (LangGraph, CrewAI, Semantic Kernel, custom solutions) to create powerful, composite AI systems.
+
+- :material-lan-connect:{ .lg .middle } **Complex Workflows**
+
+    Enable agents to delegate sub-tasks, exchange information, and coordinate actions to solve complex problems that a single agent cannot.
+
+- :material-shield-key-outline:{ .lg .middle } **Secure & Opaque**
+
+    Agents interact without needing to share internal memory, tools, or proprietary logic, ensuring security and preserving intellectual property.
+
+- :material-puzzle-outline:{ .lg .middle } **Extensible**
+
+    Add capabilities through formal protocol [extensions and custom bindings](./topics/extension-and-binding-governance.md), governed by a tiered promotion process so the core stays stable.
+
+</div>
 
 ## Get started with A2A
 
 <div class="grid cards" markdown>
-
-- :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
-
-    <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://deeplearning.ai) - Intro to A2A
-
-    [![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
 
 - :material-book-open:{ .lg .middle } **Read the Introduction**
 
@@ -53,9 +72,7 @@ Welcome to the **official documentation** for the **Agent2Agent (A2A) Protocol**
 
     Build your first A2A-compliant agent with our step-by-step Python quickstart.
 
-    [:octicons-arrow-right-24: Python Tutorial](./tutorials/python/1-introduction.md)
-
-    [:octicons-arrow-right-24: Walkthrough with AI Agent Frameworks](https://github.com/holtskinner/A2AWalkthrough)
+    [:octicons-arrow-right-24: Hands-on-Tutorial](./tutorials/python/1-introduction.md)
 
 - :material-code-braces:{ .lg .middle } **Explore Code Samples**
 
@@ -77,12 +94,17 @@ Welcome to the **official documentation** for the **Agent2Agent (A2A) Protocol**
 
     [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rust)
 
+- :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
+
+    <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://deeplearning.ai) - Intro to A2A
+
+    [![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
+
 </div>
 
 ## How A2A Works with MCP
-
-![A2A MCP Graphic](assets/a2a-mcp-readme.png){width="60%"}
-{style="text-align: center; margin-bottom:1em; margin-top:1em;"}
 
 The Model Context Protocol (MCP) and the A2A Protocol are not competitors — they are highly complementary. They solve two different problems and are designed to work together.
 
@@ -91,49 +113,26 @@ The Model Context Protocol (MCP) and the A2A Protocol are not competitors — th
 
 Use MCP to equip an individual agent with the specific tools it needs to do its job (e.g., access to a GitHub repository or a SQL database). Use A2A to let that specialized agent securely collaborate with other agents across different frameworks.
 
-> Equip the agent with MCP; build the agent's network with A2A.
-
-[:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
-
-## Key Features
-
 <div style="text-align:center">
 
 ```mermaid
-graph LR
+flowchart LR
     User(🧑‍💻 User) <--> ClientAgent(🤖 Client Agent)
-    ClientAgent --> A2A1(**↔️ A2A**) --> RemoteAgent1(🤖 Remote Agent 1)
-    ClientAgent --> A2A2(**↔️ A2A**) --> RemoteAgent2(🤖 Remote Agent 2)
+    RemoteAgent(🤖 Remote Agent)
+    RemoteTool(⚙️ Remote Tool)
+    ClientAgent -- Using <img src="assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg" alt="Agent2Agent Protocol Logo" height="40" width="40"> --> RemoteAgent
+    ClientAgent -- Using <img src="https://modelcontextprotocol.io/mcp.png" alt="Agent2Agent Protocol Logo" height="40" width="40"> --> RemoteTool
+
 
     style User fill:#fdebd0,stroke:#e67e22,stroke-width:2px
     style ClientAgent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-    style RemoteAgent1 fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-    style RemoteAgent2 fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-    style A2A1 fill:#ebedef,stroke:#909497,stroke-width:2px
-    style A2A2 fill:#ebedef,stroke:#909497,stroke-width:2px
+    style RemoteAgent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
+    style RemoteTool fill:#d6eaf8,stroke:#3498db,stroke-width:2px
 ```
 
 </div>
 
-<div class="grid cards" markdown>
-
-- :material-account-group-outline:{ .lg .middle } **Interoperability**
-
-    Connect agents built on different platforms (LangGraph, CrewAI, Semantic Kernel, custom solutions) to create powerful, composite AI systems.
-
-- :material-lan-connect:{ .lg .middle } **Complex Workflows**
-
-    Enable agents to delegate sub-tasks, exchange information, and coordinate actions to solve complex problems that a single agent cannot.
-
-- :material-shield-key-outline:{ .lg .middle } **Secure & Opaque**
-
-    Agents interact without needing to share internal memory, tools, or proprietary logic, ensuring security and preserving intellectual property.
-
-- :material-puzzle-outline:{ .lg .middle } **Extensible**
-
-    Add capabilities through formal protocol [extensions and custom bindings](./topics/extension-and-binding-governance.md), governed by a tiered promotion process so the core stays stable.
-
-</div>
+[:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
 
 ## What A2A Is Not
 
