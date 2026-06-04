@@ -53,8 +53,8 @@ Both are **only present for Phase 2 ATB sessions**. All existing A2A flows are u
    Body: { "skill": "verify-payment", "tx_id": "...", "network": "...", "token": "..." }
 
 3. ← Task completed:
-   result.data.zkp_receipt_payload  = <unsigned ZKP receipt payload>
-   result.data.composite_trust_verdict = "TRUSTED"
+   task.artifacts[0].parts[0].data.zkp_receipt_payload  = <unsigned ZKP receipt payload>
+   task.artifacts[0].parts[0].data.composite_trust_verdict = "TRUSTED"
    Spend cap decremented by payment amount
 ```
 
