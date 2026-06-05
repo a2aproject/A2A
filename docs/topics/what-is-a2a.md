@@ -27,8 +27,8 @@ task involves orchestrating multiple specialized agents, such as:
 Without A2A, integrating these diverse agents presents several challenges:
 
 - **Agent Exposure**: Developers often wrap agents as tools to expose them to
-    other agents, similar to how tools are exposed in a Multi-agent Control
-    Platform (Model Context Protocol). However, this approach is inefficient because agents are
+    other agents, similar to how tools are exposed through the Model Context
+    Protocol (MCP). However, this approach is inefficient because agents are
     designed to negotiate directly. Wrapping agents as tools limits their capabilities.
     A2A allows agents to be exposed as they are, without requiring this wrapping.
 - **Custom Integrations**: Each interaction requires custom, point-to-point
