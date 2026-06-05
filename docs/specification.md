@@ -1850,7 +1850,7 @@ Host: example.com
 ```http
 POST /token HTTP/1.1
 Host: authorization-server.example.com
-Authorization: Basic dXNlcjpwYXNz
+Authorization: Basic ...
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
@@ -1860,7 +1860,7 @@ grant_type=client_credentials
 
 ```json
 {
-  "access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "access_token":"eyJ...",
   "token_type":"Bearer"
 }
 ```
@@ -1870,7 +1870,7 @@ grant_type=client_credentials
 ```http
 GET /extendedAgentCard HTTP/1.1
 Host: agent.example.com
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer eyJ...
 ```
 
 **Response:**
