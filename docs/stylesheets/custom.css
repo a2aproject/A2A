@@ -70,15 +70,18 @@
   line-height: 1.4;
 }
 
-/* stylelint-disable selector-class-pattern -- Material uses BEM `__` class names */
-.md-banner__inner:has(.md-banner__hackathon) {
+/* Announcement bar: right-align the call-to-action button and vertically
+   center both it and the dismiss icon. Each announcement is wrapped in a
+   <p>. Material uses BEM `__` class names, hence the stylelint exception. */
+/* stylelint-disable selector-class-pattern */
+.md-banner__inner {
   display: grid;
   grid-template-columns: 1fr auto;
   column-gap: 0.8em;
   align-items: center;
 }
 
-.md-banner__hackathon {
+.md-banner__inner > p {
   grid-column: 1;
   display: flex;
   align-items: center;
@@ -86,12 +89,12 @@
   margin: 0;
 }
 
-.md-banner__hackathon .md-button {
+.md-banner__inner .md-button {
   margin-left: auto;
   padding: 0.2em 0.6em;
 }
 
-.md-banner__inner:has(.md-banner__hackathon) .md-banner__button {
+.md-banner__button {
   grid-column: 2;
   grid-row: 1 / -1;
   align-self: center;
