@@ -120,6 +120,115 @@ The following is an example of an Agent Card with an extension:
 }
 ```
 
+### Example: Scoped Authorization Receipt Extension
+
+Some enterprise deployments need a client to prove that a runtime policy system
+admitted a high-impact action before an agent processes it. For example,
+transport authentication can show that a client is allowed to reach an A2A
+server, while a scoped authorization receipt can show that a specific
+client-requested action was admitted for a particular task, resource, request
+digest, policy version, and expiry. The A2A server or downstream provider still
+needs to enforce its own business authorization before mutating state.
+
+An extension can advertise those requirements through the Agent Card without
+changing the core Agent Card schema. The extension URI identifies the extension
+specification, and the `params` object carries extension-defined metadata:
+
+```json
+{
+  "name": "Expense Approval Agent",
+  "description": "An agent that can prepare and submit expense approvals.",
+  "version": "1.0.0",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/agents/expense-approval",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "capabilities": {
+    "extensions": [
+      {
+        "uri": "https://example.com/ext/scoped-authorization-receipts/v1",
+        "description": "Requires scoped authorization receipts for high-impact actions.",
+        "required": true,
+        "params": {
+          "authority_manifest_uri": "https://example.com/.well-known/authority-manifest.json",
+          "authorization_contract_uri": "https://example.com/contracts/expense-approval/v1",
+          "receipt_required_for": [
+            "expense.submit",
+            "expense.approve"
+          ],
+          "receipt_transport": {
+            "type": "http_header",
+            "name": "Authorization-Receipt"
+          },
+          "receipt_binds": [
+            "agent_card_digest",
+            "task_id",
+            "message_id",
+            "action",
+            "resource",
+            "request_digest",
+            "policy_version",
+            "expires_at",
+            "audience"
+          ],
+          "receipt_verification": {
+            "format": "JWS",
+            "canonicalization": "profile-defined",
+            "algorithms": ["ES256"],
+            "jwks_uri": "https://example.com/.well-known/authorization-receipts/jwks.json"
+          },
+          "receipt_profile_uri": "https://example.com/profiles/payment-compliance-receipt/v1"
+        }
+      }
+    ]
+  },
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "expense_approval",
+      "name": "Expense approval",
+      "description": "Prepare and submit expense approvals.",
+      "tags": ["expenses", "approvals"]
+    }
+  ]
+}
+```
+
+In this example, `receipt_profile_uri` points to a separate profile that defines
+the receipt's outcome vocabulary and verifier rules. Keeping the profile outside
+the Agent Card lets one extension advertise the generic transport and binding
+requirements while domain-specific profiles define closed categorical outcomes,
+such as a payment-compliance verdict and basis enumeration. Implementations
+should avoid relying on open-ended receipt status strings for decisions that
+must be independently audited.
+
+The referenced profile should define how a verifier reaches the same answer as
+the receipt issuer. At minimum, this includes the closed outcome vocabulary,
+canonical request digest construction, which fields are signed and which are
+referenced, freshness and replay handling, verifier key discovery, and profile
+versioning. Where a verdict basis or policy rationale contains sensitive
+details, the profile can use a categorical value or reference instead of placing
+the full rationale in signed receipt bytes. The `JWS` format and `ES256`
+algorithm above are illustrative; profiles should define their supported
+verification formats and algorithms, and may use other trust or attestation
+mechanisms.
+
+Receipt-consuming agents should reject receipts that are expired, intended for a
+different audience, or bound to a different task, message, action, resource,
+request digest, or policy version before executing the requested action. This
+helps prevent receipt replay and scope drift when a client retries a request or
+changes the requested operation.
+
+This extension only advertises receipt metadata and verification requirements.
+It does not prove that the requested action was executed, that an external
+system accepted the receipt outcome, that a profile's outcome vocabulary is
+normative for all A2A agents, or that private policy basis is exposed in the
+Agent Card.
+
 ## Required Extensions
 
 While extensions generally offer optional functionality, some agents may have
