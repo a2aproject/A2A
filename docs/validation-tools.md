@@ -125,18 +125,18 @@ For CI pipelines, start with the smallest validation scope that catches the
 failure mode you care about:
 
 - Agent implementation repositories can run the TCK against a local test server
-    and publish the generated `reports/` artifacts.
+  and publish the generated `reports/` artifacts.
 - SDK repositories can run ITK scenarios against a "current" SDK checkout and
-    stable reference SDK agents.
+  stable reference SDK agents.
 - Nightly pipelines can run broader ITK matrices and publish metrics for the
-    centralized dashboard.
+  centralized dashboard.
 
 When integrating ITK into an SDK repository, provide:
 
 - An instruction-handling test agent for the SDK.
 - Scenario definitions for PR and nightly validation.
 - A runner script that checks out the ITK revision, mounts the SDK workspace,
-    starts the required agent cluster, and verifies the result artifacts.
+  starts the required agent cluster, and verifies the result artifacts.
 
 See the ITK repository for production integration examples in the Python and Go
 SDK repositories.
