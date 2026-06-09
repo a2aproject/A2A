@@ -176,7 +176,7 @@ specification, and the `params` object carries extension-defined metadata:
           ],
           "receipt_verification": {
             "format": "JWS",
-            "canonicalization": "jcs-rfc8785-v1",
+            "canonicalization": "rfc8785-json-canonicalization-v1",
             "algorithms": ["ES256"],
             "jwks_uri": "https://example.com/.well-known/authorization-receipts/jwks.json"
           },
@@ -211,7 +211,7 @@ the receipt issuer. At minimum, this includes the closed outcome vocabulary,
 canonical request digest construction, a single named canonicalization and
 projection that independent issuers and verifiers can reproduce, which fields
 are signed and which are referenced, freshness and replay handling, verifier
-key discovery, and profile versioning. A value such as `jcs-rfc8785-v1` is
+key discovery, and profile versioning. A value such as `rfc8785-json-canonicalization-v1` is
 illustrative; the important property is that the referenced profile pins one
 concrete scheme rather than leaving canonicalization open at verification time.
 Where a verdict basis or policy rationale contains sensitive details, the
