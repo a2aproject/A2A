@@ -176,7 +176,7 @@ specification, and the `params` object carries extension-defined metadata:
           ],
           "receipt_verification": {
             "format": "JWS",
-            "canonicalization": "profile-defined",
+            "canonicalization": "jcs-rfc8785-v1",
             "algorithms": ["ES256"],
             "jwks_uri": "https://example.com/.well-known/authorization-receipts/jwks.json"
           },
@@ -208,14 +208,17 @@ must be independently audited.
 
 The referenced profile should define how a verifier reaches the same answer as
 the receipt issuer. At minimum, this includes the closed outcome vocabulary,
-canonical request digest construction, which fields are signed and which are
-referenced, freshness and replay handling, verifier key discovery, and profile
-versioning. Where a verdict basis or policy rationale contains sensitive
-details, the profile can use a categorical value or reference instead of placing
-the full rationale in signed receipt bytes. The `JWS` format and `ES256`
-algorithm above are illustrative; profiles should define their supported
-verification formats and algorithms, and may use other trust or attestation
-mechanisms.
+canonical request digest construction, a single named canonicalization and
+projection that independent issuers and verifiers can reproduce, which fields
+are signed and which are referenced, freshness and replay handling, verifier
+key discovery, and profile versioning. A value such as `jcs-rfc8785-v1` is
+illustrative; the important property is that the referenced profile pins one
+concrete scheme rather than leaving canonicalization open at verification time.
+Where a verdict basis or policy rationale contains sensitive details, the
+profile can use a categorical value or reference instead of placing free-form
+rationale text in signed receipt bytes. The `JWS` format and `ES256` algorithm
+above are illustrative; profiles should define their supported verification
+formats and algorithms, and may use other trust or attestation mechanisms.
 
 Receipt-consuming agents should reject receipts that are expired, intended for a
 different audience, or bound to a different task, message, action, resource,
