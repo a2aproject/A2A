@@ -86,8 +86,8 @@ Originally developed by Google and now donated to the Linux Foundation, A2A prov
 ```mermaid
 graph LR
     User(🧑‍💻 User) <--> ClientAgent(🤖 Client Agent)
-    ClientAgent --> A2A1(**↔️ A2A**) --> RemoteAgent1(🤖 Remote Agent 1)
-    ClientAgent --> A2A2(**↔️ A2A**) --> RemoteAgent2(🤖 Remote Agent 2)
+    ClientAgent --> A2A1("`**↔️ A2A**`") --> RemoteAgent1(🤖 Remote Agent 1)
+    ClientAgent --> A2A2("`**↔️ A2A**`") --> RemoteAgent2(🤖 Remote Agent 2)
 
     style User fill:#fdebd0,stroke:#e67e22,stroke-width:2px
     style ClientAgent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
