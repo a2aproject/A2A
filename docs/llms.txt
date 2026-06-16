@@ -60,6 +60,7 @@ Represents a stateful unit of work.
 ### 2.6 TaskPushNotificationConfig
 Associates a webhook push-notification configuration with a task (for asynchronous updates).
 - `task_id`, `id`: Identifiers for the task and this configuration.
+- `tenant`: Optional opaque routing identifier; must match the `tenant` of the selected `AgentInterface` when set.
 - `url`: Webhook URL where notifications are delivered.
 - `token`: Token unique to this task/session for validation.
 - `authentication`: `AuthenticationInfo` (`scheme`, `credentials`).
