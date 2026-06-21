@@ -46,7 +46,7 @@ TYPE_MAP = {
 # name, so we build a {TypeName: "#numbered-anchor"} map by scanning the spec
 # headers and use it to emit links that actually resolve. Types with no
 # dedicated header render as plain text (no broken link).
-_ANCHOR_MAP: dict[str, str] | None = None
+_ANCHOR_MAP: dict[str, str] = {}
 
 # Matches numbered section headers whose title is a single type name, e.g.
 # "#### 4.1.4. Message" or "### 8.4. AgentCardSignature".
@@ -291,7 +291,7 @@ def _format_type_for_docs(
     # Types without a dedicated header render as plain text to avoid dead links.
     label = f'`{display_name}`'
     if not is_primitive:
-        anchor = (_ANCHOR_MAP or {}).get(display_name)
+        anchor = _ANCHOR_MAP.get(display_name)
         if anchor:
             label = f'[{label}]({anchor})'
 
