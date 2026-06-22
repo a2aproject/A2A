@@ -7,18 +7,24 @@ on:
     paths:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
+      - "scripts/build_docs.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
+      - ".mkdocs/**"
+      - "specification/a2a.proto"
   pull_request:
     branches:
       - main
     paths:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
+      - "scripts/build_docs.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
+      - ".mkdocs/**"
+      - "specification/a2a.proto"
   release:
     types:
       - published
