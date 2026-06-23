@@ -5,6 +5,7 @@ package lf.a2a.v1;
 import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
+import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/timestamp.proto";
@@ -40,6 +41,21 @@ service A2AService {
       }
     };
   }
+  // Opens a bidirectional live session with an agent. The client streams
+  // `LiveRequest`s (turns and/or continuous media frames) and the agent streams
+  // back `LiveResponse`s (task events and/or media frames). The session is bound
+  // to the `Task` established by the opening `SendMessageRequest` and lives for
+  // the duration of the stream.
+  //
+  // A `message` frame is semantically identical to a standalone `SendMessageRequest`;
+  // this method does not change the semantics of sending a message to a task. It
+  // adds a media plane (`MediaFrame`) for full-duplex audio/video and a single
+  // long-lived connection (useful for latency and server affinity).
+  //
+  // This method requires a transport that supports bidirectional streaming (e.g.,
+  // gRPC). It is gated by `AgentCapabilities.bidi_streaming`; media support is
+  // described by `AgentCapabilities.live_session`.
+  rpc SendLiveMessage(stream LiveRequest) returns (stream LiveResponse);
 
   // Gets the latest state of a task.
   rpc GetTask(GetTaskRequest) returns (Task) {
@@ -158,6 +174,25 @@ message SendMessageConfiguration {
   // terminal (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or interrupted
   // (`INPUT_REQUIRED`, `AUTH_REQUIRED`) state before returning.
   bool return_immediately = 4;
+  // Optional. The media offer for a live session, carried on the opening
+  // `SendMessageRequest` of a `SendLiveMessage` stream. Selects a concrete media
+  // configuration from what the agent advertises in `AgentCapabilities.live_session`.
+  // Omit for a text/turn-only live session. Ignored for non-live requests.
+  LiveSessionOffer live_session = 5;
+}
+
+// The media offer a client makes when opening a live session (via the opening
+// `SendMessageRequest` of a `SendLiveMessage` stream). The client selects a
+// concrete configuration from what the agent advertises in its Agent Card
+// (`AgentCapabilities.live_session`).
+message LiveSessionOffer {
+  // The modalities the client requests for the session, each with its direction,
+  // and optionally codec and sample rate.
+  repeated ModalitySpec modalities = 1;
+  // Optional. The requested maximum duration of the live session.
+  google.protobuf.Duration max_session_duration = 2;
+  // Optional. The requested idle timeout after which the session may be closed.
+  google.protobuf.Duration idle_timeout = 3;
 }
 
 // `Task` is the core unit of action for A2A. It has a current status
@@ -239,6 +274,42 @@ message Part {
   // The `media_type` (MIME type) of the part content (e.g., "text/plain", "application/json", "image/png").
   // This field is available for all part types.
   string media_type = 7;
+}
+
+// A single frame on the media plane of a live session (see `SendLiveMessage`).
+// Unlike `Message`, a `MediaFrame` is not a turn: it has no `message_id` or
+// `role`, so neither side treats it as a new agent invocation. It carries
+// continuous media (audio/video/binary) in either direction, plus lifecycle
+// signals such as start, stop, pause and interrupt (barge-in).
+message MediaFrame {
+  // The media content of this frame. The bytes typically reside in `Part.raw`
+  // with `Part.media_type` set (e.g., "audio/l16;rate=16000").
+  Part part = 1 [(google.api.field_behavior) = REQUIRED];
+  // A per-modality sequence number, increasing within a modality, used to detect
+  // loss and re-order frames. This is independent of any task-level ordering.
+  uint64 seq_num = 2;
+  // The index of the modality this frame belongs to, relative to the modalities
+  // negotiated for the session.
+  uint32 modality_index = 3;
+  // The lifecycle signal carried by this frame.
+  Event event = 4;
+
+  // The lifecycle signal of a media frame.
+  enum Event {
+    // The event is unspecified.
+    EVENT_UNSPECIFIED = 0;
+    // Marks the start of a modality stream.
+    EVENT_MEDIA_START = 1;
+    // Carries a chunk of media content for an active modality.
+    EVENT_MEDIA_DELTA = 2;
+    // Marks the end of a modality stream.
+    EVENT_MEDIA_STOP = 3;
+    // Pauses an active modality without ending it.
+    EVENT_MEDIA_PAUSE = 4;
+    // Signals an interruption (barge-in): the receiver SHOULD stop the current
+    // output for the relevant modality.
+    EVENT_INTERRUPT = 5;
+  }
 }
 
 // Defines the sender of a message in A2A protocol communication.
@@ -417,6 +488,57 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 4;
+  // Indicates if the agent supports bidirectional live sessions via `SendLiveMessage`.
+  // This is the marker for live/duplex support and applies to both text/turn-only
+  // sessions and media (audio/video) sessions. The supported media modalities,
+  // if any, are described by `live_session`.
+  optional bool bidi_streaming = 5;
+  // Optional. Describes the media modalities the agent supports within a live
+  // session. When omitted (or with empty `modalities`), live sessions are
+  // text/turn-only. The transport(s) carrying live sessions are taken from
+  // `supported_interfaces`, not repeated here.
+  LiveSessionCapabilities live_session = 6;
+}
+
+// Describes the media a live session can carry (see `SendLiveMessage`).
+message LiveSessionCapabilities {
+  // Per-modality media support. For each modality the agent advertises the
+  // direction(s), and optionally the codecs and sample rates it supports.
+  repeated ModalitySpec modalities = 1;
+  // Optional. The maximum duration the agent will keep a live session open.
+  google.protobuf.Duration max_session_duration = 2;
+  // Optional. The idle timeout after which the agent may close an inactive session.
+  google.protobuf.Duration idle_timeout = 3;
+}
+
+// A per-modality media specification. It is used both by an agent to advertise
+// support (in `LiveSessionCapabilities`, listing the full supported set) and by a
+// client to make an offer (in `LiveSessionOffer`, selecting one concrete
+// configuration per modality).
+message ModalitySpec {
+  // The media type of the modality (e.g., "audio/l16", "video/vp8").
+  string media_type = 1 [(google.api.field_behavior) = REQUIRED];
+  // The direction of media flow for this modality, relative to the client.
+  Directionality direction = 2;
+  // Optional. The codecs supported (when advertised) or selected (when offered).
+  repeated string codecs = 3;
+  // Optional. The sample rates in Hz supported (when advertised) or selected (when offered).
+  repeated int32 sample_rates = 4;
+}
+
+// The direction of media flow for a modality, mirroring the SDP direction
+// attributes (RFC 3264). Directions are expressed relative to the client.
+enum Directionality {
+  // Unspecified; treated as `DIRECTIONALITY_SENDRECV`.
+  DIRECTIONALITY_UNSPECIFIED = 0;
+  // Media flows in both directions.
+  DIRECTIONALITY_SENDRECV = 1;
+  // Media flows from the client to the agent only.
+  DIRECTIONALITY_SENDONLY = 2;
+  // Media flows from the agent to the client only.
+  DIRECTIONALITY_RECVONLY = 3;
+  // The modality is negotiated but no media is currently flowing.
+  DIRECTIONALITY_INACTIVE = 4;
 }
 
 // A declaration of a protocol extension supported by an Agent.
@@ -798,6 +920,34 @@ message StreamResponse {
     TaskStatusUpdateEvent status_update = 3;
     // An event indicating a task artifact update.
     TaskArtifactUpdateEvent artifact_update = 4;
+  }
+}
+
+// A client-to-server frame on a bidirectional live session (see `SendLiveMessage`).
+// It composes existing request types rather than modifying them.
+message LiveRequest {
+  // The payload of the live request.
+  oneof payload {
+    // A turn, or the opening message of the session. Semantically identical to a
+    // standalone `SendMessageRequest`. The opening message MAY carry a media
+    // offer in its `SendMessageConfiguration.live_session`.
+    SendMessageRequest message = 1;
+    // A media-plane frame (audio/video/binary) sent by the client.
+    MediaFrame frame = 2;
+  }
+}
+
+// A server-to-client frame on a bidirectional live session (see `SendLiveMessage`).
+// It embeds the existing `StreamResponse` unchanged and adds a media arm, so the
+// existing streaming responses are reused without modification.
+message LiveResponse {
+  // The payload of the live response.
+  oneof payload {
+    // A standard streaming event, identical to what `SendStreamingMessage` and
+    // `SubscribeToTask` return (task, message, or task update).
+    StreamResponse event = 1;
+    // A media-plane frame (e.g., synthesized audio) produced by the agent.
+    MediaFrame frame = 2;
   }
 }
 
