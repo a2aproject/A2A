@@ -671,7 +671,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#318-get-push-notification-config)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -2570,7 +2570,7 @@ Sends a message with streaming updates.
 
 {{ proto_to_table("SendMessageRequest") }}
 
-**Response:** Server streaming [`StreamResponse`](#stream-response) objects.
+**Response:** Server streaming [`StreamResponse`](#323-stream-response) objects.
 
 #### 10.4.3. GetTask
 
@@ -2612,7 +2612,7 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 {{ proto_to_table("SubscribeToTaskRequest") }}
 
-**Response:** Server streaming [`StreamResponse`](#stream-response) objects.
+**Response:** Server streaming [`StreamResponse`](#323-stream-response) objects.
 
 #### 10.4.7. CreateTaskPushNotificationConfig
 
