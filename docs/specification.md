@@ -2618,9 +2618,7 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 Creates a push notification configuration for a task.
 
-**Request:**
-
-{{ proto_to_table("TaskPushNotificationConfig") }}
+**Request:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
 **Response:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
