@@ -4,6 +4,17 @@ Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2
 
 ---
 
+## Meetings & Agenda
+
+Looking for the live community meeting schedule or past recordings?
+
+- [A2A meetings on the Linux Foundation platform](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent)
+- [TSC meeting agenda working doc](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view)
+
+These links are also referenced in [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md#tsc-meetings).
+
+---
+
 ## Recent News & Blog Posts
 
 Stay up-to-date with the latest announcements, tutorials, and insights from the A2A team and our community.
