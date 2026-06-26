@@ -70,7 +70,10 @@ jobs:
         run: uv pip install --system --upgrade -r requirements-docs.txt
 
       - name: Setup Buf
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+          version: "1.71.0"
 
       - name: Setup Go
         uses: actions/setup-go@v6
