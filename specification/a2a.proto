@@ -334,8 +334,9 @@ message AuthenticationInfo {
 // Declares a combination of a target URL, transport and protocol version for interacting with the agent.
 // This allows agents to expose the same functionality over multiple protocol binding mechanisms.
 message AgentInterface {
-  // The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
-  // Example: "https://api.example.com/a2a/v1", "https://grpc.example.com/a2a"
+  // The URL where this interface is available. For HTTP-based transports, must be a valid absolute
+  // HTTPS URL in production. For gRPC, the URL should be in the format "hostname:port".
+  // Example: "https://api.example.com/a2a/v1", "grpc.example.com:443"
   string url = 1 [(google.api.field_behavior) = REQUIRED];
   // The protocol binding supported at this URL. This is an open form string, to be
   // easily extended for other protocol bindings. The core ones officially
