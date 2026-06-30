@@ -14,6 +14,7 @@ collaborate effectively with each other and with users.
 - [AgentTrust](https://agenttrust.ai/)
 - [AI21 Labs](https://www.ai21.com/)
 - [AI71](https://ai71.ai/)
+- [Airia](https://airia.com/building-the-future-of-enterprise-ai-airia-expands-a2a-support-and-delivers-enterprise-grade-mcp-security/)
 - [Aisera](https://aisera.com/)
 - [AliCloud](http://www.alibabacloud.com)
 - [Almawave.it](https://www.almawave.com/it/)
