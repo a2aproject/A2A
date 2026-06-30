@@ -40,7 +40,7 @@
 <!-- markdownlint-disable MD041 -->
 <div style="text-align: center;">
   <div class="centered-logo-text-group">
-    <img src="docs/assets/a2a-logo-black.svg" alt="Agent2Agent Protocol Logo" width="100">
+    <img src="docs/assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="100">
     <h1>Agent2Agent (A2A) Protocol</h1>
   </div>
 </div>
@@ -97,6 +97,7 @@ As AI agents become more prevalent, their ability to interoperate is crucial for
     - [🧑‍💻 A2A JS SDK](https://github.com/a2aproject/a2a-js) `npm install @a2a-js/sdk`
     - [☕️ A2A Java SDK](https://github.com/a2aproject/a2a-java) using maven
     - [🔷 A2A .NET SDK](https://github.com/a2aproject/a2a-dotnet) using [NuGet](https://www.nuget.org/packages/A2A) `dotnet add package A2A`
+    - [🦀 A2A Rust SDK](https://github.com/a2aproject/a2a-rs) `cargo add a2a-lf`
 - 🎬 Use our [samples](https://github.com/a2aproject/a2a-samples) to see A2A in action
 
 ## Contributing
