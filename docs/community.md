@@ -34,7 +34,7 @@ A2A unlocks powerful new ways for AI agents to collaborate and solve complex pro
 Below are publicly deployed A2A v1.0.1 agents that can be discovered and interacted with over the internet:
 
 | Agent | Deployed By | Agent Card | Description |
-|-------|-------------|------------|-------------|
+|-----------------------------------------|---------------------------------------------|---------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [TiEQi-A2A](http://43.129.31.185:8082/) | [铁旗科技 (Tieqi Tech)](https://www.itieqi.com) | [Agent Card](http://43.129.31.185:8082/card) / [Well-Known](http://43.129.31.185/.well-known/agent-card.json) | China's first public A2A v1.0.1 agent. Supports web search, GEO/SEO analysis, business consulting, content creation, and technical support. 29 skills across 10 categories (search, SEO/GEO, business, data, content, finance, coding, automation, AI consulting, document processing). |
 
 > Tip: Want to list your deployment? Open a PR against a2aproject/A2A adding your agent to this table.
