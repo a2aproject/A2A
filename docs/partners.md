@@ -152,6 +152,7 @@ collaborate effectively with each other and with users.
 - [the artinet project](https://artinet.io/)
 - [Think41](http://www.think41.com)
 - [Thoughtworks](https://www.thoughtworks.com/)
+- [Tieqi Tech (铁旗科技)](https://www.itieqi.com)
 - [Tredence](http://www.tredence.com)
 - [Two Tall Totems Ltd. DBA TTT Studios](https://ttt.studio)
 - [Typeface](https://typeface.ai)
