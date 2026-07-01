@@ -472,7 +472,7 @@ The `historyLength` parameter appears in multiple operations and controls how mu
 
 #### 3.2.5. Metadata
 
-A flexible key-value map for passing additional context or parameters with operations. Metadata keys and are strings and values can be any valid value that can be represented in JSON. [`Extensions`](#46-extensions) can be used to strongly type metadata values for specific use cases.
+A flexible key-value map for passing additional context or parameters with operations. Metadata keys are strings and values can be any valid value that can be represented in JSON. [`Extensions`](#46-extensions) can be used to strongly type metadata values for specific use cases.
 
 #### 3.2.6 Service Parameters
 
