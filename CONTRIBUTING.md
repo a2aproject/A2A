@@ -117,10 +117,10 @@ maintainers and implementers to validate behavior consistently.
 
 Suggested minimum metadata per fixture proposal:
 
-- protocol area covered (for example: discovery, lifecycle, errors, streaming)
-- expected request/response shape or event sequence
-- pass/fail criteria that can be checked across SDKs
-- edge case rationale (why this fixture matters for interoperability)
+- Protocol area covered (for example: discovery, lifecycle, errors, streaming)
+- Expected request/response shape or event sequence
+- Pass/fail criteria that can be checked across SDKs
+- Edge case rationale (why this fixture matters for interoperability)
 
 For protocol-affecting fixture changes, link the related issue and document any
 specification assumptions directly in the PR description.
