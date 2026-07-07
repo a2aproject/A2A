@@ -31,10 +31,7 @@ Individual URIs under a prefix identify a specific artifact and, where applicabl
 its version—for example, `https://a2a-protocol.org/extensions/{name}/v1` or
 `https://a2a-protocol.org/bindings/{name}/v1`.
 
-These URIs are identifiers first. HTTP access to a URI under either prefix is
-only expected when an official specification has been published for that
-extension or binding. Paths that have no published specification are not
-required to resolve to a web page.
+These URIs are identifiers, HTTP access is not expected.
 
 ### Official
 
