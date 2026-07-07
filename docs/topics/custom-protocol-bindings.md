@@ -133,9 +133,8 @@ protocol bindings.
     The `https://a2a-protocol.org/bindings/` prefix is a canonical namespace
     for globally unique binding identifiers used in Agent Cards. Individual URIs
     under this prefix—such as
-    `https://a2a-protocol.org/bindings/{name}/v1`—identify a specific binding
-    and version. These URIs are identifiers first; HTTP access is only expected
-    when an official specification has been published for that binding. See
+    `https://a2a-protocol.org/bindings/{name}/v1` identify a specific binding
+    and version. These URIs are identifiers, HTTP access is not expected. See
     [URI namespaces](extension-and-binding-governance.md#uri-namespaces) in the
     governance documentation for details.
 
