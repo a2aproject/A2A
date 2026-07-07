@@ -140,6 +140,7 @@ collaborate effectively with each other and with users.
 - [SoftBank Corp](https://www.softbank.jp/en//)
 - [Solace](https://solace.com/products/agent-mesh/)
 - [Solo.io](https://www.solo.io/)
+- [Space Auto](https://space.auto/)
 - [Stacklok, Inc](https://stacklok.com)
 - [Strale](https://strale.dev)
 - [Supertab](https://www.supertab.co/post/supertab-connect-partners-with-google-cloud-to-enable-ai-agents)
