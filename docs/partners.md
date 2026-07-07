@@ -16,6 +16,7 @@ collaborate effectively with each other and with users.
 - [AI71](https://ai71.ai/)
 - [Airia](https://airia.com)
 - [Aisera](https://aisera.com/)
+- [AlgoVoi](https://algovoi.co.uk)
 - [AliCloud](http://www.alibabacloud.com)
 - [Almawave.it](https://www.almawave.com/it/)
 - [AmikoNet](https://amikonet.ai)
