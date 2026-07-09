@@ -14,6 +14,7 @@ collaborate effectively with each other and with users.
 - [AgentTrust](https://agenttrust.ai/)
 - [AI21 Labs](https://www.ai21.com/)
 - [AI71](https://ai71.ai/)
+- [Airia](https://airia.com)
 - [Aisera](https://aisera.com/)
 - [AlgoVoi](https://algovoi.co.uk)
 - [AliCloud](http://www.alibabacloud.com)
