@@ -11,6 +11,7 @@ collaborate effectively with each other and with users.
 - [Activeloop](https://www.activeloop.ai/)
 - [Adobe](https://www.adobe.com)
 - [AG2AI](https://ag2.ai)
+- [Agent Identity Protocol (AIP)](https://sunilprakash.com/aip/)
 - [AgentTrust](https://agenttrust.ai/)
 - [AI21 Labs](https://www.ai21.com/)
 - [AI71](https://ai71.ai/)
