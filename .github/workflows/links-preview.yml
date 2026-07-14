@@ -1,0 +1,93 @@
+# Temporary preview workflow for testing link checks from a feature branch.
+# Delete this file before merging links.yaml to main.
+name: Links (preview)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - lychee-automation
+
+jobs:
+  linkChecker:
+    runs-on: ubuntu-latest
+    if: github.repository == 'a2aproject/A2A'
+    permissions:
+      issues: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.13
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install documentation dependencies
+        run: uv pip install --system --upgrade -r requirements-docs.txt
+
+      - name: Setup Buf
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+          version: "1.71.0"
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+
+      - name: Install build tools
+        run: |
+          PROTOC_VERSION="28.3"
+          PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+          curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
+          sudo unzip -q /tmp/protoc.zip -d /usr/local
+          rm /tmp/protoc.zip
+
+          go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
+          sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
+
+          mkdir -p third_party
+          cd third_party
+          git clone --depth 1 https://github.com/googleapis/googleapis.git
+          cd ..
+
+      - name: Build docs
+        run: ./scripts/build_docs.sh
+
+      - name: Link Checker
+        id: lychee
+        continue-on-error: true
+        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
+        with:
+          args: '--config lychee.toml --exclude-path "(^|/)404\\.html$" site'
+          fail: true
+          output: lychee/out.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait before confirmation
+        if: steps.lychee.outcome == 'failure'
+        run: sleep 90
+
+      - name: Clear link cache before confirmation
+        if: steps.lychee.outcome == 'failure'
+        run: rm -rf .lycheecache
+
+      - name: Confirm broken links
+        id: lychee_confirm
+        if: steps.lychee.outcome == 'failure'
+        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
+        with:
+          args: '--config lychee.toml --max-retries 5 --retry-wait-time 10 --exclude-path "(^|/)404\\.html$" site'
+          fail: true
+          output: lychee/confirmed-out.md
+          token: ${{ secrets.GITHUB_TOKEN }}
