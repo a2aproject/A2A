@@ -85,8 +85,14 @@ fi
 # ADRs live outside docs/ but are linked from the specification page.
 if [ -d "$ROOT_DIR/adrs" ]; then
   mkdir -p "$ROOT_DIR/site/adrs"
-  cp "$ROOT_DIR/adrs"/*.md "$ROOT_DIR/site/adrs/"
-  echo "[build_docs] Published ADRs to site/adrs" >&2
+  (
+    shopt -s nullglob
+    files=("$ROOT_DIR/adrs"/*.md)
+    if [ ${#files[@]} -gt 0 ]; then
+      cp "${files[@]}" "$ROOT_DIR/site/adrs/"
+      echo "[build_docs] Published ADRs to site/adrs" >&2
+    fi
+  )
 fi
 
 echo "[build_docs] Done." >&2
