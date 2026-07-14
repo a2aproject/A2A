@@ -69,6 +69,7 @@ jobs:
         continue-on-error: true
         uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
         with:
+          lycheeVersion: "v0.22.0"
           args: '--config lychee.toml --exclude-path "(^|/)404\\.html$" site'
           fail: true
           output: lychee/out.md
@@ -87,6 +88,7 @@ jobs:
         if: steps.lychee.outcome == 'failure'
         uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
         with:
+          lycheeVersion: "v0.22.0"
           args: '--config lychee.toml --max-retries 5 --retry-wait-time 10 --exclude-path "(^|/)404\\.html$" site'
           fail: true
           output: lychee/confirmed-out.md
