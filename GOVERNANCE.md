@@ -11,7 +11,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | **Salesforce** | Stephen Petschulat | Principal Architect | [@spetschulatSFDC](https://github.com/spetschulatSFDC) |
 | **ServiceNow** | Sean Hughes | Director of Open Science | [@hughesthe1st](https://github.com/hughesthe1st) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
-| **IBM Research** | Kate Blair | Director of Incubation | [@geneknit](https://github.com/geneknit) |
+| **IBM** | Stefano Maestri | Principal Software Engineer | [@maeste](https://github.com/maeste) |
 
 ## Mission and Scope of the Project
 
