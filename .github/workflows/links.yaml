@@ -1,54 +1,117 @@
-name: Lychee Link Checker
+name: Links
 
 on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: "00 18 * * *"
-  pull_request:
+    - cron: "00 06 * * *"
 
 jobs:
-  check_links:
-    name: Check for Broken Links
+  linkChecker:
     runs-on: ubuntu-latest
-    if: |
-      github.repository == 'a2aproject/A2A'
+    if: github.repository == 'a2aproject/A2A'
+    permissions:
+      issues: write
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v7
-
-      - name: Get relevant changed files
-        id: changed-files
-        if: github.event_name == 'pull_request'
-        uses: tj-actions/changed-files@v47
         with:
-          files: |
-            **/*.md
-            **/*.mdx
-            **/*.html
-            **/*.htm
-            **/*.rst
-            **/*.txt
+          fetch-depth: 0
 
-      - name: Run Lychee on changed files (PR)
-        if: github.event_name == 'pull_request' && steps.changed-files.outputs.all_changed_files != ''
-        uses: lycheeverse/lychee-action@v2
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
-          args: --no-progress ${{ steps.changed-files.outputs.all_changed_files }}
-          failIfEmpty: false
+          python-version: 3.13
 
-      - name: Run Lychee on all files (Scheduled/Manual)
-        if: github.event_name != 'pull_request'
-        uses: lycheeverse/lychee-action@v2
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v7
         with:
-          args: --no-progress .
-          failIfEmpty: false
+          enable-cache: true
+
+      - name: Install documentation dependencies
+        run: uv pip install --system --upgrade -r requirements-docs.txt
+
+      - name: Setup Buf
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+          version: "1.71.0"
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+
+      - name: Install build tools
+        run: |
+          PROTOC_VERSION="28.3"
+          PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+          curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
+          sudo unzip -q /tmp/protoc.zip -d /usr/local
+          rm /tmp/protoc.zip
+
+          go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
+          sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
+
+          mkdir -p third_party
+          cd third_party
+          git clone --depth 1 https://github.com/googleapis/googleapis.git
+          cd ..
+
+      - name: Build docs
+        run: ./scripts/build_docs.sh
+
+      - name: Link Checker
+        id: lychee
+        continue-on-error: true
+        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
+        with:
+          args: '--config lychee.toml --exclude-path "(^|/)404\\.html$" site'
+          fail: true
+          output: lychee/out.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait before confirmation
+        if: steps.lychee.outcome == 'failure'
+        run: sleep 90
+
+      - name: Clear link cache before confirmation
+        if: steps.lychee.outcome == 'failure'
+        run: rm -rf .lycheecache
+
+      - name: Confirm broken links
+        id: lychee_confirm
+        if: steps.lychee.outcome == 'failure'
+        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
+        with:
+          args: '--config lychee.toml --max-retries 5 --retry-wait-time 10 --exclude-path "(^|/)404\\.html$" site'
+          fail: true
+          output: lychee/confirmed-out.md
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Issue on Failure
-        if: failure() && github.event_name != 'pull_request'
+        if: failure() && steps.lychee_confirm.outcome == 'failure' && github.event_name == 'schedule'
         uses: peter-evans/create-issue-from-file@v6
         with:
           title: Link Checker Report
-          content-filepath: ./lychee/out.md
+          content-filepath: ./lychee/confirmed-out.md
           labels: report, automated issue
+          reuse-issue: true
+
+      - name: Close resolved link checker issue
+        if: success() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          issue_number=$(gh issue list \
+            --label "automated issue" \
+            --label "report" \
+            --state open \
+            --search "Link Checker Report in:title" \
+            --json number \
+            --jq '.[0].number')
+          if [ -n "$issue_number" ] && [ "$issue_number" != "null" ]; then
+            gh issue close "$issue_number" \
+              --comment "Daily link check passed on confirmation; closing as resolved."
+          fi
