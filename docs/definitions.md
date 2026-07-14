@@ -22,7 +22,9 @@
 
     <h3>Download</h3>
 
-    You can download the schema file directly: [`a2a.json`](https://a2a-protocol.org/latest/spec/a2a.json)
+    You can download the version-specific schema file directly: [`a2a.json`](spec/a2a.json)
+
+    When viewing this source file on GitHub, use the [latest published schema](https://a2a-protocol.org/latest/spec/a2a.json) because the version-specific files are generated during documentation builds and are not committed to the repository.
 
     <h3>Definition</h3>
 
