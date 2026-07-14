@@ -95,6 +95,12 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 [actioncard/a2a-elixir](https://github.com/actioncard/a2a-elixir) · A2A spec v0.2.0 · OTP-native with Agent behaviour, TaskStore, and supervision tree.
 
+### ⚙️ C++ — a2a-cpp
+
+![Stars](https://img.shields.io/github/stars/MisterVVP/a2a-cpp?style=flat-square) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/MisterVVP/a2a-cpp/tck.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/MisterVVP/a2a-cpp/actions/workflows/tck.yml) [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square)](https://mistervvp.github.io/a2a-cpp/) [![vcpkg overlay](https://img.shields.io/badge/vcpkg-overlay%20port-blue?style=flat-square)](https://github.com/MisterVVP/a2a-cpp/tree/main/vcpkg-overlay-ports)
+
+[MisterVVP/a2a-cpp](https://github.com/MisterVVP/a2a-cpp) · A2A spec v1.0.0 · C++20 SDK with client/server APIs, discovery, REST/JSON-RPC/gRPC transports, streaming, authentication hooks, CMake/vcpkg build integration, and a TCK conformance workflow.
+
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues/new?title=Community%20SDK%20Submission) with a link to your repository and published package.
 
