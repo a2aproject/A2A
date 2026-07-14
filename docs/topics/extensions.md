@@ -63,6 +63,15 @@ proposed, developed, promoted, and maintained. Official extensions use the
 `a2aproject` organization with the `ext-` repository prefix (experimental
 extensions use `experimental-ext-`).
 
+!!! note "URI Namespaces"
+    The `https://a2a-protocol.org/extensions/` prefix is a canonical namespace
+    for globally unique extension identifiers used in Agent Cards and protocol
+    messages. Individual URIs under this prefix, such as
+    `https://a2a-protocol.org/extensions/{name}/v1` identify a specific
+    extension and version. These URIs are identifiers, HTTP access is not
+    expected. See [URI namespaces](extension-and-binding-governance.md#uri-namespaces)
+    in the governance documentation for details.
+
 For the full governance process—including tiers, lifecycle, SDK support, and
 legal requirements—see the
 [Extension and Protocol Binding Governance](extension-and-binding-governance.md)
