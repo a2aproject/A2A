@@ -184,7 +184,7 @@ The v1.0 release focuses on four major themes:
 
 - **✅ BREAKING:** All IDs are now simple literals
 - **✅ BREAKING:** Operations that previously used compound IDs now separate parent and resource ID
-    - Example: `tasks/{taskId}/pushNotificationConfigs/{configId}` → separate `task_id` and `config_id` fields
+    - Example: `tasks/{taskId}/pushNotificationConfigs/{configId}` → separate `task_id` and `id` fields
 - **✅ BENEFIT:** Simpler to implement - IDs map directly to database keys
 
 #### HTTP URL Path Simplification (#1269)
@@ -437,7 +437,7 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "kind": "taskStatusUpdate",
+  "kind": "status-update",
   "taskId": "...",
   "contextId": "...",
   "status": {...},
@@ -470,7 +470,7 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "kind": "taskArtifactUpdate",
+  "kind": "artifact-update",
   "taskId": "...",
   "contextId": "...",
   "artifact": {...}
@@ -648,9 +648,9 @@ Stream events changed from kind-based to wrapper-based discrimination:
 **Before (v0.3.0):**
 
 ```typescript
-if (event.kind === "taskStatusUpdate") {
+if (event.kind === "status-update") {
   handleStatusUpdate(event);
-} else if (event.kind === "taskArtifactUpdate") {
+} else if (event.kind === "artifact-update") {
   handleArtifactUpdate(event);
 }
 ```
