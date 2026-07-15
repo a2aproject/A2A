@@ -62,9 +62,11 @@ jobs:
       - name: Build docs
         run: ./scripts/build_docs.sh
 
+      - name: Clear link cache
+        run: rm -rf .lycheecache
+
       - name: Link Checker
         id: lychee
-        continue-on-error: true
         uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
         with:
           lycheeVersion: "v0.22.0"
@@ -73,31 +75,12 @@ jobs:
           output: lychee/out.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait before confirmation
-        if: steps.lychee.outcome == 'failure'
-        run: sleep 90
-
-      - name: Clear link cache before confirmation
-        if: steps.lychee.outcome == 'failure'
-        run: rm -rf .lycheecache
-
-      - name: Confirm broken links
-        id: lychee_confirm
-        if: steps.lychee.outcome == 'failure'
-        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
-        with:
-          lycheeVersion: "v0.22.0"
-          args: '--config lychee.toml --max-retries 5 --retry-wait-time 10 --exclude-path "(^|/)404\\.html$" site'
-          fail: true
-          output: lychee/confirmed-out.md
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Issue on Failure
-        if: failure() && steps.lychee_confirm.outcome == 'failure' && github.event_name == 'schedule'
+        if: failure() && steps.lychee.outcome == 'failure' && github.event_name == 'schedule'
         uses: peter-evans/create-issue-from-file@v6
         with:
           title: Link Checker Report
-          content-filepath: ./lychee/confirmed-out.md
+          content-filepath: ./lychee/out.md
           labels: report, automated issue
           reuse-issue: true
 
@@ -115,5 +98,5 @@ jobs:
             --jq '.[0].number')
           if [ -n "$issue_number" ] && [ "$issue_number" != "null" ]; then
             gh issue close "$issue_number" \
-              --comment "Daily link check passed on confirmation; closing as resolved."
+              --comment "Daily link check passed; closing as resolved."
           fi
