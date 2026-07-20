@@ -109,3 +109,18 @@ You may follow these steps to contribute:
 8. **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
 
 Be patient! It may take some time for your pull request to be reviewed and merged.
+
+## Conformance fixture contributions (recommended pattern)
+
+When proposing interoperability or conformance fixtures, include enough detail for
+maintainers and implementers to validate behavior consistently.
+
+Suggested minimum metadata per fixture proposal:
+
+- Protocol area covered (for example: discovery, lifecycle, errors, streaming)
+- Expected request/response shape or event sequence
+- Pass/fail criteria that can be checked across SDKs
+- Edge case rationale (why this fixture matters for interoperability)
+
+For protocol-affecting fixture changes, link the related issue and document any
+specification assumptions directly in the PR description.
