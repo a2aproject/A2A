@@ -2,8 +2,6 @@
 
 Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2A is an open, standardized protocol that enables seamless interoperability and collaboration between AI agents across all frameworks and vendors.
 
----
-
 ## Recent News & Blog Posts
 
 Stay up-to-date with the latest announcements, tutorials, and insights from the A2A team and our community.
@@ -95,6 +93,12 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 [actioncard/a2a-elixir](https://github.com/actioncard/a2a-elixir) · A2A spec v0.2.0 · OTP-native with Agent behaviour, TaskStore, and supervision tree.
 
+### ⚙️ C++ — a2a-cpp
+
+![Stars](https://img.shields.io/github/stars/MisterVVP/a2a-cpp?style=flat-square) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/MisterVVP/a2a-cpp/tck.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/MisterVVP/a2a-cpp/actions/workflows/tck.yml) [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square)](https://mistervvp.github.io/a2a-cpp/) [![vcpkg overlay](https://img.shields.io/badge/vcpkg-overlay%20port-blue?style=flat-square)](https://github.com/MisterVVP/a2a-cpp/tree/main/vcpkg-overlay-ports)
+
+[MisterVVP/a2a-cpp](https://github.com/MisterVVP/a2a-cpp) · A2A spec v1.0.0 · C++20 SDK with client/server APIs, discovery, REST/JSON-RPC/gRPC transports, streaming, authentication hooks, CMake/vcpkg build integration, and a TCK conformance workflow.
+
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues/new?title=Community%20SDK%20Submission) with a link to your repository and published package.
 
@@ -105,3 +109,14 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
 
 **Join the growing community building the future of AI interoperability with A2A!**
+
+---
+
+## Meetings & Agenda
+
+Looking for the live community meeting schedule or past recordings?
+
+- [A2A meetings on the Linux Foundation platform](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent)
+- [TSC meeting agenda working doc](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view)
+
+These links are also referenced in [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md#tsc-meetings).
