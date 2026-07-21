@@ -2164,7 +2164,7 @@ Clients verifying Agent Card signatures **MUST**:
       }
     }
   },
-  "security": [{ "google": ["openid", "profile", "email"] }],
+  "securityRequirements": [{ "schemes": { "google": { "list": ["openid", "profile", "email"] } } }],
   "defaultInputModes": ["application/json", "text/plain"],
   "defaultOutputModes": ["application/json", "image/png"],
   "skills": [
