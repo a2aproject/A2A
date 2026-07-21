@@ -15,6 +15,12 @@ a2a.client.transports.http_helpers.handle_http_exceptions(status_error_handler: 
       an appropriate domain-specific exception. If not provided, a
       default *A2AClientError* will be raised.
 
+async a2a.client.transports.http_helpers.parse_sse_stream(response: Response) -> AsyncGenerator[tuple[str, str], None]
+
+   Yields (event_name, data) from a streaming httpx.Response.
+
+   Conforms to the W3C Server-Sent Events specification.
+
 async a2a.client.transports.http_helpers.send_http_request(httpx_client: AsyncClient, request: Request, status_error_handler: Callable[[HTTPStatusError], NoReturn] | None = None) -> dict[str, Any]
 
    Sends an HTTP request and parses the JSON response, handling common

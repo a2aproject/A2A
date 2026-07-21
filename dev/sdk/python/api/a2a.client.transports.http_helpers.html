@@ -331,6 +331,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.errors.html">a2a.utils.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.grpc_status.html">a2a.utils.grpc_status module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
@@ -401,6 +402,13 @@ If provided, this handler should raise an appropriate domain-specific exception.
 If not provided, a default <cite>A2AClientError</cite> will be raised.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.client.transports.http_helpers.parse_sse_stream">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.client.transports.http_helpers.</span></span><span class="sig-name descname"><span class="pre">parse_sse_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Response</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">AsyncGenerator</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.client.transports.http_helpers.parse_sse_stream" title="Link to this definition">¶</a></dt>
+<dd><p>Yields (event_name, data) from a streaming httpx.Response.</p>
+<p>Conforms to the W3C Server-Sent Events specification.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -490,6 +498,7 @@ Should raise an appropriate domain-specific exception.</p></li>
 <li><a class="reference internal" href="#">a2a.client.transports.http_helpers module</a><ul>
 <li><a class="reference internal" href="#a2a.client.transports.http_helpers.get_http_args"><code class="docutils literal notranslate"><span class="pre">get_http_args()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.client.transports.http_helpers.handle_http_exceptions"><code class="docutils literal notranslate"><span class="pre">handle_http_exceptions()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.client.transports.http_helpers.parse_sse_stream"><code class="docutils literal notranslate"><span class="pre">parse_sse_stream()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.client.transports.http_helpers.send_http_request"><code class="docutils literal notranslate"><span class="pre">send_http_request()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.client.transports.http_helpers.send_http_stream_request"><code class="docutils literal notranslate"><span class="pre">send_http_stream_request()</span></code></a></li>
 </ul>

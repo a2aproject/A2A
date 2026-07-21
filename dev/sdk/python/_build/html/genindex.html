@@ -329,6 +329,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.constants.html">a2a.utils.constants module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.error_handlers.html">a2a.utils.error_handlers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.errors.html">a2a.utils.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.grpc_status.html">a2a.utils.grpc_status module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
@@ -1123,6 +1124,13 @@
 </li>
         </ul></li>
         <li>
+    a2a.utils.grpc_status
+
+        <ul>
+          <li><a href="a2a.utils.grpc_status.html#module-a2a.utils.grpc_status">module</a>
+</li>
+        </ul></li>
+        <li>
     a2a.utils.json_utils
 
         <ul>
@@ -1781,6 +1789,8 @@
 </li>
           <li><a href="a2a.server.jsonrpc_models.html#a2a.server.jsonrpc_models.MethodNotFoundError.code">(a2a.server.jsonrpc_models.MethodNotFoundError attribute)</a>
 </li>
+          <li><a href="a2a.utils.grpc_status.html#a2a.utils.grpc_status.GrpcStatus.code">(a2a.utils.grpc_status.GrpcStatus attribute)</a>
+</li>
         </ul></li>
         <li><a href="a2a.migrations.migration_utils.html#a2a.migrations.migration_utils.column_exists">column_exists() (in module a2a.migrations.migration_utils)</a>
 </li>
@@ -1792,10 +1802,10 @@
 </li>
         <li><a href="a2a.compat.v0_3.grpc_transport.html#a2a.compat.v0_3.grpc_transport.CompatGrpcTransport">CompatGrpcTransport (class in a2a.compat.v0_3.grpc_transport)</a>
 </li>
-        <li><a href="a2a.compat.v0_3.jsonrpc_transport.html#a2a.compat.v0_3.jsonrpc_transport.CompatJsonRpcTransport">CompatJsonRpcTransport (class in a2a.compat.v0_3.jsonrpc_transport)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="a2a.compat.v0_3.jsonrpc_transport.html#a2a.compat.v0_3.jsonrpc_transport.CompatJsonRpcTransport">CompatJsonRpcTransport (class in a2a.compat.v0_3.jsonrpc_transport)</a>
+</li>
         <li><a href="a2a.compat.v0_3.rest_transport.html#a2a.compat.v0_3.rest_transport.CompatRestTransport">CompatRestTransport (class in a2a.compat.v0_3.rest_transport)</a>
 </li>
         <li><a href="a2a.server.tasks.task_updater.html#a2a.server.tasks.task_updater.TaskUpdater.complete">complete() (a2a.server.tasks.task_updater.TaskUpdater method)</a>
@@ -2236,8 +2246,6 @@
 </li>
         <li><a href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.DeleteTaskPushNotificationConfigSuccessResponse">DeleteTaskPushNotificationConfigSuccessResponse (class in a2a.compat.v0_3.types)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="a2a.server.events.event_queue.html#a2a.server.events.event_queue.EventQueueLegacy.dequeue_event">dequeue_event() (a2a.server.events.event_queue.EventQueueLegacy method)</a>
 
         <ul>
@@ -2248,6 +2256,8 @@
           <li><a href="a2a.server.events.html#a2a.server.events.EventQueueLegacy.dequeue_event">(a2a.server.events.EventQueueLegacy method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.AgentCard.description">description (a2a.compat.v0_3.types.AgentCard attribute)</a>
 
         <ul>
@@ -2374,6 +2384,8 @@
           <li><a href="a2a.types.html#a2a.types.TaskStatusUpdateEvent.DESCRIPTOR">(a2a.types.TaskStatusUpdateEvent attribute)</a>
 </li>
         </ul></li>
+        <li><a href="a2a.utils.grpc_status.html#a2a.utils.grpc_status.GrpcStatus.details">details (a2a.utils.grpc_status.GrpcStatus attribute)</a>
+</li>
         <li><a href="a2a.types.html#a2a.types.DeviceCodeOAuthFlow">DeviceCodeOAuthFlow (class in a2a.types)</a>
 </li>
         <li><a href="a2a.types.html#a2a.types.DeviceCodeOAuthFlow.ScopesEntry">DeviceCodeOAuthFlow.ScopesEntry (class in a2a.types)</a>
@@ -2920,6 +2932,8 @@
           <li><a href="a2a.server.request_handlers.grpc_handler.html#a2a.server.request_handlers.grpc_handler.GrpcServerCallContextBuilder">(class in a2a.server.request_handlers.grpc_handler)</a>
 </li>
         </ul></li>
+        <li><a href="a2a.utils.grpc_status.html#a2a.utils.grpc_status.GrpcStatus">GrpcStatus (class in a2a.utils.grpc_status)</a>
+</li>
         <li><a href="a2a.client.transports.html#a2a.client.transports.GrpcTransport">GrpcTransport (class in a2a.client.transports)</a>
 
         <ul>
@@ -4160,6 +4174,8 @@
 </li>
           <li><a href="a2a.utils.errors.html#module-a2a.utils.errors">a2a.utils.errors</a>
 </li>
+          <li><a href="a2a.utils.grpc_status.html#module-a2a.utils.grpc_status">a2a.utils.grpc_status</a>
+</li>
           <li><a href="a2a.utils.json_utils.html#module-a2a.utils.json_utils">a2a.utils.json_utils</a>
 </li>
           <li><a href="a2a.utils.proto_utils.html#module-a2a.utils.proto_utils">a2a.utils.proto_utils</a>
@@ -4640,6 +4656,8 @@
         <li><a href="a2a.client.card_resolver.html#a2a.client.card_resolver.parse_agent_card">parse_agent_card() (in module a2a.client.card_resolver)</a>
 </li>
         <li><a href="a2a.utils.proto_utils.html#a2a.utils.proto_utils.parse_params">parse_params() (in module a2a.utils.proto_utils)</a>
+</li>
+        <li><a href="a2a.client.transports.http_helpers.html#a2a.client.transports.http_helpers.parse_sse_stream">parse_sse_stream() (in module a2a.client.transports.http_helpers)</a>
 </li>
         <li><a href="a2a.compat.v0_3.proto_utils.html#a2a.compat.v0_3.proto_utils.parse_string_integers_in_dict">parse_string_integers_in_dict() (in module a2a.compat.v0_3.proto_utils)</a>
 
@@ -5307,6 +5325,10 @@
           <li><a href="a2a.server.models.html#a2a.server.models.TaskModel.status">(a2a.server.models.TaskModel attribute)</a>
 </li>
         </ul></li>
+        <li><a href="a2a.utils.grpc_status.html#a2a.utils.grpc_status.status_from_call">status_from_call() (in module a2a.utils.grpc_status)</a>
+</li>
+        <li><a href="a2a.utils.grpc_status.html#a2a.utils.grpc_status.status_to_grpc">status_to_grpc() (in module a2a.utils.grpc_status)</a>
+</li>
         <li><a href="a2a.compat.v0_3.proto_utils.html#a2a.compat.v0_3.proto_utils.FromProto.stream_response">stream_response() (a2a.compat.v0_3.proto_utils.FromProto class method)</a>
 
         <ul>
@@ -5770,6 +5792,8 @@
 </li>
         </ul></li>
         <li><a href="a2a.compat.v0_3.proto_utils.html#a2a.compat.v0_3.proto_utils.ToProto">ToProto (class in a2a.compat.v0_3.proto_utils)</a>
+</li>
+        <li><a href="a2a.utils.grpc_status.html#a2a.utils.grpc_status.GrpcStatus.trailing_metadata">trailing_metadata (a2a.utils.grpc_status.GrpcStatus attribute)</a>
 </li>
         <li><a href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.AgentInterface.transport">transport (a2a.compat.v0_3.types.AgentInterface attribute)</a>
 </li>

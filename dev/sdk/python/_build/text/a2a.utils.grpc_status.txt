@@ -1,0 +1,30 @@
+a2a.utils.grpc_status module
+****************************
+
+class a2a.utils.grpc_status.GrpcStatus(code: Any, details: str, trailing_metadata: tuple)
+
+   Bases: "NamedTuple"
+
+   Represents the gRPC status code, details, and trailing metadata.
+
+   code: Any
+
+      Alias for field number 0
+
+   details: str
+
+      Alias for field number 1
+
+   trailing_metadata: tuple
+
+      Alias for field number 2
+
+a2a.utils.grpc_status.status_from_call(call: Any) -> Status | None
+
+   Extracts a google.rpc.status.Status message from a grpc.Call
+   instance.
+
+a2a.utils.grpc_status.status_to_grpc(status: Status) -> GrpcStatus
+
+   Converts a google.rpc.status.Status message into its gRPC
+   components.
