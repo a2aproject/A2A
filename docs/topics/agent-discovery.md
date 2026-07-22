@@ -91,6 +91,56 @@ To mitigate risks, the following protection mechanisms should be considered:
 
 Any Agent Card containing sensitive data must be protected with authentication and authorization mechanisms. The A2A specification strongly recommends the use of out-of-band dynamic credentials rather than embedding static secrets within the Agent Card.
 
+## Verifying Agent Identity
+
+Discovery and security tell a client *where* an agent is and *how* to authenticate the connection. They do not answer a different question: *is this agent runtime legitimate?*
+
+Transport-layer mechanisms (TLS, OAuth, mTLS) verify the server's domain identity, but they do not provide cryptographic proof of the agent's own identity, its registration status within a trust framework, or whether its credentials have been revoked. In open agent ecosystems where agents from different organizations interact, clients may need to verify these properties before routing a task.
+
+### The Identity Verification Gap
+
+A2A's current security model establishes trust at the transport layer: TLS verifies the server certificate, and OAuth/OpenID Connect handles authorization. This is sufficient when both agents operate within the same trust boundary (for example, agents within a single enterprise). However, when agents operate across organizational boundaries, additional verification questions arise:
+
+- Is this agent's runtime registered with a trusted authority?
+- Has this agent's identity been revoked or suspended?
+- Can the agent's public key be resolved to a verifiable decentralized identifier (DID)?
+- Was this agent authorized to act on behalf of a specific principal, and within what scope?
+
+These are identity verification questions, distinct from the authorization questions that OAuth answers.
+
+### Ecosystem Approaches
+
+The agent identity ecosystem is actively developing open protocols to address this gap. Several approaches are emerging that complement A2A's existing security model:
+
+#### Trust Registries
+
+Federated trust registries maintain cryptographically signed lists of verified agent runtimes. A client discovering an Agent Card can optionally verify the agent's runtime against such a registry before establishing communication. This verification can be performed locally against a cached registry manifest, without requiring network calls at verification time.
+
+Example open-source implementations include the [Open Agent Trust Registry](https://github.com/FransDevelopment/open-agent-trust-registry) (OATR), which provides permissionless registration via Ed25519 proof-of-key-ownership, domain verification, and a [14-step local verification protocol](https://github.com/FransDevelopment/open-agent-trust-registry/blob/main/spec/03-verification.md) using JWS ([RFC 7515](https://tools.ietf.org/html/rfc7515)) attestations with JSON canonicalization ([RFC 8785](https://tools.ietf.org/html/rfc8785)), the same primitives A2A uses for [Agent Card Signing](../specification.md#84-agent-card-signing).
+
+#### Decentralized Identifiers (DIDs)
+
+[W3C Decentralized Identifiers](https://www.w3.org/TR/did-core/) (DIDs) provide a standard way to resolve an agent's identity to a cryptographic public key without depending on a central identity provider. DID methods such as `did:web` (resolved via `/.well-known/did.json`) and `did:key` (self-contained in the identifier) allow agents to advertise verifiable identities that can be independently resolved.
+
+An [Agent Identity Working Group](https://github.com/corpollc/qntm/issues/5) comprising multiple independent projects has ratified three specs for DID-based agent identity: [DID Resolution v1.0](https://github.com/corpollc/qntm/blob/main/specs/working-group/did-resolution.md), [Entity Verification v1.0](https://github.com/corpollc/qntm/blob/main/specs/working-group/entity-verification.md), and [QSP-1 v1.0](https://github.com/corpollc/qntm/blob/main/specs/working-group/qsp1-envelope.md) (encrypted transport). Cross-implementation [test vectors](https://github.com/corpollc/qntm/tree/main/specs/test-vectors) are available.
+
+#### Capability Discovery
+
+Separate from the Agent Card, capability manifests such as [agent.json](https://github.com/FransDevelopment/agent-json) (hosted at `/.well-known/agent.json`) can declare structured capabilities alongside identity metadata including DIDs and public keys. Because A2A Agent Cards (`/.well-known/agent-card.json`) and capability manifests (`/.well-known/agent.json`) use different well-known paths, they can coexist on the same domain without conflict, allowing services to serve both formats for different consumers.
+
+### Composing Identity Verification with A2A
+
+Identity verification is designed to complement, not replace, A2A's existing security model. A typical verification flow alongside A2A:
+
+1. **Discover** the Agent Card via `/.well-known/agent-card.json` (standard A2A)
+2. **Authenticate** using the Agent Card's declared security schemes (OAuth, API key, mTLS)
+3. **Optionally verify** the agent's runtime identity against a trust registry or DID resolution
+4. **Route the task** only if both authentication and identity verification succeed
+
+Steps 1-2 are existing A2A behavior. Steps 3-4 add an optional identity verification layer that services can adopt incrementally based on their trust requirements.
+
+For a comprehensive treatment of composable trust architecture for agent identity, see [Moore, 2026](https://zenodo.org/records/19263547).
+
 ## Caching Considerations
 
 Agent Cards describe an agent's capabilities and typically change infrequently — for example, when skills are added or authentication requirements are updated. Applying standard HTTP caching practices to Agent Card endpoints reduces unnecessary network requests while ensuring clients eventually receive updated information.
@@ -109,4 +159,8 @@ For normative requirements, see [Section 8.6](../specification.md#86-caching) of
 
 ## Future Considerations
 
-The A2A community explores standardizing registry interactions or advanced discovery protocols.
+The A2A community is exploring several areas for standardization:
+
+- **Registry interactions**: Standardizing APIs for curated registries, including trust registries that provide cryptographic verification of agent identity beyond transport-layer authentication.
+- **Advanced discovery protocols**: Combining capability discovery with identity verification so that agents can assess both *what* a remote agent offers and *whether* it is a verified participant in a trust framework.
+- **Delegation and authorization chains**: Formalizing how delegation proofs propagate through multi-hop agent interactions, enabling agents to verify not only who they are communicating with but what authority that agent has been granted.
