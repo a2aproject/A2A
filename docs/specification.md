@@ -1166,7 +1166,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
-| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
+| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `GET /tasks/{id}:subscribe`                             |
 | Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
 | List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |
@@ -2792,7 +2792,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 - `GET /tasks/{id}` - Get task status
 - `GET /tasks` - List tasks (with query parameters)
 - `POST /tasks/{id}:cancel` - Cancel task
-- `POST /tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
+- `GET /tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
 
 #### 11.3.3. Push Notification Configuration
 
