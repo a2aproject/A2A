@@ -454,6 +454,20 @@ for external observers and internal loops to check if the ActiveTask has
 permanently ceased execution and closed its queues.</p></li>
 </ul>
 <dl class="py method">
+<dt class="sig sig-object py" id="a2a.server.agent_execution.active_task.ActiveTask.aclose">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aclose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.agent_execution.active_task.ActiveTask.aclose" title="Link to this definition">¶</a></dt>
+<dd><p>Force-closes the task’s queues and drains its background tasks.</p>
+<p>Provides a bounded, public teardown for the producer and consumer
+<code class="docutils literal notranslate"><span class="pre">asyncio.Task``s</span> <span class="pre">spawned</span> <span class="pre">in</span> <span class="pre">``start()</span></code>. Without it, a producer
+wedged in its <code class="docutils literal notranslate"><span class="pre">finally</span></code> closing an abandoned subscriber sink can
+survive until event-loop shutdown and surface as
+<code class="docutils literal notranslate"><span class="pre">Task</span> <span class="pre">was</span> <span class="pre">destroyed</span> <span class="pre">but</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">pending!</span></code>.</p>
+<p>Always forces: the queues are closed with <code class="docutils literal notranslate"><span class="pre">immediate=True</span></code> and the
+background tasks are cancelled, so teardown is bounded even when a
+subscriber sink was never drained. It is safe to call multiple times.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.agent_execution.active_task.ActiveTask.cancel">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.context.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.Task" title="a2a.compat.v0_3.types.Task"><span class="pre">Task</span></a></span></span><a class="headerlink" href="#a2a.server.agent_execution.active_task.ActiveTask.cancel" title="Link to this definition">¶</a></dt>
 <dd><p>Cancels the running active task.</p>
@@ -574,6 +588,7 @@ triggering <cite>_maybe_cleanup()</cite> to potentially garbage collect the Acti
             <ul>
 <li><a class="reference internal" href="#">a2a.server.agent_execution.active_task module</a><ul>
 <li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask"><code class="docutils literal notranslate"><span class="pre">ActiveTask</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask.aclose"><code class="docutils literal notranslate"><span class="pre">ActiveTask.aclose()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask.cancel"><code class="docutils literal notranslate"><span class="pre">ActiveTask.cancel()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask.enqueue_request"><code class="docutils literal notranslate"><span class="pre">ActiveTask.enqueue_request()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.agent_execution.active_task.ActiveTask.get_task"><code class="docutils literal notranslate"><span class="pre">ActiveTask.get_task()</span></code></a></li>

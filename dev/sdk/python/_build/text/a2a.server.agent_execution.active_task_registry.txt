@@ -7,10 +7,27 @@ class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_e
 
    A registry for active ActiveTask instances.
 
+   async aclose() -> None
+
+      Closes the registry and drains all active tasks.
+
+      Marks the registry closed so "get_or_create" refuses new work,
+      then force-closes every registered "ActiveTask" and awaits the
+      in-flight "_remove_task" cleanup tasks they schedule, so no SDK-
+      owned "asyncio.Task" is left pending at event-loop shutdown.
+      Safe to call multiple times.
+
+      The close flag is set and the active-task snapshot is taken
+      under "_lock", and the lock is then released before awaiting,
+      because "_remove_task" re-acquires "_lock"; holding it while
+      draining would deadlock. Marking closed under the same lock
+      prevents a concurrent "get_or_create" from registering a task
+      that the drain would miss.
+
    async get(task_id: str) -> ActiveTask | None
 
       Retrieves an existing task.
 
-   async get_or_create(task_id: str, call_context: ServerCallContext, context_id: str | None = None, create_task_if_missing: bool = False) -> ActiveTask
+   async get_or_create(task_id: str, call_context: ServerCallContext, context_id: str | None = None, create_task_if_missing: bool = False, initial_message: Message | None = None) -> ActiveTask
 
       Retrieves an existing ActiveTask or creates a new one.

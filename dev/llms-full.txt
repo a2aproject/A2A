@@ -503,9 +503,9 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
-- [Pydantic AI](https://ai.pydantic.dev/a2a/)
+- [Pydantic AI](https://ai.pydantic.dev/)
 - [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
-- [Strands Agents](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/multi-agent/agent-to-agent/)
+- [Strands Agents](https://strandsagents.com/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
 ## Community SDKs
 
@@ -693,7 +693,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:fontawesome-brands-golang: Golang](https://github.com/a2aproject/a2a-go)
 
-    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rust)
+    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rs)
 
 - :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
 
@@ -881,7 +881,6 @@ collaborate effectively with each other and with users.
 - [Personal AI](https://personal.ai)
 - [Poppulo](https://www.poppulo.com/blog/poppulo-google-a2a-the-future-of-workplace-communication)
 - [Productive Edge](https://www.productiveedge.com/)
-- [Proofs](https://proofs.io)
 - [Publicis Sapient](https://www.publicissapient.com/)
 - [PWC](https://www.pwc.com)
 - [Quantiphi](https://www.quantiphi.com)
@@ -11783,7 +11782,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7257164e60>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3b9aa7c50>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11809,7 +11808,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7257164d70>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3b9aa7b60>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -11853,7 +11852,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7257164e60>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3b9aa7c50>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -11873,7 +11872,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7257164d70>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3b9aa7b60>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16351,7 +16350,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16386,7 +16385,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16439,7 +16438,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16474,7 +16473,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3baf8cf50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16490,7 +16489,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16507,7 +16506,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503750>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3baf8cf50>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16559,7 +16558,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -16778,7 +16777,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16813,7 +16812,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16866,7 +16865,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16901,7 +16900,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3baf8cf50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16917,7 +16916,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16934,7 +16933,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503750>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3baf8cf50>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16986,7 +16985,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503950> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3ba963650> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -17268,6 +17267,21 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
      if the ActiveTask has permanently ceased execution and closed its
      queues.
 
+   async aclose() -> None
+
+      Force-closes the task's queues and drains its background tasks.
+
+      Provides a bounded, public teardown for the producer and
+      consumer "asyncio.Task``s spawned in ``start()". Without it, a
+      producer wedged in its "finally" closing an abandoned subscriber
+      sink can survive until event-loop shutdown and surface as "Task
+      was destroyed but it is pending!".
+
+      Always forces: the queues are closed with "immediate=True" and
+      the background tasks are cancelled, so teardown is bounded even
+      when a subscriber sink was never drained. It is safe to call
+      multiple times.
+
    async cancel(call_context: ServerCallContext) -> Task
 
       Cancels the running active task.
@@ -17328,11 +17342,28 @@ class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_e
 
    A registry for active ActiveTask instances.
 
+   async aclose() -> None
+
+      Closes the registry and drains all active tasks.
+
+      Marks the registry closed so "get_or_create" refuses new work,
+      then force-closes every registered "ActiveTask" and awaits the
+      in-flight "_remove_task" cleanup tasks they schedule, so no SDK-
+      owned "asyncio.Task" is left pending at event-loop shutdown.
+      Safe to call multiple times.
+
+      The close flag is set and the active-task snapshot is taken
+      under "_lock", and the lock is then released before awaiting,
+      because "_remove_task" re-acquires "_lock"; holding it while
+      draining would deadlock. Marking closed under the same lock
+      prevents a concurrent "get_or_create" from registering a task
+      that the drain would miss.
+
    async get(task_id: str) -> ActiveTask | None
 
       Retrieves an existing task.
 
-   async get_or_create(task_id: str, call_context: ServerCallContext, context_id: str | None = None, create_task_if_missing: bool = False) -> ActiveTask
+   async get_or_create(task_id: str, call_context: ServerCallContext, context_id: str | None = None, create_task_if_missing: bool = False, initial_message: Message | None = None) -> ActiveTask
 
       Retrieves an existing ActiveTask or creates a new one.
 </file>
@@ -17584,6 +17615,8 @@ Submodules
 
   * "ActiveTask"
 
+    * "ActiveTask.aclose()"
+
     * "ActiveTask.cancel()"
 
     * "ActiveTask.enqueue_request()"
@@ -17603,6 +17636,8 @@ Submodules
 * a2a.server.agent_execution.active_task_registry module
 
   * "ActiveTaskRegistry"
+
+    * "ActiveTaskRegistry.aclose()"
 
     * "ActiveTaskRegistry.get()"
 
@@ -19017,6 +19052,14 @@ class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandl
 
    Default request handler for all incoming requests.
 
+   async aclose() -> None
+
+      Shuts down the handler, draining all active tasks.
+
+      Drains the "ActiveTaskRegistry" so a server shutdown leaves no
+      pending "asyncio.Task". Intended to be wired into an ASGI
+      "lifespan" / "on_shutdown" hook. Safe to call multiple times.
+
    async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
       Handles the 'tasks/cancel' method.
@@ -19592,6 +19635,8 @@ Submodules
 
   * "DefaultRequestHandlerV2"
 
+    * "DefaultRequestHandlerV2.aclose()"
+
     * "DefaultRequestHandlerV2.on_cancel_task()"
 
     * "DefaultRequestHandlerV2.on_create_task_push_notification_config
@@ -19724,6 +19769,14 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
    Bases: "RequestHandler"
 
    Default request handler for all incoming requests.
+
+   async aclose() -> None
+
+      Shuts down the handler, draining all active tasks.
+
+      Drains the "ActiveTaskRegistry" so a server shutdown leaves no
+      pending "asyncio.Task". Intended to be wired into an ASGI
+      "lifespan" / "on_shutdown" hook. Safe to call multiple times.
 
    async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
@@ -21326,7 +21379,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3baf8cf50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22077,7 +22130,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7258503750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fc3baf8cf50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22313,6 +22366,8 @@ Subpackages
     * "DefaultRequestHandler"
 
     * "DefaultRequestHandlerV2"
+
+      * "DefaultRequestHandlerV2.aclose()"
 
       * "DefaultRequestHandlerV2.on_cancel_task()"
 
@@ -25669,8 +25724,9 @@ message AuthenticationInfo {
 // Declares a combination of a target URL, transport and protocol version for interacting with the agent.
 // This allows agents to expose the same functionality over multiple protocol binding mechanisms.
 message AgentInterface {
-  // The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
-  // Example: "https://api.example.com/a2a/v1", "https://grpc.example.com/a2a"
+  // The URL or address where this interface is available. For HTTP-based transports, must be a valid absolute
+  // HTTPS URL in production. For gRPC, the address should be in the format "hostname:port".
+  // Example: "https://api.example.com/a2a/v1", "grpc.example.com:443"
   string url = 1 [(google.api.field_behavior) = REQUIRED];
   // The protocol binding supported at this URL. This is an open form string, to be
   // easily extended for other protocol bindings. The core ones officially

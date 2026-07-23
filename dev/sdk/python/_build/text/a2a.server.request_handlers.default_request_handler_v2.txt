@@ -7,6 +7,14 @@ class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandl
 
    Default request handler for all incoming requests.
 
+   async aclose() -> None
+
+      Shuts down the handler, draining all active tasks.
+
+      Drains the "ActiveTaskRegistry" so a server shutdown leaves no
+      pending "asyncio.Task". Intended to be wired into an ASGI
+      "lifespan" / "on_shutdown" hook. Safe to call multiple times.
+
    async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
       Handles the 'tasks/cancel' method.

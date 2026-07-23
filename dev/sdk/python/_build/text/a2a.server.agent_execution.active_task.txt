@@ -81,6 +81,21 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
      if the ActiveTask has permanently ceased execution and closed its
      queues.
 
+   async aclose() -> None
+
+      Force-closes the task's queues and drains its background tasks.
+
+      Provides a bounded, public teardown for the producer and
+      consumer "asyncio.Task``s spawned in ``start()". Without it, a
+      producer wedged in its "finally" closing an abandoned subscriber
+      sink can survive until event-loop shutdown and surface as "Task
+      was destroyed but it is pending!".
+
+      Always forces: the queues are closed with "immediate=True" and
+      the background tasks are cancelled, so teardown is bounded even
+      when a subscriber sink was never drained. It is safe to call
+      multiple times.
+
    async cancel(call_context: ServerCallContext) -> Task
 
       Cancels the running active task.
