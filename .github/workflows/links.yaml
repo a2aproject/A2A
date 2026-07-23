@@ -5,11 +5,60 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "00 06 * * *"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/links.yaml"
+      - "lychee.toml"
+      - "**/*.md"
+      - "**/*.mdx"
+      - "**/*.html"
+      - "**/*.htm"
+      - "**/*.rst"
+      - "**/*.txt"
 
 jobs:
+  linkCheckerPR:
+    name: Check PR links
+    runs-on: ubuntu-latest
+    if: github.repository == 'a2aproject/A2A' && github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Get relevant changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v47
+        with:
+          files: |
+            **/*.md
+            **/*.mdx
+            **/*.html
+            **/*.htm
+            **/*.rst
+            **/*.txt
+
+      - name: No link-checkable files changed
+        if: steps.changed-files.outputs.any_changed != 'true'
+        run: echo "No link-checkable files changed in this PR."
+
+      - name: Link Checker
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
+        with:
+          lycheeVersion: "v0.22.0"
+          args: --config lychee.toml --no-progress ${{ steps.changed-files.outputs.all_changed_files }}
+          fail: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
   linkChecker:
     runs-on: ubuntu-latest
-    if: github.repository == 'a2aproject/A2A'
+    if: github.repository == 'a2aproject/A2A' && github.event_name != 'pull_request'
     permissions:
       issues: write
 
