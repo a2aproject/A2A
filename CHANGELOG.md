@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/a2aproject/A2A/compare/v1.0.1...v1.0.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* **proto:** correct gRPC URL example in AgentInterface ([#1997](https://github.com/a2aproject/A2A/issues/1997)) ([cfc9d34](https://github.com/a2aproject/A2A/commit/cfc9d34bc41e368827eb6446d31f912e44f795c5))
+
 ## [1.0.1](https://github.com/a2aproject/A2A/compare/v1.0.0...v1.0.1) (2026-05-26)
 
 
