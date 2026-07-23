@@ -110,7 +110,7 @@ jq -s '
     if $item.title and $item."$id" then
       . + {($item."$id" | sub("\\.jsonschema\\.json$"; "")): $item.title}
     else . end
-  )) as $refmap |
+  )) as $ref_map |
   (if .[0]."$schema" then .[0]."$schema" else "http://json-schema.org/draft-07/schema#" end) as $schema |
   (reduce .[] as $item ({};
     if $item.title then
@@ -122,8 +122,8 @@ jq -s '
   ($defs | walk(
     if type == "object" and has("$ref") then
       ."$ref" as $r |
-      if $refmap[$r] then
-        ."$ref" = "#/definitions/\($refmap[$r])"
+      if $ref_map[$r] then
+        ."$ref" = "#/definitions/\($ref_map[$r])"
       else . end
     else . end
   )) as $fixed_defs |
