@@ -1960,6 +1960,7 @@ If using in-band credential exchange, we recommend adhering to the following sec
 
 - Credentials SHOULD be bound to the agent which originated the request, such that only this agent is able to use the credentials. This ensures that credentials propagating through a chain of A2A requests are only usable by the requesting agent.
 - Credentials containing sensitive information SHOULD be only readable by the agent which originated the request, such as by encrypting the credential.
+- Credentials SHOULD grant the minimal permissions required to perform the desired action.
 
 ## 8. Agent Discovery: The Agent Card
 
