@@ -124,4 +124,3 @@ python3 "$ROOT_DIR/scripts/clean_schema_names.py" "$UNFILTERED_OUTPUT" "$OUTPUT"
 # Count definitions
 DEF_COUNT=$(jq '."$defs" | length' "$OUTPUT")
 echo "✓ Generated $OUTPUT with $DEF_COUNT definitions" >&2
-
