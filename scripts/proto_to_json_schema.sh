@@ -87,13 +87,13 @@ INCLUDE_FLAGS=("-I$TEMP_DIR" "${INCLUDE_FLAGS[@]}")
 echo "→ Generating JSON Schema from proto..." >&2
 if ! protoc "${INCLUDE_FLAGS[@]}" \
   --jsonschema_out="$TEMP_DIR" \
-  --jsonschema_opt=target=json \
+  --jsonschema_opt=target=json-bundle \
   "$CLEAN_PROTO_FILE" 2>&1; then
   echo "Error: protoc generation failed" >&2
   exit 1
 fi
 
-# Step 2: Bundle all schemas into a single file with cleaned names
+# Step 2: Bundle all schemas into a single file
 echo "→ Creating JSON Schema bundle..." >&2
 
 # Check if any JSON files were generated
@@ -103,24 +103,25 @@ if [ ! -f "${JSON_FILES[0]}" ]; then
   exit 1
 fi
 
+UNFILTERED_OUTPUT="$TEMP_DIR/unfiltered_a2a.json"
+
 jq -s '
-  (if .[0]."$schema" then .[0]."$schema" else "http://json-schema.org/draft-07/schema#" end) as $schema |
-  (reduce .[] as $item ({};
-    if $item.title then
-      . + {($item.title): ($item | del(."$id"))}
-    else
-      .
-    end
-  )) as $defs |
+  (.[0]."$schema") as $schema |
+  (reduce .[] as $item ({}; . + $item."$defs")) as $defs |
   {
     "$schema": $schema,
-    title: "A2A Protocol Schemas",
-    description: "Non-normative JSON Schema bundle extracted from proto definitions.",
-    version: "v1",
-    definitions: $defs
+    "title": "A2A Protocol Schemas",
+    "description": "Non-normative JSON Schema bundle extracted from proto definitions.",
+    "version": "v1",
+    "$defs": $defs
   }
-' "$TEMP_DIR"/*.json >"$OUTPUT"
+' "$TEMP_DIR"/*.bundle.json >"$UNFILTERED_OUTPUT"
+
+# Step 3: Post-process with Python script to clean up definition names and references
+echo "→ Cleaning up definition names..." >&2
+python3 "$ROOT_DIR/scripts/clean_schema_names.py" "$UNFILTERED_OUTPUT" "$OUTPUT"
 
 # Count definitions
-DEF_COUNT=$(jq '.definitions | length' "$OUTPUT")
+DEF_COUNT=$(jq '."$defs" | length' "$OUTPUT")
 echo "✓ Generated $OUTPUT with $DEF_COUNT definitions" >&2
+
