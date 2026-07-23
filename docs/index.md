@@ -92,7 +92,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:fontawesome-brands-golang: Golang](https://github.com/a2aproject/a2a-go)
 
-    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rust)
+    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rs)
 
 - :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
 

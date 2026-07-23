@@ -1,12 +1,73 @@
+# Lychee Link Checker Configuration
+# https://github.com/lycheeverse/lychee
+
+# Maximum number of concurrent network requests
+max_concurrency = 6
+
+# Request timeout in seconds
+timeout = 30
+
+# Accept these HTTP status codes as valid
+accept = [200, 201, 204, 301, 302, 307, 308, 403, 429, 503]
+
+# Exclude URL patterns (regex)
 exclude = [
-    'https://fonts.gstatic.com/',
-    'https://fonts.googleapis.com/',
-    'https://medium.com/',
-    'https://x.com/',
+    # Local development URLs
+    'localhost',
+    'http://127\.0\.0\.1',
+    'https://127\.0\.0\.1',
+    'http://0\.0\.0\.0',
+    'host\.docker\.internal',
     'http://localhost:12000/',
     'http://localhost:10020/',
+
+    # Well-known endpoints and example domains
+    '\.well-known',
+    'example\.com',
+
+    # Self-referential docs URLs (checked via --remap in PR workflow)
+    'https://a2a-protocol\.org/.*',
+
+    # Example/placeholder URLs used in documentation
+    'token\.actions\.githubusercontent\.com',
+    'github\.com/example/',
+
+    # Sites that timeout or block GitHub Actions IPs
+    'w3\.org',
+    'gnu\.org',
+    'helm\.sh',
+    'https://medium.com/',
+    'https://x.com/',
     'https://goo.gle/',
+    'https://www\.linkedin\.com/',
+    'https://www\.youtube\.com/',
+    'https://img\.shields\.io/',
+    'https://shields\.io/',
+    'https://badges\.github\.com/',
+    'https://www\.mckinsey\.com/',
+    'https://www\.adobe\.com/',
+    'https://www\.servicenow\.com/',
+    'https://www\.nttdata\.com/',
+    'https://hellotars\.com/',
+    'https://www\.uvicorn\.org/',
+    'https://ai\.pydantic\.dev/',
+    'https://strandsagents\.com/',
+    'https://codimite\.ai/',
+    'github\.com/open-telemetry/opentelemetry-',
+
+    # GitHub pages that redirect or require auth in CI
+    'https://github\.com/settings/developers',
+    'https://github\.com/login/device',
+    'https://github\.com/.*/edit/',
+
+    # Google Fonts (injected by mkdocs-material; root URL returns 404 to HEAD/GET)
+    'fonts\.googleapis\.com',
+    'fonts\.gstatic\.com',
 ]
+
+# Exclude paths (regex patterns relative to the input)
+# Skip MkDocs awesome-pages .index files/dirs that lychee cannot parse
+# Skip 404.html: root-relative links need a base URL lychee cannot resolve for local files
 exclude_path = [
     ".github/actions/spelling",
     "CHANGELOG.md",
@@ -16,9 +77,28 @@ exclude_path = [
     "docs/spec/a2a.json",
     "docs/spec-proto.md",
     "docs/sdk/python.md",
+    '\.index(/|$)',
+    '(^|/)404\.html$',
+    'site/sdk/python/_build/',
 ]
 
-accept = ["200..=299", 403, 408, 429]
+# Enable link caching for faster subsequent runs
+cache = true
 
-max_retries = 0
+# Maximum number of retries per link (helps with transient HTTP/2 errors to GitHub)
+max_retries = 3
+
+# Wait between retries to reduce rate-limit false positives (~90s total per URL)
+retry_wait_time = 30
+
+# HTTP method to use for checking links
+method = "get"
+
+# Exclude links from code blocks, preformatted text, and other verbatim content
+include_verbatim = false
+
+# User agent string
+user_agent = "lychee/a2a-protocol"
+
+# Skip missing input files (useful when checking changed paths in PRs)
 skip_missing = true
