@@ -83,7 +83,6 @@ The v1.0 release focuses on four major themes:
 **v1.0 Changes:**
 
 - **✅ RENAMED:** Operation now **GetTask**
-- **✅ NEW:** `createdAt` and `lastModified` timestamp fields added to Task object
 - **✅ CLARIFIED:** More precise specification of history inclusion behavior
 - **✅ NEW:** Task object now includes `extensions[]` array in messages and artifacts
 - **✅ CLARIFIED:** Authentication/authorization scoping - servers MUST only return tasks visible to caller
@@ -155,7 +154,6 @@ The v1.0 release focuses on four major themes:
 **v1.0 Changes:**
 
 - **✅ RENAMED:** Operations now **CreateTaskPushNotificationConfig**, **GetTaskPushNotificationConfig**, **ListTaskPushNotificationConfigs**, **DeleteTaskPushNotificationConfig**
-- **✅ NEW:** `createdAt` timestamp field added to PushNotificationConfig
 - **✅ CLARIFIED:** Push notification payloads now use StreamResponse format
 - **✅ BREAKING:** model changed for all methods, with TaskPushNotificationConfig flattened
 
@@ -186,7 +184,7 @@ The v1.0 release focuses on four major themes:
 
 - **✅ BREAKING:** All IDs are now simple literals
 - **✅ BREAKING:** Operations that previously used compound IDs now separate parent and resource ID
-    - Example: `tasks/{taskId}/pushNotificationConfigs/{configId}` → separate `task_id` and `config_id` fields
+    - Example: `tasks/{taskId}/pushNotificationConfigs/{configId}` → separate `task_id` and `id` fields
 - **✅ BENEFIT:** Simpler to implement - IDs map directly to database keys
 
 #### HTTP URL Path Simplification (#1269)
@@ -427,11 +425,6 @@ if ("text" in part) { ... }        // v1.0
 
 ### PushNotificationConfig Object
 
-**Added Fields:**
-
-- ✅ `configId`: Unique identifier for the configuration
-- ✅ `createdAt`: Timestamp - Configuration creation time
-
 **Modified Fields:**
 
 - ✅ `authentication`: Enhanced PushNotificationAuthenticationInfo structure
@@ -444,7 +437,7 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "kind": "taskStatusUpdate",
+  "kind": "status-update",
   "taskId": "...",
   "contextId": "...",
   "status": {...},
@@ -456,7 +449,7 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "taskStatusUpdate": {
+  "statusUpdate": {
     "taskId": "...",
     "contextId": "...",
     "status": {...}
@@ -468,7 +461,7 @@ if ("text" in part) { ... }        // v1.0
 
 - ⛔ **REMOVED:** `kind` discriminator
 - ⛔ **REMOVED:** `final` boolean field (stream closure indicates completion instead)
-- ✅ **NEW PATTERN:** Event type determined by JSON member name (`taskStatusUpdate` or `taskArtifactUpdate`)
+- ✅ **NEW PATTERN:** Event type determined by JSON member name (`statusUpdate` or `artifactUpdate`)
 - ✅ **CLARIFIED:** Terminal state indicated by protocol-specific stream closure mechanism
 
 **TaskArtifactUpdateEvent:**
@@ -477,7 +470,7 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "kind": "taskArtifactUpdate",
+  "kind": "artifact-update",
   "taskId": "...",
   "contextId": "...",
   "artifact": {...}
@@ -488,7 +481,7 @@ if ("text" in part) { ... }        // v1.0
 
 ```json
 {
-  "taskArtifactUpdate": {
+  "artifactUpdate": {
     "taskId": "...",
     "contextId": "...",
     "artifact": {...},
@@ -500,7 +493,7 @@ if ("text" in part) { ... }        // v1.0
 **Changes:**
 
 - ⛔ **REMOVED:** `kind` discriminator
-- ✅ **NEW PATTERN:** Wrapped in `taskArtifactUpdate` object
+- ✅ **NEW PATTERN:** Wrapped in `artifactUpdate` object
 - ✅ **NEW:** `index` field indicates artifact position in task's artifacts array
 
 ### OAuth 2.0 Security Updates (#1303)
@@ -585,7 +578,7 @@ v1.0 introduces several new formal dependencies on industry-standard specificati
 #### ✅ ISO 8601
 
 - **Purpose:** Timestamp format standard
-- **Usage:** All timestamp fields (createdAt, lastModified, timestamp)
+- **Usage:** Timestamp fields such as `TaskStatus.timestamp`
 - **Impact:** Explicit format requirement: UTC with millisecond precision (`YYYY-MM-DDTHH:mm:ss.sssZ`)
 
 ### Existing Dependencies (Retained from v0.3.0)
@@ -655,9 +648,9 @@ Stream events changed from kind-based to wrapper-based discrimination:
 **Before (v0.3.0):**
 
 ```typescript
-if (event.kind === "taskStatusUpdate") {
+if (event.kind === "status-update") {
   handleStatusUpdate(event);
-} else if (event.kind === "taskArtifactUpdate") {
+} else if (event.kind === "artifact-update") {
   handleArtifactUpdate(event);
 }
 ```
@@ -665,10 +658,10 @@ if (event.kind === "taskStatusUpdate") {
 **After (v1.0):**
 
 ```typescript
-if ("taskStatusUpdate" in event) {
-  handleStatusUpdate(event.taskStatusUpdate);
-} else if ("taskArtifactUpdate" in event) {
-  handleArtifactUpdate(event.taskArtifactUpdate);
+if ("statusUpdate" in event) {
+  handleStatusUpdate(event.statusUpdate);
+} else if ("artifactUpdate" in event) {
+  handleArtifactUpdate(event.artifactUpdate);
 }
 ```
 
@@ -863,14 +856,7 @@ if (!clientSupportsAll(requiredExtensions)) {
 }
 ```
 
-#### 4. Enhanced Timestamp Tracking
-
-```typescript
-const taskAge = Date.now() - new Date(task.createdAt).getTime();
-const timeSinceUpdate = Date.now() - new Date(task.lastModified).getTime();
-```
-
-#### 5. Versioning Negotiation
+#### 4. Versioning Negotiation
 
 ```typescript
 // Client sends A2A-Version header
@@ -975,7 +961,6 @@ class A2AClient {
 
 #### Low (Nice to Have)
 
-- Add createdAt/lastModified timestamp tracking
 - Leverage enhanced metadata capabilities
 - Implement mutual TLS authentication support
 
