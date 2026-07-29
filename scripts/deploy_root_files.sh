@@ -14,6 +14,8 @@ set -e
 # --- Configuration ---
 # List of files to copy from the source directory to the root of the gh-pages branch.
 FILES_TO_DEPLOY=("404.html" "robots.txt" "llms.txt" "llms-full.txt")
+# Directories to copy under the gh-pages root (e.g. root-redirects/extensions -> extensions/).
+DIRS_TO_DEPLOY=("root-redirects/extensions" "root-redirects/bindings")
 # The source directory in the main branch where these files are located.
 SOURCE_DIR="docs"
 
@@ -29,6 +31,7 @@ GH_TOKEN=$2
 
 echo "Deploying root-level site files for repository: $REPO_NAME"
 echo "Files to deploy: ${FILES_TO_DEPLOY[*]}"
+echo "Directories to deploy: ${DIRS_TO_DEPLOY[*]}"
 
 # --- Deployment Logic ---
 # Clone the gh-pages branch using the provided token for authentication.
@@ -48,6 +51,20 @@ for file in "${FILES_TO_DEPLOY[@]}"; do
     git add "$file"
   else
     echo "Warning: Source file not found, skipping: $SOURCE_FILE"
+  fi
+done
+
+# Copy redirect directories to the gh-pages root (e.g. docs/root-redirects/extensions -> extensions/).
+for dir in "${DIRS_TO_DEPLOY[@]}"; do
+  SOURCE_DIR_PATH="../${SOURCE_DIR}/${dir}"
+  TARGET_DIR="${dir#root-redirects/}"
+  if [ -d "$SOURCE_DIR_PATH" ]; then
+    echo "Copying ${dir} to ${TARGET_DIR}/..."
+    mkdir -p "./${TARGET_DIR}"
+    cp -R "${SOURCE_DIR_PATH}/." "./${TARGET_DIR}/"
+    git add "./${TARGET_DIR}"
+  else
+    echo "Warning: Source directory not found, skipping: $SOURCE_DIR_PATH"
   fi
 done
 

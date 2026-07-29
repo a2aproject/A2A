@@ -7,18 +7,24 @@ on:
     paths:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
+      - "scripts/build_docs.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
+      - ".mkdocs/**"
+      - "specification/a2a.proto"
   pull_request:
     branches:
       - main
     paths:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
+      - "scripts/build_docs.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
+      - ".mkdocs/**"
+      - "specification/a2a.proto"
   release:
     types:
       - published
@@ -40,7 +46,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
@@ -64,7 +70,10 @@ jobs:
         run: uv pip install --system --upgrade -r requirements-docs.txt
 
       - name: Setup Buf
-        uses: bufbuild/buf-setup-action@v1
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+          version: "1.71.0"
 
       - name: Setup Go
         uses: actions/setup-go@v6
