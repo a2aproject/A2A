@@ -5,11 +5,7 @@
     extension. It describes an end-to-end flow, security considerations, and an
     example transcript so reviewers have something concrete to evaluate. It does
     **not** add core types or enums, and it does **not** change the core
-    protocol. The normative specification and reference implementation are
-    expected to live in a separate `experimental-ext-*` repository once the
-    proposal secures maintainer sponsorship, per the
-    [Extension and Binding Governance](extension-and-binding-governance.md)
-    process.
+    protocol. 
 
     Tracking issue:
     [#2078](https://github.com/a2aproject/A2A/issues/2078).
