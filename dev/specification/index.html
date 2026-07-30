@@ -2571,6 +2571,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#764-in-task-authorization-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.4 In-Task Authorization Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -6053,6 +6064,17 @@
     <span class="md-ellipsis">
       
         7.6.3 In-Task Authorization Security Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#764-in-task-authorization-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6.4 In-Task Authorization Scope
       
     </span>
   </a>
@@ -10458,6 +10480,11 @@ so that clients can distinguish between incompatible versions:</p>
 <li>Credentials SHOULD be bound to the agent which originated the request, such that only this agent is able to use the credentials. This ensures that credentials propagating through a chain of A2A requests are only usable by the requesting agent.</li>
 <li>Credentials containing sensitive information SHOULD be only readable by the agent which originated the request, such as by encrypting the credential.</li>
 </ul>
+<h4 id="764-in-task-authorization-scope">7.6.4 In-Task Authorization Scope<a class="headerlink" href="#764-in-task-authorization-scope" title="Permanent link">&para;</a></h4>
+<p>The <code>TASK_STATE_AUTH_REQUIRED</code> state signals that additional authorization is required to continue processing a Task. The A2A protocol does not define the scope, representation, validity, or revocation semantics of the authorization decision or credential obtained in response to this state.</p>
+<p>Agents MUST NOT treat the <code>TASK_STATE_AUTH_REQUIRED</code> state transition, by itself, as authorization for any particular operation. The meaning and scope of any resulting authorization decision or credential MUST be defined by the agent's implementation, by the credential issuer, or by an A2A extension.</p>
+<p>If an implementation requires authorization for specific operations, it is responsible for defining how the authorized operation is identified and how that authorization is checked before the operation is performed.</p>
+<p>A credential or authorization decision obtained while a Task is in <code>TASK_STATE_AUTH_REQUIRED</code> MUST NOT be assumed to authorize subsequent messages on the Task unless that behavior is explicitly defined by the implementation, credential issuer, or extension.</p>
 <h2 id="8-agent-discovery-the-agent-card">8. Agent Discovery: The Agent Card<a class="headerlink" href="#8-agent-discovery-the-agent-card" title="Permanent link">&para;</a></h2>
 <p><span id="5-agent-discovery-the-agent-card"></span></p>
 <h3 id="81-purpose">8.1. Purpose<a class="headerlink" href="#81-purpose" title="Permanent link">&para;</a></h3>
