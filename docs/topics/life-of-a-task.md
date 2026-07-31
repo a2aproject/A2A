@@ -65,7 +65,7 @@ Conceptually, agents operate at different levels of complexity:
     `input-required` or error handling. Once a task is created, the agent will
     only return `Task` objects in response to messages sent, and once a task is
     complete, no more messages can be sent. A hybrid agent uses messages to
-    negotiate the scope of a task, and then generate a task to track its
+    negotiate the scope of a task, and then generates a task to track its
     execution.
     For more information about hybrid agents, see [A2A protocol: Demystifying Tasks vs Messages](https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879).
 
