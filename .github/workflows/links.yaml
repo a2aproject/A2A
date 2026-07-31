@@ -54,6 +54,7 @@ jobs:
           lycheeVersion: "v0.22.0"
           args: --config lychee.toml --no-progress ${{ steps.changed-files.outputs.all_changed_files }}
           fail: true
+          fail-if-empty: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
   linkChecker:
