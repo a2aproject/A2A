@@ -62,7 +62,7 @@ frame as opaque and forward it without modification.
 | `frame_provider_did` | string  | yes      | DID URI of the party that issued this frame.                                          |
 | `frame_timestamp_ms` | integer | yes      | Frame creation time as Unix epoch milliseconds.                                       |
 | `canon_version`      | string  | yes      | Canonicalisation algorithm URI. MUST be `"urn:x402:canonicalisation:jcs-rfc8785-v1"`. |
-| `signature`          | string  | no       | RFC 9421 HTTP message signature string, covering the frame preimage.                  |
+| `signature`          | string  | no       | Opaque RFC 9421 transport evidence; see Signature Scope below.                        |
 
 All string values are UTF-8. Integer values are JSON numbers with no fractional
 part.
@@ -133,8 +133,9 @@ An orchestrator receiving this artifact can:
 - Read `claim_type` to determine routing logic without inspecting `receipt`.
 - Verify `receipt_hash` to confirm `receipt` has not been altered.
 - Index `frame_id` as a stable cross-system reference.
-- Verify the optional `signature` field if present, using the RFC 9421 rules
-  with `frame_provider_did` to locate the public key.
+- Treat the optional `signature` field as opaque provenance evidence. RFC 9421
+  verification is scoped to the original HTTP exchange; see Signature Scope
+  below.
 
 ---
 
@@ -156,6 +157,40 @@ computation.
 
 ---
 
+## Signature Scope
+
+An RFC 9421 signature is verifiable only against the HTTP message that carried
+it. A verifier reconstructs the signature base (RFC 9421 Section 2.5) from the
+covered component values of that message and the signature parameters
+serialised in the `Signature-Input` field (Section 4.1), then checks the value
+from the `Signature` field (Section 4.2) against that base (Section 3.2). The
+frame body is bound into such a signature only when the message includes a
+`Content-Digest` field (RFC 9530) over the body and `content-digest` is among
+the covered components. The bare signature value alone is therefore not
+verifiable.
+
+Consequences for A2A carriage:
+
+- Verification of `signature` is scoped to the original HTTP transport. It
+  requires the captured `Signature` and `Signature-Input` field values and the
+  covered component values of that exchange.
+- Once a frame is re-carried as an A2A `DataPart`, that HTTP context is
+  generally absent. A verifier MUST then treat the frame as **unsigned at the
+  frame layer**, regardless of the embedded `signature` value, unless the
+  artifact carries a separate self-contained proof.
+- A verifier MUST NOT reconstruct a `Signature-Input`, infer covered
+  components, or derive verification key material from `frame_provider_did`.
+- Conformance suites SHOULD include a negative vector: a signed frame
+  serialised through an A2A artifact with no accompanying HTTP context, for
+  which signature verification MUST fail (report unverified) rather than
+  succeed.
+
+This scoping preserves the stability property above: `frame_id`,
+`receipt_hash`, and the JCS preimage remain verifiable offline from the frame
+alone. Only the transport signature requires its originating HTTP exchange.
+
+---
+
 ## Reference Implementation
 
 Two reference implementations are published under the Apache 2.0 licence:
@@ -164,8 +199,10 @@ Two reference implementations are published under the Apache 2.0 licence:
 - **TypeScript**: [@algovoi/pef on npm](https://www.npmjs.com/package/@algovoi/pef)
 
 Both implementations expose helpers for frame construction, `frame_id`
-derivation, `receipt_hash` computation, and signature verification. They share
-a common test-vector corpus to ensure byte-for-byte agreement across languages.
+derivation, `receipt_hash` computation, and structural verification. Neither
+performs RFC 9421 verification at the frame layer, consistent with the
+Signature Scope section above. They share a common test-vector corpus to
+ensure byte-for-byte agreement across languages.
 
 ---
 
@@ -177,3 +214,5 @@ a common test-vector corpus to ensure byte-for-byte agreement across languages.
   <https://www.rfc-editor.org/rfc/rfc8785>
 - RFC 9421 -- HTTP Message Signatures:
   <https://www.rfc-editor.org/rfc/rfc9421>
+- RFC 9530 -- Digest Fields:
+  <https://www.rfc-editor.org/rfc/rfc9530>
