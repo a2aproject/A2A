@@ -22,7 +22,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
 !!! abstract ""
     Build with
-    **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
+    **[![ADK Logo](https://adk.dev/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://adk.dev/)** _(or any framework)_,
     equip with **[![MCP Logo](https://modelcontextprotocol.io/mcp.png){class="twemoji lg middle"} MCP](https://modelcontextprotocol.io)** _(or any tool)_,
     and communicate with
     **![A2A Logo](./assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg){class="twemoji lg middle"} A2A**,
