@@ -104,20 +104,35 @@ if [ ! -f "${JSON_FILES[0]}" ]; then
 fi
 
 jq -s '
+  # Build a mapping from protoc-generated $ref filename (without .jsonschema.json)
+  # to the human-readable title, so we can rewrite external $ref to #/definitions/<title>.
+  (reduce .[] as $item ({};
+    if $item.title and $item."$id" then
+      . + {($item."$id" | sub("\\.jsonschema\\.json$"; "")): $item.title}
+    else . end
+  )) as $ref_map |
   (if .[0]."$schema" then .[0]."$schema" else "http://json-schema.org/draft-07/schema#" end) as $schema |
   (reduce .[] as $item ({};
     if $item.title then
-      . + {($item.title): ($item | del(."$id"))}
-    else
-      .
-    end
+      . + {($item.title): ($item | del(."$id", "$schema"))}
+    else . end
   )) as $defs |
+  # Rewrite every $ref that references a known protoc-generated filename
+  # to point at the corresponding entry in the definitions map.
+  ($defs | walk(
+    if type == "object" and has("$ref") then
+      ."$ref" as $r |
+      if $ref_map[$r] then
+        ."$ref" = "#/definitions/\($ref_map[$r])"
+      else . end
+    else . end
+  )) as $fixed_defs |
   {
     "$schema": $schema,
     title: "A2A Protocol Schemas",
     description: "Non-normative JSON Schema bundle extracted from proto definitions.",
     version: "v1",
-    definitions: $defs
+    definitions: $fixed_defs
   }
 ' "$TEMP_DIR"/*.json >"$OUTPUT"
 
