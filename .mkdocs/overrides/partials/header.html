@@ -37,10 +37,6 @@
         </div>
       </div>
     </div>
-    <!-- SDK repository links (A2A customization) -->
-    <div class="lang-header-repos">
-      {% include "partials/sdk_repos.html" %}
-    </div>
     {% if config.theme.palette %}
       {% if not config.theme.palette is mapping %}
         {% include "partials/palette.html" %}
@@ -62,6 +58,10 @@
         {% include "partials/search.html" %}
       {% endif %}
     {% endif %}
+    <!-- SDK repository links (A2A customization); placed after search -->
+    <div class="lang-header-repos">
+      {% include "partials/sdk_repos.html" %}
+    </div>
     {% if config.repo_url %}
       <div class="md-header__source">
         {% include "partials/source.html" %}
