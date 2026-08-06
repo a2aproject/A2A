@@ -1741,21 +1741,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-enhanced-timestamp-tracking" class="md-nav__link">
+  <a href="#4-versioning-negotiation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Enhanced Timestamp Tracking
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-versioning-negotiation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Versioning Negotiation
+        4. Versioning Negotiation
       
     </span>
   </a>
@@ -3432,21 +3421,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-enhanced-timestamp-tracking" class="md-nav__link">
+  <a href="#4-versioning-negotiation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Enhanced Timestamp Tracking
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#5-versioning-negotiation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5. Versioning Negotiation
+        4. Versioning Negotiation
       
     </span>
   </a>
@@ -3761,7 +3739,6 @@
 <p><strong>v1.0 Changes:</strong></p>
 <ul>
 <li><strong>✅ RENAMED:</strong> Operation now <strong>GetTask</strong></li>
-<li><strong>✅ NEW:</strong> <code>createdAt</code> and <code>lastModified</code> timestamp fields added to Task object</li>
 <li><strong>✅ CLARIFIED:</strong> More precise specification of history inclusion behavior</li>
 <li><strong>✅ NEW:</strong> Task object now includes <code>extensions[]</code> array in messages and artifacts</li>
 <li><strong>✅ CLARIFIED:</strong> Authentication/authorization scoping - servers MUST only return tasks visible to caller</li>
@@ -3830,7 +3807,6 @@
 <p><strong>v1.0 Changes:</strong></p>
 <ul>
 <li><strong>✅ RENAMED:</strong> Operations now <strong>CreateTaskPushNotificationConfig</strong>, <strong>GetTaskPushNotificationConfig</strong>, <strong>ListTaskPushNotificationConfigs</strong>, <strong>DeleteTaskPushNotificationConfig</strong></li>
-<li><strong>✅ NEW:</strong> <code>createdAt</code> timestamp field added to PushNotificationConfig</li>
 <li><strong>✅ CLARIFIED:</strong> Push notification payloads now use StreamResponse format</li>
 <li><strong>✅ BREAKING:</strong> model changed for all methods, with TaskPushNotificationConfig flattened</li>
 </ul>
@@ -3858,7 +3834,7 @@
 <ul>
 <li><strong>✅ BREAKING:</strong> All IDs are now simple literals</li>
 <li><strong>✅ BREAKING:</strong> Operations that previously used compound IDs now separate parent and resource ID<ul>
-<li>Example: <code>tasks/{taskId}/pushNotificationConfigs/{configId}</code> → separate <code>task_id</code> and <code>config_id</code> fields</li>
+<li>Example: <code>tasks/{taskId}/pushNotificationConfigs/{configId}</code> → separate <code>task_id</code> and <code>id</code> fields</li>
 </ul>
 </li>
 <li><strong>✅ BENEFIT:</strong> Simpler to implement - IDs map directly to database keys</li>
@@ -4071,11 +4047,6 @@
 <li>✅ <code>extendedAgentCard</code>: Moved from top-level <code>supportsAuthenticatedExtendedCard</code> field</li>
 </ul>
 <h3 id="pushnotificationconfig-object">PushNotificationConfig Object<a class="headerlink" href="#pushnotificationconfig-object" title="Permanent link">&para;</a></h3>
-<p><strong>Added Fields:</strong></p>
-<ul>
-<li>✅ <code>configId</code>: Unique identifier for the configuration</li>
-<li>✅ <code>createdAt</code>: Timestamp - Configuration creation time</li>
-</ul>
 <p><strong>Modified Fields:</strong></p>
 <ul>
 <li>✅ <code>authentication</code>: Enhanced PushNotificationAuthenticationInfo structure</li>
@@ -4084,7 +4055,7 @@
 <p><strong>TaskStatusUpdateEvent:</strong></p>
 <p><strong>v0.3.0:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;taskStatusUpdate&quot;</span><span class="p">,</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;status-update&quot;</span><span class="p">,</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
@@ -4093,7 +4064,7 @@
 </span></code></pre></div>
 <p><strong>v1.0:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">&quot;taskStatusUpdate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">&quot;statusUpdate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
@@ -4104,13 +4075,13 @@
 <ul>
 <li>⛔ <strong>REMOVED:</strong> <code>kind</code> discriminator</li>
 <li>⛔ <strong>REMOVED:</strong> <code>final</code> boolean field (stream closure indicates completion instead)</li>
-<li>✅ <strong>NEW PATTERN:</strong> Event type determined by JSON member name (<code>taskStatusUpdate</code> or <code>taskArtifactUpdate</code>)</li>
+<li>✅ <strong>NEW PATTERN:</strong> Event type determined by JSON member name (<code>statusUpdate</code> or <code>artifactUpdate</code>)</li>
 <li>✅ <strong>CLARIFIED:</strong> Terminal state indicated by protocol-specific stream closure mechanism</li>
 </ul>
 <p><strong>TaskArtifactUpdateEvent:</strong></p>
 <p><strong>v0.3.0:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;taskArtifactUpdate&quot;</span><span class="p">,</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;artifact-update&quot;</span><span class="p">,</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="nt">&quot;artifact&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span>
@@ -4118,7 +4089,7 @@
 </span></code></pre></div>
 <p><strong>v1.0:</strong></p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">{</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">&quot;taskArtifactUpdate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">&quot;artifactUpdate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="nt">&quot;taskId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="nt">&quot;contextId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
 </span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="nt">&quot;artifact&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
@@ -4129,7 +4100,7 @@
 <p><strong>Changes:</strong></p>
 <ul>
 <li>⛔ <strong>REMOVED:</strong> <code>kind</code> discriminator</li>
-<li>✅ <strong>NEW PATTERN:</strong> Wrapped in <code>taskArtifactUpdate</code> object</li>
+<li>✅ <strong>NEW PATTERN:</strong> Wrapped in <code>artifactUpdate</code> object</li>
 <li>✅ <strong>NEW:</strong> <code>index</code> field indicates artifact position in task's artifacts array</li>
 </ul>
 <h3 id="oauth-20-security-updates-1303">OAuth 2.0 Security Updates (#1303)<a class="headerlink" href="#oauth-20-security-updates-1303" title="Permanent link">&para;</a></h3>
@@ -4209,7 +4180,7 @@
 <h4 id="iso-8601">✅ ISO 8601<a class="headerlink" href="#iso-8601" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>Purpose:</strong> Timestamp format standard</li>
-<li><strong>Usage:</strong> All timestamp fields (createdAt, lastModified, timestamp)</li>
+<li><strong>Usage:</strong> Timestamp fields such as <code>TaskStatus.timestamp</code></li>
 <li><strong>Impact:</strong> Explicit format requirement: UTC with millisecond precision (<code>YYYY-MM-DDTHH:mm:ss.sssZ</code>)</li>
 </ul>
 <h3 id="existing-dependencies-retained-from-v030">Existing Dependencies (Retained from v0.3.0)<a class="headerlink" href="#existing-dependencies-retained-from-v030" title="Permanent link">&para;</a></h3>
@@ -4263,17 +4234,17 @@
 <h4 id="2-stream-event-discriminator-pattern-high-impact">2. Stream Event Discriminator Pattern (HIGH IMPACT)<a class="headerlink" href="#2-stream-event-discriminator-pattern-high-impact" title="Permanent link">&para;</a></h4>
 <p>Stream events changed from kind-based to wrapper-based discrimination:</p>
 <p><strong>Before (v0.3.0):</strong></p>
-<div class="language-typescript highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;taskStatusUpdate&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;status-update&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nx">handleStatusUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;taskArtifactUpdate&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">kind</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">&quot;artifact-update&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="nx">handleArtifactUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
 </span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>After (v1.0):</strong></p>
-<div class="language-typescript highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;taskStatusUpdate&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nx">handleStatusUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">taskStatusUpdate</span><span class="p">);</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;taskArtifactUpdate&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nx">handleArtifactUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">taskArtifactUpdate</span><span class="p">);</span>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;statusUpdate&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nx">handleStatusUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">statusUpdate</span><span class="p">);</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="s2">&quot;artifactUpdate&quot;</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nx">handleArtifactUpdate</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">artifactUpdate</span><span class="p">);</span>
 </span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <h4 id="3-agent-card-structure-high-impact">3. Agent Card Structure (HIGH IMPACT)<a class="headerlink" href="#3-agent-card-structure-high-impact" title="Permanent link">&para;</a></h4>
@@ -4425,18 +4396,14 @@
 </span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="w">  </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;Missing required extension support&quot;</span><span class="p">);</span>
 </span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="p">}</span>
 </span></code></pre></div>
-<h4 id="4-enhanced-timestamp-tracking">4. Enhanced Timestamp Tracking<a class="headerlink" href="#4-enhanced-timestamp-tracking" title="Permanent link">&para;</a></h4>
-<div class="language-typescript highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">taskAge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">createdAt</span><span class="p">).</span><span class="nx">getTime</span><span class="p">();</span>
-</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">timeSinceUpdate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Date</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">(</span><span class="nx">task</span><span class="p">.</span><span class="nx">lastModified</span><span class="p">).</span><span class="nx">getTime</span><span class="p">();</span>
-</span></code></pre></div>
-<h4 id="5-versioning-negotiation">5. Versioning Negotiation<a class="headerlink" href="#5-versioning-negotiation" title="Permanent link">&para;</a></h4>
-<div class="language-typescript highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1">// Client sends A2A-Version header</span>
-</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;A2A-Version&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span><span class="p">;</span>
-</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>
-</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="c1">// Server validates and rejects if unsupported</span>
-</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">supportedVersions</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">requestedVersion</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">  </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VersionNotSupportedError</span><span class="p">();</span>
-</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="p">}</span>
+<h4 id="4-versioning-negotiation">4. Versioning Negotiation<a class="headerlink" href="#4-versioning-negotiation" title="Permanent link">&para;</a></h4>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1">// Client sends A2A-Version header</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;A2A-Version&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span><span class="p">;</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="c1">// Server validates and rejects if unsupported</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">supportedVersions</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">requestedVersion</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">  </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">VersionNotSupportedError</span><span class="p">();</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="migration-strategy-recommendations">Migration Strategy Recommendations<a class="headerlink" href="#migration-strategy-recommendations" title="Permanent link">&para;</a></h3>
 <h4 id="phase-1-compatibility-layer">Phase 1: Compatibility Layer<a class="headerlink" href="#phase-1-compatibility-layer" title="Permanent link">&para;</a></h4>
@@ -4468,24 +4435,24 @@
 <li>Clients negotiate version by selecting appropriate interface from Agent Card</li>
 </ul>
 <p><strong>SDK Implementation Pattern:</strong></p>
-<div class="language-typescript highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1">// SDK can support multiple protocol versions</span>
-</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="kd">class</span><span class="w"> </span><span class="nx">A2AClient</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">connect</span><span class="p">(</span><span class="nx">agentCardUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">card</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">getAgentCard</span><span class="p">(</span><span class="nx">agentCardUrl</span><span class="p">);</span>
-</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
-</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">    </span><span class="c1">// Find best matching interface</span>
-</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">card</span><span class="p">.</span><span class="nx">supportedInterfaces</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span>
-</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">supportedVersions</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">i</span><span class="p">.</span><span class="nx">protocolVersion</span><span class="p">)</span>
-</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="w">    </span><span class="p">);</span>
-</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>
-</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kd">interface</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;No compatible protocol version&quot;</span><span class="p">);</span>
-</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="w">    </span><span class="p">}</span>
-</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>
-</span><span id="__span-29-15"><a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a><span class="w">    </span><span class="c1">// Use version-specific adapter</span>
-</span><span id="__span-29-16"><a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">createAdapter</span><span class="p">(</span><span class="kd">interface</span><span class="p">.</span><span class="nx">protocolVersion</span><span class="p">,</span><span class="w"> </span><span class="kd">interface</span><span class="p">);</span>
-</span><span id="__span-29-17"><a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-29-18"><a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a><span class="p">}</span>
+<div class="language-typescript highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1">// SDK can support multiple protocol versions</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="kd">class</span><span class="w"> </span><span class="nx">A2AClient</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">  </span><span class="k">async</span><span class="w"> </span><span class="nx">connect</span><span class="p">(</span><span class="nx">agentCardUrl</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">card</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">getAgentCard</span><span class="p">(</span><span class="nx">agentCardUrl</span><span class="p">);</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">    </span><span class="c1">// Find best matching interface</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">card</span><span class="p">.</span><span class="nx">supportedInterfaces</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="w">      </span><span class="k">this</span><span class="p">.</span><span class="nx">supportedVersions</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="nx">i</span><span class="p">.</span><span class="nx">protocolVersion</span><span class="p">)</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="w">    </span><span class="p">);</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="kd">interface</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="s2">&quot;No compatible protocol version&quot;</span><span class="p">);</span>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a>
+</span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="w">    </span><span class="c1">// Use version-specific adapter</span>
+</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">createAdapter</span><span class="p">(</span><span class="kd">interface</span><span class="p">.</span><span class="nx">protocolVersion</span><span class="p">,</span><span class="w"> </span><span class="kd">interface</span><span class="p">);</span>
+</span><span id="__span-28-17"><a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-28-18"><a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="p">}</span>
 </span></code></pre></div>
 <p><strong>Benefits:</strong></p>
 <ul>
@@ -4524,7 +4491,6 @@
 </ul>
 <h4 id="low-nice-to-have">Low (Nice to Have)<a class="headerlink" href="#low-nice-to-have" title="Permanent link">&para;</a></h4>
 <ul>
-<li>Add createdAt/lastModified timestamp tracking</li>
 <li>Leverage enhanced metadata capabilities</li>
 <li>Implement mutual TLS authentication support</li>
 </ul>
