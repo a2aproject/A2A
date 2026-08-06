@@ -1,0 +1,211 @@
+acts_version: "1.0"
+spec_version: "1.0"
+metadata:
+  title: "Agent Card Discovery"
+  description: "Tests for A2A agent card discovery and structure"
+
+suites:
+  - id: discovery
+    name: Agent Card Discovery
+    tests:
+      - id: CARD-DISC-001
+        name: Agent card is discoverable
+        description: Agent card is discoverable at the well-known URL and exposes core metadata.
+        spec_ref: Agent Card Discovery
+        level: must
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                name:
+                  exists: true
+                version:
+                  exists: true
+                description:
+                  exists: true
+
+      - id: CARD-DISC-002
+        name: Agent card contains supported interfaces
+        description: Agent card lists one or more supported interfaces with binding and version metadata.
+        spec_ref: Agent Card Discovery
+        level: must
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                supportedInterfaces:
+                  type: array
+                  count_gte: 1
+                  items:
+                    url:
+                      type: string
+                    protocolBinding:
+                      one_of:
+                        - JSONRPC
+                        - GRPC
+                        - REST
+                    protocolVersion:
+                      type: string
+
+      - id: CARD-DISC-003
+        name: Agent card contains capabilities
+        description: Agent card exposes capabilities as an object.
+        spec_ref: Agent Card Discovery
+        level: must
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                capabilities:
+                  exists: true
+                  type: object
+
+      - id: CARD-DISC-004
+        name: Agent card contains skills
+        description: Agent card includes skills with identifiers and names.
+        spec_ref: Agent Card Discovery
+        level: should
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                skills:
+                  type: array
+                  items:
+                    id:
+                      exists: true
+                    name:
+                      exists: true
+
+      - id: CARD-DISC-005
+        name: Agent card contains default input and output modes
+        description: Agent card includes default input and output mode arrays.
+        spec_ref: Agent Card Discovery
+        level: should
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                defaultInputModes:
+                  type: array
+                defaultOutputModes:
+                  type: array
+
+      - id: CARD-DISC-006
+        name: Agent card protocolVersion matches spec version
+        description: The first supported interface advertises an A2A 1.x protocol version.
+        spec_ref: Agent Card Discovery
+        level: must
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                supportedInterfaces:
+                  type: array
+                  count_gte: 1
+                  items:
+                    - protocolVersion:
+                        starts_with: "1."
+
+      - id: CARD-CACHE-001
+        name: Agent card caching headers
+        description: Runner SHOULD verify Cache-Control or ETag headers are present.
+        spec_ref: Agent Card Discovery
+        level: should
+        tags: [discovery, caching, runner-special]
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                name:
+                  exists: true
+
+      - id: CARD-SCHEMA-001
+        name: Agent card validates against schema
+        description: Runner MUST validate response against A2A AgentCard JSON Schema.
+        spec_ref: Agent Card Discovery
+        level: should
+        tags: [discovery, schema-validation]
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                name:
+                  exists: true
+                capabilities:
+                  type: object
+
+      - id: CARD-EXT-001
+        name: Extended agent card
+        description: Retrieves the extended agent card when the capability is advertised.
+        spec_ref: Get Extended Agent Card
+        level: may
+        preconditions:
+          capabilities:
+            extendedAgentCard: true
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params:
+              extended: true
+            expect:
+              status: 200
+              body:
+                skills:
+                  type: array
+                  count_gte: 1
+                description:
+                  matches: ".+"
+
+      - id: CARD-DISC-007
+        name: Agent card declares all supported protocols
+        description: Verifies that the public Agent Card declares at least one protocol endpoint through supportedInterfaces or a direct url field.
+        spec_ref: REQ-BIND-002
+        level: must
+        requires_behaviors: []
+        steps:
+          - id: step-1
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                any_of:
+                  - supportedInterfaces:
+                      type: array
+                      count_gte: 1
+                  - url:
+                      type: string

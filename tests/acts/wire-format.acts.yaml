@@ -1,0 +1,122 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "Wire Format Compliance"
+  description: "Tests for camelCase field naming, enum value format, and default value omission"
+
+suites:
+  - id: wire-format
+    name: "Wire Format Compliance"
+    tests:
+      - id: DM-FMT-001
+        name: "Wire format uses camelCase field names"
+        description: >
+          Sends a raw JSON-RPC SendMessage request and verifies the wire-format
+          response does not expose snake_case field names.
+        spec_ref: "specification.md#2.3"
+        level: must
+        transport: [jsonrpc]
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send-raw
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "wire-format-001"
+                method: SendMessage
+                params:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-complete-task verify wire format"
+            expect:
+              status: 200
+              body:
+                result:
+                  task:
+                    id:
+                      type: string
+                context_id:
+                  absent: true
+                message_id:
+                  absent: true
+                task_id:
+                  absent: true
+                artifact_id:
+                  absent: true
+                status_update:
+                  absent: true
+                artifact_update:
+                  absent: true
+                protocol_version:
+                  absent: true
+                media_type:
+                  absent: true
+
+      - id: DM-FMT-002
+        name: "Enum values use prefixed format"
+        description: >
+          Verifies enum values are returned using the prefixed wire-format names
+          for message roles and task states.
+        spec_ref: "specification.md#2.3"
+        level: must
+        requires_behaviors: ["tck-message-response", "tck-complete-task"]
+        steps:
+          - id: check-role
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-message-response check role"
+            expect:
+              status: 200
+              body:
+                message:
+                  role: ROLE_AGENT
+
+          - id: check-state
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task check state"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+      - id: DM-FMT-003
+        name: "Default and empty values are omitted from wire"
+        description: >
+          Verifies message responses omit default taskId and contextId fields,
+          or at minimum never serialize them as empty strings.
+        spec_ref: "specification.md#2.3"
+        level: should
+        requires_behaviors: ["tck-message-response"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-message-response test defaults"
+            expect:
+              status: 200
+              body:
+                message:
+                  role: ROLE_AGENT
+                  taskId:
+                    absent: true
+                  contextId:
+                    absent: true
