@@ -1961,6 +1961,16 @@ If using in-band credential exchange, we recommend adhering to the following sec
 - Credentials SHOULD be bound to the agent which originated the request, such that only this agent is able to use the credentials. This ensures that credentials propagating through a chain of A2A requests are only usable by the requesting agent.
 - Credentials containing sensitive information SHOULD be only readable by the agent which originated the request, such as by encrypting the credential.
 
+#### 7.6.4 In-Task Authorization Scope
+
+The `TASK_STATE_AUTH_REQUIRED` state signals that additional authorization is required to continue processing a Task. The A2A protocol does not define the scope, representation, validity, or revocation semantics of the authorization decision or credential obtained in response to this state.
+
+Agents MUST NOT treat the `TASK_STATE_AUTH_REQUIRED` state transition, by itself, as authorization for any particular operation. The meaning and scope of any resulting authorization decision or credential MUST be defined by the agent's implementation, by the credential issuer, or by an A2A extension.
+
+If an implementation requires authorization for specific operations, it is responsible for defining how the authorized operation is identified and how that authorization is checked before the operation is performed.
+
+A credential or authorization decision obtained while a Task is in `TASK_STATE_AUTH_REQUIRED` MUST NOT be assumed to authorize subsequent messages on the Task unless that behavior is explicitly defined by the implementation, credential issuer, or extension.
+
 ## 8. Agent Discovery: The Agent Card
 
 <span id="5-agent-discovery-the-agent-card"></span>
