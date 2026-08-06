@@ -120,7 +120,7 @@ jobs:
         uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
         with:
           lycheeVersion: "v0.22.0"
-          args: '--config lychee.toml --exclude-path "(^|/)404\\.html$" site'
+          args: '--config lychee.toml site'
           fail: true
           output: lychee/out.md
           token: ${{ secrets.GITHUB_TOKEN }}
