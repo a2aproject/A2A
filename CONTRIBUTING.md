@@ -108,4 +108,17 @@ You may follow these steps to contribute:
 7. **Submit a pull request.** Submit a PR from your fork's feature branch to the official repository's `main` branch.
 8. **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
 
-Be patient! It may take some time for your pull request to be reviewed and merged.
+Here are some additional things to keep in mind during the process:
+
+- **Test your changes.** Before you submit a pull request, make sure that your changes work as expected.
+- **Be patient.** It may take some time for your pull request to be reviewed and merged.
+
+## Versioning
+
+The A2A specification follows semantic versioning. When contributing:
+
+- **Patch releases** (x.x.X): Non-functional changes only (e.g., documentation, comments, tests)
+- **Minor releases** (x.X.0): Any backward-compatible functional changes to `a2a.proto` or protocol behavior
+- **Major releases** (X.0.0): Breaking changes
+
+For detailed versioning guidelines, see [Section 3.6.5 of the specification](docs/specification.md#365-specification-versioning).
