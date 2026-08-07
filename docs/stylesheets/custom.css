@@ -16,6 +16,14 @@
 
 /* Index page styling */
 
+.hero {
+  text-align: center;
+}
+
+.hero-actions {
+  margin: 0;
+}
+
 .md-grid {
   max-width: 80%;
 }
@@ -41,13 +49,97 @@
   text-align: left;
 }
 
-/* Hero tagline: sits between the logo and the primary CTAs. */
+/* Hero tagline carousel: sits between the logo and the primary CTAs. */
+.hero-tagline-carousel {
+  --tagline-interval: 6s;
+  --tagline-count: 3;
+  max-width: 42em;
+  margin: 1em auto 1.75em;
+}
+
+.hero-tagline-slides {
+  display: grid;
+}
+
 .hero-tagline {
+  grid-area: 1 / 1;
   font-size: 1.25rem;
   line-height: 1.5;
   color: var(--md-default-fg-color--light);
-  max-width: 42em;
-  margin: 1em auto 1.75em;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  animation: hero-tagline-cycle calc(var(--tagline-interval) * var(--tagline-count)) infinite;
+}
+
+.hero-tagline:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.hero-tagline:nth-child(2) {
+  animation-delay: calc(-1 * var(--tagline-interval));
+}
+
+.hero-tagline:nth-child(3) {
+  animation-delay: calc(-2 * var(--tagline-interval));
+}
+
+@keyframes hero-tagline-cycle {
+  0%,
+  27% {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  33%,
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.hero-tagline-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+  margin-top: 1em;
+}
+
+.hero-tagline-dot {
+  width: 0.55em;
+  height: 0.55em;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--md-default-fg-color--lighter);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-tagline-dot:hover,
+.hero-tagline-dot:focus-visible {
+  background-color: var(--md-default-fg-color--light);
+  transform: scale(1.15);
+  outline: none;
+}
+
+.hero-tagline-dot.is-active {
+  background-color: var(--md-primary-fg-color, #526cfe);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-tagline {
+    animation: none;
+  }
+
+  .hero-tagline:first-child {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .hero-tagline-dot {
+    transition: none;
+  }
 }
 
 .install-command-container {
