@@ -2858,6 +2858,27 @@ Content-Type: application/a2a+json
 
 **Referenced Objects:** [`Task`](#411-task)
 
+**Empty Responses:**
+
+Operations whose Protocol Buffer definition returns `google.protobuf.Empty` (currently only `DeleteTaskPushNotificationConfig`) **MUST** respond with `200 OK` and a JSON body of `{}`. This follows directly from the ProtoJSON mapping adopted for this binding (see [ADR-001](../adrs/adr-001-protojson-serialization.md)): the canonical JSON representation of `google.protobuf.Empty` is an empty JSON object, not an absent body. Implementations **MUST NOT** return `204 No Content` for these operations, since a `204` response carries no body and would be inconsistent with the `application/a2a+json` `Content-Type` used elsewhere in this binding.
+
+**Example Delete Push Notification Configuration:**
+
+```http
+DELETE /tasks/task-uuid/pushNotificationConfigs/config-uuid
+```
+
+**Response:**
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/a2a+json
+
+{}
+```
+
+**Referenced Objects:** [`DeleteTaskPushNotificationConfigRequest`](#10410-deletetaskpushnotificationconfig)
+
 ### 11.5. Query Parameter Naming for Request Parameters
 
 HTTP methods that do not support request bodies (GET, DELETE) **MUST** transmit operation request parameters as path parameters or query parameters. This section defines how to map Protocol Buffer field names to query parameter names.
