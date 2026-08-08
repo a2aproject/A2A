@@ -19,8 +19,8 @@ hide:
   </div>
 
   <p class="hero-actions">
-    <a class="md-button md-button--primary" href="tutorials/python/1-introduction/">Get started</a>
-    <a class="md-button" href="specification/">Read the spec</a>
+    <a class="md-button md-button--primary" href="tutorials/python/1-introduction.md">Get started</a>
+    <a class="md-button" href="specification.md">Read the spec</a>
   </p>
 </div>
 

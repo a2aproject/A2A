@@ -36,7 +36,7 @@ function initHeroTaglineCarousels() {
     const dotsContainer = document.createElement("div");
     dotsContainer.className = "hero-tagline-dots";
     dotsContainer.setAttribute("role", "tablist");
-    dotsContainer.setAttribute("aria-label", "Taglines");
+    dotsContainer.setAttribute("aria-label", "Select tagline");
 
     const dots = slides.map((_, dotIndex) => {
       const dot = document.createElement("button");
