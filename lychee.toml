@@ -75,6 +75,9 @@ exclude = [
 exclude_path = [
     ".github/actions/spelling",
     "CHANGELOG.md",
+    # MkDocs theme override templates: Jinja2, not real HTML. hrefs contain
+    # template expressions (e.g. {{ ... }}) that lychee misreads as file paths.
+    ".mkdocs",
     # Source docs (PR / changed-file checks)
     "docs/robots.txt",
     "docs/llms.txt",
