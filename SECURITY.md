@@ -1,5 +1,6 @@
 # Security Policy
 
-To report a security issue, please use email <security@lists.a2aproject.org>.
+To report a security issue, please use GitHub Security Advisories:
+[Security Advisories · a2aproject/A2A](https://github.com/a2aproject/A2A/security/advisories)
 
-We use a mailing list for our intake, and do coordination and disclosure here using GitHub Security Advisory to privately discuss and fix the issue.
+We use GitHub Security Advisories for private intake, coordination, and disclosure.
