@@ -107,3 +107,73 @@ iframe.video-container {
     height: auto;
     border-radius: 4px;
 }
+
+/* SDK language repository links in the header (see partials/sdk_repos.html) */
+.lang-header-repos {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-left: 0.4rem;
+  margin-right: 0.2rem;
+}
+
+.lang-repos {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lang-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--md-primary-bg-color);
+  padding: 4px 6px;
+  border-radius: 4px;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+
+.lang-item:hover {
+  opacity: 1;
+  background-color: rgb(255 255 255 / 12%);
+}
+
+.lang-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  display: inline-flex;
+}
+
+.lang-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentcolor;
+}
+
+.lang-label {
+  font-size: 0.55rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Hide labels on medium screens to save room */
+@media screen and (width <= 1100px) {
+  .lang-label {
+    display: none;
+  }
+
+  .lang-item {
+    padding: 4px;
+  }
+}
+
+/* Hide the SDK row entirely on small screens */
+@media screen and (width <= 76.1875em) {
+  .lang-header-repos {
+    display: none;
+  }
+}
