@@ -56,6 +56,7 @@ collaborate effectively with each other and with users.
 - [Datadog](https://www.datadoghq.com)
 - [DataRobot](https://www.datarobot.com)
 - [DataStax](https://www.datastax.com)
+- [Dealer Handshake](https://dealerhandshake.com/)
 - [Decagon.ai](https://decagon.ai)
 - [Deloitte](https://www.prnewswire.com/news-releases/deloitte-expands-alliances-with-google-cloud-and-servicenow-to-accelerate-agentic-ai-adoption-in-the-enterprise-302423941.html)
 - [Devnagri](https://devnagri.com)
