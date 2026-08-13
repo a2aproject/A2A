@@ -51,9 +51,6 @@
 
 /* Hero tagline carousel: sits between the logo and the primary CTAs. */
 .hero-tagline-carousel {
-  --tagline-interval: 6s;
-  --tagline-count: 3;
-
   max-width: 42em;
   margin: 1em auto 1.75em;
 }
@@ -70,33 +67,14 @@
   margin: 0;
   opacity: 0;
   visibility: hidden;
-  animation: hero-tagline-cycle calc(var(--tagline-interval) * var(--tagline-count)) infinite;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  pointer-events: none;
 }
 
-.hero-tagline:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.hero-tagline:nth-child(2) {
-  animation-delay: calc(-1 * var(--tagline-interval));
-}
-
-.hero-tagline:nth-child(3) {
-  animation-delay: calc(-2 * var(--tagline-interval));
-}
-
-@keyframes hero-tagline-cycle {
-  0%,
-  27% {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  33%,
-  100% {
-    opacity: 0;
-    visibility: hidden;
-  }
+.hero-tagline.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .hero-tagline-dots {
@@ -130,12 +108,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-tagline {
-    animation: none;
-  }
-
-  .hero-tagline:first-child {
-    opacity: 1;
-    visibility: visible;
+    transition: none;
   }
 
   .hero-tagline-dot {

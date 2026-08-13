@@ -22,6 +22,10 @@ function initHeroTaglineCarousels() {
     return;
   }
 
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
   carousels.forEach((carousel) => {
     carousel.dataset.ready = "true";
 
@@ -32,6 +36,7 @@ function initHeroTaglineCarousels() {
 
     const interval = Number.parseInt(carousel.dataset.interval || "6000", 10);
     let activeIndex = 0;
+    let timerId = null;
 
     const dotsContainer = document.createElement("div");
     dotsContainer.className = "hero-tagline-dots";
@@ -48,7 +53,8 @@ function initHeroTaglineCarousels() {
         `Tagline ${dotIndex + 1} of ${slides.length}`,
       );
       dot.addEventListener("click", () => {
-        updateDots(dotIndex);
+        showSlide(dotIndex);
+        startAutoRotate();
       });
       dotsContainer.appendChild(dot);
       return dot;
@@ -56,8 +62,13 @@ function initHeroTaglineCarousels() {
 
     carousel.appendChild(dotsContainer);
 
-    function updateDots(index) {
-      activeIndex = index;
+    function showSlide(index) {
+      activeIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, slideIndex) => {
+        slide.classList.toggle("is-active", slideIndex === activeIndex);
+      });
+
       dots.forEach((dot, dotIndex) => {
         const isActive = dotIndex === activeIndex;
         dot.classList.toggle("is-active", isActive);
@@ -65,10 +76,26 @@ function initHeroTaglineCarousels() {
       });
     }
 
-    updateDots(0);
-    window.setInterval(() => {
-      updateDots((activeIndex + 1) % slides.length);
-    }, interval);
+    function stopAutoRotate() {
+      if (timerId !== null) {
+        window.clearInterval(timerId);
+        timerId = null;
+      }
+    }
+
+    function startAutoRotate() {
+      if (prefersReducedMotion) {
+        return;
+      }
+
+      stopAutoRotate();
+      timerId = window.setInterval(() => {
+        showSlide(activeIndex + 1);
+      }, interval);
+    }
+
+    showSlide(0);
+    startAutoRotate();
   });
 }
 
