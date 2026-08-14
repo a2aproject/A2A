@@ -17,11 +17,13 @@ hide:
       <p class="hero-tagline">An open standard enabling developers to expose portable tools through MCP and interoperable agents through A2A.</p>
     </div>
   </div>
+</div>
 
-  <p class="hero-actions">
-    <a class="md-button md-button--primary" href="tutorials/python/1-introduction/">Get started</a>
-    <a class="md-button" href="specification/">Read the spec</a>
-  </p>
+<div class="hero" markdown="1">
+
+[Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
+[Read the spec](./specification.md){ .md-button }
+
 </div>
 
 ## What is A2A Protocol?
