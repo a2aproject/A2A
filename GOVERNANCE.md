@@ -9,7 +9,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | **Cisco** | Luca Muscariello | Distinguished Engineer | [@muscariello](https://github.com/muscariello) |
 | **Amazon Web Services** | Abhimanyu Siwach | Senior Software Engineer | [@siwachabhi](https://github.com/siwachabhi) |
 | **Salesforce** | Stephen Petschulat | Principal Architect | [@spetschulatSFDC](https://github.com/spetschulatSFDC) |
-| **ServiceNow** | Sean Hughes | Director of Open Science | [@hughesthe1st](https://github.com/hughesthe1st) |
+| **ServiceNow** | Sugandh Rakha | Head of Product (MCP & A2A) | [sugandhrakha (Sugandh Rakha)](https://github.com/sugandhrakha) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
 | **IBM** | Stefano Maestri | Principal Software Engineer | [@maeste](https://github.com/maeste) |
 
