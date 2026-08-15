@@ -19,7 +19,12 @@ The TSC looks to streamline opportunities for contribution through [A2A extensio
 
 ### Validation
 
-As the A2A ecosystem matures, it becomes critical for the A2A community to have tools to validate their agents. The community has launched two efforts to help with validation. Learn more about [A2A Inspector](https://github.com/a2aproject/a2a-inspector) and the [A2A Protocol Technology Compatibility Kit](https://github.com/a2aproject/a2a-tck) (TCK).
+As the A2A ecosystem matures, it becomes critical for the A2A community to have
+tools to validate agents and SDK interoperability. Learn more about the
+[A2A Inspector](https://github.com/a2aproject/a2a-inspector), the
+[A2A Protocol Technology Compatibility Kit](https://github.com/a2aproject/a2a-tck)
+(TCK), and the [A2A Integration Test Kit](https://github.com/a2aproject/a2a-itk)
+(ITK) in the [Validation Tools](validation-tools.md) guide.
 
 ### SDKs
 
