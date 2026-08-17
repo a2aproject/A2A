@@ -252,6 +252,11 @@ message TaskStatus {
   // ISO 8601 Timestamp when the status was recorded.
   // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 3;
+  // Optional. Elicitations created or changed at this status - a delta, not the
+  // full set. Because the delta travels on the status, it is delivered by
+  // `TaskStatusUpdateEvent` and captured in the `timeline`. Clients merge these
+  // into `Task.elicitations` by `elicitation_id`. See ADR-002.
+  repeated Elicitation elicitations = 4;
 }
 
 // `Part` represents a container for a section of communication content.
@@ -391,14 +396,8 @@ message Elicitation {
   string elicitation_id = 1 [(google.api.field_behavior) = REQUIRED];
   // The current state of this elicitation.
   ElicitationState state = 2 [(google.api.field_behavior) = REQUIRED];
-  // Optional. The `message_id` of the agent `Message` (carried in a timeline
-  // `TaskStatus` entry) that requests input.
-  string request_message_id = 3;
-  // Optional. The task's `generation` at which this elicitation last changed
-  // state.
-  int64 generation = 4;
   // Optional. Metadata associated with this elicitation.
-  google.protobuf.Struct metadata = 5;
+  google.protobuf.Struct metadata = 3;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
@@ -415,12 +414,6 @@ message TaskStatusUpdateEvent {
   // to detect missed events (a gap in generation values) and to correlate
   // events with a specific task snapshot.
   int64 generation = 5;
-  // Optional. Elicitations created or changed by this update, identified by
-  // `elicitation_id`. This is a delta: only the affected elicitations are
-  // included. Clients merge them into `Task.elicitations` by `elicitation_id`
-  // (elicitations are never removed, only transitioned between states). See
-  // ADR-002.
-  repeated Elicitation elicitations = 6;
 }
 
 // A task delta where an artifact has been generated.
