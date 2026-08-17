@@ -5,15 +5,25 @@ hide:
 ---
 
 <!-- markdownlint-disable MD041 -->
-<div style="text-align: center;" markdown>
+<div class="hero" markdown="0">
   <div class="centered-logo-text-group">
     <h1><img src="assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="500"></h1>
   </div>
 
-  <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
+  <div class="hero-tagline-carousel" data-interval="6000">
+    <div class="hero-tagline-slides" aria-live="polite">
+      <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
+      <p class="hero-tagline">An open standard enabling users to connect agents to tools and data through MCP, and to other agents through A2A.</p>
+      <p class="hero-tagline">An open standard enabling developers to expose portable tools through MCP and interoperable agents through A2A.</p>
+    </div>
+  </div>
+</div>
 
-  [Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
-  [Read the spec](./specification.md){ .md-button }
+<div class="hero" markdown="1">
+
+[Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
+[Read the spec](./specification.md){ .md-button }
+
 </div>
 
 ## What is A2A Protocol?
