@@ -505,9 +505,9 @@ The `generation` field on [`Task`](#411-task) is a sequentially increasing integ
 
 - Appending a [`TimelineEntry`](#418-timelineentry): an agent status update (any [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), including a progress message that does not change `Task.status.state`), or a client message added to the task's `timeline`.
 - An Artifact addition or update (any change to `Task.artifacts`).
-- An [`Elicitation`](#419-elicitation) state change (any change to `Task.elicitations`).
+- An [`Elicitation`](#419-elicitation) creation or state change (any change to `Task.elicitations`).
 
-Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Other mutations (client-message timeline entries and elicitation state changes) also advance `generation` but are not necessarily delivered to every subscriber as a discrete event; clients reconcile these via [Get Task](#313-get-task) (see Event Ordering below).
+Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), which also carry any [`Elicitation`](#419-elicitation) delta) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Client-message timeline entries also advance `generation` but are not necessarily delivered to every subscriber as a discrete event; clients reconcile these via [Get Task](#313-get-task) (see Event Ordering below).
 
 **Event Ordering and Missed-Event Detection:**
 
@@ -566,9 +566,23 @@ Because agent status entries are delivered by the existing [`TaskStatusUpdateEve
 
 <span id="329-elicitation-semantics"></span>
 
-An [`Elicitation`](#419-elicitation) is an explicit record of a request for client input. The `elicitations` field on [`Task`](#411-task) lets agents model input-required flows additively, without overloading the [`TaskState`](#413-taskstate) enum. Each elicitation has an [`ElicitationState`](#4110-elicitationstate) of `ELICITATION_STATE_WAITING`, `ELICITATION_STATE_BLOCKED`, or `ELICITATION_STATE_RESOLVED`, and MAY reference the agent [`Message`](#414-message) that requested the input.
+An [`Elicitation`](#419-elicitation) is an explicit record of a request for client input. The `elicitations` field on [`Task`](#411-task) lets agents model input-required flows additively, without overloading the [`TaskState`](#413-taskstate) enum. Each elicitation has an [`ElicitationState`](#4110-elicitationstate) of `ELICITATION_STATE_WAITING`, `ELICITATION_STATE_BLOCKED`, or `ELICITATION_STATE_RESOLVED`, and MAY reference the agent [`Message`](#414-message) that requested the input via `requestMessageId`.
 
-A task is considered to require input while any elicitation is in the `WAITING` or `BLOCKED` state. Servers MAY continue to set `Task.status.state` to `TASK_STATE_INPUT_REQUIRED` for backward compatibility; clients that understand `elicitations` **SHOULD** derive input-required status from the collection. An `Elicitation` state change is a generation-advancing mutation (see [Task Generation Semantics](#327-task-generation-semantics)).
+A task is considered to require input while any elicitation is in the `WAITING` or `BLOCKED` state. Servers MAY continue to set `Task.status.state` to `TASK_STATE_INPUT_REQUIRED` for backward compatibility; clients that understand `elicitations` **SHOULD** derive input-required status from the collection.
+
+**Creation and identity:**
+
+Elicitations are created and state-changed by the agent. An elicitation is normally created **together with the status update that requests the input**: the requesting agent message travels in that [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)'s `status.message`, and the elicitation's `requestMessageId` points back to it.
+
+Each elicitation is identified by `elicitationId`, which is unique within the task. Elicitations are **never removed**; they only transition between states (`WAITING` and `BLOCKED` are open states, `RESOLVED` is terminal). The collection is therefore monotonic and can be merged by `elicitationId`.
+
+**Delivery:**
+
+Elicitation creations and state changes are delivered to streaming clients via the `elicitations` field on [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) — a delta containing only the affected elicitations. No new streaming event type is introduced. A server MAY attach an elicitation delta to a status update it is already emitting, or emit a status update specifically to carry an elicitation change; such an elicitation-only update need not add a new [timeline](#328-task-timeline-semantics) entry. Clients **SHOULD** merge each delta into their view of `Task.elicitations` by `elicitationId`. The full current set is always available via [Get Task](#313-get-task).
+
+An `Elicitation` create or state change is a generation-advancing mutation and is delivered as part of the status update that carries it (see [Task Generation Semantics](#327-task-generation-semantics)).
+
+How a client indicates *which* elicitation a subsequent input satisfies is defined by the bidirectional interaction model and is out of scope for this version; agents resolve elicitations from interaction context.
 
 ### 3.3. Operation Semantics
 

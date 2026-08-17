@@ -415,6 +415,12 @@ message TaskStatusUpdateEvent {
   // to detect missed events (a gap in generation values) and to correlate
   // events with a specific task snapshot.
   int64 generation = 5;
+  // Optional. Elicitations created or changed by this update, identified by
+  // `elicitation_id`. This is a delta: only the affected elicitations are
+  // included. Clients merge them into `Task.elicitations` by `elicitation_id`
+  // (elicitations are never removed, only transitioned between states). See
+  // ADR-002.
+  repeated Elicitation elicitations = 6;
 }
 
 // A task delta where an artifact has been generated.
