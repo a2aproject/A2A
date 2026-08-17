@@ -555,7 +555,7 @@ Entries are ordered by their `generation` value, which establishes a total order
 
 The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
 
-Because agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), introducing the timeline requires **no new streaming event type**, and clients that do not understand the `timeline` field are unaffected on the wire. Live delivery of client-message timeline entries to other subscribers (for example, in bidirectional interactions) is out of scope for this version; such entries are observed via [Get Task](#313-get-task). The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions without a breaking change.
+Because agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), introducing the timeline requires **no new streaming event type**, and clients that do not understand the `timeline` field are unaffected on the wire. Live delivery of client-message timeline entries to other subscribers (for example, in bidirectional interactions) is out of scope for this version; such entries are observed via [Get Task](#313-get-task). The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
 
 **Interleaving artifacts with the timeline:**
 
@@ -578,8 +578,6 @@ Changes are carried as a **delta** on [`TaskStatus`](#412-taskstatus)`.elicitati
 Each elicitation is identified by `elicitationId`, unique within the task. Elicitations are **never removed**; they only transition between states (`WAITING` and `BLOCKED` are open, `RESOLVED` is terminal). Clients **SHOULD** merge each status delta into `Task.elicitations` by `elicitationId`; the full current set is always available via [Get Task](#313-get-task).
 
 Because an elicitation change is part of the status that carries it, it is a status mutation and advances `generation` like any other status update (see [Task Generation Semantics](#327-task-generation-semantics)).
-
-How a client indicates *which* elicitation a subsequent input satisfies is defined by the bidirectional interaction model and is out of scope for this version; agents resolve elicitations from interaction context.
 
 ### 3.3. Operation Semantics
 

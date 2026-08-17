@@ -354,8 +354,9 @@ message Artifact {
 // `message` and state) interleaved with client messages, in the order they
 // occurred. Agent status entries are delivered on the wire by the existing
 // `TaskStatusUpdateEvent`, so the timeline needs no new event type. The `entry`
-// is a `oneof` so additional entry kinds can be added later without a breaking
-// change. See ADR-002.
+// is a `oneof` so additional entry kinds can be added later; clients MUST fail
+// open and skip an entry whose `entry` kind they do not recognise (its
+// `generation` is still accounted for). See ADR-002.
 message TimelineEntry {
   // The content of this timeline entry.
   oneof entry {
