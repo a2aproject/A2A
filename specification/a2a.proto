@@ -147,11 +147,17 @@ message SendMessageConfiguration {
   // Configuration for the agent to send push notifications for task updates.
   // Task id should be empty when sending this configuration in a `SendMessage` request.
   TaskPushNotificationConfig task_push_notification_config = 2;
-  // The maximum number of most recent messages from the task's history to retrieve in
-  // the response. An unset value means the client does not impose any limit. A
-  // value of zero is a request to not include any messages. The server MUST NOT
-  // return more messages than the provided value, but MAY apply a lower limit.
-  optional int32 history_length = 3;
+  // Deprecated: use `timeline_length` instead. The maximum number of most recent
+  // messages from the task's history to retrieve in the response. An unset value
+  // means the client does not impose any limit. A value of zero is a request to
+  // not include any messages. The server MUST NOT return more messages than the
+  // provided value, but MAY apply a lower limit. Removed in 2.0. See ADR-002.
+  optional int32 history_length = 3 [deprecated = true];
+  // Optional. The maximum number of most recent `timeline` entries to retrieve
+  // in the response. An unset value means the client does not impose any limit;
+  // a value of zero requests no entries. The server MUST NOT return more entries
+  // than this value, but MAY apply a lower limit. See ADR-002.
+  optional int32 timeline_length = 6;
   // If `true`, the operation returns immediately after creating the task,
   // even if processing is still in progress.
   // If `false` (default), the operation MUST wait until the task reaches a
@@ -182,8 +188,11 @@ message Task {
   // A set of output artifacts for a `Task`.
   repeated Artifact artifacts = 4;
   // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
-  // The history of interactions from a `Task`.
-  repeated Message history = 5;
+  // Deprecated: read the task `timeline` instead, which records the interaction
+  // (agent status entries and client messages) in generation order. Servers
+  // continue to populate `history` throughout the v1.x line for backward
+  // compatibility; it is removed in 2.0. See ADR-002.
+  repeated Message history = 5 [deprecated = true];
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
   google.protobuf.Struct metadata = 6;
@@ -772,11 +781,17 @@ message GetTaskRequest {
   string tenant = 1;
   // The resource ID of the task to retrieve.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
-  // The maximum number of most recent messages from the task's history to retrieve. An
-  // unset value means the client does not impose any limit. A value of zero is
-  // a request to not include any messages. The server MUST NOT return more
-  // messages than the provided value, but MAY apply a lower limit.
-  optional int32 history_length = 3;
+  // Deprecated: use `timeline_length` instead. The maximum number of most recent
+  // messages from the task's history to retrieve. An unset value means the
+  // client does not impose any limit. A value of zero is a request to not
+  // include any messages. The server MUST NOT return more messages than the
+  // provided value, but MAY apply a lower limit. Removed in 2.0. See ADR-002.
+  optional int32 history_length = 3 [deprecated = true];
+  // Optional. The maximum number of most recent `timeline` entries to retrieve.
+  // An unset value means the client does not impose any limit; a value of zero
+  // requests no entries. The server MUST NOT return more entries than this
+  // value, but MAY apply a lower limit. See ADR-002.
+  optional int32 timeline_length = 5;
   // Optional. If set, the server SHOULD NOT return until the task's generation
   // is strictly greater than this value, enabling efficient long-polling.
   // The server MAY return earlier (e.g. on timeout) with the current task state.
@@ -803,8 +818,12 @@ message ListTasksRequest {
   // `ListTasksResponse.next_page_token`.
   // Provide this to retrieve the subsequent page.
   string page_token = 5;
-  // The maximum number of messages to include in each task's history.
-  optional int32 history_length = 6;
+  // Deprecated: use `timeline_length` instead. The maximum number of messages to
+  // include in each task's history. Removed in 2.0. See ADR-002.
+  optional int32 history_length = 6 [deprecated = true];
+  // Optional. The maximum number of `timeline` entries to include in each task.
+  // See ADR-002.
+  optional int32 timeline_length = 9;
   // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
   // Only tasks with a status timestamp time greater than or equal to this value will be returned.
   google.protobuf.Timestamp status_timestamp_after = 7;
