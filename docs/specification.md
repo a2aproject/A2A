@@ -549,8 +549,8 @@ The `generation` field was introduced in version **1.1** of this specification. 
 
 The [`timeline`](#418-timelineentry) field on [`Task`](#411-task) is the coherent, generation-ordered record of the interaction on the wire. Each [`TimelineEntry`](#418-timelineentry) is a `oneof` carrying either:
 
-- an agent [`TaskStatus`](#412-taskstatus) — the agent's state and `message` at a point in the interaction, delivered to subscribers by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent); or
-- a client [`Message`](#414-message) — client input recorded in the task.
+- a client [`Message`](#414-message) — client input recorded in the task; or
+- an agent [`TaskStatus`](#412-taskstatus) — the agent's state and `message` at a point in the interaction, delivered to subscribers by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent).
 
 Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append.
 

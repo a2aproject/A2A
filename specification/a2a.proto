@@ -354,12 +354,12 @@ message Artifact {
 message TimelineEntry {
   // The content of this timeline entry.
   oneof entry {
-    // An agent status recorded in the timeline: the state plus the agent's
-    // `message` at that point. Streamed via `TaskStatusUpdateEvent`.
-    TaskStatus status = 1;
     // A standalone message recorded in the timeline, used for client input
     // (`ROLE_USER`). Agent messages are carried by `status` entries.
-    Message message = 2;
+    Message message = 1;
+    // An agent status recorded in the timeline: the state plus the agent's
+    // `message` at that point. Streamed via `TaskStatusUpdateEvent`.
+    TaskStatus status = 2;
   }
   // The task's `generation` at the point this entry was appended. Entries are
   // ordered by this value, establishing a total order independent of wall-clock
