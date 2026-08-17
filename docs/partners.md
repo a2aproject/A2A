@@ -67,7 +67,7 @@ collaborate effectively with each other and with users.
 - [Ema.co](https://ema.co)
 - [EPAM](https://www.epam.com)
 - [Eviden (Atos Group)](https://atos.net/)
-- [FAF](https://www.iana.org/assignments/media-types/application/vnd.fafa+yaml)
+- [FAF](https://faf.one/blog/fafa-speaks-a2a)
 - [fractal.ai](https://fractal.ai/new)
 - [GenAI Nebula9.ai Solutions Pvt Ltd](http://nebula9.ai)
 - [Glean](https://www.glean.com)
