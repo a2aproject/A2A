@@ -187,12 +187,22 @@ message Task {
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
   google.protobuf.Struct metadata = 6;
-  // Sequentially increasing counter incremented by exactly 1 by the server
-  // on every state-changing mutation to this task (TaskState transition or
-  // Artifact addition/update), with each mutation mapping 1:1 to one event.
+  // Sequentially increasing counter incremented by exactly 1 by the server on
+  // every state-changing mutation to this task, with each mutation mapping 1:1
+  // to one event. Mutations include: a status update recorded as a
+  // `TimelineEntry` (any `TaskStatusUpdateEvent`, including a progress message
+  // that does not change `TaskState`); an `Artifact` addition or update; and an
+  // `Elicitation` state change.
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
+  // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
+  // Optional. The coherent, generation-ordered record of the task's status
+  // progression: the accumulated `TaskStatus` history. Each entry corresponds to
+  // a `TaskStatusUpdateEvent` already delivered on the wire, so no new event
+  // type is required to stream it. See ADR-002.
+  repeated TimelineEntry timeline = 8;
+  // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
 }
 
 // Defines the possible lifecycle states of a `Task`.
@@ -302,6 +312,31 @@ message Artifact {
   google.protobuf.Struct metadata = 5;
   // The URIs of extensions that are present or contributed to this Artifact.
   repeated string extensions = 6;
+}
+
+// `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
+// The timeline is the coherent, replayable record of the interaction on the
+// wire: agent status progression (each `TaskStatus` carrying the agent's
+// `message` and state) interleaved with client messages, in the order they
+// occurred. Agent status entries are delivered on the wire by the existing
+// `TaskStatusUpdateEvent`, so the timeline needs no new event type. The `entry`
+// is a `oneof` so additional entry kinds can be added later without a breaking
+// change. See ADR-002.
+message TimelineEntry {
+  // The content of this timeline entry.
+  oneof entry {
+    // An agent status recorded in the timeline: the state plus the agent's
+    // `message` at that point. Streamed via `TaskStatusUpdateEvent`.
+    TaskStatus status = 1;
+    // A standalone message recorded in the timeline, used for client input
+    // (`ROLE_USER`). Agent messages are carried by `status` entries.
+    Message message = 2;
+  }
+  // The task's `generation` at the point this entry was appended. Entries are
+  // ordered by this value, establishing a total order independent of wall-clock
+  // time. Appending a `TimelineEntry` is itself a generation-incrementing
+  // mutation (see `Task.generation`).
+  int64 generation = 3;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
