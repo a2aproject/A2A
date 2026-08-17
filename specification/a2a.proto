@@ -203,6 +203,11 @@ message Task {
   // type is required to stream it. See ADR-002.
   repeated TimelineEntry timeline = 8;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
+  // Optional. Outstanding and resolved requests for client input. The task is
+  // considered to require input while any elicitation is in the `WAITING` or
+  // `BLOCKED` state; this derives `INPUT_REQUIRED` additively without changing
+  // the `TaskState` enum. See ADR-002.
+  repeated Elicitation elicitations = 9;
 }
 
 // Defines the possible lifecycle states of a `Task`.
@@ -337,6 +342,39 @@ message TimelineEntry {
   // time. Appending a `TimelineEntry` is itself a generation-incrementing
   // mutation (see `Task.generation`).
   int64 generation = 3;
+}
+
+// Defines the lifecycle states of an `Elicitation` (a request for client input).
+enum ElicitationState {
+  // The elicitation state is unspecified.
+  ELICITATION_STATE_UNSPECIFIED = 0;
+  // The agent is waiting for the client to satisfy this request; the task may
+  // continue other work in the meantime.
+  ELICITATION_STATE_WAITING = 1;
+  // The request is blocking task progress. While any elicitation is `WAITING`
+  // or `BLOCKED`, the task is considered to require input (`INPUT_REQUIRED`)
+  // without a change to the `TaskState` enum.
+  ELICITATION_STATE_BLOCKED = 2;
+  // The request has been satisfied or withdrawn.
+  ELICITATION_STATE_RESOLVED = 3;
+}
+
+// `Elicitation` is an explicit, additive record of a request for client input.
+// It lets consumers model input-required flows without overloading `TaskState`.
+// See ADR-002.
+message Elicitation {
+  // Unique identifier (e.g. UUID) for this elicitation within the task.
+  string elicitation_id = 1 [(google.api.field_behavior) = REQUIRED];
+  // The current state of this elicitation.
+  ElicitationState state = 2 [(google.api.field_behavior) = REQUIRED];
+  // Optional. The `message_id` of the agent `Message` (carried in a timeline
+  // `TaskStatus` entry) that requests input.
+  string request_message_id = 3;
+  // Optional. The task's `generation` at which this elicitation last changed
+  // state.
+  int64 generation = 4;
+  // Optional. Metadata associated with this elicitation.
+  google.protobuf.Struct metadata = 5;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
