@@ -551,7 +551,7 @@ The [`timeline`](#418-timelineentry) field on [`Task`](#411-task) is the coheren
 - a client [`Message`](#414-message) — client input recorded in the task; or
 - an agent [`TaskStatus`](#412-taskstatus) — the agent's state and `message` at a point in the interaction, delivered to subscribers by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent).
 
-Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append.
+Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append. These `generation` values are monotonic but **not contiguous**: other mutations (notably `Artifact` updates) also advance `generation`, so consumers **MUST NOT** assume timeline entries have consecutive `generation` values — gaps are expected, and artifacts are placed relative to entries via `startGeneration`/`endGeneration` (see *Interleaving artifacts with the timeline* below).
 
 The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
 

@@ -200,8 +200,8 @@ message Task {
   // every state-changing mutation to this task, with each mutation mapping 1:1
   // to one event. Mutations include: a status update recorded as a
   // `TimelineEntry` (any `TaskStatusUpdateEvent`, including a progress message
-  // that does not change `TaskState`); an `Artifact` addition or update; and an
-  // `Elicitation` state change.
+  // that does not change `TaskState`, or one whose `status` carries an
+  // `Elicitation` delta); and an `Artifact` addition or update.
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
@@ -359,8 +359,10 @@ message TimelineEntry {
   }
   // The task's `generation` at the point this entry was appended. Entries are
   // ordered by this value, establishing a total order independent of wall-clock
-  // time. Appending a `TimelineEntry` is itself a generation-incrementing
-  // mutation (see `Task.generation`).
+  // time. These values are monotonic but NOT contiguous: other mutations
+  // (notably `Artifact` updates) also advance `generation`, so gaps between
+  // entries are expected, and artifacts are placed relative to entries via their
+  // `start_generation`/`end_generation` (see `Task.generation`).
   int64 generation = 3;
 }
 
