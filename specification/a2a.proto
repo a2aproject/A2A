@@ -313,6 +313,13 @@ message Message {
   repeated string extensions = 7;
   // A list of task IDs that this message references for additional context.
   repeated string reference_task_ids = 8;
+  // Optional. The `elicitation_id`s this message is intended to satisfy, when
+  // the sender knows them; a single message MAY answer several. This is a hint
+  // only: the recipient MAY use it to resolve the corresponding `Elicitation`s
+  // directly, and MAY ignore it and determine from context which requests the
+  // message answers. Senders are never required to set it. Because it travels
+  // on the message, it is retained in the task `timeline`. See ADR-002.
+  repeated string elicitation_ids = 9;
 }
 
 // Artifacts represent task outputs.
@@ -764,12 +771,6 @@ message SendMessageRequest {
   SendMessageConfiguration configuration = 3;
   // A flexible key-value map for passing additional context or parameters.
   google.protobuf.Struct metadata = 4;
-  // Optional. The `elicitation_id` this message is intended to satisfy, when the
-  // client knows it. This is a hint only: the server MAY use it to resolve the
-  // corresponding `Elicitation` directly, and MAY ignore it and determine from
-  // context which requests the message answers. Clients are never required to
-  // set it. See ADR-002.
-  string elicitation_id = 5;
 }
 
 // Represents a request for the `GetTask` method.

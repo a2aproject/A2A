@@ -589,11 +589,13 @@ Because an elicitation change is part of the status that carries it, it is a sta
 
 Resolving an elicitation is the agent's responsibility: it decides, from the content and context of the client's input, which outstanding requests have been satisfied and transitions them to `RESOLVED`.
 
-To help, a client MAY set `elicitationId` on [`SendMessageRequest`](#321-sendmessagerequest) to indicate which elicitation the message is intended to answer. This is a **hint only**:
+To help, a sender MAY set `elicitationIds` on the [`Message`](#414-message) to indicate which elicitations it is intended to answer. A single message MAY answer several. This is a **hint only**:
 
-- Clients are never required to set it, and a message that omits it is equally valid.
-- Servers MAY use it to resolve the referenced elicitation directly, and MAY ignore it entirely and determine the mapping from context.
-- Servers **MUST NOT** reject a message solely because the field is absent, unknown, or refers to an already-`RESOLVED` elicitation.
+- Senders are never required to set it, and a message that omits it is equally valid.
+- Recipients MAY use it to resolve the referenced elicitations directly, and MAY ignore it entirely and determine the mapping from context.
+- Recipients **MUST NOT** reject a message solely because the field is absent, unknown, or refers to an already-`RESOLVED` elicitation.
+
+Because the hint travels on the `Message` rather than on the request, it is retained in the task [`timeline`](#328-task-timeline-semantics), so the record of which input answered which request survives in the task's history.
 
 ### 3.3. Operation Semantics
 
