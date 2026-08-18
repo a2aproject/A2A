@@ -332,20 +332,10 @@ message Artifact {
   // The URIs of extensions that are present or contributed to this Artifact.
   repeated string extensions = 6;
   // Optional. The task `generation` at which this artifact first appeared.
-  // Together with `end_generation`, this lets consumers interleave artifacts
-  // with the `timeline` without the timeline carrying per-chunk stream events.
-  // See ADR-002.
   int64 start_generation = 7;
-  // Optional. The task `generation` at which this artifact was completed (its
-  // last chunk). Unset while the artifact is still streaming; for a single-shot
-  // artifact it equals `start_generation`.
+  // Optional. The task `generation` at which this artifact was completed; unset
+  // while it is still streaming.
   int64 end_generation = 8;
-  // Optional. The originator of this artifact. Artifacts are agent outputs by
-  // default (`ROLE_AGENT`); a client-written (bidirectional) artifact is
-  // `ROLE_USER`. This preserves the input/output distinction as client-written
-  // artifacts are introduced. The mechanics of writing artifacts are specified
-  // separately (bidirectional streaming). See ADR-002.
-  Role role = 9;
 }
 
 // `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
