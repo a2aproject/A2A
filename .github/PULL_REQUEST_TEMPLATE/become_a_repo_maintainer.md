@@ -25,4 +25,4 @@ Once accepted you'll be able to commit to this repo!
 - [ ] I have at least one merged Pull Request
 - [ ] I have reviewed the [contribution guidelines](https://github.com/a2aproject/A2A/blob/main/CONTRIBUTING.md)
 - [ ] I have enabled [2FA on my GitHub account](https://github.com/settings/security)
-- [ ] I have joined the A2A discord
+- [ ] I have joined the [A2A Discord](https://discord.gg/a2aprotocol)
