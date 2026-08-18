@@ -212,9 +212,9 @@ message Task {
   // type is required to stream it. See ADR-002.
   repeated TimelineEntry timeline = 8;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
-  // Optional. Outstanding and resolved requests for client input. The task is
-  // considered to require input while any elicitation is in the `WAITING` or
-  // `BLOCKED` state; this derives `INPUT_REQUIRED` additively without changing
+  // Optional. The authoritative, current set of requests for client input,
+  // outstanding and resolved. `WAITING` requests do not stop the agent working;
+  // a `BLOCKED` one does. Lets consumers model input-required without changing
   // the `TaskState` enum. See ADR-002.
   repeated Elicitation elicitations = 9;
 }
@@ -373,9 +373,9 @@ enum ElicitationState {
   // The agent is waiting for the client to satisfy this request; the task may
   // continue other work in the meantime.
   ELICITATION_STATE_WAITING = 1;
-  // The request is blocking task progress. While any elicitation is `WAITING`
-  // or `BLOCKED`, the task is considered to require input (`INPUT_REQUIRED`)
-  // without a change to the `TaskState` enum.
+  // The request is blocking task progress until it is satisfied. By convention
+  // (implementation guidance, not a protocol requirement) a task is reported as
+  // `TASK_STATE_INPUT_REQUIRED` while at least one elicitation is `BLOCKED`.
   ELICITATION_STATE_BLOCKED = 2;
   // The request has been satisfied or withdrawn.
   ELICITATION_STATE_RESOLVED = 3;

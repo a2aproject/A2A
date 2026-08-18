@@ -567,7 +567,11 @@ Because agent status entries are delivered by the existing [`TaskStatusUpdateEve
 
 An [`Elicitation`](#419-elicitation) is an explicit record of a request for client input. It lets agents model input-required flows additively, without overloading the [`TaskState`](#413-taskstate) enum. Each elicitation has an [`ElicitationState`](#4110-elicitationstate) of `ELICITATION_STATE_WAITING`, `ELICITATION_STATE_BLOCKED`, or `ELICITATION_STATE_RESOLVED`.
 
-The `elicitations` field on [`Task`](#411-task) is the authoritative, current set of the task's elicitations. A task is considered to require input while any elicitation is in the `WAITING` or `BLOCKED` state. Servers MAY continue to set `Task.status.state` to `TASK_STATE_INPUT_REQUIRED` for backward compatibility; clients that understand `elicitations` **SHOULD** derive input-required status from the collection.
+The `elicitations` field on [`Task`](#411-task) is the authoritative, current set of the task's elicitations. The two open states differ in whether they stop the agent: an elicitation in `WAITING` is outstanding but the agent MAY continue other work, whereas an elicitation in `BLOCKED` prevents further progress until it is satisfied. Clients that understand `elicitations` **SHOULD** read the collection directly rather than inferring input-required status from `Task.status.state`.
+
+**Relationship to `TASK_STATE_INPUT_REQUIRED` (implementation guidance, not a protocol requirement):**
+
+The protocol does not mandate a mapping between elicitations and the [`TaskState`](#413-taskstate) enum, and this mapping is not conditioned on the negotiated protocol version. The expected default — typically provided by an SDK so agent authors need not manage the state themselves — is to set `Task.status.state` to `TASK_STATE_INPUT_REQUIRED` while at least one elicitation is `BLOCKED`, and to leave the state unchanged (for example `TASK_STATE_WORKING`) when the only open elicitations are `WAITING`. This keeps existing clients that read `Task.status.state` working unchanged, while clients that read `elicitations` additionally see non-blocking requests.
 
 **Creation, identity, and delivery:**
 
