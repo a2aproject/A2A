@@ -1,0 +1,140 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "Polling and Long-Running Tasks"
+  description: "Tests for long-running tasks with returnImmediately and polling patterns"
+
+suites:
+  - id: polling
+    name: "Polling and Long-Running Tasks"
+    tests:
+      - id: CORE-EXEC-001
+        name: "Long-running task with returnImmediately and polling"
+        description: >
+          Sends a long-running request with returnImmediately enabled, polls
+          until the task reaches a terminal state, and verifies the task
+          completes with at least one artifact.
+        spec_ref: "specification.md#3.1.1"
+        level: must
+        requires_behaviors: ["tck-long-running"]
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start process"
+              configuration:
+                returnImmediately: true
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]
+
+          - id: poll
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                status:
+                  state:
+                    type: string
+            repeat:
+              until: "status.state in [TASK_STATE_COMPLETED, TASK_STATE_FAILED]"
+              max_attempts: 15
+              delay_ms: 2000
+
+          - id: verify
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                status:
+                  state: TASK_STATE_COMPLETED
+                artifacts:
+                  type: array
+                  count_gte: 1
+
+      - id: CORE-EXEC-002
+        name: "Polling shows progress through working state"
+        description: >
+          Sends a long-running request with returnImmediately enabled, verifies
+          polling observes TASK_STATE_WORKING during execution, and then confirms
+          the task reaches TASK_STATE_COMPLETED.
+        spec_ref: "specification.md#3.1.1"
+        level: should
+        requires_behaviors: ["tck-long-running"]
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start process"
+              configuration:
+                returnImmediately: true
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state:
+                      one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]
+
+          - id: wait-for-working
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                status:
+                  state:
+                    type: string
+            repeat:
+              until: "status.state == TASK_STATE_WORKING"
+              max_attempts: 10
+              delay_ms: 1000
+
+          - id: poll-to-terminal
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                status:
+                  state:
+                    type: string
+            repeat:
+              until: "status.state in [TASK_STATE_COMPLETED, TASK_STATE_FAILED]"
+              max_attempts: 15
+              delay_ms: 2000
+
+          - id: verify
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                status:
+                  state: TASK_STATE_COMPLETED
