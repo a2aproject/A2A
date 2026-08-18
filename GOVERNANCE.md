@@ -4,7 +4,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
 | Company | Representative | Title | Contact |
 | :--- | :--- | :--- | :--- |
-| **Google** | Todd Segal | Principal Engineer | [@ToddSegal](https://github.com/ToddSegal) |
+ | **Google** | Todd Segal | Distinguished Engineer | [@ToddSegal](https://github.com/ToddSegal) |
 | **Microsoft** | Darrel Miller | Partner API Architect | [@darrelmiller](https://github.com/darrelmiller) |
 | **Cisco** | Luca Muscariello | Distinguished Engineer | [@muscariello](https://github.com/muscariello) |
 | **Amazon Web Services** | Abhimanyu Siwach | Senior Software Engineer | [@siwachabhi](https://github.com/siwachabhi) |
