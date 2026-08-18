@@ -472,11 +472,13 @@ This wrapper allows streaming endpoints to return different types of updates thr
 
 #### 3.2.4. History Length Semantics
 
-The `historyLength` parameter appears in multiple operations and controls how much task history is returned in responses. This parameter follows consistent semantics across all operations:
+> **Deprecated:** `historyLength` (and the `history` field it controls) is deprecated as of version **1.1** in favour of `timelineLength` and the task [`timeline`](#328-task-timeline-semantics). Servers continue to honour `historyLength` and populate `history` throughout the 1.x line; both are removed in 2.0.
 
-- **Unset/undefined**: No limit imposed; server returns its default amount of history (implementation-defined, may be all history)
-- **0**: No history should be returned; the `history` field SHOULD be omitted
-- **> 0**: Return at most this many recent messages from the task's history
+The `historyLength` parameter controls how much task history is returned in responses; its replacement, `timelineLength`, controls how many [`timeline`](#418-timelineentry) entries are returned. Both parameters appear in multiple operations and follow the same, consistent semantics:
+
+- **Unset/undefined**: No limit imposed; the server returns its default amount (implementation-defined, may be all entries)
+- **0**: None should be returned; the corresponding field (`history` or `timeline`) SHOULD be omitted
+- **> 0**: Return at most this many most-recent entries
 
 #### 3.2.5. Metadata
 
@@ -501,14 +503,14 @@ As service parameter names MAY need to co-exist with other parameters defined by
 
 The `generation` field on [`Task`](#411-task) is a sequentially increasing integer maintained by the server. It is initialised to `1` when a task is created and **MUST** be incremented by exactly `1` by the server on every state-changing mutation:
 
-- A `TaskState` transition (any change to `Task.status.state`).
+- Appending a [`TimelineEntry`](#418-timelineentry): an agent status update (any [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) — including a progress message that does not change `Task.status.state`, or one whose `status` carries an [`Elicitation`](#419-elicitation) delta), or a client message added to the task's `timeline`.
 - An Artifact addition or update (any change to `Task.artifacts`).
 
-Each mutation **MUST** map 1:1 to exactly one emitted event. The `generation` value carried in [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) **MUST** reflect the task's generation **after** the mutation that produced the event.
+Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), whose `status` also carries any [`Elicitation`](#419-elicitation) delta) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Client-message timeline entries also advance `generation` but are not necessarily delivered to every subscriber as a discrete event; clients reconcile these via [Get Task](#313-get-task) (see Event Ordering below).
 
 **Event Ordering and Missed-Event Detection:**
 
-Because the server increments `generation` by exactly `1` per mutation, a client that tracks the last seen `generation` can detect missed events by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, it knows at least one event was not delivered and **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
+Because the server increments `generation` by exactly `1` per mutation, a client that tracks the last seen `generation` can detect that its view is behind by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, at least one intervening mutation has not been delivered to it — a missed event, or a mutation not delivered to that subscriber as a discrete event (such as a client-message timeline entry) — and it **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
 
 A correctly-implemented server **MUST NOT** emit two events for the same task with the same `generation` value. If a client observes any event carrying `generation = 0`, or observes two consecutive events for the same task carrying identical `generation` values, it **MUST** conclude that the server does not implement the `generation` field and **MUST NOT** use `generation` for ordering, long-polling, or precondition checks for the remainder of that interaction. The client **SHOULD** fall back to stream ordering or timestamps for sequencing.
 
@@ -539,6 +541,61 @@ The `ifGenerationMatch` field in [`SendMessageConfiguration`](#322-sendmessageco
 **Backwards Compatibility:**
 
 The `generation` field was introduced in version **1.1** of this specification. The field defaults to `0` in the Protocol Buffer encoding (proto3 default for `int64`). Clients that do not read or send `generation` continue to interoperate correctly with servers that support it. Servers that have not yet implemented `generation` will return `0` on all events and responses; since a correctly-implemented server always returns `generation ≥ 1`, clients will detect a `0` value as a signal that the server does not support the field and gracefully fall back.
+
+#### 3.2.8. Task Timeline Semantics
+
+<span id="328-task-timeline-semantics"></span>
+
+The [`timeline`](#418-timelineentry) field on [`Task`](#411-task) is the coherent, generation-ordered record of the interaction on the wire. Each [`TimelineEntry`](#418-timelineentry) is a `oneof` carrying either:
+
+- a client [`Message`](#414-message) — client input recorded in the task; or
+- an agent [`TaskStatus`](#412-taskstatus) — the agent's state and `message` at a point in the interaction, delivered to subscribers by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent).
+
+Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append. These `generation` values are monotonic but **not contiguous**: other mutations (notably `Artifact` updates) also advance `generation`, so consumers **MUST NOT** assume timeline entries have consecutive `generation` values — gaps are expected, and artifacts are placed relative to entries via `startGeneration`/`endGeneration` (see *Interleaving artifacts with the timeline* below).
+
+The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
+
+Because agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), introducing the timeline requires **no new streaming event type**, and clients that do not understand the `timeline` field are unaffected on the wire. Live delivery of client-message timeline entries to other subscribers (for example, in bidirectional interactions) is out of scope for this version; such entries are observed via [Get Task](#313-get-task). The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
+
+**Interleaving artifacts with the timeline:**
+
+[`Artifact`](#417-artifact) objects are recorded separately from the timeline so that per-chunk streaming updates do not flood it. To place an artifact relative to timeline entries, an artifact carries `startGeneration` (the `generation` at which it first appeared) and `endGeneration` (the `generation` at which it completed; unset while it is still streaming). Consumers interleave artifacts with timeline entries by comparing these values against entry `generation`s.
+
+#### 3.2.9. Elicitation Semantics
+
+<span id="329-elicitation-semantics"></span>
+
+An [`Elicitation`](#419-elicitation) is an explicit record of a request for client input. It lets agents model input-required flows additively, without overloading the [`TaskState`](#413-taskstate) enum. Each elicitation has an [`ElicitationState`](#4110-elicitationstate) of `ELICITATION_STATE_WAITING`, `ELICITATION_STATE_BLOCKED`, or `ELICITATION_STATE_RESOLVED`.
+
+A single agent message may raise **several** elicitations — for example when it asks for multiple data points that can be answered separately, or where some are blocking and others are not. This is why an elicitation is modelled as its own record rather than being inferred from the requesting message.
+
+The `elicitations` field on [`Task`](#411-task) is the authoritative, current set of the task's elicitations. The two open states differ in whether they stop the agent: an elicitation in `WAITING` is outstanding but the agent MAY continue other work, whereas an elicitation in `BLOCKED` prevents further progress until it is satisfied. Clients that understand `elicitations` **SHOULD** read the collection directly rather than inferring input-required status from `Task.status.state`.
+
+**Relationship to `TASK_STATE_INPUT_REQUIRED` (implementation guidance, not a protocol requirement):**
+
+The protocol does not mandate a mapping between elicitations and the [`TaskState`](#413-taskstate) enum, and this mapping is not conditioned on the negotiated protocol version. The expected default — typically provided by an SDK so agent authors need not manage the state themselves — is to set `Task.status.state` to `TASK_STATE_INPUT_REQUIRED` while at least one elicitation is `BLOCKED`, and to leave the state unchanged (for example `TASK_STATE_WORKING`) when the only open elicitations are `WAITING`. This keeps existing clients that read `Task.status.state` working unchanged, while clients that read `elicitations` additionally see non-blocking requests.
+
+**Creation, identity, and delivery:**
+
+Elicitations are created and state-changed by the agent, normally **together with the status update that requests the input** — the requesting agent message travels in the same [`TaskStatus`](#412-taskstatus)'s `message`.
+
+Changes are carried as a **delta** on [`TaskStatus`](#412-taskstatus)`.elicitations`: only the elicitations created or changed at that status are included. Because the delta travels on the status, it is delivered to streaming clients by the [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) that carries the status, and it is captured in the [timeline](#328-task-timeline-semantics) — each status entry records what changed then, so walking the timeline reconstructs the elicitation history. No new streaming event type is introduced.
+
+Each elicitation is identified by `elicitationId`, unique within the task. Elicitations are **never removed**; they only transition between states (`WAITING` and `BLOCKED` are open, `RESOLVED` is terminal). Clients **SHOULD** merge each status delta into `Task.elicitations` by `elicitationId`; the full current set is always available via [Get Task](#313-get-task).
+
+Because an elicitation change is part of the status that carries it, it is a status mutation and advances `generation` like any other status update (see [Task Generation Semantics](#327-task-generation-semantics)).
+
+**Responding to an elicitation:**
+
+Resolving an elicitation is the agent's responsibility: it decides, from the content and context of the client's input, which outstanding requests have been satisfied and transitions them to `RESOLVED`.
+
+To help, a sender MAY set `elicitationIds` on the [`Message`](#414-message) to indicate which elicitations it is intended to answer. A single message MAY answer several. This is a **hint only**:
+
+- Senders are never required to set it, and a message that omits it is equally valid.
+- Recipients MAY use it to resolve the referenced elicitations directly, and MAY ignore it entirely and determine the mapping from context.
+- Recipients **MUST NOT** reject a message solely because the field is absent, unknown, or refers to an already-`RESOLVED` elicitation.
+
+Because the hint travels on the `Message` rather than on the request, it is retained in the task [`timeline`](#328-task-timeline-semantics), so the record of which input answered which request survives in the task's history.
 
 ### 3.3. Operation Semantics
 
@@ -744,7 +801,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 
 All implementations MUST deliver events in the order they were generated. Events MUST NOT be reordered during transmission, regardless of protocol binding.
 
-Each [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) carries the task's `generation` value after the mutation that produced it. Clients **SHOULD** use this value to verify that no events were missed (a gap in generation values indicates a missed event) and to establish a total ordering of events that is independent of wall-clock time. See [Task Generation Semantics](#327-task-generation-semantics) for details.
+Each [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) carries the task's `generation` value after the mutation that produced it. Clients **SHOULD** use this value to detect when their view is behind (a gap in generation values) and to establish a total ordering of events that is independent of wall-clock time; on a gap a client **SHOULD** reconcile via [Get Task](#313-get-task). Agent status entries in the task [`timeline`](#418-timelineentry) are delivered by these existing events — no additional streaming event type is introduced for the timeline. See [Task Generation Semantics](#327-task-generation-semantics) and [Task Timeline Semantics](#328-task-timeline-semantics) for details.
 
 **Multiple Streams Per Task:**
 
@@ -821,6 +878,8 @@ Messages play several key roles:
 
 Messages SHOULD NOT be used to deliver task outputs. Results SHOULD BE returned using Artifacts associated with a Task. This separation allows for a clear distinction between communication (Messages) and data output (Artifacts).
 
+> **Deprecated:** the Task `history` field is deprecated as of version **1.1** in favour of the task [`timeline`](#328-task-timeline-semantics), which records the interaction (agent status entries and client messages) in generation order. Servers continue to populate `history` throughout the 1.x line; the behaviour below describes `history` during that period.
+
 The Task History field contains Messages exchanged during task execution. However, not all Messages are guaranteed to be persisted in the Task history; for example, transient informational messages may not be stored. Messages exchanged prior to task creation may not be stored in Task history. The agent is responsible to determine which Messages are persisted in the Task History.
 
 Clients using streaming to retrieve task updates MAY not receive all status update messages if the client is disconnected and then reconnects. Messages MUST NOT be considered a reliable delivery mechanism for critical information.
@@ -874,6 +933,28 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 #### 4.1.7. Artifact
 
 {{ proto_to_table("Artifact") }}
+
+<a id="TimelineEntry"></a>
+
+#### 4.1.8. TimelineEntry
+
+{{ proto_to_table("TimelineEntry") }}
+
+See [Task Timeline Semantics](#328-task-timeline-semantics).
+
+<a id="Elicitation"></a>
+
+#### 4.1.9. Elicitation
+
+{{ proto_to_table("Elicitation") }}
+
+See [Elicitation Semantics](#329-elicitation-semantics).
+
+<a id="ElicitationState"></a>
+
+#### 4.1.10. ElicitationState
+
+{{ proto_enum_to_table("ElicitationState") }}
 
 ### 4.2. Streaming Events
 
