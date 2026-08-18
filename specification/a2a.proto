@@ -193,6 +193,11 @@ message Task {
   // continue to populate `history` throughout the v1.x line for backward
   // compatibility; it is removed in 2.0. See ADR-002.
   repeated Message history = 5 [deprecated = true];
+  // Optional. The coherent, generation-ordered record of the interaction: agent
+  // status entries and client messages. Each status entry corresponds to a
+  // `TaskStatusUpdateEvent` already delivered on the wire, so no new event type
+  // is required to stream it. See ADR-002.
+  repeated TimelineEntry timeline = 8;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
   google.protobuf.Struct metadata = 6;
@@ -200,23 +205,10 @@ message Task {
   // every state-changing mutation to this task, with each mutation mapping 1:1
   // to one event. Mutations include: a status update recorded as a
   // `TimelineEntry` (any `TaskStatusUpdateEvent`, including a progress message
-  // that does not change `TaskState`, or one whose `status` carries an
-  // `Elicitation` delta); and an `Artifact` addition or update.
+  // that does not change `TaskState`); and an `Artifact` addition or update.
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
-  // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
-  // Optional. The coherent, generation-ordered record of the task's status
-  // progression: the accumulated `TaskStatus` history. Each entry corresponds to
-  // a `TaskStatusUpdateEvent` already delivered on the wire, so no new event
-  // type is required to stream it. See ADR-002.
-  repeated TimelineEntry timeline = 8;
-  // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
-  // Optional. The authoritative, current set of requests for client input,
-  // outstanding and resolved. `WAITING` requests do not stop the agent working;
-  // a `BLOCKED` one does. Lets consumers model input-required without changing
-  // the `TaskState` enum. See ADR-002.
-  repeated Elicitation elicitations = 9;
 }
 
 // Defines the possible lifecycle states of a `Task`.
@@ -252,11 +244,6 @@ message TaskStatus {
   // ISO 8601 Timestamp when the status was recorded.
   // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 3;
-  // Optional. Elicitations created or changed at this status - a delta, not the
-  // full set. Because the delta travels on the status, it is delivered by
-  // `TaskStatusUpdateEvent` and captured in the `timeline`. Clients merge these
-  // into `Task.elicitations` by `elicitation_id`. See ADR-002.
-  repeated Elicitation elicitations = 4;
 }
 
 // `Part` represents a container for a section of communication content.
@@ -364,33 +351,6 @@ message TimelineEntry {
   // entries are expected, and artifacts are placed relative to entries via their
   // `start_generation`/`end_generation` (see `Task.generation`).
   int64 generation = 3;
-}
-
-// Defines the lifecycle states of an `Elicitation` (a request for client input).
-enum ElicitationState {
-  // The elicitation state is unspecified.
-  ELICITATION_STATE_UNSPECIFIED = 0;
-  // The agent is waiting for the client to satisfy this request; the task may
-  // continue other work in the meantime.
-  ELICITATION_STATE_WAITING = 1;
-  // The request is blocking task progress until it is satisfied. By convention
-  // (implementation guidance, not a protocol requirement) a task is reported as
-  // `TASK_STATE_INPUT_REQUIRED` while at least one elicitation is `BLOCKED`.
-  ELICITATION_STATE_BLOCKED = 2;
-  // The request has been satisfied or withdrawn.
-  ELICITATION_STATE_RESOLVED = 3;
-}
-
-// `Elicitation` is an explicit, additive record of a request for client input.
-// It lets consumers model input-required flows without overloading `TaskState`.
-// See ADR-002.
-message Elicitation {
-  // Unique identifier (e.g. UUID) for this elicitation within the task.
-  string elicitation_id = 1 [(google.api.field_behavior) = REQUIRED];
-  // The current state of this elicitation.
-  ElicitationState state = 2 [(google.api.field_behavior) = REQUIRED];
-  // Optional. Metadata associated with this elicitation.
-  google.protobuf.Struct metadata = 3;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
