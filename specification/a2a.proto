@@ -137,6 +137,34 @@ service A2AService {
     };
     option (google.api.method_signature) = "task_id,id";
   }
+
+  // Establishes a bidirectional stream for live interaction.
+  rpc SendLiveMessage(stream StreamRequest) returns (stream StreamResponse) {
+    option (google.api.http) = {
+      post: "/live"
+      body: "*"
+      additional_bindings: {
+        post: "/{tenant}/live"
+        body: "*"
+      }
+    };
+  }
+}
+
+// A wrapper object used in streaming operations to encapsulate different types of client input.
+message StreamRequest {
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
+  string tenant = 1;
+  // The payload of the stream request.
+  oneof payload {
+    // A message from the client.
+    Message message = 2;
+    // A client-written artifact update.
+    TaskArtifactUpdateEvent artifact_update = 3;
+  }
+  // Optional. Any metadata to provide along with the request.
+  google.protobuf.Struct metadata = 4;
 }
 
 // Configuration of a send message request.
@@ -147,11 +175,17 @@ message SendMessageConfiguration {
   // Configuration for the agent to send push notifications for task updates.
   // Task id should be empty when sending this configuration in a `SendMessage` request.
   TaskPushNotificationConfig task_push_notification_config = 2;
-  // The maximum number of most recent messages from the task's history to retrieve in
-  // the response. An unset value means the client does not impose any limit. A
-  // value of zero is a request to not include any messages. The server MUST NOT
-  // return more messages than the provided value, but MAY apply a lower limit.
-  optional int32 history_length = 3;
+  // Deprecated: use `timeline_length` instead. The maximum number of most recent
+  // messages from the task's history to retrieve in the response. An unset value
+  // means the client does not impose any limit. A value of zero is a request to
+  // not include any messages. The server MUST NOT return more messages than the
+  // provided value, but MAY apply a lower limit. Removed in 2.0. See ADR-002.
+  optional int32 history_length = 3 [deprecated = true];
+  // Optional. The maximum number of most recent `timeline` entries to retrieve
+  // in the response. An unset value means the client does not impose any limit;
+  // a value of zero requests no entries. The server MUST NOT return more entries
+  // than this value, but MAY apply a lower limit. See ADR-002.
+  optional int32 timeline_length = 6;
   // If `true`, the operation returns immediately after creating the task,
   // even if processing is still in progress.
   // If `false` (default), the operation MUST wait until the task reaches a
@@ -182,14 +216,24 @@ message Task {
   // A set of output artifacts for a `Task`.
   repeated Artifact artifacts = 4;
   // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
-  // The history of interactions from a `Task`.
-  repeated Message history = 5;
+  // Deprecated: read the task `timeline` instead, which records the interaction
+  // (agent status entries and client messages) in generation order. Servers
+  // continue to populate `history` throughout the v1.x line for backward
+  // compatibility; it is removed in 2.0. See ADR-002.
+  repeated Message history = 5 [deprecated = true];
+  // Optional. The coherent, generation-ordered record of the interaction: agent
+  // status entries and client messages. Each status entry corresponds to a
+  // `TaskStatusUpdateEvent` already delivered on the wire, so no new event type
+  // is required to stream it. See ADR-002.
+  repeated TimelineEntry timeline = 8;
   // protolint:enable REPEATED_FIELD_NAMES_PLURALIZED
   // A key/value object to store custom metadata about a task.
   google.protobuf.Struct metadata = 6;
-  // Sequentially increasing counter incremented by exactly 1 by the server
-  // on every state-changing mutation to this task (TaskState transition or
-  // Artifact addition/update), with each mutation mapping 1:1 to one event.
+  // Sequentially increasing counter incremented by exactly 1 by the server on
+  // every state-changing mutation to this task, with each mutation mapping 1:1
+  // to one event. Mutations include: a status update recorded as a
+  // `TimelineEntry` (any `TaskStatusUpdateEvent`, including a progress message
+  // that does not change `TaskState`); and an `Artifact` addition or update.
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
@@ -302,6 +346,59 @@ message Artifact {
   google.protobuf.Struct metadata = 5;
   // The URIs of extensions that are present or contributed to this Artifact.
   repeated string extensions = 6;
+  // Optional. The task `generation` at which this artifact first appeared.
+  int64 start_generation = 7;
+  // Optional. The task `generation` at which this artifact was completed; unset
+  // while it is still streaming.
+  int64 end_generation = 8;
+  // Optional. The originator of this artifact. Artifacts are agent outputs by
+  // default (`ROLE_AGENT`); a client-written (bidirectional) artifact is
+  // `ROLE_USER`.
+  Role role = 9;
+}
+
+// `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
+// The timeline is the coherent, replayable record of the interaction on the
+// wire: agent status progression (each `TaskStatus` carrying the agent's
+// `message` and state) interleaved with client messages, in the order they
+// occurred. Agent status entries are delivered on the wire by the existing
+// `TaskStatusUpdateEvent`, so the timeline needs no new event type. The `entry`
+// is a `oneof` so additional entry kinds can be added later; clients MUST fail
+// open and skip an entry whose `entry` kind they do not recognise (its
+// `generation` is still accounted for). See ADR-002.
+message TimelineEntry {
+  // The content of this timeline entry.
+  oneof entry {
+    // A standalone message recorded in the timeline, used for client input
+    // (`ROLE_USER`). Agent messages are carried by `status` entries.
+    Message message = 1;
+    // An agent status recorded in the timeline: the state plus the agent's
+    // `message` at that point. Streamed via `TaskStatusUpdateEvent`.
+    TaskStatus status = 2;
+  }
+  // The task's `generation` at the point this entry was appended. Entries are
+  // ordered by this value, establishing a total order independent of wall-clock
+  // time. These values are monotonic but NOT contiguous: other mutations
+  // (notably `Artifact` updates) also advance `generation`, so gaps between
+  // entries are expected, and artifacts are placed relative to entries via their
+  // `start_generation`/`end_generation` (see `Task.generation`).
+  int64 generation = 3;
+}
+
+// An event sent by the server to notify clients of a new message added to the task (e.g. client input).
+// Emitted only to clients that negotiated a compatible protocol version (>= 1.1).
+message TaskMessageUpdateEvent {
+  // The ID of the task that the message belongs to.
+  string task_id = 1 [(google.api.field_behavior) = REQUIRED];
+  // The ID of the context that this task belongs to.
+  string context_id = 2 [(google.api.field_behavior) = REQUIRED];
+  // The message that was appended to the task.
+  Message message = 3 [(google.api.field_behavior) = REQUIRED];
+  // Optional. Metadata associated with the message update.
+  google.protobuf.Struct metadata = 4;
+  // The task's `generation` after this message was appended, allowing clients
+  // to order it correctly in the timeline and detect missed events.
+  int64 generation = 5;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
@@ -501,6 +598,10 @@ message TaskPushNotificationConfig {
   string token = 5;
   // Authentication information required to send the notification.
   AuthenticationInfo authentication = 6;
+  // Optional. The A2A protocol version to use when delivering the notification.
+  // Defaults to the version of the request that created the configuration,
+  // or "1.0" if unset.
+  string protocol_version = 7;
 }
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
@@ -684,11 +785,17 @@ message GetTaskRequest {
   string tenant = 1;
   // The resource ID of the task to retrieve.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
-  // The maximum number of most recent messages from the task's history to retrieve. An
-  // unset value means the client does not impose any limit. A value of zero is
-  // a request to not include any messages. The server MUST NOT return more
-  // messages than the provided value, but MAY apply a lower limit.
-  optional int32 history_length = 3;
+  // Deprecated: use `timeline_length` instead. The maximum number of most recent
+  // messages from the task's history to retrieve. An unset value means the
+  // client does not impose any limit. A value of zero is a request to not
+  // include any messages. The server MUST NOT return more messages than the
+  // provided value, but MAY apply a lower limit. Removed in 2.0. See ADR-002.
+  optional int32 history_length = 3 [deprecated = true];
+  // Optional. The maximum number of most recent `timeline` entries to retrieve.
+  // An unset value means the client does not impose any limit; a value of zero
+  // requests no entries. The server MUST NOT return more entries than this
+  // value, but MAY apply a lower limit. See ADR-002.
+  optional int32 timeline_length = 5;
   // Optional. If set, the server SHOULD NOT return until the task's generation
   // is strictly greater than this value, enabling efficient long-polling.
   // The server MAY return earlier (e.g. on timeout) with the current task state.
@@ -715,8 +822,12 @@ message ListTasksRequest {
   // `ListTasksResponse.next_page_token`.
   // Provide this to retrieve the subsequent page.
   string page_token = 5;
-  // The maximum number of messages to include in each task's history.
-  optional int32 history_length = 6;
+  // Deprecated: use `timeline_length` instead. The maximum number of messages to
+  // include in each task's history. Removed in 2.0. See ADR-002.
+  optional int32 history_length = 6 [deprecated = true];
+  // Optional. The maximum number of `timeline` entries to include in each task.
+  // See ADR-002.
+  optional int32 timeline_length = 9;
   // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
   // Only tasks with a status timestamp time greater than or equal to this value will be returned.
   google.protobuf.Timestamp status_timestamp_after = 7;
@@ -824,6 +935,8 @@ message StreamResponse {
     TaskStatusUpdateEvent status_update = 3;
     // An event indicating a task artifact update.
     TaskArtifactUpdateEvent artifact_update = 4;
+    // An event indicating a new message was appended to the task (e.g. client input).
+    TaskMessageUpdateEvent message_update = 5;
   }
 }
 
