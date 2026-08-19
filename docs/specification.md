@@ -2813,6 +2813,32 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 - `GET /extendedAgentCard` - Get authenticated extended Agent Card
 
+#### 11.3.5. Base Path
+
+The URL patterns above are defined relative to a base URL that is
+implementation-defined. The specification does not mandate where A2A endpoints
+are rooted, so implementations **MAY** serve them at the root of a host or
+under a dedicated base path.
+
+Exposing A2A endpoints under a dedicated base path such as `/a2a` (for example,
+`POST /a2a/message:send` and `GET /a2a/tasks/{id}`) can simplify operational
+concerns when A2A endpoints coexist with other APIs on the same host, including:
+
+- API gateway and reverse-proxy routing
+- attaching authentication and authorization middleware to a single prefix
+- rate limiting and traffic separation
+- logging and observability partitioning
+
+A base path is an operational and routing convenience only. It is not a
+security or identity boundary: implementations **MUST NOT** treat the presence
+of a particular prefix as authentication or authorization for a request, and
+**MUST** apply the transport's declared security requirements regardless of the
+base path in use.
+
+When a base path is used, the fully-qualified endpoint URL advertised in the
+Agent Card's [`AgentInterface`](#446-agentinterface) `url` **MUST** include that
+base path so clients resolve the correct location.
+
 ### 11.4. Request/Response Format
 
 All requests and responses use JSON objects structurally equivalent to the Protocol Buffer definitions.
