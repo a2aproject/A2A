@@ -506,7 +506,7 @@ The `generation` field on [`Task`](#411-task) is a sequentially increasing integ
 - Appending a [`TimelineEntry`](#418-timelineentry): an agent status update (any [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), including a progress message that does not change `Task.status.state`), or a client message added to the task's `timeline`.
 - An Artifact addition or update (any change to `Task.artifacts`).
 
-Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Client-message timeline entries also advance `generation` but are not necessarily delivered to every subscriber as a discrete event; clients reconcile these via [Get Task](#313-get-task) (see Event Ordering below).
+Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Client-message timeline entries also advance `generation`; they are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) to clients that request `A2A-Version: 1.1` or later, while older clients reconcile them via [Get Task](#313-get-task) (see Event Ordering below).
 
 **Event Ordering and Missed-Event Detection:**
 
@@ -555,7 +555,7 @@ Entries are ordered by their `generation` value, which establishes a total order
 
 The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
 
-Because agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), introducing the timeline requires **no new streaming event type**, and clients that do not understand the `timeline` field are unaffected on the wire. Live delivery of client-message timeline entries to other subscribers (for example, in bidirectional interactions) is out of scope for this version; such entries are observed via [Get Task](#313-get-task). The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
+Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent). Client-message entries are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — which is emitted **only** to clients that request `A2A-Version: 1.1` or later, so 1.0 clients that do not understand the `timeline` field are unaffected on the wire. The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
 
 **Interleaving artifacts with the timeline:**
 
@@ -919,6 +919,12 @@ See [Task Timeline Semantics](#328-task-timeline-semantics).
 #### 4.2.2. TaskArtifactUpdateEvent
 
 {{ proto_to_table("TaskArtifactUpdateEvent") }}
+
+<a id="TaskMessageUpdateEvent"></a>
+
+#### 4.2.3. TaskMessageUpdateEvent
+
+{{ proto_to_table("TaskMessageUpdateEvent") }}
 
 ### 4.3. Push Notification Objects
 
