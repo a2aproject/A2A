@@ -2083,7 +2083,7 @@ The protected header **MUST** include:
 
 The protected header **MAY** include:
 
-- `jku`: URL to JSON Web Key Set (JWKS) containing the public key
+- `jku`: URL to JSON Web Key Set (JWKS) containing the public key. This is an informational hint only; per [Section 8.4.3](#843-signature-verification), it **MUST NOT** be used by verifiers to establish trust.
 
 **Signature Generation Process:**
 
@@ -2129,7 +2129,7 @@ Where the `protected` value decodes to:
 Clients verifying Agent Card signatures **MUST**:
 
 1. Extract the signature from the `signatures` array
-2. Retrieve the public key using the `kid` and `jku` (or from a trusted key store)
+2. Retrieve the public key using verifier-side policy (a configured JWKS endpoint, a trusted key store, or another verifier-controlled path); `kid` **MAY** be used to select among keys enrolled through that path
 3. Remove properties with default values from the received Agent Card
 4. Exclude the `signatures` field
 5. Canonicalize the resulting JSON using RFC 8785
@@ -2138,6 +2138,7 @@ Clients verifying Agent Card signatures **MUST**:
 **Security Considerations:**
 
 - Clients **SHOULD** verify at least one signature before trusting an Agent Card
+- Key discovery **MUST** be controlled by verifier-side policy. A verifier **MUST NOT** use a signer-supplied `jku` (or similar signer-controlled URL, such as `x5u`, if later added) from the protected header to select or establish the trust root: doing so lets the signer nominate its own trust anchor, defeating the purpose of the signature. A verifier that resolves keys by URL **MUST** constrain the target to a verifier-side allowlist
 - Public keys **SHOULD** be retrieved over secure channels (HTTPS)
 - Clients **MAY** maintain a trusted key store for known agent providers
 - Expired or revoked keys **MUST NOT** be used for verification
