@@ -831,7 +831,7 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.3.1. PushNotificationConfig
 
-{{ proto_to_table("PushNotificationConfig") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 <a id="PushNotificationAuthenticationInfo"></a>
 
@@ -2630,7 +2630,7 @@ Creates a push notification configuration for a task.
 
 **Request:**
 
-{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
