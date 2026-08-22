@@ -2630,7 +2630,7 @@ Creates a push notification configuration for a task.
 
 **Request:**
 
-{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 **Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
 
