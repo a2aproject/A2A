@@ -1166,7 +1166,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
-| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
+| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `GET /tasks/{id}:subscribe`                             |
 | Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
 | List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |
