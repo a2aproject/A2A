@@ -33,6 +33,7 @@ Here are some ideas and resources to continue your A2A journey:
     - Explore implementing push notifications if your agent's tasks are very long-lived.
     - Consider more complex input and output modalities (e.g., handling file uploads/downloads via file Parts, or structured data via data Parts).
 - **Contribute to the A2A Community:**
+    - Join the [A2A Discord server](https://discord.gg/a2aprotocol).
     - Join the discussions on the [A2A GitHub Discussions page](https://github.com/a2aproject/A2A/discussions).
     - Report issues or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).
     - Consider contributing code, examples, or documentation. See the [CONTRIBUTING.md](https://github.com/a2aproject/A2A/blob/main/CONTRIBUTING.md) guide.
