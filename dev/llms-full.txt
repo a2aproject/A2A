@@ -356,7 +356,7 @@ As AI agents become more prevalent, their ability to interoperate is crucial for
 
 We welcome community contributions to enhance and evolve the A2A protocol!
 
-- **Questions & Discussions:** Join our [GitHub Discussions](https://github.com/a2aproject/A2A/discussions).
+- **Questions & Discussions:** Join our [GitHub Discussions](https://github.com/a2aproject/A2A/discussions) or the [A2A Discord server](https://discord.gg/a2aprotocol).
 - **Issues & Feedback:** Report issues or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).
 - **Contribution Guide:** See our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute.
 - **Private Feedback:** Use this [Google Form](https://goo.gle/a2a-feedback).
@@ -443,6 +443,10 @@ A2A Protocol Community
 # A2A Community Hub
 
 Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2A is an open, standardized protocol that enables seamless interoperability and collaboration between AI agents across all frameworks and vendors.
+
+## Connect on Discord
+
+Join the [A2A Discord server](https://discord.gg/a2aprotocol) to chat with contributors, ask questions, and stay connected with the community.
 
 ## Recent News & Blog Posts
 
@@ -551,7 +555,7 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
 
-**Join the growing community building the future of AI interoperability with A2A!**
+**Join the growing community building the future of AI interoperability with A2A!** Connect on [Discord](https://discord.gg/a2aprotocol).
 
 ---
 
@@ -559,6 +563,7 @@ The excitement surrounding Google's A2A protocol clearly indicates a strong beli
 
 Looking for the live community meeting schedule or past recordings?
 
+- [A2A Discord server](https://discord.gg/a2aprotocol)
 - [A2A meetings on the Linux Foundation platform](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent)
 - [TSC meeting agenda working doc](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view)
 
@@ -758,6 +763,8 @@ A2A is a focused protocol. To set expectations, here is what it explicitly does 
 ## Governance & Open Source
 
 A2A was originally developed by Google and donated to the Linux Foundation. It is maintained by a Technical Steering Committee with representatives from AWS, Cisco, Google, IBM Research, Microsoft, Salesforce, SAP, and ServiceNow, and supported by a broad community of [partners](./partners.md).
+
+Join the community on [Discord](https://discord.gg/a2aprotocol) to connect with contributors, ask questions, and discuss the protocol.
 
 For details on how the project is run, see [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md) and [`MAINTAINERS.md`](https://github.com/a2aproject/A2A/blob/main/MAINTAINERS.md).
 
@@ -7153,6 +7160,7 @@ Here are some ideas and resources to continue your A2A journey:
     - Explore implementing push notifications if your agent's tasks are very long-lived.
     - Consider more complex input and output modalities (e.g., handling file uploads/downloads via file Parts, or structured data via data Parts).
 - **Contribute to the A2A Community:**
+    - Join the [A2A Discord server](https://discord.gg/a2aprotocol).
     - Join the discussions on the [A2A GitHub Discussions page](https://github.com/a2aproject/A2A/discussions).
     - Report issues or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).
     - Consider contributing code, examples, or documentation. See the [CONTRIBUTING.md](https://github.com/a2aproject/A2A/blob/main/CONTRIBUTING.md) guide.
@@ -11790,7 +11798,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa39287d0>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd82262300>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11816,7 +11824,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa39286e0>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd82262210>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -11860,7 +11868,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa39287d0>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd82262300>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -11880,7 +11888,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa39286e0>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd82262210>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16358,7 +16366,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16393,7 +16401,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16446,7 +16454,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16481,7 +16489,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23450>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83276d50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16497,7 +16505,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16514,7 +16522,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23450>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83276d50>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16566,7 +16574,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -16785,7 +16793,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16820,7 +16828,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16873,7 +16881,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16908,7 +16916,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23450>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83276d50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16924,7 +16932,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16941,7 +16949,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23450>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83276d50>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16993,7 +17001,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23650> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83121c50> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -21387,7 +21395,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23450>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83276d50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22138,7 +22146,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fcfa3b23450>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7efd83276d50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
