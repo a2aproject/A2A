@@ -688,7 +688,7 @@ const supportsExtended = agentCard.capabilities.extendedAgentCard;
 
 #### 4. Pagination (MEDIUM IMPACT)
 
-List Tasks implementation must switch from page-based to cursor-based:
+List Tasks implementation must switch from page-based to token-based:
 
 **Before (v0.3.0):**
 
@@ -881,7 +881,7 @@ if (!supportedVersions.includes(requestedVersion)) {
 1. Update all APIs to emit v1.0 format
 2. Maintain backward compatibility readers for v0.3.0
 3. Add A2A-Version header handling
-4. Implement cursor-based pagination alongside legacy page-based
+4. Implement token-based pagination alongside legacy page-based
 
 #### Phase 3: v1.0 Only
 
@@ -934,7 +934,7 @@ class A2AClient {
 
 - Test with both v0.3.0 and v1.0 formatted data
 - Validate Agent Card signature verification
-- Test cursor-based pagination edge cases (empty results, single page, etc.)
+- Test token-based pagination edge cases (empty results, single page, etc.)
 - Verify proper handling of new error types
 - Test extension requirement validation
 
@@ -948,7 +948,7 @@ class A2AClient {
 
 #### High (Within 1 Month)
 
-- Implement cursor-based pagination
+- Implement token-based pagination
 - Update enum value handling (state field)
 - Add return_immediately parameter support
 
