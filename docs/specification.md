@@ -472,7 +472,7 @@ The `historyLength` parameter appears in multiple operations and controls how mu
 
 #### 3.2.5. Metadata
 
-A flexible key-value map for passing additional context or parameters with operations. Metadata keys and are strings and values can be any valid value that can be represented in JSON. [`Extensions`](#46-extensions) can be used to strongly type metadata values for specific use cases.
+A flexible key-value map for passing additional context or parameters with operations. Metadata keys must be strings, and values can be any valid JSON value. [Extensions](#46-extensions) can be used to strongly type metadata values for specific use cases.
 
 #### 3.2.6 Service Parameters
 
@@ -671,7 +671,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#318-get-push-notification-config)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -1373,11 +1373,11 @@ Authorization: Bearer token
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
-data: {"task": {"id": "task-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
+data: {"task": {"id": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
-data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
+data: {"artifactUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
+data: {"statusUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1961,6 +1961,16 @@ If using in-band credential exchange, we recommend adhering to the following sec
 - Credentials SHOULD be bound to the agent which originated the request, such that only this agent is able to use the credentials. This ensures that credentials propagating through a chain of A2A requests are only usable by the requesting agent.
 - Credentials containing sensitive information SHOULD be only readable by the agent which originated the request, such as by encrypting the credential.
 
+#### 7.6.4 In-Task Authorization Scope
+
+The `TASK_STATE_AUTH_REQUIRED` state signals that additional authorization is required to continue processing a Task. The A2A protocol does not define the scope, representation, validity, or revocation semantics of the authorization decision or credential obtained in response to this state.
+
+Agents MUST NOT treat the `TASK_STATE_AUTH_REQUIRED` state transition, by itself, as authorization for any particular operation. The meaning and scope of any resulting authorization decision or credential MUST be defined by the agent's implementation, by the credential issuer, or by an A2A extension.
+
+If an implementation requires authorization for specific operations, it is responsible for defining how the authorized operation is identified and how that authorization is checked before the operation is performed.
+
+A credential or authorization decision obtained while a Task is in `TASK_STATE_AUTH_REQUIRED` MUST NOT be assumed to authorize subsequent messages on the Task unless that behavior is explicitly defined by the implementation, credential issuer, or extension.
+
 ## 8. Agent Discovery: The Agent Card
 
 <span id="5-agent-discovery-the-agent-card"></span>
@@ -2163,7 +2173,7 @@ Clients verifying Agent Card signatures **MUST**:
       }
     }
   },
-  "security": [{ "google": ["openid", "profile", "email"] }],
+  "securityRequirements": [{ "schemes": { "google": { "list": ["openid", "profile", "email"] } } }],
   "defaultInputModes": ["application/json", "text/plain"],
   "defaultOutputModes": ["application/json", "image/png"],
   "skills": [
@@ -2570,7 +2580,7 @@ Sends a message with streaming updates.
 
 {{ proto_to_table("SendMessageRequest") }}
 
-**Response:** Server streaming [`StreamResponse`](#stream-response) objects.
+**Response:** Server streaming [`StreamResponse`](#323-stream-response) objects.
 
 #### 10.4.3. GetTask
 
@@ -2612,7 +2622,7 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 {{ proto_to_table("SubscribeToTaskRequest") }}
 
-**Response:** Server streaming [`StreamResponse`](#stream-response) objects.
+**Response:** Server streaming [`StreamResponse`](#323-stream-response) objects.
 
 #### 10.4.7. CreateTaskPushNotificationConfig
 

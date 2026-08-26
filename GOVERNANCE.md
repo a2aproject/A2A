@@ -4,12 +4,12 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 
 | Company | Representative | Title | Contact |
 | :--- | :--- | :--- | :--- |
-| **Google** | Todd Segal | Principal Engineer | [@ToddSegal](https://github.com/ToddSegal) |
+ | **Google** | Todd Segal | Distinguished Engineer | [@ToddSegal](https://github.com/ToddSegal) |
 | **Microsoft** | Darrel Miller | Partner API Architect | [@darrelmiller](https://github.com/darrelmiller) |
 | **Cisco** | Luca Muscariello | Distinguished Engineer | [@muscariello](https://github.com/muscariello) |
 | **Amazon Web Services** | Abhimanyu Siwach | Senior Software Engineer | [@siwachabhi](https://github.com/siwachabhi) |
 | **Salesforce** | Stephen Petschulat | Principal Architect | [@spetschulatSFDC](https://github.com/spetschulatSFDC) |
-| **ServiceNow** | Sean Hughes | Director of Open Science | [@hughesthe1st](https://github.com/hughesthe1st) |
+| **ServiceNow** | Sugandh Rakha | Head of Product (MCP & A2A) | [@sugandhrakha](https://github.com/sugandhrakha) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
 | **IBM** | Stefano Maestri | Principal Software Engineer | [@maeste](https://github.com/maeste) |
 
@@ -77,7 +77,7 @@ Our [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx
 
 ## Project Communications
 
-The A2A project utilizes Discord for chat conversations about the project. All are welcome and encouraged to join the [A2A Discord](http://discord.gg/a2aprotocol). Discussion is encouraged however we do remind the community that chat is ephemeral, and not all members of the project are active in chat at the same time.
+The A2A project utilizes Discord for chat conversations about the project. All are welcome and encouraged to join the [A2A Discord](https://discord.gg/a2aprotocol). Discussion is encouraged however we do remind the community that chat is ephemeral, and not all members of the project are active in chat at the same time.
 
 Therefore, any discussions about feature proposals, significant changes to the project architecture or governance, etc. should be held in GitHub with adequate notice and time for comment. Look for specifics on that timing coming soon as the TSC ramps up. Just keep in mind - our goal is that GitHub is the source of truth for significant project decisions.
 

@@ -5,15 +5,25 @@ hide:
 ---
 
 <!-- markdownlint-disable MD041 -->
-<div style="text-align: center;" markdown>
+<div class="hero" markdown="0">
   <div class="centered-logo-text-group">
     <h1><img src="assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="500"></h1>
   </div>
 
-  <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
+  <div class="hero-tagline-carousel" data-interval="6000">
+    <div class="hero-tagline-slides" aria-live="polite">
+      <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
+      <p class="hero-tagline">An open standard enabling users to connect agents to tools and data through MCP, and to other agents through A2A.</p>
+      <p class="hero-tagline">An open standard enabling developers to expose portable tools through MCP and interoperable agents through A2A.</p>
+    </div>
+  </div>
+</div>
 
-  [Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
-  [Read the spec](./specification.md){ .md-button }
+<div class="hero" markdown="1">
+
+[Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
+[Read the spec](./specification.md){ .md-button }
+
 </div>
 
 ## What is A2A Protocol?
@@ -92,7 +102,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:fontawesome-brands-golang: Golang](https://github.com/a2aproject/a2a-go)
 
-    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rust)
+    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rs)
 
 - :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
 
@@ -146,6 +156,8 @@ A2A is a focused protocol. To set expectations, here is what it explicitly does 
 ## Governance & Open Source
 
 A2A was originally developed by Google and donated to the Linux Foundation. It is maintained by a Technical Steering Committee with representatives from AWS, Cisco, Google, IBM Research, Microsoft, Salesforce, SAP, and ServiceNow, and supported by a broad community of [partners](./partners.md).
+
+Join the community on [Discord](https://discord.gg/a2aprotocol) to connect with contributors, ask questions, and discuss the protocol.
 
 For details on how the project is run, see [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md) and [`MAINTAINERS.md`](https://github.com/a2aproject/A2A/blob/main/MAINTAINERS.md).
 
