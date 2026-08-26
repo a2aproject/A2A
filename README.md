@@ -104,7 +104,7 @@ As AI agents become more prevalent, their ability to interoperate is crucial for
 
 We welcome community contributions to enhance and evolve the A2A protocol!
 
-- **Questions & Discussions:** Join our [GitHub Discussions](https://github.com/a2aproject/A2A/discussions).
+- **Questions & Discussions:** Join our [GitHub Discussions](https://github.com/a2aproject/A2A/discussions) or the [A2A Discord server](https://discord.gg/a2aprotocol).
 - **Issues & Feedback:** Report issues or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).
 - **Contribution Guide:** See our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute.
 - **Private Feedback:** Use this [Google Form](https://goo.gle/a2a-feedback).
