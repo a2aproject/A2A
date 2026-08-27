@@ -7,7 +7,7 @@ categories:
 
 # A New Chapter for A2A: Joining the Agentic AI Foundation
 
-The Agent2Agent (A2A) protocol has officially been accepted as a Growth Stage project at the Agentic AI Foundation (AAIF). By joining the AAIF’s open agentic stack, A2A provides an open standard for how autonomous AI agents discover each other, delegate tasks, and collaborate across distinct frameworks and vendor boundaries.
+The Agent2Agent (A2A) protocol has officially been accepted as a Growth Stage project at the Agentic AI Foundation (AAIF). By joining the AAIF's open agentic stack, A2A provides an open standard for how autonomous AI agents discover each other, delegate tasks, and collaborate across distinct frameworks and vendor boundaries.
 
 ## The Horizontal Orchestration Layer
 
