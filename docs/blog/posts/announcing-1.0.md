@@ -1,3 +1,10 @@
+---
+date: 2026-03-12
+author: A2A Protocol Community
+categories:
+  - Announcements
+---
+
 # A2A Protocol Ships v1.0: Production-Ready Standard for Agent-to-Agent Communication
 
 The A2A Protocol community today are announcing the release of A2A Protocol v1.0, marking the first stable, production-ready version of the open standard for communication between AI agents. The protocol is guided by a technical steering committee with representatives from eight major technology companies.
