@@ -12580,7 +12580,7 @@ Objects now use the <strong>JSON member name</strong> itself to identify the typ
 <ol>
 <li>Update parsers to expect wrapper objects with member names as discriminators</li>
 <li>When constructing requests, use the new wrapper format</li>
-<li>Implement version detection based on the agent's <code>protocolVersions</code> in the <code>AgentCard</code></li>
+<li>Implement version detection based on <code>protocolVersion</code> in the agent's <code>supportedInterfaces</code> entries</li>
 <li>Consider maintaining backward compatibility by detecting and handling both formats during a transition period</li>
 </ol>
 <p>For <strong>Servers</strong> upgrading from pre-0.3.x:</p>
@@ -12588,7 +12588,7 @@ Objects now use the <strong>JSON member name</strong> itself to identify the typ
 <li>Update serialization logic to emit wrapper objects</li>
 <li><strong>Breaking:</strong> The <code>kind</code> field is no longer part of the protocol and should not be emitted</li>
 <li>Update deserialization to expect wrapper objects with member names</li>
-<li>Ensure the <code>AgentCard</code> declares the correct <code>protocolVersions</code> (e.g., ["1.0"] or later)</li>
+<li>Ensure each <code>AgentInterface</code> in the <code>AgentCard</code> declares the correct <code>protocolVersion</code> (e.g., "1.0" or later)</li>
 </ol>
 <p><strong>Rationale:</strong></p>
 <p>This change aligns with modern API design practices and Protocol Buffers' <code>oneof</code> semantics, where the field name itself serves as the type discriminator. This approach:</p>
