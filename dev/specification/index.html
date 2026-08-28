@@ -1845,10 +1845,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#431-pushnotificationconfig" class="md-nav__link">
+  <a href="#431-taskpushnotificationconfig" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.3.1. PushNotificationConfig
+        4.3.1. TaskPushNotificationConfig
       
     </span>
   </a>
@@ -5519,10 +5519,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#431-pushnotificationconfig" class="md-nav__link">
+  <a href="#431-taskpushnotificationconfig" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4.3.1. PushNotificationConfig
+        4.3.1. TaskPushNotificationConfig
       
     </span>
   </a>
@@ -7906,7 +7906,7 @@
 </table>
 <p><strong>Outputs:</strong></p>
 <ul>
-<li><a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a>: Created configuration with assigned ID</li>
+<li><a href="#431-taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a>: Created configuration with assigned ID</li>
 </ul>
 <p><strong>Errors:</strong></p>
 <ul>
@@ -7953,7 +7953,7 @@
 </table>
 <p><strong>Outputs:</strong></p>
 <ul>
-<li><a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a>: The requested configuration</li>
+<li><a href="#431-taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a>: The requested configuration</li>
 </ul>
 <p><strong>Errors:</strong></p>
 <ul>
@@ -8991,9 +8991,57 @@
 </tbody>
 </table>
 <h3 id="43-push-notification-objects">4.3. Push Notification Objects<a class="headerlink" href="#43-push-notification-objects" title="Permanent link">&para;</a></h3>
-<p><a id="PushNotificationConfig"></a></p>
-<h4 id="431-pushnotificationconfig">4.3.1. PushNotificationConfig<a class="headerlink" href="#431-pushnotificationconfig" title="Permanent link">&para;</a></h4>
-<p><strong>Error:</strong> Message <code>PushNotificationConfig</code> not found.</p>
+<p><a id="TaskPushNotificationConfig"></a></p>
+<h4 id="431-taskpushnotificationconfig">4.3.1. TaskPushNotificationConfig<a class="headerlink" href="#431-taskpushnotificationconfig" title="Permanent link">&para;</a></h4>
+<p>A container associating a push notification configuration with a specific task.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tenant</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>Optional. Opaque routing identifier. Must match the <code>tenant</code> value from the selected <code>AgentInterface</code> in the Agent Card when that field is set.</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>The push notification configuration details. A unique identifier (e.g. UUID) for this push notification configuration.</td>
+</tr>
+<tr>
+<td><code>taskId</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>The ID of the task this configuration is associated with.</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code>string</code></td>
+<td>Yes</td>
+<td>The URL where the notification should be sent.</td>
+</tr>
+<tr>
+<td><code>token</code></td>
+<td><code>string</code></td>
+<td>No</td>
+<td>A token unique for this task or session.</td>
+</tr>
+<tr>
+<td><code>authentication</code></td>
+<td><a href="#authenticationinfo"><code>AuthenticationInfo</code></a></td>
+<td>No</td>
+<td>Authentication information required to send the notification.</td>
+</tr>
+</tbody>
+</table>
 <p><a id="PushNotificationAuthenticationInfo"></a></p>
 <h4 id="432-authenticationinfo">4.3.2. AuthenticationInfo<a class="headerlink" href="#432-authenticationinfo" title="Permanent link">&para;</a></h4>
 <p>Defines authentication details, used for push notifications.</p>
@@ -9045,7 +9093,7 @@
 <li><strong>artifactUpdate</strong>: A <a href="#422-taskartifactupdateevent"><code>TaskArtifactUpdateEvent</code></a> indicating artifact updates</li>
 </ul>
 <p><strong>Authentication:</strong></p>
-<p>The agent MUST include authentication credentials in the request headers as specified in the <a href="#432-authenticationinfo"><code>PushNotificationConfig.authentication</code></a> field. The format follows standard HTTP authentication patterns (Bearer tokens, Basic auth, etc.).</p>
+<p>The agent MUST include authentication credentials in the request headers as specified in the <a href="#432-authenticationinfo"><code>TaskPushNotificationConfig.authentication</code></a> field. The format follows standard HTTP authentication patterns (Bearer tokens, Basic auth, etc.).</p>
 <p><strong>Client Responsibilities:</strong></p>
 <ul>
 <li>Clients MUST respond with HTTP 2xx status codes to acknowledge successful receipt</li>
@@ -11581,9 +11629,8 @@ so that clients can distinguish between incompatible versions:</p>
 <p><strong>Response:</strong> Server streaming <a href="#323-stream-response"><code>StreamResponse</code></a> objects.</p>
 <h4 id="1047-createtaskpushnotificationconfig">10.4.7. CreateTaskPushNotificationConfig<a class="headerlink" href="#1047-createtaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Creates a push notification configuration for a task.</p>
-<p><strong>Request:</strong></p>
-<p><strong>Error:</strong> Message <code>CreateTaskPushNotificationConfigRequest</code> not found.</p>
-<p><strong>Response:</strong> See <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> object definition.</p>
+<p><strong>Request:</strong> See <a href="#431-taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a> object definition.</p>
+<p><strong>Response:</strong> See <a href="#431-taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a> object definition.</p>
 <h4 id="1048-gettaskpushnotificationconfig">10.4.8. GetTaskPushNotificationConfig<a class="headerlink" href="#1048-gettaskpushnotificationconfig" title="Permanent link">&para;</a></h4>
 <p>Retrieves an existing push notification configuration for a task.</p>
 <p><strong>Request:</strong></p>
@@ -11618,7 +11665,7 @@ so that clients can distinguish between incompatible versions:</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Response:</strong> See <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> object definition.</p>
+<p><strong>Response:</strong> See <a href="#431-taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a> object definition.</p>
 <h4 id="1049-listtaskpushnotificationconfigs">10.4.9. ListTaskPushNotificationConfigs<a class="headerlink" href="#1049-listtaskpushnotificationconfigs" title="Permanent link">&para;</a></h4>
 <p>Lists all push notification configurations for a task.</p>
 <p><strong>Request:</strong></p>
@@ -12229,7 +12276,7 @@ Streaming responses are simple, linearly ordered sequences: first a <code>Task</
 <p><strong>Configuration Security:</strong></p>
 <ul>
 <li>Webhook URLs <strong>SHOULD</strong> use HTTPS to protect payload confidentiality in transit</li>
-<li>Authentication tokens in <a href="#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> <strong>SHOULD</strong> be treated as secrets and rotated periodically</li>
+<li>Authentication tokens in <a href="#431-taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a> <strong>SHOULD</strong> be treated as secrets and rotated periodically</li>
 <li>Agents <strong>SHOULD</strong> securely store push notification configurations and credentials</li>
 <li>Clients <strong>SHOULD</strong> use unique, single-purpose tokens for each push notification configuration</li>
 </ul>

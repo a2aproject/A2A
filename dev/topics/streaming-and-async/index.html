@@ -2646,10 +2646,10 @@
 <p>The following key features detail how push notifications are implemented and managed within the A2A protocol:</p>
 <ul>
 <li><strong>Server Capability:</strong> The A2A Server must indicate its support for this feature by setting <code>capabilities.pushNotifications: true</code> in its Agent Card.</li>
-<li><strong>Configuration:</strong> The client provides a <a href="../../specification/#431-pushnotificationconfig"><code>PushNotificationConfig</code></a> to the server. This configuration is supplied:<ul>
+<li><strong>Configuration:</strong> The client provides a <a href="../../specification/#431-taskpushnotificationconfig"><code>TaskPushNotificationConfig</code></a> to the server. This configuration is supplied:<ul>
 <li>Within the initial <code>SendMessage</code> or <code>SendStreamingMessage</code> request, or</li>
 <li>Separately, using the <code>CreateTaskPushNotificationConfig</code> RPC method for an existing task.
-The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS webhook URL), an optional <code>token</code> (for client-side validation), and optional <code>authentication</code> details (for the A2A Server to authenticate to the webhook).</li>
+The <code>TaskPushNotificationConfig</code> includes a <code>url</code> (the HTTPS webhook URL), an optional <code>token</code> (for client-side validation), and optional <code>authentication</code> details (for the A2A Server to authenticate to the webhook).</li>
 </ul>
 </li>
 <li><strong>Notification Trigger:</strong> The A2A Server decides when to send a push notification, typically when a task reaches a significant state change (for example, terminal state, <code>input-required</code>, or <code>auth-required</code>).</li>
@@ -2670,7 +2670,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 <li><a href="../../specification/#313-get-task"><code>GetTask</code></a></li>
 </ul>
 <h3 id="client-side-push-notification-service">Client-Side Push Notification Service<a class="headerlink" href="#client-side-push-notification-service" title="Permanent link">&para;</a></h3>
-<p>The <code>url</code> specified in <code>PushNotificationConfig.url</code> points to a client-side Push Notification Service. This service is responsible for receiving the HTTP POST notification from the A2A Server. Its responsibilities include authenticating the incoming notification, validating its relevance, and relaying the notification or its content to the appropriate client application logic or system.</p>
+<p>The <code>url</code> specified in <code>TaskPushNotificationConfig.url</code> points to a client-side Push Notification Service. This service is responsible for receiving the HTTP POST notification from the A2A Server. Its responsibilities include authenticating the incoming notification, validating its relevance, and relaying the notification or its content to the appropriate client application logic or system.</p>
 <h3 id="security-considerations-for-push-notifications">Security Considerations for Push Notifications<a class="headerlink" href="#security-considerations-for-push-notifications" title="Permanent link">&para;</a></h3>
 <p>Security is paramount for push notifications due to their asynchronous and server-initiated outbound nature. Both the A2A Server (sending the notification) and the client's webhook receiver have critical responsibilities.</p>
 <h4 id="a2a-server-security-when-sending-notifications-to-client-webhook">A2A Server Security (when sending notifications to client webhook)<a class="headerlink" href="#a2a-server-security-when-sending-notifications-to-client-webhook" title="Permanent link">&para;</a></h4>
@@ -2679,12 +2679,12 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 <li><strong>Mitigation strategies:</strong> Allowlisting of trusted domains, ownership verification (for example, challenge-response mechanisms), and network controls (e.g., egress firewalls).</li>
 </ul>
 </li>
-<li><strong>Authenticating to the Client's Webhook:</strong> The A2A Server MUST authenticate itself to the client's webhook URL according to the scheme specified in <code>PushNotificationConfig.authentication</code>. Common schemes include Bearer Tokens (OAuth 2.0), API keys, HMAC signatures, or mutual TLS (mTLS).</li>
+<li><strong>Authenticating to the Client's Webhook:</strong> The A2A Server MUST authenticate itself to the client's webhook URL according to the scheme specified in <code>TaskPushNotificationConfig.authentication</code>. Common schemes include Bearer Tokens (OAuth 2.0), API keys, HMAC signatures, or mutual TLS (mTLS).</li>
 </ul>
 <h4 id="client-webhook-receiver-security-when-receiving-notifications-from-a2a-server">Client Webhook Receiver Security (when receiving notifications from A2A server)<a class="headerlink" href="#client-webhook-receiver-security-when-receiving-notifications-from-a2a-server" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>Authenticating the A2A Server:</strong> The webhook endpoint MUST rigorously verify the authenticity of incoming notification requests to ensure they originate from the legitimate A2A Server and not an imposter.<ul>
-<li><strong>Verification methods:</strong> Verify signatures/tokens (for example, JWT signatures against the A2A Server's trusted public keys, HMAC signatures, or API key validation). Also, validate the <code>PushNotificationConfig.token</code> if provided.</li>
+<li><strong>Verification methods:</strong> Verify signatures/tokens (for example, JWT signatures against the A2A Server's trusted public keys, HMAC signatures, or API key validation). Also, validate the <code>TaskPushNotificationConfig.token</code> if provided.</li>
 </ul>
 </li>
 <li><strong>Preventing Replay Attacks:</strong><ul>
@@ -2696,7 +2696,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 </ul>
 <h4 id="example-asymmetric-key-flow-jwt-jwks">Example Asymmetric Key Flow (JWT + JWKS)<a class="headerlink" href="#example-asymmetric-key-flow-jwt-jwks" title="Permanent link">&para;</a></h4>
 <ol>
-<li>Client creates a <code>PushNotificationConfig</code> specifying <code>authentication.scheme: "Bearer"</code> and possibly an expected <code>issuer</code> or <code>audience</code> for the JWT.</li>
+<li>Client creates a <code>TaskPushNotificationConfig</code> specifying <code>authentication.scheme: "Bearer"</code> and possibly an expected <code>issuer</code> or <code>audience</code> for the JWT.</li>
 <li>A2A Server, when sending a notification:<ul>
 <li>Generates a JWT, signing it with its private key. The JWT includes claims like <code>iss</code> (issuer), <code>aud</code> (audience), <code>iat</code> (issued at), <code>exp</code> (expires), <code>jti</code> (JWT ID), and <code>taskId</code>.</li>
 <li>The JWT header indicates the signing algorithm and key ID (<code>kid</code>).</li>
@@ -2709,7 +2709,7 @@ The <code>PushNotificationConfig</code> includes a <code>url</code> (the HTTPS w
 <li>Fetches the corresponding public key from the A2A Server's JWKS endpoint (caching keys is recommended).</li>
 <li>Verifies the JWT signature using the public key.</li>
 <li>Validates claims (<code>iss</code>, <code>aud</code>, <code>iat</code>, <code>exp</code>, <code>jti</code>).</li>
-<li>Checks the <code>PushNotificationConfig.token</code> if provided.</li>
+<li>Checks the <code>TaskPushNotificationConfig.token</code> if provided.</li>
 </ul>
 </li>
 </ol>
