@@ -9,6 +9,8 @@ categories:
 
 The Agent2Agent (A2A) protocol has officially been accepted as a Growth Stage project at the Agentic AI Foundation (AAIF). By joining the AAIF's open agentic stack, A2A provides an open standard for how autonomous AI agents discover each other, delegate tasks, and collaborate across distinct frameworks and vendor boundaries.
 
+<!-- more -->
+
 ## The Horizontal Orchestration Layer
 
 While the Model Context Protocol (MCP) serves as the vertical integration layer connecting agents to internal tools and databases, A2A acts as the horizontal protocol enabling peer-to-peer collaboration. Before A2A, handing off work between agents built on different frameworks required writing custom integration code from scratch for every new pairing. Today, an agent can publish a structured "agent card" detailing its capabilities and contact methods, allowing other independent agents to securely read it, negotiate modalities, and delegate tasks without manual intervention.
