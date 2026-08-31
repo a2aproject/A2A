@@ -132,12 +132,6 @@ flowchart LR
     RemoteTool(⚙️ Remote Tool)
     ClientAgent -- Using <img src="assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg" alt="Agent2Agent Protocol Logo" height="40" width="40"> --> RemoteAgent
     ClientAgent -- Using <img src="https://modelcontextprotocol.io/mcp.png" alt="Agent2Agent Protocol Logo" height="40" width="40"> --> RemoteTool
-
-
-    style User fill:#fdebd0,stroke:#e67e22,stroke-width:2px
-    style ClientAgent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-    style RemoteAgent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-    style RemoteTool fill:#d6eaf8,stroke:#3498db,stroke-width:2px
 ```
 
 </div>
