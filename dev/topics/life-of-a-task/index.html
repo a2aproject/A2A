@@ -2552,15 +2552,18 @@ nature of the interaction and the agent's capabilities:</p>
     sent, and once a task is complete, no more messages can be sent. This
     approach avoids deciding between <code>Task</code> versus <code>Message</code>, but creates completed task objects
     for even simple interactions.</li>
-<li><strong>Hybrid Agents</strong>: Generate both <code>Message</code> and <code>Task</code> objects. These agents
-    use messages to negotiate agent capability and the scope of work for a task,
-    then send a <code>Task</code> object to track execution and manage states like
-    <code>input-required</code> or error handling. Once a task is created, the agent will
-    only return <code>Task</code> objects in response to messages sent, and once a task is
-    complete, no more messages can be sent. A hybrid agent uses messages to
-    negotiate the scope of a task, and then generates a task to track its
-    execution.
-    For more information about hybrid agents, see <a href="https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879">A2A protocol: Demystifying Tasks vs Messages</a>.</li>
+<li>
+<p><strong>Hybrid Agents</strong>: Generate both <code>Message</code> and <code>Task</code> objects. These agents
+    use messages to negotiate agent capability and the scope of work, then send a
+    <code>Task</code> object to track execution and manage states like <code>input-required</code> or
+    error handling. In other words, <code>Message</code> objects carry the lightweight
+    back-and-forth that establishes what should be done, and a <code>Task</code> is created
+    once there is committed work to execute and observe. As with task-generating
+    agents, once a task is created the agent returns only <code>Task</code> objects in
+    response to subsequent messages, and once a task is complete no more messages
+    can be sent to it.</p>
+<p>For a deeper discussion of when to use messages versus tasks, see <a href="https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879">A2A protocol: Demystifying Tasks vs Messages</a>.</p>
+</li>
 </ul>
 <h2 id="task-refinements">Task Refinements<a class="headerlink" href="#task-refinements" title="Permanent link">&para;</a></h2>
 <p>Clients often need to send new requests based on task results or refine the
