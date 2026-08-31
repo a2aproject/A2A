@@ -103,9 +103,22 @@ theme:
       example: fontawesome/solid/flask
       quote: fontawesome/solid/quote-left
   palette:
-    - scheme: default
+    # Light mode (respects system preference)
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       primary: indigo
       accent: white
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode (respects system preference)
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: white
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
   features:
     - announce.dismiss
     # content.action.view disabled: requires repo_url, which is disabled above.

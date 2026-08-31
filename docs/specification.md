@@ -64,29 +64,6 @@ graph TB
     %% Dependencies between layers
     L1 --> L2
     L2 --> L3
-
-
-    style A fill:#e1f5fe
-    style B fill:#e1f5fe
-    style C fill:#e1f5fe
-    style D fill:#e1f5fe
-    style E fill:#e1f5fe
-    style F fill:#e1f5fe
-
-    style G fill:#f3e5f5
-    style H fill:#f3e5f5
-    style I fill:#f3e5f5
-    style J fill:#f3e5f5
-    style K fill:#f3e5f5
-    style L fill:#f3e5f5
-
-    style M fill:#e8f5e8
-    style N fill:#e8f5e8
-    style O fill:#e8f5e8
-
-    style L1 fill:#f0f8ff,stroke:#333,stroke-width:2px
-    style L2 fill:#faf0ff,stroke:#333,stroke-width:2px
-    style L3 fill:#f0fff0,stroke:#333,stroke-width:2px
 ```
 
 **Layer 1: Canonical Data Model** defines the core data structures and message formats that all A2A implementations must understand. These are protocol agnostic definitions expressed as Protocol Buffer messages.
