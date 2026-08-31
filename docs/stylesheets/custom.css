@@ -20,6 +20,23 @@
   text-align: center;
 }
 
+/* Mermaid diagrams: readable labels in both color schemes */
+[data-md-color-scheme="default"] {
+  --md-mermaid-label-fg-color: hsl(0deg 0% 13%);
+  --md-mermaid-edge-color: hsl(0deg 0% 29%);
+  --md-mermaid-label-bg-color: hsl(0deg 0% 100%);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-mermaid-node-bg-color: hsl(231deg 18% 24%);
+  --md-mermaid-node-fg-color: hsl(231deg 55% 78%);
+  --md-mermaid-edge-color: hsl(0deg 0% 88%);
+  --md-mermaid-label-fg-color: hsl(0deg 0% 94%);
+  --md-mermaid-label-bg-color: hsl(231deg 18% 20%);
+  --md-mermaid-sequence-number-bg-color: hsl(231deg 18% 24%);
+  --md-mermaid-sequence-number-fg-color: hsl(0deg 0% 94%);
+}
+
 .hero-actions {
   margin: 0;
 }
@@ -117,32 +134,298 @@
 }
 
 .install-command-container {
-  max-width: 600px;
-  margin: 2.5em auto;
-  padding: 1.5em 2em;
+  max-width: 42rem;
+  margin: 0.5em auto 3em;
+  padding: 1.75em 2.25em 1.5em;
   background-color: var(--md-code-bg-color);
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
   box-shadow: 0 3px 6px hsl(0deg 0% 0% / 10%);
   border-left: 5px solid var(--md-primary-fg-color);
-  margin-top: 30px;
 }
 
-.install-command-container p {
-  font-size: 1.1em;
+.install-command-container > p {
+  font-size: 1.05em;
   color: var(--md-default-fg-color);
-  margin-bottom: -10px;
-  margin-top: -10px;
+  margin: 0 0 1em;
+  line-height: 1.55;
 }
 
-.install-command-container p code {
-  font-size: 1.1em;
+.md-typeset .install-command-container .highlight {
+  width: 100%;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.md-typeset .install-command-container .highlight pre {
+  margin: 0;
+  padding: 0.85em 1em;
+  border: none;
+  box-shadow: none;
+  text-align: left;
+}
+
+.md-typeset .install-command-container .highlight code {
+  font-size: 1rem;
   font-weight: 600;
-  padding: 0.3em 0.6em;
-  background-color: var(--md-default-bg-color--lighter);
-  border-radius: 4px;
-  display: inline-block;
-  line-height: 1.4;
+}
+
+.md-typeset .install-command-container .highlight a[id^="__codelineno"],
+.md-typeset .install-command-container .highlight a[name^="__codelineno"] {
+  display: none;
+}
+
+/* Key features: compact flip cards in a single row */
+.feature-flip-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 0.85rem;
+  margin: 1.25em 0 2em;
+}
+
+.feature-flip-card {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 16rem;
+  height: 9.5rem;
+  perspective: 900px;
+  cursor: default;
+  outline: none;
+}
+
+.feature-flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.45s ease;
+}
+
+.feature-flip-card:hover .feature-flip-card-inner,
+.feature-flip-card:focus-within .feature-flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.feature-flip-card-front,
+.feature-flip-card-back {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  backface-visibility: hidden;
+  box-shadow: 0 2px 6px hsl(0deg 0% 0% / 10%);
+}
+
+.feature-flip-card-front {
+  flex-direction: column;
+  gap: 0.55rem;
+  background-color: var(--md-default-bg-color--light);
+  color: var(--md-default-fg-color);
+}
+
+.feature-flip-card-icon {
+  display: inline-flex;
+  color: var(--md-primary-fg-color, #526cfe);
+}
+
+.feature-flip-card-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  fill: currentcolor;
+}
+
+.feature-flip-card-front strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.feature-flip-card-back {
+  transform: rotateY(180deg);
+  background-color: var(--md-primary-fg-color, #526cfe);
+  color: var(--md-primary-bg-color, #fff);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  text-align: center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.feature-flip-card-back p {
+  margin: 0;
+  width: 100%;
+}
+
+.feature-flip-card-back a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.feature-flip-card:focus-visible .feature-flip-card-front {
+  outline: 2px solid var(--md-primary-fg-color);
+  outline-offset: 2px;
+}
+
+@media screen and (width <= 720px) {
+  .feature-flip-cards {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+
+  .feature-flip-card {
+    flex: 0 0 11.5rem;
+    max-width: none;
+    height: 10rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feature-flip-card-inner {
+    transition: none;
+  }
+
+  .feature-flip-card:hover .feature-flip-card-inner,
+  .feature-flip-card:focus-within .feature-flip-card-inner {
+    transform: none;
+  }
+
+  .feature-flip-card-front,
+  .feature-flip-card-back {
+    transition: opacity 0.15s ease;
+  }
+
+  .feature-flip-card-back {
+    transform: none;
+    opacity: 0;
+  }
+
+  .feature-flip-card:hover .feature-flip-card-front,
+  .feature-flip-card:focus-within .feature-flip-card-front {
+    opacity: 0;
+  }
+
+  .feature-flip-card:hover .feature-flip-card-back,
+  .feature-flip-card:focus-within .feature-flip-card-back {
+    opacity: 1;
+  }
+}
+
+/* Trust band: TSC, partners, and project stats */
+.trust-band {
+  margin: 3.5em 0 2.5em;
+  padding: 2.5em 2em;
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    var(--md-default-bg-color--lightest) 0%,
+    var(--md-default-bg-color) 100%
+  );
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 12px;
+}
+
+.trust-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25em;
+  margin-bottom: 2em;
+}
+
+.trust-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+
+.trust-stat strong {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+  line-height: 1.2;
+}
+
+.trust-stat span {
+  font-size: 0.85rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.trust-tsc-label,
+.trust-partners-lead {
+  margin: 0 0 0.85em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color--light);
+}
+
+.trust-tsc,
+.trust-partner-names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5em 0.65em;
+  margin-bottom: 1.5em;
+}
+
+.trust-tsc span,
+.trust-partner-names span {
+  padding: 0.35em 0.75em;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--md-default-fg-color);
+  background-color: var(--md-default-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 999px;
+}
+
+.trust-partner-names span:last-child {
+  font-style: italic;
+  color: var(--md-default-fg-color--light);
+  background: transparent;
+  border-color: transparent;
+}
+
+.trust-links {
+  margin: 0 0 0.75em;
+  font-size: 0.95rem;
+}
+
+.trust-links a {
+  font-weight: 500;
+}
+
+.trust-origin {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--md-default-fg-color--light);
+}
+
+@media screen and (width <= 900px) {
+  .trust-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (width <= 480px) {
+  .trust-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .trust-band {
+    padding: 2em 1.25em;
+  }
 }
 
 .md-banner .md-button {
