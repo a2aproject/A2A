@@ -15,6 +15,7 @@
  */
 
 (function () {
+  const BRANDED_LIGHT_FILLS = ["#fdebd0", "#d6eaf8"];
   const BRANDED_FILLS = [
     ["#fdebd0", "#6d4c2a"],
     ["#d6eaf8", "#1a4a6b"],
@@ -40,18 +41,47 @@
   const DARK_EDGE = "#e0e0e0";
   const DARK_CLUSTER_FILL = "#252836";
   const DARK_LABEL_BG = "#252836";
+  const LIGHT_TEXT = "#1a1a1a";
 
   const CONTRAST_STYLE_ID = "a2a-mermaid-contrast";
   const STYLE_LINE =
     /((?:classDef|style) \w+ fill:#[0-9a-fA-F]{3,8},stroke:#[0-9a-fA-F]{3,8},stroke-width:\d+px)(?:,color:#[0-9a-fA-F]{3,8})?/g;
 
   const sourcesById = new Map();
+  const orderedSources = [];
   const pendingSourceIds = [];
   let hooksInstalled = false;
   let originalRender = null;
+  let refreshTimer = null;
 
   function isDarkMode() {
     return (document.body.getAttribute("data-md-color-scheme") || "default") === "slate";
+  }
+
+  function rememberSource(id, source) {
+    const normalized = source.trim();
+    sourcesById.set(id, normalized);
+
+    const existingIndex = orderedSources.findIndex((entry) => entry.source === normalized);
+    if (existingIndex >= 0) {
+      orderedSources[existingIndex].id = id;
+      return;
+    }
+
+    orderedSources.push({ id, source: normalized });
+  }
+
+  function snapshotMermaidSources() {
+    document.querySelectorAll("pre.mermaid").forEach((pre, index) => {
+      const source = pre.textContent?.trim();
+      if (!source) {
+        return;
+      }
+
+      const id = pre.dataset.a2aMermaidSource || `__a2a_snapshot_${index}`;
+      pre.dataset.a2aMermaidSource = id;
+      rememberSource(id, source);
+    });
   }
 
   function stripContrastStyles(value) {
@@ -59,6 +89,10 @@
       new RegExp(`<style id="${CONTRAST_STYLE_ID}">[\\s\\S]*?<\\/style>`, "g"),
       "",
     );
+  }
+
+  function hasBrandedFills(value) {
+    return BRANDED_LIGHT_FILLS.some((fill) => value.toLowerCase().includes(fill));
   }
 
   function swapBrandedFills(value) {
@@ -96,6 +130,22 @@
     return adapted;
   }
 
+  function injectContrastStyle(svg, styleBlock) {
+    return svg.includes("</style>")
+      ? svg.replace("</style>", `${styleBlock}</style>`)
+      : svg.replace(/(<svg[^>]*>)/, `$1${styleBlock}`);
+  }
+
+  function buildLightBrandedStyleBlock() {
+    return (
+      `<style id="${CONTRAST_STYLE_ID}">` +
+      `.node .label,.node .label p,.node .label span,.node .label div,.node .label foreignObject div` +
+      `{color:${LIGHT_TEXT}!important;}` +
+      `.node .label span,.nodeLabel{fill:${LIGHT_TEXT}!important;}` +
+      `</style>`
+    );
+  }
+
   function buildDarkContrastStyleBlock() {
     return (
       `<style id="${CONTRAST_STYLE_ID}">` +
@@ -128,16 +178,15 @@
     const cleaned = stripContrastStyles(svg);
 
     if (!isDarkMode()) {
+      if (hasBrandedFills(cleaned)) {
+        return injectContrastStyle(cleaned, buildLightBrandedStyleBlock());
+      }
       return cleaned;
     }
 
     let patched = swapBrandedFills(cleaned);
     patched = replaceDefaultLightFills(patched);
-
-    const contrastStyle = buildDarkContrastStyleBlock();
-    return patched.includes("</style>")
-      ? patched.replace("</style>", `${contrastStyle}</style>`)
-      : patched.replace(/(<svg[^>]*>)/, `$1${contrastStyle}`);
+    return injectContrastStyle(patched, buildDarkContrastStyleBlock());
   }
 
   function renderDiagram(id, source) {
@@ -148,23 +197,40 @@
   }
 
   function wrappedRender(id, text, container) {
-    if (!sourcesById.has(id)) {
-      sourcesById.set(id, text);
-    }
-
+    rememberSource(id, text);
     pendingSourceIds.push(id);
     return renderDiagram(id, adaptDiagramSource(sourcesById.get(id)));
   }
 
+  function resolveHostSource(host, index) {
+    const sourceId = host.dataset.mermaidSourceId;
+    if (sourceId && sourcesById.has(sourceId)) {
+      return { sourceId, source: sourcesById.get(sourceId) };
+    }
+
+    const ordered = orderedSources[index];
+    if (ordered) {
+      host.dataset.mermaidSourceId = ordered.id;
+      return ordered;
+    }
+
+    return null;
+  }
+
   function refreshMermaidDiagrams() {
-    document.querySelectorAll(".mermaid").forEach((host) => {
-      const sourceId = host.dataset.mermaidSourceId;
-      const source = sourceId ? sourcesById.get(sourceId) : null;
-      if (!source) {
+    if (!originalRender) {
+      return;
+    }
+
+    document.querySelectorAll(".mermaid").forEach((host, index) => {
+      const resolved = resolveHostSource(host, index);
+      if (!resolved) {
         return;
       }
 
-      const renderId = `${sourceId}_${Date.now()}`;
+      const { sourceId, source } = resolved;
+      const renderId = `${sourceId}_${Date.now()}_${index}`;
+
       renderDiagram(renderId, adaptDiagramSource(source)).then(({ svg, bindFunctions }) => {
         const nextHost = document.createElement("div");
         nextHost.className = "mermaid";
@@ -177,6 +243,11 @@
         host.replaceWith(nextHost);
       });
     });
+  }
+
+  function scheduleRefreshMermaidDiagrams() {
+    window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(refreshMermaidDiagrams, 100);
   }
 
   function installMermaidHooks() {
@@ -199,6 +270,7 @@
     return true;
   }
 
+  snapshotMermaidSources();
   installMermaidHooks();
 
   if (!hooksInstalled) {
@@ -208,7 +280,10 @@
       }
     }, 50);
     window.setTimeout(() => window.clearInterval(retryTimer), 10000);
-    window.addEventListener("load", installMermaidHooks);
+    window.addEventListener("load", () => {
+      snapshotMermaidSources();
+      installMermaidHooks();
+    });
   }
 
   const hostObserver = new MutationObserver((mutations) => {
@@ -231,17 +306,20 @@
     if (document.body.hasAttribute("data-md-color-switching")) {
       return;
     }
-    window.setTimeout(refreshMermaidDiagrams, 0);
+    scheduleRefreshMermaidDiagrams();
   });
   themeObserver.observe(document.body, {
     attributes: true,
-    attributeFilter: ["data-md-color-scheme"],
+    attributeFilter: ["data-md-color-scheme", "data-md-color-switching"],
   });
 
   if (typeof window.document$ !== "undefined") {
     window.document$.subscribe(() => {
-      installMermaidHooks();
+      orderedSources.length = 0;
       pendingSourceIds.length = 0;
+      sourcesById.clear();
+      snapshotMermaidSources();
+      installMermaidHooks();
     });
   }
 
@@ -249,7 +327,7 @@
     "toggle",
     (event) => {
       if (event.target instanceof HTMLDetailsElement && event.target.open) {
-        window.setTimeout(refreshMermaidDiagrams, 50);
+        scheduleRefreshMermaidDiagrams();
       }
     },
     true,
