@@ -40,6 +40,21 @@ TYPE_MAP = {
     'google.protobuf.Empty': 'empty',
 }
 
+
+class ProtoReferenceError(Exception):
+    """A doc macro referenced a proto type that does not exist.
+
+    Raised rather than returned as page text. These macros used to return
+    strings like ``**Error:** Message `X` not found.`` when a lookup failed,
+    which rendered the error into the published specification while the docs
+    build still reported success. Two such strings were live on
+    https://a2a-protocol.org/latest/specification/ (sections 4.3.1 and
+    10.4.7); the first was reported in #1676 and went unnoticed for months
+    because nothing failed. Raising makes an unresolved reference a build
+    error, so it cannot ship.
+    """
+
+
 # -----------------------------------------------------------------------------
 # Main Macros
 # -----------------------------------------------------------------------------
@@ -62,15 +77,14 @@ def define_env(env):
         message_name: str, proto_file: str = 'specification/a2a.proto'
     ) -> str:
         """Parses a .proto file and renders a message table."""
-        try:
-            elements = _parse_proto(proto_file)
-        except FileNotFoundError as e:
-            return f'**Error:** {e}'
+        elements = _parse_proto(proto_file)
 
         # Find the specific message object
         target_message = _find_type(elements, message_name, Message)
         if not target_message:
-            return f'**Error:** Message `{message_name}` not found.'
+            raise ProtoReferenceError(
+                f'Message `{message_name}` not found in {proto_file}.'
+            )
 
         # Extract data
         rows = []
@@ -126,65 +140,62 @@ def define_env(env):
         enum_name: str, proto_file: str = 'specification/a2a.proto'
     ):
         """Parses a .proto file and renders an Enum table."""
-        try:
-            elements = _parse_proto(proto_file)
-            el = _find_type(elements, enum_name, Enum)
-            if not el:
-                return f'**Error:** Enum `{enum_name}` not found.'
-
-            rows = [
-                [f'`{e.name}`', _extract_comments(e)]
-                for e in el.elements
-                if isinstance(e, EnumValue)
-            ]
-            return f'{_extract_comments(el)}\n\n' + tabulate(
-                rows, ['Value', 'Description'], tablefmt='github'
+        elements = _parse_proto(proto_file)
+        el = _find_type(elements, enum_name, Enum)
+        if not el:
+            raise ProtoReferenceError(
+                f'Enum `{enum_name}` not found in {proto_file}.'
             )
-        except Exception as e:
-            return f'**Error:** {e}'
+
+        rows = [
+            [f'`{e.name}`', _extract_comments(e)]
+            for e in el.elements
+            if isinstance(e, EnumValue)
+        ]
+        return f'{_extract_comments(el)}\n\n' + tabulate(
+            rows, ['Value', 'Description'], tablefmt='github'
+        )
 
     @env.macro
     def proto_service_to_table(
         service_name: str, proto_file: str = 'specification/a2a.proto'
     ) -> str:
         """Parses a .proto file and renders a Service table."""
-        try:
-            elements = _parse_proto(proto_file)
-            service = _find_type(elements, service_name, Service)
-            if not service:
-                return f'**Error:** Service `{service_name}` not found.'
+        elements = _parse_proto(proto_file)
+        service = _find_type(elements, service_name, Service)
+        if not service:
+            raise ProtoReferenceError(
+                f'Service `{service_name}` not found in {proto_file}.'
+            )
 
-            rows = []
-            for el in service.elements:
-                if isinstance(el, Method):
-                    # Request Type
-                    # input_type is a MessageType(type='...', stream=True/False)
-                    req_str = _format_type_for_docs(el.input_type.type)
-                    if el.input_type.stream:
-                        req_str = f'stream {req_str}'
+        rows = []
+        for el in service.elements:
+            if isinstance(el, Method):
+                # Request Type
+                # input_type is a MessageType(type='...', stream=True/False)
+                req_str = _format_type_for_docs(el.input_type.type)
+                if el.input_type.stream:
+                    req_str = f'stream {req_str}'
 
-                    # Response Type
-                    res_str = _format_type_for_docs(el.output_type.type)
-                    if el.output_type.stream:
-                        res_str = f'stream {res_str}'
+                # Response Type
+                res_str = _format_type_for_docs(el.output_type.type)
+                if el.output_type.stream:
+                    res_str = f'stream {res_str}'
 
-                    rows.append(
-                        [
-                            f'`{el.name}`',
-                            req_str,
-                            res_str,
-                            _extract_comments(el),
-                        ]
-                    )
+                rows.append(
+                    [
+                        f'`{el.name}`',
+                        req_str,
+                        res_str,
+                        _extract_comments(el),
+                    ]
+                )
 
-            if not rows:
-                return 'None'
+        if not rows:
+            return 'None'
 
-            headers = ['Method', 'Request', 'Response', 'Description']
-            return tabulate(rows, headers, tablefmt='github')
-
-        except Exception as e:
-            return f'**Error:** {e}'
+        headers = ['Method', 'Request', 'Response', 'Description']
+        return tabulate(rows, headers, tablefmt='github')
 
 
 # -----------------------------------------------------------------------------
