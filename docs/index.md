@@ -72,12 +72,6 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:octicons-arrow-right-24: Key Concepts](./topics/key-concepts.md)
 
-- :material-file-document-outline:{ .lg .middle } **Dive into the Specification**
-
-    Explore the detailed technical definition of the A2A protocol.
-
-    [:octicons-arrow-right-24: Protocol Specification](./specification.md)
-
 - :material-application-cog-outline:{ .lg .middle } **Follow the Tutorials**
 
     Build your first A2A-compliant agent with our step-by-step Python quickstart.
@@ -89,20 +83,6 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
     See A2A in action with sample clients, servers, and agent framework integrations.
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
-
-- :material-code-braces:{ .lg .middle } **Download the Official SDKs**
-
-    [:fontawesome-brands-python: Python](https://github.com/a2aproject/a2a-python)
-
-    [:fontawesome-brands-js: JavaScript](https://github.com/a2aproject/a2a-js)
-
-    [:fontawesome-brands-java: Java](https://github.com/a2aproject/a2a-java)
-
-    [:material-language-csharp: C#/.NET](https://github.com/a2aproject/a2a-dotnet)
-
-    [:fontawesome-brands-golang: Golang](https://github.com/a2aproject/a2a-go)
-
-    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rs)
 
 - :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
 
