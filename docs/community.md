@@ -2,6 +2,10 @@
 
 Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2A is an open, standardized protocol that enables seamless interoperability and collaboration between AI agents across all frameworks and vendors.
 
+## Connect on Discord
+
+Join the [A2A Discord server](https://discord.gg/a2aprotocol) to chat with contributors, ask questions, and stay connected with the community.
+
 ## Recent News & Blog Posts
 
 Stay up-to-date with the latest announcements, tutorials, and insights from the A2A team and our community.
@@ -109,7 +113,7 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
 
-**Join the growing community building the future of AI interoperability with A2A!**
+**Join the growing community building the future of AI interoperability with A2A!** Connect on [Discord](https://discord.gg/a2aprotocol).
 
 ---
 
@@ -117,6 +121,7 @@ The excitement surrounding Google's A2A protocol clearly indicates a strong beli
 
 Looking for the live community meeting schedule or past recordings?
 
+- [A2A Discord server](https://discord.gg/a2aprotocol)
 - [A2A meetings on the Linux Foundation platform](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent)
 - [TSC meeting agenda working doc](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view)
 
