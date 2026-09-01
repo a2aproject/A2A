@@ -328,6 +328,7 @@ message AuthenticationInfo {
   // Scheme names are case-insensitive per [RFC 9110 Section 11.1](https://www.rfc-editor.org/rfc/rfc9110#section-11.1).
   string scheme = 1 [(google.api.field_behavior) = REQUIRED];
   // Push Notification credentials. Format depends on the scheme (e.g., token for Bearer).
+  // For read APIs, this field MUST be omitted in Get/List push config responses.
   string credentials = 2;
 }
 
