@@ -1,0 +1,245 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "A2A Transport Binding Conformance Tests"
+  description: "Transport-specific ACTS coverage for JSON-RPC, REST, and gRPC bindings."
+
+suites:
+  - id: jsonrpc-transport
+    name: "JSON-RPC transport bindings"
+    tests:
+      - id: JSONRPC-ENV-001
+        name: "Response has valid JSON-RPC 2.0 envelope"
+        level: must
+        tags: [transport, jsonrpc, raw, envelope]
+        transport: [jsonrpc]
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send-raw
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-env-001"
+                method: SendMessage
+                params:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-complete-task verify jsonrpc envelope"
+            expect:
+              status: 200
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-env-001"
+                result:
+                  exists: true
+
+      - id: JSONRPC-CT-001
+        name: "Response Content-Type is application/json"
+        description: "ACTS cannot reliably assert response headers in this raw format, so the test uses a valid JSON-RPC body as a proxy for the expected application/json response."
+        level: must
+        tags: [transport, jsonrpc, raw, content-type]
+        transport: [jsonrpc]
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send-raw
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-ct-001"
+                method: SendMessage
+                params:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-complete-task verify content type"
+            expect:
+              status: 200
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-ct-001"
+                result:
+                  exists: true
+
+      - id: JSONRPC-SSE-001
+        name: "SSE streaming events have JSON-RPC envelope"
+        level: must
+        tags: [transport, jsonrpc, raw, sse, streaming]
+        transport: [jsonrpc]
+        requires_behaviors: ["tck-stream-basic"]
+        steps:
+          - id: stream-raw
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                Accept: text/event-stream
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-sse-001"
+                method: SendStreamingMessage
+                params:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-stream-basic generate output"
+            expect:
+              status: 200
+            expect_stream:
+              min_count: 2
+              each_event:
+                jsonrpc: "2.0"
+
+  - id: rest-transport
+    name: "REST transport bindings"
+    tests:
+      - id: REST-STATUS-001
+        name: "REST errors map to correct HTTP status codes"
+        level: must
+        tags: [transport, rest, raw, status]
+        transport: [rest]
+        steps:
+          - id: get-missing
+            raw:
+              method: GET
+              path: "/tasks/nonexistent-id"
+              headers:
+                Accept: application/json
+                A2A-Version: "1.0"
+            expect:
+              status: 404
+
+      - id: REST-PD-001
+        name: "REST errors use problem details format"
+        level: should
+        tags: [transport, rest, raw, problem-details]
+        transport: [rest]
+        steps:
+          - id: get-missing-problem
+            raw:
+              method: GET
+              path: "/tasks/nonexistent-id"
+              headers:
+                Accept: application/json
+                A2A-Version: "1.0"
+            expect:
+              status: 404
+              body:
+                type:
+                  type: string
+                title:
+                  type: string
+                status:
+                  type: number
+
+      - id: REST-CT-001
+        name: "REST responses use application/a2a+json content type"
+        description: "Runner SHOULD verify the Content-Type response header is application/a2a+json for REST responses."
+        level: should
+        tags: [transport, content-type, runner-special]
+        transport: [rest]
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task verify rest content type"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+  - id: grpc-transport
+    name: "gRPC transport bindings"
+    tests:
+      - id: GRPC-STATUS-001
+        name: "gRPC errors map to correct status codes"
+        description: "Verifies that missing-task errors surface through the gRPC binding with the expected status semantics (for example, NOT_FOUND) even though the ACTS assertion is expressed as an abstract TaskNotFoundError."
+        level: must
+        tags: [transport, grpc, grpc-status-verification]
+        transport: [grpc]
+        steps:
+          - id: get-missing
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+
+      - id: GRPC-STREAM-001
+        name: "gRPC streaming delivers proper message structure"
+        level: must
+        tags: [transport, grpc, streaming]
+        transport: [grpc]
+        requires_behaviors: ["tck-stream-basic"]
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic generate output"
+            expect_stream:
+              min_count: 2
+
+      - id: GRPC-STREAM-002
+        name: "gRPC streaming cancellation works"
+        level: should
+        tags: [transport, grpc, streaming, cancel]
+        transport: [grpc]
+        requires_behaviors: ["tck-cancel"]
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-cancel start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_SUBMITTED
+                        - TASK_STATE_WORKING
+            capture:
+              taskId: "task.id"
+
+          - id: cancel
+            operation: cancel_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                status:
+                  state: TASK_STATE_CANCELED

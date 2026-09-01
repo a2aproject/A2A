@@ -1,0 +1,388 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "Authentication and Security"
+  description: "ACTS coverage for authentication, authorization, and security-sensitive behaviors that require runner-managed credentials or webhooks."
+
+suites:
+  - id: auth-security
+    name: "Authentication and Security"
+    tests:
+      - id: SEC-AUTH-001
+        name: "Server rejects invalid or missing auth credentials"
+        description: "Runner MUST attempt a SendMessage request without valid credentials and verify rejection."
+        spec_ref: "REQ-ERR-002"
+        level: must
+        preconditions:
+          capabilities:
+            authentication: true
+        tags: [auth, runner-special]
+        transport: [jsonrpc]
+        steps:
+          - id: send-without-auth
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "sec-auth-001"
+                method: SendMessage
+                params:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "auth should be required"
+            expect:
+              status:
+                one_of: [200, 401, 403]
+              body:
+                any_of:
+                  - error:
+                      exists: true
+                  - title:
+                      type: string
+
+      - id: SEC-AUTH-002
+        name: "Server returns authorization error for insufficient permissions"
+        description: "Runner MUST attempt a request with valid but insufficient credentials and verify rejection."
+        spec_ref: "REQ-ERR-003"
+        level: must
+        preconditions:
+          capabilities:
+            authentication: true
+        tags: [auth, runner-special]
+        transport: [jsonrpc]
+        steps:
+          - id: send-insufficient-auth
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+                Authorization: "Bearer {{insufficientAuthToken}}"
+              body:
+                jsonrpc: "2.0"
+                id: "sec-auth-002"
+                method: SendMessage
+                params:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "authorization should fail"
+            expect:
+              status:
+                one_of: [200, 403]
+              body:
+                any_of:
+                  - error:
+                      exists: true
+                  - title:
+                      type: string
+
+      - id: SEC-AUTH-003
+        name: "Server does not reveal unauthorized resource existence"
+        description: "Runner MUST verify that getting a task belonging to another user returns the same error as getting a nonexistent task."
+        spec_ref: "REQ-ERR-004"
+        level: must
+        preconditions:
+          capabilities:
+            authentication: true
+        tags: [auth, security, runner-special]
+        steps:
+          - id: get-other-user-task
+            operation: get_task
+            params:
+              id: "{{otherUserTaskId}}"
+            expect_error:
+              message:
+                type: string
+
+          - id: get-missing-task
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              message:
+                type: string
+
+      - id: SEC-AUTH-004
+        name: "Server authenticates every incoming request"
+        description: "Runner MUST verify that unauthenticated requests to all endpoints are rejected."
+        spec_ref: "REQ-SEC-004"
+        level: must
+        preconditions:
+          capabilities:
+            authentication: true
+        tags: [auth, runner-special]
+        transport: [jsonrpc]
+        steps:
+          - id: get-task-without-auth
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "sec-auth-004"
+                method: GetTask
+                params:
+                  id: "00000000-0000-0000-0000-000000000000"
+            expect:
+              status:
+                one_of: [200, 401, 403]
+              body:
+                any_of:
+                  - error:
+                      exists: true
+                  - title:
+                      type: string
+
+      - id: SEC-AUTH-005
+        name: "In-task auth transitions to AUTH_REQUIRED state"
+        description: "Verifies that an in-task authentication challenge transitions the task into TASK_STATE_AUTH_REQUIRED with a status message."
+        spec_ref: "REQ-SEC-006"
+        level: must
+        requires_behaviors:
+          - "tck-auth-required"
+        tags: [auth, task-state]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-auth-required trigger auth"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_AUTH_REQUIRED
+                    message:
+                      exists: true
+
+      - id: SEC-PUSH-001
+        name: "Push notification webhook includes auth credentials"
+        description: "Runner MUST set up a webhook and verify auth credentials are present in request headers."
+        spec_ref: "REQ-SEC-018"
+        level: must
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        tags: [auth, push, runner-special]
+        requires_behaviors: ["tck-long-running"]
+        steps:
+          - id: create-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create-task.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+                authentication:
+                  scheme: "Bearer"
+                  credentials: "test-token"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+
+      - id: SEC-PUSH-002
+        name: "Client validates push notification webhook authenticity"
+        description: "Runner MUST verify that webhook requests with invalid auth are rejected by the client."
+        spec_ref: "REQ-SEC-019"
+        level: must
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        tags: [auth, push, client, runner-special]
+        requires_behaviors: ["tck-long-running"]
+        steps:
+          - id: create-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create-task.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+                authentication:
+                  scheme: "Bearer"
+                  credentials: "expected-token"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+
+      - id: SEC-EXTCARD-001
+        name: "Extended Agent Card requires authentication"
+        description: "Verifies that fetching the extended Agent Card without authentication is rejected."
+        spec_ref: "REQ-SEC-021"
+        level: must
+        preconditions:
+          capabilities:
+            extendedAgentCard: true
+        tags: [auth, discovery, runner-special]
+        transport: [rest]
+        steps:
+          - id: get-extended-card-without-auth
+            raw:
+              method: GET
+              path: "/extendedAgentCard"
+              headers:
+                Accept: application/json
+                A2A-Version: "1.0"
+            expect:
+              status:
+                one_of: [401, 403]
+              body:
+                any_of:
+                  - title:
+                      type: string
+                  - error:
+                      exists: true
+
+      - id: SEC-EXTCARD-002
+        name: "Extended Agent Card verifies permissions before returning"
+        description: "Runner MUST verify that an authenticated request with insufficient permissions is rejected."
+        spec_ref: "REQ-SEC-022"
+        level: must
+        preconditions:
+          capabilities:
+            extendedAgentCard: true
+        tags: [auth, discovery, runner-special]
+        transport: [rest]
+        steps:
+          - id: get-extended-card-insufficient-auth
+            raw:
+              method: GET
+              path: "/extendedAgentCard"
+              headers:
+                Accept: application/json
+                A2A-Version: "1.0"
+                Authorization: "Bearer {{insufficientAuthToken}}"
+            expect:
+              status:
+                one_of: [401, 403]
+              body:
+                any_of:
+                  - title:
+                      type: string
+                  - error:
+                      exists: true
+
+      - id: SEC-EXTCARD-003
+        name: "Missing extended-card support returns specified error"
+        description: "Verifies that Get Extended Agent Card returns the specified error when the capability is not advertised."
+        spec_ref: "REQ-SEC-025"
+        level: must
+        preconditions:
+          capabilities:
+            extendedAgentCard: false
+        tags: [auth, discovery]
+        steps:
+          - id: get-extended-card
+            operation: get_agent_card
+            params:
+              extended: true
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: SEC-EXTCARD-004
+        name: "Extended cards enforce access controls"
+        description: "Runner MUST verify that extended Agent Cards enforce access controls consistently with the registered endpoint."
+        spec_ref: "REQ-IANA-008"
+        level: must
+        preconditions:
+          capabilities:
+            extendedAgentCard: true
+        tags: [auth, discovery, runner-special]
+        transport: [rest]
+        steps:
+          - id: get-extended-card-without-auth
+            raw:
+              method: GET
+              path: "/extendedAgentCard"
+              headers:
+                Accept: application/json
+                A2A-Version: "1.0"
+            expect:
+              status:
+                one_of: [401, 403]
+              body:
+                any_of:
+                  - title:
+                      type: string
+                  - error:
+                      exists: true
+
+      - id: SEC-AUTH-006
+        name: "Server uses binding-specific auth challenge or rejection"
+        description: "Runner SHOULD verify that authentication rejection uses the binding-appropriate mechanism, such as HTTP 401 for HTTP transports."
+        spec_ref: "REQ-SEC-005"
+        level: should
+        preconditions:
+          capabilities:
+            authentication: true
+        tags: [auth, runner-special]
+        transport: [rest]
+        steps:
+          - id: get-agent-card-without-auth
+            raw:
+              method: GET
+              path: "/.well-known/agent-card.json"
+              headers:
+                Accept: application/json
+                A2A-Version: "1.0"
+            expect:
+              status:
+                one_of: [200, 401, 403]
+              body:
+                any_of:
+                  - title:
+                      type: string
+                  - error:
+                      exists: true
