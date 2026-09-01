@@ -160,7 +160,7 @@ For a more in-depth comparison, refer to the [A2A and MCP Comparison](a2a-and-mc
 
 #### A2A and ADK
 
-The [Agent Development Kit (ADK)](https://google.github.io/adk-docs)
+The [Agent Development Kit (ADK)](https://adk.dev)
 is an open-source agent development toolkit developed by Google. A2A is a
 communication protocol for agents that enables inter-agent communication,
 regardless of the framework used for their construction (e.g., ADK, LangGraph,
