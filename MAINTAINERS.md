@@ -4,6 +4,14 @@ This document lists the maintainers of various repositories within the project.
 
 ## Repository Maintainers
 
+### a2a
+
+- role:maintain
+  - @Tehsmash
+  - @herczyn
+  - @vinoo999
+  - @mikeas1
+
 ### a2a-dotnet
 
 - role:maintain
@@ -73,6 +81,14 @@ This document lists the maintainers of various repositories within the project.
   - @kthota-g
   - @ToddSegal
   - @zeroasterisk
+
+### a2a-rs
+
+- role:maintain
+  - @muscariello
+  - @Tehsmash
+  - @msardara
+  - @micpapal
 
 ### a2a-samples
 

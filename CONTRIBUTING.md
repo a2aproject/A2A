@@ -122,3 +122,10 @@ The A2A specification follows semantic versioning. When contributing:
 - **Major releases** (X.0.0): Breaking changes
 
 For detailed versioning guidelines, see [Section 3.6.5 of the specification](docs/specification.md#365-specification-versioning).
+Be patient! It may take some time for your pull request to be reviewed and merged.
+
+## Community
+
+- **Discord:** Join the [A2A Discord server](https://discord.gg/a2aprotocol) for chat and questions.
+- **GitHub Discussions:** Join the [A2A GitHub Discussions](https://github.com/a2aproject/A2A/discussions) for longer-form conversations.
+- **Issues:** Report bugs or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).

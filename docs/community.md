@@ -2,7 +2,9 @@
 
 Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2A is an open, standardized protocol that enables seamless interoperability and collaboration between AI agents across all frameworks and vendors.
 
----
+## Connect on Discord
+
+Join the [A2A Discord server](https://discord.gg/a2aprotocol) to chat with contributors, ask questions, and stay connected with the community.
 
 ## Recent News & Blog Posts
 
@@ -63,9 +65,10 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
-- [Pydantic AI](https://ai.pydantic.dev/a2a/)
+- [Noorle](https://noorle.com/docs/reference/a2a/overview)
+- [Pydantic AI](https://pydantic.dev/docs/ai/overview/)
 - [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
-- [Strands Agents](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/multi-agent/agent-to-agent/)
+- [Strands Agents](https://strandsagents.com/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
 ## Community SDKs
 
@@ -110,4 +113,16 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
 
-**Join the growing community building the future of AI interoperability with A2A!**
+**Join the growing community building the future of AI interoperability with A2A!** Connect on [Discord](https://discord.gg/a2aprotocol).
+
+---
+
+## Meetings & Agenda
+
+Looking for the live community meeting schedule or past recordings?
+
+- [A2A Discord server](https://discord.gg/a2aprotocol)
+- [A2A meetings on the Linux Foundation platform](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent)
+- [TSC meeting agenda working doc](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view)
+
+These links are also referenced in [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md#tsc-meetings).

@@ -58,12 +58,14 @@ nav:
       - Roadmap: roadmap.md
       - Partners: partners.md
   - Blog:
-      - 🆕 Announcing Version 1.0: announcing-1.0.md
+      - Overview: blog/index.md
       - Release Notes: https://github.com/a2aproject/A2A/releases
 
 # Repository
-repo_name: a2aproject/A2A
-repo_url: https://github.com/a2aproject/A2A
+# repo_name/repo_url disabled: the A2A repo is now shown in the SDK links row
+# in the header (see .mkdocs/overrides/partials/sdk_repos.html).
+# repo_name: a2aproject/A2A
+# repo_url: https://github.com/a2aproject/A2A
 
 # Copyright
 copyright: Copyright 2026 The Linux Foundation. Licensed under the Apache License, Version 2.0.
@@ -71,6 +73,9 @@ copyright: Copyright 2026 The Linux Foundation. Licensed under the Apache Licens
 # Custom CSS
 extra_css:
   - stylesheets/custom.css
+
+extra_javascript:
+  - javascripts/hero-tagline-carousel.js
 
 # Configuration
 theme:
@@ -80,7 +85,7 @@ theme:
     text: Google Sans
     code: Roboto Mono
   logo: assets/a2a_logo/icon/white/SVG/a2a_icon_white.svg
-  favicon: assets/a2a_logo/icon/white/SVG/a2a_icon_white.svg
+  favicon: assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg
   icon:
     repo: fontawesome/brands/github
     view: material/pencil-box-multiple
@@ -103,7 +108,7 @@ theme:
       accent: white
   features:
     - announce.dismiss
-    - content.action.view
+    # content.action.view disabled: requires repo_url, which is disabled above.
     - content.code.annotate
     - content.code.copy
     - content.code.select
@@ -157,11 +162,15 @@ markdown_extensions:
 
 # Plugins
 plugins:
+  - blog:
+      post_url_format: "{date}/{slug}"
+      pagination_per_page: 2
   - search
   - macros:
       module_name: .mkdocs/macros
   - redirects:
       redirect_maps:
+        "announcing-1.0.md": "blog/posts/announcing-1.0.md"
         "specification/overview.md": "specification.md"
         "specification/agent-card.md": "specification.md#5-agent-discovery-the-agent-card"
         "specification/agent-to-agent-communication.md": "specification.md#6-protocol-data-objects"
