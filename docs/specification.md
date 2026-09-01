@@ -744,6 +744,63 @@ Agents CAN expose multiple interfaces for the same transport with different vers
 
 Tooling libraries and SDKs that implement the A2A protocol MUST provide mechanisms to help clients manage protocol versioning, such as negotiation of the transport and protocol version used. Client Agents that require the latest features of the protocol should be configured to request specific versions and avoid automatic fallback to older versions, to prevent silently losing functionality.
 
+#### 3.6.5 Specification Versioning
+
+<span id="365-specification-versioning"></span>
+
+This section documents versioning guidelines for the A2A specification repository itself, governing when specification maintainers should increment version numbers.
+
+The A2A specification follows [Semantic Versioning](https://semver.org/) principles with the following rules:
+
+**Patch Releases (x.x.PATCH):**
+
+Patch releases **SHOULD** be used exclusively for non-functional changes that do not alter protocol behavior or semantics:
+
+- Documentation clarifications, typo fixes, and improved explanations
+- Comment updates in `a2a.proto` or specification files
+- Formatting changes, whitespace corrections, and linting fixes
+- Example code improvements that do not change protocol behavior
+- Broken link repairs and cross-reference corrections
+
+**Minor Releases (x.MINOR.0):**
+
+Minor releases **MUST** be used whenever functional changes are made to the protocol:
+
+- Any modifications to `a2a.proto` that affect protocol behavior:
+    - Adding new fields to existing messages
+    - Adding new messages, enums, or services
+    - Adding new RPC methods or operations
+    - Modifying field behaviors in backward-compatible ways
+- Introduction of new protocol features or capabilities
+- Backward-compatible enhancements to protocol semantics
+
+**Major Releases (MAJOR.0.0):**
+
+Major releases are used for breaking changes that require implementations to update:
+
+- Removal of fields, methods, or messages
+- Changes to field semantics that break existing implementations
+- Protocol changes that violate backward compatibility
+- Changes that require coordinated updates across all implementations
+
+**Version Determination Guidelines:**
+
+Contributors should apply the following decision process when submitting changes:
+
+1. **Does the change introduce any functional modifications to `specification/a2a.proto` (i.e., changes other than comments or formatting)?**
+   - YES → Requires at least a minor release
+   - NO → Continue to step 2
+
+2. **Does the change affect protocol behavior, semantics, or wire format in other ways?**
+   - YES → Requires at least a minor release
+   - NO → Continue to step 3
+
+3. **Is the change a non-functional update (e.g., documentation, comments, examples, tests, build scripts, CI configuration)?**
+   - YES → Patch release is appropriate
+   - NO → Requires at least a minor release
+
+**Note:** When uncertain about the appropriate version increment, contributors should note this in their pull request description for maintainer guidance.
+
 ### 3.7 Messages and Artifacts
 
 Messages and Artifacts serve distinct purposes within the A2A protocol. The core interaction model defined by A2A is for clients to send messages to initiate a task that produces one or more artifacts.
