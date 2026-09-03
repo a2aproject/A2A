@@ -1189,6 +1189,8 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 | `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 
+> **Note:** Six cells in this table were corrected in the `v1.0.1` patch release to align with [`google.rpc.Code`](https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto)-defined mappings ([#1627](https://github.com/a2aproject/A2A/pull/1627)). The `v1.0.0` values were: `TaskNotCancelableError` HTTP Status `409 Conflict`; `PushNotificationNotSupportedError` gRPC Status `UNIMPLEMENTED`; `UnsupportedOperationError` gRPC Status `UNIMPLEMENTED`; `ContentTypeNotSupportedError` HTTP Status `415 Unsupported Media Type`; `InvalidAgentResponseError` HTTP Status `502 Bad Gateway`; `VersionNotSupportedError` gRPC Status `UNIMPLEMENTED`. An implementation built against the `v1.0.0` table should be updated to match the table above.
+
 **Custom Binding Requirements:**
 
 Custom protocol bindings **MUST** define equivalent error code mappings that preserve the semantic meaning of each A2A error type. The binding specification **SHOULD** provide a similar mapping table showing how each A2A error type is represented in the custom binding's native error format.
