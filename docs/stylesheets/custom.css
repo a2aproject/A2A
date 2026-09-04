@@ -249,28 +249,27 @@
 
 .feature-flip-hint {
   position: absolute;
-  top: 0.4rem;
-  right: 0.45rem;
+  right: 0;
+  bottom: 0;
   z-index: 2;
-  display: inline-flex;
-  width: 1.05rem;
-  height: 1.05rem;
-  color: var(--md-default-fg-color--light);
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0 0 8px 0;
+  background: linear-gradient(
+    315deg,
+    var(--md-primary-fg-color, #526cfe) 48%,
+    color-mix(in srgb, var(--md-primary-fg-color, #526cfe) 55%, black) 50%,
+    transparent 52%
+  );
   cursor: help;
   transition: opacity 0.2s ease;
-}
-
-.feature-flip-hint svg {
-  width: 100%;
-  height: 100%;
-  fill: currentcolor;
 }
 
 .feature-flip-hint::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: calc(100% + 0.35rem);
   right: 0;
+  bottom: calc(100% + 0.35rem);
   z-index: 3;
   width: max-content;
   max-width: 9.5rem;
@@ -285,7 +284,7 @@
   white-space: normal;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-2px);
+  transform: translateY(2px);
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
