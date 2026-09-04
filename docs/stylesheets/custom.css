@@ -339,17 +339,63 @@
 }
 
 @media screen and (width <= 720px) {
+  .md-main__inner.md-grid:has(.install-command-container) {
+    max-width: 100%;
+  }
+
+  .install-command-container {
+    max-width: 14rem;
+    margin: 0.25em auto 1.25em;
+    padding: 0.7em 0.85em 0.65em;
+  }
+
+  .install-command-container > p {
+    font-size: 0.8em;
+    margin: 0 0 0.5em;
+    line-height: 1.35;
+  }
+
+  .md-typeset .install-command-container .highlight pre {
+    padding: 0.45em 0.6em;
+  }
+
+  .md-typeset .install-command-container .highlight code {
+    font-size: 0.75rem;
+  }
+
   .feature-flip-cards {
-    overflow-x: auto;
-    justify-content: flex-start;
-    padding-bottom: 0.25rem;
-    scrollbar-width: thin;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    gap: 0.65rem;
+    overflow: visible;
+    padding-bottom: 0;
   }
 
   .feature-flip-card {
-    flex: 0 0 11.5rem;
+    flex: none;
+    width: 100%;
     max-width: none;
-    height: 10rem;
+    height: 8.25rem;
+  }
+
+  .feature-flip-card-front,
+  .feature-flip-card-back {
+    padding: 0.65rem 0.6rem;
+  }
+
+  .feature-flip-card-icon svg {
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+
+  .feature-flip-card-front strong {
+    font-size: 0.78rem;
+  }
+
+  .feature-flip-card-back {
+    font-size: 0.68rem;
+    line-height: 1.35;
   }
 }
 
