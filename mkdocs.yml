@@ -176,6 +176,13 @@ markdown_extensions:
   - toc:
       permalink: true
 
+# Watch extra paths during `mkdocs serve` (docs/ and mkdocs.yml are already watched).
+watch:
+  - .mkdocs
+
+hooks:
+  - .mkdocs/hooks.py
+
 # Plugins
 plugins:
   - blog:

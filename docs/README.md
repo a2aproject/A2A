@@ -6,7 +6,7 @@
 
 1. Clone this repository and `cd` into the repository directory
 2. Run `pip install -r requirements-docs.txt`
-3. Run `mkdocs serve`, edit `.md` files, and live preview
+3. Run `mkdocs serve --livereload`, edit files, and live preview
 4. Contribute docs changes as usual
 
 ## How it works

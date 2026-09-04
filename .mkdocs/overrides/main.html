@@ -1,5 +1,39 @@
 {% extends "base.html" %}
 
+{% block extrahead %}
+  {{ super() }}
+  {% if config.extra.dev_livereload %}
+  <script>
+    (function () {
+      var epoch = 0;
+      var primed = false;
+      function poll() {
+        var req = new XMLHttpRequest();
+        req.onloadend = function () {
+          var next = parseFloat(this.responseText);
+          if (!primed) {
+            primed = true;
+            if (!isNaN(next)) {
+              epoch = next;
+            }
+            poll();
+            return;
+          }
+          if (next > epoch) {
+            window.location.reload();
+            return;
+          }
+          setTimeout(poll, this.status === 200 ? 0 : 3000);
+        };
+        req.open("GET", "/livereload/" + epoch + "/" + Date.now());
+        req.send();
+      }
+      poll();
+    })();
+  </script>
+  {% endif %}
+{% endblock %}
+
 {% block announce %}
   <span>Join the DeepLearning.AI course to explore the <b>A2A Protocol</b></span>
   <a href="https://www.deeplearning.ai/courses/a2a-the-agent2agent-protocol" class="md-button">
