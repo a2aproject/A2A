@@ -206,6 +206,24 @@
   transition: transform 0.45s ease;
 }
 
+.feature-flip-hint {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0 0 8px;
+  background: linear-gradient(
+    315deg,
+    var(--md-primary-fg-color, #526cfe) 48%,
+    color-mix(in srgb, var(--md-primary-fg-color, #526cfe) 55%, black) 50%,
+    transparent 52%
+  );
+  cursor: help;
+  transition: opacity 0.2s ease;
+}
+
 .feature-flip-card:hover .feature-flip-card-inner,
 .feature-flip-card:focus-within .feature-flip-card-inner {
   transform: rotateY(180deg);
@@ -245,24 +263,6 @@
   gap: 0.55rem;
   background-color: var(--md-default-bg-color--light);
   color: var(--md-default-fg-color);
-}
-
-.feature-flip-hint {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0 0 8px 0;
-  background: linear-gradient(
-    315deg,
-    var(--md-primary-fg-color, #526cfe) 48%,
-    color-mix(in srgb, var(--md-primary-fg-color, #526cfe) 55%, black) 50%,
-    transparent 52%
-  );
-  cursor: help;
-  transition: opacity 0.2s ease;
 }
 
 .feature-flip-hint::after {
@@ -426,14 +426,6 @@
   text-decoration: none;
 }
 
-a.trust-stat:hover strong,
-a.trust-stat:hover span,
-a.trust-stat:focus-visible strong,
-a.trust-stat:focus-visible span {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
 .trust-stat strong {
   font-size: 1.35rem;
   font-weight: 600;
@@ -444,6 +436,14 @@ a.trust-stat:focus-visible span {
 .trust-stat span {
   font-size: 0.85rem;
   color: var(--md-default-fg-color--light);
+}
+
+a.trust-stat:hover strong,
+a.trust-stat:hover span,
+a.trust-stat:focus-visible strong,
+a.trust-stat:focus-visible span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .trust-links {
