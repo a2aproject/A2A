@@ -1878,6 +1878,8 @@ For a comprehensive guide on enterprise security aspects, see [Enterprise-Ready 
 
 Production deployments **MUST** use encrypted communication (HTTPS for HTTP-based bindings, TLS for gRPC). Implementations **SHOULD** use modern TLS configurations (TLS 1.3+ recommended) with strong cipher suites.
 
+**Trust Anchor Selection:** Whenever a signed protocol artifact (an Agent Card, or any extension payload such as `trust.signals[]`) carries key-discovery metadata in its own contents — for example a `jku`, `x5u`, or similar signer-supplied URL — that metadata **MUST NOT** be used to select or fetch the trust root used to verify the artifact. Trust-root selection is always verifier-side policy (a configured key store, an allowlisted JWKS endpoint, or another verifier-controlled path), never artifact input; letting a signer nominate the key that validates its own signature defeats the purpose of the signature (CWE-863). Signer-supplied key-discovery hints **MAY** be used only to select among keys already enrolled through that verifier-controlled path (for example via `kid`). See §8.4.3 for the application of this rule to Agent Card signatures.
+
 ### 7.2. Server Identity Verification
 
 A2A Clients **SHOULD** verify the A2A Server's identity by validating its TLS certificate against trusted certificate authorities (CAs) during the TLS handshake.
@@ -2083,7 +2085,7 @@ The protected header **MUST** include:
 
 The protected header **MAY** include:
 
-- `jku`: URL to JSON Web Key Set (JWKS) containing the public key
+- `jku`: URL to JSON Web Key Set (JWKS) containing the public key. This is an informational hint only; per [Section 8.4.3](#843-signature-verification), it **MUST NOT** be used by verifiers to establish trust.
 
 **Signature Generation Process:**
 
@@ -2129,7 +2131,7 @@ Where the `protected` value decodes to:
 Clients verifying Agent Card signatures **MUST**:
 
 1. Extract the signature from the `signatures` array
-2. Retrieve the public key using the `kid` and `jku` (or from a trusted key store)
+2. Retrieve the public key using verifier-side policy (a configured JWKS endpoint, a trusted key store, or another verifier-controlled path); `kid` **MAY** be used to select among keys enrolled through that path
 3. Remove properties with default values from the received Agent Card
 4. Exclude the `signatures` field
 5. Canonicalize the resulting JSON using RFC 8785
@@ -2138,6 +2140,7 @@ Clients verifying Agent Card signatures **MUST**:
 **Security Considerations:**
 
 - Clients **SHOULD** verify at least one signature before trusting an Agent Card
+- Key discovery **MUST** be controlled by verifier-side policy, per the Trust Anchor Selection rule in [§7.1](#71-protocol-security): a verifier **MUST NOT** use a signer-supplied `jku` (or similar signer-controlled URL, such as `x5u`, if later added) from the protected header to select or establish the trust root. A verifier that resolves keys by URL **MUST** constrain the target to a verifier-side allowlist
 - Public keys **SHOULD** be retrieved over secure channels (HTTPS)
 - Clients **MAY** maintain a trusted key store for known agent providers
 - Expired or revoked keys **MUST NOT** be used for verification
