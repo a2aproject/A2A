@@ -48,10 +48,12 @@ The A2A documentation is built using [MkDocs](https://www.mkdocs.org/) with the 
     ```
 
 2. **Serve the documentation locally:**
-    Run the following command to start a local server with live reloading:
+    Run the following command to start a local server with live reloading.
+    `--livereload` must be passed explicitly on Click 8.3.x, which otherwise
+    silently disables the file watcher:
 
     ```bash
-    mkdocs serve
+    mkdocs serve --livereload
     ```
 
 3. **View the documentation:**

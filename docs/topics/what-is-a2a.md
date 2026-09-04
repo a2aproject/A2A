@@ -179,30 +179,23 @@ sequenceDiagram
     participant A2A Server
     participant Auth Server
 
-    rect rgb(240, 240, 240)
     Note over Client, A2A Server: 1. Agent Discovery
     Client->>A2A Server: GET agent card eg: (/.well-known/agent-card)
     A2A Server-->>Client: Returns Agent Card
-    end
 
-    rect rgb(240, 240, 240)
     Note over Client, Auth Server: 2. Authentication
     Client->>Client: Parse Agent Card for securitySchemes
     alt securityScheme is "openIdConnect"
         Client->>Auth Server: Request token based on "authorizationUrl" and "tokenUrl".
         Auth Server-->>Client: Returns JWT
     end
-    end
 
-    rect rgb(240, 240, 240)
     Note over Client, A2A Server: 3. sendMessage API
     Client->>Client: Parse Agent Card for "url" param to send API requests to.
     Client->>A2A Server: POST /sendMessage (with JWT)
     A2A Server->>A2A Server: Process message and create task
     A2A Server-->>Client: Returns Task Response
-    end
 
-    rect rgb(240, 240, 240)
     Note over Client, A2A Server: 4. sendMessageStream API
     Client->>A2A Server: POST /sendMessageStream (with JWT)
     A2A Server-->>Client: Stream: Task (Submitted)
@@ -210,7 +203,6 @@ sequenceDiagram
     A2A Server-->>Client: Stream: TaskArtifactUpdateEvent (artifact A)
     A2A Server-->>Client: Stream: TaskArtifactUpdateEvent (artifact B)
     A2A Server-->>Client: Stream: TaskStatusUpdateEvent (Completed)
-    end
 ```
 
 ## What's Next
