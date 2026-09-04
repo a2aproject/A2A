@@ -699,12 +699,12 @@ const response = await listTasks({ page: 1, perPage: 50 });
 **After (v1.0):**
 
 ```typescript
-let cursor = undefined;
+let pageToken = undefined;
 do {
-  const response = await listTasks({ cursor, limit: 50 });
+  const response = await listTasks({ pageToken, pageSize: 50 });
   // process response.tasks
-  cursor = response.nextCursor;
-} while (cursor);
+  pageToken = response.nextPageToken;
+} while (pageToken);
 ```
 
 #### 5. Enum Value Changes (HIGH IMPACT)

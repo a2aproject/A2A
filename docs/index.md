@@ -157,6 +157,8 @@ A2A is a focused protocol. To set expectations, here is what it explicitly does 
 
 A2A was originally developed by Google and donated to the Linux Foundation. It is maintained by a Technical Steering Committee with representatives from AWS, Cisco, Google, IBM Research, Microsoft, Salesforce, SAP, and ServiceNow, and supported by a broad community of [partners](./partners.md).
 
+Join the community on [Discord](https://discord.gg/a2aprotocol) to connect with contributors, ask questions, and discuss the protocol.
+
 For details on how the project is run, see [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md) and [`MAINTAINERS.md`](https://github.com/a2aproject/A2A/blob/main/MAINTAINERS.md).
 
 ## License

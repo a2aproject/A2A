@@ -58,7 +58,7 @@ nav:
       - Roadmap: roadmap.md
       - Partners: partners.md
   - Blog:
-      - 🆕 Announcing Version 1.0: announcing-1.0.md
+      - Overview: blog/index.md
       - Release Notes: https://github.com/a2aproject/A2A/releases
 
 # Repository
@@ -162,11 +162,15 @@ markdown_extensions:
 
 # Plugins
 plugins:
+  - blog:
+      post_url_format: "{date}/{slug}"
+      pagination_per_page: 2
   - search
   - macros:
       module_name: .mkdocs/macros
   - redirects:
       redirect_maps:
+        "announcing-1.0.md": "blog/posts/announcing-1.0.md"
         "specification/overview.md": "specification.md"
         "specification/agent-card.md": "specification.md#5-agent-discovery-the-agent-card"
         "specification/agent-to-agent-communication.md": "specification.md#6-protocol-data-objects"
