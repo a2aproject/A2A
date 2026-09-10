@@ -822,10 +822,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#a2a-and-adk" class="md-nav__link">
+  <a href="#a2a-and-agent-frameworks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A2A and ADK
+        A2A and Agent Frameworks
       
     </span>
   </a>
@@ -845,6 +845,45 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="A2A Request Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-agent-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Agent discovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-sendmessage-and-sendmessagestream-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The sendMessage and sendMessageStream APIs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2560,10 +2599,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#a2a-and-adk" class="md-nav__link">
+  <a href="#a2a-and-agent-frameworks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A2A and ADK
+        A2A and Agent Frameworks
       
     </span>
   </a>
@@ -2583,6 +2622,45 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="A2A Request Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-agent-discovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Agent discovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-sendmessage-and-sendmessagestream-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The sendMessage and sendMessageStream APIs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2671,13 +2749,11 @@
 
 
 <h1 id="what-is-a2a">What is A2A?<a class="headerlink" href="#what-is-a2a" title="Permanent link">&para;</a></h1>
-<p>The A2A protocol is an open standard that enables seamless communication and
-collaboration between AI agents. It provides a common language for agents built
-using diverse frameworks and by different vendors, fostering interoperability
-and breaking down silos. Agents are autonomous problem-solvers that act
-independently within their environment. A2A allows agents from different
-developers, built on different frameworks, and owned by different organizations
-to unite and work together.</p>
+<p>The A2A protocol is an open standard for communication between AI agents. It
+gives agents a common language, whatever framework or vendor built them. This
+makes them interoperable and breaks down silos. Agents are autonomous
+problem-solvers that act on their own within their environment. With A2A, agents
+from different developers, frameworks, and organizations can work together.</p>
 <h2 id="why-use-the-a2a-protocol">Why Use the A2A Protocol<a class="headerlink" href="#why-use-the-a2a-protocol" title="Permanent link">&para;</a></h2>
 <p>A2A addresses key challenges in AI agent collaboration. It provides
 a standardized approach for agents to interact. This section explains the
@@ -2693,11 +2769,11 @@ task involves orchestrating multiple specialized agents, such as:</p>
 </ul>
 <p>Without A2A, integrating these diverse agents presents several challenges:</p>
 <ul>
-<li><strong>Agent Exposure</strong>: Developers often wrap agents as tools to expose them to
-    other agents, similar to how tools are exposed through the Model Context
-    Protocol (MCP). However, this approach is inefficient because agents are
-    designed to negotiate directly. Wrapping agents as tools limits their capabilities.
-    A2A allows agents to be exposed as they are, without requiring this wrapping.</li>
+<li><strong>Agent Exposure</strong>: To expose agents to each other, developers often wrap
+    them as tools, much like the Model Context Protocol (MCP) exposes tools. But
+    this is inefficient: agents are built to negotiate directly, and wrapping
+    them as tools limits what they can do. A2A exposes agents as they are, with
+    no wrapping.</li>
 <li><strong>Custom Integrations</strong>: Each interaction requires custom, point-to-point
     solutions, creating significant engineering overhead.</li>
 <li><strong>Slow Innovation</strong>: Bespoke development for each new integration slows
@@ -2709,10 +2785,10 @@ task involves orchestrating multiple specialized agents, such as:</p>
 <li><strong>Security Gaps</strong>: Ad hoc communication often lacks consistent security
     measures.</li>
 </ul>
-<p>The A2A protocol addresses these challenges by establishing interoperability for
-AI agents to interact reliably and securely.</p>
+<p>A2A solves these challenges. It lets AI agents interoperate, so they can
+interact reliably and securely.</p>
 <h3 id="a2a-example-scenario">A2A Example Scenario<a class="headerlink" href="#a2a-example-scenario" title="Permanent link">&para;</a></h3>
-<p>This section provides an example scenario to illustrate the benefits of using an A2A (Agent2Agent) protocol for complex interactions between AI agents.</p>
+<p>This example shows how the A2A (Agent2Agent) protocol helps AI agents handle complex interactions.</p>
 <h4 id="a-users-complex-request">A User's Complex Request<a class="headerlink" href="#a-users-complex-request" title="Permanent link">&para;</a></h4>
 <p>A user interacts with an AI assistant, giving it a complex prompt like "Plan an international trip."</p>
 <pre class="mermaid"><code>graph LR
@@ -2735,26 +2811,25 @@ AI agents to interact reliably and securely.</p>
 <p>The core problem: The agents are unable to work together because each has its own bespoke development and deployment.</p>
 <p>The consequence of a lack of a standardized protocol is that these agents cannot collaborate with each other let alone discover what they can do. The individual agents (Flight, Hotel, Currency, and Tours) are isolated.</p>
 <h4 id="the-with-a2a-solution">The "With A2A" Solution<a class="headerlink" href="#the-with-a2a-solution" title="Permanent link">&para;</a></h4>
-<p>The A2A Protocol provides standard methods and data structures for agents to communicate with one another, regardless of their underlying implementation, so the same agents can be used as an interconnected system, communicating seamlessly through the standardized protocol.</p>
-<p>The AI assistant, now acting as an orchestrator, receives the cohesive information from all the A2A-enabled agents. It then presents a single, complete travel plan as a seamless response to the user's initial prompt.</p>
+<p>The A2A Protocol gives agents standard methods and data structures to talk to one another. This holds whatever their underlying implementation. The same agents now form an interconnected system, communicating through the shared protocol.</p>
+<p>The AI assistant now acts as an orchestrator. It gathers the results from every A2A-enabled agent and presents a single, complete travel plan in response to the user's prompt.</p>
 <p><img alt="A2A Actors showing a User, A2A Client (Client Agent), and A2A Server (Remote Agent)" src="../../assets/a2a-actors.png" style="margin:20px auto;display:block;" width="70%" /></p>
 <h3 id="core-benefits-of-a2a">Core Benefits of A2A<a class="headerlink" href="#core-benefits-of-a2a" title="Permanent link">&para;</a></h3>
 <p>Implementing the A2A protocol offers significant advantages across the AI ecosystem:</p>
 <ul>
-<li><strong>Secure collaboration</strong>: Without a standard, it's difficult to ensure
-    secure communication between agents. A2A uses HTTPS for secure communication
-    and maintains opaque operations, so agents can't see the inner workings of
-    other agents during collaboration.</li>
-<li><strong>Interoperability</strong>: A2A breaks down silos between different AI
-    agent ecosystems, enabling agents from various vendors and frameworks to work
-    together seamlessly.</li>
-<li><strong>Agent autonomy</strong>: A2A allows agents to retain their individual capabilities
-    and act as autonomous entities while collaborating with other agents.</li>
-<li><strong>Reduced integration complexity</strong>: The protocol standardizes agent
-    communication, enabling teams to focus on the unique value their agents
-    provide.</li>
-<li><strong>Support for LRO</strong>: The protocol supports long-running operations (LRO) and
-    streaming with Server-Sent Events (SSE) and asynchronous execution.</li>
+<li><strong>Secure collaboration</strong>: Without a standard, secure communication between
+    agents is hard to guarantee. A2A uses HTTPS and keeps operations opaque, so
+    agents can't see the inner workings of the agents they collaborate with.</li>
+<li><strong>Interoperability</strong>: A2A breaks down silos between AI agent ecosystems. Agents
+    from different vendors and frameworks work together.</li>
+<li><strong>Agent autonomy</strong>: With A2A, agents keep their own capabilities and stay
+    autonomous while they collaborate.</li>
+<li><strong>No custom integrations</strong>: You don't build bespoke plugins or point-to-point
+    code to connect agents. The same protocol reaches them wherever they run: on
+    your machine, in the cloud, or hosted by a vendor. It connects agents across
+    teams, projects, and companies. Teams focus on the value their agents provide.</li>
+<li><strong>Support for LRO</strong>: The protocol supports long-running operations (LRO). It
+    handles streaming with Server-Sent Events (SSE) and asynchronous execution.</li>
 </ul>
 <h3 id="key-design-principles-of-a2a">Key Design Principles of A2A<a class="headerlink" href="#key-design-principles-of-a2a" title="Permanent link">&para;</a></h3>
 <p>A2A development follows principles that prioritize broad adoption,
@@ -2763,60 +2838,62 @@ enterprise-grade capabilities, and future-proofing.</p>
 <li><strong>Simplicity</strong>: A2A leverages existing standards like HTTP, JSON-RPC, and
     Server-Sent Events (SSE). This avoids reinventing core technologies and
     accelerates developer adoption.</li>
-<li><strong>Enterprise Readiness</strong>: A2A addresses critical enterprise needs. It aligns
-    with standard web practices for robust authentication, authorization,
-    security, privacy, tracing, and monitoring.</li>
+<li><strong>Enterprise Readiness</strong>: A2A meets critical enterprise needs. It follows
+    standard web practices for authentication, authorization, security, privacy,
+    tracing, and monitoring.</li>
 <li><strong>Asynchronous</strong>: A2A natively supports long-running tasks. It handles
     scenarios where agents or users might not remain continuously connected. It
     uses mechanisms like streaming and push notifications.</li>
-<li><strong>Modality Independent</strong>: The protocol allows agents to communicate using a
-    wide variety of content types. This enables rich and flexible interactions
-    beyond plain text.</li>
-<li><strong>Opaque Execution</strong>: Agents collaborate effectively without exposing their
-    internal logic, memory, or proprietary tools. Interactions rely on declared
-    capabilities and exchanged context. This preserves intellectual property and
-    enhances security.</li>
+<li><strong>Modality Independent</strong>: Agents can communicate using many content types.
+    This supports rich, flexible interactions beyond plain text.</li>
+<li><strong>Opaque Execution</strong>: Agents collaborate without exposing their internal
+    logic, memory, or proprietary tools. Interactions rely on declared
+    capabilities and shared context. This protects intellectual property and
+    improves security.</li>
 </ul>
 <h3 id="understanding-the-agent-stack-a2a-mcp-agent-frameworks-and-models">Understanding the Agent Stack: A2A, MCP, Agent Frameworks and Models<a class="headerlink" href="#understanding-the-agent-stack-a2a-mcp-agent-frameworks-and-models" title="Permanent link">&para;</a></h3>
 <p>A2A is situated within a broader agent stack, which includes:</p>
 <ul>
-<li><strong>A2A:</strong> Standardizes communication among agents deployed in different organizations and developed using diverse frameworks.</li>
+<li><strong>A2A:</strong> Standardizes communication among agents, across organizations and frameworks.</li>
 <li><strong>MCP:</strong> Connects models to data and external resources.</li>
-<li><strong>Frameworks (like ADK):</strong> Provide toolkits for constructing agents.</li>
+<li><strong>Agent frameworks (e.g., LangGraph, CrewAI, ADK):</strong> Provide toolkits for constructing agents.</li>
 <li><strong>Models:</strong> Fundamental to an agent's reasoning, these can be any Large Language Model (LLM).</li>
 </ul>
 <p><img alt="ADK versus MCP" src="../../assets/agentic-stack.png" style="margin:20px auto;display:block;" width="70%" /></p>
 <h4 id="a2a-and-mcp">A2A and MCP<a class="headerlink" href="#a2a-and-mcp" title="Permanent link">&para;</a></h4>
-<p>In the broader ecosystem of AI communication, you might be familiar with protocols designed to facilitate interactions between agents, models, and tools. Notably, the Model Context Protocol (MCP) is an emerging standard focused on connecting Large Language Models (LLMs) with data and external resources.</p>
-<p>The Agent2Agent (A2A) protocol is designed to standardize communication between AI agents, particularly those deployed in external systems. A2A is positioned to complement MCP, addressing a distinct yet related aspect of agent interaction.</p>
+<p>You may already know protocols that support interactions between agents, models, and tools. The Model Context Protocol (MCP) is one emerging standard. It focuses on connecting Large Language Models (LLMs) with data and external resources.</p>
+<p>The Agent2Agent (A2A) protocol is a shared language for AI agents, especially agents in other systems. A2A complements MCP: it covers a distinct but related part of agent interaction.</p>
 <ul>
 <li><strong>MCP's Focus:</strong> Reducing the complexity involved in connecting agents with tools and data. Tools are typically stateless and perform specific, predefined functions (e.g., a calculator, a database query).</li>
-<li><strong>A2A's Focus:</strong> Enabling agents to collaborate within their native modalities, allowing them to communicate as agents (or as users) rather than being constrained to tool-like interactions. This enables complex, multi-turn interactions where agents reason, plan, and delegate tasks to other agents. For example, this facilitates multi-turn interactions, such as those involving negotiation or clarification when placing an order.</li>
+<li><strong>A2A's Focus:</strong> Letting agents collaborate in their native modalities. They communicate as agents (or as users), not through tool-like interactions. This supports complex, multi-turn interactions where agents reason, plan, and delegate tasks. For example, they can negotiate or ask for clarification when placing an order.</li>
 </ul>
 <p><img alt="ADK + MCP" src="../../assets/a2a-mcp-readme.png" style="margin:20px auto;display:block;" width="70%" /></p>
-<p>The practice of encapsulating an agent as a simple tool is fundamentally limiting, as it fails to capture the agent's full capabilities. This critical distinction is explored in the post, <a href="https://discuss.google.dev/t/agents-are-not-tools/192812">Why Agents Are Not Tools</a>.</p>
+<p>Wrapping an agent as a simple tool is limiting: it can't capture the agent's full capabilities. The post <a href="https://discuss.google.dev/t/agents-are-not-tools/192812">Why Agents Are Not Tools</a> explores this distinction.</p>
 <p>For a more in-depth comparison, refer to the <a href="../a2a-and-mcp/">A2A and MCP Comparison</a> document.</p>
-<h4 id="a2a-and-adk">A2A and ADK<a class="headerlink" href="#a2a-and-adk" title="Permanent link">&para;</a></h4>
-<p>The <a href="https://google.github.io/adk-docs">Agent Development Kit (ADK)</a>
-is an open-source agent development toolkit developed by Google. A2A is a
-communication protocol for agents that enables inter-agent communication,
-regardless of the framework used for their construction (e.g., ADK, LangGraph,
-or Crew AI). ADK is a flexible and modular framework for developing and
-deploying AI agents. While optimized for Gemini AI and the Google ecosystem,
-ADK is model-agnostic, deployment-agnostic, and built for compatibility with
-other frameworks.</p>
+<h4 id="a2a-and-agent-frameworks">A2A and Agent Frameworks<a class="headerlink" href="#a2a-and-agent-frameworks" title="Permanent link">&para;</a></h4>
+<p>A2A is a communication protocol for agents. It enables inter-agent communication
+regardless of the framework used to build each agent. Teams build agents with a
+range of agent development kits and frameworks — such as LangGraph, CrewAI, ADK,
+and others — and A2A lets agents built with any of them work together. The
+protocol does not depend on, or favor, any single framework.</p>
 <h3 id="a2a-request-lifecycle">A2A Request Lifecycle<a class="headerlink" href="#a2a-request-lifecycle" title="Permanent link">&para;</a></h3>
-<p>The A2A request lifecycle is a sequence that details the four main steps a request follows: agent discovery, authentication, <code>sendMessage</code> API, and <code>sendMessageStream</code> API. The following diagram provides a deeper look into the operational flow, illustrating the interactions between the client, A2A server, and auth server.</p>
+<p>A request follows four main steps across three stages: agent discovery, authentication, and the messaging APIs (<code>sendMessage</code> and <code>sendMessageStream</code>). The diagrams below break the flow into these three stages and show how the client, A2A server, and auth server interact.</p>
+<h4 id="1-agent-discovery">1. Agent discovery<a class="headerlink" href="#1-agent-discovery" title="Permanent link">&para;</a></h4>
+<p>The client fetches the server's Agent Card to learn its capabilities and endpoint.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Client
     participant A2A Server
-    participant Auth Server
 
     rect rgb(240, 240, 240)
     Note over Client, A2A Server: 1. Agent Discovery
     Client-&gt;&gt;A2A Server: GET agent card eg: (/.well-known/agent-card)
     A2A Server--&gt;&gt;Client: Returns Agent Card
-    end
+    end</code></pre>
+<h4 id="2-authentication">2. Authentication<a class="headerlink" href="#2-authentication" title="Permanent link">&para;</a></h4>
+<p>The client reads the Agent Card's security schemes and obtains a token when one is required.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant Auth Server
 
     rect rgb(240, 240, 240)
     Note over Client, Auth Server: 2. Authentication
@@ -2825,7 +2902,12 @@ other frameworks.</p>
         Client-&gt;&gt;Auth Server: Request token based on "authorizationUrl" and "tokenUrl".
         Auth Server--&gt;&gt;Client: Returns JWT
     end
-    end
+    end</code></pre>
+<h4 id="3-the-sendmessage-and-sendmessagestream-apis">3. The sendMessage and sendMessageStream APIs<a class="headerlink" href="#3-the-sendmessage-and-sendmessagestream-apis" title="Permanent link">&para;</a></h4>
+<p>The client sends messages to the server's endpoint — either a single request/response with <code>sendMessage</code>, or a stream of task updates with <code>sendMessageStream</code>.</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant A2A Server
 
     rect rgb(240, 240, 240)
     Note over Client, A2A Server: 3. sendMessage API
@@ -2845,7 +2927,12 @@ other frameworks.</p>
     A2A Server--&gt;&gt;Client: Stream: TaskStatusUpdateEvent (Completed)
     end</code></pre>
 <h2 id="whats-next">What's Next<a class="headerlink" href="#whats-next" title="Permanent link">&para;</a></h2>
-<p>Learn about the <a href="../key-concepts/">Key Concepts</a> that form the foundation of the A2A protocol.</p>
+<p>Pick the path that fits you:</p>
+<ul>
+<li><strong>Prefer a hands-on approach?</strong> Build your first agent with the <a href="../../tutorials/python/1-introduction/">Python tutorial</a>.</li>
+<li><strong>Want the foundations?</strong> Read the <a href="../key-concepts/">Key Concepts</a> that underpin the A2A protocol.</li>
+<li><strong>Want to deep dive in the A2A Protocol?</strong> The <a href="../../specification/">A2A specification</a> is the source of truth for every capability, method, and data structure.</li>
+</ul>
 
 
 

@@ -721,6 +721,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#horizontal-and-vertical-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Horizontal and Vertical Layers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#model-context-protocol" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2331,6 +2342,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#horizontal-and-vertical-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Horizontal and Vertical Layers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#model-context-protocol" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2475,8 +2497,25 @@
 interoperability. One connects agents to tools and resources. The other enables
 agent-to-agent collaboration. The Agent2Agent (A2A) Protocol and the
 <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP) address these distinct but highly complementary needs.</p>
+<h2 id="horizontal-and-vertical-layers">Horizontal and Vertical Layers<a class="headerlink" href="#horizontal-and-vertical-layers" title="Permanent link">&para;</a></h2>
+<p>One way to picture the two protocols is by the direction they connect in.</p>
+<p><strong>MCP is vertical.</strong> It deepens a single agent. You can build an agentic system
+under one roof — one or more agents in a single application. Every MCP connection
+you add hands an agent another tool, resource, or skill. The more you connect,
+the more that agent can do on its own.</p>
+<p><strong>A2A is horizontal.</strong> It connects agents across that boundary. The other agent
+may belong to another team, another department, or a partner organization. Your
+agent reaches out to those agents to discover them, negotiate, and exchange
+information.</p>
+<p>That horizontal reach goes beyond asking another agent for a status update. It is
+closer to how one person reaches out to another for help: <em>"Are you working on
+this project? Do you know about it? Can you share what you have — and if not,
+which agent can?"</em> Agents break the ice, exchange context, and — depending on how
+the exchange goes — either go deeper or get pointed to a better place to get the
+job done.</p>
+<p>Used together, MCP gives each agent depth, and A2A gives your system reach.</p>
 <h2 id="model-context-protocol">Model Context Protocol<a class="headerlink" href="#model-context-protocol" title="Permanent link">&para;</a></h2>
-<p>The Model Context Protocol (MCP) defines how an AI agent interacts with and utilizes individual tools and resources, such as a database or an API.</p>
+<p>The Model Context Protocol (MCP) defines how an AI agent uses individual tools and resources, such as a database or an API.</p>
 <p>This protocol offers the following capabilities:</p>
 <ul>
 <li>Standardizes how AI models and agents connect to and interact with tools,
@@ -2488,20 +2527,20 @@ agent-to-agent collaboration. The Agent2Agent (A2A) Protocol and the
   querying a database, or an agent connecting to predefined functions.</li>
 </ul>
 <h2 id="agent2agent-protocol">Agent2Agent Protocol<a class="headerlink" href="#agent2agent-protocol" title="Permanent link">&para;</a></h2>
-<p>The Agent2Agent Protocol focuses on enabling different agents to collaborate with one another to achieve a common goal.</p>
+<p>The Agent2Agent Protocol lets different agents collaborate to reach a common goal.</p>
 <p>This protocol offers the following capabilities:</p>
 <ul>
 <li>Standardizes how independent, often opaque, AI agents communicate and
   collaborate as peers.</li>
-<li>Provides an application-level protocol for agents to discover each other,
-  negotiate interactions, manage shared tasks, and exchange conversational
-  context and complex data.</li>
-<li>Supports typical use cases, including a customer service agent delegating an
-  inquiry to a billing agent, or a travel agent coordinating with flight,
+<li>Gives agents an application-level protocol. With it, agents discover each
+  other and negotiate interactions. They also manage shared tasks and exchange
+  conversational context and complex data.</li>
+<li>Supports common use cases. For example, a customer service agent might delegate
+  an inquiry to a billing agent. A travel agent might coordinate with flight,
   hotel, and activity agents.</li>
 </ul>
 <h2 id="why-different-protocols">Why Different Protocols?<a class="headerlink" href="#why-different-protocols" title="Permanent link">&para;</a></h2>
-<p>Both the MCP and A2A protocols are essential for building complex AI systems, and they address distinct but highly complementary needs. The distinction between A2A and MCP depends on what an agent interacts with.</p>
+<p>Both protocols are essential for building complex AI systems. The distinction between A2A and MCP depends on what an agent interacts with.</p>
 <ul>
 <li><strong>Tools and Resources (MCP Domain)</strong>:<ul>
 <li><strong>Characteristics:</strong> These are typically primitives with well-defined,
@@ -2514,44 +2553,42 @@ agent-to-agent collaboration. The Agent2Agent (A2A) Protocol and the
 </li>
 <li><strong>Agents (A2A domain)</strong>:<ul>
 <li><strong>Characteristics:</strong> These are more autonomous systems. They reason,
-    plan, use multiple tools, maintain state over longer interactions, and
-    engage in complex, often multi-turn dialogues to achieve novel or
-    evolving tasks.</li>
+    plan, and use multiple tools. They keep state over longer interactions
+    and hold complex, often multi-turn dialogues to handle novel or evolving
+    tasks.</li>
 <li><strong>Purpose:</strong> Agents collaborate with other agents to tackle broader, more
     complex goals.</li>
 </ul>
 </li>
 </ul>
 <h2 id="a2a-mcp-complementary-protocols-for-agentic-systems">A2A ❤️ MCP: Complementary Protocols for Agentic Systems<a class="headerlink" href="#a2a-mcp-complementary-protocols-for-agentic-systems" title="Permanent link">&para;</a></h2>
-<p>An agentic application might primarily use A2A to communicate with other agents.
-Each individual agent internally uses MCP to interact with its specific tools
-and resources.</p>
+<p>An agentic application might use A2A to communicate with other agents. Inside,
+each agent uses MCP to work with its own tools and resources.</p>
 <div style="text-align: center; margin: 20px;">
 <p><img alt="Diagram showing A2A and MCP working together. A User interacts with Agent A using A2A. Agent A interacts with Agent B using A2A. Agent B uses MCP to interact with Tool 1 and Tool 2." src="../../assets/a2a-mcp.png" width="80%" /></p>
-<p><em>An agentic application might use A2A to communicate with other agents, while each agent internally uses MCP to interact with its specific tools and resources.</em></p>
+<p><em>A2A connects the agents to each other; MCP connects each agent to its own tools.</em></p>
 </div>
 <h3 id="example-scenario-the-auto-repair-shop">Example Scenario: The Auto Repair Shop<a class="headerlink" href="#example-scenario-the-auto-repair-shop" title="Permanent link">&para;</a></h3>
 <p>Consider an auto repair shop staffed by autonomous AI agent "mechanics".
-These mechanics use special-purpose tools, such as vehicle diagnostic scanners,
-repair manuals, and platform lifts, to diagnose and repair problems. The repair
-process can involve extensive conversations, research, and interaction with part
+These mechanics diagnose and repair problems with special-purpose tools. Their
+tools include vehicle diagnostic scanners, repair manuals, and platform lifts.
+The repair process can involve long conversations, research, and work with part
 suppliers.</p>
 <ul>
 <li>
-<p><strong>Customer Interaction (User-to-Agent using A2A)</strong>: A customer (or their
-    primary assistant agent) uses A2A to communicate with the "Shop Manager"
-    agent.</p>
+<p><strong>Customer interaction — user-to-agent via A2A.</strong> A customer, or their
+    assistant agent, talks to the "Shop Manager" agent.</p>
 <p>For example, the customer might say, "My car is making a rattling noise".</p>
 </li>
 <li>
-<p><strong>Multi-turn Diagnostic Conversation (Agent-to-Agent using A2A)</strong>: The Shop
-    Manager agent uses A2A for a multi-turn diagnostic conversation.</p>
+<p><strong>Diagnostic conversation — agent-to-agent via A2A.</strong> The Shop Manager agent
+    holds a back-and-forth diagnostic conversation.</p>
 <p>For example, the Manager might ask, "Can you send a video of the noise?" or "I see some fluid leaking. How long has this been happening?".</p>
 </li>
 <li>
-<p><strong>Internal Tool Usage (Agent-to-Tool using MCP)</strong>: The Mechanic agent,
-    assigned the task by the Shop Manager, needs to diagnose the issue. The
-    Mechanic agent uses MCP to interact with its specialized tools.</p>
+<p><strong>Internal tool use — agent-to-tool via MCP.</strong> The Mechanic agent, assigned
+    the task by the Shop Manager, needs to diagnose the issue. It uses MCP to
+    reach its specialized tools.</p>
 <p>For example:</p>
 <ul>
 <li>MCP call to a "Vehicle Diagnostic Scanner" tool:
@@ -2563,35 +2600,29 @@ suppliers.</p>
 </ul>
 </li>
 <li>
-<p><strong>Supplier Interaction (Agent-to-Agent using A2A)</strong>: The Mechanic agent
-    determines that a specific part is needed. The Mechanic agent uses A2A to
-    communicate with a "Parts Supplier" agent to order a part.
+<p><strong>Supplier interaction — agent-to-agent via A2A.</strong> The Mechanic agent finds
+    that a specific part is needed. It uses A2A to talk to a "Parts Supplier"
+    agent and order the part.
     For example, the
     Mechanic agent might ask, "Do you have part #12345 in stock for a Toyota Camry 2018?"</p>
 </li>
 <li>
-<p><strong>Order processing (Agent-to-Agent using A2A)</strong>: The Parts Supplier agent,
-    which is also an A2A-compliant system, responds, potentially leading to an
-    order.</p>
+<p><strong>Order processing — agent-to-agent via A2A.</strong> The Parts Supplier agent is
+    also an A2A-compliant system. It responds, which can lead to an order.</p>
 </li>
 </ul>
 <p>In this example:</p>
 <ul>
-<li>A2A facilitates the higher-level, conversational, and task-oriented
-    interactions between the customer and the shop, and between the shop's
-    agents and external supplier agents.</li>
+<li>A2A handles the higher-level, conversational, task-oriented interactions. It
+    links the customer with the shop, and the shop's agents with outside supplier
+    agents.</li>
 <li>MCP enables the mechanic agent to use its specific, structured tools to
     perform its diagnostic and repair functions.</li>
 </ul>
-<p>An A2A server could expose some of its skills as MCP-compatible resources.
-However, A2A's primary strength lies in its support for more flexible, stateful,
-and collaborative interactions. These interactions go beyond a typical tool
-invocation. A2A focuses on agents partnering on tasks, whereas MCP focuses on
-agents using capabilities.</p>
 <h2 id="representing-a2a-agents-as-mcp-resources">Representing A2A Agents as MCP Resources<a class="headerlink" href="#representing-a2a-agents-as-mcp-resources" title="Permanent link">&para;</a></h2>
-<p>An A2A Server (a remote agent) could expose some of its skills as MCP-compatible resources, especially if those skills are well-defined and can be invoked in a more tool-like, stateless manner. In such a case, another agent might "discover" this A2A agent's specific skill through an MCP-style tool description (perhaps derived from its Agent Card).</p>
-<p>However, the primary strength of A2A lies in its support for more flexible, stateful, and collaborative interactions that go beyond typical tool invocation. A2A is about agents <em>partnering</em> on tasks, while MCP is more about agents <em>using</em> capabilities.</p>
-<p>By leveraging both A2A for inter-agent collaboration and MCP for tool integration, developers can build more powerful, flexible, and interoperable AI systems.</p>
+<p>An A2A Server (a remote agent) can expose some skills as MCP-compatible resources. This works best when the skills are well-defined and can be called in a tool-like, stateless way. Another agent might then "discover" the skill through an MCP-style tool description, perhaps derived from the Agent Card.</p>
+<p>Still, A2A's main strength is its support for flexible, stateful, collaborative interactions that go beyond a typical tool call. A2A is about agents <em>partnering</em> on tasks; MCP is more about agents <em>using</em> capabilities.</p>
+<p>Use both together. A2A handles inter-agent collaboration and MCP handles tool integration. This lets you build more powerful, flexible, and interoperable AI systems.</p>
 
 
 
