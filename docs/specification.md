@@ -323,7 +323,7 @@ Creates a push notification configuration for a task to receive asynchronous upd
 
 **Outputs:**
 
-- [`PushNotificationConfig`](#431-pushnotificationconfig): Created configuration with assigned ID
+- [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig): Created configuration with assigned ID
 
 **Errors:**
 
@@ -348,7 +348,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Outputs:**
 
-- [`PushNotificationConfig`](#431-pushnotificationconfig): The requested configuration
+- [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig): The requested configuration
 
 **Errors:**
 
@@ -827,11 +827,11 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 ### 4.3. Push Notification Objects
 
-<a id="PushNotificationConfig"></a>
+<a id="TaskPushNotificationConfig"></a>
 
-#### 4.3.1. PushNotificationConfig
+#### 4.3.1. TaskPushNotificationConfig
 
-{{ proto_to_table("PushNotificationConfig") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 <a id="PushNotificationAuthenticationInfo"></a>
 
@@ -870,7 +870,7 @@ The webhook payload is a [`StreamResponse`](#323-stream-response) object contain
 
 **Authentication:**
 
-The agent MUST include authentication credentials in the request headers as specified in the [`PushNotificationConfig.authentication`](#432-authenticationinfo) field. The format follows standard HTTP authentication patterns (Bearer tokens, Basic auth, etc.).
+The agent MUST include authentication credentials in the request headers as specified in the [`TaskPushNotificationConfig.authentication`](#432-authenticationinfo) field. The format follows standard HTTP authentication patterns (Bearer tokens, Basic auth, etc.).
 
 **Client Responsibilities:**
 
@@ -2628,11 +2628,9 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 Creates a push notification configuration for a task.
 
-**Request:**
+**Request:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
-{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
-
-**Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
+**Response:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
 #### 10.4.8. GetTaskPushNotificationConfig
 
@@ -2642,7 +2640,7 @@ Retrieves an existing push notification configuration for a task.
 
 {{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
-**Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
+**Response:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
 #### 10.4.9. ListTaskPushNotificationConfigs
 
@@ -3137,7 +3135,7 @@ When implementing push notifications, both agents (as webhook callers) and clien
 **Configuration Security:**
 
 - Webhook URLs **SHOULD** use HTTPS to protect payload confidentiality in transit
-- Authentication tokens in [`PushNotificationConfig`](#431-pushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
+- Authentication tokens in [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
 - Agents **SHOULD** securely store push notification configurations and credentials
 - Clients **SHOULD** use unique, single-purpose tokens for each push notification configuration
 
@@ -3516,7 +3514,7 @@ For **Clients** upgrading from pre-0.3.x:
 
 1. Update parsers to expect wrapper objects with member names as discriminators
 2. When constructing requests, use the new wrapper format
-3. Implement version detection based on the agent's `protocolVersions` in the `AgentCard`
+3. Implement version detection based on `protocolVersion` in the agent's `supportedInterfaces` entries
 4. Consider maintaining backward compatibility by detecting and handling both formats during a transition period
 
 For **Servers** upgrading from pre-0.3.x:
@@ -3524,7 +3522,7 @@ For **Servers** upgrading from pre-0.3.x:
 1. Update serialization logic to emit wrapper objects
 2. **Breaking:** The `kind` field is no longer part of the protocol and should not be emitted
 3. Update deserialization to expect wrapper objects with member names
-4. Ensure the `AgentCard` declares the correct `protocolVersions` (e.g., ["1.0"] or later)
+4. Ensure each `AgentInterface` in the `AgentCard` declares the correct `protocolVersion` (e.g., "1.0" or later)
 
 **Rationale:**
 
