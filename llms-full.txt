@@ -4686,9 +4686,32 @@ interoperability. One connects agents to tools and resources. The other enables
 agent-to-agent collaboration. The Agent2Agent (A2A) Protocol and the
 [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) address these distinct but highly complementary needs.
 
+## Horizontal and Vertical Layers
+
+One way to picture the two protocols is by the direction they connect in.
+
+**MCP is vertical.** It deepens a single agent. You can build an agentic system
+under one roof — one or more agents in a single application. Every MCP connection
+you add hands an agent another tool, resource, or skill. The more you connect,
+the more that agent can do on its own.
+
+**A2A is horizontal.** It connects agents across that boundary. The other agent
+may belong to another team, another department, or a partner organization. Your
+agent reaches out to those agents to discover them, negotiate, and exchange
+information.
+
+That horizontal reach goes beyond asking another agent for a status update. It is
+closer to how one person reaches out to another for help: _"Are you working on
+this project? Do you know about it? Can you share what you have — and if not,
+which agent can?"_ Agents break the ice, exchange context, and — depending on how
+the exchange goes — either go deeper or get pointed to a better place to get the
+job done.
+
+Used together, MCP gives each agent depth, and A2A gives your system reach.
+
 ## Model Context Protocol
 
-The Model Context Protocol (MCP) defines how an AI agent interacts with and utilizes individual tools and resources, such as a database or an API.
+The Model Context Protocol (MCP) defines how an AI agent uses individual tools and resources, such as a database or an API.
 
 This protocol offers the following capabilities:
 
@@ -4702,22 +4725,22 @@ This protocol offers the following capabilities:
 
 ## Agent2Agent Protocol
 
-The Agent2Agent Protocol focuses on enabling different agents to collaborate with one another to achieve a common goal.
+The Agent2Agent Protocol lets different agents collaborate to reach a common goal.
 
 This protocol offers the following capabilities:
 
 - Standardizes how independent, often opaque, AI agents communicate and
   collaborate as peers.
-- Provides an application-level protocol for agents to discover each other,
-  negotiate interactions, manage shared tasks, and exchange conversational
-  context and complex data.
-- Supports typical use cases, including a customer service agent delegating an
-  inquiry to a billing agent, or a travel agent coordinating with flight,
+- Gives agents an application-level protocol. With it, agents discover each
+  other and negotiate interactions. They also manage shared tasks and exchange
+  conversational context and complex data.
+- Supports common use cases. For example, a customer service agent might delegate
+  an inquiry to a billing agent. A travel agent might coordinate with flight,
   hotel, and activity agents.
 
 ## Why Different Protocols?
 
-Both the MCP and A2A protocols are essential for building complex AI systems, and they address distinct but highly complementary needs. The distinction between A2A and MCP depends on what an agent interacts with.
+Both protocols are essential for building complex AI systems. The distinction between A2A and MCP depends on what an agent interacts with.
 
 - **Tools and Resources (MCP Domain)**:
       - **Characteristics:** These are typically primitives with well-defined,
@@ -4728,48 +4751,46 @@ Both the MCP and A2A protocols are essential for building complex AI systems, an
         functions.
 - **Agents (A2A domain)**:
       - **Characteristics:** These are more autonomous systems. They reason,
-        plan, use multiple tools, maintain state over longer interactions, and
-        engage in complex, often multi-turn dialogues to achieve novel or
-        evolving tasks.
+        plan, and use multiple tools. They keep state over longer interactions
+        and hold complex, often multi-turn dialogues to handle novel or evolving
+        tasks.
       - **Purpose:** Agents collaborate with other agents to tackle broader, more
         complex goals.
 
 ## A2A ❤️ MCP: Complementary Protocols for Agentic Systems
 
-An agentic application might primarily use A2A to communicate with other agents.
-Each individual agent internally uses MCP to interact with its specific tools
-and resources.
+An agentic application might use A2A to communicate with other agents. Inside,
+each agent uses MCP to work with its own tools and resources.
 
 <div style="text-align: center; margin: 20px;" markdown>
 
 ![Diagram showing A2A and MCP working together. A User interacts with Agent A using A2A. Agent A interacts with Agent B using A2A. Agent B uses MCP to interact with Tool 1 and Tool 2.](../assets/a2a-mcp.png){width="80%"}
 
-_An agentic application might use A2A to communicate with other agents, while each agent internally uses MCP to interact with its specific tools and resources._
+_A2A connects the agents to each other; MCP connects each agent to its own tools._
 
 </div>
 
 ### Example Scenario: The Auto Repair Shop
 
 Consider an auto repair shop staffed by autonomous AI agent "mechanics".
-These mechanics use special-purpose tools, such as vehicle diagnostic scanners,
-repair manuals, and platform lifts, to diagnose and repair problems. The repair
-process can involve extensive conversations, research, and interaction with part
+These mechanics diagnose and repair problems with special-purpose tools. Their
+tools include vehicle diagnostic scanners, repair manuals, and platform lifts.
+The repair process can involve long conversations, research, and work with part
 suppliers.
 
-- **Customer Interaction (User-to-Agent using A2A)**: A customer (or their
-    primary assistant agent) uses A2A to communicate with the "Shop Manager"
-    agent.
+- **Customer interaction — user-to-agent via A2A.** A customer, or their
+    assistant agent, talks to the "Shop Manager" agent.
 
     For example, the customer might say, "My car is making a rattling noise".
 
-- **Multi-turn Diagnostic Conversation (Agent-to-Agent using A2A)**: The Shop
-    Manager agent uses A2A for a multi-turn diagnostic conversation.
+- **Diagnostic conversation — agent-to-agent via A2A.** The Shop Manager agent
+    holds a back-and-forth diagnostic conversation.
 
     For example, the Manager might ask, "Can you send a video of the noise?" or "I see some fluid leaking. How long has this been happening?".
 
-- **Internal Tool Usage (Agent-to-Tool using MCP)**: The Mechanic agent,
-    assigned the task by the Shop Manager, needs to diagnose the issue. The
-    Mechanic agent uses MCP to interact with its specialized tools.
+- **Internal tool use — agent-to-tool via MCP.** The Mechanic agent, assigned
+    the task by the Shop Manager, needs to diagnose the issue. It uses MCP to
+    reach its specialized tools.
 
     For example:
 
@@ -4780,37 +4801,30 @@ suppliers.
         vehicle_model='Camry')`
     - MCP call to a "Platform Lift" tool: `raise_platform(height_meters=2)`
 
-- **Supplier Interaction (Agent-to-Agent using A2A)**: The Mechanic agent
-    determines that a specific part is needed. The Mechanic agent uses A2A to
-    communicate with a "Parts Supplier" agent to order a part.
+- **Supplier interaction — agent-to-agent via A2A.** The Mechanic agent finds
+    that a specific part is needed. It uses A2A to talk to a "Parts Supplier"
+    agent and order the part.
     For example, the
     Mechanic agent might ask, "Do you have part #12345 in stock for a Toyota Camry 2018?"
 
-- **Order processing (Agent-to-Agent using A2A)**: The Parts Supplier agent,
-    which is also an A2A-compliant system, responds, potentially leading to an
-    order.
+- **Order processing — agent-to-agent via A2A.** The Parts Supplier agent is
+    also an A2A-compliant system. It responds, which can lead to an order.
 
 In this example:
 
-- A2A facilitates the higher-level, conversational, and task-oriented
-    interactions between the customer and the shop, and between the shop's
-    agents and external supplier agents.
+- A2A handles the higher-level, conversational, task-oriented interactions. It
+    links the customer with the shop, and the shop's agents with outside supplier
+    agents.
 - MCP enables the mechanic agent to use its specific, structured tools to
     perform its diagnostic and repair functions.
 
-An A2A server could expose some of its skills as MCP-compatible resources.
-However, A2A's primary strength lies in its support for more flexible, stateful,
-and collaborative interactions. These interactions go beyond a typical tool
-invocation. A2A focuses on agents partnering on tasks, whereas MCP focuses on
-agents using capabilities.
-
 ## Representing A2A Agents as MCP Resources
 
-An A2A Server (a remote agent) could expose some of its skills as MCP-compatible resources, especially if those skills are well-defined and can be invoked in a more tool-like, stateless manner. In such a case, another agent might "discover" this A2A agent's specific skill through an MCP-style tool description (perhaps derived from its Agent Card).
+An A2A Server (a remote agent) can expose some skills as MCP-compatible resources. This works best when the skills are well-defined and can be called in a tool-like, stateless way. Another agent might then "discover" the skill through an MCP-style tool description, perhaps derived from the Agent Card.
 
-However, the primary strength of A2A lies in its support for more flexible, stateful, and collaborative interactions that go beyond typical tool invocation. A2A is about agents _partnering_ on tasks, while MCP is more about agents _using_ capabilities.
+Still, A2A's main strength is its support for flexible, stateful, collaborative interactions that go beyond a typical tool call. A2A is about agents _partnering_ on tasks; MCP is more about agents _using_ capabilities.
 
-By leveraging both A2A for inter-agent collaboration and MCP for tool integration, developers can build more powerful, flexible, and interoperable AI systems.
+Use both together. A2A handles inter-agent collaboration and MCP handles tool integration. This lets you build more powerful, flexible, and interoperable AI systems.
 </file>
 
 <file path="docs/topics/agent-discovery.md">
@@ -6319,13 +6333,11 @@ This comprehensive, layered approach to security for push notifications helps en
 <file path="docs/topics/what-is-a2a.md">
 # What is A2A?
 
-The A2A protocol is an open standard that enables seamless communication and
-collaboration between AI agents. It provides a common language for agents built
-using diverse frameworks and by different vendors, fostering interoperability
-and breaking down silos. Agents are autonomous problem-solvers that act
-independently within their environment. A2A allows agents from different
-developers, built on different frameworks, and owned by different organizations
-to unite and work together.
+The A2A protocol is an open standard for communication between AI agents. It
+gives agents a common language, whatever framework or vendor built them. This
+makes them interoperable and breaks down silos. Agents are autonomous
+problem-solvers that act on their own within their environment. With A2A, agents
+from different developers, frameworks, and organizations can work together.
 
 ## Why Use the A2A Protocol
 
@@ -6345,11 +6357,11 @@ task involves orchestrating multiple specialized agents, such as:
 
 Without A2A, integrating these diverse agents presents several challenges:
 
-- **Agent Exposure**: Developers often wrap agents as tools to expose them to
-    other agents, similar to how tools are exposed through the Model Context
-    Protocol (MCP). However, this approach is inefficient because agents are
-    designed to negotiate directly. Wrapping agents as tools limits their capabilities.
-    A2A allows agents to be exposed as they are, without requiring this wrapping.
+- **Agent Exposure**: To expose agents to each other, developers often wrap
+    them as tools, much like the Model Context Protocol (MCP) exposes tools. But
+    this is inefficient: agents are built to negotiate directly, and wrapping
+    them as tools limits what they can do. A2A exposes agents as they are, with
+    no wrapping.
 - **Custom Integrations**: Each interaction requires custom, point-to-point
     solutions, creating significant engineering overhead.
 - **Slow Innovation**: Bespoke development for each new integration slows
@@ -6361,12 +6373,12 @@ Without A2A, integrating these diverse agents presents several challenges:
 - **Security Gaps**: Ad hoc communication often lacks consistent security
     measures.
 
-The A2A protocol addresses these challenges by establishing interoperability for
-AI agents to interact reliably and securely.
+A2A solves these challenges. It lets AI agents interoperate, so they can
+interact reliably and securely.
 
 ### A2A Example Scenario
 
-This section provides an example scenario to illustrate the benefits of using an A2A (Agent2Agent) protocol for complex interactions between AI agents.
+This example shows how the A2A (Agent2Agent) protocol helps AI agents handle complex interactions.
 
 #### A User's Complex Request
 
@@ -6404,9 +6416,9 @@ The consequence of a lack of a standardized protocol is that these agents cannot
 
 #### The "With A2A" Solution
 
-The A2A Protocol provides standard methods and data structures for agents to communicate with one another, regardless of their underlying implementation, so the same agents can be used as an interconnected system, communicating seamlessly through the standardized protocol.
+The A2A Protocol gives agents standard methods and data structures to talk to one another. This holds whatever their underlying implementation. The same agents now form an interconnected system, communicating through the shared protocol.
 
-The AI assistant, now acting as an orchestrator, receives the cohesive information from all the A2A-enabled agents. It then presents a single, complete travel plan as a seamless response to the user's initial prompt.
+The AI assistant now acts as an orchestrator. It gathers the results from every A2A-enabled agent and presents a single, complete travel plan in response to the user's prompt.
 
 ![A2A Actors showing a User, A2A Client (Client Agent), and A2A Server (Remote Agent)](../assets/a2a-actors.png){ width="70%" style="margin:20px auto;display:block;" }
 
@@ -6414,20 +6426,19 @@ The AI assistant, now acting as an orchestrator, receives the cohesive informati
 
 Implementing the A2A protocol offers significant advantages across the AI ecosystem:
 
-- **Secure collaboration**: Without a standard, it's difficult to ensure
-    secure communication between agents. A2A uses HTTPS for secure communication
-    and maintains opaque operations, so agents can't see the inner workings of
-    other agents during collaboration.
-- **Interoperability**: A2A breaks down silos between different AI
-    agent ecosystems, enabling agents from various vendors and frameworks to work
-    together seamlessly.
-- **Agent autonomy**: A2A allows agents to retain their individual capabilities
-    and act as autonomous entities while collaborating with other agents.
-- **Reduced integration complexity**: The protocol standardizes agent
-    communication, enabling teams to focus on the unique value their agents
-    provide.
-- **Support for LRO**: The protocol supports long-running operations (LRO) and
-    streaming with Server-Sent Events (SSE) and asynchronous execution.
+- **Secure collaboration**: Without a standard, secure communication between
+    agents is hard to guarantee. A2A uses HTTPS and keeps operations opaque, so
+    agents can't see the inner workings of the agents they collaborate with.
+- **Interoperability**: A2A breaks down silos between AI agent ecosystems. Agents
+    from different vendors and frameworks work together.
+- **Agent autonomy**: With A2A, agents keep their own capabilities and stay
+    autonomous while they collaborate.
+- **No custom integrations**: You don't build bespoke plugins or point-to-point
+    code to connect agents. The same protocol reaches them wherever they run: on
+    your machine, in the cloud, or hosted by a vendor. It connects agents across
+    teams, projects, and companies. Teams focus on the value their agents provide.
+- **Support for LRO**: The protocol supports long-running operations (LRO). It
+    handles streaming with Server-Sent Events (SSE) and asynchronous execution.
 
 ### Key Design Principles of A2A
 
@@ -6437,72 +6448,81 @@ enterprise-grade capabilities, and future-proofing.
 - **Simplicity**: A2A leverages existing standards like HTTP, JSON-RPC, and
     Server-Sent Events (SSE). This avoids reinventing core technologies and
     accelerates developer adoption.
-- **Enterprise Readiness**: A2A addresses critical enterprise needs. It aligns
-    with standard web practices for robust authentication, authorization,
-    security, privacy, tracing, and monitoring.
+- **Enterprise Readiness**: A2A meets critical enterprise needs. It follows
+    standard web practices for authentication, authorization, security, privacy,
+    tracing, and monitoring.
 - **Asynchronous**: A2A natively supports long-running tasks. It handles
     scenarios where agents or users might not remain continuously connected. It
     uses mechanisms like streaming and push notifications.
-- **Modality Independent**: The protocol allows agents to communicate using a
-    wide variety of content types. This enables rich and flexible interactions
-    beyond plain text.
-- **Opaque Execution**: Agents collaborate effectively without exposing their
-    internal logic, memory, or proprietary tools. Interactions rely on declared
-    capabilities and exchanged context. This preserves intellectual property and
-    enhances security.
+- **Modality Independent**: Agents can communicate using many content types.
+    This supports rich, flexible interactions beyond plain text.
+- **Opaque Execution**: Agents collaborate without exposing their internal
+    logic, memory, or proprietary tools. Interactions rely on declared
+    capabilities and shared context. This protects intellectual property and
+    improves security.
 
 ### Understanding the Agent Stack: A2A, MCP, Agent Frameworks and Models
 
 A2A is situated within a broader agent stack, which includes:
 
-- **A2A:** Standardizes communication among agents deployed in different organizations and developed using diverse frameworks.
+- **A2A:** Standardizes communication among agents, across organizations and frameworks.
 - **MCP:** Connects models to data and external resources.
-- **Frameworks (like ADK):** Provide toolkits for constructing agents.
+- **Agent frameworks (e.g., LangGraph, CrewAI, ADK):** Provide toolkits for constructing agents.
 - **Models:** Fundamental to an agent's reasoning, these can be any Large Language Model (LLM).
 
 ![ADK versus MCP](../assets/agentic-stack.png){ width="70%" style="margin:20px auto;display:block;" }
 
 #### A2A and MCP
 
-In the broader ecosystem of AI communication, you might be familiar with protocols designed to facilitate interactions between agents, models, and tools. Notably, the Model Context Protocol (MCP) is an emerging standard focused on connecting Large Language Models (LLMs) with data and external resources.
+You may already know protocols that support interactions between agents, models, and tools. The Model Context Protocol (MCP) is one emerging standard. It focuses on connecting Large Language Models (LLMs) with data and external resources.
 
-The Agent2Agent (A2A) protocol is designed to standardize communication between AI agents, particularly those deployed in external systems. A2A is positioned to complement MCP, addressing a distinct yet related aspect of agent interaction.
+The Agent2Agent (A2A) protocol is a shared language for AI agents, especially agents in other systems. A2A complements MCP: it covers a distinct but related part of agent interaction.
 
 - **MCP's Focus:** Reducing the complexity involved in connecting agents with tools and data. Tools are typically stateless and perform specific, predefined functions (e.g., a calculator, a database query).
-- **A2A's Focus:** Enabling agents to collaborate within their native modalities, allowing them to communicate as agents (or as users) rather than being constrained to tool-like interactions. This enables complex, multi-turn interactions where agents reason, plan, and delegate tasks to other agents. For example, this facilitates multi-turn interactions, such as those involving negotiation or clarification when placing an order.
+- **A2A's Focus:** Letting agents collaborate in their native modalities. They communicate as agents (or as users), not through tool-like interactions. This supports complex, multi-turn interactions where agents reason, plan, and delegate tasks. For example, they can negotiate or ask for clarification when placing an order.
 
 ![ADK + MCP](../assets/a2a-mcp-readme.png){ width="70%" style="margin:20px auto;display:block;" }
 
-The practice of encapsulating an agent as a simple tool is fundamentally limiting, as it fails to capture the agent's full capabilities. This critical distinction is explored in the post, [Why Agents Are Not Tools](https://discuss.google.dev/t/agents-are-not-tools/192812).
+Wrapping an agent as a simple tool is limiting: it can't capture the agent's full capabilities. The post [Why Agents Are Not Tools](https://discuss.google.dev/t/agents-are-not-tools/192812) explores this distinction.
 
 For a more in-depth comparison, refer to the [A2A and MCP Comparison](a2a-and-mcp.md) document.
 
-#### A2A and ADK
+#### A2A and Agent Frameworks
 
-The [Agent Development Kit (ADK)](https://google.github.io/adk-docs)
-is an open-source agent development toolkit developed by Google. A2A is a
-communication protocol for agents that enables inter-agent communication,
-regardless of the framework used for their construction (e.g., ADK, LangGraph,
-or Crew AI). ADK is a flexible and modular framework for developing and
-deploying AI agents. While optimized for Gemini AI and the Google ecosystem,
-ADK is model-agnostic, deployment-agnostic, and built for compatibility with
-other frameworks.
+A2A is a communication protocol for agents. It enables inter-agent communication
+regardless of the framework used to build each agent. Teams build agents with a
+range of agent development kits and frameworks — such as LangGraph, CrewAI, ADK,
+and others — and A2A lets agents built with any of them work together. The
+protocol does not depend on, or favor, any single framework.
 
 ### A2A Request Lifecycle
 
-The A2A request lifecycle is a sequence that details the four main steps a request follows: agent discovery, authentication, `sendMessage` API, and `sendMessageStream` API. The following diagram provides a deeper look into the operational flow, illustrating the interactions between the client, A2A server, and auth server.
+A request follows four main steps across three stages: agent discovery, authentication, and the messaging APIs (`sendMessage` and `sendMessageStream`). The diagrams below break the flow into these three stages and show how the client, A2A server, and auth server interact.
+
+#### 1. Agent discovery
+
+The client fetches the server's Agent Card to learn its capabilities and endpoint.
 
 ```mermaid
 sequenceDiagram
     participant Client
     participant A2A Server
-    participant Auth Server
 
     rect rgb(240, 240, 240)
     Note over Client, A2A Server: 1. Agent Discovery
     Client->>A2A Server: GET agent card eg: (/.well-known/agent-card)
     A2A Server-->>Client: Returns Agent Card
     end
+```
+
+#### 2. Authentication
+
+The client reads the Agent Card's security schemes and obtains a token when one is required.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Auth Server
 
     rect rgb(240, 240, 240)
     Note over Client, Auth Server: 2. Authentication
@@ -6512,6 +6532,16 @@ sequenceDiagram
         Auth Server-->>Client: Returns JWT
     end
     end
+```
+
+#### 3. The sendMessage and sendMessageStream APIs
+
+The client sends messages to the server's endpoint — either a single request/response with `sendMessage`, or a stream of task updates with `sendMessageStream`.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant A2A Server
 
     rect rgb(240, 240, 240)
     Note over Client, A2A Server: 3. sendMessage API
@@ -6534,7 +6564,11 @@ sequenceDiagram
 
 ## What's Next
 
-Learn about the [Key Concepts](./key-concepts.md) that form the foundation of the A2A protocol.
+Pick the path that fits you:
+
+- **Prefer a hands-on approach?** Build your first agent with the [Python tutorial](../tutorials/python/1-introduction.md).
+- **Want the foundations?** Read the [Key Concepts](./key-concepts.md) that underpin the A2A protocol.
+- **Want to deep dive in the A2A Protocol?** The [A2A specification](../specification.md) is the source of truth for every capability, method, and data structure.
 </file>
 
 <file path="docs/tutorials/index.md">
@@ -11852,7 +11886,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697d7fa6c0>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f5879240aa0>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11878,7 +11912,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697d7fa5d0>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f58792409b0>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -11922,7 +11956,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697d7fa6c0>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f5879240aa0>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -11942,7 +11976,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697d7fa5d0>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f58792409b0>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16420,7 +16454,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16455,7 +16489,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16508,7 +16542,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16543,7 +16577,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697edeb150>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587ac17050>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16559,7 +16593,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16576,7 +16610,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697edeb150>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587ac17050>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16628,7 +16662,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -16847,7 +16881,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16882,7 +16916,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16935,7 +16969,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16970,7 +17004,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697edeb150>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587ac17050>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16986,7 +17020,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17003,7 +17037,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697edeb150>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587ac17050>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17055,7 +17089,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697e7dfd50> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587a7bfe50> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -21449,7 +21483,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697edeb150>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587ac17050>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22200,7 +22234,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f697edeb150>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f587ac17050>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
