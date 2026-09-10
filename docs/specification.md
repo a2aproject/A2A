@@ -3514,7 +3514,7 @@ For **Clients** upgrading from pre-0.3.x:
 
 1. Update parsers to expect wrapper objects with member names as discriminators
 2. When constructing requests, use the new wrapper format
-3. Implement version detection based on `protocolVersion` in the agent's `supportedInterfaces` entries
+3. Implement version detection based on `protocolVersion` in each of the agent's `supportedInterfaces` entries in the `AgentCard`
 4. Consider maintaining backward compatibility by detecting and handling both formats during a transition period
 
 For **Servers** upgrading from pre-0.3.x:
@@ -3522,7 +3522,7 @@ For **Servers** upgrading from pre-0.3.x:
 1. Update serialization logic to emit wrapper objects
 2. **Breaking:** The `kind` field is no longer part of the protocol and should not be emitted
 3. Update deserialization to expect wrapper objects with member names
-4. Ensure each `AgentInterface` in the `AgentCard` declares the correct `protocolVersion` (e.g., "1.0" or later)
+4. Ensure each `supportedInterfaces` entry in the `AgentCard` declares the correct `protocolVersion` (e.g., "1.0" or later)
 
 **Rationale:**
 
