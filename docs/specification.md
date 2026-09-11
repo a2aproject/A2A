@@ -2050,7 +2050,7 @@ For more on discovery strategies, see the [Agent Discovery guide](./topics/agent
 
 Clients can find Agent Cards through:
 
-- **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json` (see [Section 8.6](#86-caching) for caching guidance)
+- **AI Catalog (`/.well-known/ai-catalog.json`):** Fetching an [AI Catalog](https://ai-catalog.io/) document from `https://{domain}/.well-known/ai-catalog.json`, which lists one or more Agent Cards as entries of type `application/a2a-agent-card+json`. This approach supports multiple agents and tenants under a single domain and is the recommended mechanism for public discovery. See the [Agent Discovery guide](./topics/agent-discovery.md) for examples. (See [Section 8.6](#86-caching) for caching guidance.)
 - **Registries/Catalogs:** Querying curated catalogs of agents
 - **Direct Configuration:** Pre-configured Agent Card URLs or content
 
@@ -3443,7 +3443,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 **Specification document:** Section 8.2 of the A2A Protocol Specification
 
 **Related information:**
-The `.well-known/agent-card.json` URI provides a standardized location for discovering an A2A agent's capabilities, supported protocols, authentication requirements, and available skills. The resource at this URI MUST return an AgentCard object as defined in Section 4.4.1 of the A2A specification.
+The `.well-known/agent-card.json` URI was a standardized single-agent discovery location. It has been superseded by `/.well-known/ai-catalog.json` (see [Section 8.2](#82-discovery-mechanisms) and [ai-catalog.io](https://ai-catalog.io/)), which supports multiple agents and tenants under a single domain. Implementations serving a single agent MAY continue to expose `agent-card.json` for backwards compatibility. The resource at this URI MUST return an AgentCard object as defined in Section 4.4.1 of the A2A specification.
 
 **Status:** Permanent
 

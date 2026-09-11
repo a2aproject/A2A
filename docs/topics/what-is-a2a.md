@@ -177,7 +177,7 @@ sequenceDiagram
 
     rect rgb(240, 240, 240)
     Note over Client, A2A Server: 1. Agent Discovery
-    Client->>A2A Server: GET agent card eg: (/.well-known/agent-card)
+    Client->>A2A Server: GET /.well-known/ai-catalog.json, then fetch Agent Card URL
     A2A Server-->>Client: Returns Agent Card
     end
 ```
