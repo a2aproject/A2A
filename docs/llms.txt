@@ -30,8 +30,8 @@ The repository contains:
 
 ## 2. Core Data Objects
 
-### 2.1 AgentCard (`/.well-known/agent-card.json`)
-Describes an agent's identity and capabilities.
+### 2.1 AgentCard
+Describes an agent's identity and capabilities. Agent Cards are discovered via `/.well-known/ai-catalog.json` (an [AI Catalog](https://ai-catalog.io/) document listing entries of type `application/a2a-agent-card+json`), a curated registry, or direct configuration.
 - `name`, `description`, `version`: Identity metadata.
 - `supported_interfaces`: List of `AgentInterface` (URL, protocol binding, tenant, protocol version).
 - `capabilities`: `streaming`, `push_notifications`, `extended_agent_card`, `extensions`.
