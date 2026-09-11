@@ -31,6 +31,7 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "ver-neg-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "version negotiation unsupported"
@@ -43,13 +44,16 @@ suites:
                     type: string
 
       - id: VER-NEG-002
-        name: "Missing A2A-Version is treated as default"
-        description: "Verifies that a JSON-RPC request without an A2A-Version header succeeds using the server's default version behavior."
+        name: "Missing A2A-Version is treated as 0.3"
+        description: >
+          An absent A2A-Version header means 0.3, never the version the interface
+          happens to serve. A 1.0 interface must therefore refuse the request rather
+          than process it as 1.0: either with VersionNotSupportedError, or, if it also
+          serves 0.3 at this URL, by not recognising a 1.0 method name.
         spec_ref: "docs/specification.md"
         level: should
         transport: [jsonrpc]
-        requires_behaviors:
-          - "tck-complete-task"
+        requires_behaviors: []
         steps:
           - id: send-without-version
             raw:
@@ -63,13 +67,13 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "ver-neg-002-msg"
                     role: ROLE_USER
                     parts:
-                      - text: "tck-complete-task version default"
+                      - text: "version default"
             expect:
               status: 200
               body:
-                result:
-                  task:
-                    id:
-                      type: string
+                error:
+                  code:
+                    one_of: [-32009, -32601]

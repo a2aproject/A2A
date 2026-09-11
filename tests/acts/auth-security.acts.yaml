@@ -15,11 +15,27 @@ suites:
         spec_ref: "REQ-ERR-002"
         level: must
         preconditions:
-          capabilities:
-            authentication: true
+          authentication: true
         tags: [auth, runner-special]
         transport: [jsonrpc]
         steps:
+          - id: send-with-auth
+            description: >
+              Positive control. The same operation on the same endpoint must
+              succeed when the runner presents its credential, so that the
+              rejection below is attributable to the absent credential rather
+              than to the server refusing the request for a reason of its own.
+              Only the status is asserted: what the agent replies with is the
+              subject of the CORE-SEND tests, not of this one.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "auth positive control"
+            expect:
+              status: 200
+
           - id: send-without-auth
             raw:
               method: POST
@@ -33,6 +49,7 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "sec-auth-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "auth should be required"
@@ -40,11 +57,8 @@ suites:
               status:
                 one_of: [200, 401, 403]
               body:
-                any_of:
-                  - error:
-                      exists: true
-                  - title:
-                      type: string
+                error:
+                  exists: true
 
       - id: SEC-AUTH-002
         name: "Server returns authorization error for insufficient permissions"
@@ -52,11 +66,25 @@ suites:
         spec_ref: "REQ-ERR-003"
         level: must
         preconditions:
-          capabilities:
-            authentication: true
+          authentication: true
         tags: [auth, runner-special]
         transport: [jsonrpc]
         steps:
+          - id: send-with-sufficient-auth
+            description: >
+              Positive control, distinguishing a server that authorizes on the
+              presented credential from one that refuses everything. The runner's
+              own credential must be accepted before the insufficient one below
+              can be said to have been rejected for insufficiency.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "auth positive control"
+            expect:
+              status: 200
+
           - id: send-insufficient-auth
             raw:
               method: POST
@@ -71,6 +99,7 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "sec-auth-002-msg"
                     role: ROLE_USER
                     parts:
                       - text: "authorization should fail"
@@ -78,11 +107,8 @@ suites:
               status:
                 one_of: [200, 403]
               body:
-                any_of:
-                  - error:
-                      exists: true
-                  - title:
-                      type: string
+                error:
+                  exists: true
 
       - id: SEC-AUTH-003
         name: "Server does not reveal unauthorized resource existence"
@@ -90,23 +116,32 @@ suites:
         spec_ref: "REQ-ERR-004"
         level: must
         preconditions:
-          capabilities:
-            authentication: true
+          authentication: true
         tags: [auth, security, runner-special]
         steps:
           - id: get-other-user-task
+            description: >
+              A task the client is not authorized to see must be reported as not
+              found, never as a permission failure: naming the error after the
+              authorization decision is itself the disclosure the requirement
+              forbids.
             operation: get_task
             params:
               id: "{{otherUserTaskId}}"
             expect_error:
+              error_type: TaskNotFoundError
               message:
                 type: string
 
           - id: get-missing-task
+            description: >
+              The same error for a task that genuinely does not exist, so the two
+              answers agree on the error the client is given.
             operation: get_task
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
+              error_type: TaskNotFoundError
               message:
                 type: string
 
@@ -116,11 +151,22 @@ suites:
         spec_ref: "REQ-SEC-004"
         level: must
         preconditions:
-          capabilities:
-            authentication: true
+          authentication: true
         tags: [auth, runner-special]
         transport: [jsonrpc]
         steps:
+          - id: get-task-with-auth
+            description: >
+              Positive control. Asking for the same absent task with a credential
+              must reach the resource layer and be answered `TaskNotFoundError`,
+              which is what separates "the credential was rejected" below from
+              "this endpoint refuses everything".
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              error_type: TaskNotFoundError
+
           - id: get-task-without-auth
             raw:
               method: POST
@@ -138,11 +184,8 @@ suites:
               status:
                 one_of: [200, 401, 403]
               body:
-                any_of:
-                  - error:
-                      exists: true
-                  - title:
-                      type: string
+                error:
+                  exists: true
 
       - id: SEC-AUTH-005
         name: "In-task auth transitions to AUTH_REQUIRED state"
@@ -199,16 +242,17 @@ suites:
               taskId: "task.id"
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create-task.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
-                authentication:
-                  scheme: "Bearer"
-                  credentials: "test-token"
+              url: "{{webhookUrl}}"
+              authentication:
+                scheme: "Bearer"
+                credentials: "test-token"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
@@ -243,16 +287,17 @@ suites:
               taskId: "task.id"
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create-task.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
-                authentication:
-                  scheme: "Bearer"
-                  credentials: "expected-token"
+              url: "{{webhookUrl}}"
+              authentication:
+                scheme: "Bearer"
+                credentials: "expected-token"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
@@ -279,11 +324,8 @@ suites:
               status:
                 one_of: [401, 403]
               body:
-                any_of:
-                  - title:
-                      type: string
-                  - error:
-                      exists: true
+                error:
+                  exists: true
 
       - id: SEC-EXTCARD-002
         name: "Extended Agent Card verifies permissions before returning"
@@ -308,11 +350,8 @@ suites:
               status:
                 one_of: [401, 403]
               body:
-                any_of:
-                  - title:
-                      type: string
-                  - error:
-                      exists: true
+                error:
+                  exists: true
 
       - id: SEC-EXTCARD-003
         name: "Missing extended-card support returns specified error"
@@ -325,11 +364,10 @@ suites:
         tags: [auth, discovery]
         steps:
           - id: get-extended-card
-            operation: get_agent_card
-            params:
-              extended: true
+            operation: get_extended_agent_card
+            params: {}
             expect_error:
-              code: UnsupportedOperationError
+              error_type: UnsupportedOperationError
 
       - id: SEC-EXTCARD-004
         name: "Extended cards enforce access controls"
@@ -353,11 +391,8 @@ suites:
               status:
                 one_of: [401, 403]
               body:
-                any_of:
-                  - title:
-                      type: string
-                  - error:
-                      exists: true
+                error:
+                  exists: true
 
       - id: SEC-AUTH-006
         name: "Server uses binding-specific auth challenge or rejection"
@@ -365,24 +400,31 @@ suites:
         spec_ref: "REQ-SEC-005"
         level: should
         preconditions:
-          capabilities:
-            authentication: true
+          authentication: true
         tags: [auth, runner-special]
         transport: [rest]
         steps:
-          - id: get-agent-card-without-auth
+          - id: get-task-with-auth
+            description: >
+              Positive control, as in SEC-AUTH-004: with a credential the same
+              path must reach the resource layer, so that the status asserted
+              below is a report about authentication and not about the route.
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              error_type: TaskNotFoundError
+
+          - id: get-task-without-auth
             raw:
               method: GET
-              path: "/.well-known/agent-card.json"
+              path: "/tasks/00000000-0000-0000-0000-000000000000"
               headers:
                 Accept: application/json
                 A2A-Version: "1.0"
             expect:
               status:
-                one_of: [200, 401, 403]
+                one_of: [401, 403]
               body:
-                any_of:
-                  - title:
-                      type: string
-                  - error:
-                      exists: true
+                error:
+                  exists: true

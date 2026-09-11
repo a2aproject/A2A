@@ -19,6 +19,9 @@ suites:
         level: must
         requires_behaviors:
           - tck-stream-basic
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message
@@ -42,6 +45,9 @@ suites:
         level: must
         requires_behaviors:
           - tck-stream-basic
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message
@@ -65,6 +71,9 @@ suites:
         level: should
         requires_behaviors:
           - tck-stream-chunked
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message
@@ -82,6 +91,9 @@ suites:
         level: should
         requires_behaviors:
           - tck-long-running
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: start
             operation: send_message
@@ -93,14 +105,16 @@ suites:
               configuration:
                 returnImmediately: true
             expect:
-              task:
-                id:
-                  type: string
-                status:
-                  state:
-                    one_of:
-                      - TASK_STATE_SUBMITTED
-                      - TASK_STATE_WORKING
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_SUBMITTED
+                        - TASK_STATE_WORKING
             capture:
               taskId: task.id
           - id: subscribe
@@ -123,6 +137,9 @@ suites:
         level: must
         requires_behaviors:
           - tck-stream-basic
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message
@@ -141,10 +158,13 @@ suites:
                       - TASK_STATE_CANCELED
 
       - id: STREAM-SUB-003
-        name: "Subscribe to terminal task returns error"
+        name: "Subscribe to terminal task returns UnsupportedOperationError"
         level: must
         requires_behaviors:
           - tck-complete-task
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: setup
             operation: send_message
@@ -154,31 +174,35 @@ suites:
                 parts:
                   - text: "tck-complete-task setup"
             expect:
-              task:
-                id:
-                  type: string
-                status:
-                  state:
-                    one_of:
-                      - TASK_STATE_COMPLETED
-                      - TASK_STATE_FAILED
-                      - TASK_STATE_CANCELED
-                      - TASK_STATE_REJECTED
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_COMPLETED
+                        - TASK_STATE_FAILED
+                        - TASK_STATE_CANCELED
+                        - TASK_STATE_REJECTED
             capture:
               taskId: task.id
           - id: subscribe
             operation: subscribe_to_task
             params:
               id: "{{setup.taskId}}"
-            expect:
-              error:
-                exists: true
+            expect_error:
+              error_type: UnsupportedOperationError
 
       - id: STREAM-SSE-004
         name: "First event on subscribe is current task state"
         level: must
         requires_behaviors:
           - tck-long-running
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: start
             operation: send_message
@@ -218,6 +242,9 @@ suites:
         level: should
         requires_behaviors:
           - tck-message-response
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message
@@ -239,6 +266,9 @@ suites:
         tags: [streaming, concurrent, runner-special]
         requires_behaviors:
           - tck-stream-basic
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message
@@ -257,6 +287,9 @@ suites:
         tags: [streaming, concurrent, runner-special]
         requires_behaviors:
           - tck-stream-basic
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message
@@ -275,6 +308,9 @@ suites:
         tags: [streaming, resubscribe, runner-special]
         requires_behaviors:
           - tck-long-running
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: start
             operation: send_message

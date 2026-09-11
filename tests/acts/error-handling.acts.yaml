@@ -19,12 +19,12 @@ suites:
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
-              code: TaskNotFoundError
+              error_type: TaskNotFoundError
               message:
                 type: string
 
       - id: CORE-ERR-002
-        name: "CancelTask on non-existent task returns error"
+        name: "CancelTask on non-existent task returns TaskNotFoundError"
         level: must
         tags: [error, cancel-task]
         steps:
@@ -33,8 +33,7 @@ suites:
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
-              code:
-                one_of: [TaskNotFoundError, TaskNotCancelableError]
+              error_type: TaskNotFoundError
 
       - id: CORE-ERR-003
         name: "CancelTask on completed task returns TaskNotCancelableError"
@@ -65,7 +64,7 @@ suites:
             params:
               id: "{{setup-completed-task.taskId}}"
             expect_error:
-              code: TaskNotCancelableError
+              error_type: TaskNotCancelableError
 
       - id: CORE-ERR-004
         name: "SendMessage to terminal task returns UnsupportedOperationError"
@@ -100,7 +99,7 @@ suites:
                 parts:
                   - text: "tck-complete-task second"
             expect_error:
-              code: UnsupportedOperationError
+              error_type: UnsupportedOperationError
 
       - id: JSONRPC-ERR-001
         name: "Unknown method returns MethodNotFoundError"
@@ -158,7 +157,7 @@ suites:
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
-              code: TaskNotFoundError
+              error_type: TaskNotFoundError
               message:
                 all_of:
                   - type: string
@@ -193,7 +192,7 @@ suites:
                     one_of: [-32600, -32602]
 
       - id: CORE-CAP-001
-        name: "Push not supported returns UnsupportedOperationError"
+        name: "Push not supported returns PushNotificationNotSupportedError"
         description: "Overlaps with PUSH-CFG-004 but verifies the capability error at the error-handling suite level."
         level: must
         preconditions:
@@ -217,16 +216,15 @@ suites:
             capture:
               taskId: "task.id"
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create-task.taskId}}"
-              pushNotificationConfig:
-                url: "https://example.com/webhooks/a2a-tests"
+              url: "https://example.com/webhooks/a2a-tests"
             expect_error:
-              code: UnsupportedOperationError
+              error_type: PushNotificationNotSupportedError
 
       - id: CORE-CAP-002
-        name: "Streaming not supported returns error"
+        name: "Streaming not supported returns UnsupportedOperationError"
         level: should
         preconditions:
           capabilities:
@@ -241,10 +239,10 @@ suites:
                 parts:
                   - text: "tck-complete-task streaming unsupported"
             expect_error:
-              code: UnsupportedOperationError
+              error_type: UnsupportedOperationError
 
       - id: CORE-ERR-007
-        name: "Error data contains structured error info"
+        name: "Error details contain structured error info"
         level: should
         steps:
           - id: get-missing-structured
@@ -252,9 +250,10 @@ suites:
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
-              code: TaskNotFoundError
-              data:
-                type: object
+              error_type: TaskNotFoundError
+              details:
+                type: array
+                count_gte: 1
 
       - id: CORE-ERR-008
         name: "Error details include @type field"
@@ -275,9 +274,10 @@ suites:
                 id: "core-err-008"
                 method: SendMessage
                 params:
-                  taskId: "00000000-0000-0000-0000-000000000000"
                   message:
+                    messageId: "core-err-008-msg"
                     role: ROLE_USER
+                    taskId: "00000000-0000-0000-0000-000000000000"
                     parts:
                       - text: "missing task should return error details"
             expect:
