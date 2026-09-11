@@ -102,17 +102,18 @@ suites:
                 any:
                   path: "task.artifacts[*].parts[*]"
                   match:
-                    file:
-                      name:
-                        type: string
-                      mediaType:
-                        type: string
+                    raw:
+                      type: string
+                    filename:
+                      type: string
+                    mediaType:
+                      type: string
 
       - id: DM-ART-004
         name: "File URL artifact"
         description: >
           Sends a request that should produce a file URL artifact and verifies
-          a returned artifact part includes fileUrl metadata.
+          a returned artifact part carries the file's url and media type.
         spec_ref: "specification.md#4.1.7"
         level: may
         requires_behaviors: ["tck-artifact-file-url"]
@@ -137,11 +138,10 @@ suites:
                 any:
                   path: "task.artifacts[*].parts[*]"
                   match:
-                    fileUrl:
-                      url:
-                        type: string
-                      name:
-                        type: string
+                    url:
+                      type: string
+                    mediaType:
+                      type: string
 
       - id: DM-SERIAL-001
         name: "Timestamps are ISO 8601 UTC"
@@ -162,7 +162,7 @@ suites:
                   status:
                     state: TASK_STATE_COMPLETED
                     timestamp:
-                      matches: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}"
+                      matches: "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$"
 
       - id: DM-SERIAL-002
         name: "Response validates against A2A schema"
@@ -207,6 +207,7 @@ suites:
                 method: "SendMessage"
                 params:
                   message:
+                    messageId: "dm-extra-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-complete-task extra field"

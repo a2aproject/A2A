@@ -102,10 +102,12 @@ suites:
                         - data:
                             key: value
                   history:
-                    - role: ROLE_USER
+                    - messageId: "msg-hist-1"
+                      role: ROLE_USER
                       parts:
                         - text: "original request"
-                    - role: ROLE_AGENT
+                    - messageId: "msg-hist-2"
+                      role: ROLE_AGENT
                       parts:
                         - text: "processing..."
             expect_parsed:
@@ -136,7 +138,11 @@ suites:
                   code: -32001
                   message: "Task not found"
                   data:
-                    taskId: "nonexistent-task-id"
+                    - "@type": "type.googleapis.com/google.rpc.ErrorInfo"
+                      reason: "TASK_NOT_FOUND"
+                      domain: "a2a-protocol.org"
+                      metadata:
+                        taskId: "nonexistent-task-id"
             expect_parsed:
               error:
                 code: -32001
@@ -210,16 +216,14 @@ suites:
                             unit: "fahrenheit"
                     - artifactId: "art-file"
                       parts:
-                        - file:
-                            name: "report.pdf"
-                            mediaType: "application/pdf"
-                            bytes: "JVBERi0xLjQ="
+                        - raw: "JVBERi0xLjQ="
+                          filename: "report.pdf"
+                          mediaType: "application/pdf"
                     - artifactId: "art-url"
                       parts:
-                        - fileUrl:
-                            url: "https://example.com/report.pdf"
-                            name: "report.pdf"
-                            mediaType: "application/pdf"
+                        - url: "https://example.com/report.pdf"
+                          filename: "report.pdf"
+                          mediaType: "application/pdf"
             expect_parsed:
               id: "task-mixed-001"
               artifacts:
@@ -237,13 +241,19 @@ suites:
               operation: get_agent_card
               wire_payload:
                 name: "Example Agent"
+                description: "An agent that publishes an extended card to authenticated clients."
                 version: "1.0.0"
                 capabilities:
                   streaming: false
                   extendedAgentCard: true
+                defaultInputModes: ["text/plain"]
+                defaultOutputModes: ["text/plain"]
+                skills:
+                  - id: "public-skill"
+                    name: "Public Skill"
                 supportedInterfaces:
-                  - url: "https://example.com/.well-known/agent-card.json"
-                    protocolBinding: REST
+                  - url: "https://example.com/a2a/v1"
+                    protocolBinding: HTTP+JSON
                     protocolVersion: "1.0"
             expect_parsed:
               capabilities:
@@ -254,16 +264,21 @@ suites:
               operation: get_extended_agent_card
               wire_payload:
                 name: "Example Agent"
+                description: "An agent that publishes an extended card to authenticated clients."
                 version: "1.0.0"
                 capabilities:
                   streaming: true
                   extendedAgentCard: true
+                defaultInputModes: ["text/plain"]
+                defaultOutputModes: ["text/plain"]
                 skills:
+                  - id: "public-skill"
+                    name: "Public Skill"
                   - id: "extended-skill"
                     name: "Extended Skill"
                 supportedInterfaces:
-                  - url: "https://example.com/extendedAgentCard"
-                    protocolBinding: REST
+                  - url: "https://example.com/a2a/v1"
+                    protocolBinding: HTTP+JSON
                     protocolVersion: "1.0"
             expect_parsed:
               capabilities:
@@ -284,13 +299,19 @@ suites:
               operation: get_agent_card
               wire_payload:
                 name: "Capability Gated Agent"
+                description: "An agent that advertises no optional capabilities."
                 version: "1.0.0"
                 capabilities:
                   streaming: false
                   pushNotifications: false
+                defaultInputModes: ["text/plain"]
+                defaultOutputModes: ["text/plain"]
+                skills:
+                  - id: "basic-skill"
+                    name: "Basic Skill"
                 supportedInterfaces:
-                  - url: "https://example.com/.well-known/agent-card.json"
-                    protocolBinding: REST
+                  - url: "https://example.com/a2a/v1"
+                    protocolBinding: HTTP+JSON
                     protocolVersion: "1.0"
             expect_parsed:
               capabilities:

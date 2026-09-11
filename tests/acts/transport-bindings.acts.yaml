@@ -29,6 +29,7 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "jsonrpc-env-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-complete-task verify jsonrpc envelope"
@@ -42,10 +43,11 @@ suites:
 
       - id: JSONRPC-CT-001
         name: "Response Content-Type is application/json"
-        description: "ACTS cannot reliably assert response headers in this raw format, so the test uses a valid JSON-RPC body as a proxy for the expected application/json response."
+        description: "Verifies the JSON-RPC binding answers with the application/json content type."
         level: must
         tags: [transport, jsonrpc, raw, content-type]
         transport: [jsonrpc]
+        runner_requirements: [header_inspection]
         requires_behaviors: ["tck-complete-task"]
         steps:
           - id: send-raw
@@ -61,11 +63,15 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "jsonrpc-ct-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-complete-task verify content type"
             expect:
               status: 200
+              headers:
+                Content-Type:
+                  starts_with: "application/json"
               body:
                 jsonrpc: "2.0"
                 id: "jsonrpc-ct-001"
@@ -78,6 +84,9 @@ suites:
         tags: [transport, jsonrpc, raw, sse, streaming]
         transport: [jsonrpc]
         requires_behaviors: ["tck-stream-basic"]
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream-raw
             raw:
@@ -93,6 +102,7 @@ suites:
                 method: SendStreamingMessage
                 params:
                   message:
+                    messageId: "jsonrpc-sse-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-stream-basic generate output"
@@ -123,9 +133,10 @@ suites:
               status: 404
 
       - id: REST-PD-001
-        name: "REST errors use problem details format"
+        name: "REST errors use the google.rpc.Status representation"
+        description: "Verifies that a REST error body is a google.rpc.Status object whose details array carries an ErrorInfo naming the A2A error type."
         level: should
-        tags: [transport, rest, raw, problem-details]
+        tags: [transport, rest, raw, error-format]
         transport: [rest]
         steps:
           - id: get-missing-problem
@@ -138,19 +149,31 @@ suites:
             expect:
               status: 404
               body:
-                type:
-                  type: string
-                title:
-                  type: string
-                status:
-                  type: number
+                error:
+                  code:
+                    type: number
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    count_gte: 1
+            assertions:
+              - source: "{{get-missing-problem.response}}"
+                any:
+                  path: "error.details[*]"
+                  match:
+                    "@type":
+                      contains: "ErrorInfo"
+                    reason: "TASK_NOT_FOUND"
+                    domain: "a2a-protocol.org"
 
       - id: REST-CT-001
         name: "REST responses use application/a2a+json content type"
-        description: "Runner SHOULD verify the Content-Type response header is application/a2a+json for REST responses."
+        description: "Verifies the Content-Type response header is application/a2a+json for REST responses."
         level: should
-        tags: [transport, content-type, runner-special]
+        tags: [transport, content-type]
         transport: [rest]
+        runner_requirements: [header_inspection]
         requires_behaviors: ["tck-complete-task"]
         steps:
           - id: send
@@ -162,6 +185,9 @@ suites:
                   - text: "tck-complete-task verify rest content type"
             expect:
               status: 200
+              headers:
+                Content-Type:
+                  starts_with: "application/a2a+json"
               body:
                 task:
                   id:
@@ -184,7 +210,7 @@ suites:
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
-              code: TaskNotFoundError
+              error_type: TaskNotFoundError
 
       - id: GRPC-STREAM-001
         name: "gRPC streaming delivers proper message structure"
@@ -192,6 +218,9 @@ suites:
         tags: [transport, grpc, streaming]
         transport: [grpc]
         requires_behaviors: ["tck-stream-basic"]
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message

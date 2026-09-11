@@ -41,13 +41,14 @@ suites:
                     type: string
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
@@ -84,21 +85,22 @@ suites:
                     type: string
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             capture:
               configId: "id"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
 
           - id: get-config
-            operation: get_push_notification_config
+            operation: get_push_config
             params:
               taskId: "{{create.taskId}}"
               id: "{{set-config.configId}}"
@@ -137,29 +139,32 @@ suites:
                     type: string
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             capture:
               configId: "id"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
 
           - id: delete-config
-            operation: delete_push_notification_config
+            operation: delete_push_config
             params:
               taskId: "{{create.taskId}}"
               id: "{{set-config.configId}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
 
       - id: PUSH-CFG-004
-        name: "Push config on unsupported server returns error"
+        name: "Push config on unsupported server returns PushNotificationNotSupportedError"
         description: >
           Creates a task on a server that does not advertise push notification
           support, then verifies setting a push notification configuration fails.
@@ -187,13 +192,12 @@ suites:
                     type: string
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             expect_error:
-              code: UnsupportedOperationError
+              error_type: PushNotificationNotSupportedError
 
       - id: PUSH-LIST-001
         name: "List push configs"
@@ -220,13 +224,14 @@ suites:
               taskId: "task.id"
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
@@ -234,7 +239,7 @@ suites:
               configId: "id"
 
           - id: list-configs
-            operation: list_push_notification_configs
+            operation: list_push_configs
             params:
               taskId: "{{create.taskId}}"
             expect:
@@ -269,12 +274,12 @@ suites:
               taskId: "task.id"
 
           - id: get-config
-            operation: get_push_notification_config
+            operation: get_push_config
             params:
               taskId: "{{create.taskId}}"
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
-              code: TaskNotFoundError
+              error_type: TaskNotFoundError
 
       - id: PUSH-IDEM-001
         name: "Delete push config is idempotent"
@@ -301,13 +306,14 @@ suites:
               taskId: "task.id"
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
@@ -315,20 +321,24 @@ suites:
               configId: "id"
 
           - id: delete-config
-            operation: delete_push_notification_config
+            operation: delete_push_config
             params:
               taskId: "{{create.taskId}}"
               id: "{{set-config.configId}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
 
           - id: delete-config-again
-            operation: delete_push_notification_config
+            operation: delete_push_config
             params:
               taskId: "{{create.taskId}}"
               id: "{{set-config.configId}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
 
       - id: PUSH-DELIV-001
         name: "Push delivery includes auth"
@@ -359,16 +369,17 @@ suites:
               taskId: "task.id"
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
-                authentication:
-                  scheme: "Bearer"
-                  credentials: "test-token"
+              url: "{{webhookUrl}}"
+              authentication:
+                scheme: "Bearer"
+                credentials: "test-token"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
@@ -402,13 +413,14 @@ suites:
               taskId: "task.id"
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string
@@ -442,13 +454,14 @@ suites:
               taskId: "task.id"
 
           - id: set-config
-            operation: set_push_notification_config
+            operation: create_push_config
             params:
               taskId: "{{create.taskId}}"
-              pushNotificationConfig:
-                url: "{{webhookUrl}}"
+              url: "{{webhookUrl}}"
             expect:
-              status: 200
+              status:
+                gte: 200
+                lt: 300
               body:
                 id:
                   type: string

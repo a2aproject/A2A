@@ -32,6 +32,7 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "wire-format-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-complete-task verify wire format"
@@ -42,22 +43,10 @@ suites:
                   task:
                     id:
                       type: string
-                context_id:
-                  absent: true
-                message_id:
-                  absent: true
-                task_id:
-                  absent: true
-                artifact_id:
-                  absent: true
-                status_update:
-                  absent: true
-                artifact_update:
-                  absent: true
-                protocol_version:
-                  absent: true
-                media_type:
-                  absent: true
+                    contextId:
+                      type: string
+                    context_id:
+                      absent: true
 
       - id: DM-FMT-002
         name: "Enum values use prefixed format"
@@ -98,8 +87,9 @@ suites:
       - id: DM-FMT-003
         name: "Default and empty values are omitted from wire"
         description: >
-          Verifies message responses omit default taskId and contextId fields,
-          or at minimum never serialize them as empty strings.
+          Verifies a message-only response omits taskId, which has no value when no
+          task was created, while still carrying the contextId that server messages
+          are required to provide.
         spec_ref: "specification.md#2.3"
         level: should
         requires_behaviors: ["tck-message-response"]
@@ -119,4 +109,4 @@ suites:
                   taskId:
                     absent: true
                   contextId:
-                    absent: true
+                    matches: ".+"
