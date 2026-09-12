@@ -172,6 +172,7 @@ collaborate effectively with each other and with users.
 - [Workday](https://www.workday.com)
 - [WritBase](https://github.com/Writbase/writbase)
 - [Writer](https://writer.com)
+- [x402-list](https://x402-list.com)
 - [Zenity](https://zenity.io)
 - [Zeotap](https://www.zeotap.com)
 - [Zocket Technologies , Inc.](https://zocket.ai)
