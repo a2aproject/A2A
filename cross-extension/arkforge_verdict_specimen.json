@@ -1,0 +1,56 @@
+{
+  "row": 8,
+  "urn": "urn:arkforge:verdict",
+  "matrix_type": "tier_transition",
+  "verification": "Ed25519",
+  "did": "did:web:trust.arkforge.tech#key-1",
+  "tier_mapping": {
+    "TRUSTED": {
+      "min_score": 0.75,
+      "claim_subtype": "TIER_UPGRADE",
+      "severity": "POSITIVE"
+    },
+    "NEUTRAL": {
+      "min_score": 0.5,
+      "claim_subtype": "TIER_UPGRADE",
+      "severity": "NEUTRAL"
+    },
+    "WATCH": {
+      "min_score": 0.25,
+      "claim_subtype": "TIER_DOWNGRADE",
+      "severity": "WARNING"
+    },
+    "QUARANTINE": {
+      "min_score": 0.0,
+      "claim_subtype": "TIER_DOWNGRADE",
+      "severity": "CRITICAL"
+    }
+  },
+  "constraint_dimensions": {
+    "RESOURCE_VIOLATION": {
+      "facet": "RESOURCE",
+      "limit": "QUOTA",
+      "actual": "CONSUMED",
+      "delta": "OVERRUN"
+    },
+    "PROTOCOL_CONFLICT": {
+      "facet": "PROTOCOL",
+      "limit": "SCHEMA",
+      "actual": "VIOLATION",
+      "delta": "MISMATCH"
+    },
+    "CROSS_AGENT_SIDE_EFFECT": {
+      "facet": "CASCADE",
+      "limit": "ISOLATION",
+      "actual": "PROPAGATION",
+      "delta": "IMPACT"
+    }
+  },
+  "ed25519_verification": {
+    "did": "did:web:trust.arkforge.tech#key-1",
+    "verified": true
+  },
+  "adapter_pipeline": "Protocol_Adapter (8734)",
+  "hps_source": "CAR (8716)",
+  "sha256_hex": "a3f2c8b91e0d5746219f7a3c5e8d1b0f4a6c9e2d7b5f8a1c3d6e9f0b2a4c7e5"
+}
