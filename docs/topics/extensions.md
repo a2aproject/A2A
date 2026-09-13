@@ -139,6 +139,61 @@ Agents shouldn't mark data-only extensions as required. If a client does not
 request activation of a required extension, or fails to follow its protocol,
 the agent should reject the incoming request with an appropriate error.
 
+## Payment Process Discovery
+
+Payment requirements are usually orthogonal to the core A2A task state machine,
+similar to authentication and authorization. Rather than adding payment-specific
+rules to the core protocol, an agent can advertise a payment process discovery
+extension. That extension describes how a client discovers the payment process;
+other extensions can then define the details for a specific payment protocol,
+rail, or authorization flow.
+
+A payment process discovery extension can define:
+
+- Which payment protocols or envelopes the agent supports, such as AP2, x402, or
+    invoice-based flows
+- Which transport-level response codes can indicate that a payment process is
+    needed, and any equivalent status or error mapping for non-HTTP bindings
+- Where the client reads the payment-process challenge, such as response
+    headers, extension-scoped task metadata, or a protocol-specific envelope
+- Where the client sends proof, authorization, or confirmation on retry
+- Whether the process happens before task creation, or after a task has already
+    entered an interrupted state such as `TASK_STATE_INPUT_REQUIRED` or
+    `TASK_STATE_AUTH_REQUIRED`
+- What receipt or settlement confirmation the agent returns after payment
+
+For example, an agent that supports x402 could declare the discovery extension
+in its Agent Card and point clients to the x402-specific challenge and retry
+fields through `params`:
+
+```json
+{
+  "uri": "https://example.com/extensions/payment-process-discovery/v1",
+  "description": "Advertises how clients discover this agent's payment process",
+  "required": false,
+  "params": {
+    "supportedPaymentProtocols": ["x402"],
+    "responseCodes": [402],
+    "challengeHeaders": ["PAYMENT-REQUIRED"],
+    "retryHeaders": ["PAYMENT-SIGNATURE"],
+    "receiptHeaders": ["PAYMENT-RESPONSE"]
+  }
+}
+```
+
+Clients that understand the extension can route payment challenges to a payment
+handler instead of treating them as generic input requests. Clients that do not
+understand the extension still receive the normal transport response, or, for a
+required extension, the appropriate extension-support error.
+
+Payment-specific extensions should document their own security requirements. At
+minimum, implementations should bind payment challenges to the requested
+resource or task, amount, currency or asset, recipient, and expiry; validate the
+returned payment proof or authorization before producing paid output or side
+effects; avoid leaking sensitive payment metadata; and expose any required
+challenge or receipt headers through CORS when browser clients are expected to
+participate.
+
 ## Extension Specification
 
 The detailed behavior and structure of an extension are defined by its
