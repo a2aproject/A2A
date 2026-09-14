@@ -238,7 +238,7 @@
   max-width: 16rem;
   height: 9.5rem;
   perspective: 900px;
-  cursor: default;
+  cursor: pointer;
   outline: none;
 }
 
@@ -270,21 +270,25 @@
 }
 
 .feature-flip-card:hover .feature-flip-card-inner,
-.feature-flip-card:focus-within .feature-flip-card-inner {
+.feature-flip-card:focus-visible .feature-flip-card-inner,
+.feature-flip-card.is-flipped .feature-flip-card-inner {
   transform: rotateY(180deg);
 }
 
-.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-inner {
+.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-inner,
+.feature-flip-card.is-unflipping .feature-flip-card-inner {
   transform: none;
 }
 
 .feature-flip-card:hover .feature-flip-hint,
-.feature-flip-card:focus-within .feature-flip-hint {
+.feature-flip-card:focus-visible .feature-flip-hint,
+.feature-flip-card.is-flipped .feature-flip-hint {
   opacity: 0;
   pointer-events: none;
 }
 
-.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-hint {
+.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-hint,
+.feature-flip-card.is-unflipping .feature-flip-hint {
   opacity: 1;
   pointer-events: auto;
 }
@@ -450,7 +454,8 @@
   }
 
   .feature-flip-card:hover .feature-flip-card-inner,
-  .feature-flip-card:focus-within .feature-flip-card-inner {
+  .feature-flip-card:focus-visible .feature-flip-card-inner,
+  .feature-flip-card.is-flipped .feature-flip-card-inner {
     transform: none;
   }
 
@@ -465,20 +470,24 @@
   }
 
   .feature-flip-card:hover .feature-flip-card-front,
-  .feature-flip-card:focus-within .feature-flip-card-front {
+  .feature-flip-card:focus-visible .feature-flip-card-front,
+  .feature-flip-card.is-flipped .feature-flip-card-front {
     opacity: 0;
   }
 
   .feature-flip-card:hover .feature-flip-card-back,
-  .feature-flip-card:focus-within .feature-flip-card-back {
+  .feature-flip-card:focus-visible .feature-flip-card-back,
+  .feature-flip-card.is-flipped .feature-flip-card-back {
     opacity: 1;
   }
 
-  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-front {
+  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-front,
+  .feature-flip-card.is-unflipping .feature-flip-card-front {
     opacity: 1;
   }
 
-  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-back {
+  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-back,
+  .feature-flip-card.is-unflipping .feature-flip-card-back {
     opacity: 0;
   }
 
