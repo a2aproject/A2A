@@ -10,6 +10,13 @@ hide:
   <div class="centered-logo-text-group">
     <h1><img src="assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="500"></h1>
   </div>
+  <p class="aaif-affiliation">
+    Part of the
+    <a href="https://aaif.io/" aria-label="Agentic AI Foundation">
+      <img class="aaif-logo aaif-logo-light" src="assets/aaif/AAIF_Primary_Logo_Black.svg" alt="" height="40" aria-hidden="true">
+      <img class="aaif-logo aaif-logo-dark" src="assets/aaif/AAIF_Primary_Logo_White.svg" alt="" height="40" aria-hidden="true">
+    </a>
+  </p>
 
   <div class="hero-tagline-carousel" data-interval="6000">
     <div class="hero-tagline-slides" aria-live="polite">
