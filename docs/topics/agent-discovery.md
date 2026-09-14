@@ -18,25 +18,103 @@ Client agents use the Agent Card to determine an agent's suitability, structure 
 
 The following sections detail common strategies used by client agents to discover remote Agent Cards:
 
-### 1. Well-Known URI
+### 1. AI Catalog Discovery (`/.well-known/ai-catalog.json`)
 
-This approach is recommended for public agents or agents intended for broad discovery within a specific domain.
+This approach is recommended for public agents or agents intended for broad discovery within a specific domain. It supports both single-agent deployments and multi-agent or multi-tenant scenarios where multiple agents share a domain — a scenario that a single fixed URI cannot accommodate.
 
-- **Mechanism:** A2A Servers make their Agent Card discoverable by hosting it at a standardized, `well-known` URI on their domain. The standard path is `https://{agent-server-domain}/.well-known/agent-card.json`, following the principles of [RFC 8615](https://datatracker.ietf.org/doc/html/rfc8615).
+- **Mechanism:** Hosts publish an [AI Catalog](https://ai-catalog.io/) document listing one or more Agent Cards as entries. Each entry either references the Agent Card via a `url` field or embeds it inline via a `data` field. Clients fetch the catalog first, then retrieve any referenced Agent Cards as needed. The conventional unauthenticated location is `/.well-known/ai-catalog.json` (following [RFC 8615](https://datatracker.ietf.org/doc/html/rfc8615)), but the catalog can be served from any URL — for example, an authenticated endpoint that returns only the agents a specific caller is permitted to see.
 
 - **Process:**
-    1. A client agent knows or programmatically discovers the domain of a potential A2A Server (e.g., `smart-thermostat.example.com`).
-    2. The client performs an HTTP GET request to `https://smart-thermostat.example.com/.well-known/agent-card.json`.
-    3. If the Agent Card exists and is accessible, the server returns it as a JSON response.
+    1. A client knows or discovers the catalog URL — either by convention (`https://{domain}/.well-known/ai-catalog.json`) or via out-of-band configuration (documentation, a registry, or an authenticated endpoint).
+    2. The client performs an HTTP GET to that catalog URL, supplying credentials if the endpoint requires them.
+    3. The catalog returns an array of entries. The client selects the relevant entry (or entries). If the entry has a `url`, the client fetches the Agent Card from that URL. If the entry has a `data` field, the Agent Card is already present inline — no further fetch needed.
+
+- **Example catalog (single agent, referenced by URL):**
+
+    ```json
+    {
+      "specVersion": "1.0",
+      "host": {
+        "displayName": "Example Corp",
+        "identifier": "did:web:agents.example.com"
+      },
+      "entries": [
+        {
+          "identifier": "urn:air:agents.example.com:a2a:assistant",
+          "type": "application/a2a-agent-card+json",
+          "url": "https://agents.example.com/assistant/agent-card.json"
+        }
+      ]
+    }
+    ```
+
+- **Example catalog (single agent, embedded inline):**
+
+    Each entry uses either `url` or `data` — not both. Use `data` to embed the Agent Card directly in the catalog, avoiding a second HTTP fetch. This is convenient when you have a single agent and do not want to host the Agent Card at a separate URL.
+
+    ```json
+    {
+      "specVersion": "1.0",
+      "host": {
+        "displayName": "Example Corp",
+        "identifier": "did:web:agents.example.com"
+      },
+      "entries": [
+        {
+          "identifier": "urn:air:agents.example.com:a2a:assistant",
+          "type": "application/a2a-agent-card+json",
+          "data": {
+            "name": "Assistant Agent",
+            "description": "General purpose assistant.",
+            "version": "1.0.0",
+            "url": "https://agents.example.com/assistant",
+            "supportedInterfaces": [
+              {
+                "url": "https://agents.example.com/assistant",
+                "protocolBinding": "JSONRPC",
+                "protocolVersion": "1.0"
+              }
+            ],
+            "skills": []
+          }
+        }
+      ]
+    }
+    ```
+
+- **Example catalog (multiple agents or tenants):**
+
+    ```json
+    {
+      "specVersion": "1.0",
+      "host": {
+        "displayName": "Example Corp",
+        "identifier": "did:web:agents.example.com"
+      },
+      "entries": [
+        {
+          "identifier": "urn:air:agents.example.com:a2a:assistant",
+          "type": "application/a2a-agent-card+json",
+          "url": "https://agents.example.com/assistant/agent-card.json"
+        },
+        {
+          "identifier": "urn:air:agents.example.com:a2a:analytics",
+          "type": "application/a2a-agent-card+json",
+          "url": "https://agents.example.com/analytics/agent-card.json"
+        }
+      ]
+    }
+    ```
 
 - **Advantages:**
-    - Ease of implementation
-    - Adheres to standards
-    - Facilitates automated discovery
+    - Supports multiple agents and tenants under a single domain.
+    - Interoperable with other AI artifact types (e.g., MCP servers, nested catalogs).
+    - Adheres to the open [AI Catalog](https://ai-catalog.io/) standard.
+    - Facilitates automated discovery.
 
 - **Considerations:**
-    - Best suited for open or domain-controlled discovery scenarios.
-    - Authentication is necessary at the endpoint serving the Agent Card if it contains sensitive details.
+    - Agent Card URLs in the catalog can be any path; hosts choose the layout.
+    - Authentication should be applied to individual Agent Card endpoints for cards containing sensitive information.
 
 ### 2. Curated Registries (Catalog-Based Discovery)
 
@@ -82,7 +160,7 @@ Agent Cards include sensitive information, such as:
 To mitigate risks, the following protection mechanisms should be considered:
 
 - **Authenticated Agent Cards:** We recommend the use of [authenticated extended agent cards](../specification.md#3111-get-extended-agent-card) for sensitive information or for serving a more detailed version of the card.
-- **Secure Endpoints:** Implement access controls on the HTTP endpoint serving the Agent Card (e.g., `/.well-known/agent-card.json` or registry API). The methods include:
+- **Secure Endpoints:** Implement access controls on the HTTP endpoint serving the Agent Card (e.g., the URL listed in the AI Catalog entry, or a registry API). The methods include:
     - Mutual TLS (mTLS)
     - Network restrictions (e.g., IP ranges)
     - HTTP Authentication (e.g., OAuth 2.0)
