@@ -10,6 +10,10 @@ timeout = 30
 # Accept these HTTP status codes as valid
 accept = [200, 201, 204, 301, 302, 307, 308, 403, 429, 503]
 
+# MkDocs pretty URLs omit .md (e.g. ./partners/ → docs/partners.md).
+# These raw HTML hrefs are not rewritten by the Markdown renderer.
+fallback_extensions = ["md", "html"]
+
 # Exclude URL patterns (regex)
 exclude = [
     # Local development URLs
