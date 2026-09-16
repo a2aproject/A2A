@@ -18,9 +18,30 @@ Client agents use the Agent Card to determine an agent's suitability, structure 
 
 The following sections detail common strategies used by client agents to discover remote Agent Cards:
 
-### 1. AI Catalog Discovery (`/.well-known/ai-catalog.json`)
+### 1. Well-Known URI (`/.well-known/agent-card.json`)
 
-This approach is recommended for public agents or agents intended for broad discovery within a specific domain. It supports both single-agent deployments and multi-agent or multi-tenant scenarios where multiple agents share a domain — a scenario that a single fixed URI cannot accommodate.
+A simple option for single-agent deployments. The Agent Card is served at a fixed path on the domain, following [RFC 8615](https://datatracker.ietf.org/doc/html/rfc8615).
+
+- **Mechanism:** The A2A Server hosts its Agent Card at `https://{agent-server-domain}/.well-known/agent-card.json`. A client that knows the domain can retrieve it with a single HTTP GET.
+
+- **Process:**
+    1. A client knows the domain of the A2A Server (e.g., `smart-thermostat.example.com`).
+    2. The client performs an HTTP GET to `https://smart-thermostat.example.com/.well-known/agent-card.json`.
+    3. If accessible, the server returns the Agent Card as a JSON response.
+
+- **Advantages:**
+    - Minimal setup — one static file or route.
+    - Adheres to well-known URI standards.
+
+- **Limitations:**
+    - **One Agent Card per domain.** A domain can only advertise a single agent via this path. It does not work for multi-agent or multi-tenant deployments where multiple agents share a domain.
+    - Not suitable when different clients should see different sets of agents.
+
+    For deployments with more than one agent, or where per-client visibility is needed, use [AI Catalog discovery](#2-ai-catalog-discovery-well-knownaicatalogjson-preferred) instead.
+
+### 2. AI Catalog Discovery (`/.well-known/ai-catalog.json`) — Preferred
+
+This is the recommended approach for public agents. It supports single-agent deployments, multi-agent hosts, multi-tenant scenarios, and authenticated per-client catalogs — use cases where a single fixed URI is insufficient.
 
 - **Mechanism:** Hosts publish an [AI Catalog](https://ai-catalog.io/) document listing one or more Agent Cards as entries. Each entry either references the Agent Card via a `url` field or embeds it inline via a `data` field. Clients fetch the catalog first, then retrieve any referenced Agent Cards as needed. The conventional unauthenticated location is `/.well-known/ai-catalog.json` (following [RFC 8615](https://datatracker.ietf.org/doc/html/rfc8615)), but the catalog can be served from any URL — for example, an authenticated endpoint that returns only the agents a specific caller is permitted to see.
 
@@ -116,7 +137,7 @@ This approach is recommended for public agents or agents intended for broad disc
     - Agent Card URLs in the catalog can be any path; hosts choose the layout.
     - Authentication should be applied to individual Agent Card endpoints for cards containing sensitive information.
 
-### 2. Curated Registries (Catalog-Based Discovery)
+### 4. Curated Registries (Catalog-Based Discovery)
 
 This approach is employed in enterprise environments or public marketplaces, where Agent Cards are often managed by a central registry. The curated registry acts as a central repository, allowing clients to query and discover agents based on criteria like "skills" or "tags".
 
@@ -136,7 +157,7 @@ This approach is employed in enterprise environments or public marketplaces, whe
     - Requires deployment and maintenance of a registry service.
     - The current A2A specification does not prescribe a standard API for curated registries.
 
-### 3. Direct Configuration / Private Discovery
+### 5. Direct Configuration / Private Discovery
 
 This approach is used for tightly coupled systems, private agents, or development purposes, where clients are directly configured with Agent Card information or URLs.
 
