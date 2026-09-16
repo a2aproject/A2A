@@ -48,6 +48,7 @@ pip install a2a-sdk
 
 <div class="feature-flip-cards" markdown="0">
   <div class="feature-flip-card" tabindex="0">
+    <span class="feature-flip-tooltip" data-tooltip="Hover, click, or focus to see details" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg></span>
     <span class="feature-flip-hint" data-tooltip="Hover or focus to see details" aria-hidden="true"></span>
     <div class="feature-flip-card-inner">
       <div class="feature-flip-card-front">
@@ -60,6 +61,7 @@ pip install a2a-sdk
     </div>
   </div>
   <div class="feature-flip-card" tabindex="0">
+    <span class="feature-flip-tooltip" data-tooltip="Hover, click, or focus to see details" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg></span>
     <span class="feature-flip-hint" data-tooltip="Hover or focus to see details" aria-hidden="true"></span>
     <div class="feature-flip-card-inner">
       <div class="feature-flip-card-front">
@@ -72,6 +74,7 @@ pip install a2a-sdk
     </div>
   </div>
   <div class="feature-flip-card" tabindex="0">
+    <span class="feature-flip-tooltip" data-tooltip="Hover, click, or focus to see details" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg></span>
     <span class="feature-flip-hint" data-tooltip="Hover or focus to see details" aria-hidden="true"></span>
     <div class="feature-flip-card-inner">
       <div class="feature-flip-card-front">
@@ -84,6 +87,7 @@ pip install a2a-sdk
     </div>
   </div>
   <div class="feature-flip-card" tabindex="0">
+    <span class="feature-flip-tooltip" data-tooltip="Hover, click, or focus to see details" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg></span>
     <span class="feature-flip-hint" data-tooltip="Hover or focus to see details" aria-hidden="true"></span>
     <div class="feature-flip-card-inner">
       <div class="feature-flip-card-front">

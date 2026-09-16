@@ -37,7 +37,7 @@ function initFeatureFlipCards() {
     const isInteractiveTarget = (target) =>
       Boolean(
         target instanceof Element &&
-          target.closest("a, .feature-flip-hint"),
+          target.closest("a, .feature-flip-hint, .feature-flip-tooltip"),
       );
 
     card.addEventListener("click", (event) => {

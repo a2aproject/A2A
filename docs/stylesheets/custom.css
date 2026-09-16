@@ -241,6 +241,53 @@
   transition: transform 0.45s ease;
 }
 
+.feature-flip-tooltip {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.45rem;
+  z-index: 2;
+  display: inline-flex;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--md-default-fg-color--light);
+  cursor: help;
+  transition: opacity 0.2s ease;
+}
+
+.feature-flip-tooltip svg {
+  width: 100%;
+  height: 100%;
+  fill: currentcolor;
+}
+
+.feature-flip-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  z-index: 3;
+  width: max-content;
+  max-width: 9.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  background: var(--md-default-fg-color);
+  color: var(--md-default-bg-color);
+  font-size: 0.65rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-2px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.feature-flip-tooltip:hover::after {
+  opacity: 1;
+  transform: none;
+}
+
 .feature-flip-hint {
   position: absolute;
   right: 0;
@@ -266,19 +313,25 @@
 }
 
 .feature-flip-card.is-unflipping .feature-flip-card-inner,
-.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-inner {
+.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-inner,
+.feature-flip-card:has(.feature-flip-tooltip:hover) .feature-flip-card-inner {
   transform: none;
 }
 
 .feature-flip-card:hover .feature-flip-hint,
+.feature-flip-card:hover .feature-flip-tooltip,
 .feature-flip-card:focus-visible .feature-flip-hint,
-.feature-flip-card.is-flipped .feature-flip-hint {
+.feature-flip-card:focus-visible .feature-flip-tooltip,
+.feature-flip-card.is-flipped .feature-flip-hint,
+.feature-flip-card.is-flipped .feature-flip-tooltip {
   opacity: 0;
   pointer-events: none;
 }
 
 .feature-flip-card.is-unflipping .feature-flip-hint,
-.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-hint {
+.feature-flip-card.is-unflipping .feature-flip-tooltip,
+.feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-hint,
+.feature-flip-card:has(.feature-flip-tooltip:hover) .feature-flip-tooltip {
   opacity: 1;
   pointer-events: auto;
 }
@@ -464,17 +517,21 @@
   }
 
   .feature-flip-card.is-unflipping .feature-flip-card-front,
-  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-front {
+  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-front,
+  .feature-flip-card:has(.feature-flip-tooltip:hover) .feature-flip-card-front {
     opacity: 1;
   }
 
   .feature-flip-card.is-unflipping .feature-flip-card-back,
-  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-back {
+  .feature-flip-card:has(.feature-flip-hint:hover) .feature-flip-card-back,
+  .feature-flip-card:has(.feature-flip-tooltip:hover) .feature-flip-card-back {
     opacity: 0;
   }
 
   .feature-flip-hint,
-  .feature-flip-hint::after {
+  .feature-flip-hint::after,
+  .feature-flip-tooltip,
+  .feature-flip-tooltip::after {
     transition: none;
   }
 }
