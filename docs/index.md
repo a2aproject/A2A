@@ -180,20 +180,6 @@ flowchart LR
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
 
-- :material-download:{ .lg .middle } **Official SDKs**
-
-    [:fontawesome-brands-python: Python](https://github.com/a2aproject/a2a-python)
-
-    [:fontawesome-brands-js: JavaScript](https://github.com/a2aproject/a2a-js)
-
-    [:fontawesome-brands-java: Java](https://github.com/a2aproject/a2a-java)
-
-    [:material-language-csharp: C#/.NET](https://github.com/a2aproject/a2a-dotnet)
-
-    [:fontawesome-brands-golang: Golang](https://github.com/a2aproject/a2a-go)
-
-    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rs)
-
 - :material-play-circle:{ .lg .middle } **Video** — Intro in under 8 min
 
     <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
