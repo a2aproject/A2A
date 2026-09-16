@@ -2503,49 +2503,44 @@
 
 
 <h1 id="life-of-a-task">Life of a Task<a class="headerlink" href="#life-of-a-task" title="Permanent link">&para;</a></h1>
-<p>In the Agent2Agent (A2A) Protocol, interactions can range from simple, stateless
-exchanges to complex, long-running processes. When an agent receives a message
-from a client, it can respond in one of two fundamental ways:</p>
+<p>In the Agent2Agent (A2A) Protocol, interactions vary widely. They range from
+simple, stateless exchanges to complex, long-running processes. When an agent
+receives a message from a client, it can respond in one of two ways:</p>
 <ul>
-<li><strong>Respond with a Stateless <code>Message</code></strong>: This type of response is
-    typically used for immediate, self-contained interactions that conclude
-    without requiring further state management.</li>
-<li><strong>Initiate a Stateful <code>Task</code></strong>: If the response is a <code>Task</code>, the agent will
-    process it through a defined lifecycle, communicating progress and requiring
-    input as needed, until it reaches an interrupted state (e.g.,
-    <code>input-required</code>, <code>auth-required</code>) or a terminal state (e.g., <code>completed</code>,
-    <code>canceled</code>, <code>rejected</code>, <code>failed</code>).</li>
+<li><strong>Respond with a Stateless <code>Message</code></strong>: Use this for immediate, self-contained
+    interactions. They finish without any further state to manage.</li>
+<li><strong>Initiate a Stateful <code>Task</code></strong>: The agent runs a <code>Task</code> through a defined
+    lifecycle. It reports progress and asks for input as needed, until it
+    reaches an interrupted state (such as <code>input-required</code> or <code>auth-required</code>) or
+    a terminal state (such as <code>completed</code>, <code>canceled</code>, <code>rejected</code>, or <code>failed</code>).</li>
 </ul>
 <h2 id="group-related-interactions">Group Related Interactions<a class="headerlink" href="#group-related-interactions" title="Permanent link">&para;</a></h2>
-<p>A <code>contextId</code> is a crucial identifier that logically groups multiple <code>Task</code>
-objects and independent <code>Message</code> objects, providing continuity across a series of
+<p>A <code>contextId</code> is a key identifier. It groups multiple <code>Task</code> objects and
+independent <code>Message</code> objects. This gives continuity across a series of
 interactions.</p>
 <ul>
 <li>When a client sends a message for the first time, the agent responds
     with a new <code>contextId</code>. If a task is initiated, it will also have a <code>taskId</code>.</li>
-<li>Clients can send subsequent messages and include the same <code>contextId</code> to
-    indicate that they are continuing their previous interaction within the same
-    context.</li>
+<li>To continue a previous interaction, clients send later messages with the same
+    <code>contextId</code>.</li>
 <li>Clients optionally attach the <code>taskId</code> to a subsequent message to
     indicate that it continues that specific task.</li>
 </ul>
-<p>The <code>contextId</code> enables collaboration towards a common goal or a shared
-contextual session across multiple, potentially concurrent tasks. Internally, an
-A2A agent (especially one using an LLM) uses the <code>contextId</code> to manage its internal
-conversational state or its LLM context.</p>
+<p>The <code>contextId</code> enables collaboration toward a common goal, or a shared session
+across several tasks that may run at once. Internally, an A2A agent (especially
+one using an LLM) uses the <code>contextId</code> to manage its conversational state or its
+LLM context.</p>
 <h2 id="agent-response-message-or-task">Agent Response: Message or Task<a class="headerlink" href="#agent-response-message-or-task" title="Permanent link">&para;</a></h2>
 <p>The choice between responding with a <code>Message</code> or a <code>Task</code> depends on the
 nature of the interaction and the agent's capabilities:</p>
 <ul>
-<li><strong>Messages for Trivial Interactions</strong>: <code>Message</code> objects are suitable for
-    transactional interactions that don't require long-running
-    processing or complex state management. An agent might use messages to
-    negotiate the acceptance or scope of a task before committing to a <code>Task</code>
-    object.</li>
-<li><strong>Tasks for Stateful Interactions</strong>: Once an agent maps the intent of an
-    incoming message to a supported capability that requires substantial,
-    trackable work over an extended period, the agent responds with a <code>Task</code>
-    object.</li>
+<li><strong>Messages for Trivial Interactions</strong>: Use <code>Message</code> objects for transactional
+    interactions. These need no long-running processing or complex state. An agent
+    might use messages to agree on the scope of a task before it commits to a
+    <code>Task</code> object.</li>
+<li><strong>Tasks for Stateful Interactions</strong>: An agent maps an incoming message to a
+    supported capability. When that capability needs substantial, trackable work
+    over a longer period, the agent responds with a <code>Task</code> object.</li>
 </ul>
 <p>Conceptually, agents operate at different levels of complexity:</p>
 <ul>
@@ -2553,12 +2548,11 @@ nature of the interaction and the agent's capabilities:</p>
     typically don't manage complex state or long-running executions, and use
     <code>contextId</code> to tie messages together. These agents might directly wrap LLM
     invocations and simple tools.</li>
-<li><strong>Task-generating Agents</strong>: Always respond with <code>Task</code> objects, even for
-    responses, which are then modeled as completed tasks. Once a task is
-    created, the agent will only return <code>Task</code> objects in response to messages
-    sent, and once a task is complete, no more messages can be sent. This
-    approach avoids deciding between <code>Task</code> versus <code>Message</code>, but creates completed task objects
-    for even simple interactions.</li>
+<li><strong>Task-generating Agents</strong>: Always respond with <code>Task</code> objects. Even plain
+    responses are modeled as completed tasks. Once a task is created, the agent
+    returns only <code>Task</code> objects; once a task is complete, no more messages can be
+    sent. This avoids the <code>Task</code>-versus-<code>Message</code> decision, but it creates
+    completed task objects even for simple interactions.</li>
 <li>
 <p><strong>Hybrid Agents</strong>: Generate both <code>Message</code> and <code>Task</code> objects. These agents
     use messages to negotiate agent capability and the scope of work, then send a
@@ -2585,9 +2579,9 @@ it cannot restart. Any subsequent interaction related to that task, such as a
 refinement, must initiate a new task within the same <code>contextId</code>. This principle
 offers several benefits:</p>
 <ul>
-<li><strong>Task Immutability.</strong> Clients reliably reference tasks and their
-    associated state, artifacts, and messages, providing a clean mapping of
-    inputs to outputs. This is valuable for orchestration and traceability.</li>
+<li><strong>Task Immutability.</strong> Clients reliably reference a task and its state,
+    artifacts, and messages. This gives a clean mapping of inputs to outputs,
+    which helps orchestration and traceability.</li>
 <li><strong>Clear Unit of Work.</strong> Every new request, refinement, or follow-up becomes
     a distinct task. This simplifies bookkeeping, allows for granular tracking
     of an agent's work, and enables tracing each artifact to a specific unit of
@@ -2609,16 +2603,16 @@ prerequisite task is complete.</p>
 </ul>
 <h2 id="referencing-previous-artifacts">Referencing Previous Artifacts<a class="headerlink" href="#referencing-previous-artifacts" title="Permanent link">&para;</a></h2>
 <p>The serving agent infers the relevant artifact from a referenced task or from the
-<code>contextId</code>. As the domain expert, the serving agent is best suited to resolve
-ambiguity or identify missing information. If there is ambiguity, the agent asks
-the client for clarification by returning an <code>input-required</code> state. The client
-then specifies the artifact in its response, optionally populating artifact
-references (<code>artifactId</code>, <code>taskId</code>) in <code>Part</code> metadata.</p>
+<code>contextId</code>. As the domain expert, it is best placed to resolve ambiguity or spot
+missing information. When something is ambiguous, the agent returns an
+<code>input-required</code> state to ask the client for clarification. The client then names
+the artifact in its response, and can add artifact references (<code>artifactId</code>,
+<code>taskId</code>) in <code>Part</code> metadata.</p>
 <h2 id="tracking-artifact-mutation">Tracking Artifact Mutation<a class="headerlink" href="#tracking-artifact-mutation" title="Permanent link">&para;</a></h2>
-<p>Follow-up or refinement tasks often lead to the creation of new artifacts based on older ones. Tracking these mutations is important to ensure that only the most recent version of an artifact is used in subsequent interactions. This could be conceptualized as a version history, where each new artifact is linked to its predecessor.</p>
-<p>However, the client is in the best position to manage this artifact linkage. The client determines what constitutes an acceptable result and has the ability to accept or reject new versions. Therefore, the serving agent shouldn't be responsible for tracking artifact mutations, and this linkage is not part of the A2A protocol specification. Clients should maintain this version history on their end and present the latest acceptable version to the user.</p>
-<p>To facilitate client-side tracking, serving agents should use a consistent <code>artifact-name</code> when generating a refined version of an existing artifact.</p>
-<p>When initiating follow-up or refinement tasks, the client should explicitly reference the specific artifact they intend to refine, ideally the "latest" version from their perspective. If the artifact reference is not provided, the serving agent can:</p>
+<p>Follow-up or refinement tasks often create new artifacts based on older ones. Track these mutations so that later interactions use only the most recent version. Think of it as a version history, where each new artifact links to the one before it.</p>
+<p>The client is best placed to manage this artifact linkage. The client decides what counts as an acceptable result and can accept or reject new versions. So the serving agent shouldn't track artifact mutations, and this linkage is not part of the A2A protocol specification. Clients should keep the version history on their end and show the user the latest acceptable version.</p>
+<p>To help client-side tracking, serving agents should reuse a consistent <code>artifact-name</code> when they generate a refined version of an existing artifact.</p>
+<p>For follow-up or refinement tasks, the client should name the exact artifact it wants to refine — ideally the "latest" version from its perspective. If the client provides no artifact reference, the serving agent can:</p>
 <ul>
 <li>Attempt to infer the intended artifact based on the current <code>contextId</code>.</li>
 <li>If there is ambiguity or insufficient context, the agent should respond with an <code>input-required</code> task state to request clarification from the client.</li>
@@ -2705,7 +2699,7 @@ references (<code>artifactId</code>, <code>taskId</code>) in <code>Part</code> m
 <li>
 <p>Agent responds with a new image artifact (new task, same context, same
     artifact name): The agent creates a new task within the same <code>contextId</code>. The
-    new boat image artifact retains the same name but has a new <code>artifactId</code>.</p>
+    new boat image artifact keeps the same name but has a new <code>artifactId</code>.</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"req-002"</span><span class="p">,</span>
