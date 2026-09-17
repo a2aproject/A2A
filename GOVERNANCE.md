@@ -77,7 +77,7 @@ Our [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx
 
 ## Project Communications
 
-The A2A project utilizes Discord for chat conversations about the project. All are welcome and encouraged to join the [A2A Discord](http://discord.gg/a2aprotocol). Discussion is encouraged however we do remind the community that chat is ephemeral, and not all members of the project are active in chat at the same time.
+The A2A project utilizes Discord for chat conversations about the project. All are welcome and encouraged to join the [A2A Discord](https://discord.gg/a2aprotocol). Discussion is encouraged however we do remind the community that chat is ephemeral, and not all members of the project are active in chat at the same time.
 
 Therefore, any discussions about feature proposals, significant changes to the project architecture or governance, etc. should be held in GitHub with adequate notice and time for comment. Look for specifics on that timing coming soon as the TSC ramps up. Just keep in mind - our goal is that GitHub is the source of truth for significant project decisions.
 

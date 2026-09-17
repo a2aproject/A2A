@@ -2,7 +2,7 @@
 
 Now that we have an Agent Card and an Agent Executor, we can set up and start the A2A server.
 
-To set up an A2A server, the Python SDK provides a route factory and helper functions (`create_agent_card_routes`, `create_jsonrpc_routes`, `create_rest_routes`). Use the route factory to create routes for the A2A server's services. These routes can be attached natively to popular frameworks like [Starlette](https://www.starlette.io/) and [FastAPI](https://fastapi.tiangolo.com/), which give you better control over authentication, logging, and other features.
+To set up an A2A server, the Python SDK provides a route factory and helper functions (`create_agent_card_routes`, `create_jsonrpc_routes`, `create_rest_routes`). Use the route factory to create routes for the A2A server's services. These routes can be attached natively to popular frameworks like [Starlette](https://www.starlette.dev/) and [FastAPI](https://fastapi.tiangolo.com/), which give you better control over authentication, logging, and other features.
 
 In this tutorial, we will use Starlette with [Uvicorn](https://www.uvicorn.org/).
 
