@@ -1,0 +1,53 @@
+{
+  "row": 8,
+  "urn": "urn:arkforge:verdict",
+  "trust_ledger_port": 8731,
+  "tier_mapping": {
+    "TRUSTED": {
+      "min_score": 0.75,
+      "claim_subtype": "tier_upgrade",
+      "severity": "positive"
+    },
+    "NEUTRAL": {
+      "min_score": 0.5,
+      "claim_subtype": "tier_upgrade",
+      "severity": "neutral"
+    },
+    "WATCH": {
+      "min_score": 0.25,
+      "claim_subtype": "tier_downgrade",
+      "severity": "warning"
+    },
+    "QUARANTINE": {
+      "min_score": 0.0,
+      "claim_subtype": "tier_downgrade",
+      "severity": "critical"
+    }
+  },
+  "constraint_dimensions": {
+    "ResourceViolation": {
+      "facet": "resource",
+      "limit": "quota",
+      "actual": "consumed",
+      "delta": "overrun"
+    },
+    "ProtocolConflict": {
+      "facet": "protocol",
+      "limit": "schema",
+      "actual": "violation",
+      "delta": "mismatch"
+    },
+    "CrossAgentSideEffect": {
+      "facet": "cascade",
+      "limit": "isolation",
+      "actual": "propagation",
+      "delta": "impact"
+    }
+  },
+  "ed25519_verification": {
+    "did": "did:web:trust.arkforge.tech#key-1",
+    "verified": true
+  },
+  "adapter_pipeline": "Protocol_Adapter (8734)",
+  "hps_source": "CAR (8716)"
+}
