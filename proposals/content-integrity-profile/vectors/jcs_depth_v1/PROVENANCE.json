@@ -1,0 +1,54 @@
+{
+  "_note": "Provenance for the jcs_depth_v1 corpus. Unlike the sibling jcs_edge_v1 directory, nothing here is a byte-verbatim retention of a third-party artifact: the vectors were authored for this repository, and every expected byte string was produced by canonicalising the materialised preimage with the reference implementation named below rather than written by hand. The record exists for the same reason the sibling's does. A corpus that is silently regenerated or hand-edited still cross-checks cleanly against itself, so the cross-check reports agreement while proving nothing. Confirm the digests below before running anything against these vectors.",
+  "corpus": {
+    "name": "jcs_depth_v1",
+    "license": "Apache-2.0",
+    "author": "Sankalp Gilda",
+    "vectors": 8,
+    "pair_invariants": 4,
+    "max_depth": 128,
+    "depth_counting_rule": "open containers; the outermost brace or bracket is depth 1, and an empty container is its own level"
+  },
+  "artifacts": [
+    {
+      "file": "jcs_depth_v1.json",
+      "sha256": "7e262412c3dea78713a950219f0413ee0382a48d43cf4698bd6d67214c78cdce"
+    },
+    {
+      "file": "README.md",
+      "sha256": "6efefe6c7f317e6d4b07fefa121fc1fa1a89b4d8a58838b511ea6aedc0063ba0"
+    }
+  ],
+  "generation": {
+    "reference_impl": "Python rfc8785 0.1.4 (Trail of Bits)",
+    "_note": "The same reference implementation the sibling jcs_edge_v1 corpus names. Each accept vector's expected_jcs_bytes_b64 is the output of canonicalising the materialised preimage with it, reproduced independently by a second serialiser before being pinned; expected_sha256 is SHA-256 over those same bytes. Reject vectors publish no canonical bytes, because an implementation that produces bytes for them has not applied the bound.",
+    "cross_check": "Every vector's preimage was rebuilt from its published preimage_rule, its depth measured by counting open containers over the materialised text rather than read from the rule, and its preimage_sha256 confirmed before any canonicalisation ran."
+  },
+  "source_corpus": {
+    "_note": "The two boundary cases carry a counterpart in the corpus below, recorded per vector in trace.sibling_vector_id. The remaining six are authored here to separate container kinds and to distinguish a refusal from a crash, which that corpus does not cover at the JCS layer.",
+    "name": "agent-evidence-vectors",
+    "repository": "https://github.com/astrogilda/agent-evidence-vectors",
+    "commit": "23949cc90b136359b54123b4cffb0800ea311980",
+    "suite": "adversarial-execution-evidence-conformance",
+    "suite_revision": 28,
+    "corpus_digest": "8b035678def9e5ac00ba761b8c640e4412c57163134afb9d2c1a90f49d573a52",
+    "vectors_in_suite": 272,
+    "run": "uvx agent-evidence-vectors",
+    "counterparts": [
+      {
+        "vector_id": "jcs-depth-101-object-one-past-bound",
+        "source_vector_id": "v08251931ec038e91"
+      },
+      {
+        "vector_id": "jcs-depth-103-empty-object-leaf-one-past-bound",
+        "source_vector_id": "v83f4b7fe6068ef86"
+      }
+    ]
+  },
+  "bound_reference": {
+    "_note": "The bound and its counting rule are the ones stated in the predicate specification proposed in the pull request below. That pull request is open, not merged, so this is a citation of proposed text and not of a published standard.",
+    "pull_request": "https://github.com/in-toto/attestation/pull/570",
+    "state_read_at": "2026-09-18",
+    "state": "open"
+  }
+}
