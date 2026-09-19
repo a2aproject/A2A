@@ -2813,6 +2813,46 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 - `GET /extendedAgentCard` - Get authenticated extended Agent Card
 
+#### 11.3.5. Path Prefix
+
+The URL patterns above specify the path portion that each operation appends to
+the endpoint URL advertised for the interface. The specification does not
+mandate where A2A endpoints are rooted, so implementations **MAY** serve them at
+the root of a host or under a dedicated path prefix.
+
+When a prefix is used, the operation path (which always begins with `/`) is
+concatenated onto it. For example, with the prefix `/a2a`, the message-send
+operation is served at `POST /a2a/message:send` and task retrieval at
+`GET /a2a/tasks/{id}`. To keep this concatenation unambiguous, a path prefix
+**MUST NOT** end with a `/`, so that no `//` sequence appears in the resulting
+path.
+
+> **Note:** The endpoint URL plus prefix is not a "base URI" in the
+> [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1) sense.
+> Resolving an operation path such as `/message:send` as a relative reference
+> against a base URI would [replace](https://www.rfc-editor.org/rfc/rfc3986.html#section-5.2.2)
+> the prefix rather than preserve it. A2A prefixes are concatenated, not
+> resolved.
+
+Exposing A2A endpoints under a dedicated path prefix such as `/a2a` can simplify
+operational concerns when A2A endpoints coexist with other APIs on the same
+host, including:
+
+- API gateway and reverse-proxy routing
+- attaching authentication and authorization middleware to a single prefix
+- rate limiting and traffic separation
+- logging and observability partitioning
+
+A path prefix is an operational and routing convenience only. It is not a
+security or identity boundary: implementations **MUST NOT** treat the presence
+of a particular prefix as authentication or authorization for a request, and
+**MUST** apply the transport's declared security requirements regardless of the
+prefix in use.
+
+When a prefix is used, the endpoint URL advertised in the Agent Card's
+[`AgentInterface`](#446-agentinterface) `url` **MUST** include that prefix so
+clients resolve the correct location.
+
 ### 11.4. Request/Response Format
 
 All requests and responses use JSON objects structurally equivalent to the Protocol Buffer definitions.
