@@ -121,7 +121,32 @@ suites:
         level: must
         tags: [transport, rest, raw, status]
         transport: [rest]
+        requires_behaviors:
+          - "tck-complete-task"
         steps:
+          - id: create
+            description: >
+              Positive control. Without a task that GET /tasks/{id} actually
+              returns, an agent serving no REST routes at all answers 404 to
+              the probe below and passes a MUST about status mapping.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for REST status"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+
+          - id: get-existing
+            operation: get_task
+            params:
+              id: "{{create.taskId}}"
+            expect:
+              status: 200
+
           - id: get-missing
             raw:
               method: GET

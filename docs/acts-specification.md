@@ -234,7 +234,7 @@ Steps are the building blocks of a test. They execute sequentially within a test
 **Test isolation:** Tests within a suite (or across suites) MUST NOT share state. Each test starts with a clean context — no tasks, captures, or side effects carry over from previous tests. Runners MAY execute tests in any order or in parallel.
 
 ```cddl
-step = server-step / client-step / assertion-step / raw-step
+step = server-step / client-step / webhook-step / assertion-step / raw-step
 
 server-step = {
   id: text,                         ; Unique within the test
@@ -256,6 +256,12 @@ client-step = {
   client_response: client-response, ; Canonical wire payload for the client to parse
   expect_parsed: { * text => assertion }, ; Assertions on the parsed result
   ? assertions: [+ named-assertion]
+}
+
+webhook-step = {
+  id: text,
+  ? description: text,
+  expect_webhook: expect-webhook    ; Assertions on what the SUT pushed to the runner
 }
 
 assertion-step = {
@@ -762,9 +768,15 @@ Streaming operations (`send_streaming_message`, `subscribe_to_task`) return an o
 
 ```cddl
 expect-stream = {
+  stream-assertions,                ; Applied to every stream the step opens
+
+  ? timeout_ms: int,                ; Maximum time to wait for stream completion
+  ? streams: [+ stream-plan]        ; Open one stream per entry, concurrently (§7.3)
+}
+
+stream-assertions = (
   ? min_count: int,                 ; Minimum number of events
   ? max_count: int,                 ; Maximum number of events
-  ? timeout_ms: int,                ; Maximum time to wait for stream completion
   ? ordering: ordering-rule,        ; Ordering constraint on task states
 
   ; Event-level assertions
@@ -775,6 +787,12 @@ expect-stream = {
 
   ; All-events assertion (applied to every event)
   ? each_event: { * text => assertion }
+)
+
+stream-plan = {
+  stream-assertions,                ; Applied to this stream alone
+  ? description: text,              ; Names the stream in a failure report
+  ? disconnect_after: int           ; Read this many events, then hang up (§7.3)
 }
 
 ordering-rule = "monotonic_state"   ; Task states never regress
@@ -873,6 +891,124 @@ is likewise legal: the interrupting condition was resolved.
             - status_update:
                 status:
                   state: TASK_STATE_COMPLETED
+```
+
+---
+
+## 7.2. Push Delivery Assertions
+
+A push notification is a request the **SUT** makes, to a URL the runner supplied. It appears in
+no response, so none of the assertion blocks above can reach it: a test that registers a push
+configuration and stops has shown that the configuration API works and nothing about delivery.
+`expect_webhook` is the only construct whose subject is an inbound request.
+
+```cddl
+expect-webhook = {
+  task_id: text,                    ; Whose notifications to read; usually a captured id
+  ? min_count: int,                 ; Deliveries required before the step passes. Default 1
+  ? timeout_ms: int,                ; How long to wait for them. Default 10000
+  ? each_event: { * text => assertion },  ; Applied to every delivered payload
+  ? final_event: { * text => assertion }, ; Applied to the most recent delivery
+  ? token: assertion                ; The notification token the SUT must echo back
+}
+```
+
+A webhook step carries no `expect`, `expect_error`, `expect_stream`, `capture` or `repeat`: those
+address a reply to a request the runner made, and this step makes none.
+
+A runner MUST poll until `min_count` deliveries have arrived or `timeout_ms` elapses, and MUST
+fail the step when too few arrived, reporting how many did. Delivery is asynchronous, so a fixed
+wait would make a slow SUT indistinguishable from a silent one.
+
+A test using `expect_webhook` MUST declare `runner_requirements: [webhook_endpoint]`. A runner
+with no receiver of its own cannot host the URL the SUT calls back on, and MUST skip rather than
+report a failure it caused itself.
+
+`token` addresses the `X-A2A-Notification-Token` header carried on the delivery, which is how a
+receiver tells an authentic push from a forged one. It is the only part of push authentication a
+conformance runner can observe: whether a client *rejects* a forged call is a property of the
+client, not of the agent under test.
+
+```yaml
+- id: set-config
+  operation: create_push_config
+  params:
+    taskId: "{{create.taskId}}"
+    url: "{{webhookUrl}}"
+    token: "acts-push-token"
+
+- id: delivered
+  expect_webhook:
+    task_id: "{{create.taskId}}"
+    min_count: 1
+    token: "acts-push-token"
+    each_event:
+      any_of:
+        - task:
+            id: "{{create.taskId}}"
+        - statusUpdate:
+            taskId: "{{create.taskId}}"
+```
+
+---
+
+## 7.3. Concurrent Streams and Disconnection
+
+Some requirements are about the connections rather than the events on them: that an agent serves
+two subscribers to one task at once, and that it keeps serving one when the other goes away.
+Neither is observable from a single stream read to its end, however many assertions are made
+about the events it delivered.
+
+`streams` opens one stream per entry, **concurrently**, all from the step's single request. The
+assertions in the enclosing `expect_stream` apply to every stream; those in a `stream-plan` apply
+to that stream alone. A step that omits `streams` opens one stream, as before.
+
+A runner MUST issue the same request for every stream in a set. Concurrent streams are
+subscribers to one thing, so a runner that rebuilt the request per stream — generating a fresh
+`messageId` for each, as §12.4 requires it to do once — would be observing several different
+tasks and could conclude nothing about any of them.
+
+`disconnect_after` reads that many events and then **closes the connection**. A runner MUST
+actually close it, not merely stop reading: an abandoned response is closed eventually by
+whatever reclaims it, by which time the stream has ended and the SUT has observed no mid-stream
+disconnect at all.
+
+The two controls are independent. `disconnect_after` on the only stream of a step is the
+disconnect half of a resubscribe test; combined with `streams` it is what makes the members of a
+set differ.
+
+Restrictions, all of which exist to stop a test passing without exercising what it names:
+
+- A test whose step opens more than one stream MUST declare
+  `runner_requirements: [concurrent_streams]`, and one using `disconnect_after` MUST declare
+  `stream_disconnect`. A runner lacking either MUST skip the test. Prose in `description` is not
+  a declaration: `STREAM-MULTI-001`, `STREAM-MULTI-002` and `STREAM-RESUB-001` each described a
+  capability no runner had, executed a single undisturbed stream instead, and passed.
+- `max_count` MUST NOT appear on a plan with `disconnect_after`: the runner stops first, so the
+  limit cannot be exceeded.
+- `min_count` on such a plan MUST NOT exceed `disconnect_after`, which no stream could satisfy.
+- `timeout_ms` bounds the step, not one stream of it, and MUST NOT appear on a plan.
+- `capture` MUST NOT appear on a step opening more than one stream; which stream a value came
+  from would be decided by arrival order.
+
+A runner MUST report which stream a failure came from, naming it by its `description` where one
+is given.
+
+```yaml
+- id: subscribe
+  operation: subscribe_to_task
+  params:
+    id: "{{start.taskId}}"
+  expect_stream:
+    min_count: 1
+    streams:
+      - description: "hangs up after one event"
+        disconnect_after: 1
+      - description: "stays subscribed"
+        ordering: monotonic_state
+        final_event:
+          status:
+            state: TASK_STATE_COMPLETED
 ```
 
 ---
@@ -1165,6 +1301,7 @@ test rather than failing it — the gap is in the runner, not the SUT:
 | --- | --- | --- |
 | `insufficientAuthToken` | `auth_credentials` | A credential that authenticates but does not authorize, so a test can tell a 403 apart from a 401. |
 | `otherUserTaskId` | `auth_credentials` | The id of a task belonging to a different principal, so a test can check that an inaccessible resource is not distinguishable from an absent one. |
+| `webhookUrl` | `webhook_endpoint` | A URL the runner is listening on, so the SUT's push notifications arrive somewhere a test can assert against with `expect_webhook` (§7.2). A literal cannot serve: an address nobody answers makes every delivery test vacuous. |
 
 `baseUrl` is also runner-provided; it is defined in §12.4 alongside the other protocol-level
 inputs.
@@ -1863,7 +2000,7 @@ preconditions = {
 }
 
 ; ── Steps ─────────────────────────────────────────────────────────
-step = server-step / client-step / assertion-step / raw-step
+step = server-step / client-step / webhook-step / assertion-step / raw-step
 
 server-step = {
   id: text,
@@ -2003,13 +2140,24 @@ jsonrpc-standard-error =
 
 ; ── Streaming ─────────────────────────────────────────────────────
 expect-stream = {
+  stream-assertions,
+  ? timeout_ms: int,
+  ? streams: [+ stream-plan]
+}
+
+stream-assertions = (
   ? min_count: int,
   ? max_count: int,
-  ? timeout_ms: int,
   ? ordering: ordering-rule,
   ? events: [+ event-assertion],
   ? final_event: { * text => assertion },
   ? each_event: { * text => assertion }
+)
+
+stream-plan = {
+  stream-assertions,
+  ? description: text,
+  ? disconnect_after: int
 }
 
 ordering-rule = "monotonic_state"

@@ -295,16 +295,36 @@ suites:
 
       - id: CORE-ERR-009
         name: "Error response should not distinguish missing vs unauthorized"
-        description: "Runner SHOULD verify that the error response for a missing resource is indistinguishable from one for an unauthorized resource. This requires auth infrastructure."
+        description: "Runner SHOULD verify that the error response for a missing resource is indistinguishable from one for an unauthorized resource."
         spec_ref: "REQ-ERR-007"
         level: should
         tags: [security, error-handling, runner-special]
+        runner_requirements: [auth_credentials]
         steps:
+          - id: get-unauthorized
+            description: >
+              The inaccessible half of the comparison. Without it the test
+              asks only what a server does with an id nobody owns, which
+              every server answers the same way and which says nothing about
+              disclosure.
+            operation: get_task
+            params:
+              id: "{{otherUserTaskId}}"
+            expect_error:
+              error_type: TaskNotFoundError
+              message:
+                type: string
+
           - id: get-missing
+            description: >
+              The absent half. Both must name the same error: reporting an
+              inaccessible task as anything other than not-found is the
+              disclosure REQ-ERR-007 forbids.
             operation: get_task
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
+              error_type: TaskNotFoundError
               message:
                 type: string
 

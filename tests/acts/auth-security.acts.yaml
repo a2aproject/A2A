@@ -223,6 +223,7 @@ suites:
           capabilities:
             pushNotifications: true
         tags: [auth, push, runner-special]
+        runner_requirements: [webhook_endpoint]
         requires_behaviors: ["tck-long-running"]
         steps:
           - id: create-task
@@ -248,6 +249,7 @@ suites:
             params:
               taskId: "{{create-task.taskId}}"
               url: "{{webhookUrl}}"
+              token: "acts-push-token"
               authentication:
                 scheme: "Bearer"
                 credentials: "test-token"
@@ -259,6 +261,25 @@ suites:
                 id:
                   type: string
 
+          - id: delivery-carries-the-credential
+            description: >
+              REQ-SEC-018 is about the headers on the request the *SUT*
+              makes, which no response can show. Accepting the config proves
+              nothing: a server that stores it and pushes anonymously — or
+              never pushes — satisfies every other step here.
+
+              The assertion is on `Authorization`, because that is what A2A
+              §4.3.3 makes a MUST: "the agent MUST include authentication
+              credentials in the request headers as specified in the
+              PushNotificationConfig.authentication field". The `token` field
+              has no header defined for it anywhere in A2A, so requiring one
+              would fail a conformant agent over a convention.
+            expect_webhook:
+              task_id: "{{create-task.taskId}}"
+              min_count: 1
+              headers:
+                Authorization: "Bearer test-token"
+
       - id: SEC-PUSH-002
         name: "Client validates push notification webhook authenticity"
         description: "Runner MUST verify that webhook requests with invalid auth are rejected by the client."
@@ -268,6 +289,7 @@ suites:
           capabilities:
             pushNotifications: true
         tags: [auth, push, client, runner-special]
+        runner_requirements: [webhook_endpoint]
         requires_behaviors: ["tck-long-running"]
         steps:
           - id: create-task
@@ -293,6 +315,7 @@ suites:
             params:
               taskId: "{{create-task.taskId}}"
               url: "{{webhookUrl}}"
+              token: "acts-expected-token"
               authentication:
                 scheme: "Bearer"
                 credentials: "expected-token"
@@ -303,6 +326,21 @@ suites:
               body:
                 id:
                   type: string
+
+          - id: delivery-carries-the-configured-credential
+            description: >
+              The client-side half of REQ-SEC-019 — rejecting a forged
+              webhook call — is not something a conformance runner can drive
+              against the SUT. What it can check is the precondition that
+              makes rejection possible at all: the agent must present the
+              credential it was configured with, and present *that* one
+              rather than something of its own, so a receiver has a value to
+              compare against.
+            expect_webhook:
+              task_id: "{{create-task.taskId}}"
+              min_count: 1
+              headers:
+                Authorization: "Bearer expected-token"
 
       - id: SEC-EXTCARD-001
         name: "Extended Agent Card requires authentication"
@@ -315,6 +353,17 @@ suites:
         tags: [auth, discovery, runner-special]
         transport: [rest]
         steps:
+          - id: get-extended-card-with-auth
+            description: >
+              Positive control. The runner presents its credential on an
+              abstract operation (§12.4), so the same endpoint must answer
+              this one — otherwise the rejection below is attributable to a
+              server that refuses everything here, or to no such route at
+              all, rather than to the absent credential.
+            operation: get_extended_agent_card
+            expect:
+              status: 200
+
           - id: get-extended-card-without-auth
             raw:
               method: GET
@@ -341,6 +390,15 @@ suites:
         runner_requirements: [auth_credentials]
         transport: [rest]
         steps:
+          - id: get-extended-card-with-auth
+            description: >
+              Positive control, as in SEC-EXTCARD-001: a server refusing this
+              endpoint outright would otherwise satisfy the rejection below
+              without ever having looked at the credential's scope.
+            operation: get_extended_agent_card
+            expect:
+              status: 200
+
           - id: get-extended-card-insufficient-auth
             raw:
               method: GET
@@ -383,6 +441,13 @@ suites:
         tags: [auth, discovery, runner-special]
         transport: [rest]
         steps:
+          - id: get-extended-card-with-auth
+            description: >
+              Positive control, as in SEC-EXTCARD-001.
+            operation: get_extended_agent_card
+            expect:
+              status: 200
+
           - id: get-extended-card-without-auth
             raw:
               method: GET

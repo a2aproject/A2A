@@ -261,51 +261,10 @@ suites:
 
       - id: STREAM-MULTI-001
         name: "Multiple concurrent streams receive same events"
-        description: "Runner MUST open two concurrent streams and verify both receive the same events. This test may require special runner support."
+        description: "Two clients subscribed to one task at the same time each receive its events, and both streams end in the same terminal state."
         level: should
         tags: [streaming, concurrent, runner-special]
-        requires_behaviors:
-          - tck-stream-basic
-        preconditions:
-          capabilities:
-            streaming: true
-        steps:
-          - id: stream
-            operation: send_streaming_message
-            params:
-              message:
-                role: ROLE_USER
-                parts:
-                  - text: "tck-stream-basic generate output"
-            expect_stream:
-              min_count: 2
-
-      - id: STREAM-MULTI-002
-        name: "Closing one stream doesn't affect others"
-        description: "Runner MUST open two concurrent streams, close one of them mid-stream, and verify the other continues receiving events. This test may require special runner support."
-        level: should
-        tags: [streaming, concurrent, runner-special]
-        requires_behaviors:
-          - tck-stream-basic
-        preconditions:
-          capabilities:
-            streaming: true
-        steps:
-          - id: stream
-            operation: send_streaming_message
-            params:
-              message:
-                role: ROLE_USER
-                parts:
-                  - text: "tck-stream-basic generate output"
-            expect_stream:
-              min_count: 2
-
-      - id: STREAM-RESUB-001
-        name: "Resubscribe after disconnect"
-        description: "Runner MUST disconnect from stream mid-flight and resubscribe. This test may require special runner support."
-        level: should
-        tags: [streaming, resubscribe, runner-special]
+        runner_requirements: [concurrent_streams]
         requires_behaviors:
           - tck-long-running
         preconditions:
@@ -335,3 +294,103 @@ suites:
               id: "{{start.taskId}}"
             expect_stream:
               min_count: 1
+              ordering: monotonic_state
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+              streams:
+                - description: "first subscriber"
+                - description: "second subscriber"
+
+      - id: STREAM-MULTI-002
+        name: "Closing one stream doesn't affect others"
+        description: "One of two clients subscribed to the same task hangs up mid-stream; the other still receives the task's events through to completion."
+        level: should
+        tags: [streaming, concurrent, runner-special]
+        runner_requirements: [concurrent_streams, stream_disconnect]
+        requires_behaviors:
+          - tck-long-running
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+          - id: subscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              min_count: 1
+              streams:
+                - description: "hangs up after one event"
+                  disconnect_after: 1
+                - description: "stays subscribed"
+                  ordering: monotonic_state
+                  final_event:
+                    status:
+                      state: TASK_STATE_COMPLETED
+
+      - id: STREAM-RESUB-001
+        name: "Resubscribe after disconnect"
+        description: "A client that hangs up mid-stream can subscribe to the same task again and receive the rest of its events."
+        level: should
+        tags: [streaming, resubscribe, runner-special]
+        runner_requirements: [stream_disconnect]
+        requires_behaviors:
+          - tck-long-running
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+          - id: interrupted
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              min_count: 1
+              streams:
+                - description: "reads one event, then hangs up"
+                  disconnect_after: 1
+          - id: resubscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              min_count: 1
+              ordering: monotonic_state
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED

@@ -5,8 +5,6 @@ metadata:
   title: "Push Notification Configuration"
   description: "Tests for push notification config CRUD and unsupported-server behavior"
 
-variables:
-  webhookUrl: "https://example.com/webhooks/a2a-tests"
 
 suites:
   - id: push-notifications
@@ -345,6 +343,7 @@ suites:
         description: "Runner MUST set up a webhook endpoint and verify auth credentials are included."
         level: may
         tags: [push, delivery, runner-special]
+        runner_requirements: [webhook_endpoint]
         preconditions:
           capabilities:
             pushNotifications: true
@@ -373,6 +372,7 @@ suites:
             params:
               taskId: "{{create.taskId}}"
               url: "{{webhookUrl}}"
+              token: "acts-push-token"
               authentication:
                 scheme: "Bearer"
                 credentials: "test-token"
@@ -384,10 +384,26 @@ suites:
                 id:
                   type: string
 
+          - id: delivered-with-credentials
+            description: >
+              The substance of the test. Registering a config proves only
+              that the config API works; whether the SUT then authenticates
+              what it pushes is visible nowhere but at the receiver.
+
+              `Authorization` rather than the token header: §4.3.3 mandates
+              the former and defines no header at all for
+              `PushNotificationConfig.token`.
+            expect_webhook:
+              task_id: "{{create.taskId}}"
+              min_count: 1
+              headers:
+                Authorization: "Bearer test-token"
+
       - id: PUSH-DELIV-002
         name: "Push delivery is at-least-once"
         description: "Runner MUST set up a webhook endpoint and verify at-least-once delivery semantics."
         level: may
+        runner_requirements: [webhook_endpoint]
         tags: [push, delivery, runner-special]
         preconditions:
           capabilities:
@@ -425,9 +441,19 @@ suites:
                 id:
                   type: string
 
+          - id: delivered-at-least-once
+            description: >
+              At-least-once is a claim about delivery, so the only place it
+              can be observed is the receiver. A config accepted and never
+              acted on satisfies every other step in this test.
+            expect_webhook:
+              task_id: "{{create.taskId}}"
+              min_count: 1
+
       - id: PUSH-DELIV-003
         name: "Push payload format correct"
         description: "Runner MUST set up a webhook endpoint and verify the delivered payload format matches the A2A specification."
+        runner_requirements: [webhook_endpoint]
         level: may
         tags: [push, delivery, runner-special]
         preconditions:
@@ -465,3 +491,26 @@ suites:
               body:
                 id:
                   type: string
+
+          - id: delivered-payload-is-a2a-shaped
+            description: >
+              The payload format is the subject, and it appears in no
+              response. A2A pushes the task event itself, so the delivery must
+              be one of the discriminated event shapes and must name the task
+              it is about — a whole Task or a status update, as §7 allows for
+              any event.
+            expect_webhook:
+              task_id: "{{create.taskId}}"
+              min_count: 1
+              each_event:
+                any_of:
+                  - task:
+                      id: "{{create.taskId}}"
+                      status:
+                        state:
+                          type: string
+                  - statusUpdate:
+                      taskId: "{{create.taskId}}"
+                      status:
+                        state:
+                          type: string
