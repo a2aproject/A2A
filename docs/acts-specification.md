@@ -171,12 +171,41 @@ Preconditions describe what the SUT must advertise or support for the test to be
 ```cddl
 preconditions = {
   ? capabilities: { * text => any },   ; Required AgentCard capability fields
+  ? authentication: bool,              ; Whether the agent must require a credential
   ? skills: [+ { id: text }],          ; Required skill IDs in the AgentCard
   ? transport: [+ transport-binding],   ; Required transport binding
   ? extensions: [+ text],              ; Required extension URIs
   ? description: text                  ; Human-readable precondition summary
 }
 ```
+
+`capabilities` is matched against the `AgentCard.capabilities` object, whose members the A2A
+specification fixes as `streaming`, `pushNotifications`, `extendedAgentCard` and `extensions`. A
+precondition naming anything else can never be met by any agent card. Runners MUST skip such a
+test, and SHOULD report it distinctly from an ordinary skip: "not applicable to this agent" and
+"no agent could satisfy this" are different findings, and only the second is a defect in the test.
+
+`authentication` is **not** among those members, and is a separate precondition for that reason:
+A2A declares authentication at the top level of the card, in `securitySchemes` and
+`securityRequirements`, and `AgentCapabilities` has no member for it. `authentication: true` is met
+when the card declares at least one entry in **both** fields; `false` is met when it declares
+neither. A runner MUST test presence only and MUST NOT inspect the shape of a declared scheme:
+`SecurityScheme` is a union whose JSON encoding differs between SDK toolchains, and presence is all
+the precondition needs.
+
+The precondition exists because the server's obligation is itself conditional. A2A requires a server
+to authenticate every request "based on the provided credentials **and its declared authentication
+requirements**", so an agent that declares no requirement is not violating anything by serving an
+unauthenticated request, and a test asserting rejection is genuinely not applicable to it. The one
+exception is `Get Extended Agent Card`, whose authentication A2A mandates unconditionally; tests of
+that operation MUST NOT declare this precondition, because doing so would let an agent escape the
+requirement by declaring nothing.
+
+A test that asserts a request is **rejected** for want of a credential SHOULD first establish, in an
+earlier step of the same test, that the same operation on the same endpoint **succeeds** when the
+credential is supplied. Without that control the test cannot distinguish a rejection on
+authentication grounds from a rejection for any other reason, and it will report a pass against a
+server that refuses the request for reasons of its own.
 
 ### Example
 
@@ -205,7 +234,7 @@ Steps are the building blocks of a test. They execute sequentially within a test
 **Test isolation:** Tests within a suite (or across suites) MUST NOT share state. Each test starts with a clean context — no tasks, captures, or side effects carry over from previous tests. Runners MAY execute tests in any order or in parallel.
 
 ```cddl
-step = server-step / client-step / assertion-step / raw-step
+step = server-step / client-step / webhook-step / assertion-step / raw-step
 
 server-step = {
   id: text,                         ; Unique within the test
@@ -227,6 +256,12 @@ client-step = {
   client_response: client-response, ; Canonical wire payload for the client to parse
   expect_parsed: { * text => assertion }, ; Assertions on the parsed result
   ? assertions: [+ named-assertion]
+}
+
+webhook-step = {
+  id: text,
+  ? description: text,
+  expect_webhook: expect-webhook    ; Assertions on what the SUT pushed to the runner
 }
 
 assertion-step = {
@@ -270,12 +305,13 @@ The runner MUST translate each abstract operation to the correct wire representa
 | `get_task` | `GetTask` | `GetTask` | `GET /tasks/{id}` |
 | `list_tasks` | `ListTasks` | `ListTasks` | `GET /tasks` |
 | `cancel_task` | `CancelTask` | `CancelTask` | `POST /tasks/{id}:cancel` |
-| `subscribe_to_task` | `SubscribeToTask` | `SubscribeToTask` | `GET /tasks/{id}:subscribe` |
+| `subscribe_to_task` | `SubscribeToTask` | `SubscribeToTask` | `POST /tasks/{id}:subscribe` |
 | `get_agent_card` | *(HTTP GET)* | *(HTTP GET)* | `GET /.well-known/agent-card.json` |
-| `create_push_config` | `CreatePushNotificationConfig` | `CreatePushNotificationConfig` | `POST /tasks/{id}/pushNotifications` |
-| `get_push_config` | `GetPushNotificationConfig` | `GetPushNotificationConfig` | `GET /tasks/{id}/pushNotifications/{configId}` |
-| `list_push_configs` | `ListPushNotificationConfigs` | `ListPushNotificationConfigs` | `GET /tasks/{id}/pushNotifications` |
-| `delete_push_config` | `DeletePushNotificationConfig` | `DeletePushNotificationConfig` | `DELETE /tasks/{id}/pushNotifications/{configId}` |
+| `get_extended_agent_card` | `GetExtendedAgentCard` | `GetExtendedAgentCard` | `GET /extendedAgentCard` |
+| `create_push_config` | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs` |
+| `get_push_config` | `GetTaskPushNotificationConfig` | `GetTaskPushNotificationConfig` | `GET /tasks/{id}/pushNotificationConfigs/{configId}` |
+| `list_push_configs` | `ListTaskPushNotificationConfigs` | `ListTaskPushNotificationConfigs` | `GET /tasks/{id}/pushNotificationConfigs` |
+| `delete_push_config` | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
 
 ### 4.2. Assertion Root
 
@@ -291,9 +327,9 @@ Different A2A operations return different response shapes. The **assertion root*
 | `subscribe_to_task` | Stream of `StreamResponse` | Per-event (see §7) |
 | `get_agent_card` | `AgentCard` | The `AgentCard` object directly |
 | `get_extended_agent_card` | `AgentCard` | The `AgentCard` object directly |
-| `create_push_config` | `PushNotificationConfig` | The `PushNotificationConfig` object directly |
-| `get_push_config` | `PushNotificationConfig` | The `PushNotificationConfig` object directly |
-| `list_push_configs` | `ListPushNotificationConfigsResponse` | The response object (contains `configs` array) |
+| `create_push_config` | `TaskPushNotificationConfig` | The `TaskPushNotificationConfig` object directly |
+| `get_push_config` | `TaskPushNotificationConfig` | The `TaskPushNotificationConfig` object directly |
+| `list_push_configs` | `ListTaskPushNotificationConfigsResponse` | The response object (contains `configs` array) |
 | `delete_push_config` | *(empty)* | N/A |
 
 For operations that return a wrapper (like `SendMessageResponse`), assertions reference fields within the wrapper. For operations that return a domain object directly (like `get_task` → `Task`), assertions reference fields on that object.
@@ -361,23 +397,27 @@ request-params = {
   ? cursor: text,
   ? pageSize: int,
 
-  ; For push config operations:
+  ; For push config operations. The request message is a TaskPushNotificationConfig,
+  ; so its fields sit beside taskId rather than nested under a wrapper:
   ? taskId: text,
-  ? pushNotificationConfig: any,
+  ? url: text,
+  ? token: text,
+  ? authentication: { scheme: text, ? credentials: text },
 
   ; Catch-all for future fields:
   * text => any
 }
 
+; A2A `Part` is a flat object: exactly one of `text`, `raw`, `url` or `data`
+; carries the content, and `filename`, `mediaType` and `metadata` are siblings.
 part = {
   ? text: text,
+  ? raw: text,                      ; base64-encoded bytes
+  ? url: text,
   ? data: any,
-  ? file: {
-      ? url: text,
-      ? raw: text,                  ; base64-encoded bytes
-      ? mediaType: text,
-      ? name: text
-    },
+  ? filename: text,
+  ? mediaType: text,
+  ? metadata: { * text => any },
   * text => any
 }
 ```
@@ -399,12 +439,15 @@ raw-step = {
   },
   ? expect: expect-block,           ; Reuses the standard expect-block
   ? expect_error: expect-error,     ; Can also expect errors from raw steps
+  ? expect_stream: expect-stream,   ; Streaming assertions, for raw streaming requests
   ? capture: { + text => text },
   ? assertions: [+ named-assertion]
 }
 ```
 
 Raw steps are used when the test must verify wire-level details that the abstract operation layer intentionally hides (e.g., HTTP status codes, header values, malformed input handling).
+
+A raw request is sent exactly as written. The runner MUST NOT add or complete any part of it — in particular it MUST NOT supply the `A2A-Version` header or generate a `messageId`, both of which §12.4 requires for abstract operations. A raw body that carries a `message` therefore has to spell out its own `messageId`, which the A2A specification marks REQUIRED on every message.
 
 > **Note:** Raw steps are inherently transport-specific. A test containing only raw steps MUST specify a `transport` filter.
 
@@ -448,8 +491,11 @@ assertion-object = {
   ? count_gte: int,                 ; Length >= N
   ? count_lte: int,                 ; Length <= N
 
+  ; Array elements
+  ? items: { * text => assertion } / [+ { * text => assertion }],
+
   ; Enum / alternatives
-  ? one_of: [+ any],               ; Value is one of these
+  ? one_of: [+ (any / assertion)], ; Value is one of these
 
   ; Combinators
   ? all_of: [+ assertion],         ; All assertions must pass
@@ -458,6 +504,28 @@ assertion-object = {
 }
 
 number = int / float
+```
+
+**`items`** asserts on the elements of an array in the same map that constrains the array itself,
+which the nesting rules of §5.2 cannot express (a single YAML node cannot be both the list §5.2
+requires and the map an operator requires). It follows JSON Schema semantics: a **map** applies to
+every element, a **list** applies positionally.
+
+```yaml
+supportedInterfaces:
+  type: array
+  count_gte: 1
+  items:                             # applies to every element
+    protocolVersion: {type: string}
+```
+
+**`one_of`** members are compared by value when they are scalars and evaluated as assertions when
+they are maps. The second form is what expresses an alternation between two response shapes:
+
+```yaml
+one_of:
+  - task: {status: {exists: true}}
+  - status_update: {status: {exists: true}}
 ```
 
 ### 5.2. Assertion Paths and Nesting
@@ -585,11 +653,26 @@ For non-streaming operations, `expect` describes the expected response.
 ```cddl
 expect-block = {
   ? status: assertion,               ; Expected HTTP status (default: 200 for success)
+  ? headers: { * text => assertion }, ; Response header assertions (header names are case-insensitive)
   ? body: { * text => assertion }    ; Response body assertions
 }
 ```
 
 For abstract operations, assertions in `expect.body` apply to the unwrapped A2A response object described in §4.2. For raw steps, `expect.body` applies to the raw transport response body.
+
+`status` is the HTTP response status. The gRPC binding produces no HTTP response, so there it is
+the canonical transcoding of the RPC's gRPC status (`OK` → 200) — the same derivation A2A §5.4
+applies to obtain its own HTTP column from its gRPC column. This is what allows a test that
+asserts a status to remain binding-agnostic.
+
+`headers` has no gRPC equivalent, because gRPC carries metadata rather than an HTTP header block.
+A test that asserts on `headers` MUST therefore declare a `transport` filter excluding `grpc`,
+unless the operation is one §4.1 maps to a plain HTTP GET on every binding. A runner MUST NOT
+treat a header assertion as satisfied on a binding that cannot produce the value.
+
+`headers` is the only way to verify requirements about response metadata — content types, caching
+directives, authentication challenges — that never appear in the response body. Tests using it
+SHOULD declare the `header_inspection` runner requirement.
 
 ### 6.2. Error Expect
 
@@ -597,44 +680,69 @@ For operations expected to fail, `expect_error` describes the expected error.
 
 ```cddl
 expect-error = {
-  error_type: a2a-error-type,        ; Abstract A2A error name
+  ? error_type: a2a-error-type,      ; Abstract A2A error name
   ? message: assertion,              ; Assertion on the error message string
-  ? details: { * text => assertion } ; Assertions on error details/metadata
+  ? details: assertion               ; Assertion on the error details array
 }
 
-a2a-error-type =
+a2a-error-type = a2a-specific-error / jsonrpc-standard-error
+
+a2a-specific-error =
   "TaskNotFoundError" /
   "TaskNotCancelableError" /
+  "PushNotificationNotSupportedError" /
   "UnsupportedOperationError" /
   "ContentTypeNotSupportedError" /
-  "InvalidParamsError" /
-  "VersionNotSupportedError" /
-  "PushNotificationNotSupportedError" /
-  "StreamingNotSupportedError" /
+  "InvalidAgentResponseError" /
+  "ExtendedAgentCardNotConfiguredError" /
   "ExtensionSupportRequiredError" /
-  "ExtendedCardNotSupportedError" /
+  "VersionNotSupportedError"
+
+jsonrpc-standard-error =
   "JSONParseError" /
+  "InvalidRequestError" /
   "MethodNotFoundError" /
+  "InvalidParamsError" /
   "InternalError"
 ```
 
-The runner MUST map each abstract error type to the transport-specific representation:
+`error_type` names the A2A error the SUT is required to return. It is OPTIONAL because some
+requirements mandate that an operation fail without mandating which error it fails with; such a
+test asserts only on `message` or `details`.
+
+The runner MUST map each A2A-specific error type to the transport-specific representation. The
+following values reproduce the canonical mappings in A2A §5.4 (Error Code Mappings):
 
 | Abstract Error | JSON-RPC Code | gRPC Status | REST HTTP Status |
 |---|---|---|---|
 | `TaskNotFoundError` | -32001 | `NOT_FOUND` | 404 |
-| `TaskNotCancelableError` | -32002 | `FAILED_PRECONDITION` | 409 |
-| `UnsupportedOperationError` | -32004 | `UNIMPLEMENTED` | 405 |
-| `ContentTypeNotSupportedError` | -32005 | `INVALID_ARGUMENT` | 415 |
-| `InvalidParamsError` | -32602 | `INVALID_ARGUMENT` | 400 |
-| `VersionNotSupportedError` | -32006 | `UNIMPLEMENTED` | 406 |
-| `PushNotificationNotSupportedError` | -32003 | `UNIMPLEMENTED` | 501 |
-| `StreamingNotSupportedError` | -32007 | `UNIMPLEMENTED` | 501 |
-| `JSONParseError` | -32700 | `INVALID_ARGUMENT` | 400 |
-| `MethodNotFoundError` | -32601 | `UNIMPLEMENTED` | 501 |
-| `InternalError` | -32603 | `INTERNAL` | 500 |
+| `TaskNotCancelableError` | -32002 | `FAILED_PRECONDITION` | 400 |
+| `PushNotificationNotSupportedError` | -32003 | `FAILED_PRECONDITION` | 400 |
+| `UnsupportedOperationError` | -32004 | `FAILED_PRECONDITION` | 400 |
+| `ContentTypeNotSupportedError` | -32005 | `INVALID_ARGUMENT` | 400 |
+| `InvalidAgentResponseError` | -32006 | `INTERNAL` | 500 |
+| `ExtendedAgentCardNotConfiguredError` | -32007 | `FAILED_PRECONDITION` | 400 |
+| `ExtensionSupportRequiredError` | -32008 | `FAILED_PRECONDITION` | 400 |
+| `VersionNotSupportedError` | -32009 | `FAILED_PRECONDITION` | 400 |
+
+The standard JSON-RPC error codes in A2A §9.5 are defined for the JSON-RPC binding only; A2A
+defines no gRPC or HTTP representation for them. A test naming one of these error types MUST
+restrict itself to the JSON-RPC binding with a `transport` filter.
+
+| Abstract Error | JSON-RPC Code |
+|---|---|
+| `JSONParseError` | -32700 |
+| `InvalidRequestError` | -32600 |
+| `MethodNotFoundError` | -32601 |
+| `InvalidParamsError` | -32602 |
+| `InternalError` | -32603 |
 
 > **Note:** This mapping table is derived from the A2A specification. Runners MUST consult the normative A2A specification for authoritative error code mappings. If this table conflicts with the A2A specification, the A2A specification takes precedence.
+
+HTTP and gRPC status codes are not injective: A2A §11.6 notes that several A2A error types share
+a single HTTP status. Runners MUST therefore identify an error by the JSON-RPC `error.code`, or by
+the `reason` field of the `google.rpc.ErrorInfo` object that A2A §11.6 requires in the error
+details, and MUST NOT infer the error type from the status alone.
 
 ### Example
 
@@ -660,9 +768,15 @@ Streaming operations (`send_streaming_message`, `subscribe_to_task`) return an o
 
 ```cddl
 expect-stream = {
+  stream-assertions,                ; Applied to every stream the step opens
+
+  ? timeout_ms: int,                ; Maximum time to wait for stream completion
+  ? streams: [+ stream-plan]        ; Open one stream per entry, concurrently (§7.3)
+}
+
+stream-assertions = (
   ? min_count: int,                 ; Minimum number of events
   ? max_count: int,                 ; Maximum number of events
-  ? timeout_ms: int,                ; Maximum time to wait for stream completion
   ? ordering: ordering-rule,        ; Ordering constraint on task states
 
   ; Event-level assertions
@@ -673,6 +787,12 @@ expect-stream = {
 
   ; All-events assertion (applied to every event)
   ? each_event: { * text => assertion }
+)
+
+stream-plan = {
+  stream-assertions,                ; Applied to this stream alone
+  ? description: text,              ; Names the stream in a failure report
+  ? disconnect_after: int           ; Read this many events, then hang up (§7.3)
 }
 
 ordering-rule = "monotonic_state"   ; Task states never regress
@@ -693,30 +813,44 @@ event-assertion = {
 }
 ```
 
+A stream event is a `StreamResponse`, a oneof over `task`, `message`, `status_update` and
+`artifact_update`. `event-assertion`, `final_event` and `each_event` may address it in either of
+two forms, and a runner MUST support both:
+
+- **Discriminated** — the payload arm is named, as above. This is the form that distinguishes one
+  kind of event from another, so `{message: {...}}` MUST NOT match a status update.
+- **Direct** — the assertion addresses the fields of the payload itself, without naming the arm,
+  as in `final_event: {status: {state: TASK_STATE_COMPLETED}}` against a `TaskStatusUpdateEvent`.
+
+Because the JSON bindings serialize the oneof with the ProtoJSON field naming of A2A §5.5, the
+discriminator arrives on the wire as `statusUpdate` and `artifactUpdate`. Runners MUST accept both
+that spelling and the `status_update` / `artifact_update` spelling used in this specification.
+
 ### 7.1. Ordering Rules
 
 When `ordering: monotonic_state` is specified, the runner MUST verify that task state transitions in the event stream follow the A2A state machine and never regress illegally.
 
 The A2A task states are:
 
-- **Non-terminal:** `TASK_STATE_SUBMITTED`, `TASK_STATE_WORKING`, `TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`
+- **Non-terminal:** `TASK_STATE_SUBMITTED`, `TASK_STATE_WORKING`
+- **Interrupted:** `TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`
 - **Terminal:** `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`
 
-The valid transitions are:
+The following transitions are **illegal** and MUST cause a test failure. This list is exhaustive:
+a transition it does not name MUST be accepted.
 
-```
-SUBMITTED → WORKING
-WORKING → COMPLETED | FAILED | CANCELED | REJECTED | INPUT_REQUIRED | AUTH_REQUIRED
-INPUT_REQUIRED → WORKING           (client sent more input)
-AUTH_REQUIRED → WORKING             (authorization was provided)
-```
-
-A state MAY repeat (e.g., multiple WORKING events). The following transitions are **illegal** and MUST cause a test failure:
-
-- Any state → SUBMITTED (SUBMITTED is only the initial state)
+- Any state → `TASK_STATE_SUBMITTED` (`TASK_STATE_SUBMITTED` is only the initial state)
 - Any terminal state → any state (terminal states are final)
 
-Note that `INPUT_REQUIRED → WORKING` and `AUTH_REQUIRED → WORKING` are valid (the interrupted condition was resolved). The `monotonic_state` rule enforces "no regression from terminal states" and "no illegal transitions," not a simple linear progression.
+A state MAY repeat (e.g., multiple `TASK_STATE_WORKING` events).
+
+The rule is deliberately not a linear progression, and a runner MUST NOT reject a transition on
+the grounds that it skipped an intermediate state. The A2A specification allows an agent to
+complete a task without ever reporting `TASK_STATE_WORKING`, and to reject one during initial
+creation, so `TASK_STATE_SUBMITTED → TASK_STATE_COMPLETED` and
+`TASK_STATE_SUBMITTED → TASK_STATE_REJECTED` are both legal. Recovery from an interrupted state
+(`TASK_STATE_INPUT_REQUIRED → TASK_STATE_WORKING`, `TASK_STATE_AUTH_REQUIRED → TASK_STATE_WORKING`)
+is likewise legal: the interrupting condition was resolved.
 
 ### Example
 
@@ -755,9 +889,126 @@ Note that `INPUT_REQUIRED → WORKING` and `AUTH_REQUIRED → WORKING` are valid
                 status:
                   state: TASK_STATE_COMPLETED
             - status_update:
-                final: true
                 status:
                   state: TASK_STATE_COMPLETED
+```
+
+---
+
+## 7.2. Push Delivery Assertions
+
+A push notification is a request the **SUT** makes, to a URL the runner supplied. It appears in
+no response, so none of the assertion blocks above can reach it: a test that registers a push
+configuration and stops has shown that the configuration API works and nothing about delivery.
+`expect_webhook` is the only construct whose subject is an inbound request.
+
+```cddl
+expect-webhook = {
+  task_id: text,                    ; Whose notifications to read; usually a captured id
+  ? min_count: int,                 ; Deliveries required before the step passes. Default 1
+  ? timeout_ms: int,                ; How long to wait for them. Default 10000
+  ? each_event: { * text => assertion },  ; Applied to every delivered payload
+  ? final_event: { * text => assertion }, ; Applied to the most recent delivery
+  ? token: assertion                ; The notification token the SUT must echo back
+}
+```
+
+A webhook step carries no `expect`, `expect_error`, `expect_stream`, `capture` or `repeat`: those
+address a reply to a request the runner made, and this step makes none.
+
+A runner MUST poll until `min_count` deliveries have arrived or `timeout_ms` elapses, and MUST
+fail the step when too few arrived, reporting how many did. Delivery is asynchronous, so a fixed
+wait would make a slow SUT indistinguishable from a silent one.
+
+A test using `expect_webhook` MUST declare `runner_requirements: [webhook_endpoint]`. A runner
+with no receiver of its own cannot host the URL the SUT calls back on, and MUST skip rather than
+report a failure it caused itself.
+
+`token` addresses the `X-A2A-Notification-Token` header carried on the delivery, which is how a
+receiver tells an authentic push from a forged one. It is the only part of push authentication a
+conformance runner can observe: whether a client *rejects* a forged call is a property of the
+client, not of the agent under test.
+
+```yaml
+- id: set-config
+  operation: create_push_config
+  params:
+    taskId: "{{create.taskId}}"
+    url: "{{webhookUrl}}"
+    token: "acts-push-token"
+
+- id: delivered
+  expect_webhook:
+    task_id: "{{create.taskId}}"
+    min_count: 1
+    token: "acts-push-token"
+    each_event:
+      any_of:
+        - task:
+            id: "{{create.taskId}}"
+        - statusUpdate:
+            taskId: "{{create.taskId}}"
+```
+
+---
+
+## 7.3. Concurrent Streams and Disconnection
+
+Some requirements are about the connections rather than the events on them: that an agent serves
+two subscribers to one task at once, and that it keeps serving one when the other goes away.
+Neither is observable from a single stream read to its end, however many assertions are made
+about the events it delivered.
+
+`streams` opens one stream per entry, **concurrently**, all from the step's single request. The
+assertions in the enclosing `expect_stream` apply to every stream; those in a `stream-plan` apply
+to that stream alone. A step that omits `streams` opens one stream, as before.
+
+A runner MUST issue the same request for every stream in a set. Concurrent streams are
+subscribers to one thing, so a runner that rebuilt the request per stream — generating a fresh
+`messageId` for each, as §12.4 requires it to do once — would be observing several different
+tasks and could conclude nothing about any of them.
+
+`disconnect_after` reads that many events and then **closes the connection**. A runner MUST
+actually close it, not merely stop reading: an abandoned response is closed eventually by
+whatever reclaims it, by which time the stream has ended and the SUT has observed no mid-stream
+disconnect at all.
+
+The two controls are independent. `disconnect_after` on the only stream of a step is the
+disconnect half of a resubscribe test; combined with `streams` it is what makes the members of a
+set differ.
+
+Restrictions, all of which exist to stop a test passing without exercising what it names:
+
+- A test whose step opens more than one stream MUST declare
+  `runner_requirements: [concurrent_streams]`, and one using `disconnect_after` MUST declare
+  `stream_disconnect`. A runner lacking either MUST skip the test. Prose in `description` is not
+  a declaration: `STREAM-MULTI-001`, `STREAM-MULTI-002` and `STREAM-RESUB-001` each described a
+  capability no runner had, executed a single undisturbed stream instead, and passed.
+- `max_count` MUST NOT appear on a plan with `disconnect_after`: the runner stops first, so the
+  limit cannot be exceeded.
+- `min_count` on such a plan MUST NOT exceed `disconnect_after`, which no stream could satisfy.
+- `timeout_ms` bounds the step, not one stream of it, and MUST NOT appear on a plan.
+- `capture` MUST NOT appear on a step opening more than one stream; which stream a value came
+  from would be decided by arrival order.
+
+A runner MUST report which stream a failure came from, naming it by its `description` where one
+is given.
+
+```yaml
+- id: subscribe
+  operation: subscribe_to_task
+  params:
+    id: "{{start.taskId}}"
+  expect_stream:
+    min_count: 1
+    streams:
+      - description: "hangs up after one event"
+        disconnect_after: 1
+      - description: "stays subscribed"
+        ordering: monotonic_state
+        final_event:
+          status:
+            state: TASK_STATE_COMPLETED
 ```
 
 ---
@@ -889,6 +1140,8 @@ client-response = {
 
 Client tests are valuable for catching interop bugs: they ensure that every SDK can parse responses produced by any other conformant SDK. The `client_response` payloads in the official test suite represent the canonical wire format for each abstract operation.
 
+A `wire_payload` is a canned response, but a JSON-RPC client correlates a response to its request by `id`, and it generates that `id` itself at call time. A fixed `id` in the payload can therefore never be the one the client is waiting for, and a client that validates the correlation — as JSON-RPC 2.0 requires — will reject the payload before parsing any of it. Where a `wire_payload` carries a JSON-RPC envelope, the runner MUST replace its `id` with the `id` of the request the client actually issued. The value written in the test file is a placeholder and carries no meaning.
+
 ### Example
 
 ```yaml
@@ -952,8 +1205,10 @@ behavior = {
 artifact-spec = {
   ? text: text,
   ? data: any,
-  ? file: { name: text, mediaType: text },
-  ? fileUrl: { url: text, name: text, mediaType: text }
+  ? raw: text,                      ; base64-encoded bytes
+  ? url: text,
+  ? filename: text,
+  ? mediaType: text
 }
 ```
 
@@ -965,6 +1220,7 @@ The following prefixes form the standard SUT behavior contract. Any SUT that imp
 |--------|----------|
 | `tck-complete-task` | Complete the task with a text response message. |
 | `tck-input-required` | Return task in `TASK_STATE_INPUT_REQUIRED` state. |
+| `tck-auth-required` | Return task in `TASK_STATE_AUTH_REQUIRED` state with a status message describing the required authorization. |
 | `tck-reject-task` | Reject the task with an error. |
 | `tck-message-response` | Return a `Message` (not a `Task`). |
 | `tck-artifact-text` | Complete with a text artifact. |
@@ -1034,6 +1290,28 @@ A runner MUST resolve variables in the following order of precedence (highest fi
 4. Built-in generators (`{{$uuid}}`)
 
 If a variable cannot be resolved, the runner MUST fail the step with a clear error message.
+
+**Runner-provided variables.** Some values a test needs are not properties of the SUT and
+cannot be written as literals: a credential, or a resource belonging to a principal other than
+the one the runner acts as. A runner MUST supply the following, and a test that references one
+MUST declare the corresponding `runner_requirement` so a runner that cannot supply it skips the
+test rather than failing it — the gap is in the runner, not the SUT:
+
+| Variable | Requirement | What the runner MUST supply |
+| --- | --- | --- |
+| `insufficientAuthToken` | `auth_credentials` | A credential that authenticates but does not authorize, so a test can tell a 403 apart from a 401. |
+| `otherUserTaskId` | `auth_credentials` | The id of a task belonging to a different principal, so a test can check that an inaccessible resource is not distinguishable from an absent one. |
+| `webhookUrl` | `webhook_endpoint` | A URL the runner is listening on, so the SUT's push notifications arrive somewhere a test can assert against with `expect_webhook` (§7.2). A literal cannot serve: an address nobody answers makes every delivery test vacuous. |
+
+`baseUrl` is also runner-provided; it is defined in §12.4 alongside the other protocol-level
+inputs.
+
+The *valid* credential is deliberately not a variable. A runner presents it on abstract
+operations as a matter of protocol compliance (§12.4), and raw steps are sent exactly as written
+(§4.4), so a test needing a request to go out **without** a credential gets that by writing no
+`Authorization` header, and one needing a bad credential names `insufficientAuthToken`. A
+`validAuthToken` variable would let an author write a raw step whose meaning depends on how the
+runner is configured rather than on the text of the test.
 
 ### 12.3. Transport Mapping
 
@@ -1592,49 +1870,49 @@ suites:
 The official A2A conformance test suite SHOULD be organized as follows:
 
 ```
-a2a-conformance/
-├── acts-spec.md                   # This specification
-├── v1.0/                          # Tests for A2A spec v1.0
-│   ├── suite.yaml                 # Master file listing all test files
-│   ├── discovery.yaml             # CARD-* tests
-│   ├── core-operations.yaml       # CORE-* tests
-│   ├── streaming.yaml             # STREAM-* tests
-│   ├── error-handling.yaml        # Error tests (CORE-ERR-*, CORE-CAP-*)
-│   ├── multi-turn.yaml            # CORE-MULTI-* tests
-│   ├── push-notifications.yaml    # PUSH-* tests
-│   ├── data-model.yaml            # DM-* tests
-│   ├── history.yaml               # CORE-HIST-* tests
-│   ├── version-negotiation.yaml   # VER-* tests
-│   ├── transport-jsonrpc.yaml     # JSONRPC-* tests
-│   ├── transport-grpc.yaml        # GRPC-* tests
-│   ├── transport-rest.yaml        # REST-* tests
-│   ├── client-parsing.yaml        # CLIENT-* client response tests
-│   ├── interop.yaml               # INTEROP-* tests (from cross-SDK bugs)
-│   └── sut-behaviors.yaml         # Standard SUT behavior contract
-└── v0.3/                          # Backward compatibility tests (if needed)
-    └── ...
+tests/acts/
+├── suite.acts.yaml                # Master file listing all test files
+├── discovery.acts.yaml            # CARD-* tests
+├── core-operations.acts.yaml      # CORE-SEND/GET/CANCEL/LIST/FAIL-* tests
+├── history.acts.yaml              # CORE-HIST-* tests
+├── multi-turn.acts.yaml           # CORE-MULTI-*, CORE-CTX-* tests
+├── streaming.acts.yaml            # STREAM-* tests
+├── polling.acts.yaml              # CORE-EXEC-* tests
+├── error-handling.acts.yaml       # CORE-ERR-*, CORE-CAP-*, JSONRPC-ERR-* tests
+├── auth-security.acts.yaml        # SEC-* tests
+├── version-negotiation.acts.yaml  # VER-* tests
+├── wire-format.acts.yaml          # DM-FMT-* tests
+├── data-types.acts.yaml           # DM-ART-*, DM-SERIAL-*, DM-EXTRA-* tests
+├── push-notifications.acts.yaml   # PUSH-* tests
+├── transport-bindings.acts.yaml   # JSONRPC-*, REST-*, GRPC-* binding tests
+└── client-parsing.acts.yaml       # CLIENT-* client response tests
 ```
 
-The `suite.yaml` master file references all test files in the version directory:
+Test files use the `.acts.yaml` extension so that a runner can discover them without being told
+which files in a directory are conformance tests. Each SUT publishes its own `sut-behaviors.yaml`
+(§11.1) declaring the `tck-*` prefixes it implements; that file describes an implementation rather
+than the suite, so it lives with the implementation, not here.
+
+The `suite.acts.yaml` master file references all test files in the directory:
 
 ```yaml
 acts_version: "1.0"
 spec_version: "1.0"
 include:
-  - discovery.yaml
-  - core-operations.yaml
-  - streaming.yaml
-  - error-handling.yaml
-  - multi-turn.yaml
-  - push-notifications.yaml
-  - data-model.yaml
-  - history.yaml
-  - version-negotiation.yaml
-  - transport-jsonrpc.yaml
-  - transport-grpc.yaml
-  - transport-rest.yaml
-  - client-parsing.yaml
-  - interop.yaml
+  - discovery.acts.yaml
+  - core-operations.acts.yaml
+  - history.acts.yaml
+  - multi-turn.acts.yaml
+  - streaming.acts.yaml
+  - polling.acts.yaml
+  - error-handling.acts.yaml
+  - auth-security.acts.yaml
+  - version-negotiation.acts.yaml
+  - wire-format.acts.yaml
+  - data-types.acts.yaml
+  - push-notifications.acts.yaml
+  - transport-bindings.acts.yaml
+  - client-parsing.acts.yaml
 ```
 
 ---
@@ -1714,6 +1992,7 @@ runner-requirement =
 
 preconditions = {
   ? capabilities: { * text => any },
+  ? authentication: bool,
   ? skills: [+ { id: text }],
   ? transport: [+ transport-binding],
   ? extensions: [+ text],
@@ -1721,7 +2000,7 @@ preconditions = {
 }
 
 ; ── Steps ─────────────────────────────────────────────────────────
-step = server-step / client-step / assertion-step / raw-step
+step = server-step / client-step / webhook-step / assertion-step / raw-step
 
 server-step = {
   id: text,
@@ -1768,6 +2047,7 @@ raw-step = {
   },
   ? expect: expect-block,
   ? expect_error: expect-error,
+  ? expect_stream: expect-stream,
   ? capture: { + text => text },
   ? assertions: [+ named-assertion]
 }
@@ -1808,58 +2088,76 @@ request-params = {
   ? cursor: text,
   ? pageSize: int,
   ? taskId: text,
-  ? pushNotificationConfig: any,
+  ? url: text,
+  ? token: text,
+  ? authentication: { scheme: text, ? credentials: text },
   * text => any
 }
 
 part = {
   ? text: text,
+  ? raw: text,
+  ? url: text,
   ? data: any,
-  ? file: {
-      ? url: text,
-      ? raw: text,
-      ? mediaType: text,
-      ? name: text
-    },
+  ? filename: text,
+  ? mediaType: text,
+  ? metadata: { * text => any },
   * text => any
 }
 
 ; ── Expect ────────────────────────────────────────────────────────
 expect-block = {
   ? status: assertion,
+  ? headers: { * text => assertion },
   ? body: { * text => assertion }
 }
 
 expect-error = {
-  error_type: a2a-error-type,
+  ? error_type: a2a-error-type,
   ? message: assertion,
-  ? details: { * text => assertion }
+  ? details: assertion
 }
 
-a2a-error-type =
+a2a-error-type = a2a-specific-error / jsonrpc-standard-error
+
+a2a-specific-error =
   "TaskNotFoundError" /
   "TaskNotCancelableError" /
+  "PushNotificationNotSupportedError" /
   "UnsupportedOperationError" /
   "ContentTypeNotSupportedError" /
-  "InvalidParamsError" /
-  "VersionNotSupportedError" /
-  "PushNotificationNotSupportedError" /
-  "StreamingNotSupportedError" /
+  "InvalidAgentResponseError" /
+  "ExtendedAgentCardNotConfiguredError" /
   "ExtensionSupportRequiredError" /
-  "ExtendedCardNotSupportedError" /
+  "VersionNotSupportedError"
+
+jsonrpc-standard-error =
   "JSONParseError" /
+  "InvalidRequestError" /
   "MethodNotFoundError" /
+  "InvalidParamsError" /
   "InternalError"
 
 ; ── Streaming ─────────────────────────────────────────────────────
 expect-stream = {
+  stream-assertions,
+  ? timeout_ms: int,
+  ? streams: [+ stream-plan]
+}
+
+stream-assertions = (
   ? min_count: int,
   ? max_count: int,
-  ? timeout_ms: int,
   ? ordering: ordering-rule,
   ? events: [+ event-assertion],
   ? final_event: { * text => assertion },
   ? each_event: { * text => assertion }
+)
+
+stream-plan = {
+  stream-assertions,
+  ? description: text,
+  ? disconnect_after: int
 }
 
 ordering-rule = "monotonic_state"
@@ -1895,7 +2193,8 @@ assertion-object = {
   ? count: int,
   ? count_gte: int,
   ? count_lte: int,
-  ? one_of: [+ any],
+  ? items: { * text => assertion } / [+ { * text => assertion }],
+  ? one_of: [+ (any / assertion)],
   ? all_of: [+ assertion],
   ? any_of: [+ assertion],
   ? not: assertion
@@ -1954,8 +2253,10 @@ behavior = {
 artifact-spec = {
   ? text: text,
   ? data: any,
-  ? file: { name: text, mediaType: text },
-  ? fileUrl: { url: text, name: text, mediaType: text }
+  ? raw: text,
+  ? url: text,
+  ? filename: text,
+  ? mediaType: text
 }
 
 ; ── Report Format ─────────────────────────────────────────────────

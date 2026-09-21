@@ -51,7 +51,7 @@ suites:
                       one_of:
                         - JSONRPC
                         - GRPC
-                        - REST
+                        - HTTP+JSON
                     protocolVersion:
                       type: string
 
@@ -133,10 +133,11 @@ suites:
 
       - id: CARD-CACHE-001
         name: Agent card caching headers
-        description: Runner SHOULD verify Cache-Control or ETag headers are present.
+        description: Verifies the agent card response carries a Cache-Control or ETag header.
         spec_ref: Agent Card Discovery
         level: should
-        tags: [discovery, caching, runner-special]
+        tags: [discovery, caching]
+        runner_requirements: [header_inspection]
         requires_behaviors: []
         steps:
           - id: step-1
@@ -144,6 +145,12 @@ suites:
             params: {}
             expect:
               status: 200
+              headers:
+                any_of:
+                  - Cache-Control:
+                      type: string
+                  - ETag:
+                      type: string
               body:
                 name:
                   exists: true
@@ -178,9 +185,8 @@ suites:
         requires_behaviors: []
         steps:
           - id: step-1
-            operation: get_agent_card
-            params:
-              extended: true
+            operation: get_extended_agent_card
+            params: {}
             expect:
               status: 200
               body:
@@ -192,7 +198,7 @@ suites:
 
       - id: CARD-DISC-007
         name: Agent card declares all supported protocols
-        description: Verifies that the public Agent Card declares at least one protocol endpoint through supportedInterfaces or a direct url field.
+        description: Verifies that the public Agent Card declares every protocol endpoint it serves in supportedInterfaces.
         spec_ref: REQ-BIND-002
         level: must
         requires_behaviors: []
@@ -203,9 +209,6 @@ suites:
             expect:
               status: 200
               body:
-                any_of:
-                  - supportedInterfaces:
-                      type: array
-                      count_gte: 1
-                  - url:
-                      type: string
+                supportedInterfaces:
+                  type: array
+                  count_gte: 1
