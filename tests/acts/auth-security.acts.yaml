@@ -68,6 +68,7 @@ suites:
         preconditions:
           authentication: true
         tags: [auth, runner-special]
+        runner_requirements: [auth_credentials]
         transport: [jsonrpc]
         steps:
           - id: send-with-sufficient-auth
@@ -118,6 +119,7 @@ suites:
         preconditions:
           authentication: true
         tags: [auth, security, runner-special]
+        runner_requirements: [auth_credentials]
         steps:
           - id: get-other-user-task
             description: >
@@ -336,6 +338,7 @@ suites:
           capabilities:
             extendedAgentCard: true
         tags: [auth, discovery, runner-special]
+        runner_requirements: [auth_credentials]
         transport: [rest]
         steps:
           - id: get-extended-card-insufficient-auth
