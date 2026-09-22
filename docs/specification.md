@@ -429,6 +429,45 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
+#### 3.1.12. Send Live Message
+
+<span id="3112-send-live-message"></span>
+
+Exchanges messages and artifacts with an agent over a live, bidirectional channel. The same operation serves both a long-lived session and a brief connect-send-disconnect exchange, so no separate operation is needed to write an artifact.
+
+**Inputs:**
+
+{{ proto_to_table("StreamRequest") }}
+
+**Outputs:**
+
+- [`Stream Response`](#323-stream-response) objects, as for [Send Streaming Message](#312-send-streaming-message), plus [`StreamError`](#424-streamerror) for non-fatal rejections.
+
+**Errors:**
+
+- [`UnsupportedOperationError`](#332-error-handling): The agent does not support live messaging.
+- [`TaskNotFoundError`](#332-error-handling): The referenced `taskId` does not exist or is not accessible.
+
+**Behavior:**
+
+A live exchange has two logical directions: an **uplink** carrying [`StreamRequest`](#3112-send-live-message) objects from the client, and a **downlink** carrying [`StreamResponse`](#323-stream-response) objects from the agent. How those directions map onto a connection depends on the transport:
+
+- **Transports with native duplex** (for example gRPC or WebSocket): both directions share one connection for the life of the exchange.
+- **HTTP transports**: the operation is invoked as a server stream. The invoking call's response is the **downlink** and remains open. To send further input, the client makes **additional, short-lived calls to the same operation**, correlating them with `taskId`. This is required because an HTTP request body is complete before the response begins, so a single call cannot carry later input.
+
+The following rules make the two mappings behave identically:
+
+- An uplink call that is not the downlink call MUST return only an acknowledgement — the current [`Task`](#411-task) state — and MUST NOT replay task events. All task events MUST be delivered on the downlink, so a client with both open never receives an event twice.
+- `StreamRequest.taskId` identifies the task an uplink call applies to. Clients continuing an existing task MUST set it, so that servers and intermediaries can route without inspecting the payload. It is unset when the exchange starts a new task.
+- Ordering is by arrival. Each accepted client message is appended to the task [`timeline`](#328-task-timeline-semantics) and advances `generation` (see [Task Generation Semantics](#327-task-generation-semantics)).
+- A `TaskArtifactUpdateEvent` sent on the uplink is a **client-written artifact**; its `role` SHOULD be `ROLE_USER`. Its `generation` is owned by the server: clients MUST leave it unset, servers MUST ignore any value received, and the server assigns the authoritative value when broadcasting the resulting event on the downlink.
+
+**Rejecting a single request:**
+
+An agent MAY decline an individual client request — because it is malformed, or because the agent is not accepting input at that moment — without ending the exchange. It does so by emitting a [`StreamError`](#424-streamerror) on the downlink, identifying the rejected request via `referenceId`. The stream remains open and the client MAY correct and retry. Only conditions that make the channel itself unusable terminate the stream as a transport-level error.
+
+Because rejection is per request, an agent that accepts input while `TASK_STATE_WORKING` is not committing to accept every message; it MAY decline individual ones while continuing to work.
+
 ### 3.2. Operation Parameter Objects
 
 This section defines common parameter objects used across multiple operations.
@@ -925,6 +964,14 @@ See [Task Timeline Semantics](#328-task-timeline-semantics).
 #### 4.2.3. TaskMessageUpdateEvent
 
 {{ proto_to_table("TaskMessageUpdateEvent") }}
+
+<a id="StreamError"></a>
+
+#### 4.2.4. StreamError
+
+{{ proto_to_table("StreamError") }}
+
+See [Send Live Message](#3112-send-live-message).
 
 ### 4.3. Push Notification Objects
 

@@ -160,11 +160,18 @@ message StreamRequest {
   oneof payload {
     // A message from the client.
     Message message = 2;
-    // A client-written artifact update.
+    // A client-written artifact update. The `generation` field is owned by the
+    // server: clients MUST leave it unset, servers MUST ignore any value sent,
+    // and the server stamps the authoritative value when it broadcasts the
+    // resulting event on the downlink.
     TaskArtifactUpdateEvent artifact_update = 3;
   }
   // Optional. Any metadata to provide along with the request.
   google.protobuf.Struct metadata = 4;
+  // Optional. The task this request belongs to. Required when continuing an
+  // existing task over a separate uplink call, so the server can route the
+  // request without inspecting the payload. Unset when starting a new task.
+  string task_id = 5;
 }
 
 // Configuration of a send message request.
@@ -937,7 +944,30 @@ message StreamResponse {
     TaskArtifactUpdateEvent artifact_update = 4;
     // An event indicating a new message was appended to the task (e.g. client input).
     TaskMessageUpdateEvent message_update = 5;
+    // A non-fatal rejection of a single client request on the uplink.
+    StreamError error = 6;
   }
+}
+
+// A non-fatal error reported on a live stream. It rejects a single client
+// request without terminating the stream, so the client can correct and retry.
+// Conditions that make the stream itself unusable remain transport-level errors
+// and close the stream as before.
+message StreamError {
+  // The ID of the task the rejected request applied to, when known.
+  string task_id = 1;
+  // A machine-readable identifier for the rejection, using the same codes as
+  // the equivalent unary operation (e.g. `INVALID_ARGUMENT` for a malformed
+  // request, `UNAVAILABLE` when the agent is not accepting input right now).
+  string code = 2 [(google.api.field_behavior) = REQUIRED];
+  // A human readable description of why the request was rejected.
+  string message = 3;
+  // Optional. The `message_id` of the rejected client `Message`, or the
+  // `artifact_id` of the rejected artifact update, so the client can correlate
+  // the rejection with what it sent.
+  string reference_id = 4;
+  // Optional. Metadata associated with the rejection.
+  google.protobuf.Struct metadata = 5;
 }
 
 // Represents a successful response for the `ListTaskPushNotificationConfigs`
