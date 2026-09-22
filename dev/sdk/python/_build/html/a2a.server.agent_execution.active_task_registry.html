@@ -334,6 +334,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.grpc_status.html">a2a.utils.grpc_status module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.push_url_validator.html">a2a.utils.push_url_validator module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.telemetry.html">a2a.utils.telemetry module</a></li>
@@ -400,11 +401,9 @@ force-closes every registered <code class="docutils literal notranslate"><span c
 <code class="docutils literal notranslate"><span class="pre">asyncio.Task</span></code> is left pending at event-loop shutdown. Safe to call
 multiple times.</p>
 <p>The close flag is set and the active-task snapshot is taken under
-<code class="docutils literal notranslate"><span class="pre">_lock</span></code>, and the lock is then released before awaiting, because
-<code class="docutils literal notranslate"><span class="pre">_remove_task</span></code> re-acquires <code class="docutils literal notranslate"><span class="pre">_lock</span></code>; holding it while draining
-would deadlock. Marking closed under the same lock prevents a
-concurrent <code class="docutils literal notranslate"><span class="pre">get_or_create</span></code> from registering a task that the drain
-would miss.</p>
+<code class="docutils literal notranslate"><span class="pre">_lock</span></code>, then the lock is released before awaiting the drain. Marking
+closed under the same lock prevents a concurrent <code class="docutils literal notranslate"><span class="pre">get_or_create</span></code> from
+registering a task that the drain would miss.</p>
 </dd></dl>
 
 <dl class="py method">

@@ -334,6 +334,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.grpc_status.html">a2a.utils.grpc_status module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.push_url_validator.html">a2a.utils.push_url_validator module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.telemetry.html">a2a.utils.telemetry module</a></li>
@@ -430,7 +431,7 @@ Python 3.10/3.12 async queues in consumers, and for the test suite.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.event_queue_v2.EventQueueSink.tap">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_queue_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#a2a.server.events.event_queue_v2.EventQueueSink" title="a2a.server.events.event_queue_v2.EventQueueSink"><span class="pre">EventQueueSink</span></a></span></span><a class="headerlink" href="#a2a.server.events.event_queue_v2.EventQueueSink.tap" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_queue_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evict_on_full</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#a2a.server.events.event_queue_v2.EventQueueSink" title="a2a.server.events.event_queue_v2.EventQueueSink"><span class="pre">EventQueueSink</span></a></span></span><a class="headerlink" href="#a2a.server.events.event_queue_v2.EventQueueSink.tap" title="Link to this definition">¶</a></dt>
 <dd><p>Creates a child queue that receives future events.</p>
 <p>Note: The tapped queue may receive some old events if the incoming event
 queue is lagging behind and hasn’t dispatched them yet.</p>
@@ -494,15 +495,31 @@ Python 3.10/3.12 async queues in consumers, and for the test suite.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.event_queue_v2.EventQueueSource.remove_sink">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">remove_sink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sink</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.server.events.event_queue_v2.EventQueueSink" title="a2a.server.events.event_queue_v2.EventQueueSink"><span class="pre">EventQueueSink</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.server.events.event_queue_v2.EventQueueSource.remove_sink" title="Link to this definition">¶</a></dt>
-<dd><p>Removes a sink from the source’s internal list.</p>
+<dd><p>Removes a sink from the source’s internal list if present.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.server.events.event_queue_v2.EventQueueSource.tap">
-<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_queue_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#a2a.server.events.event_queue_v2.EventQueueSink" title="a2a.server.events.event_queue_v2.EventQueueSink"><span class="pre">EventQueueSink</span></a></span></span><a class="headerlink" href="#a2a.server.events.event_queue_v2.EventQueueSource.tap" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">tap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_queue_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1024</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evict_on_full</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#a2a.server.events.event_queue_v2.EventQueueSink" title="a2a.server.events.event_queue_v2.EventQueueSink"><span class="pre">EventQueueSink</span></a></span></span><a class="headerlink" href="#a2a.server.events.event_queue_v2.EventQueueSource.tap" title="Link to this definition">¶</a></dt>
 <dd><p>Taps the event queue to create a new child queue that receives future events.</p>
 <p>Note: The tapped queue may receive some old events if the incoming event
 queue is lagging behind and hasn’t dispatched them yet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_queue_size</strong> – Bound for the new sink’s queue.</p></li>
+<li><p><strong>evict_on_full</strong> – When True, the dispatcher treats this sink as a
+broadcast observer: if its queue is full at delivery time, the
+sink is force-closed and detached instead of blocking dispatch
+(and, transitively, every producer) behind it. When False (the
+default), a full sink back-pressures dispatch, preserving the
+documented flow-control behavior. Use True for sinks that may
+fall more than <code class="docutils literal notranslate"><span class="pre">max_queue_size</span></code> events behind the dispatcher,
+such as remote subscribers, whether because their consumer went
+away or because it is merely slow.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

@@ -1,7 +1,7 @@
 a2a.server.request_handlers.default_request_handler module
 **********************************************************
 
-class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None)
+class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
 
    Bases: "RequestHandler"
 

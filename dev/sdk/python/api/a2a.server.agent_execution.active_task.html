@@ -334,6 +334,7 @@
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.grpc_status.html">a2a.utils.grpc_status module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.json_utils.html">a2a.utils.json_utils module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.proto_utils.html">a2a.utils.proto_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="a2a.utils.push_url_validator.html">a2a.utils.push_url_validator module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.signing.html">a2a.utils.signing module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.task.html">a2a.utils.task module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="a2a.utils.telemetry.html">a2a.utils.telemetry module</a></li>
@@ -471,6 +472,11 @@ subscriber sink was never drained. It is safe to call multiple times.</p>
 <dt class="sig sig-object py" id="a2a.server.agent_execution.active_task.ActiveTask.cancel">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call_context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.server.context.html#a2a.server.context.ServerCallContext" title="a2a.server.context.ServerCallContext"><span class="pre">ServerCallContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.Task" title="a2a.compat.v0_3.types.Task"><span class="pre">Task</span></a></span></span><a class="headerlink" href="#a2a.server.agent_execution.active_task.ActiveTask.cancel" title="Link to this definition">¶</a></dt>
 <dd><p>Cancels the running active task.</p>
+<p>The returned task carries a terminal state, which is written to the
+task store. That write is not guaranteed to reach an active subscriber
+stream: by the time cancel writes it the event queues may already be
+closed, so a client that was streaming may have to re-read the task to
+observe the terminal state.</p>
 <p>Concurrency Guarantee:
 Uses <cite>_lock</cite> to ensure we don’t attempt to cancel a producer that is
 already winding down or hasn’t started. It fires the cancellation signal

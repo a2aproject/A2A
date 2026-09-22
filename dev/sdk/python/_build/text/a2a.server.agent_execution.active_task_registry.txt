@@ -18,11 +18,10 @@ class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_e
       Safe to call multiple times.
 
       The close flag is set and the active-task snapshot is taken
-      under "_lock", and the lock is then released before awaiting,
-      because "_remove_task" re-acquires "_lock"; holding it while
-      draining would deadlock. Marking closed under the same lock
-      prevents a concurrent "get_or_create" from registering a task
-      that the drain would miss.
+      under "_lock", then the lock is released before awaiting the
+      drain. Marking closed under the same lock prevents a concurrent
+      "get_or_create" from registering a task that the drain would
+      miss.
 
    async get(task_id: str) -> ActiveTask | None
 

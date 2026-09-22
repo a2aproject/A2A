@@ -1,7 +1,7 @@
 a2a.server.tasks.base_push_notification_sender module
 *****************************************************
 
-class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None)
+class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None, *, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
 
    Bases: "PushNotificationSender"
 

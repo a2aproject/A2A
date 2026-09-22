@@ -1,0 +1,24 @@
+a2a.utils.push_url_validator module
+***********************************
+
+Shared policy for screening client-supplied push-notification URLs.
+
+async a2a.utils.push_url_validator.validate_push_notification_url(url: str) -> bool
+
+   Return True if a push-notification URL is safe to fetch.
+
+   Blocks non-HTTP(S) schemes and hosts that resolve to loopback,
+   link-local, private, reserved, multicast, or unspecified addresses
+   (e.g. 169.254.169.254 cloud metadata, internal services). A host
+   that cannot be resolved is rejected: the POST would fail anyway,
+   and failing closed avoids treating resolution errors as a bypass.
+
+   IPv4-mapped IPv6 forms are covered: "ipaddress" maps them to the
+   underlying IPv4 address, so the "is_private"/"is_loopback" checks
+   apply to the mapped value.
+
+   Uses the running event-loop resolver so request handlers and the
+   sender stay non-blocking. Deployments can pass this function as
+   "push_url_validator" on "DefaultRequestHandler" /
+   "DefaultRequestHandlerV2" / "BasePushNotificationSender". The
+   default on those constructors is "None" (no library screening).

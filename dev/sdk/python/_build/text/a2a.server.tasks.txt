@@ -195,7 +195,7 @@ Module contents
 
 Components for managing tasks within the A2A server.
 
-class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None)
+class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None, *, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
 
    Bases: "PushNotificationSender"
 
@@ -731,7 +731,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fe5091ec050>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fe39e4a6e50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.

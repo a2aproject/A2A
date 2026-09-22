@@ -13,6 +13,7 @@ Submodules
    a2a.utils.grpc_status
    a2a.utils.json_utils
    a2a.utils.proto_utils
+   a2a.utils.push_url_validator
    a2a.utils.signing
    a2a.utils.task
    a2a.utils.telemetry

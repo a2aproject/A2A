@@ -100,6 +100,12 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
 
       Cancels the running active task.
 
+      The returned task carries a terminal state, which is written to
+      the task store. That write is not guaranteed to reach an active
+      subscriber stream: by the time cancel writes it the event queues
+      may already be closed, so a client that was streaming may have
+      to re-read the task to observe the terminal state.
+
       Concurrency Guarantee: Uses *_lock* to ensure we don't attempt
       to cancel a producer that is already winding down or hasn't
       started. It fires the cancellation signal and blocks until the

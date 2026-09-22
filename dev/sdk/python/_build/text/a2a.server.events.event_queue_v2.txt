@@ -41,7 +41,7 @@ class a2a.server.events.event_queue_v2.EventQueueSink(*args: Any, **kwargs: Any)
 
       Returns the underlying asyncio.Queue of this sink.
 
-   async tap(max_queue_size: int = 1024) -> EventQueueSink
+   async tap(max_queue_size: int = 1024, evict_on_full: bool = False) -> EventQueueSink
 
       Creates a child queue that receives future events.
 
@@ -103,9 +103,9 @@ class a2a.server.events.event_queue_v2.EventQueueSource(*args: Any, **kwargs: An
 
    async remove_sink(sink: EventQueueSink) -> None
 
-      Removes a sink from the source's internal list.
+      Removes a sink from the source's internal list if present.
 
-   async tap(max_queue_size: int = 1024) -> EventQueueSink
+   async tap(max_queue_size: int = 1024, evict_on_full: bool = False) -> EventQueueSink
 
       Taps the event queue to create a new child queue that receives
       future events.
@@ -113,6 +113,20 @@ class a2a.server.events.event_queue_v2.EventQueueSource(*args: Any, **kwargs: An
       Note: The tapped queue may receive some old events if the
       incoming event queue is lagging behind and hasn't dispatched
       them yet.
+
+      Parameters:
+         * **max_queue_size** -- Bound for the new sink's queue.
+
+         * **evict_on_full** -- When True, the dispatcher treats this
+           sink as a broadcast observer: if its queue is full at
+           delivery time, the sink is force-closed and detached
+           instead of blocking dispatch (and, transitively, every
+           producer) behind it. When False (the default), a full sink
+           back-pressures dispatch, preserving the documented flow-
+           control behavior. Use True for sinks that may fall more
+           than "max_queue_size" events behind the dispatcher, such as
+           remote subscribers, whether because their consumer went
+           away or because it is merely slow.
 
    task_done() -> None
 
