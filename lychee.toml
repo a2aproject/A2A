@@ -8,7 +8,7 @@ max_concurrency = 6
 timeout = 30
 
 # Accept these HTTP status codes as valid
-accept = [200, 201, 204, 301, 302, 307, 308, 403, 429, 503]
+accept = [200, 201, 202, 204, 301, 302, 307, 308, 403, 429, 503]
 
 # Exclude URL patterns (regex)
 exclude = [
@@ -31,6 +31,10 @@ exclude = [
     # Example/placeholder URLs used in documentation
     'token\.actions\.githubusercontent\.com',
     'github\.com/example/',
+
+    # Partner site with an expired SSL cert, no working variant (#2100); keep
+    # partners.md itself checked so future dead links are caught.
+    'https://www\.crubyt\.com',
 
     # Sites that timeout or block GitHub Actions IPs
     'w3\.org',
@@ -78,14 +82,12 @@ exclude_path = [
     # template expressions (e.g. {{ ... }}) that lychee misreads as file paths.
     ".mkdocs",
     # Source docs (PR / changed-file checks)
-    "docs/partners.md",
     "docs/robots.txt",
     "docs/llms.txt",
     "docs/spec/a2a.json",
     "docs/spec-proto.md",
     "docs/sdk/python.md",
     # Built site equivalents (scheduled site/ checks)
-    '(^|/)partners(/|$)',
     '(^|/)robots\.txt$',
     '(^|/)llms\.txt$',
     '(^|/)spec/a2a\.json$',
