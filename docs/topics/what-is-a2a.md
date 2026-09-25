@@ -164,7 +164,7 @@ protocol does not depend on, or favor, any single framework.
 
 ### A2A Request Lifecycle
 
-A request follows four main steps across three stages: agent discovery, authentication, and the messaging APIs (`sendMessage` and `sendMessageStream`). The diagrams below break the flow into these three stages and show how the client, A2A server, and auth server interact.
+A request follows four main steps across three stages: agent discovery, authentication, and the messaging APIs (`SendMessage` and `SendStreamingMessage`). The diagrams below break the flow into these three stages and show how the client, A2A server, and auth server interact.
 
 #### 1. Agent discovery
 
@@ -177,7 +177,7 @@ sequenceDiagram
 
     rect rgb(240, 240, 240)
     Note over Client, A2A Server: 1. Agent Discovery
-    Client->>A2A Server: GET agent card eg: (/.well-known/agent-card)
+    Client->>A2A Server: GET agent card eg: (/.well-known/agent-card.json)
     A2A Server-->>Client: Returns Agent Card
     end
 ```
@@ -201,9 +201,9 @@ sequenceDiagram
     end
 ```
 
-#### 3. The sendMessage and sendMessageStream APIs
+#### 3. The SendMessage and SendStreamingMessage APIs
 
-The client sends messages to the server's endpoint — either a single request/response with `sendMessage`, or a stream of task updates with `sendMessageStream`.
+The client sends messages to the server's endpoint — either a single request/response with `SendMessage`, or a stream of task updates with `SendStreamingMessage`.
 
 ```mermaid
 sequenceDiagram
@@ -211,16 +211,16 @@ sequenceDiagram
     participant A2A Server
 
     rect rgb(240, 240, 240)
-    Note over Client, A2A Server: 3. sendMessage API
-    Client->>Client: Parse Agent Card for "url" param to send API requests to.
-    Client->>A2A Server: POST /sendMessage (with JWT)
+    Note over Client, A2A Server: 3. SendMessage API
+    Client->>Client: Select an interface from supportedInterfaces.
+    Client->>A2A Server: POST /message:send (with JWT)
     A2A Server->>A2A Server: Process message and create task
     A2A Server-->>Client: Returns Task Response
     end
 
     rect rgb(240, 240, 240)
-    Note over Client, A2A Server: 4. sendMessageStream API
-    Client->>A2A Server: POST /sendMessageStream (with JWT)
+    Note over Client, A2A Server: 4. SendStreamingMessage API
+    Client->>A2A Server: POST /message:stream (with JWT)
     A2A Server-->>Client: Stream: Task (Submitted)
     A2A Server-->>Client: Stream: TaskStatusUpdateEvent (Working)
     A2A Server-->>Client: Stream: TaskArtifactUpdateEvent (artifact A)

@@ -99,7 +99,13 @@ The following is an example of an Agent Card with an extension:
   "name": "Magic 8-ball",
   "description": "An agent that can tell your future... maybe.",
   "version": "0.1.0",
-  "url": "https://example.com/agents/eightball",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/agents/eightball",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
   "capabilities": {
     "streaming": true,
     "extensions": [
