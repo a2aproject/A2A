@@ -1,5 +1,7 @@
 # Agent2Agent (A2A) Protocol
 
+Part of the <a href="https://aaif.io/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/aaif/AAIF_Primary_Logo_White.svg"><img src="docs/assets/aaif/AAIF_Primary_Logo_Black.svg" alt="Agentic AI Foundation" height="40" style="vertical-align: middle;"></picture></a>
+
 [![PyPI - Version](https://img.shields.io/pypi/v/a2a-sdk)](https://pypi.org/project/a2a-sdk)
 [![Apache License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 <a href="https://codewiki.google/github.com/a2aproject/a2a">
