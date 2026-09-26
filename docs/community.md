@@ -104,6 +104,12 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 [MisterVVP/a2a-cpp](https://github.com/MisterVVP/a2a-cpp) · A2A spec v1.0.0 · C++20 SDK with client/server APIs, discovery, REST/JSON-RPC/gRPC transports, streaming, authentication hooks, CMake/vcpkg build integration, and a TCK conformance workflow.
 
+### 🐘 PHP — a2a-php
+
+![Stars](https://img.shields.io/github/stars/praveendias1180/a2a-php?style=flat-square) [![Packagist](https://img.shields.io/packagist/v/praveendias1180/a2a-php?style=flat-square)](https://packagist.org/packages/praveendias1180/a2a-php) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/praveendias1180/a2a-php/ci.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/praveendias1180/a2a-php/actions/workflows/ci.yml) [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square)](https://praveendias1180.github.io/a2a-php/)
+
+[praveendias1180/a2a-php](https://github.com/praveendias1180/a2a-php) · A2A spec v1.0.0 · Mirrors the official Python SDK class for class. JSON-RPC/REST with SSE streaming, push notifications, card signing, v0.3 compatibility, and a Laravel bridge; passes the TCK MUST level in CI.
+
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues/new?title=Community%20SDK%20Submission) with a link to your repository and published package.
 
