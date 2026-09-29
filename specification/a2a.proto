@@ -212,6 +212,14 @@ message Task {
 }
 
 // Defines the possible lifecycle states of a `Task`.
+//
+// States are either terminal or non-terminal. Terminal states (COMPLETED,
+// FAILED, CANCELED, REJECTED) end the task: the server accepts no further
+// messages or updates for it. Non-terminal states, including the interrupted
+// states INPUT_REQUIRED and AUTH_REQUIRED, leave the task lifecycle under the
+// server's control: the server may continue processing the task and transition
+// it to another state (including out of an interrupted state) without a message
+// from the client, and may accept further messages.
 enum TaskState {
   // The task is in an unknown or indeterminate state.
   TASK_STATE_UNSPECIFIED = 0;
