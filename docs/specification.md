@@ -207,7 +207,7 @@ The operation MUST establish a streaming connection for real-time updates. The s
 
 1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` object and then close immediately. No task tracking or updates are provided.
 
-2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`).
+2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`). A non-terminal state, including an interrupted state (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`), SHOULD NOT by itself close the stream.
 
 The agent MAY return a `Task` for complex processing with status/artifact updates or MAY return a `Message` for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
 
@@ -873,6 +873,13 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 #### 4.1.3. TaskState
 
 {{ proto_enum_to_table("TaskState") }}
+
+Task states are either **terminal** or **non-terminal**:
+
+- **Terminal states** — `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`. The task is finished; the server **MUST NOT** accept further messages or emit further updates for it.
+- **Non-terminal states** — every other state, including the *interrupted* states `TASK_STATE_INPUT_REQUIRED` and `TASK_STATE_AUTH_REQUIRED`. The task is ongoing and the server retains control of its lifecycle: it **MAY** continue processing the task and transition it to any other state — including out of an interrupted state — without a message from the client, and **MAY** continue to accept messages directed to the task.
+
+An interrupted state signals that the agent is awaiting client input (`TASK_STATE_INPUT_REQUIRED`) or authorization (`TASK_STATE_AUTH_REQUIRED`) to make further progress. It is a non-terminal state and does not end the task or transfer lifecycle control to the client.
 
 <a id="Message"></a>
 
@@ -3104,7 +3111,7 @@ data: { /* StreamResponse object */ }
 ```
 
 **Referenced Objects:** [`StreamResponse`](#323-stream-response)
-Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
+Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal state, at which point the stream closes. A non-terminal state, including an interrupted state (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`), does not necessitate closing the stream (see [Send Streaming Message](#312-send-streaming-message)). Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
 
 ## 12. Custom Binding Guidelines
 
