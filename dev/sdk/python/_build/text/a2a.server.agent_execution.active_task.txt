@@ -57,7 +57,7 @@ Data Flow and Event Handling: 1. Producer
      requests, creating a temporary subscription that yields events
      and automatically finishes once the request is completed.
 
-class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None)
+class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None, event_stream: TaskEventStream | None = None)
 
    Bases: "object"
 

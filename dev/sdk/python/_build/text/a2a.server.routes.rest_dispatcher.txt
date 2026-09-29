@@ -1,6 +1,14 @@
 a2a.server.routes.rest_dispatcher module
 ****************************************
 
+class a2a.server.routes.rest_dispatcher.A2AJSONResponse(content: Any, status_code: int = 200, headers: Mapping[str, str] | None = None, media_type: str | None = None, background: BackgroundTask | None = None)
+
+   Bases: "JSONResponse"
+
+   JSONResponse labelled with the A2A media type.
+
+   media_type = 'application/a2a+json'
+
 class a2a.server.routes.rest_dispatcher.RestDispatcher(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None)
 
    Bases: "object"

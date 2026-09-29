@@ -77,6 +77,118 @@ Subpackages
 
       * "SimpleRequestContextBuilder.build()"
 
+* a2a.server.cluster package
+
+  * Submodules
+
+    * a2a.server.cluster.database_event_stream module
+
+      * "DatabaseTaskEventStream"
+
+      * "stream_response_to_event()"
+
+    * a2a.server.cluster.database_task_store module
+
+      * "VersionedDatabaseTaskStore"
+
+    * a2a.server.cluster.event_stream module
+
+      * "TaskEventStream"
+
+      * "VersionedEvent"
+
+    * a2a.server.cluster.task_store module
+
+      * "ConcurrentTaskModificationError"
+
+      * "LegacyTaskStoreAdapter"
+
+      * "StoredTask"
+
+      * "VersionedTaskStore"
+
+    * a2a.server.cluster.version module
+
+      * "TaskVersion"
+
+  * Module contents
+
+    * "ConcurrentTaskModificationError"
+
+    * "DatabaseTaskEventStream"
+
+      * "DatabaseTaskEventStream.destroy()"
+
+      * "DatabaseTaskEventStream.initialize()"
+
+      * "DatabaseTaskEventStream.publish()"
+
+      * "DatabaseTaskEventStream.subscribe()"
+
+    * "LegacyTaskStoreAdapter"
+
+      * "LegacyTaskStoreAdapter.delete()"
+
+      * "LegacyTaskStoreAdapter.get()"
+
+      * "LegacyTaskStoreAdapter.list()"
+
+      * "LegacyTaskStoreAdapter.save()"
+
+      * "LegacyTaskStoreAdapter.store"
+
+    * "StoredTask"
+
+      * "StoredTask.task"
+
+      * "StoredTask.version"
+
+    * "TaskEventStream"
+
+      * "TaskEventStream.destroy()"
+
+      * "TaskEventStream.publish()"
+
+      * "TaskEventStream.subscribe()"
+
+    * "TaskVersion"
+
+      * "TaskVersion.MISSING"
+
+      * "TaskVersion.is_after()"
+
+      * "TaskVersion.is_missing"
+
+    * "VersionedDatabaseTaskStore"
+
+      * "VersionedDatabaseTaskStore.as_task_store"
+
+      * "VersionedDatabaseTaskStore.delete()"
+
+      * "VersionedDatabaseTaskStore.get()"
+
+      * "VersionedDatabaseTaskStore.initialize()"
+
+      * "VersionedDatabaseTaskStore.list()"
+
+      * "VersionedDatabaseTaskStore.save()"
+
+    * "VersionedEvent"
+
+      * "VersionedEvent.event"
+
+      * "VersionedEvent.version"
+
+    * "VersionedTaskStore"
+
+      * "VersionedTaskStore.delete()"
+
+      * "VersionedTaskStore.get()"
+
+      * "VersionedTaskStore.list()"
+
+      * "VersionedTaskStore.save()"
+
 * a2a.server.events package
 
   * Submodules
@@ -364,6 +476,8 @@ Subpackages
 
     * a2a.server.routes.rest_dispatcher module
 
+      * "A2AJSONResponse"
+
       * "RestDispatcher"
 
     * a2a.server.routes.rest_routes module
@@ -548,11 +662,15 @@ Subpackages
 
     * "TaskManager"
 
+      * "TaskManager.current_version"
+
       * "TaskManager.ensure_task()"
 
       * "TaskManager.ensure_task_id()"
 
       * "TaskManager.get_task()"
+
+      * "TaskManager.invalidate()"
 
       * "TaskManager.process()"
 
@@ -718,6 +836,30 @@ Submodules
 
     * "PushNotificationConfigModel.task_id"
 
+  * "TaskEventMixin"
+
+    * "TaskEventMixin.event_data"
+
+    * "TaskEventMixin.owner"
+
+    * "TaskEventMixin.seq"
+
+    * "TaskEventMixin.task_id"
+
+    * "TaskEventMixin.task_version"
+
+  * "TaskEventModel"
+
+    * "TaskEventModel.event_data"
+
+    * "TaskEventModel.owner"
+
+    * "TaskEventModel.seq"
+
+    * "TaskEventModel.task_id"
+
+    * "TaskEventModel.task_version"
+
   * "TaskMixin"
 
     * "TaskMixin.artifacts"
@@ -762,9 +904,29 @@ Submodules
 
     * "TaskModel.task_metadata"
 
+  * "TaskVersionMixin"
+
+    * "TaskVersionMixin.owner"
+
+    * "TaskVersionMixin.task_id"
+
+    * "TaskVersionMixin.version"
+
+  * "TaskVersionModel"
+
+    * "TaskVersionModel.owner"
+
+    * "TaskVersionModel.task_id"
+
+    * "TaskVersionModel.version"
+
   * "create_push_notification_config_model()"
 
+  * "create_task_event_model()"
+
   * "create_task_model()"
+
+  * "create_task_version_model()"
 
   * "override()"
 

@@ -1,0 +1,30 @@
+a2a.server.cluster.event_stream module
+**************************************
+
+class a2a.server.cluster.event_stream.TaskEventStream
+
+   Bases: "ABC"
+
+   Delivers task events across replicas.
+
+   abstractmethod async destroy(task_id: str) -> None
+
+      Releases resources for a task that has reached a terminal state.
+
+   abstractmethod async publish(task_id: str, event: VersionedEvent) -> None
+
+      Publishes one event for *task_id* to all replicas.
+
+   abstractmethod subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+
+      Yields events for *task_id* newer than *after*.
+
+class a2a.server.cluster.event_stream.VersionedEvent(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent, version: TaskVersion)
+
+   Bases: "object"
+
+   An event together with the task version produced by applying it.
+
+   event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+   version: TaskVersion

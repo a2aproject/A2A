@@ -11,6 +11,7 @@ Submodules
    a2a.utils.error_handlers
    a2a.utils.errors
    a2a.utils.grpc_status
+   a2a.utils.input_mode_validator
    a2a.utils.json_utils
    a2a.utils.proto_utils
    a2a.utils.push_url_validator

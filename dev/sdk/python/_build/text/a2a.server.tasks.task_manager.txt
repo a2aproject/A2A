@@ -1,7 +1,7 @@
 a2a.server.tasks.task_manager module
 ************************************
 
-class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
+class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
 
    Bases: "object"
 
@@ -9,6 +9,10 @@ class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore, context: 
 
    Responsible for retrieving, saving, and updating the *Task* object
    based on events received from the agent.
+
+   property current_version: TaskVersion
+
+      The version of the most recently read/written task snapshot.
 
    async ensure_task(event: TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Task
 
@@ -46,7 +50,14 @@ class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore, context: 
       Returns:
          The *Task* object if found, otherwise *None*.
 
-   async process(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+   invalidate() -> None
+
+      Drops the cached snapshot so the next read hits the store.
+
+      Only safe at a request boundary; used to pick up state another
+      replica may have advanced.
+
+   async process(event: Event) -> Event
 
       Processes an event, updates the task state if applicable, stores
       it, and returns the event.

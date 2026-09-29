@@ -47,6 +47,10 @@ Submodules
 
 * a2a.server.routes.rest_dispatcher module
 
+  * "A2AJSONResponse"
+
+    * "A2AJSONResponse.media_type"
+
   * "RestDispatcher"
 
     * "RestDispatcher.delete_push_notification()"
@@ -149,10 +153,24 @@ a2a.server.routes.add_a2a_routes_to_fastapi(app: FastAPI, *, agent_card_routes: 
 
       * **rest_routes** -- Routes returned by "create_rest_routes".
 
-a2a.server.routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json') -> list[Route]
+a2a.server.routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json', cache_control: str | None = None) -> list[Route]
 
    Creates the Starlette Route for the A2A protocol agent card
    endpoint.
+
+   Parameters:
+      * **agent_card** -- The *AgentCard* to serve.
+
+      * **card_modifier** -- Optional callback to adjust the card per
+        request.
+
+      * **card_url** -- Path the card is served from.
+
+      * **cache_control** -- Value for the *Cache-Control* response
+        header, e.g. "'public, max-age=3600'". A *max-age* has to suit
+        the agent's expected update frequency, which only the
+        deployment knows, so there is no default. The *ETag* is sent
+        either way, and revalidating against it costs one 304.
 
 a2a.server.routes.create_jsonrpc_routes(request_handler: RequestHandler, rpc_url: str, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False) -> list[Route]
 

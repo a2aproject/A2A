@@ -1,0 +1,98 @@
+a2a.server.cluster.task_store module
+************************************
+
+exception a2a.server.cluster.task_store.ConcurrentTaskModificationError(task_id: str)
+
+   Bases: "Exception"
+
+   Raised by *VersionedTaskStore.save* when *prev_version* is stale.
+
+class a2a.server.cluster.task_store.LegacyTaskStoreAdapter(store: TaskStore)
+
+   Bases: "VersionedTaskStore"
+
+   Runs an unversioned *TaskStore* under the *VersionedTaskStore*
+   interface.
+
+   async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task via the wrapped store.
+
+   async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Gets from the wrapped store, pairing the result with MISSING.
+
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Lists tasks via the wrapped store.
+
+   async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None, prev: Task | None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Saves via the wrapped store; ignores version args, returns
+      MISSING.
+
+   property store: TaskStore
+
+      The wrapped task store.
+
+class a2a.server.cluster.task_store.StoredTask(task: Task, version: TaskVersion)
+
+   Bases: "object"
+
+   A task together with the version it was read at.
+
+   task: Task
+
+   version: TaskVersion
+
+class a2a.server.cluster.task_store.VersionedTaskStore
+
+   Bases: "ABC"
+
+   A *TaskStore* variant with snapshot versioning to prevent
+   concurrent re-writes.
+
+   abstractmethod async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task from the store by ID.
+
+   abstractmethod async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Retrieves a task with its version, or *None* if it does not
+      exist.
+
+   abstractmethod async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Retrieves a list of tasks from the store.
+
+   abstractmethod async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None, prev: Task | None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Persists *task* and returns its new version.
+
+      Parameters:
+         * **task** -- The task state to persist.
+
+         * **event** -- The event that produced this state, or *None*
+           for a direct write.
+
+         * **prev** -- The task as previously read, for
+           implementations that diff.
+
+         * **prev_version** -- The version *task* was derived from.
+           Implementations MUST raise
+           *ConcurrentTaskModificationError* if the currently stored
+           version differs. *TaskVersion.MISSING* marks a first write.
+           A write moving *task* to CANCELED overwrites a non-terminal
+           stored task without a version check, and raises
+           *ConcurrentTaskModificationError* if the stored task is
+           already terminal or absent.
+
+         * **context** -- The server call context (used to resolve the
+           owner).
+
+      Returns:
+         The new *TaskVersion* for the persisted task.
+
+      Raises:
+         **ConcurrentTaskModificationError** -- If *prev_version* is
+         stale.

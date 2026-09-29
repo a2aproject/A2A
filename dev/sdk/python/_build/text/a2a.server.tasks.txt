@@ -137,11 +137,15 @@ Submodules
 
   * "TaskManager"
 
+    * "TaskManager.current_version"
+
     * "TaskManager.ensure_task()"
 
     * "TaskManager.ensure_task_id()"
 
     * "TaskManager.get_task()"
+
+    * "TaskManager.invalidate()"
 
     * "TaskManager.process()"
 
@@ -529,7 +533,7 @@ class a2a.server.tasks.ResultAggregator(task_manager: TaskManager)
          the final *Message* if one was received, or *None* if no
          result has been produced yet.
 
-class a2a.server.tasks.TaskManager(task_store: TaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
+class a2a.server.tasks.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
 
    Bases: "object"
 
@@ -537,6 +541,10 @@ class a2a.server.tasks.TaskManager(task_store: TaskStore, context: ServerCallCon
 
    Responsible for retrieving, saving, and updating the *Task* object
    based on events received from the agent.
+
+   property current_version: TaskVersion
+
+      The version of the most recently read/written task snapshot.
 
    async ensure_task(event: TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Task
 
@@ -574,7 +582,14 @@ class a2a.server.tasks.TaskManager(task_store: TaskStore, context: ServerCallCon
       Returns:
          The *Task* object if found, otherwise *None*.
 
-   async process(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+   invalidate() -> None
+
+      Drops the cached snapshot so the next read hits the store.
+
+      Only safe at a request boundary; used to pick up state another
+      replica may have advanced.
+
+   async process(event: Event) -> Event
 
       Processes an event, updates the task state if applicable, stores
       it, and returns the event.
@@ -731,7 +746,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926710450>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.

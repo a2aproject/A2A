@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    a2a.server.agent_execution
+   a2a.server.cluster
    a2a.server.events
    a2a.server.request_handlers
    a2a.server.routes

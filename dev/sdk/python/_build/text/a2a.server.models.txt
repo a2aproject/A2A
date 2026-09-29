@@ -51,6 +51,43 @@ class a2a.server.models.PushNotificationConfigModel(**kwargs)
 
    task_id: Mapped[str]
 
+class a2a.server.models.TaskEventMixin
+
+   Bases: "object"
+
+   Mixin providing columns for an append-only task-event log.
+
+   Written transactionally with the task row by the clustered
+   *VersionedTaskStore* and read by *DatabaseTaskEventStream*. Only
+   used by *a2a.server.cluster*; unused by the default single-process
+   stores.
+
+   event_data: Mapped[bytes] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   owner: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   seq: Mapped[int] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_version: Mapped[int] = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.TaskEventModel(**kwargs)
+
+   Bases: "TaskEventMixin", "Base"
+
+   Default task-event model with standard table name.
+
+   event_data: Mapped[bytes]
+
+   owner: Mapped[str]
+
+   seq: Mapped[int]
+
+   task_id: Mapped[str]
+
+   task_version: Mapped[int]
+
 class a2a.server.models.TaskMixin
 
    Bases: "object"
@@ -103,10 +140,38 @@ class a2a.server.models.TaskModel(**kwargs)
 
    task_metadata
 
+class a2a.server.models.TaskVersionMixin
+
+   Bases: "object"
+
+   Mixin providing the compare-and-swap version for a task.
+
+   owner: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   version: Mapped[int] = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.TaskVersionModel(**kwargs)
+
+   Bases: "TaskVersionMixin", "Base"
+
+   Default task-version model with standard table name.
+
+   owner: Mapped[str]
+
+   task_id: Mapped[str]
+
+   version: Mapped[int]
+
 a2a.server.models.create_push_notification_config_model(table_name: str = 'push_notification_configs', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
 
    Create a PushNotificationConfigModel class with a configurable
    table name.
+
+a2a.server.models.create_task_event_model(table_name: str = 'task_events', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a TaskEventModel class with a configurable table name.
 
 a2a.server.models.create_task_model(table_name: str = 'tasks', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
 
@@ -134,6 +199,10 @@ a2a.server.models.create_task_model(table_name: str = 'tasks', base: type[Declar
       from myapp.database import Base as MyBase
 
       TaskModel = create_task_model('tasks', MyBase)
+
+a2a.server.models.create_task_version_model(table_name: str = 'task_versions', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a TaskVersionModel class with a configurable table name.
 
 a2a.server.models.override(func)
 

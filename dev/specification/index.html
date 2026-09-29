@@ -7534,7 +7534,7 @@
 <p>Centering the proto file as the normative source ensures protocol neutrality, reduces specification drift, and provides a deterministic evolution path for the ecosystem.</p>
 <h2 id="2-terminology">2. Terminology<a class="headerlink" href="#2-terminology" title="Permanent link">&para;</a></h2>
 <h3 id="21-requirements-language">2.1. Requirements Language<a class="headerlink" href="#21-requirements-language" title="Permanent link">&para;</a></h3>
-<p>The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a>.</p>
+<p>The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="https://datatracker.ietf.org/doc/html/rfc2119">RFC 2119</a>.</p>
 <h3 id="22-core-concepts">2.2. Core Concepts<a class="headerlink" href="#22-core-concepts" title="Permanent link">&para;</a></h3>
 <p>A2A revolves around several key concepts. For detailed explanations, please refer to the <a href="../topics/key-concepts/">Key Concepts guide</a>.</p>
 <ul>
@@ -8362,7 +8362,7 @@
 <ol>
 <li><strong>Error Code</strong>: A machine-readable identifier for the error type (e.g., string code, numeric code, or protocol-specific status)</li>
 <li><strong>Error Message</strong>: A human-readable description of the error</li>
-<li><strong>Error Details</strong> (optional): An array of objects providing additional structured information about the error. Each object in the array <strong>MUST</strong> include a <code>@type</code> key that identifies the object's type (using <a href="https://protobuf.dev/programming-guides/json">ProtoJSON <code>Any</code> representation</a>). Well-known types from the <a href="https://cloud.google.com/apis/design/errors#error_model"><code>google.rpc</code> error model</a> (e.g., <code>ErrorInfo</code>, <code>BadRequest</code>) <strong>SHOULD</strong> be used where applicable. Error details may be used for:<ul>
+<li><strong>Error Details</strong> (optional): An array of objects providing additional structured information about the error. Each object in the array <strong>MUST</strong> include a <code>@type</code> key that identifies the object's type (using <a href="https://protobuf.dev/programming-guides/json/">ProtoJSON <code>Any</code> representation</a>). Well-known types from the <a href="https://cloud.google.com/apis/design/errors#error_model"><code>google.rpc</code> error model</a> (e.g., <code>ErrorInfo</code>, <code>BadRequest</code>) <strong>SHOULD</strong> be used where applicable. Error details may be used for:<ul>
 <li>Affected fields or parameters</li>
 <li>Contextual information (e.g., task ID, timestamp)</li>
 <li>Suggestions for resolution</li>
@@ -10746,9 +10746,9 @@ so that clients can distinguish between incompatible versions:</p>
 <li>Set the <code>tenant</code> field in every request message to exactly the value declared in the selected <code>AgentInterface</code> entry (omit the field if <code>tenant</code> is not set in that entry)</li>
 </ol>
 <h3 id="84-agent-card-signing">8.4. Agent Card Signing<a class="headerlink" href="#84-agent-card-signing" title="Permanent link">&para;</a></h3>
-<p>Agent Cards <strong>MAY</strong> be digitally signed using JSON Web Signature (JWS) as defined in <a href="https://tools.ietf.org/html/rfc7515">RFC 7515</a> to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.</p>
+<p>Agent Cards <strong>MAY</strong> be digitally signed using JSON Web Signature (JWS) as defined in <a href="https://datatracker.ietf.org/doc/html/rfc7515">RFC 7515</a> to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.</p>
 <h4 id="841-canonicalization-requirements">8.4.1. Canonicalization Requirements<a class="headerlink" href="#841-canonicalization-requirements" title="Permanent link">&para;</a></h4>
-<p>Before signing, the Agent Card content <strong>MUST</strong> be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in <a href="https://tools.ietf.org/html/rfc8785">RFC 8785</a>. This ensures consistent signature generation and verification across different JSON implementations.</p>
+<p>Before signing, the Agent Card content <strong>MUST</strong> be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in <a href="https://datatracker.ietf.org/doc/html/rfc8785">RFC 8785</a>. This ensures consistent signature generation and verification across different JSON implementations.</p>
 <p><strong>Canonicalization Rules:</strong></p>
 <ol>
 <li>
@@ -10801,7 +10801,7 @@ so that clients can distinguish between incompatible versions:</p>
 <div class="language-json highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="p">{</span><span class="nt">"capabilities"</span><span class="p">:{</span><span class="nt">"pushNotifications"</span><span class="p">:</span><span class="kc">false</span><span class="p">,</span><span class="nt">"streaming"</span><span class="p">:</span><span class="kc">false</span><span class="p">},</span><span class="nt">"description"</span><span class="p">:</span><span class="s2">""</span><span class="p">,</span><span class="nt">"name"</span><span class="p">:</span><span class="s2">"Example Agent"</span><span class="p">,</span><span class="nt">"skills"</span><span class="p">:[]}</span>
 </span></code></pre></div>
 <h4 id="842-signature-format">8.4.2. Signature Format<a class="headerlink" href="#842-signature-format" title="Permanent link">&para;</a></h4>
-<p>Signatures use the JSON Web Signature (JWS) format as defined in <a href="https://tools.ietf.org/html/rfc7515">RFC 7515</a>. The <a href="#447-agentcardsignature"><code>AgentCardSignature</code></a> object represents JWS components using three fields:</p>
+<p>Signatures use the JSON Web Signature (JWS) format as defined in <a href="https://datatracker.ietf.org/doc/html/rfc7515">RFC 7515</a>. The <a href="#447-agentcardsignature"><code>AgentCardSignature</code></a> object represents JWS components using three fields:</p>
 <ul>
 <li><strong><code>protected</code></strong> (required, string): Base64url-encoded JSON object containing the JWS Protected Header</li>
 <li><strong><code>signature</code></strong> (required, string): Base64url-encoded signature value</li>
@@ -10965,7 +10965,7 @@ so that clients can distinguish between incompatible versions:</p>
 </ul>
 <h4 id="862-client-requirements">8.6.2. Client Requirements<a class="headerlink" href="#862-client-requirements" title="Permanent link">&para;</a></h4>
 <ul>
-<li>Clients <strong>SHOULD</strong> honor HTTP caching semantics as defined in <a href="https://www.rfc-editor.org/rfc/rfc9111">RFC 9111</a> when fetching Agent Cards</li>
+<li>Clients <strong>SHOULD</strong> honor HTTP caching semantics as defined in <a href="https://datatracker.ietf.org/doc/html/rfc9111">RFC 9111</a> when fetching Agent Cards</li>
 <li>When a cached Agent Card has expired, clients <strong>SHOULD</strong> use conditional requests (<code>If-None-Match</code> with the stored <code>ETag</code>, or <code>If-Modified-Since</code>) to avoid re-downloading unchanged cards</li>
 <li>When the server does not include caching headers, clients <strong>MAY</strong> apply an implementation-specific default cache duration</li>
 </ul>

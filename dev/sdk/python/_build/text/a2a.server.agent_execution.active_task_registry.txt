@@ -1,7 +1,7 @@
 a2a.server.agent_execution.active_task_registry module
 ******************************************************
 
-class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore, push_sender: PushNotificationSender | None = None)
+class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, push_sender: PushNotificationSender | None = None, event_stream: TaskEventStream | None = None)
 
    Bases: "object"
 

@@ -183,6 +183,7 @@ Streams return a payload containing one of:
 - sdk/python/a2a.migrations.txt
 - sdk/python/a2a.migrations.versions.38ce57e08137_add_column_protocol_version.txt
 - sdk/python/a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated.txt
+- sdk/python/a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_events.txt
 - sdk/python/a2a.migrations.versions.txt
 - sdk/python/a2a.server.agent_execution.active_task.txt
 - sdk/python/a2a.server.agent_execution.active_task_registry.txt
@@ -191,6 +192,12 @@ Streams return a payload containing one of:
 - sdk/python/a2a.server.agent_execution.request_context_builder.txt
 - sdk/python/a2a.server.agent_execution.simple_request_context_builder.txt
 - sdk/python/a2a.server.agent_execution.txt
+- sdk/python/a2a.server.cluster.database_event_stream.txt
+- sdk/python/a2a.server.cluster.database_task_store.txt
+- sdk/python/a2a.server.cluster.event_stream.txt
+- sdk/python/a2a.server.cluster.task_store.txt
+- sdk/python/a2a.server.cluster.txt
+- sdk/python/a2a.server.cluster.version.txt
 - sdk/python/a2a.server.context.txt
 - sdk/python/a2a.server.events.event_consumer.txt
 - sdk/python/a2a.server.events.event_queue.txt
@@ -238,6 +245,7 @@ Streams return a payload containing one of:
 - sdk/python/a2a.utils.error_handlers.txt
 - sdk/python/a2a.utils.errors.txt
 - sdk/python/a2a.utils.grpc_status.txt
+- sdk/python/a2a.utils.input_mode_validator.txt
 - sdk/python/a2a.utils.json_utils.txt
 - sdk/python/a2a.utils.proto_utils.txt
 - sdk/python/a2a.utils.push_url_validator.txt
@@ -551,12 +559,12 @@ The launch of A2A has sparked lively discussions and positive reactions across v
 
 These agentic frameworks have built-in A2A integration, making it easy to get started:
 
-- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/a2a/)
+- [Agent Development Kit (ADK)](https://adk.dev/a2a/)
 - [Agno](https://docs.agno.com/agent-os/interfaces/a2a/introduction)
 - [AG2](https://docs.ag2.ai/latest/docs/user-guide/a2a/)
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
 - [CrewAI](https://docs.crewai.com/en/learn/a2a-agent-delegation)
-- [Hector](https://github.com/kadirpekel/hector)
+- [Hector](https://github.com/verikod/hector)
 - [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
@@ -583,9 +591,9 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 ### 🍎 Swift — A2AClient
 
-![Stars](https://img.shields.io/github/stars/tolgaki/a2a-client-swift?style=flat-square)
+![Stars](https://img.shields.io/github/stars/tolgaki/a2a-swift-client?style=flat-square)
 
-[tolgaki/a2a-client-swift](https://github.com/tolgaki/a2a-client-swift) · A2A spec v1.0.0 · Swift Package Manager. iOS 15+, macOS 12+, watchOS 8+, tvOS 15+.
+[tolgaki/a2a-swift-client](https://github.com/tolgaki/a2a-swift-client) · A2A spec v1.0.0 · Swift Package Manager. iOS 15+, macOS 12+, watchOS 8+, tvOS 15+.
 
 ### 💧 Elixir — a2a
 
@@ -692,7 +700,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
 !!! abstract ""
     Build with
-    **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
+    **[![ADK Logo](https://adk.dev/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://adk.dev/)** _(or any framework)_,
     equip with **[![MCP Logo](https://modelcontextprotocol.io/mcp.png){class="twemoji lg middle"} MCP](https://modelcontextprotocol.io)** _(or any tool)_,
     and communicate with
     **![A2A Logo](./assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg){class="twemoji lg middle"} A2A**,
@@ -768,7 +776,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://deeplearning.ai) - Intro to A2A
+- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://www.deeplearning.ai) - Intro to A2A
 
     [![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
 
@@ -846,10 +854,10 @@ collaborate effectively with each other and with users.
 - [Airia](https://airia.com)
 - [Aisera](https://aisera.com/)
 - [AlgoVoi](https://algovoi.co.uk)
-- [AliCloud](http://www.alibabacloud.com)
+- [AliCloud](https://www.alibabacloud.com)
 - [Almawave.it](https://www.almawave.com/it/)
 - [AmikoNet](https://amikonet.ai)
-- [ArcBlock](http://www.arcblock.io)
+- [ArcBlock](https://www.arcblock.io)
 - [Arize](https://arize.com/blog/arize-ai-and-future-of-agent-interoperability-embracing-googles-a2a-protocol/)
 - [Articul8](https://www.articul8.ai/blog/unleashing-the-next-frontier-of-enterprise-ai-introducing-model-mesh-dock-and-inter-lock-and-our-a2-a-partnership-with-google)
 - [ask-ai.com](https://ask-ai.com)
@@ -858,7 +866,7 @@ collaborate effectively with each other and with users.
 - [Autodesk](https://www.autodesk.com)
 - [Auto Agent Protocol](https://autoagentprotocol.org/)
 - [AWS](https://aws.amazon.com/)
-- [Beekeeper](http://beekeeper.io)
+- [Beekeeper](https://beekeeper.io)
 - [BCG](https://www.bcg.com)
 - [Block Inc](https://block.xyz/)
 - [Bloomberg LP](https://techatbloomberg.com/)
@@ -866,7 +874,7 @@ collaborate effectively with each other and with users.
 - [BMC Software Inc](https://www.bmc.com/it-solutions/bmc-helix.html)
 - [Boomi](https://boomi.com/)
 - [Box](https://www.box.com)
-- [Bridge2Things Automation Process GmbH](http://bridge2things.at)
+- [Bridge2Things Automation Process GmbH](https://bridge2things.at)
 - [Cafe 24](https://www.cafe24corp.com/en/company/about)
 - [C3 AI](https://c3.ai)
 - [Capgemini](https://www.capgemini.com)
@@ -881,7 +889,7 @@ collaborate effectively with each other and with users.
 - [Contextual](https://contextual.ai)
 - [Cotality](https://cotality.com) (fka Corelogic)
 - [Crubyt](https://www.crubyt.com)
-- [Cyderes](http://www.cyderes.com)
+- [Cyderes](https://www.cyderes.com)
 - [Datadog](https://www.datadoghq.com)
 - [DataRobot](https://www.datarobot.com)
 - [DataStax](https://www.datastax.com)
@@ -890,7 +898,7 @@ collaborate effectively with each other and with users.
 - [Deloitte](https://www.prnewswire.com/news-releases/deloitte-expands-alliances-with-google-cloud-and-servicenow-to-accelerate-agentic-ai-adoption-in-the-enterprise-302423941.html)
 - [Devnagri](https://devnagri.com)
 - [Deutsche Telekom](https://www.telekom.com/en)
-- [Dexter Tech Labs](http://www.dextertechlabs.com)
+- [Dexter Tech Labs](https://www.dextertechlabs.com)
 - [Distyl.ai](https://distyl.ai)
 - [Elastic](https://www.elastic.co)
 - [Ema.co](https://ema.co)
@@ -898,12 +906,12 @@ collaborate effectively with each other and with users.
 - [Eviden (Atos Group)](https://atos.net/)
 - [FAF](https://faf.one/)
 - [fractal.ai](https://fractal.ai/new)
-- [GenAI Nebula9.ai Solutions Pvt Ltd](http://nebula9.ai)
+- [GenAI Nebula9.ai Solutions Pvt Ltd](https://nebula9.ai)
 - [Glean](https://www.glean.com)
 - [Global Logic](https://www.globallogic.com/)
 - [Gravitee](https://www.gravitee.io/)
 - [GrowthLoop](https://growthloop.com)
-- [Guru](http://www.getguru.com)
+- [Guru](https://www.getguru.com)
 - [Harness](https://harness.io)
 - [HCLTech](https://www.hcltech.com)
 - [Headwaters](https://www.headwaters.co.jp)
@@ -922,10 +930,10 @@ collaborate effectively with each other and with users.
 - [Kakao](https://www.kakaocorp.com)
 - [King's College London](https://www.kcl.ac.uk/informatics)
 - [KPMG](https://kpmg.com/us/en/media/news/kpmg-google-cloud-alliance-expansion-agentspace-adoption.html)
-- [Kyndryl](http://www.kyndryl.com)
+- [Kyndryl](https://www.kyndryl.com)
 - [LabelBox](https://labelbox.com)
 - [LangChain](https://www.langchain.com)
-- [LG CNS](http://www.lgcns.com)
+- [LG CNS](https://www.lgcns.com)
 - [Livex.ai](https://livex.ai)
 - [LlamaIndex](https://x.com/llama_index/status/1912949446322852185)
 - [LTIMindTtree](https://www.ltimindtree.com)
@@ -942,8 +950,8 @@ collaborate effectively with each other and with users.
 - [Monite](https://monite.com/)
 - [Neo4j](https://neo4j.com)
 - [New Relic](https://newrelic.com)
-- [Nisum](http://www.nisum.com)
-- [Noorle Inc](http://www.noorle.com)
+- [Nisum](https://www.nisum.com)
+- [Noorle Inc](https://www.noorle.com)
 - [NTT DATA](https://www.nttdata.com)
 - [OpenAgents](https://openagents.org)
 - [Optimizely Inc](https://www.optimizely.com/)
@@ -962,7 +970,7 @@ collaborate effectively with each other and with users.
 - [Radix](https://radix.website/)
 - [RagaAI Inc](https://raga.ai/)
 - [Red Hat](https://www.redhat.com)
-- [Reltio Inc](http://www.reltio.com)
+- [Reltio Inc](https://www.reltio.com)
 - [S&P](https://www.spglobal.com)
 - [Sage](https://www.sage.com/en-us/)
 - [Salesforce](https://www.salesforce.com)
@@ -982,18 +990,18 @@ collaborate effectively with each other and with users.
 - [Tech Mahindra](https://www.techmahindra.com/)
 - [Telefonica](https://www.telefonica.com/)
 - [Test Innovation Technology](https://www.test-it.com)
-- [the artinet project](https://artinet.io/)
-- [Think41](http://www.think41.com)
+- [The artinet project](https://artinet.io/)
+- [Think41](https://www.think41.com)
 - [Thoughtworks](https://www.thoughtworks.com/)
-- [Tieqi Tech (铁旗科技)](https://www.itieqi.com)
+- [Tieqi Tech](https://www.itieqi.com)
 - [Tredence](http://www.tredence.com)
 - [Two Tall Totems Ltd. DBA TTT Studios](https://ttt.studio)
 - [Typeface](https://typeface.ai)
 - [UKG](https://www.ukg.com)
 - [UiPath](https://www.uipath.com/newsroom/uipath-launches-first-enterprise-grade-platform-for-agentic-automation)
 - [Upwork, Inc.](https://www.upwork.com/)
-- [Ushur, Inc.](http://ushur.ai)
-- [Valle AI](http://www.valleai.com.br)
+- [Ushur, Inc.](https://ushur.ai)
+- [Valle AI](https://www.valleai.com.br)
 - [Valtech](https://www.valtech.com/)
 - [Vervelo](https://www.vervelo.com/)
 - [VoltAgent](https://voltagent.dev/)
@@ -1007,7 +1015,7 @@ collaborate effectively with each other and with users.
 - [Zeotap](https://www.zeotap.com)
 - [Zocket Technologies , Inc.](https://zocket.ai)
 - [Zoom](https://www.zoom.us)
-- [zyprova](http://www.zyprova.com)
+- [zyprova](https://www.zyprova.com)
 </file>
 
 <file path="docs/roadmap.md">
@@ -1187,7 +1195,7 @@ Centering the proto file as the normative source ensures protocol neutrality, re
 
 ### 2.1. Requirements Language
 
-The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 ### 2.2. Core Concepts
 
@@ -1602,7 +1610,7 @@ All error responses in the A2A protocol, regardless of binding, **MUST** convey 
 
 1. **Error Code**: A machine-readable identifier for the error type (e.g., string code, numeric code, or protocol-specific status)
 2. **Error Message**: A human-readable description of the error
-3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
+3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json/)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
     - Affected fields or parameters
     - Contextual information (e.g., task ID, timestamp)
     - Suggestions for resolution
@@ -3072,11 +3080,11 @@ Clients **MUST** follow these rules:
 
 ### 8.4. Agent Card Signing
 
-Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
+Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
 
 #### 8.4.1. Canonicalization Requirements
 
-Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://tools.ietf.org/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
+Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://datatracker.ietf.org/doc/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
 
 **Canonicalization Rules:**
 
@@ -3128,7 +3136,7 @@ After applying RFC 8785:
 
 #### 8.4.2. Signature Format
 
-Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
+Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
 
 - **`protected`** (required, string): Base64url-encoded JSON object containing the JWS Protected Header
 - **`signature`** (required, string): Base64url-encoded signature value
@@ -3293,7 +3301,7 @@ Agent Card content changes infrequently relative to the frequency at which clien
 
 #### 8.6.2. Client Requirements
 
-- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) when fetching Agent Cards
+- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://datatracker.ietf.org/doc/html/rfc9111) when fetching Agent Cards
 - When a cached Agent Card has expired, clients **SHOULD** use conditional requests (`If-None-Match` with the stored `ETag`, or `If-Modified-Since`) to avoid re-downloading unchanged cards
 - When the server does not include caching headers, clients **MAY** apply an implementation-specific default cache duration
 
@@ -5277,7 +5285,7 @@ maintainers identified in `MAINTAINERS.md`.
 **Requirements:**
 
 - Specifications MUST use the same language as the core specification
-    ([RFC 2119](https://tools.ietf.org/html/rfc2119))
+    ([RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119))
 - MUST be licensed under Apache 2.0
 - MUST have at least one reference implementation
 - SHOULD have associated documentation on the A2A website
@@ -11880,7 +11888,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd9283b0e60>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0516e4ac60>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11906,7 +11914,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd9283b0d70>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0516e4b200>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -11950,7 +11958,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd9283b0e60>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0516e4ac60>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -11970,7 +11978,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd9283b0d70>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0516e4b200>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16448,7 +16456,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16483,7 +16491,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16536,7 +16544,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16571,7 +16579,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926710450>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16587,7 +16595,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16604,7 +16612,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926710450>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f350>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16656,7 +16664,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -16875,7 +16883,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16910,7 +16918,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16963,7 +16971,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16998,7 +17006,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926710450>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -17014,7 +17022,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17031,7 +17039,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926710450>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f350>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17083,7 +17091,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926712a50> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -17185,6 +17193,13 @@ Subpackages
 
       * "upgrade()"
 
+    * a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_e
+      vents module
+
+      * "downgrade()"
+
+      * "upgrade()"
+
   * Module contents
 
 
@@ -17252,6 +17267,24 @@ a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated.upgrade() ->
    Upgrade schema.
 </file>
 
+<file path="sdk/python/a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_events.txt">
+a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_events module
+****************************************************************************
+
+add task_versions and task_events tables
+
+Revision ID: b5e3d1c8a2f7 Revises: 38ce57e08137 Create Date:
+2026-09-14 10:00:00.000000
+
+a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_events.downgrade() -> None
+
+   Downgrade schema: drop the task_events and task_versions tables.
+
+a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_events.upgrade() -> None
+
+   Upgrade schema: create the task_versions and task_events tables.
+</file>
+
 <file path="sdk/python/a2a.migrations.versions.txt">
 a2a.migrations.versions package
 *******************************
@@ -17269,6 +17302,13 @@ Submodules
 
 * a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated
   module
+
+  * "downgrade()"
+
+  * "upgrade()"
+
+* a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_event
+  s module
 
   * "downgrade()"
 
@@ -17341,7 +17381,7 @@ Data Flow and Event Handling: 1. Producer
      requests, creating a temporary subscription that yields events
      and automatically finishes once the request is completed.
 
-class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None)
+class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None, event_stream: TaskEventStream | None = None)
 
    Bases: "object"
 
@@ -17440,7 +17480,7 @@ class a2a.server.agent_execution.active_task.EventConsumer(active_task: ActiveTa
 a2a.server.agent_execution.active_task_registry module
 ******************************************************
 
-class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore, push_sender: PushNotificationSender | None = None)
+class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, push_sender: PushNotificationSender | None = None, event_stream: TaskEventStream | None = None)
 
    Bases: "object"
 
@@ -18014,6 +18054,554 @@ class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_ref
       Returns:
          An instance of RequestContext populated with the provided
          information and potentially a list of related tasks.
+</file>
+
+<file path="sdk/python/a2a.server.cluster.database_event_stream.txt">
+a2a.server.cluster.database_event_stream module
+***********************************************
+
+class a2a.server.cluster.database_event_stream.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5)
+
+   Bases: "TaskEventStream"
+
+   *TaskEventStream* backed by polling the shared "task_events" table.
+
+   async destroy(task_id: str) -> None
+
+      No-op: the append-only log is retained; subscribers stop on
+      their own.
+
+   async initialize() -> None
+
+      Creates the "task_events" table if requested.
+
+   async publish(task_id: str, event: VersionedEvent) -> None
+
+      No-op: events are persisted transactionally by the task store.
+
+   async subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+
+      Polls the log for events of *task_id* newer than *after*.
+
+a2a.server.cluster.database_event_stream.stream_response_to_event(response: StreamResponse) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+   Converts a *StreamResponse* proto back to an internal *Event*.
+</file>
+
+<file path="sdk/python/a2a.server.cluster.database_task_store.txt">
+a2a.server.cluster.database_task_store module
+*********************************************
+
+class a2a.server.cluster.database_task_store.VersionedDatabaseTaskStore(engine: ~sqlalchemy.ext.asyncio.engine.AsyncEngine, create_table: bool = True, table_name: str = 'tasks', owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, core_to_model_conversion: ~collections.abc.Callable[[~a2a_pb2.Task, str], ~a2a.server.models.TaskModel] | None = None, model_to_core_conversion: ~collections.abc.Callable[[~a2a.server.models.TaskModel], ~a2a_pb2.Task] | None = None, event_table_name: str = 'task_events', version_table_name: str = 'task_versions', max_attempts: int = 5, retry_delay_s: float = 0.02)
+
+   Bases: "VersionedTaskStore"
+
+   *VersionedTaskStore* backed by SQLAlchemy.
+
+   property as_task_store: TaskStore
+
+      The underlying non-versioned *TaskStore*.
+
+   async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task and its version row via the underlying store.
+
+   async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Returns the task with its stored version, or None if absent.
+
+      Retries transient contention (e.g. a lock held while another
+      writer commits) rather than failing the read.
+
+   async initialize() -> None
+
+      Initializes the database schema (task, version and event
+      tables).
+
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Lists tasks via the underlying store.
+
+   async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None = None, prev: Task | None = None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Persists *task* with a compare-and-swap on the version side
+      table.
+
+      The version lives in "task_versions", not on the tasks row, and
+      counts writes to the task: the first write sets 1 and every
+      later write adds 1. Updates CAS on it; cancel overwrites a non-
+      terminal task. When *event* is provided it is appended to
+      "task_events" in the same transaction for cross-replica replay.
+</file>
+
+<file path="sdk/python/a2a.server.cluster.event_stream.txt">
+a2a.server.cluster.event_stream module
+**************************************
+
+class a2a.server.cluster.event_stream.TaskEventStream
+
+   Bases: "ABC"
+
+   Delivers task events across replicas.
+
+   abstractmethod async destroy(task_id: str) -> None
+
+      Releases resources for a task that has reached a terminal state.
+
+   abstractmethod async publish(task_id: str, event: VersionedEvent) -> None
+
+      Publishes one event for *task_id* to all replicas.
+
+   abstractmethod subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+
+      Yields events for *task_id* newer than *after*.
+
+class a2a.server.cluster.event_stream.VersionedEvent(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent, version: TaskVersion)
+
+   Bases: "object"
+
+   An event together with the task version produced by applying it.
+
+   event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+   version: TaskVersion
+</file>
+
+<file path="sdk/python/a2a.server.cluster.task_store.txt">
+a2a.server.cluster.task_store module
+************************************
+
+exception a2a.server.cluster.task_store.ConcurrentTaskModificationError(task_id: str)
+
+   Bases: "Exception"
+
+   Raised by *VersionedTaskStore.save* when *prev_version* is stale.
+
+class a2a.server.cluster.task_store.LegacyTaskStoreAdapter(store: TaskStore)
+
+   Bases: "VersionedTaskStore"
+
+   Runs an unversioned *TaskStore* under the *VersionedTaskStore*
+   interface.
+
+   async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task via the wrapped store.
+
+   async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Gets from the wrapped store, pairing the result with MISSING.
+
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Lists tasks via the wrapped store.
+
+   async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None, prev: Task | None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Saves via the wrapped store; ignores version args, returns
+      MISSING.
+
+   property store: TaskStore
+
+      The wrapped task store.
+
+class a2a.server.cluster.task_store.StoredTask(task: Task, version: TaskVersion)
+
+   Bases: "object"
+
+   A task together with the version it was read at.
+
+   task: Task
+
+   version: TaskVersion
+
+class a2a.server.cluster.task_store.VersionedTaskStore
+
+   Bases: "ABC"
+
+   A *TaskStore* variant with snapshot versioning to prevent
+   concurrent re-writes.
+
+   abstractmethod async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task from the store by ID.
+
+   abstractmethod async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Retrieves a task with its version, or *None* if it does not
+      exist.
+
+   abstractmethod async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Retrieves a list of tasks from the store.
+
+   abstractmethod async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None, prev: Task | None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Persists *task* and returns its new version.
+
+      Parameters:
+         * **task** -- The task state to persist.
+
+         * **event** -- The event that produced this state, or *None*
+           for a direct write.
+
+         * **prev** -- The task as previously read, for
+           implementations that diff.
+
+         * **prev_version** -- The version *task* was derived from.
+           Implementations MUST raise
+           *ConcurrentTaskModificationError* if the currently stored
+           version differs. *TaskVersion.MISSING* marks a first write.
+           A write moving *task* to CANCELED overwrites a non-terminal
+           stored task without a version check, and raises
+           *ConcurrentTaskModificationError* if the stored task is
+           already terminal or absent.
+
+         * **context** -- The server call context (used to resolve the
+           owner).
+
+      Returns:
+         The new *TaskVersion* for the persisted task.
+
+      Raises:
+         **ConcurrentTaskModificationError** -- If *prev_version* is
+         stale.
+</file>
+
+<file path="sdk/python/a2a.server.cluster.txt">
+a2a.server.cluster package
+**************************
+
+
+Submodules
+==========
+
+* a2a.server.cluster.database_event_stream module
+
+  * "DatabaseTaskEventStream"
+
+    * "DatabaseTaskEventStream.destroy()"
+
+    * "DatabaseTaskEventStream.initialize()"
+
+    * "DatabaseTaskEventStream.publish()"
+
+    * "DatabaseTaskEventStream.subscribe()"
+
+  * "stream_response_to_event()"
+
+* a2a.server.cluster.database_task_store module
+
+  * "VersionedDatabaseTaskStore"
+
+    * "VersionedDatabaseTaskStore.as_task_store"
+
+    * "VersionedDatabaseTaskStore.delete()"
+
+    * "VersionedDatabaseTaskStore.get()"
+
+    * "VersionedDatabaseTaskStore.initialize()"
+
+    * "VersionedDatabaseTaskStore.list()"
+
+    * "VersionedDatabaseTaskStore.save()"
+
+* a2a.server.cluster.event_stream module
+
+  * "TaskEventStream"
+
+    * "TaskEventStream.destroy()"
+
+    * "TaskEventStream.publish()"
+
+    * "TaskEventStream.subscribe()"
+
+  * "VersionedEvent"
+
+    * "VersionedEvent.event"
+
+    * "VersionedEvent.version"
+
+* a2a.server.cluster.task_store module
+
+  * "ConcurrentTaskModificationError"
+
+  * "LegacyTaskStoreAdapter"
+
+    * "LegacyTaskStoreAdapter.delete()"
+
+    * "LegacyTaskStoreAdapter.get()"
+
+    * "LegacyTaskStoreAdapter.list()"
+
+    * "LegacyTaskStoreAdapter.save()"
+
+    * "LegacyTaskStoreAdapter.store"
+
+  * "StoredTask"
+
+    * "StoredTask.task"
+
+    * "StoredTask.version"
+
+  * "VersionedTaskStore"
+
+    * "VersionedTaskStore.delete()"
+
+    * "VersionedTaskStore.get()"
+
+    * "VersionedTaskStore.list()"
+
+    * "VersionedTaskStore.save()"
+
+* a2a.server.cluster.version module
+
+  * "TaskVersion"
+
+    * "TaskVersion.MISSING"
+
+    * "TaskVersion.is_after()"
+
+    * "TaskVersion.is_missing"
+
+
+Module contents
+===============
+
+exception a2a.server.cluster.ConcurrentTaskModificationError(task_id: str)
+
+   Bases: "Exception"
+
+   Raised by *VersionedTaskStore.save* when *prev_version* is stale.
+
+class a2a.server.cluster.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5)
+
+   Bases: "TaskEventStream"
+
+   *TaskEventStream* backed by polling the shared "task_events" table.
+
+   async destroy(task_id: str) -> None
+
+      No-op: the append-only log is retained; subscribers stop on
+      their own.
+
+   async initialize() -> None
+
+      Creates the "task_events" table if requested.
+
+   async publish(task_id: str, event: VersionedEvent) -> None
+
+      No-op: events are persisted transactionally by the task store.
+
+   async subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+
+      Polls the log for events of *task_id* newer than *after*.
+
+class a2a.server.cluster.LegacyTaskStoreAdapter(store: TaskStore)
+
+   Bases: "VersionedTaskStore"
+
+   Runs an unversioned *TaskStore* under the *VersionedTaskStore*
+   interface.
+
+   async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task via the wrapped store.
+
+   async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Gets from the wrapped store, pairing the result with MISSING.
+
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Lists tasks via the wrapped store.
+
+   async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None, prev: Task | None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Saves via the wrapped store; ignores version args, returns
+      MISSING.
+
+   property store: TaskStore
+
+      The wrapped task store.
+
+class a2a.server.cluster.StoredTask(task: Task, version: TaskVersion)
+
+   Bases: "object"
+
+   A task together with the version it was read at.
+
+   task: Task
+
+   version: TaskVersion
+
+class a2a.server.cluster.TaskEventStream
+
+   Bases: "ABC"
+
+   Delivers task events across replicas.
+
+   abstractmethod async destroy(task_id: str) -> None
+
+      Releases resources for a task that has reached a terminal state.
+
+   abstractmethod async publish(task_id: str, event: VersionedEvent) -> None
+
+      Publishes one event for *task_id* to all replicas.
+
+   abstractmethod subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+
+      Yields events for *task_id* newer than *after*.
+
+class a2a.server.cluster.TaskVersion(value: int | str)
+
+   Bases: "object"
+
+   A version marker a *VersionedTaskStore* assigns to a stored *Task*.
+
+   Prevents concurrent state re-writes. The wrapped value is the
+   store's choice - a counter, a commit timestamp, etc. Callers do not
+   read it or do arithmetic on it; they only pass it back to *save*
+   and order two versions with *is_after*.
+
+   MISSING: ClassVar[TaskVersion] = TaskVersion.MISSING
+
+   is_after(other: TaskVersion) -> bool
+
+      Whether *self* is a strictly later version than *other*.
+
+   property is_missing: bool
+
+      Whether this token means "versioning is not tracked".
+
+class a2a.server.cluster.VersionedDatabaseTaskStore(engine: ~sqlalchemy.ext.asyncio.engine.AsyncEngine, create_table: bool = True, table_name: str = 'tasks', owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, core_to_model_conversion: ~collections.abc.Callable[[~a2a_pb2.Task, str], ~a2a.server.models.TaskModel] | None = None, model_to_core_conversion: ~collections.abc.Callable[[~a2a.server.models.TaskModel], ~a2a_pb2.Task] | None = None, event_table_name: str = 'task_events', version_table_name: str = 'task_versions', max_attempts: int = 5, retry_delay_s: float = 0.02)
+
+   Bases: "VersionedTaskStore"
+
+   *VersionedTaskStore* backed by SQLAlchemy.
+
+   property as_task_store: TaskStore
+
+      The underlying non-versioned *TaskStore*.
+
+   async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task and its version row via the underlying store.
+
+   async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Returns the task with its stored version, or None if absent.
+
+      Retries transient contention (e.g. a lock held while another
+      writer commits) rather than failing the read.
+
+   async initialize() -> None
+
+      Initializes the database schema (task, version and event
+      tables).
+
+   async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Lists tasks via the underlying store.
+
+   async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None = None, prev: Task | None = None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Persists *task* with a compare-and-swap on the version side
+      table.
+
+      The version lives in "task_versions", not on the tasks row, and
+      counts writes to the task: the first write sets 1 and every
+      later write adds 1. Updates CAS on it; cancel overwrites a non-
+      terminal task. When *event* is provided it is appended to
+      "task_events" in the same transaction for cross-replica replay.
+
+class a2a.server.cluster.VersionedEvent(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent, version: TaskVersion)
+
+   Bases: "object"
+
+   An event together with the task version produced by applying it.
+
+   event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+
+   version: TaskVersion
+
+class a2a.server.cluster.VersionedTaskStore
+
+   Bases: "ABC"
+
+   A *TaskStore* variant with snapshot versioning to prevent
+   concurrent re-writes.
+
+   abstractmethod async delete(task_id: str, context: ServerCallContext) -> None
+
+      Deletes a task from the store by ID.
+
+   abstractmethod async get(task_id: str, context: ServerCallContext) -> StoredTask | None
+
+      Retrieves a task with its version, or *None* if it does not
+      exist.
+
+   abstractmethod async list(params: ListTasksRequest, context: ServerCallContext) -> ListTasksResponse
+
+      Retrieves a list of tasks from the store.
+
+   abstractmethod async save(task: Task, *, event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent | None, prev: Task | None, prev_version: TaskVersion, context: ServerCallContext) -> TaskVersion
+
+      Persists *task* and returns its new version.
+
+      Parameters:
+         * **task** -- The task state to persist.
+
+         * **event** -- The event that produced this state, or *None*
+           for a direct write.
+
+         * **prev** -- The task as previously read, for
+           implementations that diff.
+
+         * **prev_version** -- The version *task* was derived from.
+           Implementations MUST raise
+           *ConcurrentTaskModificationError* if the currently stored
+           version differs. *TaskVersion.MISSING* marks a first write.
+           A write moving *task* to CANCELED overwrites a non-terminal
+           stored task without a version check, and raises
+           *ConcurrentTaskModificationError* if the stored task is
+           already terminal or absent.
+
+         * **context** -- The server call context (used to resolve the
+           owner).
+
+      Returns:
+         The new *TaskVersion* for the persisted task.
+
+      Raises:
+         **ConcurrentTaskModificationError** -- If *prev_version* is
+         stale.
+</file>
+
+<file path="sdk/python/a2a.server.cluster.version.txt">
+a2a.server.cluster.version module
+*********************************
+
+class a2a.server.cluster.version.TaskVersion(value: int | str)
+
+   Bases: "object"
+
+   A version marker a *VersionedTaskStore* assigns to a stored *Task*.
+
+   Prevents concurrent state re-writes. The wrapped value is the
+   store's choice - a counter, a commit timestamp, etc. Callers do not
+   read it or do arithmetic on it; they only pass it back to *save*
+   and order two versions with *is_after*.
+
+   MISSING: ClassVar[TaskVersion] = TaskVersion.MISSING
+
+   is_after(other: TaskVersion) -> bool
+
+      Whether *self* is a strictly later version than *other*.
+
+   property is_missing: bool
+
+      Whether this token means "versioning is not tracked".
 </file>
 
 <file path="sdk/python/a2a.server.context.txt">
@@ -18981,6 +19569,43 @@ class a2a.server.models.PushNotificationConfigModel(**kwargs)
 
    task_id: Mapped[str]
 
+class a2a.server.models.TaskEventMixin
+
+   Bases: "object"
+
+   Mixin providing columns for an append-only task-event log.
+
+   Written transactionally with the task row by the clustered
+   *VersionedTaskStore* and read by *DatabaseTaskEventStream*. Only
+   used by *a2a.server.cluster*; unused by the default single-process
+   stores.
+
+   event_data: Mapped[bytes] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   owner: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   seq: Mapped[int] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_version: Mapped[int] = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.TaskEventModel(**kwargs)
+
+   Bases: "TaskEventMixin", "Base"
+
+   Default task-event model with standard table name.
+
+   event_data: Mapped[bytes]
+
+   owner: Mapped[str]
+
+   seq: Mapped[int]
+
+   task_id: Mapped[str]
+
+   task_version: Mapped[int]
+
 class a2a.server.models.TaskMixin
 
    Bases: "object"
@@ -19033,10 +19658,38 @@ class a2a.server.models.TaskModel(**kwargs)
 
    task_metadata
 
+class a2a.server.models.TaskVersionMixin
+
+   Bases: "object"
+
+   Mixin providing the compare-and-swap version for a task.
+
+   owner: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   task_id: Mapped[str] = <sqlalchemy.orm.properties.MappedColumn object>
+
+   version: Mapped[int] = <sqlalchemy.orm.properties.MappedColumn object>
+
+class a2a.server.models.TaskVersionModel(**kwargs)
+
+   Bases: "TaskVersionMixin", "Base"
+
+   Default task-version model with standard table name.
+
+   owner: Mapped[str]
+
+   task_id: Mapped[str]
+
+   version: Mapped[int]
+
 a2a.server.models.create_push_notification_config_model(table_name: str = 'push_notification_configs', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
 
    Create a PushNotificationConfigModel class with a configurable
    table name.
+
+a2a.server.models.create_task_event_model(table_name: str = 'task_events', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a TaskEventModel class with a configurable table name.
 
 a2a.server.models.create_task_model(table_name: str = 'tasks', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
 
@@ -19065,6 +19718,10 @@ a2a.server.models.create_task_model(table_name: str = 'tasks', base: type[Declar
 
       TaskModel = create_task_model('tasks', MyBase)
 
+a2a.server.models.create_task_version_model(table_name: str = 'task_versions', base: type[DeclarativeBase] = <class 'a2a.server.models.Base'>) -> type
+
+   Create a TaskVersionModel class with a configurable table name.
+
 a2a.server.models.override(func)
 
    Override decorator.
@@ -19083,7 +19740,7 @@ a2a.server.owner_resolver.resolve_user_scope(context: ServerCallContext) -> str
 a2a.server.request_handlers.default_request_handler module
 **********************************************************
 
-class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
+class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False)
 
    Bases: "RequestHandler"
 
@@ -19163,7 +19820,7 @@ class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(a
 a2a.server.request_handlers.default_request_handler_v2 module
 *************************************************************
 
-class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
+class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None)
 
    Bases: "RequestHandler"
 
@@ -19887,7 +20544,7 @@ a2a.server.request_handlers.DefaultRequestHandler
 
    alias of "DefaultRequestHandlerV2"
 
-class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
+class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None)
 
    Bases: "RequestHandler"
 
@@ -20132,7 +20789,7 @@ class a2a.server.request_handlers.GrpcServerCallContextBuilder
 
       Builds a ServerCallContext from a gRPC ServicerContext.
 
-class a2a.server.request_handlers.LegacyRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
+class a2a.server.request_handlers.LegacyRequestHandler(agent_executor: AgentExecutor, task_store: TaskStore, agent_card: AgentCard, queue_manager: QueueManager | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False)
 
    Bases: "RequestHandler"
 
@@ -20427,10 +21084,24 @@ a2a.server.request_handlers.validate_request_params(method: Callable) -> Callabl
 a2a.server.routes.agent_card_routes module
 ******************************************
 
-a2a.server.routes.agent_card_routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json') -> list[Route]
+a2a.server.routes.agent_card_routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json', cache_control: str | None = None) -> list[Route]
 
    Creates the Starlette Route for the A2A protocol agent card
    endpoint.
+
+   Parameters:
+      * **agent_card** -- The *AgentCard* to serve.
+
+      * **card_modifier** -- Optional callback to adjust the card per
+        request.
+
+      * **card_url** -- Path the card is served from.
+
+      * **cache_control** -- Value for the *Cache-Control* response
+        header, e.g. "'public, max-age=3600'". A *max-age* has to suit
+        the agent's expected update frequency, which only the
+        deployment knows, so there is no default. The *ETag* is sent
+        either way, and revalidating against it costs one 304.
 </file>
 
 <file path="sdk/python/a2a.server.routes.common.txt">
@@ -20602,6 +21273,14 @@ a2a.server.routes.jsonrpc_routes.create_jsonrpc_routes(request_handler: RequestH
 a2a.server.routes.rest_dispatcher module
 ****************************************
 
+class a2a.server.routes.rest_dispatcher.A2AJSONResponse(content: Any, status_code: int = 200, headers: Mapping[str, str] | None = None, media_type: str | None = None, background: BackgroundTask | None = None)
+
+   Bases: "JSONResponse"
+
+   JSONResponse labelled with the A2A media type.
+
+   media_type = 'application/a2a+json'
+
 class a2a.server.routes.rest_dispatcher.RestDispatcher(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None)
 
    Bases: "object"
@@ -20729,6 +21408,10 @@ Submodules
 
 * a2a.server.routes.rest_dispatcher module
 
+  * "A2AJSONResponse"
+
+    * "A2AJSONResponse.media_type"
+
   * "RestDispatcher"
 
     * "RestDispatcher.delete_push_notification()"
@@ -20831,10 +21514,24 @@ a2a.server.routes.add_a2a_routes_to_fastapi(app: FastAPI, *, agent_card_routes: 
 
       * **rest_routes** -- Routes returned by "create_rest_routes".
 
-a2a.server.routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json') -> list[Route]
+a2a.server.routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json', cache_control: str | None = None) -> list[Route]
 
    Creates the Starlette Route for the A2A protocol agent card
    endpoint.
+
+   Parameters:
+      * **agent_card** -- The *AgentCard* to serve.
+
+      * **card_modifier** -- Optional callback to adjust the card per
+        request.
+
+      * **card_url** -- Path the card is served from.
+
+      * **cache_control** -- Value for the *Cache-Control* response
+        header, e.g. "'public, max-age=3600'". A *max-age* has to suit
+        the agent's expected update frequency, which only the
+        deployment knows, so there is no default. The *ETag* is sent
+        either way, and revalidating against it costs one 304.
 
 a2a.server.routes.create_jsonrpc_routes(request_handler: RequestHandler, rpc_url: str, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False) -> list[Route]
 
@@ -21287,7 +21984,7 @@ class a2a.server.tasks.result_aggregator.ResultAggregator(task_manager: TaskMana
 a2a.server.tasks.task_manager module
 ************************************
 
-class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
+class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
 
    Bases: "object"
 
@@ -21295,6 +21992,10 @@ class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore, context: 
 
    Responsible for retrieving, saving, and updating the *Task* object
    based on events received from the agent.
+
+   property current_version: TaskVersion
+
+      The version of the most recently read/written task snapshot.
 
    async ensure_task(event: TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Task
 
@@ -21332,7 +22033,14 @@ class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore, context: 
       Returns:
          The *Task* object if found, otherwise *None*.
 
-   async process(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+   invalidate() -> None
+
+      Drops the cached snapshot so the next read hits the store.
+
+      Only safe at a request boundary; used to pick up state another
+      replica may have advanced.
+
+   async process(event: Event) -> Event
 
       Processes an event, updates the task state if applicable, stores
       it, and returns the event.
@@ -21514,7 +22222,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926710450>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -21671,11 +22379,15 @@ Submodules
 
   * "TaskManager"
 
+    * "TaskManager.current_version"
+
     * "TaskManager.ensure_task()"
 
     * "TaskManager.ensure_task_id()"
 
     * "TaskManager.get_task()"
+
+    * "TaskManager.invalidate()"
 
     * "TaskManager.process()"
 
@@ -22063,7 +22775,7 @@ class a2a.server.tasks.ResultAggregator(task_manager: TaskManager)
          the final *Message* if one was received, or *None* if no
          result has been produced yet.
 
-class a2a.server.tasks.TaskManager(task_store: TaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
+class a2a.server.tasks.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
 
    Bases: "object"
 
@@ -22071,6 +22783,10 @@ class a2a.server.tasks.TaskManager(task_store: TaskStore, context: ServerCallCon
 
    Responsible for retrieving, saving, and updating the *Task* object
    based on events received from the agent.
+
+   property current_version: TaskVersion
+
+      The version of the most recently read/written task snapshot.
 
    async ensure_task(event: TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Task
 
@@ -22108,7 +22824,14 @@ class a2a.server.tasks.TaskManager(task_store: TaskStore, context: ServerCallCon
       Returns:
          The *Task* object if found, otherwise *None*.
 
-   async process(event: Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> Message | Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent
+   invalidate() -> None
+
+      Drops the cached snapshot so the next read hits the store.
+
+      Only safe at a request boundary; used to pick up state another
+      replica may have advanced.
+
+   async process(event: Event) -> Event
 
       Processes an event, updates the task state if applicable, stores
       it, and returns the event.
@@ -22265,7 +22988,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fd926710450>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0517c3f350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22361,6 +23084,118 @@ Subpackages
     * "SimpleRequestContextBuilder"
 
       * "SimpleRequestContextBuilder.build()"
+
+* a2a.server.cluster package
+
+  * Submodules
+
+    * a2a.server.cluster.database_event_stream module
+
+      * "DatabaseTaskEventStream"
+
+      * "stream_response_to_event()"
+
+    * a2a.server.cluster.database_task_store module
+
+      * "VersionedDatabaseTaskStore"
+
+    * a2a.server.cluster.event_stream module
+
+      * "TaskEventStream"
+
+      * "VersionedEvent"
+
+    * a2a.server.cluster.task_store module
+
+      * "ConcurrentTaskModificationError"
+
+      * "LegacyTaskStoreAdapter"
+
+      * "StoredTask"
+
+      * "VersionedTaskStore"
+
+    * a2a.server.cluster.version module
+
+      * "TaskVersion"
+
+  * Module contents
+
+    * "ConcurrentTaskModificationError"
+
+    * "DatabaseTaskEventStream"
+
+      * "DatabaseTaskEventStream.destroy()"
+
+      * "DatabaseTaskEventStream.initialize()"
+
+      * "DatabaseTaskEventStream.publish()"
+
+      * "DatabaseTaskEventStream.subscribe()"
+
+    * "LegacyTaskStoreAdapter"
+
+      * "LegacyTaskStoreAdapter.delete()"
+
+      * "LegacyTaskStoreAdapter.get()"
+
+      * "LegacyTaskStoreAdapter.list()"
+
+      * "LegacyTaskStoreAdapter.save()"
+
+      * "LegacyTaskStoreAdapter.store"
+
+    * "StoredTask"
+
+      * "StoredTask.task"
+
+      * "StoredTask.version"
+
+    * "TaskEventStream"
+
+      * "TaskEventStream.destroy()"
+
+      * "TaskEventStream.publish()"
+
+      * "TaskEventStream.subscribe()"
+
+    * "TaskVersion"
+
+      * "TaskVersion.MISSING"
+
+      * "TaskVersion.is_after()"
+
+      * "TaskVersion.is_missing"
+
+    * "VersionedDatabaseTaskStore"
+
+      * "VersionedDatabaseTaskStore.as_task_store"
+
+      * "VersionedDatabaseTaskStore.delete()"
+
+      * "VersionedDatabaseTaskStore.get()"
+
+      * "VersionedDatabaseTaskStore.initialize()"
+
+      * "VersionedDatabaseTaskStore.list()"
+
+      * "VersionedDatabaseTaskStore.save()"
+
+    * "VersionedEvent"
+
+      * "VersionedEvent.event"
+
+      * "VersionedEvent.version"
+
+    * "VersionedTaskStore"
+
+      * "VersionedTaskStore.delete()"
+
+      * "VersionedTaskStore.get()"
+
+      * "VersionedTaskStore.list()"
+
+      * "VersionedTaskStore.save()"
 
 * a2a.server.events package
 
@@ -22649,6 +23484,8 @@ Subpackages
 
     * a2a.server.routes.rest_dispatcher module
 
+      * "A2AJSONResponse"
+
       * "RestDispatcher"
 
     * a2a.server.routes.rest_routes module
@@ -22833,11 +23670,15 @@ Subpackages
 
     * "TaskManager"
 
+      * "TaskManager.current_version"
+
       * "TaskManager.ensure_task()"
 
       * "TaskManager.ensure_task_id()"
 
       * "TaskManager.get_task()"
+
+      * "TaskManager.invalidate()"
 
       * "TaskManager.process()"
 
@@ -23003,6 +23844,30 @@ Submodules
 
     * "PushNotificationConfigModel.task_id"
 
+  * "TaskEventMixin"
+
+    * "TaskEventMixin.event_data"
+
+    * "TaskEventMixin.owner"
+
+    * "TaskEventMixin.seq"
+
+    * "TaskEventMixin.task_id"
+
+    * "TaskEventMixin.task_version"
+
+  * "TaskEventModel"
+
+    * "TaskEventModel.event_data"
+
+    * "TaskEventModel.owner"
+
+    * "TaskEventModel.seq"
+
+    * "TaskEventModel.task_id"
+
+    * "TaskEventModel.task_version"
+
   * "TaskMixin"
 
     * "TaskMixin.artifacts"
@@ -23047,9 +23912,29 @@ Submodules
 
     * "TaskModel.task_metadata"
 
+  * "TaskVersionMixin"
+
+    * "TaskVersionMixin.owner"
+
+    * "TaskVersionMixin.task_id"
+
+    * "TaskVersionMixin.version"
+
+  * "TaskVersionModel"
+
+    * "TaskVersionModel.owner"
+
+    * "TaskVersionModel.task_id"
+
+    * "TaskVersionModel.version"
+
   * "create_push_notification_config_model()"
 
+  * "create_task_event_model()"
+
   * "create_task_model()"
+
+  * "create_task_version_model()"
 
   * "override()"
 
@@ -23468,6 +24353,12 @@ Subpackages
 
       * Module contents
 
+    * a2a.server.cluster package
+
+      * Submodules
+
+      * Module contents
+
     * a2a.server.events package
 
       * Submodules
@@ -23530,13 +24421,25 @@ Subpackages
 
       * "PushNotificationConfigModel"
 
+      * "TaskEventMixin"
+
+      * "TaskEventModel"
+
       * "TaskMixin"
 
       * "TaskModel"
 
+      * "TaskVersionMixin"
+
+      * "TaskVersionModel"
+
       * "create_push_notification_config_model()"
 
+      * "create_task_event_model()"
+
       * "create_task_model()"
+
+      * "create_task_version_model()"
 
       * "override()"
 
@@ -23812,6 +24715,8 @@ Subpackages
 
     * a2a.utils.constants module
 
+      * "A2A_JSON_MEDIA_TYPE"
+
       * "DEFAULT_LIST_TASKS_PAGE_SIZE"
 
       * "MAX_LIST_TASKS_PAGE_SIZE"
@@ -23863,6 +24768,10 @@ Subpackages
       * "status_from_call()"
 
       * "status_to_grpc()"
+
+    * a2a.utils.input_mode_validator module
+
+      * "validate_input_modes()"
 
     * a2a.utils.json_utils module
 
@@ -24557,6 +25466,10 @@ a2a.utils.constants module
 
 Constants for well-known URIs used throughout the A2A Python SDK.
 
+a2a.utils.constants.A2A_JSON_MEDIA_TYPE = 'application/a2a+json'
+
+   Media type for HTTP+JSON binding payloads.
+
 a2a.utils.constants.DEFAULT_LIST_TASKS_PAGE_SIZE = 50
 
    Default page size for the *tasks/list* method.
@@ -24766,6 +25679,32 @@ a2a.utils.grpc_status.status_to_grpc(status: Status) -> GrpcStatus
 
    Converts a google.rpc.status.Status message into its gRPC
    components.
+</file>
+
+<file path="sdk/python/a2a.utils.input_mode_validator.txt">
+a2a.utils.input_mode_validator module
+*************************************
+
+Shared policy for checking message parts against an agent's declared
+input modes.
+
+a2a.utils.input_mode_validator.validate_input_modes(message: Message, agent_card: AgentCard) -> None
+
+   Rejects parts whose media type the agent card does not declare.
+
+   The allowed set is the union of *default_input_modes* and every
+   skill's *input_modes*, which may widen it: a skill's *input_modes*
+   overrides the card default for that skill. A request does not name
+   the skill that will serve it, so the union is the most that can be
+   decided here -- anything outside it is supported by no skill and
+   cannot be served, while a media type inside it may still reach a
+   skill that does not take it, which only that skill can answer.
+
+   A card declaring no input modes anywhere accepts everything: an
+   empty union is an absent declaration, not an empty allowlist.
+   *media_type* is a proto3 string, so a part that omits it arrives as
+   *''* and is likewise not checked -- only a media type the client
+   actually stated can contradict the card.
 </file>
 
 <file path="sdk/python/a2a.utils.json_utils.txt">
@@ -25192,6 +26131,8 @@ Submodules
 
 * a2a.utils.constants module
 
+  * "A2A_JSON_MEDIA_TYPE"
+
   * "DEFAULT_LIST_TASKS_PAGE_SIZE"
 
   * "MAX_LIST_TASKS_PAGE_SIZE"
@@ -25285,6 +26226,10 @@ Submodules
   * "status_from_call()"
 
   * "status_to_grpc()"
+
+* a2a.utils.input_mode_validator module
+
+  * "validate_input_modes()"
 
 * a2a.utils.json_utils module
 

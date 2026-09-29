@@ -1,7 +1,21 @@
 a2a.server.routes.agent_card_routes module
 ******************************************
 
-a2a.server.routes.agent_card_routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json') -> list[Route]
+a2a.server.routes.agent_card_routes.create_agent_card_routes(agent_card: AgentCard, card_modifier: Callable[[AgentCard], Awaitable[AgentCard]] | None = None, card_url: str = '/.well-known/agent-card.json', cache_control: str | None = None) -> list[Route]
 
    Creates the Starlette Route for the A2A protocol agent card
    endpoint.
+
+   Parameters:
+      * **agent_card** -- The *AgentCard* to serve.
+
+      * **card_modifier** -- Optional callback to adjust the card per
+        request.
+
+      * **card_url** -- Path the card is served from.
+
+      * **cache_control** -- Value for the *Cache-Control* response
+        header, e.g. "'public, max-age=3600'". A *max-age* has to suit
+        the agent's expected update frequency, which only the
+        deployment knows, so there is no default. The *ETag* is sent
+        either way, and revalidating against it costs one 304.

@@ -1,0 +1,23 @@
+a2a.server.cluster.version module
+*********************************
+
+class a2a.server.cluster.version.TaskVersion(value: int | str)
+
+   Bases: "object"
+
+   A version marker a *VersionedTaskStore* assigns to a stored *Task*.
+
+   Prevents concurrent state re-writes. The wrapped value is the
+   store's choice - a counter, a commit timestamp, etc. Callers do not
+   read it or do arithmetic on it; they only pass it back to *save*
+   and order two versions with *is_after*.
+
+   MISSING: ClassVar[TaskVersion] = TaskVersion.MISSING
+
+   is_after(other: TaskVersion) -> bool
+
+      Whether *self* is a strictly later version than *other*.
+
+   property is_missing: bool
+
+      Whether this token means "versioning is not tracked".
