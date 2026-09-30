@@ -509,6 +509,17 @@ See [Task Generation Semantics](#327-task-generation-semantics) for the full des
 
 This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.
 
+**Forward compatibility:**
+
+The `payload` of [`StreamResponse`](#323-stream-response) and of [`StreamRequest`](#3112-send-live-message) is an extension point: new payload kinds MAY be added in future minor versions, and adding one is not a breaking change. To keep that true, implementations **MUST** tolerate payload kinds they do not recognise:
+
+- A client that receives a `StreamResponse` whose payload kind it does not recognise **MUST** skip it and continue reading the stream. It **MUST NOT** treat the unknown payload as an error, as the end of the stream, or as a signal to stop processing.
+- A server that receives a `StreamRequest` whose payload kind it does not recognise **MUST** reject that request — on a live stream by emitting a [`StreamError`](#424-streamerror) — and **MUST NOT** terminate the stream because of it.
+
+An unrecognised payload that carries a `generation` still advances the task's generation, so a client that skips it will observe a gap and reconcile via [Get Task](#313-get-task) as usual (see [Task Generation Semantics](#327-task-generation-semantics)).
+
+Servers **MAY** still withhold a new payload kind from clients that negotiated an older protocol version — as this specification does for [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — to protect implementations written before this rule existed. The rule above is what allows future additions to be made without such gating.
+
 #### 3.2.4. History Length Semantics
 
 > **Deprecated:** `historyLength` (and the `history` field it controls) is deprecated as of version **1.1** in favour of `timelineLength` and the task [`timeline`](#328-task-timeline-semantics). Servers continue to honour `historyLength` and populate `history` throughout the 1.x line; both are removed in 2.0.

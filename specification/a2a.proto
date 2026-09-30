@@ -152,6 +152,10 @@ service A2AService {
 }
 
 // A wrapper object used in streaming operations to encapsulate different types of client input.
+// New `payload` kinds MAY be added in future minor versions. A server that
+// receives a request whose payload kind it does not recognise MUST reject that
+// request (on a live stream, with a `StreamError`) rather than terminating the
+// stream.
 message StreamRequest {
   // Optional. Opaque routing identifier. Must match the `tenant` value from
   // the selected `AgentInterface` in the Agent Card when that field is set.
@@ -931,6 +935,9 @@ message SendMessageResponse {
 }
 
 // A wrapper object used in streaming operations to encapsulate different types of response data.
+// New `payload` kinds MAY be added in future minor versions. A client that
+// receives a response whose payload kind it does not recognise MUST skip it and
+// continue reading the stream, rather than failing or closing the stream.
 message StreamResponse {
   // The payload of the stream response.
   oneof payload {
