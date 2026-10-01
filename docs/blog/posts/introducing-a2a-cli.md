@@ -118,6 +118,16 @@ words=$(echo "$message" | wc -w | tr -d ' ')
 echo "You said (${words} words): ${message^^}"
 ```
 
+!!! warning "macOS: `bad substitution`?"
+    macOS ships **bash 3.2** as `/bin/bash` for licensing reasons, and `${message^^}` (uppercasing) needs **bash 4+**. Install a newer bash and run the script with it explicitly:
+
+    ```bash
+    brew install bash
+    echo "hello" | /opt/homebrew/bin/bash content-generator.sh
+    ```
+
+    Point `--exec` at the same bash later (`--exec "/opt/homebrew/bin/bash content-generator.sh"`), or switch to the Python agent in [Step 4](#step-4-stream-a-reply-piece-by-piece), which has no such dependency.
+
 ### Step 3 — serve it, then talk to it
 
 In **terminal A**, wrap the script in a server:
