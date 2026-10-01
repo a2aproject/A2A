@@ -137,7 +137,10 @@ A2A is situated within a broader agent stack, which includes:
 - **Agent frameworks (e.g., LangGraph, CrewAI, ADK):** Provide toolkits for constructing agents.
 - **Models:** Fundamental to an agent's reasoning, these can be any Large Language Model (LLM).
 
-![ADK versus MCP](../assets/agentic-stack.png){ width="70%" style="margin:20px auto;display:block;" }
+![The agentic stack as four layers: the Agent Development Kit (ADK), an open-source toolkit for building, evaluating, and deploying agents; the Model Context Protocol (MCP), an open protocol for how applications provide context to LLMs; Vertex AI Agent Engine, a managed platform for running agents in production; and the Agent2Agent (A2A) Protocol, an open standard for communication between agents](../assets/agentic-stack.png){ width="70%" style="margin:20px auto;display:block;" }
+
+_Each layer answers a different question: a framework builds the agent, MCP gives
+it context, a runtime hosts it, and A2A connects it to other agents._
 
 #### A2A and MCP
 
@@ -148,7 +151,10 @@ The Agent2Agent (A2A) protocol is a shared language for AI agents, especially ag
 - **MCP's Focus:** Reducing the complexity involved in connecting agents with tools and data. Tools are typically stateless and perform specific, predefined functions (e.g., a calculator, a database query).
 - **A2A's Focus:** Letting agents collaborate in their native modalities. They communicate as agents (or as users), not through tool-like interactions. This supports complex, multi-turn interactions where agents reason, plan, and delegate tasks. For example, they can negotiate or ask for clarification when placing an order.
 
-![ADK + MCP](../assets/a2a-mcp-readme.png){ width="70%" style="margin:20px auto;display:block;" }
+![Two agents on either side of an organizational or technological boundary. Each one contains its own local agents, a model layer (Vertex AI with the Gemini API on the left, an LLM on the right), and a framework layer (ADK on the left, any agent framework on the right). The two agents talk to each other across the boundary using A2A, while each separately reaches down to APIs and enterprise applications using MCP](../assets/a2a-mcp-readme.png){ width="70%" style="margin:20px auto;display:block;" }
+
+_A2A crosses the boundary between agents; MCP stays within one agent, connecting
+it to APIs and enterprise applications._
 
 Wrapping an agent as a simple tool is limiting: it can't capture the agent's full capabilities. The post [Why Agents Are Not Tools](https://discuss.google.dev/t/agents-are-not-tools/192812) explores this distinction.
 
