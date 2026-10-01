@@ -92,68 +92,11 @@ a2a send -a http://localhost:8080 "hello world from A2A"
 
 That's a full A2A round trip. Stop it with `Ctrl-C` and let's make it actually *do* something.
 
-### Step 2 — write a dummy agent (a plain shell script)
+### Step 2 — write a dummy agent (a plain Python script)
 
-How `--exec` works: the CLI passes the incoming message on **stdin** and turns whatever the program prints on **stdout** into the response. Exit `0` succeeds; non-zero fails. **stderr** is logged and attached to the failure. That's the whole contract.
+How `--exec` works: the CLI passes the incoming message on **stdin** and turns whatever the program prints on **stdout** into the response. Exit `0` succeeds; non-zero fails. **stderr** is logged and attached to the failure. That's the whole contract — any language that can read stdin and write stdout qualifies.
 
-Save this as `content-generator.sh`. It upper-cases the message and reports a word count — a stand-in for whatever "work" your real agent would do:
-
-```bash title="content-generator.sh"
-#!/usr/bin/env bash
-# An A2A-unaware agent. `a2a server --exec` feeds the incoming message
-# text on stdin and turns whatever we print on stdout into the response.
-# Exit 0 => completed, non-zero => failed.
-set -euo pipefail
-
-# Read the whole message from stdin.
-message="$(cat)"
-
-if [[ -z "${message// }" ]]; then
-  echo "error: empty message" >&2   # stderr is logged; shows up in the failure status
-  exit 1
-fi
-
-# Do the "work". Here: shout it back with a word count.
-words=$(echo "$message" | wc -w | tr -d ' ')
-echo "You said (${words} words): ${message^^}"
-```
-
-!!! warning "macOS: `bad substitution`?"
-    macOS ships **bash 3.2** as `/bin/bash` for licensing reasons, and `${message^^}` (uppercasing) needs **bash 4+**. Install a newer bash and run the script with it explicitly:
-
-    ```bash
-    brew install bash
-    echo "hello" | /opt/homebrew/bin/bash content-generator.sh
-    ```
-
-    Point `--exec` at the same bash later (`--exec "/opt/homebrew/bin/bash content-generator.sh"`), or switch to the Python agent in [Step 4](#step-4-stream-a-reply-piece-by-piece), which has no such dependency.
-
-### Step 3 — serve it, then talk to it
-
-In **terminal A**, wrap the script in a server:
-
-```bash
-a2a server --exec "bash content-generator.sh" --port 8080
-```
-
-In **terminal B**, discover it and send it work:
-
-```bash
-# Confirm the server is up by reading its card
-a2a card get -a http://localhost:8080
-
-# One-shot message and reply
-a2a send -a http://localhost:8080 "hello world from A2A"
-# -> You said (4 words): HELLO WORLD FROM A2A
-```
-
-You just stood up a discoverable A2A agent from an ordinary shell script.
-
-![Single-terminal demo: a2a version, then a server built from a script with --exec, then card get, send, and a streamed reply.](../../assets/a2a-cli/a2a-demo.gif){ width="820" }
-
-### Step 4 — stream a reply, piece by piece
-
-Long-running agents shouldn't make you wait for the whole answer. This Python agent emits one line per word, with a small delay, so you can watch it stream. Save it as `a2a_unaware_agent.py`:
+Save this as `a2a_unaware_agent.py`. It numbers each word on its own line, with a short delay — a stand-in for your agent's real work, and a preview of the streaming in Step 4 below:
 
 ```python title="a2a_unaware_agent.py"
 #!/usr/bin/env python3
@@ -186,7 +129,35 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-Serve it with `--chunk` set to a newline so each line is delivered as its own streamed piece (**terminal A**):
+### Step 3 — serve it, then talk to it
+
+In **terminal A**, wrap the script in a server. Without `--chunk`, `--exec` waits for the script to finish and returns everything it printed as one response:
+
+```bash
+a2a server --exec "python3 -u a2a_unaware_agent.py" --port 8080
+```
+
+In **terminal B**, discover it and send it work:
+
+```bash
+# Confirm the server is up by reading its card
+a2a card get -a http://localhost:8080
+
+# One-shot message and reply
+a2a send -a http://localhost:8080 "hello world from A2A"
+# -> 1. hello
+#    2. world
+#    3. from
+#    4. A2A
+```
+
+You just stood up a discoverable A2A agent from an ordinary Python script.
+
+![Single-terminal demo: a2a version, then a server built from a script with --exec, then card get, send, and a streamed reply.](../../assets/a2a-cli/a2a-demo.gif){ width="820" }
+
+### Step 4 — stream the same reply, piece by piece
+
+Long-running agents shouldn't make you wait for the whole answer. Serve the same script again, this time with `--chunk` set to a newline so each line is delivered as its own streamed piece (**terminal A**):
 
 ```bash
 a2a server --exec "python3 -u a2a_unaware_agent.py" --chunk=$'\n' --port 8080
@@ -198,7 +169,7 @@ Then watch the pieces arrive live (**terminal B**):
 a2a send -a http://localhost:8080 --stream "one two three four"
 ```
 
-Same server mode, same CLI, now streaming — and still not a line of A2A-specific code in the agent.
+Same script, same server mode, same CLI — only the `--chunk` flag changed, and the response is now streamed instead of buffered.
 
 ## What else it does
 
