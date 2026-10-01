@@ -872,10 +872,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-the-sendmessage-and-sendmessagestream-apis" class="md-nav__link">
+  <a href="#3-the-sendmessage-and-sendstreamingmessage-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. The sendMessage and sendMessageStream APIs
+        3. The SendMessage and SendStreamingMessage APIs
       
     </span>
   </a>
@@ -2649,10 +2649,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-the-sendmessage-and-sendmessagestream-apis" class="md-nav__link">
+  <a href="#3-the-sendmessage-and-sendstreamingmessage-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. The sendMessage and sendMessageStream APIs
+        3. The SendMessage and SendStreamingMessage APIs
       
     </span>
   </a>
@@ -2877,7 +2877,7 @@ range of agent development kits and frameworks — such as LangGraph, CrewAI, AD
 and others — and A2A lets agents built with any of them work together. The
 protocol does not depend on, or favor, any single framework.</p>
 <h3 id="a2a-request-lifecycle">A2A Request Lifecycle<a class="headerlink" href="#a2a-request-lifecycle" title="Permanent link">&para;</a></h3>
-<p>A request follows four main steps across three stages: agent discovery, authentication, and the messaging APIs (<code>sendMessage</code> and <code>sendMessageStream</code>). The diagrams below break the flow into these three stages and show how the client, A2A server, and auth server interact.</p>
+<p>A request follows four main steps across three stages: agent discovery, authentication, and the messaging APIs (<code>SendMessage</code> and <code>SendStreamingMessage</code>). The diagrams below break the flow into these three stages and show how the client, A2A server, and auth server interact.</p>
 <h4 id="1-agent-discovery">1. Agent discovery<a class="headerlink" href="#1-agent-discovery" title="Permanent link">&para;</a></h4>
 <p>The client fetches the server's Agent Card to learn its capabilities and endpoint.</p>
 <pre class="mermaid"><code>sequenceDiagram
@@ -2886,7 +2886,7 @@ protocol does not depend on, or favor, any single framework.</p>
 
     rect rgb(240, 240, 240)
     Note over Client, A2A Server: 1. Agent Discovery
-    Client-&gt;&gt;A2A Server: GET agent card eg: (/.well-known/agent-card)
+    Client-&gt;&gt;A2A Server: GET agent card eg: (/.well-known/agent-card.json)
     A2A Server--&gt;&gt;Client: Returns Agent Card
     end</code></pre>
 <h4 id="2-authentication">2. Authentication<a class="headerlink" href="#2-authentication" title="Permanent link">&para;</a></h4>
@@ -2903,23 +2903,23 @@ protocol does not depend on, or favor, any single framework.</p>
         Auth Server--&gt;&gt;Client: Returns JWT
     end
     end</code></pre>
-<h4 id="3-the-sendmessage-and-sendmessagestream-apis">3. The sendMessage and sendMessageStream APIs<a class="headerlink" href="#3-the-sendmessage-and-sendmessagestream-apis" title="Permanent link">&para;</a></h4>
-<p>The client sends messages to the server's endpoint — either a single request/response with <code>sendMessage</code>, or a stream of task updates with <code>sendMessageStream</code>.</p>
+<h4 id="3-the-sendmessage-and-sendstreamingmessage-apis">3. The SendMessage and SendStreamingMessage APIs<a class="headerlink" href="#3-the-sendmessage-and-sendstreamingmessage-apis" title="Permanent link">&para;</a></h4>
+<p>The client sends messages to the server's endpoint — either a single request/response with <code>SendMessage</code>, or a stream of task updates with <code>SendStreamingMessage</code>.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Client
     participant A2A Server
 
     rect rgb(240, 240, 240)
-    Note over Client, A2A Server: 3. sendMessage API
-    Client-&gt;&gt;Client: Parse Agent Card for "url" param to send API requests to.
-    Client-&gt;&gt;A2A Server: POST /sendMessage (with JWT)
+    Note over Client, A2A Server: 3. SendMessage API
+    Client-&gt;&gt;Client: Select an interface from supportedInterfaces.
+    Client-&gt;&gt;A2A Server: POST /message:send (with JWT)
     A2A Server-&gt;&gt;A2A Server: Process message and create task
     A2A Server--&gt;&gt;Client: Returns Task Response
     end
 
     rect rgb(240, 240, 240)
-    Note over Client, A2A Server: 4. sendMessageStream API
-    Client-&gt;&gt;A2A Server: POST /sendMessageStream (with JWT)
+    Note over Client, A2A Server: 4. SendStreamingMessage API
+    Client-&gt;&gt;A2A Server: POST /message:stream (with JWT)
     A2A Server--&gt;&gt;Client: Stream: Task (Submitted)
     A2A Server--&gt;&gt;Client: Stream: TaskStatusUpdateEvent (Working)
     A2A Server--&gt;&gt;Client: Stream: TaskArtifactUpdateEvent (artifact A)
