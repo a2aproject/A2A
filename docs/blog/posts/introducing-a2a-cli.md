@@ -129,6 +129,14 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
+Because `--exec` just pipes stdin to stdout, you can check the script works before involving the CLI at all:
+
+```console
+$ echo "hello world" | python a2a_unaware_agent.py
+1. hello
+2. world
+```
+
 ### Step 3 — serve it, then talk to it
 
 In **terminal A**, wrap the script in a server. Without `--chunk`, `--exec` waits for the script to finish and returns everything it printed as one response:
