@@ -49,7 +49,10 @@ jobs:
 
       - name: Link Checker
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
+        # CVE-2024-48908: pin >=2.0.2. >=2.6.1 also extracts the lychee tarball
+        # into RUNNER_TEMP; earlier versions unpacked it in the workspace, where
+        # its bundled docs/README.md overwrote this repository's own file.
+        uses: lycheeverse/lychee-action@v2.6.1
         with:
           lycheeVersion: "v0.22.0"
           args: --config lychee.toml --no-progress ${{ steps.changed-files.outputs.all_changed_files }}
@@ -117,7 +120,7 @@ jobs:
 
       - name: Link Checker
         id: lychee
-        uses: lycheeverse/lychee-action@v2.0.2 # CVE-2024-48908: pin >=2.0.2
+        uses: lycheeverse/lychee-action@v2.6.1 # CVE-2024-48908: pin >=2.0.2
         with:
           lycheeVersion: "v0.22.0"
           args: '--config lychee.toml site'
