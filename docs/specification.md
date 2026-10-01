@@ -126,7 +126,7 @@ Centering the proto file as the normative source ensures protocol neutrality, re
 
 ### 2.1. Requirements Language
 
-The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 ### 2.2. Core Concepts
 
@@ -541,7 +541,7 @@ All error responses in the A2A protocol, regardless of binding, **MUST** convey 
 
 1. **Error Code**: A machine-readable identifier for the error type (e.g., string code, numeric code, or protocol-specific status)
 2. **Error Message**: A human-readable description of the error
-3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
+3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json/)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
     - Affected fields or parameters
     - Contextual information (e.g., task ID, timestamp)
     - Suggestions for resolution
@@ -2011,11 +2011,11 @@ Clients **MUST** follow these rules:
 
 ### 8.4. Agent Card Signing
 
-Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
+Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
 
 #### 8.4.1. Canonicalization Requirements
 
-Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://tools.ietf.org/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
+Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://datatracker.ietf.org/doc/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
 
 **Canonicalization Rules:**
 
@@ -2067,7 +2067,7 @@ After applying RFC 8785:
 
 #### 8.4.2. Signature Format
 
-Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
+Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
 
 - **`protected`** (required, string): Base64url-encoded JSON object containing the JWS Protected Header
 - **`signature`** (required, string): Base64url-encoded signature value
@@ -2232,7 +2232,7 @@ Agent Card content changes infrequently relative to the frequency at which clien
 
 #### 8.6.2. Client Requirements
 
-- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) when fetching Agent Cards
+- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://datatracker.ietf.org/doc/html/rfc9111) when fetching Agent Cards
 - When a cached Agent Card has expired, clients **SHOULD** use conditional requests (`If-None-Match` with the stored `ETag`, or `If-Modified-Since`) to avoid re-downloading unchanged cards
 - When the server does not include caching headers, clients **MAY** apply an implementation-specific default cache duration
 
