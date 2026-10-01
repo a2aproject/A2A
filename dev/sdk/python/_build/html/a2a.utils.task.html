@@ -416,6 +416,34 @@
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="a2a.utils.task.ListTasksCursor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.task.</span></span><span class="sig-name descname"><span class="pre">ListTasksCursor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp_ns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#a2a.utils.task.ListTasksCursor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A position in the <cite>ListTasks</cite> sort order.</p>
+<p>Tasks are listed by <cite>(has timestamp, timestamp, id)</cite> in descending order,
+so tasks without a timestamp come last. A cursor names the last task of a
+page; the next page starts strictly after it. Because the position is
+carried in the token rather than looked up again, a page token stays valid
+when that task is later updated or deleted.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="a2a.utils.task.ListTasksCursor.sort_key">
+<span class="sig-name descname"><span class="pre">sort_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.utils.task.ListTasksCursor.sort_key" title="Link to this definition">¶</a></dt>
+<dd><p>The cursor’s position as a <cite>(has timestamp, timestamp, id)</cite> key.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.task.ListTasksCursor.task_id">
+<span class="sig-name descname"><span class="pre">task_id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#a2a.utils.task.ListTasksCursor.task_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="a2a.utils.task.ListTasksCursor.timestamp_ns">
+<span class="sig-name descname"><span class="pre">timestamp_ns</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#a2a.utils.task.ListTasksCursor.timestamp_ns" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.task.apply_history_length">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.task.</span></span><span class="sig-name descname"><span class="pre">apply_history_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a_pb2.Task"><span class="pre">Task</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.utils.task.HistoryLengthConfig" title="a2a.utils.task.HistoryLengthConfig"><span class="pre">HistoryLengthConfig</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.types.html#a2a.types.Task" title="a2a_pb2.Task"><span class="pre">Task</span></a></span></span><a class="headerlink" href="#a2a.utils.task.apply_history_length" title="Link to this definition">¶</a></dt>
@@ -438,6 +466,22 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.task.decode_list_tasks_cursor">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.task.</span></span><span class="sig-name descname"><span class="pre">decode_list_tasks_cursor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#a2a.utils.task.ListTasksCursor" title="a2a.utils.task.ListTasksCursor"><span class="pre">ListTasksCursor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.utils.task.decode_list_tasks_cursor" title="Link to this definition">¶</a></dt>
+<dd><p>Decodes a page token produced by <cite>encode_list_tasks_cursor</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>page_token</strong> – The page token from a previous <cite>ListTasks</cite> response.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decoded cursor, or None if the token is not a valid cursor token.
+Callers treat None as a legacy task-ID token (see
+<cite>decode_page_token</cite>), which also rejects tampered or unknown tokens.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.task.decode_page_token">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.task.</span></span><span class="sig-name descname"><span class="pre">decode_page_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">page_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.utils.task.decode_page_token" title="Link to this definition">¶</a></dt>
 <dd><p>Decodes page token for tasks pagination.</p>
@@ -449,6 +493,12 @@
 <dd class="field-even"><p>The decoded task ID.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.task.encode_list_tasks_cursor">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.task.</span></span><span class="sig-name descname"><span class="pre">encode_list_tasks_cursor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#a2a.utils.task.ListTasksCursor" title="a2a.utils.task.ListTasksCursor"><span class="pre">ListTasksCursor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#a2a.utils.task.encode_list_tasks_cursor" title="Link to this definition">¶</a></dt>
+<dd><p>Encodes a <cite>ListTasksCursor</cite> as an opaque, URL-safe page token.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -544,8 +594,16 @@
 <li><a class="reference internal" href="#a2a.utils.task.HistoryLengthConfig.history_length"><code class="docutils literal notranslate"><span class="pre">HistoryLengthConfig.history_length</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#a2a.utils.task.ListTasksCursor"><code class="docutils literal notranslate"><span class="pre">ListTasksCursor</span></code></a><ul>
+<li><a class="reference internal" href="#a2a.utils.task.ListTasksCursor.sort_key"><code class="docutils literal notranslate"><span class="pre">ListTasksCursor.sort_key()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.task.ListTasksCursor.task_id"><code class="docutils literal notranslate"><span class="pre">ListTasksCursor.task_id</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.task.ListTasksCursor.timestamp_ns"><code class="docutils literal notranslate"><span class="pre">ListTasksCursor.timestamp_ns</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#a2a.utils.task.apply_history_length"><code class="docutils literal notranslate"><span class="pre">apply_history_length()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.task.decode_list_tasks_cursor"><code class="docutils literal notranslate"><span class="pre">decode_list_tasks_cursor()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.task.decode_page_token"><code class="docutils literal notranslate"><span class="pre">decode_page_token()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.task.encode_list_tasks_cursor"><code class="docutils literal notranslate"><span class="pre">encode_list_tasks_cursor()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.task.encode_page_token"><code class="docutils literal notranslate"><span class="pre">encode_page_token()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.task.validate_history_length"><code class="docutils literal notranslate"><span class="pre">validate_history_length()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.task.validate_page_size"><code class="docutils literal notranslate"><span class="pre">validate_page_size()</span></code></a></li>

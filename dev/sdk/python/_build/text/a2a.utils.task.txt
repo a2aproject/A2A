@@ -18,6 +18,27 @@ class a2a.utils.task.HistoryLengthConfig(*args, **kwargs)
 
    history_length: int
 
+class a2a.utils.task.ListTasksCursor(timestamp_ns: int | None, task_id: str)
+
+   Bases: "object"
+
+   A position in the *ListTasks* sort order.
+
+   Tasks are listed by *(has timestamp, timestamp, id)* in descending
+   order, so tasks without a timestamp come last. A cursor names the
+   last task of a page; the next page starts strictly after it.
+   Because the position is carried in the token rather than looked up
+   again, a page token stays valid when that task is later updated or
+   deleted.
+
+   sort_key() -> tuple[bool, int, str]
+
+      The cursor's position as a *(has timestamp, timestamp, id)* key.
+
+   task_id: str
+
+   timestamp_ns: int | None
+
 a2a.utils.task.apply_history_length(task: Task, config: HistoryLengthConfig | None) -> Task
 
    Applies history_length parameter on task and returns a new task
@@ -37,6 +58,20 @@ a2a.utils.task.apply_history_length(task: Task, config: HistoryLengthConfig | No
      https://a2a-protocol.org/latest/specification/#324-history-
      length-semantics
 
+a2a.utils.task.decode_list_tasks_cursor(page_token: str) -> ListTasksCursor | None
+
+   Decodes a page token produced by *encode_list_tasks_cursor*.
+
+   Parameters:
+      **page_token** -- The page token from a previous *ListTasks*
+      response.
+
+   Returns:
+      The decoded cursor, or None if the token is not a valid cursor
+      token. Callers treat None as a legacy task-ID token (see
+      *decode_page_token*), which also rejects tampered or unknown
+      tokens.
+
 a2a.utils.task.decode_page_token(page_token: str) -> str
 
    Decodes page token for tasks pagination.
@@ -46,6 +81,10 @@ a2a.utils.task.decode_page_token(page_token: str) -> str
 
    Returns:
       The decoded task ID.
+
+a2a.utils.task.encode_list_tasks_cursor(cursor: ListTasksCursor) -> str
+
+   Encodes a *ListTasksCursor* as an opaque, URL-safe page token.
 
 a2a.utils.task.encode_page_token(task_id: str) -> str
 
