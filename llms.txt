@@ -2,7 +2,12 @@
 
 > An open standard, hosted by the Linux Foundation, that lets independent AI agents discover each other, delegate work, and exchange results across frameworks and vendors — without exposing their internal state, memory, or tools.
 
-The Protobuf definition in `specification/a2a.proto` is the normative source of truth; every page below explains or implements it. The current released version is `1.0.0`.
+The repository contains:
+1.  **Formal Specification:** The normative Protobuf definition (`specification/a2a.proto`). A non-normative JSON Schema (`a2a.json`, JSON Schema 2020-12) is generated from it at build time and published at `docs/spec/a2a.json`.
+2.  **Core Concepts Documentation:** Conceptual guides in `docs/topics/` (What is A2A, A2A & MCP, Core Concepts, Life of a Task, Agent Discovery, Enterprise Features, Streaming & Async, Multi-Tenancy, and the Extensions group).
+3.  **SDKs:** Production-ready SDKs for Python, JS/TS, Java, Go, .NET, and Rust.
+4.  **Sample Implementations:** Real-world examples integrated with various agent frameworks.
+5.  **CLI:** [a2a-cli](https://github.com/a2aproject/a2a-cli) (`a2a`), the official command-line client for discovering, messaging, and managing A2A agents from a terminal or script — see `docs/blog/posts/introducing-a2a-cli.md`.
 
 - Bindings: JSON-RPC 2.0 over HTTP (with Server-Sent Events), gRPC, and HTTP/REST.
 - Core objects: Agent Card (discovery), Task (stateful unit of work), Message, Part, Artifact.
@@ -45,11 +50,44 @@ The Protobuf definition in `specification/a2a.proto` is the normative source of 
 - [SDKs](https://a2a-protocol.org/latest/sdk/): Install instructions and repository links for all six official SDKs.
 - [Python API reference](https://a2a-protocol.org/latest/sdk/python/api/): Generated reference for the `a2a-sdk` Python package.
 - [Code samples](https://github.com/a2aproject/a2a-samples): Sample clients, servers, and agent framework integrations.
+- [A2A CLI](https://github.com/a2aproject/a2a-cli): Provides Client interfaces to connect with A2A Agents. It comes with Agent Skill and Agent Plugin.
 
 ## Optional
 
+| Method | Request | Response | Description |
+| :--- | :--- | :--- | :--- |
+| `SendMessage` | `SendMessageRequest` | `SendMessageResponse` | Initiates or continues a task. |
+| `SendStreamingMessage` | `SendMessageRequest` | `stream StreamResponse` | Sends message and receives real-time SSE updates. |
+| `GetTask` | `GetTaskRequest` | `Task` | Retrieves current task state. |
+| `ListTasks` | `ListTasksRequest` | `ListTasksResponse` | Filter and paginate tasks. |
+| `CancelTask` | `CancelTaskRequest` | `Task` | Requests cancellation of a task. |
+| `SubscribeToTask` | `SubscribeToTaskRequest` | `stream StreamResponse` | Subscribes to updates for an existing task. |
+| `GetExtendedAgentCard` | `GetExtendedAgentCardRequest` | `AgentCard` | Fetches detailed metadata after authentication. |
+| `CreateTaskPushNotificationConfig` | `TaskPushNotificationConfig` | `TaskPushNotificationConfig` | Registers a push notification (webhook) config for a task. |
+| `GetTaskPushNotificationConfig` | `GetTaskPushNotificationConfigRequest` | `TaskPushNotificationConfig` | Retrieves a task's push notification config. |
+| `ListTaskPushNotificationConfigs` | `ListTaskPushNotificationConfigsRequest` | `ListTaskPushNotificationConfigsResponse` | Lists push notification configs for a task. |
+| `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfigRequest` | `Empty` | Deletes a task's push notification config. |
+
+### 3.1 Streaming Events (`StreamResponse`)
+Streams return a payload containing one of:
+- `task`: Full task state.
+- `message`: A discrete message part.
+- `status_update`: `TaskStatusUpdateEvent` (taskId, contextId, status).
+- `artifact_update`: `TaskArtifactUpdateEvent` (taskId, artifact, append, last_chunk).
+
+## 4. Security & Authentication
+- **Transport:** HTTPS/TLS required for production.
+- **Authentication:** Declared in `AgentCard` via OpenAPI-style security schemes.
+- **Push Notifications:** Webhooks secured via authentication tokens/schemes configured per task.
+
+## 5. Implementation Status
+- **Official SDKs:** Python (`a2a-sdk`), JS/TS (`@a2a-js/sdk`), Java, Go, C#/.NET (`A2A`), and Rust (`a2a-rs`).
+- **Official CLI:** [a2a-cli](https://github.com/a2aproject/a2a-cli) (`a2a`) — command-line client for discovery, messaging, and task management; built on the A2A Go SDK.
+- **Integrations:** LangGraph, CrewAI, Google ADK, Genkit, AG2, BeeAI, PydanticAI, and more.
+
+## 6. Key Documents
 - [Full documentation in one file](https://a2a-protocol.org/llms-full.txt): Every doc page, the proto, and the Python SDK reference concatenated for ingestion.
-- [Roadmap](https://a2a-protocol.org/latest/roadmap/): Planned protocol work.
+- [Roadmap](https://a2a-protocol.org/latest/roadmap/): Planned & Ongoing protocol work.
 - [Community](https://a2a-protocol.org/latest/community/): Discord, meetings, and contribution paths.
-- [Blog](https://a2a-protocol.org/latest/blog/): Release announcements and project news.
+- [Blog](https://a2a-protocol.org/latest/blog/): Release announcements, project news & other stories.
 - [Partners](https://a2a-protocol.org/latest/partners/): Organizations supporting A2A.

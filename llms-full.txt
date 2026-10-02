@@ -12,7 +12,12 @@ so what follows is the documentation content rather than the page presentation.
 
 > An open standard, hosted by the Linux Foundation, that lets independent AI agents discover each other, delegate work, and exchange results across frameworks and vendors — without exposing their internal state, memory, or tools.
 
-The Protobuf definition in `specification/a2a.proto` is the normative source of truth; every page below explains or implements it. The current released version is `1.0.0`.
+The repository contains:
+1.  **Formal Specification:** The normative Protobuf definition (`specification/a2a.proto`). A non-normative JSON Schema (`a2a.json`, JSON Schema 2020-12) is generated from it at build time and published at `docs/spec/a2a.json`.
+2.  **Core Concepts Documentation:** Conceptual guides in `docs/topics/` (What is A2A, A2A & MCP, Core Concepts, Life of a Task, Agent Discovery, Enterprise Features, Streaming & Async, Multi-Tenancy, and the Extensions group).
+3.  **SDKs:** Production-ready SDKs for Python, JS/TS, Java, Go, .NET, and Rust.
+4.  **Sample Implementations:** Real-world examples integrated with various agent frameworks.
+5.  **CLI:** [a2a-cli](https://github.com/a2aproject/a2a-cli) (`a2a`), the official command-line client for discovering, messaging, and managing A2A agents from a terminal or script — see `docs/blog/posts/introducing-a2a-cli.md`.
 
 - Bindings: JSON-RPC 2.0 over HTTP (with Server-Sent Events), gRPC, and HTTP/REST.
 - Core objects: Agent Card (discovery), Task (stateful unit of work), Message, Part, Artifact.
@@ -55,13 +60,46 @@ The Protobuf definition in `specification/a2a.proto` is the normative source of 
 - [SDKs](https://a2a-protocol.org/latest/sdk/): Install instructions and repository links for all six official SDKs.
 - [Python API reference](https://a2a-protocol.org/latest/sdk/python/api/): Generated reference for the `a2a-sdk` Python package.
 - [Code samples](https://github.com/a2aproject/a2a-samples): Sample clients, servers, and agent framework integrations.
+- [A2A CLI](https://github.com/a2aproject/a2a-cli): Provides Client interfaces to connect with A2A Agents. It comes with Agent Skill and Agent Plugin.
 
 ## Optional
 
+| Method | Request | Response | Description |
+| :--- | :--- | :--- | :--- |
+| `SendMessage` | `SendMessageRequest` | `SendMessageResponse` | Initiates or continues a task. |
+| `SendStreamingMessage` | `SendMessageRequest` | `stream StreamResponse` | Sends message and receives real-time SSE updates. |
+| `GetTask` | `GetTaskRequest` | `Task` | Retrieves current task state. |
+| `ListTasks` | `ListTasksRequest` | `ListTasksResponse` | Filter and paginate tasks. |
+| `CancelTask` | `CancelTaskRequest` | `Task` | Requests cancellation of a task. |
+| `SubscribeToTask` | `SubscribeToTaskRequest` | `stream StreamResponse` | Subscribes to updates for an existing task. |
+| `GetExtendedAgentCard` | `GetExtendedAgentCardRequest` | `AgentCard` | Fetches detailed metadata after authentication. |
+| `CreateTaskPushNotificationConfig` | `TaskPushNotificationConfig` | `TaskPushNotificationConfig` | Registers a push notification (webhook) config for a task. |
+| `GetTaskPushNotificationConfig` | `GetTaskPushNotificationConfigRequest` | `TaskPushNotificationConfig` | Retrieves a task's push notification config. |
+| `ListTaskPushNotificationConfigs` | `ListTaskPushNotificationConfigsRequest` | `ListTaskPushNotificationConfigsResponse` | Lists push notification configs for a task. |
+| `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfigRequest` | `Empty` | Deletes a task's push notification config. |
+
+### 3.1 Streaming Events (`StreamResponse`)
+Streams return a payload containing one of:
+- `task`: Full task state.
+- `message`: A discrete message part.
+- `status_update`: `TaskStatusUpdateEvent` (taskId, contextId, status).
+- `artifact_update`: `TaskArtifactUpdateEvent` (taskId, artifact, append, last_chunk).
+
+## 4. Security & Authentication
+- **Transport:** HTTPS/TLS required for production.
+- **Authentication:** Declared in `AgentCard` via OpenAPI-style security schemes.
+- **Push Notifications:** Webhooks secured via authentication tokens/schemes configured per task.
+
+## 5. Implementation Status
+- **Official SDKs:** Python (`a2a-sdk`), JS/TS (`@a2a-js/sdk`), Java, Go, C#/.NET (`A2A`), and Rust (`a2a-rs`).
+- **Official CLI:** [a2a-cli](https://github.com/a2aproject/a2a-cli) (`a2a`) — command-line client for discovery, messaging, and task management; built on the A2A Go SDK.
+- **Integrations:** LangGraph, CrewAI, Google ADK, Genkit, AG2, BeeAI, PydanticAI, and more.
+
+## 6. Key Documents
 - [Full documentation in one file](https://a2a-protocol.org/llms-full.txt): Every doc page, the proto, and the Python SDK reference concatenated for ingestion.
-- [Roadmap](https://a2a-protocol.org/latest/roadmap/): Planned protocol work.
+- [Roadmap](https://a2a-protocol.org/latest/roadmap/): Planned & Ongoing protocol work.
 - [Community](https://a2a-protocol.org/latest/community/): Discord, meetings, and contribution paths.
-- [Blog](https://a2a-protocol.org/latest/blog/): Release announcements and project news.
+- [Blog](https://a2a-protocol.org/latest/blog/): Release announcements, project news & other stories.
 - [Partners](https://a2a-protocol.org/latest/partners/): Organizations supporting A2A.
 
 ---
@@ -177,6 +215,7 @@ The documentation source lives in <https://github.com/a2aproject/A2A>.
 - docs/blog/index.md
 - docs/blog/posts/a2a-joins-aaif.md
 - docs/blog/posts/announcing-1.0.md
+- docs/blog/posts/introducing-a2a-cli.md
 - docs/community.md
 - docs/definitions.md
 - docs/index.md
@@ -560,6 +599,216 @@ A2A Protocol Community
 [https://a2a-protocol.org](https://a2a-protocol.org)
 </file>
 
+<file path="docs/blog/posts/introducing-a2a-cli.md">
+---
+date: 2026-10-01
+author: A2A Protocol Community
+slug: introducing-a2a-cli
+categories:
+  - Announcements
+---
+
+# Meet the A2A CLI: discover, message, and manage agents from your terminal
+
+A2A lets agents talk to each other. But what about everything that *isn't* an agent — your shell, a CI pipeline, a test, or a coding assistant that just needs to hand off one task? The **A2A CLI** (`a2a`) is the official command-line client: one standard command surface for every A2A agent.
+
+![Split-screen demo: on the left, an A2A server built from an ordinary script with --exec; on the right, the a2a CLI discovering its card, sending a message, and streaming a reply.](../../assets/a2a-cli/a2a-split-demo.gif){ width="820" }
+
+
+## The gap it fills
+
+A2A is bidirectional: any A2A agent can act as a client to another and hand off a task. That works between agents — but most of the world isn't an agent. Take a shell script, a scheduled job, a build step, a test harness, or a person at a terminal. None of them can easily discover an agent's capabilities, send it a message, or follow a task to completion.
+
+There's a second gap, too. As the ecosystem grew, community and SDK-provided CLIs appeared across languages. They drifted apart: different command names, flags, output shapes, transport handling. A script written for one didn't work with another.
+
+The A2A CLI closes both gaps: a single, standardized way for anything that can run a command — you, a script, or any model or coding harness that calls tools — to reach an A2A agent. It's built on the CLI from the [A2A Go SDK](https://github.com/a2aproject/a2a-go) and speaks [A2A Protocol v1.0](https://a2a-protocol.org/v1.0.0/specification/).
+
+## Three ways to use it
+
+- **Empower AI coding assistants.** Give your coding agent the `a2a` tool and it can offload work to specialized remote A2A agents — no bespoke integration code.
+- **Interact instantly.** Fetch an agent card, send a message, and stream real-time updates straight from the terminal.
+- **Automate workflows.** Protocol-native JSON output and predictable exit codes make `a2a` easy to drop into pipelines — bridging non-A2A systems to A2A agents.
+
+## Install
+
+=== "Homebrew (macOS / Linux)"
+
+    ```bash
+    brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli
+    brew install a2a
+    ```
+
+=== "WinGet (Windows)"
+
+    ```powershell
+    winget install a2aproject.a2acli
+    ```
+
+=== "Go (from source)"
+
+    ```bash
+    go install github.com/a2aproject/a2a-cli@latest
+    # go install names the binary `a2a-cli`; rename it to `a2a`
+    mv "$(command -v a2a-cli)" "$(dirname "$(command -v a2a-cli)")/a2a"
+    ```
+
+Prefer a prebuilt binary? Grab an archive from the [latest release](https://github.com/a2aproject/a2a-cli/releases/latest), extract it, and put `a2a` on your `PATH`.
+
+Once installed, three commands get you started:
+
+```bash
+# Discover an agent's card
+a2a card get https://agent.example.com
+
+# Send a message and wait for the result
+a2a send -a https://agent.example.com "Hello, what can you do?"
+
+# Stream events as they arrive
+a2a send -a https://agent.example.com --stream "Summarize this document"
+```
+
+## Hands-on: turn a plain script into an A2A agent, then drive it
+
+Here's the part that makes the CLI click: you don't need an SDK or any A2A-specific code to get a server you can talk to. The CLI ships two built-in server modes for exactly that:
+
+- `--echo` sends your message straight back — a "ping" for A2A, and the fastest way to confirm a connection.
+- `--exec` turns **any program that reads stdin and writes stdout** into a working A2A server. Any script becomes an agent.
+
+!!! note
+    `--echo` and `--exec` are built for learning, demos, and testing — not for production.
+
+### Step 1 — warm up with the echo server
+
+In **terminal A**, start the simplest server there is:
+
+```bash
+a2a server --echo --port 8080
+```
+
+In **terminal B**, send it a message and get the same text back:
+
+```bash
+a2a send -a http://localhost:8080 "hello world from A2A"
+```
+
+That's a full A2A round trip. Stop it with `Ctrl-C` and let's make it actually *do* something.
+
+### Step 2 — write a dummy agent (a plain Python script)
+
+How `--exec` works: the CLI passes the incoming message on **stdin** and turns whatever the program prints on **stdout** into the response. Exit `0` succeeds; non-zero fails. **stderr** is logged and attached to the failure. That's the whole contract — any language that can read stdin and write stdout qualifies.
+
+Save this as `a2a_unaware_agent.py`. It numbers each word on its own line, with a short delay — a stand-in for your agent's real work, and a preview of the streaming in Step 4 below:
+
+```python title="a2a_unaware_agent.py"
+#!/usr/bin/env python3
+"""An A2A-unaware agent.
+
+`a2a server --exec` pipes the incoming message to stdin and turns stdout
+into the response. Exit 0 => completed, non-zero => failed. Use `python3 -u`
+so stdout is unbuffered and chunks stream promptly.
+"""
+
+import sys
+import time
+
+
+def main() -> int:
+    message = sys.stdin.read().strip()
+    if not message:
+        print("error: empty message", file=sys.stderr)
+        return 1
+
+    # Stream one line per word so --chunk can split on newline.
+    for i, word in enumerate(message.split(), start=1):
+        print(f"{i}. {word}")
+        sys.stdout.flush()
+        time.sleep(0.3)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+Because `--exec` just pipes stdin to stdout, you can check the script works before involving the CLI at all:
+
+```console
+$ echo "hello world" | python a2a_unaware_agent.py
+1. hello
+2. world
+```
+
+### Step 3 — serve it, then talk to it
+
+In **terminal A**, wrap the script in a server. Without `--chunk`, `--exec` waits for the script to finish and returns everything it printed as one response:
+
+```bash
+a2a server --exec "python3 -u a2a_unaware_agent.py" --port 8080
+```
+
+In **terminal B**, discover it and send it work:
+
+```bash
+# Confirm the server is up by reading its card
+a2a card get -a http://localhost:8080
+
+# One-shot message and reply
+a2a send -a http://localhost:8080 "hello world from A2A"
+# -> 1. hello
+#    2. world
+#    3. from
+#    4. A2A
+```
+
+You just stood up a discoverable A2A agent from an ordinary Python script.
+
+![Single-terminal demo: a2a version, then a server built from a script with --exec, then card get, send, and a streamed reply.](../../assets/a2a-cli/a2a-demo.gif){ width="820" }
+
+### Step 4 — stream the same reply, piece by piece
+
+Long-running agents shouldn't make you wait for the whole answer. Serve the same script again, this time with `--chunk` set to a newline so each line is delivered as its own streamed piece (**terminal A**):
+
+```bash
+a2a server --exec "python3 -u a2a_unaware_agent.py" --chunk=$'\n' --port 8080
+```
+
+Then watch the pieces arrive live (**terminal B**):
+
+```bash
+a2a send -a http://localhost:8080 --stream "one two three four"
+```
+
+Same script, same server mode, same CLI — only the `--chunk` flag changed, and the response is now streamed instead of buffered.
+
+## What else it does
+
+The echo-and-exec tour is just the on-ramp. The `a2a` CLI also gives you:
+
+- **Agent-card discovery** — read, save, and reuse an agent's capabilities.
+- **Rich messages and tasks** — build multi-part messages, send synchronously or asynchronously, and follow a task through its full lifecycle.
+- **Streaming** — consume updates as they're produced.
+- **Automation-friendly output** — JSON output and predictable exit codes for pipelines and scripts.
+- **Cross-transport consistency** — JSON-RPC, REST, and gRPC out of the box, plus [custom transport plugins](https://github.com/a2aproject/a2a-cli) you can add without recompiling.
+
+## Give your coding agent the CLI
+
+The CLI is a clean tool surface, so you can hand it to an AI coding assistant and let it delegate work to A2A agents on its own. The [a2a-cli Agent Skill](https://www.skills.sh/a2aproject/a2a-cli/a2a-cli) teaches harnesses like Claude Code, Cursor, and Codex to drive `a2a` from the command line:
+
+```bash
+npx skills add https://github.com/a2aproject/a2a-cli --skill a2a-cli
+```
+
+The skill drives the `a2a` binary, so [install the CLI](#install) first.
+
+## Start here
+
+- **Repository:** [github.com/a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
+- **Cookbook:** a short, hands-on course that builds from your first server up to streaming, configuration, and the full task lifecycle — in the repo's [`examples/`](https://github.com/a2aproject/a2a-cli/tree/main/examples).
+- **New to A2A?** Start with [What is A2A?](../../topics/what-is-a2a.md) and the [Python quickstart](../../tutorials/python/1-introduction.md).
+
+The A2A CLI is open source under the Apache License 2.0. Try it, script with it, and tell the team how you use it — issues and pull requests are welcome on the repo.
+</file>
+
 <file path="docs/community.md">
 # A2A Community Hub
 
@@ -803,6 +1052,14 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
     See A2A in action with sample clients, servers, and agent framework integrations.
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
+
+- :material-console-line:{ .lg .middle } **Use the A2A CLI**
+
+    Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power.
+
+    [:octicons-arrow-right-24: Introducing the A2A CLI](./blog/posts/introducing-a2a-cli.md)
+
+    [:fontawesome-brands-github: a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
 
 - :material-code-braces:{ .lg .middle } **Download the Official SDKs**
 
@@ -11944,7 +12201,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8ec60>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc61f4e60>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11970,7 +12227,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8eb70>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc61f4d70>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -12014,7 +12271,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8ec60>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc61f4e60>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -12034,7 +12291,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8eb70>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc61f4d70>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16512,7 +16769,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16547,7 +16804,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16600,7 +16857,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16635,7 +16892,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16651,7 +16908,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16668,7 +16925,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f350>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16720,7 +16977,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -16939,7 +17196,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16974,7 +17231,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -17027,7 +17284,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -17062,7 +17319,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -17078,7 +17335,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17095,7 +17352,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f350>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17147,7 +17404,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -22278,7 +22535,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -23044,7 +23301,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6bc8b6f350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
