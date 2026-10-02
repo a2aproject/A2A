@@ -2766,7 +2766,9 @@ negotiation to determine which extensions are active for a specific request.</p>
     response SHOULD include the <code>A2A-Extensions</code> header, listing all
     extensions that were successfully activated for that request.</li>
 </ol>
-<p><img alt="A2A Extension Flow Diagram" src="https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png" style="margin:20px auto;display:block;" width="70%" /></p>
+<p><img alt="Extension negotiation in four numbered steps: (1) the client reads the extensions declared in the agent's Agent Card, (2) the client sends its chosen extension URIs in the request header, (3) the A2A server checks which of the requested extensions it has registered and activates those plugins, and (4) the server returns the activated extension data in its response. The server in turn reaches other A2A agent servers over A2A, each supporting its own extensions" src="https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png" style="margin:20px auto;display:block;" width="70%" /></p>
+<p><em>The numbered steps follow the negotiation sequence described above, with the
+Agent Card read as step 1.</em></p>
 <p><strong>Example request showing extension activation:</strong></p>
 <div class="language-http highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nf">POST</span> <span class="nn">/agents/eightball</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
@@ -3029,7 +3031,7 @@ Python facilitate the implementation of A2A agents and extensions.</p>
       <div class="md-copyright">
   
     <div class="md-copyright__highlight">
-      Copyright 2026 The Linux Foundation. Licensed under the Apache License, Version 2.0.
+      Copyright 2026 The Linux Foundation. Licensed under the Apache License, Version 2.0. Reading as an AI agent? Start at <a href="/llms.txt">llms.txt</a>.
     </div>
   
   

@@ -3,30 +3,78 @@
 This file is a consolidated version of all documentation, specifications, and API references
 for the A2A (Agent2Agent) Protocol project, optimized for LLM consumption.
 
-## Project Summary
+Layout-only markup (styling wrappers and HTML comments) is stripped from the Markdown sources,
+so what follows is the documentation content rather than the page presentation.
 
-# A2A (Agent2Agent) Protocol High-Level Summary
+## Documentation Index
 
-This project defines the **Agent2Agent (A2A) protocol**, an open standard initiated by Google and donated to the Linux Foundation, designed to enable communication and interoperability between disparate AI agent systems. It allows agents built on different frameworks (e.g., LangGraph, CrewAI, Google ADK, Genkit) to discover each other's capabilities, negotiate interaction modes, and collaborate on tasks securely without exposing internal state.
+# A2A (Agent2Agent) Protocol
 
-The repository contains:
-1.  **Formal Specification:** The normative Protobuf definition (`specification/a2a.proto`). A non-normative JSON Schema (`a2a.json`, JSON Schema 2020-12) is generated from it at build time and published at `docs/spec/a2a.json`.
-2.  **Core Concepts Documentation:** Conceptual guides in `docs/topics/` (What is A2A, A2A & MCP, Core Concepts, Life of a Task, Agent Discovery, Enterprise Features, Streaming & Async, Multi-Tenancy, and the Extensions group).
-3.  **SDKs:** Production-ready SDKs for Python, JS/TS, Java, Go, .NET, and Rust.
-4.  **Sample Implementations:** Real-world examples integrated with various agent frameworks.
+> An open standard, hosted by the Linux Foundation, that lets independent AI agents discover each other, delegate work, and exchange results across frameworks and vendors — without exposing their internal state, memory, or tools.
 
-## Key Files & Directories
+The Protobuf definition in `specification/a2a.proto` is the normative source of truth; every page below explains or implements it. The current released version is `1.0.0`.
 
-- `specification/a2a.proto`: The authoritative, normative Protobuf definition of the protocol (source of truth).
-- `docs/specification.md`: The human-readable protocol specification (current released version `1.0.0`).
-- `docs/definitions.md`: Protocol Definition reference embedding the normative proto and the generated JSON Schema.
-- `docs/whats-new-v1.md`: Summary of changes from v0.3.0 to v1.0.
-- `docs/topics/`: Conceptual guides — `what-is-a2a`, `a2a-and-mcp`, `key-concepts`, `life-of-a-task`, `agent-discovery`, `enterprise-ready`, `streaming-and-async`, `multi-tenancy`, plus the Extensions group (`extensions`, `custom-protocol-bindings`, `extension-and-binding-governance`).
-- `docs/tutorials/`: Step-by-step Python quickstart for building A2A-compliant agents.
-- `docs/sdk/`: SDK overview and Python API reference.
-- `scripts/`: Utility scripts for building docs, JSON Schema generation, and formatting.
+- Bindings: JSON-RPC 2.0 over HTTP (with Server-Sent Events), gRPC, and HTTP/REST.
+- Core objects: Agent Card (discovery), Task (stateful unit of work), Message, Part, Artifact.
+- Official SDKs: Python, JS/TS, Java, Go, .NET, and Rust.
+- A2A covers agent-to-agent communication; MCP covers agent-to-tool communication. They are complementary.
 
-# A2A (Agent2Agent) Protocol Reference
+## Start here
+
+- [What is A2A?](https://a2a-protocol.org/latest/topics/what-is-a2a/): The problems A2A solves and why wrapping an agent as a tool is not enough.
+- [Protocol specification](https://a2a-protocol.org/latest/specification/): Full technical specification, including data objects, RPC methods, error codes, and worked examples.
+- [Python quickstart](https://a2a-protocol.org/latest/tutorials/python/1-introduction/): Eight-step tutorial that builds a working A2A agent from scratch.
+- [Protocol quick reference](https://a2a-protocol.org/llms-reference.txt): Condensed, agent-readable summary of every core object, RPC method, and task state.
+
+## Specification
+
+- [Protocol definition](https://a2a-protocol.org/latest/definitions/): Reference page embedding the normative proto and the generated JSON Schema.
+- [a2a.proto](https://a2a-protocol.org/latest/spec/a2a.proto): The normative Protobuf definition of the protocol.
+- [a2a.json](https://a2a-protocol.org/latest/spec/a2a.json): Non-normative JSON Schema (2020-12), generated from the proto at build time.
+- [What's new in v1.0](https://a2a-protocol.org/latest/whats-new-v1/): Changes from v0.3.0 to v1.0.
+
+## Core topics
+
+- [Core concepts](https://a2a-protocol.org/latest/topics/key-concepts/): Actors, Agent Card, Task, Message, Part, Artifact, and the three interaction mechanisms.
+- [A2A and MCP](https://a2a-protocol.org/latest/topics/a2a-and-mcp/): How A2A and the Model Context Protocol fit together.
+- [Life of a task](https://a2a-protocol.org/latest/topics/life-of-a-task/): Task lifecycle, states, and terminal versus interrupted outcomes.
+- [Agent discovery](https://a2a-protocol.org/latest/topics/agent-discovery/): How clients find Agent Cards, including the `/.well-known/agent-card.json` location.
+- [Streaming and asynchronous operations](https://a2a-protocol.org/latest/topics/streaming-and-async/): Server-Sent Events streaming and webhook push notifications.
+- [Enterprise features](https://a2a-protocol.org/latest/topics/enterprise-ready/): Authentication, authorization, transport security, tracing, and monitoring.
+- [Multi-tenancy](https://a2a-protocol.org/latest/topics/multi-tenancy/): Serving multiple tenants from one agent deployment.
+
+## Extensions
+
+- [Extensions overview](https://a2a-protocol.org/latest/topics/extensions/): Adding capabilities without changing the core protocol.
+- [Custom protocol bindings](https://a2a-protocol.org/latest/topics/custom-protocol-bindings/): Carrying A2A over transports beyond the three standard bindings.
+- [Extension and binding governance](https://a2a-protocol.org/latest/topics/extension-and-binding-governance/): The tiered promotion process that keeps the core stable.
+
+## Build an agent
+
+- [Tutorials overview](https://a2a-protocol.org/latest/tutorials/): Index of available tutorials and courses.
+- [SDKs](https://a2a-protocol.org/latest/sdk/): Install instructions and repository links for all six official SDKs.
+- [Python API reference](https://a2a-protocol.org/latest/sdk/python/api/): Generated reference for the `a2a-sdk` Python package.
+- [Code samples](https://github.com/a2aproject/a2a-samples): Sample clients, servers, and agent framework integrations.
+
+## Optional
+
+- [Full documentation in one file](https://a2a-protocol.org/llms-full.txt): Every doc page, the proto, and the Python SDK reference concatenated for ingestion.
+- [Roadmap](https://a2a-protocol.org/latest/roadmap/): Planned protocol work.
+- [Community](https://a2a-protocol.org/latest/community/): Discord, meetings, and contribution paths.
+- [Blog](https://a2a-protocol.org/latest/blog/): Release announcements and project news.
+- [Partners](https://a2a-protocol.org/latest/partners/): Organizations supporting A2A.
+
+---
+
+# A2A (Agent2Agent) Protocol — Quick Reference
+
+A condensed, agent-readable summary of the A2A protocol as of version `1.0.0`.
+This file is non-normative. The Protobuf definition (`specification/a2a.proto`)
+is the source of truth, and the full specification is at
+<https://a2a-protocol.org/latest/specification/>.
+
+For a curated index of the documentation, see <https://a2a-protocol.org/llms.txt>.
+For every page in a single file, see <https://a2a-protocol.org/llms-full.txt>.
 
 ## 1. Overview
 
@@ -38,7 +86,9 @@ The repository contains:
 ## 2. Core Data Objects
 
 ### 2.1 AgentCard (`/.well-known/agent-card.json`)
+
 Describes an agent's identity and capabilities.
+
 - `name`, `description`, `version`: Identity metadata.
 - `supported_interfaces`: List of `AgentInterface` (URL, protocol binding, tenant, protocol version).
 - `capabilities`: `streaming`, `push_notifications`, `extended_agent_card`, `extensions`.
@@ -47,7 +97,9 @@ Describes an agent's identity and capabilities.
 - `default_input_modes`, `default_output_modes`: Supported MIME types (e.g., `text/plain`, `application/json`).
 
 ### 2.2 Task
+
 Represents a stateful unit of work.
+
 - `id`, `context_id`: Identifiers for the task and its conversational context.
 - `status`: `TaskStatus` (state, message, timestamp).
 - `artifacts`: List of `Artifact` (outputs produced).
@@ -55,13 +107,16 @@ Represents a stateful unit of work.
 - `metadata`: Custom structured data.
 
 ### 2.3 TaskState (Enum)
+
 - `SUBMITTED`, `WORKING`, `COMPLETED` (terminal), `FAILED` (terminal), `CANCELED` (terminal), `REJECTED` (terminal), `INPUT_REQUIRED` (interrupted), `AUTH_REQUIRED` (interrupted).
 
 ### 2.4 Message & Part
+
 - `Message`: Contains `message_id`, `role` (USER/AGENT), `parts`, `context_id`, `task_id`, `reference_task_ids`.
 - `Part`: Union type containing `text`, `raw` (bytes), `url`, or `data` (JSON). Includes `media_type` and `filename`.
 
 ### 2.5 Artifact
+
 - A tangible output from a task, containing one or more `Part`s and metadata.
 
 ## 3. RPC Methods
@@ -81,20 +136,38 @@ Represents a stateful unit of work.
 | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfigRequest` | `Empty` | Deletes a task's push notification config. |
 
 ### 3.1 Streaming Events (`StreamResponse`)
+
 Streams return a payload containing one of:
+
 - `task`: Full task state.
 - `message`: A discrete message part.
 - `status_update`: `TaskStatusUpdateEvent` (taskId, contextId, status).
 - `artifact_update`: `TaskArtifactUpdateEvent` (taskId, artifact, append, last_chunk).
 
 ## 4. Security & Authentication
+
 - **Transport:** HTTPS/TLS required for production.
 - **Authentication:** Declared in `AgentCard` via OpenAPI-style security schemes.
 - **Push Notifications:** Webhooks secured via authentication tokens/schemes configured per task.
 
 ## 5. Implementation Status
+
 - **Official SDKs:** Python (`a2a-sdk`), JS/TS (`@a2a-js/sdk`), Java, Go, C#/.NET (`A2A`), and Rust (`a2a-rs`).
 - **Integrations:** LangGraph, CrewAI, Google ADK, Genkit, AG2, BeeAI, PydanticAI, and more.
+
+## 6. Repository Layout
+
+The documentation source lives in <https://github.com/a2aproject/A2A>.
+
+- `specification/a2a.proto`: The authoritative, normative Protobuf definition of the protocol (source of truth).
+- `specification/json/a2a.json`: The generated, non-normative JSON Schema (2020-12).
+- `docs/specification.md`: The human-readable protocol specification.
+- `docs/definitions.md`: Protocol Definition reference embedding the normative proto and the generated JSON Schema.
+- `docs/whats-new-v1.md`: Summary of changes from v0.3.0 to v1.0.
+- `docs/topics/`: Conceptual guides — `what-is-a2a`, `a2a-and-mcp`, `key-concepts`, `life-of-a-task`, `agent-discovery`, `enterprise-ready`, `streaming-and-async`, `multi-tenancy`, plus the Extensions group (`extensions`, `custom-protocol-bindings`, `extension-and-binding-governance`).
+- `docs/tutorials/`: Step-by-step Python quickstart for building A2A-compliant agents.
+- `docs/sdk/`: SDK overview and Python API reference.
+- `scripts/`: Utility scripts for building docs, JSON Schema generation, and formatting.
 
 ---
 
@@ -269,11 +342,8 @@ Streams return a payload containing one of:
   <img src="https://www.gstatic.com/_/boq-sdlc-agents-ui/_/r/Mvosg4klCA4.svg" alt="Ask Code Wiki" height="20">
 </a>
 
-<div style="text-align: left;">
   <details>
     <summary>🌐 Language</summary>
-    <div>
-      <div style="text-align: center;">
         <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=en">English</a>
         | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=zh-CN">简体中文</a>
         | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=zh-TW">繁體中文</a>
@@ -295,18 +365,10 @@ Streams return a payload containing one of:
         | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=vi">Tiếng Việt</a>
         | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=id">Bahasa Indonesia</a>
         | <a href="https://openaitx.github.io/view.html?user=a2aproject&project=A2A&lang=as">অসমীয়া</a>
-      </div>
-    </div>
   </details>
-</div>
 
-<!-- markdownlint-disable MD041 -->
-<div style="text-align: center;">
-  <div class="centered-logo-text-group">
     <img src="docs/assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="100">
     <h1>Agent2Agent (A2A) Protocol</h1>
-  </div>
-</div>
 
 **An open protocol enabling communication and interoperability between opaque agentic applications.**
 
@@ -414,7 +476,6 @@ categories:
 
 The Agent2Agent (A2A) protocol has officially been accepted as a Growth Stage project at the Agentic AI Foundation (AAIF). By joining the AAIF's open agentic stack, A2A provides an open standard for how autonomous AI agents discover each other, delegate tasks, and collaborate across distinct frameworks and vendor boundaries.
 
-<!-- more -->
 
 ## The Horizontal Orchestration Layer
 
@@ -447,7 +508,6 @@ The A2A Protocol community today are announcing the release of A2A Protocol v1.0
 
 As organizations build increasingly sophisticated multi-agent systems, interoperability has become the defining challenge. Teams can coordinate agents effectively within a single platform, but connecting those systems across technology stacks and organizational boundaries remains difficult. A2A addresses that challenge by combining support for multiple protocol bindings, seamless version negotiation, and a common semantic model so agents can interoperate across systems with predictable behavior.
 
-<!-- more -->
 
 The v1.0 release emphasizes maturity rather than reinvention: the core ideas remain intact, while rough edges have been removed, ambiguous areas clarified, and enterprise deployment requirements addressed more directly. The official SDKs ensure v1.0 A2A agents work seamlessly with older versions.
 
@@ -672,27 +732,16 @@ hide:
   - navigation
 ---
 
-<!-- markdownlint-disable MD041 -->
-<div class="hero" markdown="0">
-  <div class="centered-logo-text-group">
     <h1><img src="assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="500"></h1>
-  </div>
 
-  <div class="hero-tagline-carousel" data-interval="6000">
-    <div class="hero-tagline-slides" aria-live="polite">
       <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
       <p class="hero-tagline">An open standard enabling users to connect agents to tools and data through MCP, and to other agents through A2A.</p>
       <p class="hero-tagline">An open standard enabling developers to expose portable tools through MCP and interoperable agents through A2A.</p>
-    </div>
-  </div>
-</div>
 
-<div class="hero" markdown="1">
 
 [Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
 [Read the spec](./specification.md){ .md-button }
 
-</div>
 
 ## What is A2A Protocol?
 
@@ -708,7 +757,6 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
 ## Key Features
 
-<div class="grid cards" markdown>
 
 - :material-account-group-outline:{ .lg .middle } **Interoperability**
 
@@ -726,11 +774,9 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     Add capabilities through formal protocol [extensions and custom bindings](./topics/extension-and-binding-governance.md), governed by a tiered promotion process so the core stays stable.
 
-</div>
 
 ## Get started with A2A
 
-<div class="grid cards" markdown>
 
 - :material-book-open:{ .lg .middle } **Read the Introduction**
 
@@ -780,7 +826,6 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
 
-</div>
 
 ## How A2A Works with MCP
 
@@ -791,7 +836,6 @@ The Model Context Protocol (MCP) and the A2A Protocol are not competitors — th
 
 Use MCP to equip an individual agent with the specific tools it needs to do its job (e.g., access to a GitHub repository or a SQL database). Use A2A to let that specialized agent securely collaborate with other agents across different frameworks.
 
-<div style="text-align:center">
 
 ```mermaid
 flowchart LR
@@ -808,7 +852,8 @@ flowchart LR
     style RemoteTool fill:#d6eaf8,stroke:#3498db,stroke-width:2px
 ```
 
-</div>
+
+_A client agent reaches remote tools with MCP and remote agents with A2A._
 
 [:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
 
@@ -4452,7 +4497,6 @@ Planned Lifecycle (example timeline; adjust per release strategy):
 
 Hidden anchor spans preserve old inbound links:
 
-<!-- Legacy inbound link compatibility anchors (old spec numbering & names) -->
 <span id="32-supported-transport-protocols"></span>
 <span id="324-transport-extensions"></span>
 <span id="35-method-mapping-and-naming-conventions"></span>
@@ -4482,7 +4526,6 @@ Hidden anchor spans preserve old inbound links:
 <span id="791-deletetaskpushnotificationconfigparams-object-taskspushnotificationconfigdelete"></span>
 <span id="8-error-handling"></span>
 <span id="82-a2a-specific-errors"></span>
-<!-- Legacy renamed message/object name anchors -->
 <span id="messagesendparams"></span>
 <span id="sendmessagesuccessresponse"></span>
 <span id="sendstreamingmessagesuccessresponse"></span>
@@ -4771,13 +4814,11 @@ Both protocols are essential for building complex AI systems. The distinction be
 An agentic application might use A2A to communicate with other agents. Inside,
 each agent uses MCP to work with its own tools and resources.
 
-<div style="text-align: center; margin: 20px;" markdown>
 
 ![Diagram showing A2A and MCP working together. A User interacts with Agent A using A2A. Agent A interacts with Agent B using A2A. Agent B uses MCP to interact with Tool 1 and Tool 2.](../assets/a2a-mcp.png){width="80%"}
 
 _A2A connects the agents to each other; MCP connects each agent to its own tools._
 
-</div>
 
 ### Example Scenario: The Auto Repair Shop
 
@@ -5632,7 +5673,10 @@ negotiation to determine which extensions are active for a specific request.
     response SHOULD include the `A2A-Extensions` header, listing all
     extensions that were successfully activated for that request.
 
-![A2A Extension Flow Diagram](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
+![Extension negotiation in four numbered steps: (1) the client reads the extensions declared in the agent's Agent Card, (2) the client sends its chosen extension URIs in the request header, (3) the A2A server checks which of the requested extensions it has registered and activates those plugins, and (4) the server returns the activated extension data in its response. The server in turn reaches other A2A agent servers over A2A, each supporting its own extensions](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
+
+_The numbered steps follow the negotiation sequence described above, with the
+Agent Card read as step 1._
 
 **Example request showing extension activation:**
 
@@ -6478,7 +6522,10 @@ A2A is situated within a broader agent stack, which includes:
 - **Agent frameworks (e.g., LangGraph, CrewAI, ADK):** Provide toolkits for constructing agents.
 - **Models:** Fundamental to an agent's reasoning, these can be any Large Language Model (LLM).
 
-![ADK versus MCP](../assets/agentic-stack.png){ width="70%" style="margin:20px auto;display:block;" }
+![The agentic stack as four layers: the Agent Development Kit (ADK), an open-source toolkit for building, evaluating, and deploying agents; the Model Context Protocol (MCP), an open protocol for how applications provide context to LLMs; Vertex AI Agent Engine, a managed platform for running agents in production; and the Agent2Agent (A2A) Protocol, an open standard for communication between agents](../assets/agentic-stack.png){ width="70%" style="margin:20px auto;display:block;" }
+
+_Each layer answers a different question: a framework builds the agent, MCP gives
+it context, a runtime hosts it, and A2A connects it to other agents._
 
 #### A2A and MCP
 
@@ -6489,7 +6536,10 @@ The Agent2Agent (A2A) protocol is a shared language for AI agents, especially ag
 - **MCP's Focus:** Reducing the complexity involved in connecting agents with tools and data. Tools are typically stateless and perform specific, predefined functions (e.g., a calculator, a database query).
 - **A2A's Focus:** Letting agents collaborate in their native modalities. They communicate as agents (or as users), not through tool-like interactions. This supports complex, multi-turn interactions where agents reason, plan, and delegate tasks. For example, they can negotiate or ask for clarification when placing an order.
 
-![ADK + MCP](../assets/a2a-mcp-readme.png){ width="70%" style="margin:20px auto;display:block;" }
+![Two agents on either side of an organizational or technological boundary. Each one contains its own local agents, a model layer (Vertex AI with the Gemini API on the left, an LLM on the right), and a framework layer (ADK on the left, any agent framework on the right). The two agents talk to each other across the boundary using A2A, while each separately reaches down to APIs and enterprise applications using MCP](../assets/a2a-mcp-readme.png){ width="70%" style="margin:20px auto;display:block;" }
+
+_A2A crosses the boundary between agents; MCP stays within one agent, connecting
+it to APIs and enterprise applications._
 
 Wrapping an agent as a simple tool is limiting: it can't capture the agent's full capabilities. The post [Why Agents Are Not Tools](https://discuss.google.dev/t/agents-are-not-tools/192812) explores this distinction.
 
@@ -11894,7 +11944,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c92130500>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8ec60>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -11920,7 +11970,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c92130410>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8eb70>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -11964,7 +12014,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c92130500>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8ec60>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -11984,7 +12034,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c92130410>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6323c8eb70>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16462,7 +16512,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16497,7 +16547,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16550,7 +16600,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16585,7 +16635,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c9422b550>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16601,7 +16651,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16618,7 +16668,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c9422b550>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -16670,7 +16720,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -16889,7 +16939,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16924,7 +16974,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16977,7 +17027,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -17012,7 +17062,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c9422b550>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -17028,7 +17078,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17045,7 +17095,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c9422b550>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17097,7 +17147,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c93d21c50> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a850> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -22228,7 +22278,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c9422b550>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22994,7 +23044,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6c9422b550>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f6326b3a750>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
