@@ -1,0 +1,360 @@
+acts_version: "1.0"
+spec_version: "1.0"
+spec_ref: "docs/specification.md"
+
+metadata:
+  title: "Task History ACTS"
+  description: "ACTS tests for historyLength behavior and persisted task history semantics."
+
+suites:
+  - id: history
+    name: "Task History"
+    description: "Coverage for GetTask and SendMessage history handling."
+    tests:
+      - id: CORE-HIST-001
+        name: "GetTask historyLength=0 returns no history"
+        description: "Verifies that GetTask omits history, or returns it as an empty array, when historyLength is zero."
+        spec_ref: "docs/specification.md#313-get-task"
+        level: must
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task history zero"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{send.taskId}}"
+              historyLength: 0
+            expect:
+              status: 200
+              body:
+                id: "{{send.taskId}}"
+                history:
+                  any_of:
+                    - absent: true
+                    - type: array
+                      count: 0
+
+      - id: CORE-HIST-002
+        name: "History count does not exceed historyLength limit"
+        description: "Verifies that GetTask does not return more history entries than requested."
+        spec_ref: "docs/specification.md#313-get-task"
+        level: should
+        requires_behaviors:
+          - "tck-multi-turn"
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn history limit first"
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn history limit second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn3
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+              historyLength: 2
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                history:
+                  any_of:
+                    - absent: true
+                    - type: array
+                      count_lte: 2
+
+      - id: CORE-HIST-003
+        name: "SendMessage historyLength=0 returns no history"
+        description: "Verifies that SendMessage omits task history when configuration.historyLength is zero."
+        spec_ref: "docs/specification.md#311-send-message"
+        level: should
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task send history zero"
+              configuration:
+                historyLength: 0
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+                  history:
+                    absent: true
+
+      - id: CORE-HIST-004
+        name: "GetTask may return persisted history"
+        description: "Verifies that GetTask may omit history entirely, but if it returns history the field is an array."
+        spec_ref: "docs/specification.md#313-get-task"
+        level: may
+        requires_behaviors:
+          - "tck-complete-task"
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task persisted history"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{send.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{send.taskId}}"
+                history:
+                  any_of:
+                    - absent: true
+                    - type: array
+
+      - id: CORE-HIST-005
+        name: "History messages are returned in chronological order"
+        description: "Verifies that persisted history preserves the order of the conversation turns."
+        spec_ref: "docs/specification.md#313-get-task"
+        level: should
+        requires_behaviors:
+          - "tck-multi-turn"
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn chronological first"
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn chronological second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn3
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                history:
+                  type: array
+                  count_gte: 3
+            assertions:
+              - source: "{{get.response}}"
+                any:
+                  path: "history[0].parts[*]"
+                  match:
+                    text:
+                      contains: "tck-multi-turn chronological first"
+              - source: "{{get.response}}"
+                any:
+                  path: "history[2].parts[*]"
+                  match:
+                    text:
+                      contains: "done"
+
+      - id: CORE-HIST-006
+        name: "History content matches sent messages"
+        description: "Verifies that persisted history includes the messages sent during a multi-turn conversation."
+        spec_ref: "docs/specification.md#313-get-task"
+        level: should
+        requires_behaviors:
+          - "tck-multi-turn"
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn first msg"
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn follow up msg"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_INPUT_REQUIRED
+                        - TASK_STATE_COMPLETED
+          - id: turn3
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                history:
+                  type: array
+                  count_gte: 2
+            assertions:
+              - source: "{{get.response}}"
+                any:
+                  path: "history[*].parts[*]"
+                  match:
+                    text:
+                      contains: "tck-multi-turn first msg"
+              - source: "{{get.response}}"
+                any:
+                  path: "history[*].parts[*]"
+                  match:
+                    text:
+                      contains: "tck-multi-turn follow up msg"
