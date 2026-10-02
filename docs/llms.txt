@@ -1,63 +1,58 @@
-# A2A (Agent2Agent) Protocol High-Level Summary
+# A2A (Agent2Agent) Protocol
 
-This project defines the **Agent2Agent (A2A) protocol**, an open standard initiated by Google and donated to the Linux Foundation, designed to enable communication and interoperability between disparate AI agent systems. It allows agents built on different frameworks (e.g., LangGraph, CrewAI, Google ADK, Genkit) to discover each other's capabilities, negotiate interaction modes, and collaborate on tasks securely without exposing internal state.
+> An open standard, hosted by the Linux Foundation, that lets independent AI agents discover each other, delegate work, and exchange results across frameworks and vendors — without exposing their internal state, memory, or tools.
 
 The repository contains:
 1.  **Formal Specification:** The normative Protobuf definition (`specification/a2a.proto`). A non-normative JSON Schema (`a2a.json`, JSON Schema 2020-12) is generated from it at build time and published at `docs/spec/a2a.json`.
 2.  **Core Concepts Documentation:** Conceptual guides in `docs/topics/` (What is A2A, A2A & MCP, Core Concepts, Life of a Task, Agent Discovery, Enterprise Features, Streaming & Async, Multi-Tenancy, and the Extensions group).
 3.  **SDKs:** Production-ready SDKs for Python, JS/TS, Java, Go, .NET, and Rust.
 4.  **Sample Implementations:** Real-world examples integrated with various agent frameworks.
+5.  **CLI:** [a2a-cli](https://github.com/a2aproject/a2a-cli) (`a2a`), the official command-line client for discovering, messaging, and managing A2A agents from a terminal or script — see `docs/blog/posts/introducing-a2a-cli.md`.
 
-## Key Files & Directories
+- Bindings: JSON-RPC 2.0 over HTTP (with Server-Sent Events), gRPC, and HTTP/REST.
+- Core objects: Agent Card (discovery), Task (stateful unit of work), Message, Part, Artifact.
+- Official SDKs: Python, JS/TS, Java, Go, .NET, and Rust.
+- A2A covers agent-to-agent communication; MCP covers agent-to-tool communication. They are complementary.
 
-- `specification/a2a.proto`: The authoritative, normative Protobuf definition of the protocol (source of truth).
-- `docs/specification.md`: The human-readable protocol specification (current released version `1.0.0`).
-- `docs/definitions.md`: Protocol Definition reference embedding the normative proto and the generated JSON Schema.
-- `docs/whats-new-v1.md`: Summary of changes from v0.3.0 to v1.0.
-- `docs/topics/`: Conceptual guides — `what-is-a2a`, `a2a-and-mcp`, `key-concepts`, `life-of-a-task`, `agent-discovery`, `enterprise-ready`, `streaming-and-async`, `multi-tenancy`, plus the Extensions group (`extensions`, `custom-protocol-bindings`, `extension-and-binding-governance`).
-- `docs/tutorials/`: Step-by-step Python quickstart for building A2A-compliant agents.
-- `docs/sdk/`: SDK overview and Python API reference.
-- `scripts/`: Utility scripts for building docs, JSON Schema generation, and formatting.
+## Start here
 
-# A2A (Agent2Agent) Protocol Reference
+- [What is A2A?](https://a2a-protocol.org/latest/topics/what-is-a2a/): The problems A2A solves and why wrapping an agent as a tool is not enough.
+- [Protocol specification](https://a2a-protocol.org/latest/specification/): Full technical specification, including data objects, RPC methods, error codes, and worked examples.
+- [Python quickstart](https://a2a-protocol.org/latest/tutorials/python/1-introduction/): Eight-step tutorial that builds a working A2A agent from scratch.
+- [Protocol quick reference](https://a2a-protocol.org/llms-reference.txt): Condensed, agent-readable summary of every core object, RPC method, and task state.
 
-## 1. Overview
+## Specification
 
-- **Purpose:** Open standard for agent-to-agent interoperability.
-- **Current Version:** 1.0. The Protobuf definition (`specification/a2a.proto`) is the normative source of truth; each `AgentInterface` advertises its own `protocol_version`.
-- **Communication Bindings:** Supports JSON-RPC 2.0 (HTTP/SSE), gRPC, and HTTP/REST.
-- **Key Concepts:** Agent Cards for discovery, Task-based execution, Multi-turn Messages, and Artifact outputs.
+- [Protocol definition](https://a2a-protocol.org/latest/definitions/): Reference page embedding the normative proto and the generated JSON Schema.
+- [a2a.proto](https://a2a-protocol.org/latest/spec/a2a.proto): The normative Protobuf definition of the protocol.
+- [a2a.json](https://a2a-protocol.org/latest/spec/a2a.json): Non-normative JSON Schema (2020-12), generated from the proto at build time.
+- [What's new in v1.0](https://a2a-protocol.org/latest/whats-new-v1/): Changes from v0.3.0 to v1.0.
 
-## 2. Core Data Objects
+## Core topics
 
-### 2.1 AgentCard (`/.well-known/agent-card.json`)
-Describes an agent's identity and capabilities.
-- `name`, `description`, `version`: Identity metadata.
-- `supported_interfaces`: List of `AgentInterface` (URL, protocol binding, tenant, protocol version).
-- `capabilities`: `streaming`, `push_notifications`, `extended_agent_card`, `extensions`.
-- `skills`: List of `AgentSkill` (id, name, description, tags, examples).
-- `security_schemes`, `security_requirements`: Authentication configuration (API Key, OAuth2, OIDC, mTLS, HTTP Auth).
-- `default_input_modes`, `default_output_modes`: Supported MIME types (e.g., `text/plain`, `application/json`).
+- [Core concepts](https://a2a-protocol.org/latest/topics/key-concepts/): Actors, Agent Card, Task, Message, Part, Artifact, and the three interaction mechanisms.
+- [A2A and MCP](https://a2a-protocol.org/latest/topics/a2a-and-mcp/): How A2A and the Model Context Protocol fit together.
+- [Life of a task](https://a2a-protocol.org/latest/topics/life-of-a-task/): Task lifecycle, states, and terminal versus interrupted outcomes.
+- [Agent discovery](https://a2a-protocol.org/latest/topics/agent-discovery/): How clients find Agent Cards, including the `/.well-known/agent-card.json` location.
+- [Streaming and asynchronous operations](https://a2a-protocol.org/latest/topics/streaming-and-async/): Server-Sent Events streaming and webhook push notifications.
+- [Enterprise features](https://a2a-protocol.org/latest/topics/enterprise-ready/): Authentication, authorization, transport security, tracing, and monitoring.
+- [Multi-tenancy](https://a2a-protocol.org/latest/topics/multi-tenancy/): Serving multiple tenants from one agent deployment.
 
-### 2.2 Task
-Represents a stateful unit of work.
-- `id`, `context_id`: Identifiers for the task and its conversational context.
-- `status`: `TaskStatus` (state, message, timestamp).
-- `artifacts`: List of `Artifact` (outputs produced).
-- `history`: List of `Message` (conversation history).
-- `metadata`: Custom structured data.
+## Extensions
 
-### 2.3 TaskState (Enum)
-- `SUBMITTED`, `WORKING`, `COMPLETED` (terminal), `FAILED` (terminal), `CANCELED` (terminal), `REJECTED` (terminal), `INPUT_REQUIRED` (interrupted), `AUTH_REQUIRED` (interrupted).
+- [Extensions overview](https://a2a-protocol.org/latest/topics/extensions/): Adding capabilities without changing the core protocol.
+- [Custom protocol bindings](https://a2a-protocol.org/latest/topics/custom-protocol-bindings/): Carrying A2A over transports beyond the three standard bindings.
+- [Extension and binding governance](https://a2a-protocol.org/latest/topics/extension-and-binding-governance/): The tiered promotion process that keeps the core stable.
 
-### 2.4 Message & Part
-- `Message`: Contains `message_id`, `role` (USER/AGENT), `parts`, `context_id`, `task_id`, `reference_task_ids`.
-- `Part`: Union type containing `text`, `raw` (bytes), `url`, or `data` (JSON). Includes `media_type` and `filename`.
+## Build an agent
 
-### 2.5 Artifact
-- A tangible output from a task, containing one or more `Part`s and metadata.
+- [Tutorials overview](https://a2a-protocol.org/latest/tutorials/): Index of available tutorials and courses.
+- [SDKs](https://a2a-protocol.org/latest/sdk/): Install instructions and repository links for all six official SDKs.
+- [Python API reference](https://a2a-protocol.org/latest/sdk/python/api/): Generated reference for the `a2a-sdk` Python package.
+- [Code samples](https://github.com/a2aproject/a2a-samples): Sample clients, servers, and agent framework integrations.
+- [A2A CLI](https://github.com/a2aproject/a2a-cli): Provides Client interfaces to connect with A2A Agents. It comes with Agent Skill and Agent Plugin.
 
-## 3. RPC Methods
+## Optional
 
 | Method | Request | Response | Description |
 | :--- | :--- | :--- | :--- |
@@ -87,4 +82,12 @@ Streams return a payload containing one of:
 
 ## 5. Implementation Status
 - **Official SDKs:** Python (`a2a-sdk`), JS/TS (`@a2a-js/sdk`), Java, Go, C#/.NET (`A2A`), and Rust (`a2a-rs`).
+- **Official CLI:** [a2a-cli](https://github.com/a2aproject/a2a-cli) (`a2a`) — command-line client for discovery, messaging, and task management; built on the A2A Go SDK.
 - **Integrations:** LangGraph, CrewAI, Google ADK, Genkit, AG2, BeeAI, PydanticAI, and more.
+
+## 6. Key Documents
+- [Full documentation in one file](https://a2a-protocol.org/llms-full.txt): Every doc page, the proto, and the Python SDK reference concatenated for ingestion.
+- [Roadmap](https://a2a-protocol.org/latest/roadmap/): Planned & Ongoing protocol work.
+- [Community](https://a2a-protocol.org/latest/community/): Discord, meetings, and contribution paths.
+- [Blog](https://a2a-protocol.org/latest/blog/): Release announcements, project news & other stories.
+- [Partners](https://a2a-protocol.org/latest/partners/): Organizations supporting A2A.
