@@ -150,6 +150,8 @@ flowchart LR
 
 </div>
 
+_A client agent reaches remote tools with MCP and remote agents with A2A._
+
 [:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
 
 ## What A2A Is Not
