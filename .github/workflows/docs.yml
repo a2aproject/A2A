@@ -138,8 +138,10 @@ jobs:
 
       - name: Manually deploy specific version from main
         if: github.event_name == 'workflow_dispatch'
+        env:
+          MIKE_VERSION: ${{ github.event.inputs.version }}
         run: |
-          mike deploy --push --update-aliases ${{ github.event.inputs.version }} latest
+          mike deploy --push --update-aliases "$MIKE_VERSION" latest
 
           echo "Setting 'latest' as the default version for the site..."
           mike set-default --push latest
