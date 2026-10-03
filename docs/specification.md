@@ -825,6 +825,13 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 {{ proto_to_table("TaskArtifactUpdateEvent") }}
 
+**Artifact lifecycle semantics:**
+
+- An artifact is identified by its `artifactId` and is scoped to the task/context in which it was emitted.
+- `append = false` **MUST** create a new artifact, or entirely replace an existing artifact with the same `artifactId`.
+- `append = true` **MUST** append the parts of this event's `artifact` to the previously sent artifact with the same `artifactId`. If no artifact with that `artifactId` exists yet, the event **MUST** create a new artifact (i.e. `append = true` on a first event behaves like `append = false`).
+- `lastChunk = true` marks the artifact as **sealed**. Once an artifact is sealed, the agent **MUST NOT** send any further `TaskArtifactUpdateEvent` for that `artifactId`. Servers and clients **MAY** treat a subsequent update to a sealed artifact as an agent implementation bug and reject or drop the event rather than silently applying it.
+
 ### 4.3. Push Notification Objects
 
 <a id="TaskPushNotificationConfig"></a>
