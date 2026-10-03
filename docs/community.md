@@ -104,6 +104,12 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 [MisterVVP/a2a-cpp](https://github.com/MisterVVP/a2a-cpp) · A2A spec v1.0.0 · C++20 SDK with client/server APIs, discovery, REST/JSON-RPC/gRPC transports, streaming, authentication hooks, CMake/vcpkg build integration, and a TCK conformance workflow.
 
+### 🐘 PHP — a2a-php-sdk
+
+![Stars](https://img.shields.io/github/stars/vbcherepanov/a2a-php-sdk?style=flat-square) [![Packagist](https://img.shields.io/packagist/v/vbcherepanov/a2a-php-sdk?style=flat-square)](https://packagist.org/packages/vbcherepanov/a2a-php-sdk) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/vbcherepanov/a2a-php-sdk/ci.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/vbcherepanov/a2a-php-sdk/actions/workflows/ci.yml)
+
+[vbcherepanov/a2a-php-sdk](https://github.com/vbcherepanov/a2a-php-sdk) · A2A spec v1.0.0 · PHP 8.4+ client and server SDK with JSON-RPC, REST and gRPC transports, SSE and gRPC streaming, protobuf types generated from the official a2a.proto, and the official TCK run in CI. Optional Symfony integration: [a2a-symfony-bundle](https://github.com/vbcherepanov/a2a-symfony-bundle).
+
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues/new?title=Community%20SDK%20Submission) with a link to your repository and published package.
 
