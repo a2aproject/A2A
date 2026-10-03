@@ -57,7 +57,7 @@ The `langgraph` example showcases several important A2A concepts:
 
 2. **Task State Management**:
 
-    - `samples/langgraph/__main__.py` initializes a `DefaultRequestHandler` with an `InMemoryTaskStore`.
+    - `samples/python/agents/langgraph/app/__main__.py` initializes a `DefaultRequestHandler` with an `InMemoryTaskStore`.
 
         ```python { .no-copy }
         --8<-- "https://raw.githubusercontent.com/a2aproject/a2a-samples/refs/heads/main/samples/python/agents/langgraph/app/__main__.py:DefaultRequestHandler"
@@ -73,23 +73,23 @@ The `langgraph` example showcases several important A2A concepts:
     - As the LangGraph agent processes the request (which might involve calling tools like `get_exchange_rate`), the `CurrencyAgentExecutor` enqueues different types of events onto the `EventQueue`:
         - `TaskStatusUpdateEvent`: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates...").
         - `TaskArtifactUpdateEvent`: When the final answer is ready, it's enqueued as an artifact. The `lastChunk` flag is `True`.
-        - A final `TaskStatusUpdateEvent` with `state=TaskState.completed` is sent to signify the end of the task, closing the stream.
+        - A final `TaskStatusUpdateEvent` with `state=TaskState.TASK_STATE_COMPLETED` is sent to signify the end of the task, closing the stream.
     - The `test_client.py`'s `run_streaming_test` function will print these individual event chunks as they are received from the server.
 
-4. **Multi-Turn Conversation (`TaskState.input_required`)**:
+4. **Multi-Turn Conversation (`TaskState.TASK_STATE_INPUT_REQUIRED`)**:
 
     - The `CurrencyAgent` can ask for clarification if a query is ambiguous (e.g., user asks "how much is 100 USD?").
-    - When this happens, the `CurrencyAgentExecutor` will enqueue a `TaskStatusUpdateEvent` where `status.state` is `TaskState.input_required` and `status.message` contains the agent's question (e.g., "To which currency would you like to convert?"). The stream closes after this event.
+    - When this happens, the `CurrencyAgentExecutor` will enqueue a `TaskStatusUpdateEvent` where `status.state` is `TaskState.TASK_STATE_INPUT_REQUIRED` and `status.message` contains the agent's question (e.g., "To which currency would you like to convert?"). The stream closes after this event.
     - The `test_client.py`'s `run_multi_turn_test` function demonstrates this:
         - It sends an initial ambiguous query.
-        - The agent responds (via the `DefaultRequestHandler` processing the enqueued events) with a `Task` whose status is `input_required`.
+        - The agent responds (via the `DefaultRequestHandler` processing the enqueued events) with a `Task` whose status is `TASK_STATE_INPUT_REQUIRED`.
         - The client then sends a second message, including the `taskId` and `contextId` from the first turn's `Task` response, to provide the missing information ("in GBP"). This continues the same task.
 
 ## Exploring the Code
 
 Take some time to look through these files:
 
-- `__main__.py`: Server setup using `A2AStarletteApplication` and `DefaultRequestHandler`. Note the `AgentCard` definition includes `capabilities.streaming=True`.
+- `__main__.py`: Server setup using `DefaultRequestHandler` and a Starlette application. Note the `AgentCard` definition includes `capabilities.streaming=True`.
 - `agent.py`: The `CurrencyAgent` with LangGraph, LLM model, and tool definitions.
 - `agent_executor.py`: The `CurrencyAgentExecutor` implementing the `execute` (and `cancel`) method. It uses the `RequestContext` to understand the ongoing task and the `EventQueue` to send back various events (`TaskStatusUpdateEvent`, `TaskArtifactUpdateEvent`, new `Task` object implicitly via the first event if no task exists).
 - `test_client.py`: Demonstrates various interaction patterns, including retrieving task IDs and using them for multi-turn conversations.
