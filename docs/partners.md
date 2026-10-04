@@ -111,6 +111,7 @@ collaborate effectively with each other and with users.
 - [MolTrust](https://moltrust.ch)
 - [MongoDB](https://www.mongodb.com)
 - [Monite](https://monite.com/)
+- [MusedIn](https://musedin.com)
 - [Neo4j](https://neo4j.com)
 - [New Relic](https://newrelic.com)
 - [Nisum](https://www.nisum.com)
