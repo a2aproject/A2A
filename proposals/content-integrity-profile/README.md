@@ -45,7 +45,7 @@ This sequence has no dependency on any particular language or library; any RFC 8
 
 ## Scope
 
-These vectors pin the bytes RFC 8785 produces from a JSON value that is already given. The preimages are not Agent Cards. The vectors do not cover field selection, signatures, or nesting depth. Changing how section 8.4.1 rule 1 is read does not change any expected output here.
+These vectors pin the bytes RFC 8785 produces from a JSON value that is already given. The input values are not Agent Cards. The vectors do not cover field selection, signatures, or nesting depth. Changing how section 8.4.1 rule 1 is read does not change any expected output here.
 
 ## Notes on the companion depth corpus
 
