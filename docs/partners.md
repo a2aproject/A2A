@@ -9,6 +9,7 @@ collaborate effectively with each other and with users.
 - [Accelirate Inc](https://www.accelirate.com)
 - [Accenture](https://www.accenture.com)
 - [Activeloop](https://www.activeloop.ai/)
+- [ADEXTO](https://adexto.xyz/agents)
 - [Adobe](https://www.adobe.com)
 - [AG2AI](https://ag2.ai)
 - [AgentTrust](https://agenttrust.ai/)
