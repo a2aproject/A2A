@@ -123,7 +123,10 @@ jobs:
         uses: lycheeverse/lychee-action@v2.6.1 # CVE-2024-48908: pin >=2.0.2
         with:
           lycheeVersion: "v0.22.0"
-          args: '--config lychee.toml site'
+          # --root-dir resolves root-relative links (e.g. the /llms.txt pointer
+          # in the mkdocs copyright footer, present on every page) against the
+          # built site; without it lychee cannot turn them into URIs.
+          args: '--config lychee.toml --root-dir "${{ github.workspace }}/site" site'
           fail: true
           output: lychee/out.md
           token: ${{ secrets.GITHUB_TOKEN }}
