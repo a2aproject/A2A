@@ -148,6 +148,7 @@ collaborate effectively with each other and with users.
 - [Space Auto](https://space.auto/)
 - [Stacklok, Inc](https://stacklok.com)
 - [Strale](https://strale.dev)
+- [Synergy Scout](https://synergy-scout-link.base44.app)
 - [Supertab](https://www.supertab.co/post/supertab-connect-partners-with-google-cloud-to-enable-ai-agents)
 - [Suzega](https://suzega.com/)
 - [TCS](https://www.tcs.com)
