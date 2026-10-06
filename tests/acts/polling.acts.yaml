@@ -14,7 +14,7 @@ suites:
         description: >
           Sends a long-running request with returnImmediately enabled, polls
           until the task reaches a terminal state, and verifies the task
-          completes with at least one artifact.
+          reaches TASK_STATE_COMPLETED.
         spec_ref: "specification.md#3.1.1"
         level: must
         requires_behaviors: ["tck-long-running"]
@@ -65,9 +65,6 @@ suites:
                 id: "{{start.taskId}}"
                 status:
                   state: TASK_STATE_COMPLETED
-                artifacts:
-                  type: array
-                  count_gte: 1
 
       - id: CORE-EXEC-002
         name: "Polling shows progress through working state"

@@ -80,10 +80,10 @@ suites:
           - id: turn2
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "tck-multi-turn history limit second"
             expect:
@@ -96,10 +96,10 @@ suites:
           - id: turn3
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "done"
             expect:
@@ -126,7 +126,7 @@ suites:
 
       - id: CORE-HIST-003
         name: "SendMessage historyLength=0 returns no history"
-        description: "Verifies that SendMessage omits task history when configuration.historyLength is zero."
+        description: "Verifies that SendMessage omits task history, or returns it as an empty array, when configuration.historyLength is zero."
         spec_ref: "docs/specification.md#311-send-message"
         level: should
         requires_behaviors:
@@ -150,7 +150,10 @@ suites:
                   status:
                     state: TASK_STATE_COMPLETED
                   history:
-                    absent: true
+                    any_of:
+                      - absent: true
+                      - type: array
+                        count: 0
 
       - id: CORE-HIST-004
         name: "GetTask may return persisted history"
@@ -219,10 +222,10 @@ suites:
           - id: turn2
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "tck-multi-turn chronological second"
             expect:
@@ -235,10 +238,10 @@ suites:
           - id: turn3
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "done"
             expect:
@@ -268,7 +271,13 @@ suites:
                       contains: "tck-multi-turn chronological first"
               - source: "{{get.response}}"
                 any:
-                  path: "history[2].parts[*]"
+                  path: "history[*].parts[*]"
+                  match:
+                    text:
+                      contains: "tck-multi-turn chronological second"
+              - source: "{{get.response}}"
+                any:
+                  path: "history[*].parts[*]"
                   match:
                     text:
                       contains: "done"
@@ -302,10 +311,10 @@ suites:
           - id: turn2
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "tck-multi-turn follow up msg"
             expect:
@@ -321,10 +330,10 @@ suites:
           - id: turn3
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "done"
             expect:

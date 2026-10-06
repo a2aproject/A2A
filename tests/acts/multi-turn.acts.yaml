@@ -38,10 +38,10 @@ suites:
           - id: turn2
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "here is more input"
             expect:
@@ -55,10 +55,10 @@ suites:
           - id: turn3
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "{{turn1.contextId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
                 parts:
                   - text: "done"
             expect:
@@ -101,9 +101,9 @@ suites:
           - id: turn2
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
                 parts:
                   - text: "done"
             expect:
@@ -144,16 +144,15 @@ suites:
           - id: turn2
             operation: send_message
             params:
-              taskId: "{{turn1.taskId}}"
-              contextId: "wrong-context-id-12345"
               message:
                 role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "wrong-context-id-12345"
                 parts:
                   - text: "should fail"
-            expect:
-              status: error
-              error:
-                exists: true
+            expect_error:
+              message:
+                type: string
 
       - id: CORE-MULTI-003
         name: Mismatched contextId and taskId is rejected
@@ -208,10 +207,10 @@ suites:
           - id: mismatch
             operation: send_message
             params:
-              taskId: "{{first.taskId1}}"
-              contextId: "{{second.contextId2}}"
               message:
                 role: ROLE_USER
+                taskId: "{{first.taskId1}}"
+                contextId: "{{second.contextId2}}"
                 parts:
                   - text: "mismatched context and task"
             expect_error:
@@ -219,22 +218,42 @@ suites:
                 type: string
 
       - id: CORE-CTX-001
-        name: Rejected client contextId returns an error
-        description: Runner SHOULD use a client-generated contextId that the server rejects and verify the server errors instead of minting a new contextId.
+        name: Client-provided contextId is preserved or rejected
+        description: >
+          An agent may accept a client-provided contextId or refuse it, but it must never
+          answer with a different one. The response must therefore either carry back the
+          contextId that was sent, or be an error.
         spec_ref: REQ-CTX-002
         level: must
-        tags: [context, identity, runner-special]
+        tags: [context, identity]
+        transport: [jsonrpc]
         requires_behaviors:
           - tck-complete-task
         steps:
           - id: send
-            operation: send_message
-            params:
-              contextId: "client-generated-context-that-should-be-rejected"
-              message:
-                role: ROLE_USER
-                parts:
-                  - text: "tck-complete-task reject client context id"
-            expect_error:
-              message:
-                type: string
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "core-ctx-001"
+                method: SendMessage
+                params:
+                  message:
+                    messageId: "core-ctx-001-msg"
+                    role: ROLE_USER
+                    contextId: "client-generated-context-id-12345"
+                    parts:
+                      - text: "tck-complete-task client supplied context id"
+            expect:
+              status: 200
+              body:
+                any_of:
+                  - result:
+                      task:
+                        contextId: "client-generated-context-id-12345"
+                  - error:
+                      exists: true

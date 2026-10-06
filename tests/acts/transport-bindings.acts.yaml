@@ -29,6 +29,7 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "jsonrpc-env-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-complete-task verify jsonrpc envelope"
@@ -42,10 +43,11 @@ suites:
 
       - id: JSONRPC-CT-001
         name: "Response Content-Type is application/json"
-        description: "ACTS cannot reliably assert response headers in this raw format, so the test uses a valid JSON-RPC body as a proxy for the expected application/json response."
+        description: "Verifies the JSON-RPC binding answers with the application/json content type."
         level: must
         tags: [transport, jsonrpc, raw, content-type]
         transport: [jsonrpc]
+        runner_requirements: [header_inspection]
         requires_behaviors: ["tck-complete-task"]
         steps:
           - id: send-raw
@@ -61,11 +63,15 @@ suites:
                 method: SendMessage
                 params:
                   message:
+                    messageId: "jsonrpc-ct-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-complete-task verify content type"
             expect:
               status: 200
+              headers:
+                Content-Type:
+                  starts_with: "application/json"
               body:
                 jsonrpc: "2.0"
                 id: "jsonrpc-ct-001"
@@ -78,6 +84,9 @@ suites:
         tags: [transport, jsonrpc, raw, sse, streaming]
         transport: [jsonrpc]
         requires_behaviors: ["tck-stream-basic"]
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream-raw
             raw:
@@ -93,6 +102,7 @@ suites:
                 method: SendStreamingMessage
                 params:
                   message:
+                    messageId: "jsonrpc-sse-001-msg"
                     role: ROLE_USER
                     parts:
                       - text: "tck-stream-basic generate output"
@@ -111,7 +121,32 @@ suites:
         level: must
         tags: [transport, rest, raw, status]
         transport: [rest]
+        requires_behaviors:
+          - "tck-complete-task"
         steps:
+          - id: create
+            description: >
+              Positive control. Without a task that GET /tasks/{id} actually
+              returns, an agent serving no REST routes at all answers 404 to
+              the probe below and passes a MUST about status mapping.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for REST status"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+
+          - id: get-existing
+            operation: get_task
+            params:
+              id: "{{create.taskId}}"
+            expect:
+              status: 200
+
           - id: get-missing
             raw:
               method: GET
@@ -123,9 +158,10 @@ suites:
               status: 404
 
       - id: REST-PD-001
-        name: "REST errors use problem details format"
+        name: "REST errors use the google.rpc.Status representation"
+        description: "Verifies that a REST error body is a google.rpc.Status object whose details array carries an ErrorInfo naming the A2A error type."
         level: should
-        tags: [transport, rest, raw, problem-details]
+        tags: [transport, rest, raw, error-format]
         transport: [rest]
         steps:
           - id: get-missing-problem
@@ -138,19 +174,31 @@ suites:
             expect:
               status: 404
               body:
-                type:
-                  type: string
-                title:
-                  type: string
-                status:
-                  type: number
+                error:
+                  code:
+                    type: number
+                  message:
+                    type: string
+                  details:
+                    type: array
+                    count_gte: 1
+            assertions:
+              - source: "{{get-missing-problem.response}}"
+                any:
+                  path: "error.details[*]"
+                  match:
+                    "@type":
+                      contains: "ErrorInfo"
+                    reason: "TASK_NOT_FOUND"
+                    domain: "a2a-protocol.org"
 
       - id: REST-CT-001
         name: "REST responses use application/a2a+json content type"
-        description: "Runner SHOULD verify the Content-Type response header is application/a2a+json for REST responses."
+        description: "Verifies the Content-Type response header is application/a2a+json for REST responses."
         level: should
-        tags: [transport, content-type, runner-special]
+        tags: [transport, content-type]
         transport: [rest]
+        runner_requirements: [header_inspection]
         requires_behaviors: ["tck-complete-task"]
         steps:
           - id: send
@@ -162,12 +210,144 @@ suites:
                   - text: "tck-complete-task verify rest content type"
             expect:
               status: 200
+              headers:
+                Content-Type:
+                  starts_with: "application/a2a+json"
               body:
                 task:
                   id:
                     type: string
                   status:
                     state: TASK_STATE_COMPLETED
+
+      - id: REST-SUB-GET-001
+        name: "REST SubscribeToTask accepts GET"
+        description: >
+          The proto's HTTP binding declares SubscribeToTask as
+          GET /tasks/{id}:subscribe, while the method mapping tables list
+          POST. Servers SHOULD accept both, so a client following either
+          source can subscribe; this test covers GET. A server that routes
+          only POST typically answers 405, or treats the request as a
+          GetTask for the id "<id>:subscribe" and answers 404.
+        spec_ref: "specification/a2a.proto: rpc SubscribeToTask"
+        level: should
+        tags: [transport, rest, raw, sse, streaming, subscribe]
+        transport: [rest]
+        requires_behaviors: ["tck-long-running"]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            description: >
+              A task that is still running when the subscribe arrives.
+              Subscribing to a terminal task is an UnsupportedOperationError,
+              which would fail this test for a reason unrelated to the
+              HTTP method.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running subscribe over REST with GET"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_SUBMITTED
+                        - TASK_STATE_WORKING
+            capture:
+              taskId: "task.id"
+
+          - id: subscribe
+            raw:
+              method: GET
+              path: "/tasks/{{start.taskId}}:subscribe"
+              headers:
+                Accept: text/event-stream
+                A2A-Version: "1.0"
+            expect:
+              status: 200
+            expect_stream:
+              min_count: 1
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+                      - TASK_STATE_CANCELED
+                      - TASK_STATE_REJECTED
+
+      - id: REST-SUB-POST-001
+        name: "REST SubscribeToTask accepts POST"
+        description: >
+          Counterpart of REST-SUB-GET-001 for POST /tasks/{id}:subscribe, the
+          method the method mapping tables list. Servers SHOULD accept both
+          methods, so a client following either source can subscribe.
+        spec_ref: "docs/specification.md#1132-task-operations"
+        level: should
+        tags: [transport, rest, raw, sse, streaming, subscribe]
+        transport: [rest]
+        requires_behaviors: ["tck-long-running"]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            description: >
+              A task that is still running when the subscribe arrives, for
+              the same reason as in REST-SUB-GET-001.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running subscribe over REST with POST"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_SUBMITTED
+                        - TASK_STATE_WORKING
+            capture:
+              taskId: "task.id"
+
+          - id: subscribe
+            raw:
+              method: POST
+              path: "/tasks/{{start.taskId}}:subscribe"
+              headers:
+                Content-Type: application/json
+                Accept: text/event-stream
+                A2A-Version: "1.0"
+              body: {}
+            expect:
+              status: 200
+            expect_stream:
+              min_count: 1
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+                      - TASK_STATE_CANCELED
+                      - TASK_STATE_REJECTED
 
   - id: grpc-transport
     name: "gRPC transport bindings"
@@ -184,7 +364,7 @@ suites:
             params:
               id: "00000000-0000-0000-0000-000000000000"
             expect_error:
-              code: TaskNotFoundError
+              error_type: TaskNotFoundError
 
       - id: GRPC-STREAM-001
         name: "gRPC streaming delivers proper message structure"
@@ -192,6 +372,9 @@ suites:
         tags: [transport, grpc, streaming]
         transport: [grpc]
         requires_behaviors: ["tck-stream-basic"]
+        preconditions:
+          capabilities:
+            streaming: true
         steps:
           - id: stream
             operation: send_streaming_message

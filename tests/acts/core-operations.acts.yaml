@@ -65,9 +65,9 @@ suites:
           - id: resend
             operation: send_message
             params:
-              taskId: "{{setup.taskId}}"
               message:
                 role: ROLE_USER
+                taskId: "{{setup.taskId}}"
                 parts:
                   - text: "tck-complete-task terminal follow-up"
             expect_error:
@@ -291,10 +291,9 @@ suites:
                 parts:
                   - data:
                       value: "unsupported"
-                    metadata:
-                      contentType: "application/x-unsupported-type-12345"
+                    mediaType: "application/x-unsupported-type-12345"
             expect_error:
-              code: ContentTypeNotSupportedError
+              error_type: ContentTypeNotSupportedError
 
       - id: CORE-LIST-001
         name: "ListTasks returns tasks for a context"
