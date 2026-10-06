@@ -220,6 +220,135 @@ suites:
                   status:
                     state: TASK_STATE_COMPLETED
 
+      - id: REST-SUB-GET-001
+        name: "REST SubscribeToTask accepts GET"
+        description: >
+          The proto's HTTP binding declares SubscribeToTask as
+          GET /tasks/{id}:subscribe, while the method mapping tables list
+          POST. Servers SHOULD accept both, so a client following either
+          source can subscribe; this test covers GET. A server that routes
+          only POST typically answers 405, or treats the request as a
+          GetTask for the id "<id>:subscribe" and answers 404.
+        spec_ref: "specification/a2a.proto: rpc SubscribeToTask"
+        level: should
+        tags: [transport, rest, raw, sse, streaming, subscribe]
+        transport: [rest]
+        requires_behaviors: ["tck-long-running"]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            description: >
+              A task that is still running when the subscribe arrives.
+              Subscribing to a terminal task is an UnsupportedOperationError,
+              which would fail this test for a reason unrelated to the
+              HTTP method.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running subscribe over REST with GET"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_SUBMITTED
+                        - TASK_STATE_WORKING
+            capture:
+              taskId: "task.id"
+
+          - id: subscribe
+            raw:
+              method: GET
+              path: "/tasks/{{start.taskId}}:subscribe"
+              headers:
+                Accept: text/event-stream
+                A2A-Version: "1.0"
+            expect:
+              status: 200
+            expect_stream:
+              min_count: 1
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+                      - TASK_STATE_CANCELED
+                      - TASK_STATE_REJECTED
+
+      - id: REST-SUB-POST-001
+        name: "REST SubscribeToTask accepts POST"
+        description: >
+          Counterpart of REST-SUB-GET-001 for POST /tasks/{id}:subscribe, the
+          method the method mapping tables list. Servers SHOULD accept both
+          methods, so a client following either source can subscribe.
+        spec_ref: "docs/specification.md#1132-task-operations"
+        level: should
+        tags: [transport, rest, raw, sse, streaming, subscribe]
+        transport: [rest]
+        requires_behaviors: ["tck-long-running"]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            description: >
+              A task that is still running when the subscribe arrives, for
+              the same reason as in REST-SUB-GET-001.
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running subscribe over REST with POST"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state:
+                      one_of:
+                        - TASK_STATE_SUBMITTED
+                        - TASK_STATE_WORKING
+            capture:
+              taskId: "task.id"
+
+          - id: subscribe
+            raw:
+              method: POST
+              path: "/tasks/{{start.taskId}}:subscribe"
+              headers:
+                Content-Type: application/json
+                Accept: text/event-stream
+                A2A-Version: "1.0"
+              body: {}
+            expect:
+              status: 200
+            expect_stream:
+              min_count: 1
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+                      - TASK_STATE_CANCELED
+                      - TASK_STATE_REJECTED
+
   - id: grpc-transport
     name: "gRPC transport bindings"
     tests:
