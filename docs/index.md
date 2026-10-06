@@ -90,6 +90,14 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
 
+- :material-console-line:{ .lg .middle } **Use the A2A CLI**
+
+    Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power.
+
+    [:octicons-arrow-right-24: Introducing the A2A CLI](./blog/posts/introducing-a2a-cli.md)
+
+    [:fontawesome-brands-github: a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
+
 - :material-code-braces:{ .lg .middle } **Download the Official SDKs**
 
     [:fontawesome-brands-python: Python](https://github.com/a2aproject/a2a-python)
@@ -141,6 +149,8 @@ flowchart LR
 ```
 
 </div>
+
+_A client agent reaches remote tools with MCP and remote agents with A2A._
 
 [:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
 
