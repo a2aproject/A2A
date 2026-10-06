@@ -302,6 +302,14 @@ message Message {
   repeated string extensions = 7;
   // A list of task IDs that this message references for additional context.
   repeated string reference_task_ids = 8;
+  // Optional. The identity of the entity that sent this message (e.g. a user ID,
+  // service account name, or connection identifier). Populated by the transport or
+  // binding layer from the authenticated connection identity where available.
+  // Clients MAY supply this field directly; agents that rely on it for
+  // authorization decisions SHOULD document whether they trust client-supplied values.
+  // Servers SHOULD preserve this value on TimelineEntry(Message) items so the
+  // sender is visible in task history.
+  optional string sender = 9;
 }
 
 // Artifacts represent task outputs.
