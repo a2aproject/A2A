@@ -43,6 +43,17 @@ class a2a.server.tasks.push_notification_config_store.PushNotificationConfigStor
       subclasses MUST override this method to deliver notifications
       correctly in multi-owner deployments.
 
-   abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
+   abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig | None
 
       Sets or updates the push notification configuration for a task.
+
+      Implementations should not mutate notification_config. They
+      store a copy normalized by normalize_push_notification_config
+      and return it. Returning None is still accepted for existing
+      implementations; the request handlers then normalize the request
+      themselves.
+
+a2a.server.tasks.push_notification_config_store.normalize_push_notification_config(task_id: str, notification_config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
+
+   Returns a copy with task_id set and an empty id defaulted to the
+   task id.

@@ -465,6 +465,14 @@ information from the request.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="a2a.server.routes.common.create_event_source_response">
+<span class="sig-prename descclassname"><span class="pre">a2a.server.routes.common.</span></span><span class="sig-name descname"><span class="pre">create_event_source_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shutdown_grace_period</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">EventSourceResponse</span></span></span><a class="headerlink" href="#a2a.server.routes.common.create_event_source_response" title="Link to this definition">¶</a></dt>
+<dd><p>Creates an SSE response, preserving support for older sse-starlette.</p>
+<p>A non-zero grace period requires cooperative shutdown support from
+sse-starlette, provided by the HTTP server optional dependencies.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="a2a.server.routes.common.serialize_list_tasks_response">
 <span class="sig-prename descclassname"><span class="pre">a2a.server.routes.common.</span></span><span class="sig-name descname"><span class="pre">serialize_list_tasks_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.types.html#a2a.types.ListTasksResponse" title="a2a_pb2.ListTasksResponse"><span class="pre">ListTasksResponse</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.server.routes.common.serialize_list_tasks_response" title="Link to this definition">¶</a></dt>
 <dd><p>Serializes a ListTasks response according to artifact semantics.</p>
@@ -542,6 +550,7 @@ information from the request.</p>
 <li><a class="reference internal" href="#a2a.server.routes.common.StarletteUser.user_name"><code class="docutils literal notranslate"><span class="pre">StarletteUser.user_name</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#a2a.server.routes.common.create_event_source_response"><code class="docutils literal notranslate"><span class="pre">create_event_source_response()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.server.routes.common.serialize_list_tasks_response"><code class="docutils literal notranslate"><span class="pre">serialize_list_tasks_response()</span></code></a></li>
 </ul>
 </li>

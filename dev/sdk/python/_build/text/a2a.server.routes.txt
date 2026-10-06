@@ -27,6 +27,8 @@ Submodules
 
     * "StarletteUser.user_name"
 
+  * "create_event_source_response()"
+
   * "serialize_list_tasks_response()"
 
 * a2a.server.routes.fastapi_routes module
@@ -172,7 +174,7 @@ a2a.server.routes.create_agent_card_routes(agent_card: AgentCard, card_modifier:
         deployment knows, so there is no default. The *ETag* is sent
         either way, and revalidating against it costs one 304.
 
-a2a.server.routes.create_jsonrpc_routes(request_handler: RequestHandler, rpc_url: str, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False) -> list[Route]
+a2a.server.routes.create_jsonrpc_routes(request_handler: RequestHandler, rpc_url: str, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False, shutdown_grace_period: float = 0) -> list[Route]
 
    Creates the Starlette Route for the A2A protocol JSON-RPC endpoint.
 
@@ -194,7 +196,13 @@ a2a.server.routes.create_jsonrpc_routes(request_handler: RequestHandler, rpc_url
       * **enable_v0_3_compat** -- Whether to enable v0.3 backward
         compatibility on the same endpoint.
 
-a2a.server.routes.create_rest_routes(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False, path_prefix: str = '') -> list[BaseRoute]
+      * **shutdown_grace_period** -- Seconds to allow active SSE
+        streams to finish before force-cancellation during shutdown.
+        This value should be less than the ASGI server's graceful
+        shutdown timeout. Defaults to 0, matching the "sse-starlette"
+        default behavior.
+
+a2a.server.routes.create_rest_routes(request_handler: RequestHandler, context_builder: ServerCallContextBuilder | None = None, enable_v0_3_compat: bool = False, path_prefix: str = '', shutdown_grace_period: float = 0) -> list[BaseRoute]
 
    Creates the Starlette Routes for the A2A protocol REST endpoint.
 
@@ -210,3 +218,9 @@ a2a.server.routes.create_rest_routes(request_handler: RequestHandler, context_bu
         v0.3 protocol endpoints using REST03Adapter.
 
       * **path_prefix** -- The URL prefix for the REST endpoints.
+
+      * **shutdown_grace_period** -- Seconds to allow active SSE
+        streams to finish before force-cancellation during shutdown.
+        This value should be less than the ASGI server's graceful
+        shutdown timeout. Defaults to 0, matching the "sse-starlette"
+        default behavior.

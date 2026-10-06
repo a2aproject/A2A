@@ -115,6 +115,8 @@ Submodules
 
     * "PushNotificationConfigStore.set_info()"
 
+  * "normalize_push_notification_config()"
+
 * a2a.server.tasks.push_notification_sender module
 
   * "PushNotificationSender"
@@ -258,7 +260,7 @@ class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: ~sqlalchemy.e
 
    owner_resolver: Callable[[ServerCallContext], str]
 
-   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
+   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig
 
       Sets or updates the push notification configuration for a task.
 
@@ -336,7 +338,7 @@ class a2a.server.tasks.InMemoryPushNotificationConfigStore(owner_resolver: ~coll
 
       Used by the push-notification dispatch path.
 
-   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
+   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig
 
       Sets or updates the push notification configuration for a task
       in memory.
@@ -409,9 +411,15 @@ class a2a.server.tasks.PushNotificationConfigStore
       subclasses MUST override this method to deliver notifications
       correctly in multi-owner deployments.
 
-   abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
+   abstractmethod async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig | None
 
       Sets or updates the push notification configuration for a task.
+
+      Implementations should not mutate notification_config. They
+      store a copy normalized by normalize_push_notification_config
+      and return it. Returning None is still accepted for existing
+      implementations; the request handlers then normalize the request
+      themselves.
 
 class a2a.server.tasks.PushNotificationSender
 
@@ -746,7 +754,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f7b65372b50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f000c6d8950>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.

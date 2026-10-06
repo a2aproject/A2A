@@ -50,6 +50,6 @@ class a2a.server.tasks.database_push_notification_config_store.DatabasePushNotif
 
    owner_resolver: Callable[[ServerCallContext], str]
 
-   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> None
+   async set_info(task_id: str, notification_config: TaskPushNotificationConfig, context: ServerCallContext) -> TaskPushNotificationConfig
 
       Sets or updates the push notification configuration for a task.

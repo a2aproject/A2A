@@ -54,6 +54,14 @@ class a2a.server.routes.common.StarletteUser(user: BaseUser)
 
       Returns the user name of the current user.
 
+a2a.server.routes.common.create_event_source_response(content: Any, shutdown_grace_period: float = 0) -> EventSourceResponse
+
+   Creates an SSE response, preserving support for older sse-
+   starlette.
+
+   A non-zero grace period requires cooperative shutdown support from
+   sse-starlette, provided by the HTTP server optional dependencies.
+
 a2a.server.routes.common.serialize_list_tasks_response(response: ListTasksResponse, include_artifacts: bool) -> dict[str, Any]
 
    Serializes a ListTasks response according to artifact semantics.
