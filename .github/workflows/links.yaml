@@ -52,9 +52,11 @@ jobs:
         # CVE-2024-48908: pin >=2.0.2. >=2.6.1 also extracts the lychee tarball
         # into RUNNER_TEMP; earlier versions unpacked it in the workspace, where
         # its bundled docs/README.md overwrote this repository's own file.
-        uses: lycheeverse/lychee-action@v2.6.1
+        # The lychee binary version is deliberately left unpinned: Dependabot
+        # cannot see a `lycheeVersion` input, so an explicit pin goes stale
+        # silently. Inheriting the action default keeps the two in step.
+        uses: lycheeverse/lychee-action@v2.9.0
         with:
-          lycheeVersion: "v0.22.0"
           args: --config lychee.toml --no-progress ${{ steps.changed-files.outputs.all_changed_files }}
           fail: true
           failIfEmpty: false
@@ -120,9 +122,10 @@ jobs:
 
       - name: Link Checker
         id: lychee
-        uses: lycheeverse/lychee-action@v2.6.1 # CVE-2024-48908: pin >=2.0.2
+        # CVE-2024-48908: pin >=2.0.2. lychee binary version is inherited from
+        # the action default rather than pinned; see the PR job above.
+        uses: lycheeverse/lychee-action@v2.9.0
         with:
-          lycheeVersion: "v0.22.0"
           # --root-dir resolves root-relative links (e.g. the /llms.txt pointer
           # in the mkdocs copyright footer, present on every page) against the
           # built site; without it lychee cannot turn them into URIs.
