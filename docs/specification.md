@@ -3299,7 +3299,7 @@ A2A Protocol Working Group, <a2a-protocol@example.org>
 
 **Author/Change controller:** A2A Protocol Working Group
 
-**Specification document:** Section 3.2.5 of the A2A Protocol Specification
+**Specification document:** [Section 3.2.6: Service Parameters](#326-service-parameters) of the A2A Protocol Specification
 
 **Related information:**
 The A2A-Version header field indicates the A2A protocol version that the client is using. The value MUST be in the format `Major.Minor` (e.g., "0.3"). If the version is not supported by the agent, the agent returns a `VersionNotSupportedError`.
@@ -3320,7 +3320,7 @@ A2A-Version: 0.3
 
 **Author/Change controller:** A2A Protocol Working Group
 
-**Specification document:** Section 3.2.5 of the A2A Protocol Specification
+**Specification document:** [Section 3.2.6: Service Parameters](#326-service-parameters) of the A2A Protocol Specification
 
 **Related information:**
 The A2A-Extensions header field contains a comma-separated list of extension URIs that the client wants to use for the request. Extensions allow agents to provide additional functionality beyond the core A2A specification while maintaining backward compatibility.
