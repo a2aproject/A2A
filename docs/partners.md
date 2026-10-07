@@ -137,6 +137,7 @@ collaborate effectively with each other and with users.
 - [S&P](https://www.spglobal.com)
 - [Sage](https://www.sage.com/en-us/)
 - [Salesforce](https://www.salesforce.com)
+- [Salt](https://saltapp.ai)
 - [SAP](https://news.sap.com/2025/04/sap-google-cloud-enterprise-ai-open-agent-collaboration-model-choice-multimodal-intelligence/)
 - [Sayone Technologies](https://www.sayonetech.com/)
 - [ServiceNow](https://www.servicenow.com)

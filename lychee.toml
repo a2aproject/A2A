@@ -84,12 +84,18 @@ exclude_path = [
     # Source docs (PR / changed-file checks)
     "docs/robots.txt",
     "docs/llms.txt",
+    "docs/llms-reference.txt",
+    # Generated: concatenates every doc page, so its links are already checked
+    # in the Markdown sources.
+    "docs/llms-full.txt",
     "docs/spec/a2a.json",
     "docs/spec-proto.md",
     "docs/sdk/python.md",
     # Built site equivalents (scheduled site/ checks)
     '(^|/)robots\.txt$',
     '(^|/)llms\.txt$',
+    '(^|/)llms-reference\.txt$',
+    '(^|/)llms-full\.txt$',
     '(^|/)spec/a2a\.json$',
     '(^|/)spec-proto(/|$)',
     '(^|/)sdk/python/index\.html$',
