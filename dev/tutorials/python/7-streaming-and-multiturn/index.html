@@ -2569,7 +2569,7 @@
 <p><strong>Task State Management</strong>:</p>
 <ul>
 <li>
-<p><code>samples/langgraph/__main__.py</code> initializes a <code>DefaultRequestHandler</code> with an <code>InMemoryTaskStore</code>.</p>
+<p><code>samples/python/agents/langgraph/app/__main__.py</code> initializes a <code>DefaultRequestHandler</code> with an <code>InMemoryTaskStore</code>.</p>
 <div class="language-python no-copy highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">httpx_client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">push_config_store</span> <span class="o">=</span> <span class="n">InMemoryPushNotificationConfigStore</span><span class="p">()</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">push_sender</span> <span class="o">=</span> <span class="n">BasePushNotificationSender</span><span class="p">(</span><span class="n">httpx_client</span><span class="o">=</span><span class="n">httpx_client</span><span class="p">,</span>
@@ -2601,20 +2601,20 @@
 <li>As the LangGraph agent processes the request (which might involve calling tools like <code>get_exchange_rate</code>), the <code>CurrencyAgentExecutor</code> enqueues different types of events onto the <code>EventQueue</code>:<ul>
 <li><code>TaskStatusUpdateEvent</code>: For intermediate updates (e.g., "Looking up exchange rates...", "Processing the exchange rates...").</li>
 <li><code>TaskArtifactUpdateEvent</code>: When the final answer is ready, it's enqueued as an artifact. The <code>lastChunk</code> flag is <code>True</code>.</li>
-<li>A final <code>TaskStatusUpdateEvent</code> with <code>state=TaskState.completed</code> is sent to signify the end of the task, closing the stream.</li>
+<li>A final <code>TaskStatusUpdateEvent</code> with <code>state=TaskState.TASK_STATE_COMPLETED</code> is sent to signify the end of the task, closing the stream.</li>
 </ul>
 </li>
 <li>The <code>test_client.py</code>'s <code>run_streaming_test</code> function will print these individual event chunks as they are received from the server.</li>
 </ul>
 </li>
 <li>
-<p><strong>Multi-Turn Conversation (<code>TaskState.input_required</code>)</strong>:</p>
+<p><strong>Multi-Turn Conversation (<code>TaskState.TASK_STATE_INPUT_REQUIRED</code>)</strong>:</p>
 <ul>
 <li>The <code>CurrencyAgent</code> can ask for clarification if a query is ambiguous (e.g., user asks "how much is 100 USD?").</li>
-<li>When this happens, the <code>CurrencyAgentExecutor</code> will enqueue a <code>TaskStatusUpdateEvent</code> where <code>status.state</code> is <code>TaskState.input_required</code> and <code>status.message</code> contains the agent's question (e.g., "To which currency would you like to convert?"). The stream closes after this event.</li>
+<li>When this happens, the <code>CurrencyAgentExecutor</code> will enqueue a <code>TaskStatusUpdateEvent</code> where <code>status.state</code> is <code>TaskState.TASK_STATE_INPUT_REQUIRED</code> and <code>status.message</code> contains the agent's question (e.g., "To which currency would you like to convert?"). The stream closes after this event.</li>
 <li>The <code>test_client.py</code>'s <code>run_multi_turn_test</code> function demonstrates this:<ul>
 <li>It sends an initial ambiguous query.</li>
-<li>The agent responds (via the <code>DefaultRequestHandler</code> processing the enqueued events) with a <code>Task</code> whose status is <code>input_required</code>.</li>
+<li>The agent responds (via the <code>DefaultRequestHandler</code> processing the enqueued events) with a <code>Task</code> whose status is <code>TASK_STATE_INPUT_REQUIRED</code>.</li>
 <li>The client then sends a second message, including the <code>taskId</code> and <code>contextId</code> from the first turn's <code>Task</code> response, to provide the missing information ("in GBP"). This continues the same task.</li>
 </ul>
 </li>
@@ -2624,7 +2624,7 @@
 <h2 id="exploring-the-code">Exploring the Code<a class="headerlink" href="#exploring-the-code" title="Permanent link">&para;</a></h2>
 <p>Take some time to look through these files:</p>
 <ul>
-<li><code>__main__.py</code>: Server setup using <code>A2AStarletteApplication</code> and <code>DefaultRequestHandler</code>. Note the <code>AgentCard</code> definition includes <code>capabilities.streaming=True</code>.</li>
+<li><code>__main__.py</code>: Server setup using <code>DefaultRequestHandler</code> and a Starlette application. Note the <code>AgentCard</code> definition includes <code>capabilities.streaming=True</code>.</li>
 <li><code>agent.py</code>: The <code>CurrencyAgent</code> with LangGraph, LLM model, and tool definitions.</li>
 <li><code>agent_executor.py</code>: The <code>CurrencyAgentExecutor</code> implementing the <code>execute</code> (and <code>cancel</code>) method. It uses the <code>RequestContext</code> to understand the ongoing task and the <code>EventQueue</code> to send back various events (<code>TaskStatusUpdateEvent</code>, <code>TaskArtifactUpdateEvent</code>, new <code>Task</code> object implicitly via the first event if no task exists).</li>
 <li><code>test_client.py</code>: Demonstrates various interaction patterns, including retrieving task IDs and using them for multi-turn conversations.</li>
