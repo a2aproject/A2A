@@ -32,7 +32,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
 !!! abstract ""
     Build with
-    **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
+    **[![ADK Logo](https://adk.dev/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://adk.dev/)** _(or any framework)_,
     equip with **[![MCP Logo](https://modelcontextprotocol.io/mcp.png){class="twemoji lg middle"} MCP](https://modelcontextprotocol.io)** _(or any tool)_,
     and communicate with
     **![A2A Logo](./assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg){class="twemoji lg middle"} A2A**,
@@ -90,6 +90,14 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
 
+- :material-console-line:{ .lg .middle } **Use the A2A CLI**
+
+    Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power.
+
+    [:octicons-arrow-right-24: Introducing the A2A CLI](./blog/posts/introducing-a2a-cli.md)
+
+    [:fontawesome-brands-github: a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
+
 - :material-code-braces:{ .lg .middle } **Download the Official SDKs**
 
     [:fontawesome-brands-python: Python](https://github.com/a2aproject/a2a-python)
@@ -108,7 +116,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://deeplearning.ai) - Intro to A2A
+- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://www.deeplearning.ai) - Intro to A2A
 
     [![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
 
@@ -141,6 +149,8 @@ flowchart LR
 ```
 
 </div>
+
+_A client agent reaches remote tools with MCP and remote agents with A2A._
 
 [:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
 
