@@ -2034,35 +2034,56 @@ Before signing, the Agent Card content **MUST** be canonicalized using the JSON 
 
 **Example of Default Value Removal:**
 
-Original Agent Card fragment:
+Original Agent Card:
 
 ```json
 {
   "name": "Example Agent",
-  "description": "",
+  "description": "An example agent that echoes messages.",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "1.0.0",
   "capabilities": {
     "streaming": false,
     "pushNotifications": false,
     "extensions": []
   },
-  "skills": []
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "echo",
+      "name": "Echo",
+      "description": "Echoes the input.",
+      "tags": ["echo"]
+    }
+  ]
 }
 ```
 
 Applying the canonicalization rules:
 
 - `name`: "Example Agent" - REQUIRED field → **include**
-- `description`: "" - REQUIRED field → **include**
+- `description`: "An example agent that echoes messages." - REQUIRED field → **include**
+- `supportedInterfaces`: array - REQUIRED field → **include**
+- `version`: "1.0.0" - REQUIRED field → **include**
 - `capabilities`: object - REQUIRED field → **include** (after processing children)
     - `streaming`: false - optional field, present in JSON (explicitly set) → **include**
     - `pushNotifications`: false - optional field, present in JSON (explicitly set) → **include**
     - `extensions`: [] - repeated field (not REQUIRED) with empty array → **omit**
-- `skills`: [] - REQUIRED field → **include**
+- `defaultInputModes`: ["text/plain"] - REQUIRED field → **include**
+- `defaultOutputModes`: ["text/plain"] - REQUIRED field → **include**
+- `skills`: array - REQUIRED field → **include**
 
 After applying RFC 8785:
 
 ```json
-{"capabilities":{"pushNotifications":false,"streaming":false},"description":"","name":"Example Agent","skills":[]}
+{"capabilities":{"pushNotifications":false,"streaming":false},"defaultInputModes":["text/plain"],"defaultOutputModes":["text/plain"],"description":"An example agent that echoes messages.","name":"Example Agent","skills":[{"description":"Echoes the input.","id":"echo","name":"Echo","tags":["echo"]}],"supportedInterfaces":[{"protocolBinding":"JSONRPC","protocolVersion":"1.0","url":"https://example.com/a2a/v1"}],"version":"1.0.0"}
 ```
 
 #### 8.4.2. Signature Format
