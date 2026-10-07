@@ -115,6 +115,7 @@ collaborate effectively with each other and with users.
 - [Monite](https://monite.com/)
 - [MusedIn](https://musedin.com)
 - [Neo4j](https://neo4j.com)
+- [Neuronto](https://neuronto.com)
 - [New Relic](https://newrelic.com)
 - [Nisum](https://www.nisum.com)
 - [Noorle Inc](https://www.noorle.com)
