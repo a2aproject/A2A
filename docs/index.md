@@ -109,60 +109,16 @@ pip install a2a-sdk
   </div>
 </div>
 
-## Why A2A matters
+## Any agent, one protocol
 
-The **Agent2Agent (A2A) Protocol** is an open standard for seamless communication and collaboration between AI agents. In a world where agents are built using diverse frameworks and by different vendors, A2A provides the common language for agent interoperability.
+The **Agent2Agent (A2A) Protocol** is an open standard for seamless communication and collaboration between AI
+agents.
 
-??? example "Example: Planning an international trip"
+You should not have to rebuild an integration every time you add another agent. A2A lets independently built agents find each other, hand off work, and send results back across frameworks and organizations.
 
-    Consider a user asking an AI assistant to **plan an international trip**. One agent cannot do it alone — it needs specialized agents for flights, hotels, currency, and local tours. Without a shared protocol, each integration is bespoke, fragile, and hard to scale. **A2A lets those agents discover each other, delegate work, and return results** — regardless of who built them or which framework they use.
+That is the practical gain: connect the agents you already have, keep their internals private, and grow a multi-agent system by adding partners instead of custom connectors. A travel assistant can book flights, hotels, and tours by talking to the agents that already do those jobs, even when each one was built by someone else.
 
-    ```mermaid
-    flowchart TB
-        User(🧑‍💻 User) --> Assistant(🤖 AI Assistant)
-        Assistant --> FBA(✈️ Flight Agent)
-        Assistant --> HRA(🏨 Hotel Agent)
-        Assistant --> CCA(💱 Currency Agent)
-        Assistant --> LTA(🚌 Tours Agent)
-        FBA & HRA & CCA & LTA --> Assistant
-        Assistant --> User
-
-        classDef user fill:#fdebd0,stroke:#e67e22,stroke-width:2px
-        classDef agent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-        class User user
-        class Assistant,FBA,HRA,CCA,LTA agent
-    ```
-
-    [:octicons-arrow-right-24: Full scenario & benefits](./topics/what-is-a2a.md)
-
-## How A2A works with MCP
-
-[MCP](https://modelcontextprotocol.io/) and A2A are complementary — not competitors:
-
-- **MCP** — agent ↔ tools, APIs, and data
-- **A2A** — agent ↔ agent discovery, delegation, and results
-
-<div style="text-align:center">
-
-```mermaid
-flowchart LR
-    User(🧑‍💻 User) <--> ClientAgent(🤖 Client Agent)
-    RemoteAgent(🤖 Remote Agent)
-    RemoteTool(⚙️ Remote Tool)
-    ClientAgent -- Using <img src="assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg" alt="Agent2Agent Protocol Logo" height="40" width="40"> --> RemoteAgent
-    ClientAgent -- Using <img src="https://modelcontextprotocol.io/mcp.png" alt="Model Context Protocol Logo" height="40" width="40"> --> RemoteTool
-
-    style User fill:#fdebd0,stroke:#e67e22,stroke-width:2px
-    style ClientAgent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-    style RemoteAgent fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-    style RemoteTool fill:#d6eaf8,stroke:#3498db,stroke-width:2px
-```
-
-</div>
-
-_A client agent reaches remote tools with MCP and remote agents with A2A._
-
-[:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
+[:octicons-arrow-right-24: What is A2A?](./topics/what-is-a2a.md)
 
 ## Explore further
 
