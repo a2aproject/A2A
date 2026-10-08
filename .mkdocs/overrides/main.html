@@ -2,6 +2,36 @@
 
 {% block extrahead %}
   {{ super() }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://a2a-protocol.org/#website",
+        "url": "https://a2a-protocol.org/",
+        "name": "A2A Protocol",
+        "alternateName": "Agent2Agent Protocol",
+        "description": "The official documentation and specification for the Agent2Agent (A2A) protocol, an open standard for secure communication and interoperability between AI agents.",
+        "inLanguage": "en",
+        "publisher": { "@id": "https://a2a-protocol.org/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://a2a-protocol.org/#organization",
+        "name": "A2A Protocol",
+        "url": "https://a2a-protocol.org/",
+        "logo": "https://a2a-protocol.org/latest/assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg",
+        "sameAs": [
+          "https://github.com/a2aproject",
+          "https://discord.gg/a2aprotocol",
+          "https://www.linuxfoundation.org/"
+        ]
+      }
+    ]
+  }
+  </script>
+
   {% if config.extra.dev_livereload %}
   <script>
     (function () {
