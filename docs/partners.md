@@ -61,6 +61,7 @@ collaborate effectively with each other and with users.
 - [Dealer Handshake](https://dealerhandshake.com/)
 - [Decagon.ai](https://decagon.ai)
 - [Deloitte](https://www.prnewswire.com/news-releases/deloitte-expands-alliances-with-google-cloud-and-servicenow-to-accelerate-agentic-ai-adoption-in-the-enterprise-302423941.html)
+- [DEUSPROOF](https://deusproof.com)
 - [Devnagri](https://devnagri.com)
 - [Deutsche Telekom](https://www.telekom.com/en)
 - [Dexter Tech Labs](https://www.dextertechlabs.com)
