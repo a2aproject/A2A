@@ -14,6 +14,15 @@ accept = [200, 201, 202, 204, 301, 302, 307, 308, 403, 429, 503]
 # These raw HTML hrefs are not rewritten by the Markdown renderer.
 fallback_extensions = ["md", "html"]
 
+# Material blog publishes posts at blog/{date}/{slug}/ (see mkdocs.yml
+# post_url_format), but source files live in docs/blog/posts/. Raw HTML
+# (markdown="0") keeps the pretty href, so PR checks would 404 unless we
+# remap. Do not match site/blog/... — the scheduled job checks the built
+# site, where those pretty URLs already exist.
+remap = [
+    'docs/blog/\d{4}/\d{2}/\d{2}/ docs/blog/posts/',
+]
+
 # Exclude URL patterns (regex)
 exclude = [
     # Local development URLs
