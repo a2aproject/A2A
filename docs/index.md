@@ -91,6 +91,19 @@ pip install a2a-sdk
     <span class="feature-flip-hint" data-tooltip="Hover or focus to see details" aria-hidden="true"></span>
     <div class="feature-flip-card-inner">
       <div class="feature-flip-card-front">
+        <span class="feature-flip-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,19V7H4V19H20M20,3A2,2 0 0,1 22,5V19A2,2 0 0,1 20,21H4A2,2 0 0,1 2,19V5C2,3.89 2.9,3 4,3H20M13,17V15H18V17H13M9.58,13L5.57,9H8.4L11.7,12.3C12.09,12.69 12.09,13.33 11.7,13.72L8.42,17H5.59L9.58,13Z"/></svg></span>
+        <strong>A2A CLI</strong>
+      </div>
+      <div class="feature-flip-card-back">
+        <p>Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power. <a href="./blog/2026/10/01/introducing-a2a-cli/">Meet the A2A CLI</a>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="feature-flip-card" tabindex="0">
+    <span class="feature-flip-tooltip" data-tooltip="Hover, click, or focus to see details" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg></span>
+    <span class="feature-flip-hint" data-tooltip="Hover or focus to see details" aria-hidden="true"></span>
+    <div class="feature-flip-card-inner">
+      <div class="feature-flip-card-front">
         <span class="feature-flip-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 13.5c0 1.76-1.3 3.22-3 3.46V20a2 2 0 0 1-2 2h-3.8v-.3a2.7 2.7 0 0 0-2.7-2.7c-1.5 0-2.7 1.21-2.7 2.7v.3H4a2 2 0 0 1-2-2v-3.8h.3C3.79 16.2 5 15 5 13.5s-1.21-2.7-2.7-2.7H2V7a2 2 0 0 1 2-2h3.04c.24-1.7 1.7-3 3.46-3s3.22 1.3 3.46 3H17a2 2 0 0 1 2 2v3.04c1.7.24 3 1.7 3 3.46M17 15h1.5a1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5H17V7h-5V5.5A1.5 1.5 0 0 0 10.5 4 1.5 1.5 0 0 0 9 5.5V7H4v2.12c1.76.68 3 2.38 3 4.38s-1.25 3.7-3 4.38V20h2.12a4.7 4.7 0 0 1 4.38-3c2 0 3.7 1.25 4.38 3H17z"/></svg></span>
         <strong>Extensible</strong>
       </div>
@@ -160,6 +173,14 @@ _A client agent reaches remote tools with MCP and remote agents with A2A._
 
 <div class="grid cards" markdown>
 
+- :material-console-line:{ .lg .middle } **Use the A2A CLI**
+
+    Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power.
+
+    [:octicons-arrow-right-24: Introducing the A2A CLI](./blog/posts/introducing-a2a-cli.md)
+
+    [:fontawesome-brands-github: a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
+
 - :material-book-open:{ .lg .middle } **Read the Introduction**
 
     Understand the core ideas behind A2A.
@@ -185,14 +206,6 @@ _A client agent reaches remote tools with MCP and remote agents with A2A._
     See A2A in action with sample clients, servers, and agent framework integrations.
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
-
-- :material-console-line:{ .lg .middle } **Use the A2A CLI**
-
-    Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power.
-
-    [:octicons-arrow-right-24: Introducing the A2A CLI](./blog/posts/introducing-a2a-cli.md)
-
-    [:fontawesome-brands-github: a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
 
 - :material-play-circle:{ .lg .middle } **Video** — Intro in under 8 min
 
