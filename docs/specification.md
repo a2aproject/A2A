@@ -429,6 +429,59 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
+#### 3.1.12. Send Live Message
+
+<span id="3112-send-live-message"></span>
+
+Exchanges messages with an agent over a live, bidirectional channel. The same operation serves a long-lived session, a brief connect-send-disconnect exchange, and attaching to a task to observe it.
+
+**Inputs:**
+
+{{ proto_to_table("StreamRequest") }}
+
+**Outputs:**
+
+- [`Stream Response`](#323-stream-response) objects, as for [Send Streaming Message](#312-send-streaming-message), plus [`StreamError`](#424-streamerror) for non-fatal rejections.
+
+**Errors:**
+
+- [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (`AgentCard.capabilities.streaming` is `false` or unset; see [Capability Validation](#334-capability-validation)).
+- [`TaskNotFoundError`](#332-error-handling): The referenced `taskId` does not exist or is not accessible.
+
+**Behavior:**
+
+A live exchange has two logical directions: an **uplink** carrying [`StreamRequest`](#3112-send-live-message) objects from the client, and a **downlink** carrying [`StreamResponse`](#323-stream-response) objects from the agent. How those directions map onto a connection depends on the transport:
+
+- **Transports with native duplex** (for example gRPC or WebSocket): both directions share one connection for the life of the exchange.
+- **HTTP transports**: the operation is invoked as a server stream. The invoking call's response is the **downlink** and remains open. To send further input, the client makes **additional, short-lived calls to the same operation**. This is required because an HTTP request body is complete before the response begins, so a single call cannot carry later input.
+
+Each payload names the task it applies to, so `StreamRequest` carries no task identifier of its own.
+
+**Opening a stream:**
+
+The first request of a stream determines what the stream is attached to, and it binds the stream to exactly one task for its lifetime.
+
+- **Opening with `sendMessage` ([`SendMessageRequest`](#321-sendmessagerequest))** sends input immediately. The server appends the message to the task [`timeline`](#328-task-timeline-semantics), then opens with a `Task` snapshot that **already reflects** the appended message, and streams onward from that point. If `message.taskId` is unset, the agent creates the task; if set, it continues that task.
+- **Opening with `subscribe` ([`SubscribeToTaskRequest`](#316-subscribe-to-task))** attaches to the task named by `id` without sending input — for a client that wants to observe, or to resume observing after a disconnect.
+    - When `lastSeenGeneration` is **set**, the server **MUST NOT** open with a [`Task`](#411-task) snapshot; it replays only the events that follow that `generation` and continues from there.
+    - When `lastSeenGeneration` is **unset**, the server **MUST** open with a `Task` snapshot and stream onward from it.
+    - If the server cannot replay from the requested `generation` (for example it no longer retains it), it **MUST** open with a `Task` snapshot instead of failing, so the client resynchronises.
+
+`subscribe` is only meaningful as the **first** request of a stream. A server that receives it later **MUST** reject it with a [`StreamError`](#424-streamerror) and keep the stream open.
+
+**Subsequent requests:**
+
+- Later requests apply to the task the stream is bound to. A request naming a different task **MUST** be rejected with a `StreamError`.
+- An uplink call that is not the downlink call MUST return only an acknowledgement — the current [`Task`](#411-task) state — and MUST NOT replay task events. All task events MUST be delivered on the downlink, so a client with both open never receives an event twice.
+- Ordering is by arrival. Each accepted client message is appended to the task [`timeline`](#328-task-timeline-semantics) and advances `generation` (see [Task Generation Semantics](#327-task-generation-semantics)).
+- `SendMessageRequest.configuration` applies only to the request it accompanies. `returnImmediately` is ignored, since the exchange is already streaming. A `taskPushNotificationConfig` supplied here is equivalent to calling [Create Push Notification Config](#317-create-push-notification-config) and is observable through [List Push Notification Configs](#319-list-push-notification-configs) rather than on the event stream.
+
+**Rejecting a single request:**
+
+An agent MAY decline an individual client request — because it is malformed, or because the agent is not accepting input at that moment — without ending the exchange. It does so by emitting a [`StreamError`](#424-streamerror) on the downlink, identifying the rejected request via `referenceId`. The stream remains open and the client MAY correct and retry. Only conditions that make the channel itself unusable terminate the stream as a transport-level error.
+
+Because rejection is per request, an agent that accepts input while `TASK_STATE_WORKING` is not committing to accept every message; it MAY decline individual ones while continuing to work.
+
 ### 3.2. Operation Parameter Objects
 
 This section defines common parameter objects used across multiple operations.
@@ -470,6 +523,17 @@ See [Task Generation Semantics](#327-task-generation-semantics) for the full des
 
 This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.
 
+**Forward compatibility:**
+
+The `payload` of [`StreamResponse`](#323-stream-response) and of [`StreamRequest`](#3112-send-live-message) is an extension point: new payload kinds MAY be added in future minor versions, and adding one is not a breaking change. To keep that true, implementations **MUST** tolerate payload kinds they do not recognise:
+
+- A client that receives a `StreamResponse` whose payload kind it does not recognise **MUST** skip it and continue reading the stream. It **MUST NOT** treat the unknown payload as an error, as the end of the stream, or as a signal to stop processing.
+- A server that receives a `StreamRequest` whose payload kind it does not recognise **MUST** reject that request — on a live stream by emitting a [`StreamError`](#424-streamerror) — and **MUST NOT** terminate the stream because of it.
+
+An unrecognised payload that carries a `generation` still advances the task's generation, so a client that skips it will observe a gap and reconcile via [Get Task](#313-get-task) as usual (see [Task Generation Semantics](#327-task-generation-semantics)).
+
+Servers **MAY** still withhold a new payload kind from clients that negotiated an older protocol version — as this specification does for [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — to protect implementations written before this rule existed. The rule above is what allows future additions to be made without such gating.
+
 #### 3.2.4. History Length Semantics
 
 > **Deprecated:** `historyLength` (and the `history` field it controls) is deprecated as of version **1.1** in favour of `timelineLength` and the task [`timeline`](#328-task-timeline-semantics). Servers continue to honour `historyLength` and populate `history` throughout the 1.x line; both are removed in 2.0.
@@ -506,7 +570,7 @@ The `generation` field on [`Task`](#411-task) is a sequentially increasing integ
 - Appending a [`TimelineEntry`](#418-timelineentry): an agent status update (any [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), including a progress message that does not change `Task.status.state`), or a client message added to the task's `timeline`.
 - An Artifact addition or update (any change to `Task.artifacts`).
 
-Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Client-message timeline entries also advance `generation` but are not necessarily delivered to every subscriber as a discrete event; clients reconcile these via [Get Task](#313-get-task) (see Event Ordering below).
+Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Client-message timeline entries also advance `generation`; they are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) to clients that request `A2A-Version: 1.1` or later, while older clients reconcile them via [Get Task](#313-get-task) (see Event Ordering below).
 
 **Event Ordering and Missed-Event Detection:**
 
@@ -555,7 +619,7 @@ Entries are ordered by their `generation` value, which establishes a total order
 
 The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
 
-Because agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), introducing the timeline requires **no new streaming event type**, and clients that do not understand the `timeline` field are unaffected on the wire. Live delivery of client-message timeline entries to other subscribers (for example, in bidirectional interactions) is out of scope for this version; such entries are observed via [Get Task](#313-get-task). The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
+Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent). Client-message entries are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — which is emitted **only** to clients that request `A2A-Version: 1.1` or later, so 1.0 clients that do not understand the `timeline` field are unaffected on the wire. The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
 
 **Interleaving artifacts with the timeline:**
 
@@ -646,7 +710,7 @@ A2A operations are designed for asynchronous task execution. Operations return i
 Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). When clients attempt to use operations or features that require capabilities not declared as supported in the Agent Card, the agent **MUST** return an appropriate error response:
 
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
-- **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
+- **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage`, `SubscribeToTask`, or `SendLiveMessage` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
 - **Extensions**: When a server requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
@@ -742,7 +806,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task)), and Send Live Message ([Section 3.1.12](#3112-send-live-message))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -919,6 +983,20 @@ See [Task Timeline Semantics](#328-task-timeline-semantics).
 #### 4.2.2. TaskArtifactUpdateEvent
 
 {{ proto_to_table("TaskArtifactUpdateEvent") }}
+
+<a id="TaskMessageUpdateEvent"></a>
+
+#### 4.2.3. TaskMessageUpdateEvent
+
+{{ proto_to_table("TaskMessageUpdateEvent") }}
+
+<a id="StreamError"></a>
+
+#### 4.2.4. StreamError
+
+{{ proto_to_table("StreamError") }}
+
+See [Send Live Message](#3112-send-live-message).
 
 ### 4.3. Push Notification Objects
 
@@ -1258,6 +1336,7 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
 | Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
 | Send streaming message          | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
+| Send live message               | `SendLiveMessage`                  | `SendLiveMessage`                  | `POST /message:live`                                    |
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
