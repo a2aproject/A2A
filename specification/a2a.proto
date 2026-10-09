@@ -40,6 +40,17 @@ service A2AService {
       }
     };
   }
+  // Establishes a bidirectional stream for live interaction.
+  rpc SendLiveMessage(stream StreamRequest) returns (stream StreamResponse) {
+    option (google.api.http) = {
+      post: "/message:live"
+      body: "*"
+      additional_bindings: {
+        post: "/{tenant}/message:live"
+        body: "*"
+      }
+    };
+  }
 
   // Gets the latest state of a task.
   rpc GetTask(GetTaskRequest) returns (Task) {
@@ -323,6 +334,9 @@ message Artifact {
   // Optional. The task `generation` at which this artifact was completed; unset
   // while it is still streaming.
   int64 end_generation = 8;
+  // Optional. The originator of this artifact. Artifacts are agent outputs by
+  // default (`ROLE_AGENT`); an artifact written by the client is `ROLE_USER`.
+  Role role = 9;
 }
 
 // `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
@@ -351,6 +365,22 @@ message TimelineEntry {
   // entries are expected, and artifacts are placed relative to entries via their
   // `start_generation`/`end_generation` (see `Task.generation`).
   int64 generation = 3;
+}
+
+// An event sent by the server to notify clients of a new message added to the task (e.g. client input).
+// Emitted only to clients that negotiated a compatible protocol version (>= 1.1).
+message TaskMessageUpdateEvent {
+  // The ID of the task that the message belongs to.
+  string task_id = 1 [(google.api.field_behavior) = REQUIRED];
+  // The ID of the context that this task belongs to.
+  string context_id = 2 [(google.api.field_behavior) = REQUIRED];
+  // The message that was appended to the task.
+  Message message = 3 [(google.api.field_behavior) = REQUIRED];
+  // Optional. Metadata associated with the message update.
+  google.protobuf.Struct metadata = 4;
+  // The task's `generation` after this message was appended, allowing clients
+  // to order it correctly in the timeline and detect missed events.
+  int64 generation = 5;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
@@ -486,6 +516,9 @@ message AgentCapabilities {
   repeated AgentExtension extensions = 3;
   // Indicates if the agent supports providing an extended agent card when authenticated.
   optional bool extended_agent_card = 4;
+  // Indicates if the agent accepts client-written artifacts (`ROLE_USER`) in
+  // `SendMessageRequest.artifact_updates`.
+  optional bool user_artifacts = 5;
 }
 
 // A declaration of a protocol extension supported by an Agent.
@@ -550,6 +583,10 @@ message TaskPushNotificationConfig {
   string token = 5;
   // Authentication information required to send the notification.
   AuthenticationInfo authentication = 6;
+  // Optional. The A2A protocol version to use when delivering the notification.
+  // Defaults to the version of the request that created the configuration,
+  // or "1.0" if unset.
+  string protocol_version = 7;
 }
 
 // protolint:disable REPEATED_FIELD_NAMES_PLURALIZED
@@ -718,12 +755,39 @@ message SendMessageRequest {
   // Optional. Opaque routing identifier. Must match the `tenant` value from
   // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
-  // The message to send to the agent.
-  Message message = 2 [(google.api.field_behavior) = REQUIRED];
+  // The message to send to the agent. Required when creating a task (when no
+  // `task_id` is provided); may be omitted only when sending `artifact_updates`
+  // to an existing task.
+  Message message = 2;
   // Configuration for the send request.
   SendMessageConfiguration configuration = 3;
   // A flexible key-value map for passing additional context or parameters.
   google.protobuf.Struct metadata = 4;
+  // Optional. Client-written artifact updates to send alongside `message` (for
+  // example, initial input artifacts when creating a task) or on their own to
+  // an existing task. Requires `AgentCard.capabilities.user_artifacts` to be
+  // `true`. The `generation` field on each update is owned by the server:
+  // clients MUST leave it unset and servers MUST ignore any value sent.
+  repeated TaskArtifactUpdateEvent artifact_updates = 5;
+}
+
+// A wrapper object used in streaming operations to encapsulate different types of client input.
+// New `payload` kinds MAY be added in future minor versions. A server that
+// receives a request whose payload kind it does not recognise MUST reject that
+// request (on a live stream, with a `StreamError`) rather than terminating the
+// stream.
+message StreamRequest {
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
+  string tenant = 1;
+  // The payload of the stream request.
+  oneof payload {
+    // Send a message on the stream, optionally with per-request configuration.
+    SendMessageRequest send_message = 2;
+    // Attach to an existing task. Only valid as the first request of a stream;
+    // a server that receives it later MUST reject it with a `StreamError`.
+    SubscribeToTaskRequest subscribe = 3;
+  }
 }
 
 // Represents a request for the `GetTask` method.
@@ -836,6 +900,10 @@ message SubscribeToTaskRequest {
   string tenant = 1;
   // The resource ID of the task to subscribe to.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
+  // Optional. Resume after this `generation`: the server replays only what
+  // followed it and does NOT open with a `Task` snapshot. When unset, the
+  // server opens with a `Task` snapshot and streams onward from it.
+  optional int64 last_seen_generation = 3;
 }
 
 // Represents a request for the `ListTaskPushNotificationConfigs` method.
@@ -872,6 +940,9 @@ message SendMessageResponse {
 }
 
 // A wrapper object used in streaming operations to encapsulate different types of response data.
+// New `payload` kinds MAY be added in future minor versions. A client that
+// receives a response whose payload kind it does not recognise MUST skip it and
+// continue reading the stream, rather than failing or closing the stream.
 message StreamResponse {
   // The payload of the stream response.
   oneof payload {
@@ -883,7 +954,32 @@ message StreamResponse {
     TaskStatusUpdateEvent status_update = 3;
     // An event indicating a task artifact update.
     TaskArtifactUpdateEvent artifact_update = 4;
+    // An event indicating a new message was appended to the task (e.g. client input).
+    TaskMessageUpdateEvent message_update = 5;
+    // A non-fatal rejection of a single client request on the uplink.
+    StreamError error = 6;
   }
+}
+
+// A non-fatal error reported on a live stream. It rejects a single client
+// request without terminating the stream, so the client can correct and retry.
+// Conditions that make the stream itself unusable remain transport-level errors
+// and close the stream as before.
+message StreamError {
+  // The ID of the task the rejected request applied to, when known.
+  string task_id = 1;
+  // A machine-readable identifier for the rejection, using the same codes as
+  // the equivalent unary operation (e.g. `INVALID_ARGUMENT` for a malformed
+  // request, `UNAVAILABLE` when the agent is not accepting input right now).
+  string code = 2 [(google.api.field_behavior) = REQUIRED];
+  // A human readable description of why the request was rejected.
+  string message = 3;
+  // Optional. The `message_id` of the rejected client `Message`, or the
+  // `artifact_id` of the rejected artifact update, so the client can correlate
+  // the rejection with what it sent.
+  string reference_id = 4;
+  // Optional. Metadata associated with the rejection.
+  google.protobuf.Struct metadata = 5;
 }
 
 // Represents a successful response for the `ListTaskPushNotificationConfigs`
