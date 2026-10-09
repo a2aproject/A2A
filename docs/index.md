@@ -114,7 +114,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
 - :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
 
-    <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <iframe class="video-container" src="https://www.youtube-nocookie.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 - :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://www.deeplearning.ai) - Intro to A2A
 
