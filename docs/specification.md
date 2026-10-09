@@ -629,7 +629,7 @@ The A2A protocol supports several patterns for multi-turn interactions:
 
 **Input Required State:**
 
-- Agents can request additional input mid-processing by transitioning a task to the `input-required` state
+- Agents can request additional input mid-processing by transitioning a task to the `TASK_STATE_INPUT_REQUIRED` state
 - The client continues the interaction by sending a new message with the same `taskId` and `contextId`
 
 **Follow-up Messages:**
