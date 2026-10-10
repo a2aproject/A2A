@@ -11,23 +11,47 @@ receives a message from a client, it can respond in one of two ways:
     reaches an interrupted state (such as `input-required` or `auth-required`) or
     a terminal state (such as `completed`, `canceled`, `rejected`, or `failed`).
 
-## Group Related Interactions
+## Overview
 
-A `contextId` is a key identifier. It groups multiple `Task` objects and
-independent `Message` objects. This gives continuity across a series of
-interactions.
+This page walks through how that choice plays out over the lifetime of an
+interaction:
 
-- When a client sends a message for the first time, the agent responds
-    with a new `contextId`. If a task is initiated, it will also have a `taskId`.
-- To continue a previous interaction, clients send later messages with the same
-    `contextId`.
-- Clients optionally attach the `taskId` to a subsequent message to
-    indicate that it continues that specific task.
+1. **How agents decide** between a stateless `Message` and a stateful `Task`.
+2. **How `contextId` groups** related messages and tasks into a coherent
+    session.
+3. **What clients can do with running tasks**: refinements, parallel
+    follow-ups, and artifact references.
+4. **How completed tasks behave**: immutability, artifact naming, and a worked
+    example.
 
-The `contextId` enables collaboration toward a common goal, or a shared session
-across several tasks that may run at once. Internally, an A2A agent (especially
-one using an LLM) uses the `contextId` to manage its conversational state or its
-LLM context.
+The flowchart below shows the decision at the heart of this page:
+
+```mermaid
+flowchart TD
+    A["Client sends a message"] --> B{"Immediate, self-contained<br>answer possible?"}
+    B -- "Yes" --> C["Respond with a stateless Message<br>No state to manage"]
+    B -- "No" --> D["Initiate a stateful Task<br>with a unique taskId"]
+    C --> H["Interaction complete"]
+    D --> E["Task runs through its lifecycle:<br>working, input-required,<br>auth-required"]
+    E --> F{"Terminal state reached?<br>completed, canceled,<br>rejected, or failed"}
+    F -- "No" --> E
+    F -- "Yes" --> G["Task ends and is immutable<br>Follow-ups start a new task<br>in the same contextId"]
+```
+
+The two response modes differ in what the client can do afterwards:
+
+- A stateless `Message` finishes the interaction in a single turn: the client
+    sends a request, the agent answers, and no state remains to manage.
+- A stateful `Task` persists across turns: the client can retrieve it
+    (`GetTask`), stream updates from it, or receive push notifications about
+    it, until it reaches an interrupted or terminal state.
+
+This page uses the following terminology for task states:
+
+- **Interrupted states**: `input-required` and `auth-required`. The task is
+    paused and waiting for the client, but it can still resume.
+- **Terminal states**: `completed`, `canceled`, `rejected`, and `failed`. The
+    task is finished and immutable.
 
 ## Agent Response: Message or Task
 
@@ -64,6 +88,24 @@ Conceptually, agents operate at different levels of complexity:
     can be sent to it.
 
     For a deeper discussion of when to use messages versus tasks, see [A2A protocol: Demystifying Tasks vs Messages](https://discuss.google.dev/t/a2a-protocol-demystifying-tasks-vs-messages/255879).
+
+## Group Related Interactions
+
+A `contextId` is a key identifier. It groups multiple `Task` objects and
+independent `Message` objects. This gives continuity across a series of
+interactions.
+
+- When a client sends a message for the first time, the agent responds
+    with a new `contextId`. If a task is initiated, it will also have a `taskId`.
+- To continue a previous interaction, clients send later messages with the same
+    `contextId`.
+- Clients optionally attach the `taskId` to a subsequent message to
+    indicate that it continues that specific task.
+
+The `contextId` enables collaboration toward a common goal, or a shared session
+across several tasks that may run at once. Internally, an A2A agent (especially
+one using an LLM) uses the `contextId` to manage its conversational state or its
+LLM context.
 
 ## Task Refinements
 
