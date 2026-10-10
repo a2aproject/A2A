@@ -56,12 +56,12 @@ The launch of A2A has sparked lively discussions and positive reactions across v
 
 These agentic frameworks have built-in A2A integration, making it easy to get started:
 
-- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/a2a/)
+- [Agent Development Kit (ADK)](https://adk.dev/a2a/)
 - [Agno](https://docs.agno.com/agent-os/interfaces/a2a/introduction)
 - [AG2](https://docs.ag2.ai/latest/docs/user-guide/a2a/)
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
 - [CrewAI](https://docs.crewai.com/en/learn/a2a-agent-delegation)
-- [Hector](https://github.com/kadirpekel/hector)
+- [Hector](https://github.com/verikod/hector)
 - [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
@@ -88,9 +88,9 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 ### 🍎 Swift — A2AClient
 
-![Stars](https://img.shields.io/github/stars/tolgaki/a2a-client-swift?style=flat-square)
+![Stars](https://img.shields.io/github/stars/tolgaki/a2a-swift-client?style=flat-square)
 
-[tolgaki/a2a-client-swift](https://github.com/tolgaki/a2a-client-swift) · A2A spec v1.0.0 · Swift Package Manager. iOS 15+, macOS 12+, watchOS 8+, tvOS 15+.
+[tolgaki/a2a-swift-client](https://github.com/tolgaki/a2a-swift-client) · A2A spec v1.0.0 · Swift Package Manager. iOS 15+, macOS 12+, watchOS 8+, tvOS 15+.
 
 ### 💧 Elixir — a2a
 
@@ -103,6 +103,18 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 ![Stars](https://img.shields.io/github/stars/MisterVVP/a2a-cpp?style=flat-square) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/MisterVVP/a2a-cpp/tck.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/MisterVVP/a2a-cpp/actions/workflows/tck.yml) [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square)](https://mistervvp.github.io/a2a-cpp/) [![vcpkg overlay](https://img.shields.io/badge/vcpkg-overlay%20port-blue?style=flat-square)](https://github.com/MisterVVP/a2a-cpp/tree/main/vcpkg-overlay-ports)
 
 [MisterVVP/a2a-cpp](https://github.com/MisterVVP/a2a-cpp) · A2A spec v1.0.0 · C++20 SDK with client/server APIs, discovery, REST/JSON-RPC/gRPC transports, streaming, authentication hooks, CMake/vcpkg build integration, and a TCK conformance workflow.
+
+### 🐘 PHP — a2a-php-sdk
+
+![Stars](https://img.shields.io/github/stars/vbcherepanov/a2a-php-sdk?style=flat-square) [![Packagist](https://img.shields.io/packagist/v/vbcherepanov/a2a-php-sdk?style=flat-square)](https://packagist.org/packages/vbcherepanov/a2a-php-sdk) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/vbcherepanov/a2a-php-sdk/ci.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/vbcherepanov/a2a-php-sdk/actions/workflows/ci.yml)
+
+[vbcherepanov/a2a-php-sdk](https://github.com/vbcherepanov/a2a-php-sdk) · A2A spec v1.0.0 · PHP 8.4+ client and server SDK with JSON-RPC, REST and gRPC transports, SSE and gRPC streaming, protobuf types generated from the official a2a.proto, and the official TCK run in CI. Optional Symfony integration: [a2a-symfony-bundle](https://github.com/vbcherepanov/a2a-symfony-bundle).
+
+### 🐘 PHP — a2a-php
+
+![Stars](https://img.shields.io/github/stars/praveendias1180/a2a-php?style=flat-square) [![Packagist](https://img.shields.io/packagist/v/praveendias1180/a2a-php?style=flat-square)](https://packagist.org/packages/praveendias1180/a2a-php) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/praveendias1180/a2a-php/ci.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/praveendias1180/a2a-php/actions/workflows/ci.yml) [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square)](https://praveendias1180.github.io/a2a-php/)
+
+[praveendias1180/a2a-php](https://github.com/praveendias1180/a2a-php) · A2A spec v1.0.0 · Mirrors the official Python SDK class for class. JSON-RPC/REST with SSE streaming, push notifications, card signing, v0.3 compatibility, and a Laravel bridge; passes the TCK MUST level in CI.
 
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues/new?title=Community%20SDK%20Submission) with a link to your repository and published package.
