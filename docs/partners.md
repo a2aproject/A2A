@@ -77,6 +77,7 @@ collaborate effectively with each other and with users.
 - [Gravitee](https://www.gravitee.io/)
 - [GrowthLoop](https://growthloop.com)
 - [Guru](https://www.getguru.com)
+- [HANRIA](https://hanria.ai)
 - [Harness](https://harness.io)
 - [HCLTech](https://www.hcltech.com)
 - [Headwaters](https://www.headwaters.co.jp)
