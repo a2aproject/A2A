@@ -67,6 +67,7 @@ collaborate effectively with each other and with users.
 - [Distyl.ai](https://distyl.ai)
 - [Elastic](https://www.elastic.co)
 - [Ema.co](https://ema.co)
+- [Emboss](https://getemboss.ai)
 - [EPAM](https://www.epam.com)
 - [Eviden (Atos Group)](https://atos.net/)
 - [FAF](https://faf.one/)
