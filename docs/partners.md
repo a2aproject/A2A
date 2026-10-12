@@ -135,6 +135,7 @@ collaborate effectively with each other and with users.
 - [Quantiphi](https://www.quantiphi.com)
 - [Radix](https://radix.website/)
 - [RagaAI Inc](https://raga.ai/)
+- [Raven](https://github.com/EverMind-AI/Raven)
 - [Red Hat](https://www.redhat.com)
 - [Reltio Inc](https://www.reltio.com)
 - [S&P](https://www.spglobal.com)
