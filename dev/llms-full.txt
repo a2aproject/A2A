@@ -3436,35 +3436,56 @@ Before signing, the Agent Card content **MUST** be canonicalized using the JSON 
 
 **Example of Default Value Removal:**
 
-Original Agent Card fragment:
+Original Agent Card:
 
 ```json
 {
   "name": "Example Agent",
-  "description": "",
+  "description": "An example agent that echoes messages.",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "1.0.0",
   "capabilities": {
     "streaming": false,
     "pushNotifications": false,
     "extensions": []
   },
-  "skills": []
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "echo",
+      "name": "Echo",
+      "description": "Echoes the input.",
+      "tags": ["echo"]
+    }
+  ]
 }
 ```
 
 Applying the canonicalization rules:
 
 - `name`: "Example Agent" - REQUIRED field → **include**
-- `description`: "" - REQUIRED field → **include**
+- `description`: "An example agent that echoes messages." - REQUIRED field → **include**
+- `supportedInterfaces`: array - REQUIRED field → **include**
+- `version`: "1.0.0" - REQUIRED field → **include**
 - `capabilities`: object - REQUIRED field → **include** (after processing children)
     - `streaming`: false - optional field, present in JSON (explicitly set) → **include**
     - `pushNotifications`: false - optional field, present in JSON (explicitly set) → **include**
     - `extensions`: [] - repeated field (not REQUIRED) with empty array → **omit**
-- `skills`: [] - REQUIRED field → **include**
+- `defaultInputModes`: ["text/plain"] - REQUIRED field → **include**
+- `defaultOutputModes`: ["text/plain"] - REQUIRED field → **include**
+- `skills`: array - REQUIRED field → **include**
 
 After applying RFC 8785:
 
 ```json
-{"capabilities":{"pushNotifications":false,"streaming":false},"description":"","name":"Example Agent","skills":[]}
+{"capabilities":{"pushNotifications":false,"streaming":false},"defaultInputModes":["text/plain"],"defaultOutputModes":["text/plain"],"description":"An example agent that echoes messages.","name":"Example Agent","skills":[{"description":"Echoes the input.","id":"echo","name":"Echo","tags":["echo"]}],"supportedInterfaces":[{"protocolBinding":"JSONRPC","protocolVersion":"1.0","url":"https://example.com/a2a/v1"}],"version":"1.0.0"}
 ```
 
 #### 8.4.2. Signature Format
@@ -12232,7 +12253,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0939a7b0>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0630544e60>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -12258,7 +12279,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0939a6c0>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0630544d70>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -12302,7 +12323,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0939a7b0>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0630544e60>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -12322,7 +12343,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0939a6c0>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f0630544d70>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -16800,7 +16821,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16835,7 +16856,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16888,7 +16909,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16923,7 +16944,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ea50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16939,7 +16960,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16956,7 +16977,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ea50>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e350>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17008,7 +17029,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -17227,7 +17248,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -17262,7 +17283,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -17315,7 +17336,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -17350,7 +17371,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ea50>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -17366,7 +17387,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17383,7 +17404,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ea50>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e350>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17435,7 +17456,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ec50> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -19765,7 +19786,7 @@ class a2a.server.jsonrpc_models.InternalError(*, code: Literal[-32603] = -32603,
 
    message: str
 
-   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True}
 
       Configuration for the model, should be a dictionary conforming
       to [*ConfigDict*][pydantic.config.ConfigDict].
@@ -19780,7 +19801,7 @@ class a2a.server.jsonrpc_models.InvalidParamsError(*, code: Literal[-32602] = -3
 
    message: str
 
-   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True}
 
       Configuration for the model, should be a dictionary conforming
       to [*ConfigDict*][pydantic.config.ConfigDict].
@@ -19795,7 +19816,7 @@ class a2a.server.jsonrpc_models.InvalidRequestError(*, code: Literal[-32600] = -
 
    message: str
 
-   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True}
 
       Configuration for the model, should be a dictionary conforming
       to [*ConfigDict*][pydantic.config.ConfigDict].
@@ -19810,7 +19831,7 @@ class a2a.server.jsonrpc_models.JSONParseError(*, code: Literal[-32700] = -32700
 
    message: str
 
-   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True}
 
       Configuration for the model, should be a dictionary conforming
       to [*ConfigDict*][pydantic.config.ConfigDict].
@@ -19821,7 +19842,7 @@ class a2a.server.jsonrpc_models.JSONRPCBaseModel(**extra_data: Any)
 
    Base model for JSON-RPC objects.
 
-   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True}
 
       Configuration for the model, should be a dictionary conforming
       to [*ConfigDict*][pydantic.config.ConfigDict].
@@ -19838,7 +19859,7 @@ class a2a.server.jsonrpc_models.JSONRPCError(*, code: int, message: str, data: A
 
    message: str
 
-   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True}
 
       Configuration for the model, should be a dictionary conforming
       to [*ConfigDict*][pydantic.config.ConfigDict].
@@ -19853,7 +19874,7 @@ class a2a.server.jsonrpc_models.MethodNotFoundError(*, code: Literal[-32601] = -
 
    message: str
 
-   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True, 'validate_by_alias': True, 'validate_by_name': True}
+   model_config = {'arbitrary_types_allowed': True, 'extra': 'allow', 'populate_by_name': True}
 
       Configuration for the model, should be a dictionary conforming
       to [*ConfigDict*][pydantic.config.ConfigDict].
@@ -22611,7 +22632,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ea50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -23385,7 +23406,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fdc0bd0ea50>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7f063379e350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
