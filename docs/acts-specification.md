@@ -149,7 +149,8 @@ runner-requirement =
   "concurrent_streams" /       ; Runner must open multiple simultaneous streams
   "stream_disconnect" /        ; Runner must disconnect and reconnect mid-stream
   "auth_credentials" /         ; Runner must provide valid/invalid auth credentials
-  "header_inspection"          ; Runner must inspect HTTP response headers
+  "header_inspection" /        ; Runner must inspect HTTP response headers
+  "fresh_connection"           ; Runner must open an independent transport connection
 ```
 
 **Conformance levels** map to RFC 2119 keywords:
@@ -239,6 +240,7 @@ step = server-step / client-step / webhook-step / assertion-step / raw-step
 server-step = {
   id: text,                         ; Unique within the test
   ? description: text,
+  ? fresh_connection: bool,         ; Use an independent transport connection (§4.5)
   operation: abstract-operation,    ; Abstract A2A operation name
   params: request-params,           ; Parameters for the operation
   ? expect: expect-block,           ; Expected response assertions
@@ -452,6 +454,35 @@ A raw request is sent exactly as written. The runner MUST NOT add or complete an
 > **Note:** Raw steps are inherently transport-specific. A test containing only raw steps MUST specify a `transport` filter.
 
 ---
+
+### 4.5. Fresh Connection for Unary Operations
+
+A unary `server-step` MAY set `fresh_connection: true`. Before sending that
+operation, the runner MUST open an independent client transport with a connection
+pool that cannot reuse any connection from earlier steps. A new HTTP/2 stream on
+an existing connection does not satisfy this requirement. The runner MUST close
+this independent transport after the response is consumed, including on failure.
+The existing transport need not be closed.
+
+The runner MUST preserve the target endpoint, protocol version, effective
+credentials (including cookies), TLS configuration, and authorized principal.
+This is connection isolation, not a test of cross-principal access or token
+refresh. The request MUST be sent to the SUT; a cached client response is not
+sufficient. If the runner cannot preserve those settings while opening an
+independent connection, it MUST skip the test with a clear reason.
+
+A test using this field MUST declare `runner_requirements: [fresh_connection]`.
+A runner lacking this capability MUST skip the test instead of falling back to
+its existing connection. In this version, the field is limited to unary
+operations on `jsonrpc` and `rest`; the test MUST declare its `transport` filter
+accordingly. It MUST NOT be combined with `repeat` or `expect_stream`, or used
+with `send_streaming_message` or `subscribe_to_task`. Omitting the field or
+setting it to `false` leaves connection management unchanged.
+
+For `SEC-AUTH-007`, the `tck-auth-required` behavior MUST keep the task in
+`TASK_STATE_AUTH_REQUIRED`, with its status message available to `GetTask`,
+until the client supplies authorization. The test supplies none. This fixture
+contract does not impose a human-approval mechanism or expiry policy on agents.
 
 ## 5. Assertions
 
@@ -1220,7 +1251,7 @@ The following prefixes form the standard SUT behavior contract. Any SUT that imp
 |--------|----------|
 | `tck-complete-task` | Complete the task with a text response message. |
 | `tck-input-required` | Return task in `TASK_STATE_INPUT_REQUIRED` state. |
-| `tck-auth-required` | Return task in `TASK_STATE_AUTH_REQUIRED` state with a status message describing the required authorization. |
+| `tck-auth-required` | Return task in `TASK_STATE_AUTH_REQUIRED` state with a status message describing the required authorization. Keep that state and message retrievable by `GetTask` until authorization is supplied. |
 | `tck-reject-task` | Reject the task with an error. |
 | `tck-message-response` | Return a `Message` (not a `Task`). |
 | `tck-artifact-text` | Complete with a text artifact. |
@@ -1673,7 +1704,7 @@ suites:
 
       # ── Error: TaskNotFound ─────────────────────────────────────
       - id: CORE-ERR-001
-        name: "GetTask with non-existent ID returns TaskNotFoundError"
+        name: "GetTask with nonexistent ID returns TaskNotFoundError"
         spec_ref: "specification.md#4.2"
         level: must
         tags: [error, task-not-found]
@@ -1988,7 +2019,8 @@ runner-requirement =
   "concurrent_streams" /
   "stream_disconnect" /
   "auth_credentials" /
-  "header_inspection"
+  "header_inspection" /
+  "fresh_connection"
 
 preconditions = {
   ? capabilities: { * text => any },
@@ -2005,6 +2037,7 @@ step = server-step / client-step / webhook-step / assertion-step / raw-step
 server-step = {
   id: text,
   ? description: text,
+  ? fresh_connection: bool,
   operation: abstract-operation,
   params: request-params,
   ? expect: expect-block,
@@ -2375,7 +2408,7 @@ The following requirement IDs are carried forward from existing conformance test
 | STREAM-SUB-001 | First SubscribeToTask event contains a Task |
 | STREAM-SUB-002 | SubscribeToTask stream closes at terminal state |
 | STREAM-SUB-003 | SubscribeToTask on terminal task returns error |
-| STREAM-SUB-004 | SubscribeToTask on non-existent task returns TaskNotFoundError |
+| STREAM-SUB-004 | SubscribeToTask on nonexistent task returns TaskNotFoundError |
 
 ### CARD (Agent Card Discovery)
 | ID | Description |

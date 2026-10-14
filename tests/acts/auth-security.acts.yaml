@@ -214,6 +214,58 @@ suites:
                     message:
                       exists: true
 
+      - id: SEC-AUTH-007
+        name: "Fresh connection retrieves a task awaiting in-task authorization"
+        description: >
+          GetTask must retrieve the current state of the same task on a new
+          transport connection, using the same authorized principal. The
+          tck-auth-required behavior remains pending until authorization is
+          supplied; this test supplies none. It checks task observability,
+          not human-approval policy, resumption, expiry, or delegation.
+        spec_ref: "docs/specification.md#313-get-task"
+        level: must
+        transport: [jsonrpc, rest]
+        runner_requirements: [fresh_connection]
+        requires_behaviors: ["tck-auth-required"]
+        tags: [auth, task-state, reconnection]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-auth-required trigger auth"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_AUTH_REQUIRED
+                    message:
+                      exists: true
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+          - id: get-on-fresh-connection
+            operation: get_task
+            fresh_connection: true
+            params:
+              id: "{{send.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{send.taskId}}"
+                contextId: "{{send.contextId}}"
+                status:
+                  state: TASK_STATE_AUTH_REQUIRED
+                  message:
+                    exists: true
+
       - id: SEC-PUSH-001
         name: "Push notification webhook includes auth credentials"
         description: "Runner MUST set up a webhook and verify auth credentials are present in request headers."
