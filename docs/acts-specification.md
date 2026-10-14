@@ -1704,7 +1704,7 @@ suites:
 
       # ── Error: TaskNotFound ─────────────────────────────────────
       - id: CORE-ERR-001
-        name: "GetTask with non-existent ID returns TaskNotFoundError"
+        name: "GetTask with nonexistent ID returns TaskNotFoundError"
         spec_ref: "specification.md#4.2"
         level: must
         tags: [error, task-not-found]
@@ -2408,7 +2408,7 @@ The following requirement IDs are carried forward from existing conformance test
 | STREAM-SUB-001 | First SubscribeToTask event contains a Task |
 | STREAM-SUB-002 | SubscribeToTask stream closes at terminal state |
 | STREAM-SUB-003 | SubscribeToTask on terminal task returns error |
-| STREAM-SUB-004 | SubscribeToTask on non-existent task returns TaskNotFoundError |
+| STREAM-SUB-004 | SubscribeToTask on nonexistent task returns TaskNotFoundError |
 
 ### CARD (Agent Card Discovery)
 | ID | Description |
