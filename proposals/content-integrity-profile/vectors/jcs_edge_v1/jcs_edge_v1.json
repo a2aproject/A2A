@@ -1,0 +1,186 @@
+{
+  "name": "jcs_edge_v1",
+  "license": "Apache-2.0",
+  "copyright": "Copyright 2026 AlgoVoi (chopmob@gmail.com)",
+  "spec": "RFC 8785 (JCS) canonicalisation edge cases",
+  "spec_authorship": "AlgoVoi-authored conformance set. Normative reference: RFC 8785 sections 3.2.2.2, 3.2.2.3, 3.2.3, 3.2.4. Pins the UTF-8 generation, property-ordering and number-form cases that ad-hoc canonicalisers and single-SDK self-checks miss.",
+  "canon_version": "jcs-rfc8785-v1",
+  "reference_impl": "Python rfc8785 0.1.4 (Trail of Bits)",
+  "vectors": [
+    {
+      "vector_id": "jcs-edge-001-sep-in-value",
+      "description": "U+2028 and U+2029 inside a string value serialise as literal UTF-8 (e2 80 a8 / e2 80 a9), not their backslash-u escapes.",
+      "rfc8785_section": "3.2.4",
+      "expectation": "literal-utf8-separators",
+      "preimage": {
+        "k": "a\u2028b\u2029c"
+      },
+      "expected_jcs_bytes_b64": "eyJrIjoiYeKAqGLigKljIn0=",
+      "expected_sha256": "cf1040eecddd4dbe295333c3cbbac003cf4083fa5058f7319c64d2042aa89f77",
+      "receipt": {
+        "k": "a\u2028b\u2029c"
+      },
+      "expected_content_hash": "cf1040eecddd4dbe295333c3cbbac003cf4083fa5058f7319c64d2042aa89f77"
+    },
+    {
+      "vector_id": "jcs-edge-002-sep-in-key",
+      "description": "U+2028 inside a property name serialises as literal UTF-8 in the key too.",
+      "rfc8785_section": "3.2.4",
+      "expectation": "literal-utf8-separator-in-key",
+      "preimage": {
+        "a\u2028b": "x"
+      },
+      "expected_jcs_bytes_b64": "eyJh4oCoYiI6IngifQ==",
+      "expected_sha256": "4a95154197d0428e8985846ebec43468c3c79fd506ca7b81cb7d6788c23983f7",
+      "receipt": {
+        "a\u2028b": "x"
+      },
+      "expected_content_hash": "4a95154197d0428e8985846ebec43468c3c79fd506ca7b81cb7d6788c23983f7"
+    },
+    {
+      "vector_id": "jcs-edge-003-nonbmp-key-order",
+      "description": "Keys U+FFFF (BMP) and U+1F600 (supplementary) sort by UTF-16 code units: the emoji (lead unit 0xD83D) precedes U+FFFF. Code-point ordering would reverse them.",
+      "rfc8785_section": "3.2.3",
+      "expectation": "utf16-code-unit-order-emoji-first",
+      "preimage": {
+        "\uffff": 1,
+        "\ud83d\ude00": 2
+      },
+      "expected_jcs_bytes_b64": "eyLwn5iAIjoyLCLvv78iOjF9",
+      "expected_sha256": "48c5d098713870a7b88be7fc0ffc0a79e912d20f80ea8a4a5604426f49add103",
+      "receipt": {
+        "\uffff": 1,
+        "\ud83d\ude00": 2
+      },
+      "expected_content_hash": "48c5d098713870a7b88be7fc0ffc0a79e912d20f80ea8a4a5604426f49add103"
+    },
+    {
+      "vector_id": "jcs-edge-004-nonbmp-key-order-multi",
+      "description": "Mixed BMP and supplementary keys; canonical order is by UTF-16 code units throughout.",
+      "rfc8785_section": "3.2.3",
+      "expectation": "utf16-code-unit-order-multi",
+      "preimage": {
+        "\ud83d\ude00": 1,
+        "\uffff": 2,
+        "\u00e9": 3,
+        "z": 4,
+        "\ud83d\udca9": 5
+      },
+      "expected_jcs_bytes_b64": "eyJ6Ijo0LCLDqSI6Mywi8J+SqSI6NSwi8J+YgCI6MSwi77+/IjoyfQ==",
+      "expected_sha256": "84c14af1e8d9ec2612d15889d0f47ae09d4b93ed0e6b5fd4a55105fdca38f3b8",
+      "receipt": {
+        "\ud83d\ude00": 1,
+        "\uffff": 2,
+        "\u00e9": 3,
+        "z": 4,
+        "\ud83d\udca9": 5
+      },
+      "expected_content_hash": "84c14af1e8d9ec2612d15889d0f47ae09d4b93ed0e6b5fd4a55105fdca38f3b8"
+    },
+    {
+      "vector_id": "jcs-edge-005-number-one-float",
+      "description": "1.0 canonicalises to the integer form 1.",
+      "rfc8785_section": "3.2.2.3",
+      "expectation": "number-1",
+      "preimage": {
+        "n": 1.0
+      },
+      "expected_jcs_bytes_b64": "eyJuIjoxfQ==",
+      "expected_sha256": "2bfd14f43d17fc7cea24e0917a8879b4b2f880b8baeec1b9d90fbaad655e71bd",
+      "receipt": {
+        "n": 1.0
+      },
+      "expected_content_hash": "2bfd14f43d17fc7cea24e0917a8879b4b2f880b8baeec1b9d90fbaad655e71bd"
+    },
+    {
+      "vector_id": "jcs-edge-006-number-one-int",
+      "description": "1 canonicalises to 1 (byte-identical to the 1.0 case).",
+      "rfc8785_section": "3.2.2.3",
+      "expectation": "number-1",
+      "preimage": {
+        "n": 1
+      },
+      "expected_jcs_bytes_b64": "eyJuIjoxfQ==",
+      "expected_sha256": "2bfd14f43d17fc7cea24e0917a8879b4b2f880b8baeec1b9d90fbaad655e71bd",
+      "receipt": {
+        "n": 1
+      },
+      "expected_content_hash": "2bfd14f43d17fc7cea24e0917a8879b4b2f880b8baeec1b9d90fbaad655e71bd"
+    },
+    {
+      "vector_id": "jcs-edge-007-mandatory-short-escapes",
+      "description": "Backspace, form feed, newline, carriage return and tab use the two-character short escapes.",
+      "rfc8785_section": "3.2.2.2",
+      "expectation": "short-escapes",
+      "preimage": {
+        "s": "\b\f\n\r\t"
+      },
+      "expected_jcs_bytes_b64": "eyJzIjoiXGJcZlxuXHJcdCJ9",
+      "expected_sha256": "86e432364fb52224b4f1561a7a942cac4b1105e0d44d5e5e760218a710686e43",
+      "receipt": {
+        "s": "\b\f\n\r\t"
+      },
+      "expected_content_hash": "86e432364fb52224b4f1561a7a942cac4b1105e0d44d5e5e760218a710686e43"
+    },
+    {
+      "vector_id": "jcs-edge-008-control-u-escape",
+      "description": "Control characters without a short escape use the lowercase backslash-u-00xx form.",
+      "rfc8785_section": "3.2.2.2",
+      "expectation": "u00xx-escapes",
+      "preimage": {
+        "s": "\u0000\u0001\u001f"
+      },
+      "expected_jcs_bytes_b64": "eyJzIjoiXHUwMDAwXHUwMDAxXHUwMDFmIn0=",
+      "expected_sha256": "3c7d87189d5a604ed61a69a4d9596d6b19faf6a347bd719d02e8948b1cadf24b",
+      "receipt": {
+        "s": "\u0000\u0001\u001f"
+      },
+      "expected_content_hash": "3c7d87189d5a604ed61a69a4d9596d6b19faf6a347bd719d02e8948b1cadf24b"
+    },
+    {
+      "vector_id": "jcs-edge-009-solidus-and-html-literal",
+      "description": "Solidus and the and- / less-than / greater-than characters stay literal (JCS does not HTML-escape).",
+      "rfc8785_section": "3.2.2.2",
+      "expectation": "literal-solidus-and-html",
+      "preimage": {
+        "s": "a/b&c<d>e"
+      },
+      "expected_jcs_bytes_b64": "eyJzIjoiYS9iJmM8ZD5lIn0=",
+      "expected_sha256": "b4f255e4d4875eb6e95d4822901a273ec4c28b6195fdd8f259768dba591d0ce2",
+      "receipt": {
+        "s": "a/b&c<d>e"
+      },
+      "expected_content_hash": "b4f255e4d4875eb6e95d4822901a273ec4c28b6195fdd8f259768dba591d0ce2"
+    },
+    {
+      "vector_id": "jcs-edge-010-accented-nfc-literal",
+      "description": "A precomposed (NFC) accented character serialises as literal UTF-8; JCS applies no Unicode normalisation.",
+      "rfc8785_section": "3.2.4",
+      "expectation": "literal-utf8-accented",
+      "preimage": {
+        "s": "caf\u00e9"
+      },
+      "expected_jcs_bytes_b64": "eyJzIjoiY2Fmw6kifQ==",
+      "expected_sha256": "298ebe9dfd0022919780451da01d6ff22cd701ae9f614b77522b751906ac2784",
+      "receipt": {
+        "s": "caf\u00e9"
+      },
+      "expected_content_hash": "298ebe9dfd0022919780451da01d6ff22cd701ae9f614b77522b751906ac2784"
+    }
+  ],
+  "pair_invariants": [
+    {
+      "name": "number_form_1.0_equals_1",
+      "a": "jcs-edge-005-number-one-float",
+      "b": "jcs-edge-006-number-one-int",
+      "relation": "equal_sha256",
+      "why": "1.0 and 1 produce byte-identical canonical output; a serialiser that preserves the trailing .0 diverges."
+    },
+    {
+      "name": "nonbmp_order_is_utf16_not_codepoint",
+      "vector": "jcs-edge-003-nonbmp-key-order",
+      "relation": "emoji_key_precedes_ffff",
+      "why": "Under UTF-16 code-unit ordering the U+1F600 key precedes the U+FFFF key; under code-point ordering it would follow. The expected bytes encode the UTF-16 order."
+    }
+  ]
+}
