@@ -1,6 +1,6 @@
 # Agent2Agent (A2A) Governance
 
-The Agent2Agent project is governed by the Technical Steering Committee. The Committee has eight seats, each held by the following companies:
+The Agent2Agent project is governed by the Technical Steering Committee. The Committee has nine seats, each held by the following companies:
 
 | Company | Representative | Title | Contact |
 | :--- | :--- | :--- | :--- |
@@ -12,6 +12,7 @@ The Agent2Agent project is governed by the Technical Steering Committee. The Com
 | **ServiceNow** | Sugandh Rakha | Head of Product (MCP & A2A) | [@sugandhrakha](https://github.com/sugandhrakha) |
 | **SAP** | Sivakumar N. | Vice President | [@SivaNSAP](https://github.com/SivaNSAP) |
 | **IBM** | Stefano Maestri | Principal Software Engineer | [@maeste](https://github.com/maeste) |
+| **Bloomberg** | Vinay Ramesh | AI Team Lead | [@vinoo999](https://github.com/vinoo999) |
 
 ## Mission and Scope of the Project
 
