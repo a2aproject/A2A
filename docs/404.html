@@ -1,52 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Redirecting...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Page not found - A2A Protocol</title>
+    <link rel="icon" href="https://a2a-protocol.org/latest/assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            color: #202124;
+            background: #fff;
+            font-family: "Google Sans", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgb(232, 234, 237);
+        }
+
+        header img {
+            display: block;
+            width: 12rem;
+            max-width: 100%;
+            height: auto;
+        }
+
+        main {
+            max-width: 42rem;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .error-code {
+            margin: 0;
+            color: #2874d7;
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            margin: 1rem 0;
+            font-size: clamp(2rem, 6vw, 3rem);
+            line-height: 1.2;
+        }
+
+        p {
+            margin: 0 0 1.5rem;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        nav a {
+            padding: 0.65rem 1.2rem;
+            border: 1px solid #2874d7;
+            border-radius: 0.25rem;
+            color: #215fb1;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        nav a:first-child {
+            color: #fff;
+            background: #215fb1;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        a:focus-visible {
+            outline: 3px solid #202124;
+            outline-offset: 4px;
+        }
+    </style>
     <script>
         (function () {
-            const basePath = '/A2A/';
-            const latestVersion = 'latest';
-
             const path = window.location.pathname;
-            const redirected = sessionStorage.getItem('redirected');
+            const latest = 'https://a2a-protocol.org/latest/';
+            const suffix = window.location.search + window.location.hash;
 
-            if (redirected) {
-                sessionStorage.removeItem('redirected');
-                console.warn('Redirect loop detected. Stopping redirect.');
+            // Preserve links to the old Python API reference location.
+            if (/^\/(?:A2A\/)?(?:(?:v?\d+\.\d+(?:\.\d+)?|latest)\/)?sdk\/python\/$/.test(path)) {
+                window.location.replace(latest + 'sdk/python/api/' + suffix);
                 return;
             }
 
-            if (path.endsWith('/sdk/python/')) {
-                window.location.replace('https://a2a-protocol.org/latest/sdk/python/api');
-            }
-
-            // Check if the path is an asset or already a versioned path
-            const isAsset = path.includes('/assets/') || path.includes('/stylesheets/');
-            const isVersioned = new RegExp(`${basePath}(v?(\d+\.\d+(\.\d+)?)|${latestVersion})/`).test(path);
-
-            if (!isVersioned && !isAsset) {
-                // Construct the new URL.
-                // Example: /A2A/specification.md -> /A2A/latest/specification.md
-                const newPath = path.replace(basePath, basePath + latestVersion + '/');
-
-                // Store a marker in sessionStorage to prevent loops
-                sessionStorage.setItem('redirected', 'true');
-
-                // Perform the redirect
-                window.location.replace(newPath + window.location.search + window.location.hash);
-            } else {
-                window.location.replace('https://a2a-protocol.org/');
+            // GitHub Pages formerly served the documentation under /A2A/.
+            // A missing current URL stays on this page instead of redirecting again.
+            if (path.startsWith('/A2A/')) {
+                const relativePath = path.slice('/A2A/'.length);
+                const isVersioned = /^(?:v?\d+\.\d+(?:\.\d+)?|latest)\//.test(relativePath);
+                const destination = isVersioned ? 'https://a2a-protocol.org/' : latest;
+                window.location.replace(destination + relativePath + suffix);
             }
         })();
     </script>
 </head>
 
 <body>
-    <h1>A2A - Page Not Found</h1>
-    <p>We are attempting to redirect you to the latest version of this page.</p>
-    <p>If you are not redirected automatically, please navigate to the <a href="https://a2a-protocol.org/">A2A project homepage</a>.</p>
+    <header>
+        <a href="https://a2a-protocol.org/" aria-label="A2A Protocol home">
+            <img src="https://a2a-protocol.org/latest/assets/a2a_logo/color/SVG/a2a_color.svg"
+                alt="Agent2Agent Protocol" width="795" height="198">
+        </a>
+    </header>
+    <main>
+        <p class="error-code">404</p>
+        <h1>Page not found</h1>
+        <p>This page may have moved, or the link may be incorrect. Find your way back to the A2A protocol below.</p>
+        <nav aria-label="Helpful links">
+            <a href="https://a2a-protocol.org/">Home</a>
+            <a href="https://a2a-protocol.org/latest/topics/what-is-a2a/">Documentation</a>
+            <a href="https://a2a-protocol.org/latest/specification/">Specification</a>
+        </nav>
+    </main>
 </body>
 
 </html>
