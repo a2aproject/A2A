@@ -67,6 +67,7 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
 - [Noorle](https://noorle.com/docs/reference/a2a/overview)
 - [Pydantic AI](https://pydantic.dev/docs/ai/overview/)
+- [Quilzo](https://quilzo.github.io/a2a/)
 - [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
 - [Strands Agents](https://strandsagents.com/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
