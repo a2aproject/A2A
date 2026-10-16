@@ -31,6 +31,37 @@
     ]
   }
   </script>
+
+  {% if config.extra.dev_livereload %}
+  <script>
+    (function () {
+      var epoch = 0;
+      var primed = false;
+      function poll() {
+        var req = new XMLHttpRequest();
+        req.onloadend = function () {
+          var next = parseFloat(this.responseText);
+          if (!primed) {
+            primed = true;
+            if (!isNaN(next)) {
+              epoch = next;
+            }
+            poll();
+            return;
+          }
+          if (next > epoch) {
+            window.location.reload();
+            return;
+          }
+          setTimeout(poll, this.status === 200 ? 0 : 3000);
+        };
+        req.open("GET", "/livereload/" + epoch + "/" + Date.now());
+        req.send();
+      }
+      poll();
+    })();
+  </script>
+  {% endif %}
 {% endblock %}
 
 {% block announce %}
