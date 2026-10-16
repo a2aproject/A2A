@@ -2074,26 +2074,18 @@ A2A Servers **MUST** make an Agent Card available. The Agent Card describes the 
 
 For more on discovery strategies, see the [Agent Discovery guide](./topics/agent-discovery.md).
 
-### 8.2. Discovery Mechanisms
-
-Clients can find Agent Cards through:
-
-- **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json` (see [Section 8.6](#86-caching) for caching guidance)
-- **Registries/Catalogs:** Querying curated catalogs of agents
-- **Direct Configuration:** Pre-configured Agent Card URLs or content
-
-### 8.3. Protocol Declaration Requirements
+### 8.2. Protocol Declaration Requirements
 
 The AgentCard **MUST** properly declare supported protocols:
 
-#### 8.3.1. Supported Interfaces Declaration
+#### 8.2.1. Supported Interfaces Declaration
 
 - The `supportedInterfaces` field **SHOULD** declare all supported protocol combinations in preference order
 - The first entry in `supportedInterfaces` represents the preferred interface
 - Each interface **MUST** accurately declare its transport protocol and URL
 - URLs **MAY** be reused if multiple transports are available at the same endpoint
 
-#### 8.3.2. Client Protocol Selection
+#### 8.2.2. Client Protocol Selection
 
 Clients **MUST** follow these rules:
 
@@ -2102,11 +2094,11 @@ Clients **MUST** follow these rules:
 3. Use the correct URL for the selected transport
 4. Set the `tenant` field in every request message to exactly the value declared in the selected `AgentInterface` entry (omit the field if `tenant` is not set in that entry)
 
-### 8.4. Agent Card Signing
+### 8.3. Agent Card Signing
 
 Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
 
-#### 8.4.1. Canonicalization Requirements
+#### 8.3.1. Canonicalization Requirements
 
 Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://tools.ietf.org/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
 
@@ -2158,7 +2150,7 @@ After applying RFC 8785:
 {"capabilities":{"pushNotifications":false,"streaming":false},"description":"","name":"Example Agent","skills":[]}
 ```
 
-#### 8.4.2. Signature Format
+#### 8.3.2. Signature Format
 
 Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
 
@@ -2217,7 +2209,7 @@ Where the `protected` value decodes to:
 {"alg":"ES256","typ":"JOSE","kid":"key-1","jku":"https://example.com/agent/jwks.json"}
 ```
 
-#### 8.4.3. Signature Verification
+#### 8.3.3. Signature Verification
 
 Clients verifying Agent Card signatures **MUST**:
 
@@ -2236,7 +2228,7 @@ Clients verifying Agent Card signatures **MUST**:
 - Expired or revoked keys **MUST NOT** be used for verification
 - Multiple signatures **MAY** be present to support key rotation
 
-### 8.5. Sample Agent Card
+### 8.4. Sample Agent Card
 
 ```json
 {
@@ -2313,17 +2305,17 @@ Clients verifying Agent Card signatures **MUST**:
 }
 ```
 
-### 8.6. Caching
+### 8.5. Caching
 
 Agent Card content changes infrequently relative to the frequency at which clients may fetch it. Servers and clients **SHOULD** use standard HTTP caching mechanisms to reduce unnecessary network overhead.
 
-#### 8.6.1. Server Requirements
+#### 8.5.1. Server Requirements
 
 - Agent Card HTTP endpoints **SHOULD** include a `Cache-Control` response header with a `max-age` directive appropriate for the agent's expected update frequency
 - Agent Card HTTP endpoints **SHOULD** include an `ETag` response header derived from the Agent Card's `version` field or a hash of the card content
 - Agent Card HTTP endpoints **MAY** include a `Last-Modified` response header
 
-#### 8.6.2. Client Requirements
+#### 8.5.2. Client Requirements
 
 - Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) when fetching Agent Cards
 - When a cached Agent Card has expired, clients **SHOULD** use conditional requests (`If-None-Match` with the stored `ETag`, or `If-Modified-Since`) to avoid re-downloading unchanged cards
@@ -3470,10 +3462,10 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 **Change controller:** A2A Protocol Working Group
 
-**Specification document:** Section 8.2 of the A2A Protocol Specification
+**Specification document:** Section 8 of the A2A Protocol Specification
 
 **Related information:**
-The `.well-known/agent-card.json` URI provides a standardized location for discovering an A2A agent's capabilities, supported protocols, authentication requirements, and available skills. The resource at this URI MUST return an AgentCard object as defined in Section 4.4.1 of the A2A specification.
+The `.well-known/agent-card.json` URI provides a standardized location for discovering an A2A agent's capabilities, supported protocols, authentication requirements, and available skills. It is limited to advertising a single Agent Card per domain. The resource at this URI MUST return an AgentCard object as defined in Section 4.4.1 of the A2A specification.
 
 **Status:** Permanent
 

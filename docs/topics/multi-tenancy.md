@@ -116,8 +116,33 @@ capabilities of the gateway in use.
 
 ## Discovering Multiple Agents
 
-When multiple agents are deployed behind a shared domain, each agent **SHOULD**
-have its own Agent Card published at an appropriate location (see
-[Agent Discovery](./agent-discovery.md)). Clients retrieve each agent's card
-independently and use the `supportedInterfaces` information it contains — including
-any `tenant` value — to communicate with the correct agent.
+When multiple agents are deployed behind a shared domain, the domain **SHOULD**
+publish an [AI Catalog](https://ai-catalog.io/) listing each agent as an entry of
+type `application/a2a-agent-card+json`. This allows clients to enumerate all
+available agents without needing to know individual Agent Card paths in advance.
+Each entry points to that agent's Agent Card URL. See
+[Agent Discovery](./agent-discovery.md) for catalog format examples.
+
+Clients retrieve each agent's card independently and use the `supportedInterfaces`
+information it contains — including any `tenant` value — to communicate with the
+correct agent.
+
+### Catalog URL Flexibility
+
+The catalog does not have to be hosted at `/.well-known/ai-catalog.json`. That
+well-known path is a convention for open, unauthenticated discovery, but operators
+can serve a catalog from any URL. This is especially useful in multi-tenant
+deployments:
+
+- **Per-tenant authenticated catalog:** An authenticated endpoint (e.g.
+  `https://agents.example.com/catalog`) can inspect the caller's identity and
+  return only the Agent Cards that tenant is permitted to see. Different tenants
+  GET the same URL but receive different catalog payloads.
+- **Environment-scoped catalogs:** Separate catalog URLs per environment or
+  product line, each listing only the relevant agents.
+- **Private catalogs:** Internal catalogs not exposed at the well-known path,
+  distributed to clients via out-of-band configuration.
+
+In all cases the catalog payload format is identical — only the URL and the access
+control around it differ. Clients discover the catalog URL through documentation,
+configuration, or a registry rather than by convention.
