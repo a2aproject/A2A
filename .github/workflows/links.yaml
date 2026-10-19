@@ -134,17 +134,13 @@ jobs:
           output: lychee/out.md
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Issue on Failure
+      # create-issue-from-file has no `reuse-issue` input; passing one is only a
+      # warning, so every failed run silently filed a new report. Look up the
+      # open report instead and hand it to `issue-number`, which updates in
+      # place. An empty value falls back to creating the first one.
+      - name: Find open link checker issue
+        id: report-issue
         if: failure() && steps.lychee.outcome == 'failure' && github.event_name == 'schedule'
-        uses: peter-evans/create-issue-from-file@v6
-        with:
-          title: Link Checker Report
-          content-filepath: ./lychee/out.md
-          labels: report, automated issue
-          reuse-issue: true
-
-      - name: Close resolved link checker issue
-        if: success() && github.event_name == 'schedule'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -154,8 +150,33 @@ jobs:
             --state open \
             --search "Link Checker Report in:title" \
             --json number \
-            --jq '.[0].number')
-          if [ -n "$issue_number" ] && [ "$issue_number" != "null" ]; then
+            --jq '.[0].number // empty')
+          echo "number=${issue_number}" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update Issue on Failure
+        if: failure() && steps.lychee.outcome == 'failure' && github.event_name == 'schedule'
+        uses: peter-evans/create-issue-from-file@v6
+        with:
+          title: Link Checker Report
+          content-filepath: ./lychee/out.md
+          labels: report, automated issue
+          issue-number: ${{ steps.report-issue.outputs.number }}
+
+      - name: Close resolved link checker issue
+        if: success() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Close every matching report, not just the first: earlier runs could
+          # file duplicates, and leaving them open keeps the backlog stale.
+          gh issue list \
+            --label "automated issue" \
+            --label "report" \
+            --state open \
+            --search "Link Checker Report in:title" \
+            --json number \
+            --jq '.[].number' |
+          while read -r issue_number; do
             gh issue close "$issue_number" \
               --comment "Daily link check passed; closing as resolved."
-          fi
+          done
