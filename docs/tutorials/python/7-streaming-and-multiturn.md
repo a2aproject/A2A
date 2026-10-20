@@ -89,7 +89,7 @@ The `langgraph` example showcases several important A2A concepts:
 
 Take some time to look through these files:
 
-- `__main__.py`: Server setup using Starlette with the SDK route factories (`create_agent_card_routes`, `create_jsonrpc_routes`) and `DefaultRequestHandler`, following the pattern in [tutorial 5](5-start-server.md). Note the `AgentCard` definition includes `capabilities.streaming=True`.
+- `__main__.py`: Server setup using the SDK's `A2AStarletteApplication` wrapper and `DefaultRequestHandler`; the application is built with `server.build()`. For a server assembled with route factories instead, see [tutorial 5](5-start-server.md). Note the `AgentCard` definition includes `capabilities.streaming=True`.
 - `agent.py`: The `CurrencyAgent` with LangGraph, LLM model, and tool definitions.
 - `agent_executor.py`: The `CurrencyAgentExecutor` implementing the `execute` (and `cancel`) method. It uses the `RequestContext` to understand the ongoing task and the `EventQueue` to send back various events (`TaskStatusUpdateEvent`, `TaskArtifactUpdateEvent`, new `Task` object implicitly via the first event if no task exists).
 - `test_client.py`: Demonstrates various interaction patterns, including retrieving task IDs and using them for multi-turn conversations.
