@@ -61,6 +61,7 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [AG2](https://docs.ag2.ai/latest/docs/user-guide/a2a/)
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
 - [CrewAI](https://docs.crewai.com/en/learn/a2a-agent-delegation)
+- [CUGA](https://github.com/cuga-project/cuga-agent/tree/main/docs/examples/a2a_two_cuga)
 - [Hector](https://github.com/verikod/hector)
 - [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
