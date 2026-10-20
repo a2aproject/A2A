@@ -1,6 +1,21 @@
 # A2A (Agent2Agent) Protocol
 
-> An open standard, hosted by the Linux Foundation, that lets independent AI agents discover each other, delegate work, and exchange results across frameworks and vendors — without exposing their internal state, memory, or tools.
+> The Agent2Agent (A2A) protocol is an open standard, originated by Google and donated to the Linux Foundation, that lets AI agents built on different frameworks (LangGraph, CrewAI, Google ADK, Genkit, and more) discover each other's capabilities, negotiate interaction modes, and collaborate on tasks securely without exposing internal state.
+
+## Links
+
+- [Documentation home](https://a2a-protocol.org/latest/): Start here — overview, key features, and how A2A relates to MCP.
+- [What is A2A?](https://a2a-protocol.org/latest/topics/what-is-a2a/): Conceptual introduction to the protocol.
+- [Protocol specification](https://a2a-protocol.org/latest/specification/): The human-readable, normative protocol specification (v1.0.0).
+- [Normative Protobuf definition](https://github.com/a2aproject/A2A/blob/main/specification/a2a.proto): Source of truth for the wire protocol.
+- [JSON Schema](https://a2a-protocol.org/latest/spec/a2a.json): Non-normative JSON Schema generated from the proto.
+- [Quickstart tutorial (Python)](https://a2a-protocol.org/latest/tutorials/python/1-introduction/): Step-by-step guide to building an A2A-compliant agent.
+- [SDKs](https://a2a-protocol.org/latest/sdk/): Official SDK overview and Python API reference.
+- [GitHub organization](https://github.com/a2aproject): Source for the spec, SDKs, CLI, and samples.
+- [a2a-cli](https://github.com/a2aproject/a2a-cli): Official command-line client for discovering, messaging, and managing A2A agents.
+- [Full consolidated docs](https://a2a-protocol.org/llms-full.txt): Every doc, topic, and the spec concatenated into one file.
+
+This project defines the **Agent2Agent (A2A) protocol**, an open standard initiated by Google and donated to the Linux Foundation, designed to enable communication and interoperability between disparate AI agent systems. It allows agents built on different frameworks (e.g., LangGraph, CrewAI, Google ADK, Genkit) to discover each other's capabilities, negotiate interaction modes, and collaborate on tasks securely without exposing internal state.
 
 The repository contains:
 1.  **Formal Specification:** The normative Protobuf definition (`specification/a2a.proto`). A non-normative JSON Schema (`a2a.json`, JSON Schema 2020-12) is generated from it at build time and published at `docs/spec/a2a.json`.
