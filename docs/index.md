@@ -5,15 +5,25 @@ hide:
 ---
 
 <!-- markdownlint-disable MD041 -->
-<div style="text-align: center;" markdown>
+<div class="hero" markdown="0">
   <div class="centered-logo-text-group">
     <h1><img src="assets/a2a_logo/color/SVG/a2a_color.svg" alt="Agent2Agent Protocol Logo" width="500"></h1>
   </div>
 
-  <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
+  <div class="hero-tagline-carousel" data-interval="6000">
+    <div class="hero-tagline-slides" aria-live="polite">
+      <p class="hero-tagline">An open protocol enabling communication and interoperability between opaque agentic applications.</p>
+      <p class="hero-tagline">An open standard enabling users to connect agents to tools and data through MCP, and to other agents through A2A.</p>
+      <p class="hero-tagline">An open standard enabling developers to expose portable tools through MCP and interoperable agents through A2A.</p>
+    </div>
+  </div>
+</div>
 
-  [Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
-  [Read the spec](./specification.md){ .md-button }
+<div class="hero" markdown="1">
+
+[Get started](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
+[Read the spec](./specification.md){ .md-button }
+
 </div>
 
 ## What is A2A Protocol?
@@ -22,7 +32,7 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
 !!! abstract ""
     Build with
-    **[![ADK Logo](https://google.github.io/adk-docs/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://google.github.io/adk-docs/)** _(or any framework)_,
+    **[![ADK Logo](https://adk.dev/assets/agent-development-kit.png){class="twemoji lg middle"} ADK](https://adk.dev/)** _(or any framework)_,
     equip with **[![MCP Logo](https://modelcontextprotocol.io/mcp.png){class="twemoji lg middle"} MCP](https://modelcontextprotocol.io)** _(or any tool)_,
     and communicate with
     **![A2A Logo](./assets/a2a_logo/icon/color/SVG/a2a_icon_color.svg){class="twemoji lg middle"} A2A**,
@@ -80,6 +90,14 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:fontawesome-brands-github: GitHub Samples](https://github.com/a2aproject/a2a-samples)
 
+- :material-console-line:{ .lg .middle } **Use the A2A CLI**
+
+    Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power.
+
+    [:octicons-arrow-right-24: Introducing the A2A CLI](./blog/posts/introducing-a2a-cli.md)
+
+    [:fontawesome-brands-github: a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
+
 - :material-code-braces:{ .lg .middle } **Download the Official SDKs**
 
     [:fontawesome-brands-python: Python](https://github.com/a2aproject/a2a-python)
@@ -92,13 +110,13 @@ The **Agent2Agent (A2A) Protocol** is an open standard for seamless communicatio
 
     [:fontawesome-brands-golang: Golang](https://github.com/a2aproject/a2a-go)
 
-    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rust)
+    [:fontawesome-brands-rust: Rust](https://github.com/a2aproject/a2a-rs)
 
 - :material-play-circle:{ .lg .middle } **Video** Intro in under 8 min
 
     <iframe class="video-container" src="https://www.youtube.com/embed/Fbr_Solax1w?si=QxPMEEiO5kLr5_0F" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://deeplearning.ai) - Intro to A2A
+- :material-play-circle:{ .lg .middle } **Course** [DeepLearning.AI](https://www.deeplearning.ai) - Intro to A2A
 
     [![A2A DeepLearning.AI](https://img.youtube.com/vi/4gYm0Rp7VHc/maxresdefault.jpg)](https://goo.gle/dlai-a2a)
 
@@ -132,6 +150,8 @@ flowchart LR
 
 </div>
 
+_A client agent reaches remote tools with MCP and remote agents with A2A._
+
 [:octicons-arrow-right-24: A2A and MCP — deeper dive](./topics/a2a-and-mcp.md)
 
 ## What A2A Is Not
@@ -146,6 +166,8 @@ A2A is a focused protocol. To set expectations, here is what it explicitly does 
 ## Governance & Open Source
 
 A2A was originally developed by Google and donated to the Linux Foundation. It is maintained by a Technical Steering Committee with representatives from AWS, Cisco, Google, IBM Research, Microsoft, Salesforce, SAP, and ServiceNow, and supported by a broad community of [partners](./partners.md).
+
+Join the community on [Discord](https://discord.gg/a2aprotocol) to connect with contributors, ask questions, and discuss the protocol.
 
 For details on how the project is run, see [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md) and [`MAINTAINERS.md`](https://github.com/a2aproject/A2A/blob/main/MAINTAINERS.md).
 

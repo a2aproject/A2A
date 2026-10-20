@@ -109,3 +109,9 @@ You may follow these steps to contribute:
 8. **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
 
 Be patient! It may take some time for your pull request to be reviewed and merged.
+
+## Community
+
+- **Discord:** Join the [A2A Discord server](https://discord.gg/a2aprotocol) for chat and questions.
+- **GitHub Discussions:** Join the [A2A GitHub Discussions](https://github.com/a2aproject/A2A/discussions) for longer-form conversations.
+- **Issues:** Report bugs or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).

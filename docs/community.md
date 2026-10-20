@@ -2,7 +2,9 @@
 
 Welcome to the official community hub for the **Agent2Agent (A2A) protocol**! A2A is an open, standardized protocol that enables seamless interoperability and collaboration between AI agents across all frameworks and vendors.
 
----
+## Connect on Discord
+
+Join the [A2A Discord server](https://discord.gg/a2aprotocol) to chat with contributors, ask questions, and stay connected with the community.
 
 ## Recent News & Blog Posts
 
@@ -54,18 +56,21 @@ The launch of A2A has sparked lively discussions and positive reactions across v
 
 These agentic frameworks have built-in A2A integration, making it easy to get started:
 
-- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/a2a/)
+- [Agent Development Kit (ADK)](https://adk.dev/a2a/)
 - [Agno](https://docs.agno.com/agent-os/interfaces/a2a/introduction)
 - [AG2](https://docs.ag2.ai/latest/docs/user-guide/a2a/)
 - [BeeAI Framework](https://framework.beeai.dev/integrations/a2a)
 - [CrewAI](https://docs.crewai.com/en/learn/a2a-agent-delegation)
-- [Hector](https://github.com/kadirpekel/hector)
+- [CUGA](https://github.com/cuga-project/cuga-agent/tree/main/docs/examples/a2a_two_cuga)
+- [Hector](https://github.com/verikod/hector)
 - [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
-- [Pydantic AI](https://ai.pydantic.dev/a2a/)
+- [Noorle](https://noorle.com/docs/reference/a2a/overview)
+- [Pydantic AI](https://pydantic.dev/docs/ai/overview/)
+- [Quilzo](https://quilzo.github.io/a2a/)
 - [Slide (Tyler)](https://slide.mintlify.app/guides/a2a-integration)
-- [Strands Agents](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/multi-agent/agent-to-agent/)
+- [Strands Agents](https://strandsagents.com/docs/user-guide/concepts/multi-agent/agent-to-agent/)
 
 ## Community SDKs
 
@@ -85,15 +90,33 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 ### 🍎 Swift — A2AClient
 
-![Stars](https://img.shields.io/github/stars/tolgaki/a2a-client-swift?style=flat-square)
+![Stars](https://img.shields.io/github/stars/tolgaki/a2a-swift-client?style=flat-square)
 
-[tolgaki/a2a-client-swift](https://github.com/tolgaki/a2a-client-swift) · A2A spec v1.0.0 · Swift Package Manager. iOS 15+, macOS 12+, watchOS 8+, tvOS 15+.
+[tolgaki/a2a-swift-client](https://github.com/tolgaki/a2a-swift-client) · A2A spec v1.0.0 · Swift Package Manager. iOS 15+, macOS 12+, watchOS 8+, tvOS 15+.
 
 ### 💧 Elixir — a2a
 
 ![Stars](https://img.shields.io/github/stars/actioncard/a2a-elixir?style=flat-square) [![Hex](https://img.shields.io/hexpm/v/a2a?style=flat-square)](https://hex.pm/packages/a2a)
 
 [actioncard/a2a-elixir](https://github.com/actioncard/a2a-elixir) · A2A spec v0.2.0 · OTP-native with Agent behaviour, TaskStore, and supervision tree.
+
+### ⚙️ C++ — a2a-cpp
+
+![Stars](https://img.shields.io/github/stars/MisterVVP/a2a-cpp?style=flat-square) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/MisterVVP/a2a-cpp/tck.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/MisterVVP/a2a-cpp/actions/workflows/tck.yml) [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square)](https://mistervvp.github.io/a2a-cpp/) [![vcpkg overlay](https://img.shields.io/badge/vcpkg-overlay%20port-blue?style=flat-square)](https://github.com/MisterVVP/a2a-cpp/tree/main/vcpkg-overlay-ports)
+
+[MisterVVP/a2a-cpp](https://github.com/MisterVVP/a2a-cpp) · A2A spec v1.0.0 · C++20 SDK with client/server APIs, discovery, REST/JSON-RPC/gRPC transports, streaming, authentication hooks, CMake/vcpkg build integration, and a TCK conformance workflow.
+
+### 🐘 PHP — a2a-php-sdk
+
+![Stars](https://img.shields.io/github/stars/vbcherepanov/a2a-php-sdk?style=flat-square) [![Packagist](https://img.shields.io/packagist/v/vbcherepanov/a2a-php-sdk?style=flat-square)](https://packagist.org/packages/vbcherepanov/a2a-php-sdk) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/vbcherepanov/a2a-php-sdk/ci.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/vbcherepanov/a2a-php-sdk/actions/workflows/ci.yml)
+
+[vbcherepanov/a2a-php-sdk](https://github.com/vbcherepanov/a2a-php-sdk) · A2A spec v1.0.0 · PHP 8.4+ client and server SDK with JSON-RPC, REST and gRPC transports, SSE and gRPC streaming, protobuf types generated from the official a2a.proto, and the official TCK run in CI. Optional Symfony integration: [a2a-symfony-bundle](https://github.com/vbcherepanov/a2a-symfony-bundle).
+
+### 🐘 PHP — a2a-php
+
+![Stars](https://img.shields.io/github/stars/praveendias1180/a2a-php?style=flat-square) [![Packagist](https://img.shields.io/packagist/v/praveendias1180/a2a-php?style=flat-square)](https://packagist.org/packages/praveendias1180/a2a-php) [![TCK conformance](https://img.shields.io/github/actions/workflow/status/praveendias1180/a2a-php/ci.yml?branch=main&label=TCK%20conformance&style=flat-square)](https://github.com/praveendias1180/a2a-php/actions/workflows/ci.yml) [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue?style=flat-square)](https://praveendias1180.github.io/a2a-php/)
+
+[praveendias1180/a2a-php](https://github.com/praveendias1180/a2a-php) · A2A spec v1.0.0 · Mirrors the official Python SDK class for class. JSON-RPC/REST with SSE streaming, push notifications, card signing, v0.3 compatibility, and a Laravel bridge; passes the TCK MUST level in CI.
 
 !!! tip "Want to add your SDK?"
     Open an issue on [a2aproject/A2A](https://github.com/a2aproject/A2A/issues/new?title=Community%20SDK%20Submission) with a link to your repository and published package.
@@ -104,4 +127,16 @@ Building an A2A agent in a language not covered by the [official SDKs](./sdk/ind
 
 The excitement surrounding Google's A2A protocol clearly indicates a strong belief in its potential to revolutionize multi-agent AI systems. By providing a standardized way for AI agents to communicate and collaborate, A2A is poised to unlock new levels of automation and innovation. As enterprises increasingly adopt AI agents, A2A represents a crucial step towards realizing the full power of interconnected AI ecosystems.
 
-**Join the growing community building the future of AI interoperability with A2A!**
+**Join the growing community building the future of AI interoperability with A2A!** Connect on [Discord](https://discord.gg/a2aprotocol).
+
+---
+
+## Meetings & Agenda
+
+Looking for the live community meeting schedule or past recordings?
+
+- [A2A Discord server](https://discord.gg/a2aprotocol)
+- [A2A meetings on the Linux Foundation platform](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent)
+- [TSC meeting agenda working doc](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view)
+
+These links are also referenced in [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md#tsc-meetings).
