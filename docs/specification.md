@@ -433,7 +433,7 @@ For detailed security guidance on extended agent cards, see [Section 13.3 Extend
 
 <span id="3112-get-agent-card"></span>
 
-Retrieves the public Agent Card for this agent at the agent's root endpoint. This operation formalises the de-facto behaviour of many A2A implementations that serve the Agent Card at the root of the declared interface URL, enabling discovery from agents hosted at any path (e.g. `agent.example.com/`, `proxy.example.com/myagent/`, `host.example.com/tenant/agent/`).
+Retrieves the public Agent Card for this agent at the agent's root endpoint. This operation formalizes the de-facto behavior of many A2A implementations that serve the Agent Card at the root of the declared interface URL, enabling discovery from agents hosted at any path (e.g. `agent.example.com/`, `proxy.example.com/my-agent/`, `host.example.com/tenant/agent/`).
 
 **Inputs:**
 
