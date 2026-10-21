@@ -12,17 +12,93 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --ink: #050b1f;
+            --blue: #526cfe;
+            --cyan: #38d4f5;
+            --violet: #a855f7;
+        }
+
         body {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             margin: 0;
-            color: #202124;
-            background: #fff;
+            overflow-x: hidden;
+            color: #e8ecfb;
+            background: var(--ink);
             font-family: "Google Sans", Arial, sans-serif;
             line-height: 1.6;
         }
 
+        /* Animated aurora backdrop, drawn behind everything. */
+        .backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .backdrop::after {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background-image:
+                linear-gradient(rgb(255 255 255 / 4%) 1px, transparent 1px),
+                linear-gradient(90deg, rgb(255 255 255 / 4%) 1px, transparent 1px);
+            background-size: 64px 64px;
+            transform: perspective(40rem) rotateX(60deg);
+            mask-image: radial-gradient(ellipse at 50% 35%, #000 10%, transparent 65%);
+        }
+
+        .orb {
+            position: absolute;
+            width: 42rem;
+            height: 42rem;
+            border-radius: 50%;
+            filter: blur(6rem);
+            opacity: 0.5;
+            animation: drift 18s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            top: -16rem;
+            left: -12rem;
+            background: var(--blue);
+        }
+
+        .orb-2 {
+            top: 20%;
+            right: -16rem;
+            background: var(--violet);
+            animation-delay: -6s;
+        }
+
+        .orb-3 {
+            bottom: -24rem;
+            left: 25%;
+            background: var(--cyan);
+            animation-delay: -12s;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+
+            to {
+                transform: translate3d(4rem, -3rem, 0) scale(1.15);
+            }
+        }
+
         header {
+            position: relative;
+            z-index: 1;
             padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid rgb(232, 234, 237);
+            border-bottom: 1px solid rgb(255 255 255 / 10%);
+            backdrop-filter: blur(6px);
         }
 
         header img {
@@ -33,27 +109,77 @@
         }
 
         main {
-            max-width: 42rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex: 1;
+            align-items: center;
+            width: 100%;
+            max-width: 46rem;
             margin: 0 auto;
             padding: 4rem 1.5rem;
         }
 
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            padding: 0.35rem 0.9rem;
+            border: 1px solid rgb(255 255 255 / 18%);
+            border-radius: 999px;
+            background: rgb(255 255 255 / 6%);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .badge .pulse {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: var(--cyan);
+            box-shadow: 0 0 0 0 rgb(56 212 245 / 70%);
+            animation: pulse 2s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            to {
+                box-shadow: 0 0 0 0.75rem rgb(56 212 245 / 0%);
+            }
+        }
+
         .error-code {
             margin: 0;
-            color: #2874d7;
-            font-size: 4rem;
-            font-weight: 700;
-            line-height: 1.2;
+            background: linear-gradient(100deg, var(--cyan), var(--blue), var(--violet), var(--cyan));
+            background-size: 300% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: clamp(5.5rem, 22vw, 11rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            animation: shimmer 6s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 300% 0;
+            }
         }
 
         h1 {
-            margin: 1rem 0;
-            font-size: clamp(2rem, 6vw, 3rem);
+            margin: 0.5rem 0 1rem;
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
             line-height: 1.2;
         }
 
         p {
-            margin: 0 0 1.5rem;
+            margin: 0 0 1.75rem;
+            max-width: 32rem;
+            color: rgb(232 236 251 / 75%);
         }
 
         nav {
@@ -63,26 +189,64 @@
         }
 
         nav a {
-            padding: 0.65rem 1.2rem;
-            border: 1px solid #2874d7;
-            border-radius: 0.25rem;
-            color: #215fb1;
+            position: relative;
+            overflow: hidden;
+            padding: 0.7rem 1.3rem;
+            border: 1px solid rgb(255 255 255 / 22%);
+            border-radius: 0.6rem;
+            background: rgb(255 255 255 / 6%);
+            color: #fff;
             font-weight: 600;
             text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
 
         nav a:first-child {
-            color: #fff;
-            background: #215fb1;
+            border-color: transparent;
+            background: linear-gradient(120deg, var(--blue), var(--violet));
+            box-shadow: 0 0.5rem 1.5rem rgb(82 108 254 / 45%);
         }
 
-        nav a:hover {
-            text-decoration: underline;
+        nav a::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(100deg, transparent, rgb(255 255 255 / 35%), transparent);
+            transition: left 0.5s ease;
+        }
+
+        nav a:hover,
+        nav a:focus-visible {
+            border-color: rgb(255 255 255 / 45%);
+            transform: translateY(-0.2rem);
+            box-shadow: 0 0.75rem 1.75rem rgb(5 11 31 / 55%);
+        }
+
+        nav a:hover::after,
+        nav a:focus-visible::after {
+            left: 100%;
         }
 
         a:focus-visible {
-            outline: 3px solid #202124;
+            outline: 3px solid var(--cyan);
             outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .orb,
+            .error-code,
+            .badge .pulse {
+                animation: none;
+            }
+
+            nav a,
+            nav a::after {
+                transition: none;
+            }
         }
     </style>
     <script>
@@ -110,21 +274,30 @@
 </head>
 
 <body>
+    <div class="backdrop" aria-hidden="true">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+    </div>
     <header>
         <a href="https://a2a-protocol.org/" aria-label="A2A Protocol home">
-            <img src="https://a2a-protocol.org/latest/assets/a2a_logo/color/SVG/a2a_color.svg"
+            <img src="https://a2a-protocol.org/latest/assets/a2a_logo/white/SVG/a2a_white.svg"
                 alt="Agent2Agent Protocol" width="795" height="198">
         </a>
     </header>
     <main>
-        <p class="error-code">404</p>
-        <h1>Page not found</h1>
-        <p>This page may have moved, or the link may be incorrect. Find your way back to the A2A protocol below.</p>
-        <nav aria-label="Helpful links">
-            <a href="https://a2a-protocol.org/">Home</a>
-            <a href="https://a2a-protocol.org/latest/topics/what-is-a2a/">Documentation</a>
-            <a href="https://a2a-protocol.org/latest/specification/">Specification</a>
-        </nav>
+        <div class="copy">
+            <p class="badge"><span class="pulse" aria-hidden="true"></span>Agent unreachable</p>
+            <p class="error-code">404</p>
+            <h1>This page went off-protocol</h1>
+            <p>The page may have moved, or the link may be incorrect. Pick a route below and we&rsquo;ll get you back
+                on the happy path.</p>
+            <nav aria-label="Helpful links">
+                <a href="https://a2a-protocol.org/">Home</a>
+                <a href="https://a2a-protocol.org/latest/topics/what-is-a2a/">Documentation</a>
+                <a href="https://a2a-protocol.org/latest/specification/">Specification</a>
+            </nav>
+        </div>
     </main>
 </body>
 
