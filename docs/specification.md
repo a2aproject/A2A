@@ -3498,7 +3498,7 @@ AI agent platforms, agentic workflow systems, multi-agent collaboration tools, a
 - **Macintosh file type code(s):** TEXT
 
 **Person & email address to contact for further information:**
-A2A Protocol Working Group (contact email to be supplied before submission)
+A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
 
 **Intended usage:** COMMON
 
@@ -3506,7 +3506,7 @@ A2A Protocol Working Group (contact email to be supplied before submission)
 
 **Author:** A2A Protocol Working Group
 
-**Change controller:** A2A Protocol Working Group
+**Change controller:** A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
 
 **Provisional registration:** No
 
@@ -3552,7 +3552,7 @@ AI agent platforms, agent registries and catalogs, and A2A clients that discover
 - **Macintosh file type code(s):** TEXT
 
 **Person & email address to contact for further information:**
-A2A Protocol Working Group (contact email to be supplied before submission)
+A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
 
 **Intended usage:** COMMON
 
@@ -3560,7 +3560,7 @@ A2A Protocol Working Group (contact email to be supplied before submission)
 
 **Author:** A2A Protocol Working Group
 
-**Change controller:** A2A Protocol Working Group
+**Change controller:** A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
 
 **Provisional registration:** No
 
