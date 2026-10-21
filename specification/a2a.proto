@@ -138,6 +138,15 @@ service A2AService {
       }
     };
   }
+  // Gets the public agent card for this agent, accessible at the agent's root endpoint.
+  rpc GetAgentCard(GetAgentCardRequest) returns (AgentCard) {
+    option (google.api.http) = {
+      get: "/"
+      additional_bindings: {
+        get: "/{tenant}/"
+      }
+    };
+  }
   // Deletes a push notification config for a task.
   rpc DeleteTaskPushNotificationConfig(DeleteTaskPushNotificationConfigRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
@@ -931,6 +940,13 @@ message ListTaskPushNotificationConfigsRequest {
 
 // Represents a request for the `GetExtendedAgentCard` method.
 message GetExtendedAgentCardRequest {
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
+  string tenant = 1;
+}
+
+// Represents a request for the `GetAgentCard` method.
+message GetAgentCardRequest {
   // Optional. Opaque routing identifier. Must match the `tenant` value from
   // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
