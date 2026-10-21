@@ -2160,6 +2160,8 @@ If using in-band credential exchange, we recommend adhering to the following sec
 
 A2A Servers **MUST** make an Agent Card available. The Agent Card describes the server's identity, capabilities, skills, and interaction requirements. Clients use this information for discovering suitable agents and configuring interactions.
 
+The media type `application/a2a-agent-card+json` identifies a JSON representation of an [AgentCard](#441-agentcard), independently of the agent's supported protocol bindings. Its IANA registration template is provided in [Section 14.1.2](#1412-applicationa2a-agent-cardjson).
+
 For more on discovery strategies, see the [Agent Discovery guide](./topics/agent-discovery.md).
 
 ### 8.2. Discovery Mechanisms
@@ -3448,9 +3450,11 @@ See also: [Section 12.6 Authentication and Authorization (Custom Bindings)](#126
 
 ## 14. IANA Considerations
 
-This section provides registration templates for the A2A protocol's media type, HTTP headers, and well-known URI, intended for submission to the Internet Assigned Numbers Authority (IANA).
+This section provides registration templates for the A2A protocol's media types, HTTP headers, and well-known URI, intended for submission to the Internet Assigned Numbers Authority (IANA).
 
 ### 14.1. Media Type Registration
+
+The following templates follow [RFC 6838, Section 5.6](https://www.rfc-editor.org/rfc/rfc6838.html#section-5.6). `application/a2a+json` identifies HTTP+JSON protocol messages, while `application/a2a-agent-card+json` identifies Agent Card documents used for discovery. These templates do not imply that IANA registration has been completed.
 
 #### 14.1.1. application/a2a+json
 
@@ -3494,7 +3498,61 @@ AI agent platforms, agentic workflow systems, multi-agent collaboration tools, a
 - **Macintosh file type code(s):** TEXT
 
 **Person & email address to contact for further information:**
-A2A Protocol Working Group, <a2a-protocol@example.org>
+A2A Protocol Working Group (contact email to be supplied before submission)
+
+**Intended usage:** COMMON
+
+**Restrictions on usage:** None
+
+**Author:** A2A Protocol Working Group
+
+**Change controller:** A2A Protocol Working Group
+
+**Provisional registration:** No
+
+#### 14.1.2. application/a2a-agent-card+json
+
+**Type name:** `application`
+
+**Subtype name:** `a2a-agent-card+json`
+
+**Required parameters:** None
+
+**Optional parameters:**
+
+- None
+
+**Encoding considerations:** Binary (UTF-8 encoding MUST be used for JSON text)
+
+**Security considerations:**
+This media type shares security considerations common to all JSON-based formats as described in RFC 8259, Section 12. Additionally:
+
+- Agent Cards contain untrusted data. Clients SHOULD validate their structure before use and MUST NOT treat descriptions or other metadata as trusted instructions.
+- URLs in Agent Cards, including service endpoints and signature key references, can lead to untrusted resources. Clients SHOULD validate URLs before accessing them to mitigate server-side request forgery (SSRF).
+- Agent Cards SHOULD NOT contain sensitive credentials or internal implementation details. Authenticated extended Agent Cards MUST be protected by appropriate access controls as described in [Section 13.3](#133-extended-agent-card-access-control).
+- HTTPS SHOULD be used to protect the authenticity and integrity of Agent Cards in transit.
+- Agent Cards MAY contain JSON Web Signatures (JWS). Signature verification and trust requirements are described in [Section 8.4](#84-agent-card-signing); the presence of a signature alone does not establish trust.
+
+**Interoperability considerations:**
+The representation is a single JSON AgentCard object as defined in [Section 4.4.1](#441-agentcard), using the JSON field naming convention in [Section 5.5](#55-json-field-naming-convention) and field presence rules in [Section 5.7](#57-field-presence-and-optionality). It describes an agent independently of its supported protocol bindings. It is distinct from `application/a2a+json`, which identifies HTTP+JSON protocol messages, and can be referenced by registries and catalogs such as AI Catalog.
+
+**Published specification:**
+Agent2Agent (A2A) Protocol Specification, [Section 4.4.1](#441-agentcard) and [Section 8](#8-agent-discovery-the-agent-card), available at: <https://a2a-protocol.org/latest/specification>
+
+**Applications that use this media type:**
+AI agent platforms, agent registries and catalogs, and A2A clients that discover agents and configure interactions using Agent Cards.
+
+**Fragment identifier considerations:** None
+
+**Additional information:**
+
+- **Deprecated alias names for this type:** None
+- **Magic number(s):** None
+- **File extension(s):** .json
+- **Macintosh file type code(s):** TEXT
+
+**Person & email address to contact for further information:**
+A2A Protocol Working Group (contact email to be supplied before submission)
 
 **Intended usage:** COMMON
 
