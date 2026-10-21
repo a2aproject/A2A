@@ -1,0 +1,240 @@
+acts_version: "1.0"
+spec_version: "1.0"
+metadata:
+  title: "Multi-turn Conversations"
+  description: "ACTS tests for multi-turn conversations, INPUT_REQUIRED flows, and context inference"
+
+suites:
+  - id: multi-turn
+    name: Multi-turn Conversations
+    tests:
+      - id: CORE-MULTI-001
+        name: Multi-turn with INPUT_REQUIRED
+        description: Covers TCK CORE-MULTI-001, CSIT scenario-parity input-required, and agentbin spec-multi-turn behavior.
+        spec_ref: CORE-MULTI-001
+        level: must
+        requires_behaviors:
+          - tck-multi-turn
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn start conversation"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+
+          - id: turn3
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "{{turn1.contextId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+      - id: CORE-MULTI-005
+        name: SendMessage with only taskId infers contextId
+        description: Verifies follow-up SendMessage can omit contextId and still remain on the original task context.
+        spec_ref: CORE-MULTI-005
+        level: must
+        requires_behaviors:
+          - tck-multi-turn
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn start"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: "task.id"
+              contextId: "task.contextId"
+
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  contextId: "{{turn1.contextId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+      - id: CORE-MULTI-006
+        name: SendMessage with taskId and wrong contextId returns error
+        description: Verifies mismatched contextId is rejected for a follow-up turn.
+        spec_ref: CORE-MULTI-006
+        level: must
+        requires_behaviors:
+          - tck-multi-turn
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn start"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: "task.id"
+
+          - id: turn2
+            operation: send_message
+            params:
+              taskId: "{{turn1.taskId}}"
+              contextId: "wrong-context-id-12345"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "should fail"
+            expect:
+              status: error
+              error:
+                exists: true
+
+      - id: CORE-MULTI-003
+        name: Mismatched contextId and taskId is rejected
+        description: Verifies that SendMessage rejects a taskId and contextId pair from different conversations.
+        spec_ref: REQ-MULTI-002
+        level: must
+        requires_behaviors:
+          - tck-complete-task
+        steps:
+          - id: first
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task first"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId1: "task.id"
+              contextId1: "task.contextId"
+
+          - id: second
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  contextId:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId2: "task.id"
+              contextId2: "task.contextId"
+
+          - id: mismatch
+            operation: send_message
+            params:
+              taskId: "{{first.taskId1}}"
+              contextId: "{{second.contextId2}}"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "mismatched context and task"
+            expect_error:
+              message:
+                type: string
+
+      - id: CORE-CTX-001
+        name: Rejected client contextId returns an error
+        description: Runner SHOULD use a client-generated contextId that the server rejects and verify the server errors instead of minting a new contextId.
+        spec_ref: REQ-CTX-002
+        level: must
+        tags: [context, identity, runner-special]
+        requires_behaviors:
+          - tck-complete-task
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              contextId: "client-generated-context-that-should-be-rejected"
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task reject client context id"
+            expect_error:
+              message:
+                type: string
