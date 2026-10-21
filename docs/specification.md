@@ -445,12 +445,12 @@ Retrieves the public Agent Card for this agent at the agent's root endpoint. Thi
 
 **Errors:**
 
-None. This operation MUST NOT require authentication.
+None.
 
 **Behavior:**
 
-- **No Authentication Required**: Servers MUST serve this endpoint without requiring authentication. Sensitive information should be placed in the authenticated extended card (see [Section 3.1.11](#3111-get-extended-agent-card)).
-- **Root Endpoint**: Servers MUST serve this operation at the root of the declared `AgentInterface.url`. Clients MAY use this endpoint to discover the Agent Card when the full interface URL is known but the well-known URI is not applicable (e.g. agents hosted at a sub-path).
+- **Authentication**: Servers MAY serve this endpoint without requiring authentication. Sensitive information should be placed in the authenticated extended card (see [Section 3.1.11](#3111-get-extended-agent-card)).
+- **Agent Endpoint**: Servers MUST serve this operation at the declared `AgentInterface.url`. Clients MAY use this endpoint to discover the Agent Card when the full interface URL is known but the well-known URI is not applicable (e.g. agents hosted at a sub-path).
 - **Caching**: The same caching guidance as the well-known URI endpoint applies (see [Section 8.6](#86-caching)).
 
 #### 3.1.13. Send Live Message
@@ -2192,7 +2192,7 @@ For more on discovery strategies, see the [Agent Discovery guide](./topics/agent
 Clients can find Agent Cards through:
 
 - **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json` (see [Section 8.6](#86-caching) for caching guidance)
-- **Agent Root URL:** Accessing `GET {interface_url}` directly (see [Section 3.1.12](#3112-get-agent-card)); useful for agents hosted at sub-paths where the well-known URI is not applicable
+- **Agent URL:** Accessing `GET {interface_url}` directly (see [Section 3.1.12](#3112-get-agent-card)); useful for agents hosted at sub-paths where the well-known URI is not applicable
 - **Registries/Catalogs:** Querying curated catalogs of agents
 - **Direct Configuration:** Pre-configured Agent Card URLs or content
 
