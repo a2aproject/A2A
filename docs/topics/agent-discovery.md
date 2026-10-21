@@ -137,7 +137,7 @@ This is the recommended approach for public agents. It supports single-agent dep
     - Agent Card URLs in the catalog can be any path; hosts choose the layout.
     - Authentication should be applied to individual Agent Card endpoints for cards containing sensitive information.
 
-### 4. Curated Registries (Catalog-Based Discovery)
+### 3. Curated Registries (Catalog-Based Discovery)
 
 This approach is employed in enterprise environments or public marketplaces, where Agent Cards are often managed by a central registry. The curated registry acts as a central repository, allowing clients to query and discover agents based on criteria like "skills" or "tags".
 
@@ -157,7 +157,7 @@ This approach is employed in enterprise environments or public marketplaces, whe
     - Requires deployment and maintenance of a registry service.
     - The current A2A specification does not prescribe a standard API for curated registries.
 
-### 5. Direct Configuration / Private Discovery
+### 4. Direct Configuration / Private Discovery
 
 This approach is used for tightly coupled systems, private agents, or development purposes, where clients are directly configured with Agent Card information or URLs.
 
