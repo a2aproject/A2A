@@ -15,13 +15,13 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Load Super Linter Environment Variables into GITHUB_ENV
         run: |
-          grep -v '^\\(#.*\\|\\s\\?\\)$' .github/super-linter.env >> "${GITHUB_ENV}"
+          grep -v '^\(#.*\|\s\?\)$' .github/super-linter.env >> "${GITHUB_ENV}"
 
       - name: GitHub Super Linter
         uses: super-linter/super-linter/slim@v8
@@ -36,13 +36,13 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
-      - name: Install buf
-        run: |
-          curl -sSL "https://github.com/bufbuild/buf/releases/latest/download/buf-Linux-x86_64" -o buf
-          sudo mv buf /usr/local/bin/buf
-          sudo chmod +x /usr/local/bin/buf
+      - name: Setup Buf
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+          version: "1.71.0"
 
       - name: Download proto dependencies
         working-directory: specification

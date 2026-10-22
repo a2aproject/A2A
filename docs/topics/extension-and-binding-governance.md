@@ -20,6 +20,19 @@ Both extensions and custom protocol bindings use a two-tier system within the
 | Experimental repo prefix | `experimental-ext-{name}`                       | `experimental-cpb-{name}`                      |
 | Official URI prefix      | `https://a2a-protocol.org/extensions/`          | `https://a2a-protocol.org/bindings/`           |
 
+### URI namespaces
+
+The official URI prefixes are canonical namespace identifiers used to
+assign globally unique URIs to extensions and custom protocol bindings. Agents
+and clients reference these URIs in Agent Cards, headers, and protocol messages
+to declare and negotiate support.
+
+Individual URIs under a prefix identify a specific artifact and, where applicable,
+its version—for example, `https://a2a-protocol.org/extensions/{name}/v1` or
+`https://a2a-protocol.org/bindings/{name}/v1`.
+
+These URIs are identifiers, HTTP access is not expected.
+
 ### Official
 
 Official artifacts are developed and maintained under the `a2aproject` GitHub
@@ -29,7 +42,7 @@ maintainers identified in `MAINTAINERS.md`.
 **Requirements:**
 
 - Specifications MUST use the same language as the core specification
-    ([RFC 2119](https://tools.ietf.org/html/rfc2119))
+    ([RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119))
 - MUST be licensed under Apache 2.0
 - MUST have at least one reference implementation
 - SHOULD have associated documentation on the A2A website

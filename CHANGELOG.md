@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/a2aproject/A2A/compare/v1.0.0...v1.0.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* **spec:** prefer application/a2a+json in HTTP binding ([#1753](https://github.com/a2aproject/A2A/issues/1753)) ([7ff1004](https://github.com/a2aproject/A2A/commit/7ff10041597b9c8a736a477e1890d2c79173bbcf))
+* **spec:** recent transcoding-related error changes ([#1627](https://github.com/a2aproject/A2A/issues/1627)) ([757f0ec](https://github.com/a2aproject/A2A/commit/757f0ec6d067ec071ff915f21ab420200ba1baa3))
+* TaskStatus values in the specification ([#1801](https://github.com/a2aproject/A2A/issues/1801)) ([e997516](https://github.com/a2aproject/A2A/commit/e997516542bd6e3a12ecb6b4939aa0bae3b13a21))
+
 ## [1.0.0](https://github.com/a2aproject/A2A/compare/v0.3.0...v1.0.0) (2026-03-12)
 
 

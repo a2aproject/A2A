@@ -7,18 +7,24 @@ on:
     paths:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
+      - "scripts/build_docs.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
+      - ".mkdocs/**"
+      - "specification/a2a.proto"
   pull_request:
     branches:
       - main
     paths:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
+      - "scripts/build_docs.sh"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
+      - ".mkdocs/**"
+      - "specification/a2a.proto"
   release:
     types:
       - published
@@ -40,7 +46,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
@@ -51,26 +57,26 @@ jobs:
           git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: 3.13
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
-
-      - name: Restore pip cache
-        uses: actions/cache@v5
         with:
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-docs.txt') }}
-          path: ~/.cache/pip
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          enable-cache: true
 
       - name: Install documentation dependencies
-        run: pip install --upgrade -r requirements-docs.txt
+        run: uv pip install --system --upgrade -r requirements-docs.txt
+
+      - name: Setup Buf
+        uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+          version: "1.71.0"
 
       - name: Setup Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: '1.25'
 
@@ -86,10 +92,6 @@ jobs:
           # Install protoc-gen-jsonschema
           go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
           sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
-
-          # Install buf CLI
-          go install github.com/bufbuild/buf/cmd/buf@latest
-          sudo cp "$(go env GOPATH)/bin/buf" /usr/local/bin/
 
           # Clone googleapis
           mkdir -p third_party
@@ -113,7 +115,7 @@ jobs:
           mike deploy --push --update-aliases dev latest
 
           echo "Setting 'latest' as the default version for the site..."
-          mike set-default --push latest
+          mike set-default --push --template .mkdocs/root-redirect-template.html latest
 
           # Deploy 404 page
           bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
@@ -127,7 +129,7 @@ jobs:
           mike deploy --push --update-aliases $MIKE_VERSION latest
 
           echo "Setting 'latest' as the default version for the site..."
-          mike set-default --push latest
+          mike set-default --push --template .mkdocs/root-redirect-template.html latest
 
           # Call the reusable script to deploy the 404 page, passing the token
           bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
@@ -140,7 +142,7 @@ jobs:
           mike deploy --push --update-aliases ${{ github.event.inputs.version }} latest
 
           echo "Setting 'latest' as the default version for the site..."
-          mike set-default --push latest
-          
+          mike set-default --push --template .mkdocs/root-redirect-template.html latest
+
           # Re-deploy 404 page
           bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}

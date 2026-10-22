@@ -126,7 +126,7 @@ Centering the proto file as the normative source ensures protocol neutrality, re
 
 ### 2.1. Requirements Language
 
-The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 ### 2.2. Core Concepts
 
@@ -172,7 +172,7 @@ The primary operation for initiating agent interactions. Clients send a message 
 **Errors:**
 
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`) cannot accept further messages.
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
 **Behavior:**
@@ -197,7 +197,7 @@ Similar to Send Message but with real-time streaming of updates during processin
 **Errors:**
 
 - [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
-- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (e.g., completed, canceled, rejected) cannot accept further messages.
+- [`UnsupportedOperationError`](#332-error-handling): Messages sent to Tasks that are in a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`) cannot accept further messages.
 - [`ContentTypeNotSupportedError`](#332-error-handling): A Media Type provided in the request's message parts is not supported by the agent.
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
 
@@ -207,7 +207,7 @@ The operation MUST establish a streaming connection for real-time updates. The s
 
 1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` object and then close immediately. No task tracking or updates are provided.
 
-2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (e.g. completed, failed, canceled, rejected).
+2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`).
 
 The agent MAY return a `Task` for complex processing with status/artifact updates or MAY return a `Message` for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
 
@@ -302,11 +302,11 @@ Establishes a streaming connection to receive updates for an existing task.
 
 - [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (see [Capability Validation](#334-capability-validation)).
 - [`TaskNotFoundError`](#332-error-handling): The task ID does not exist or is not accessible.
-- [`UnsupportedOperationError`](#332-error-handling): The operation is attempted on a task that is in a terminal state (`completed`, `failed`, `canceled`, or `rejected`).
+- [`UnsupportedOperationError`](#332-error-handling): The operation is attempted on a task that is in a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`).
 
 **Behavior:**
 
-The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (`completed`, `failed`, `canceled`, or `rejected`).
+The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`).
 
 The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
@@ -319,11 +319,11 @@ Creates a push notification configuration for a task to receive asynchronous upd
 
 **Inputs:**
 
-{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 **Outputs:**
 
-- [`PushNotificationConfig`](#431-pushnotificationconfig): Created configuration with assigned ID
+- [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig): Created configuration with assigned ID
 
 **Errors:**
 
@@ -348,7 +348,7 @@ Retrieves an existing push notification configuration for a task.
 
 **Outputs:**
 
-- [`PushNotificationConfig`](#431-pushnotificationconfig): The requested configuration
+- [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig): The requested configuration
 
 **Errors:**
 
@@ -443,9 +443,9 @@ This section defines common parameter objects used across multiple operations.
 
 The `return_immediately` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) controls whether the operation returns immediately or waits for task completion. Operations are blocking by default:
 
-- **Blocking (`return_immediately: false` or unset)**: The operation MUST wait until the task reaches a terminal state (`COMPLETED`, `FAILED`, `CANCELED`, `REJECTED`) or an interrupted state (`INPUT_REQUIRED`, `AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.
+- **Blocking (`return_immediately: false` or unset)**: The operation MUST wait until the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`) or an interrupted state (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`) before returning. The response MUST include the latest task state with all artifacts and status information. This is the default behavior.
 
-- **Non-Blocking (`return_immediately: true`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `working`, `input_required`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
+- **Non-Blocking (`return_immediately: true`)**: The operation MUST return immediately after creating the task, even if processing is still in progress. The returned task will have an in-progress state (e.g., `TASK_STATE_WORKING`, `TASK_STATE_INPUT_REQUIRED`). It is the caller's responsibility to poll for updates using [Get Task](#313-get-task), subscribe via [Subscribe to Task](#316-subscribe-to-task), or receive updates via push notifications.
 
 The `return_immediately` field has no effect:
 
@@ -472,7 +472,7 @@ The `historyLength` parameter appears in multiple operations and controls how mu
 
 #### 3.2.5. Metadata
 
-A flexible key-value map for passing additional context or parameters with operations. Metadata keys and are strings and values can be any valid value that can be represented in JSON. [`Extensions`](#46-extensions) can be used to strongly type metadata values for specific use cases.
+A flexible key-value map for passing additional context or parameters with operations. Metadata keys must be strings, and values can be any valid JSON value. [Extensions](#46-extensions) can be used to strongly type metadata values for specific use cases.
 
 #### 3.2.6 Service Parameters
 
@@ -541,7 +541,7 @@ All error responses in the A2A protocol, regardless of binding, **MUST** convey 
 
 1. **Error Code**: A machine-readable identifier for the error type (e.g., string code, numeric code, or protocol-specific status)
 2. **Error Message**: A human-readable description of the error
-3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
+3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json/)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
     - Affected fields or parameters
     - Contextual information (e.g., task ID, timestamp)
     - Suggestions for resolution
@@ -550,17 +550,17 @@ Protocol bindings **MUST** map these elements to their native error representati
 
 **A2A-Specific Errors:**
 
-| Error Name                            | Description                                                                                                                                                       |
-| :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                       |
-| `TaskNotCancelableError`              | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `completed`, `failed`, or `canceled`). |
-| `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).      |
-| `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                          |
-| `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                |
-| `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                   |
-| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                       |
-| `ExtensionSupportRequiredError`       | Server requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                   |
-| `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                            |
+| Error Name                            | Description                                                                                                                                                                                                            |
+| :------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TaskNotFoundError`                   | The specified task ID does not correspond to an existing or accessible task. It might be invalid, expired, or already completed and purged.                                                                            |
+| `TaskNotCancelableError`              | An attempt was made to cancel a task that is not in a cancelable state (e.g., it has already reached a terminal state like `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`). |
+| `PushNotificationNotSupportedError`   | Client attempted to use push notification features but the server agent does not support them (i.e., `AgentCard.capabilities.pushNotifications` is `false`).                                                           |
+| `UnsupportedOperationError`           | The requested operation or a specific aspect of it is not supported by this server agent implementation.                                                                                                               |
+| `ContentTypeNotSupportedError`        | A Media Type provided in the request's message parts or implied for an artifact is not supported by the agent or the specific skill being invoked.                                                                     |
+| `InvalidAgentResponseError`           | An agent returned a response that does not conform to the specification for the current method.                                                                                                                        |
+| `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                                                                            |
+| `ExtensionSupportRequiredError`       | Server requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                                                                        |
+| `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                                                                                 |
 
 #### 3.3.3. Asynchronous Processing
 
@@ -671,7 +671,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Client does not maintain persistent connection
 - Asynchronous delivery, client must be reachable via HTTP
 - Best for: Server-to-server integrations, long-running tasks, event-driven architectures
-- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#76-taskspushnotificationconfigget)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
+- Operations: Create ([Section 3.1.7](#317-create-push-notification-config)), Get ([Section 3.1.8](#318-get-push-notification-config)), List ([Section 3.1.9](#319-list-push-notification-configs)), Delete ([Section 3.1.10](#3110-delete-push-notification-config))
 - Event types: TaskStatusUpdateEvent ([Section 4.2.1](#421-taskstatusupdateevent)), TaskArtifactUpdateEvent ([Section 4.2.2](#422-taskartifactupdateevent)), WebHook payloads ([Section 4.3](#43-push-notification-objects))
 - Requires `AgentCard.capabilities.pushNotifications` to be `true`
 - Regardless of the protocol binding being used by the agent, WebHook calls use plain HTTP and the JSON payloads as defined in the HTTP protocol binding
@@ -827,11 +827,11 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 ### 4.3. Push Notification Objects
 
-<a id="PushNotificationConfig"></a>
+<a id="TaskPushNotificationConfig"></a>
 
-#### 4.3.1. PushNotificationConfig
+#### 4.3.1. TaskPushNotificationConfig
 
-{{ proto_to_table("PushNotificationConfig") }}
+{{ proto_to_table("TaskPushNotificationConfig") }}
 
 <a id="PushNotificationAuthenticationInfo"></a>
 
@@ -870,7 +870,7 @@ The webhook payload is a [`StreamResponse`](#323-stream-response) object contain
 
 **Authentication:**
 
-The agent MUST include authentication credentials in the request headers as specified in the [`PushNotificationConfig.authentication`](#432-authenticationinfo) field. The format follows standard HTTP authentication patterns (Bearer tokens, Basic auth, etc.).
+The agent MUST include authentication credentials in the request headers as specified in the [`TaskPushNotificationConfig.authentication`](#432-authenticationinfo) field. The format follows standard HTTP authentication patterns (Bearer tokens, Basic auth, etc.).
 
 **Client Responsibilities:**
 
@@ -1373,11 +1373,11 @@ Authorization: Bearer token
 HTTP/1.1 200 OK
 Content-Type: text/event-stream
 
-data: {"task": {"id": "task-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
+data: {"task": {"id": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_WORKING"}}}
 
-data: {"artifactUpdate": {"taskId": "task-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
+data: {"artifactUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "artifact": {"parts": [{"text": "# Climate Change Report\n\n"}]}}}
 
-data: {"statusUpdate": {"taskId": "task-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
+data: {"statusUpdate": {"taskId": "task-uuid", "contextId": "context-uuid", "status": {"state": "TASK_STATE_COMPLETED"}}}
 ```
 
 ### 6.3. Multi-Turn Interaction
@@ -1611,7 +1611,7 @@ Content-Type: application/problem+json
     },
     {
       "field": "status",
-      "message": "Invalid status value 'running'. Must be one of: pending, working, completed, failed, canceled"
+      "message": "Invalid status value 'TASK_STATE_RUNNING'. Must be one of: TASK_STATE_SUBMITTED, TASK_STATE_WORKING, TASK_STATE_COMPLETED, TASK_STATE_FAILED, TASK_STATE_CANCELED, TASK_STATE_REJECTED, TASK_STATE_INPUT_REQUIRED, TASK_STATE_AUTH_REQUIRED"
     }
   ]
 }
@@ -1640,11 +1640,11 @@ Authorization: Bearer token
     "messageId": "6dbc13b5-bd57-4c2b-b503-24e381b6c8d6"
   },
   "configuration": {
-    "pushNotificationConfig": {
+    "taskPushNotificationConfig": {
       "url": "https://client.example.com/webhook/a2a-notifications",
-      "token": "secure-client-token-for-task-aaa",
       "authentication": {
-        "schemes": ["Bearer"]
+        "scheme": "Bearer",
+        "credentials": "secure-client-token-for-task-aaa"
       }
     }
   }
@@ -1662,7 +1662,7 @@ Content-Type: application/a2a+json
     "id": "43667960-d455-4453-b0cf-1bae4955270d",
     "contextId": "c295ea44-7543-4f78-b524-7a38915ad6e4",
     "status": {
-      "state": "submitted",
+      "state": "TASK_STATE_SUBMITTED",
       "timestamp": "2024-03-15T11:00:00Z"
     }
   }
@@ -1674,9 +1674,8 @@ Content-Type: application/a2a+json
 ```http
 POST /webhook/a2a-notifications HTTP/1.1
 Host: client.example.com
-Authorization: Bearer server-generated-jwt
+Authorization: Bearer secure-client-token-for-task-aaa
 Content-Type: application/a2a+json
-X-A2A-Notification-Token: secure-client-token-for-task-aaa
 
 {
   "statusUpdate": {
@@ -1962,6 +1961,16 @@ If using in-band credential exchange, we recommend adhering to the following sec
 - Credentials SHOULD be bound to the agent which originated the request, such that only this agent is able to use the credentials. This ensures that credentials propagating through a chain of A2A requests are only usable by the requesting agent.
 - Credentials containing sensitive information SHOULD be only readable by the agent which originated the request, such as by encrypting the credential.
 
+#### 7.6.4 In-Task Authorization Scope
+
+The `TASK_STATE_AUTH_REQUIRED` state signals that additional authorization is required to continue processing a Task. The A2A protocol does not define the scope, representation, validity, or revocation semantics of the authorization decision or credential obtained in response to this state.
+
+Agents MUST NOT treat the `TASK_STATE_AUTH_REQUIRED` state transition, by itself, as authorization for any particular operation. The meaning and scope of any resulting authorization decision or credential MUST be defined by the agent's implementation, by the credential issuer, or by an A2A extension.
+
+If an implementation requires authorization for specific operations, it is responsible for defining how the authorized operation is identified and how that authorization is checked before the operation is performed.
+
+A credential or authorization decision obtained while a Task is in `TASK_STATE_AUTH_REQUIRED` MUST NOT be assumed to authorize subsequent messages on the Task unless that behavior is explicitly defined by the implementation, credential issuer, or extension.
+
 ## 8. Agent Discovery: The Agent Card
 
 <span id="5-agent-discovery-the-agent-card"></span>
@@ -1998,14 +2007,15 @@ Clients **MUST** follow these rules:
 1. Parse `supportedInterfaces` if present, and select the first supported transport
 2. Prefer earlier entries in the ordered list when multiple options are supported
 3. Use the correct URL for the selected transport
+4. Set the `tenant` field in every request message to exactly the value declared in the selected `AgentInterface` entry (omit the field if `tenant` is not set in that entry)
 
 ### 8.4. Agent Card Signing
 
-Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
+Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
 
 #### 8.4.1. Canonicalization Requirements
 
-Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://tools.ietf.org/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
+Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://datatracker.ietf.org/doc/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
 
 **Canonicalization Rules:**
 
@@ -2024,40 +2034,61 @@ Before signing, the Agent Card content **MUST** be canonicalized using the JSON 
 
 **Example of Default Value Removal:**
 
-Original Agent Card fragment:
+Original Agent Card:
 
 ```json
 {
   "name": "Example Agent",
-  "description": "",
+  "description": "An example agent that echoes messages.",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "1.0.0",
   "capabilities": {
     "streaming": false,
     "pushNotifications": false,
     "extensions": []
   },
-  "skills": []
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "echo",
+      "name": "Echo",
+      "description": "Echoes the input.",
+      "tags": ["echo"]
+    }
+  ]
 }
 ```
 
 Applying the canonicalization rules:
 
 - `name`: "Example Agent" - REQUIRED field → **include**
-- `description`: "" - REQUIRED field → **include**
+- `description`: "An example agent that echoes messages." - REQUIRED field → **include**
+- `supportedInterfaces`: array - REQUIRED field → **include**
+- `version`: "1.0.0" - REQUIRED field → **include**
 - `capabilities`: object - REQUIRED field → **include** (after processing children)
     - `streaming`: false - optional field, present in JSON (explicitly set) → **include**
     - `pushNotifications`: false - optional field, present in JSON (explicitly set) → **include**
     - `extensions`: [] - repeated field (not REQUIRED) with empty array → **omit**
-- `skills`: [] - REQUIRED field → **include**
+- `defaultInputModes`: ["text/plain"] - REQUIRED field → **include**
+- `defaultOutputModes`: ["text/plain"] - REQUIRED field → **include**
+- `skills`: array - REQUIRED field → **include**
 
 After applying RFC 8785:
 
 ```json
-{"capabilities":{"pushNotifications":false,"streaming":false},"description":"","name":"Example Agent","skills":[]}
+{"capabilities":{"pushNotifications":false,"streaming":false},"defaultInputModes":["text/plain"],"defaultOutputModes":["text/plain"],"description":"An example agent that echoes messages.","name":"Example Agent","skills":[{"description":"Echoes the input.","id":"echo","name":"Echo","tags":["echo"]}],"supportedInterfaces":[{"protocolBinding":"JSONRPC","protocolVersion":"1.0","url":"https://example.com/a2a/v1"}],"version":"1.0.0"}
 ```
 
 #### 8.4.2. Signature Format
 
-Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
+Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
 
 - **`protected`** (required, string): Base64url-encoded JSON object containing the JWS Protected Header
 - **`signature`** (required, string): Base64url-encoded signature value
@@ -2154,7 +2185,6 @@ Clients verifying Agent Card signatures **MUST**:
   "capabilities": {
     "streaming": true,
     "pushNotifications": true,
-    "stateTransitionHistory": false,
     "extendedAgentCard": true
   },
   "securitySchemes": {
@@ -2164,7 +2194,7 @@ Clients verifying Agent Card signatures **MUST**:
       }
     }
   },
-  "security": [{ "google": ["openid", "profile", "email"] }],
+  "securityRequirements": [{ "schemes": { "google": { "list": ["openid", "profile", "email"] } } }],
   "defaultInputModes": ["application/json", "text/plain"],
   "defaultOutputModes": ["application/json", "image/png"],
   "skills": [
@@ -2223,7 +2253,7 @@ Agent Card content changes infrequently relative to the frequency at which clien
 
 #### 8.6.2. Client Requirements
 
-- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) when fetching Agent Cards
+- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://datatracker.ietf.org/doc/html/rfc9111) when fetching Agent Cards
 - When a cached Agent Card has expired, clients **SHOULD** use conditional requests (`If-None-Match` with the stored `ETag`, or `If-Modified-Since`) to avoid re-downloading unchanged cards
 - When the server does not include caching headers, clients **MAY** apply an implementation-specific default cache duration
 
@@ -2406,7 +2436,7 @@ Subscribes to a task stream for receiving updates on a task that is not in a ter
 
 **Response:** SSE stream (same format as `SendStreamingMessage`)
 
-**Error:** Returns `UnsupportedOperationError` if the task is in a terminal state (`completed`, `failed`, `canceled`, or `rejected`).
+**Error:** Returns `UnsupportedOperationError` if the task is in a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, or `TASK_STATE_REJECTED`).
 
 #### 9.4.7. Push Notification Configuration Methods
 
@@ -2571,7 +2601,7 @@ Sends a message with streaming updates.
 
 {{ proto_to_table("SendMessageRequest") }}
 
-**Response:** Server streaming [`StreamResponse`](#stream-response) objects.
+**Response:** Server streaming [`StreamResponse`](#323-stream-response) objects.
 
 #### 10.4.3. GetTask
 
@@ -2613,17 +2643,15 @@ Subscribe to task updates via streaming. Returns `UnsupportedOperationError` if 
 
 {{ proto_to_table("SubscribeToTaskRequest") }}
 
-**Response:** Server streaming [`StreamResponse`](#stream-response) objects.
+**Response:** Server streaming [`StreamResponse`](#323-stream-response) objects.
 
 #### 10.4.7. CreateTaskPushNotificationConfig
 
 Creates a push notification configuration for a task.
 
-**Request:**
+**Request:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
-{{ proto_to_table("CreateTaskPushNotificationConfigRequest") }}
-
-**Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
+**Response:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
 #### 10.4.8. GetTaskPushNotificationConfig
 
@@ -2633,7 +2661,7 @@ Retrieves an existing push notification configuration for a task.
 
 {{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
-**Response:** See [`PushNotificationConfig`](#431-pushnotificationconfig) object definition.
+**Response:** See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) object definition.
 
 #### 10.4.9. ListTaskPushNotificationConfigs
 
@@ -2871,7 +2899,7 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 List tasks with filtering:
 
 ```http
-GET /tasks?contextId=uuid&status=working&pageSize=50&pageToken=cursor
+GET /tasks?contextId=uuid&status=TASK_STATE_WORKING&pageSize=50&pageToken=cursor
 ```
 
 Get task with history:
@@ -2885,7 +2913,7 @@ GET /tasks/{id}?historyLength=10
 - **Strings**: Passed directly as query parameter values
 - **Booleans**: Represented as lowercase strings (`true`, `false`)
 - **Numbers**: Represented as decimal strings
-- **Enums**: Represented using their string values (e.g., `status=working`)
+- **Enums**: Represented using their string values (e.g., `status=TASK_STATE_WORKING`)
 - **Repeated Fields**: Multiple values **MAY** be passed by repeating the parameter name (e.g., `?tag=value1&tag=value2`) or as comma-separated values (e.g., `?tag=value1,value2`)
 - **Nested Objects**: Not supported in query parameters; operations requiring nested objects **MUST** use POST with a request body
 - **Datetimes/Timestamps**: Represented as ISO 8601 strings (e.g., `2025-11-09T10:30:00Z`)
@@ -3128,7 +3156,7 @@ When implementing push notifications, both agents (as webhook callers) and clien
 **Configuration Security:**
 
 - Webhook URLs **SHOULD** use HTTPS to protect payload confidentiality in transit
-- Authentication tokens in [`PushNotificationConfig`](#431-pushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
+- Authentication tokens in [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) **SHOULD** be treated as secrets and rotated periodically
 - Agents **SHOULD** securely store push notification configurations and credentials
 - Clients **SHOULD** use unique, single-purpose tokens for each push notification configuration
 
@@ -3507,7 +3535,7 @@ For **Clients** upgrading from pre-0.3.x:
 
 1. Update parsers to expect wrapper objects with member names as discriminators
 2. When constructing requests, use the new wrapper format
-3. Implement version detection based on the agent's `protocolVersions` in the `AgentCard`
+3. Implement version detection based on `protocolVersion` in the agent's `supportedInterfaces` entries
 4. Consider maintaining backward compatibility by detecting and handling both formats during a transition period
 
 For **Servers** upgrading from pre-0.3.x:
@@ -3515,7 +3543,7 @@ For **Servers** upgrading from pre-0.3.x:
 1. Update serialization logic to emit wrapper objects
 2. **Breaking:** The `kind` field is no longer part of the protocol and should not be emitted
 3. Update deserialization to expect wrapper objects with member names
-4. Ensure the `AgentCard` declares the correct `protocolVersions` (e.g., ["1.0"] or later)
+4. Ensure each `AgentInterface` in the `AgentCard` declares the correct `protocolVersion` (e.g., "1.0" or later)
 
 **Rationale:**
 
@@ -3586,7 +3614,7 @@ For **SDK Developers**:
 
 **Rationale:**
 
-All optional features enabling specific operations (`streaming`, `pushNotifications`, `stateTransitionHistory`) reside in `AgentCapabilities`. Moving `extendedAgentCard` achieves:
+All optional features enabling specific operations (`streaming`, `pushNotifications`) reside in `AgentCapabilities`. Moving `extendedAgentCard` achieves:
 
 - Architectural consistency
 - Improved discoverability

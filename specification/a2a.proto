@@ -334,14 +334,20 @@ message AuthenticationInfo {
 // Declares a combination of a target URL, transport and protocol version for interacting with the agent.
 // This allows agents to expose the same functionality over multiple protocol binding mechanisms.
 message AgentInterface {
-  // The URL where this interface is available. Must be a valid absolute HTTPS URL in production.
-  // Example: "https://api.example.com/a2a/v1", "https://grpc.example.com/a2a"
+  // The URL or address where this interface is available. For HTTP-based transports, must be a valid absolute
+  // HTTPS URL in production. For gRPC, the address should be in the format "hostname:port".
+  // Example: "https://api.example.com/a2a/v1", "grpc.example.com:443"
   string url = 1 [(google.api.field_behavior) = REQUIRED];
   // The protocol binding supported at this URL. This is an open form string, to be
   // easily extended for other protocol bindings. The core ones officially
   // supported are `JSONRPC`, `GRPC` and `HTTP+JSON`.
   string protocol_binding = 2 [(google.api.field_behavior) = REQUIRED];
-  // Tenant ID to be used in the request when calling the agent.
+  // Optional. An opaque string used for routing requests to a specific agent
+  // or tenant when multiple agents are served behind a single A2A endpoint.
+  // When set, clients MUST include this value in the `tenant` field of all
+  // request messages sent to this interface. The server is responsible for
+  // interpreting the value and routing requests accordingly; the protocol
+  // does not define its format or semantics.
   string tenant = 3;
   // The version of the A2A protocol this interface exposes.
   // Use the latest supported minor version per major version.
@@ -462,7 +468,8 @@ message AgentCardSignature {
 
 // A container associating a push notification configuration with a specific task.
 message TaskPushNotificationConfig {
-  // Optional. Tenant ID.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The push notification configuration details.
   // A unique identifier (e.g. UUID) for this push notification configuration.
@@ -640,7 +647,8 @@ message DeviceCodeOAuthFlow {
 
 // Represents a request for the `SendMessage` method.
 message SendMessageRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The message to send to the agent.
   Message message = 2 [(google.api.field_behavior) = REQUIRED];
@@ -652,7 +660,8 @@ message SendMessageRequest {
 
 // Represents a request for the `GetTask` method.
 message GetTaskRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The resource ID of the task to retrieve.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
@@ -665,7 +674,8 @@ message GetTaskRequest {
 
 // Parameters for listing tasks with optional filtering criteria.
 message ListTasksRequest {
-  // Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // Filter tasks by context ID to get tasks from a specific conversation or session.
   string context_id = 2;
@@ -704,7 +714,8 @@ message ListTasksResponse {
 
 // Represents a request for the `CancelTask` method.
 message CancelTaskRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The resource ID of the task to cancel.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
@@ -714,7 +725,8 @@ message CancelTaskRequest {
 
 // Represents a request for the `GetTaskPushNotificationConfig` method.
 message GetTaskPushNotificationConfigRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The parent task resource ID.
   string task_id = 2 [(google.api.field_behavior) = REQUIRED];
@@ -724,7 +736,8 @@ message GetTaskPushNotificationConfigRequest {
 
 // Represents a request for the `DeleteTaskPushNotificationConfig` method.
 message DeleteTaskPushNotificationConfigRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The parent task resource ID.
   string task_id = 2 [(google.api.field_behavior) = REQUIRED];
@@ -734,7 +747,8 @@ message DeleteTaskPushNotificationConfigRequest {
 
 // Represents a request for the `SubscribeToTask` method.
 message SubscribeToTaskRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
   // The resource ID of the task to subscribe to.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
@@ -742,7 +756,8 @@ message SubscribeToTaskRequest {
 
 // Represents a request for the `ListTaskPushNotificationConfigs` method.
 message ListTaskPushNotificationConfigsRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 4;
   // The parent task resource ID.
   string task_id = 1 [(google.api.field_behavior) = REQUIRED];
@@ -756,7 +771,8 @@ message ListTaskPushNotificationConfigsRequest {
 
 // Represents a request for the `GetExtendedAgentCard` method.
 message GetExtendedAgentCardRequest {
-  // Optional. Tenant ID, provided as a path parameter.
+  // Optional. Opaque routing identifier. Must match the `tenant` value from
+  // the selected `AgentInterface` in the Agent Card when that field is set.
   string tenant = 1;
 }
 

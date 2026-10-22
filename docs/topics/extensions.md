@@ -59,6 +59,15 @@ proposed, developed, promoted, and maintained. Official extensions use the
 `a2aproject` organization with the `ext-` repository prefix (experimental
 extensions use `experimental-ext-`).
 
+!!! note "URI Namespaces"
+    The `https://a2a-protocol.org/extensions/` prefix is a canonical namespace
+    for globally unique extension identifiers used in Agent Cards and protocol
+    messages. Individual URIs under this prefix, such as
+    `https://a2a-protocol.org/extensions/{name}/v1` identify a specific
+    extension and version. These URIs are identifiers, HTTP access is not
+    expected. See [URI namespaces](extension-and-binding-governance.md#uri-namespaces)
+    in the governance documentation for details.
+
 For the full governance process—including tiers, lifecycle, SDK support, and
 legal requirements—see the
 [Extension and Protocol Binding Governance](extension-and-binding-governance.md)
@@ -90,7 +99,13 @@ The following is an example of an Agent Card with an extension:
   "name": "Magic 8-ball",
   "description": "An agent that can tell your future... maybe.",
   "version": "0.1.0",
-  "url": "https://example.com/agents/eightball",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/agents/eightball",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
   "capabilities": {
     "streaming": true,
     "extensions": [
@@ -169,7 +184,10 @@ negotiation to determine which extensions are active for a specific request.
     response SHOULD include the `A2A-Extensions` header, listing all
     extensions that were successfully activated for that request.
 
-![A2A Extension Flow Diagram](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
+![Extension negotiation in four numbered steps: (1) the client reads the extensions declared in the agent's Agent Card, (2) the client sends its chosen extension URIs in the request header, (3) the A2A server checks which of the requested extensions it has registered and activates those plugins, and (4) the server returns the activated extension data in its response. The server in turn reaches other A2A agent servers over A2A, each supporting its own extensions](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
+
+_The numbered steps follow the negotiation sequence described above, with the
+Agent Card read as step 1._
 
 **Example request showing extension activation:**
 
