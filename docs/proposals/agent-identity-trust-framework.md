@@ -145,7 +145,7 @@ For Level 2 (`ORGANIZATION_VERIFIED`), a third-party trust registry or certifica
   "issuer": {
     "name": "A2A Trust Registry",
     "kid": "registry-x1y2z3",
-    "url": "https://trust.a2a-registry.org"
+    "url": "https://trust-registry.example.com"
   },
   "subject": {
     "organization": "Example Corp",
