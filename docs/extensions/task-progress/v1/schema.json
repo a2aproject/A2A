@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2a-protocol.org/extensions/task-progress/v1/schema.json",
+  "title": "A2A Task Progress Metadata Extension v1",
+  "type": "object",
+  "required": ["trackers"],
+  "properties": {
+    "trackers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/tracker" },
+      "maxItems": 100
+    },
+    "aggregate": { "$ref": "#/$defs/aggregate" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "tracker": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "progress": { "type": "number" },
+        "total": { "type": "number" },
+        "message": { "type": "string", "maxLength": 512 },
+        "status": { "type": "string", "enum": ["running", "completed", "failed"] },
+        "startedAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "aggregate": {
+      "type": "object",
+      "properties": {
+        "progress": { "type": "number" },
+        "total": { "type": "number" },
+        "message": { "type": "string", "maxLength": 512 }
+      },
+      "additionalProperties": false
+    }
+  }
+}
