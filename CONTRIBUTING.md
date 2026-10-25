@@ -77,7 +77,14 @@ We use [markdownlint](https://github.com/igorshubovych/markdownlint-cli) for for
 
 ### Conventional Commits
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages. This helps us automate our release process and maintain a clear changelog.
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for our commit messages and PR titles to automate releases. We enforce the following rules depending on which files are changed:
+
+- **Core Specification (`docs(spec):`)**: Use for changes to the core specification (`docs/specification.md`).
+- **General Documentation (`docs:`)**: Use for other files under `docs/` (without the `spec` scope).
+- **Protocol Updates (`feat:` / `fix:`)**: Reserved exclusively for changes to the protocol definition (`specification/a2a.proto`).
+
+> [!TIP]
+> If a documentation change alters how the protocol should be used, update the `.proto` file as well (even just its comments) so that a new protocol release is triggered.
 
 ## Contribution Process
 
@@ -102,3 +109,9 @@ You may follow these steps to contribute:
 8. **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
 
 Be patient! It may take some time for your pull request to be reviewed and merged.
+
+## Community
+
+- **Discord:** Join the [A2A Discord server](https://discord.gg/a2aprotocol) for chat and questions.
+- **GitHub Discussions:** Join the [A2A GitHub Discussions](https://github.com/a2aproject/A2A/discussions) for longer-form conversations.
+- **Issues:** Report bugs or suggest improvements via [GitHub Issues](https://github.com/a2aproject/A2A/issues).
