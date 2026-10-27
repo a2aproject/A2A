@@ -140,5 +140,3 @@ Looking for the live community meeting schedule or past recordings?
 - [TSC meeting agenda working doc](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view)
 
 These links are also referenced in [`GOVERNANCE.md`](https://github.com/a2aproject/A2A/blob/main/GOVERNANCE.md#tsc-meetings).
-
-All A2A project meetings are subject to the [LF Projects Antitrust Policy](https://github.com/a2aproject/A2A/blob/main/ANTITRUST.md).
