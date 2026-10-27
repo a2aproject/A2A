@@ -223,9 +223,15 @@ See [History Length Semantics](#324-history-length-semantics) for details about 
 
 See [Task Generation Semantics](#327-task-generation-semantics) for details about `currentGeneration` and long-polling.
 
+When `includeArtifacts` is unset or true, the server MUST include the task's artifacts in the response. When `includeArtifacts` is false, the artifacts field MUST be omitted entirely from the Task object in the response. Note that this default differs from [List Tasks](#314-list-tasks), where artifacts are omitted unless requested.
+
+Because an omitted artifacts field and an empty artifacts list are indistinguishable once decoded, a client that sets `includeArtifacts` to false SHOULD NOT treat the absence of artifacts in the response as an indication that the task has no artifacts.
+
+Clients polling for task status can combine `includeArtifacts: false` with `timelineLength: 0` (and `historyLength: 0`) to retrieve only the task's identity and current status.
+
 **Outputs:**
 
-- [`Task`](#411-task): Current state and artifacts of the requested task
+- [`Task`](#411-task): Current state and, unless `includeArtifacts` is false, artifacts of the requested task
 
 **Errors:**
 
@@ -3048,6 +3054,7 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 | `page_token`          | `pageToken`          | `?pageToken=cursor`              |
 | `task_id`             | `taskId`             | `?taskId=uuid`                   |
 | `current_generation`  | `currentGeneration`  | `?currentGeneration=5`           |
+| `include_artifacts`   | `includeArtifacts`   | `?includeArtifacts=false`        |
 
 **Usage Examples:**
 
@@ -3067,6 +3074,12 @@ Get task with long-polling (wait until generation advances beyond 5):
 
 ```http
 GET /tasks/{id}?currentGeneration=5
+```
+
+Get task status only, without artifacts or timeline:
+
+```http
+GET /tasks/{id}?includeArtifacts=false&timelineLength=0
 ```
 
 **Field Type Handling:**
