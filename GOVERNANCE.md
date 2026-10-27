@@ -76,6 +76,8 @@ A voting member who has not attended a meeting of the TSC within the last six we
 TSC Meetings are held on the Linux Foundation's meeting platform. [https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent](https://zoom-lfx.platform.linuxfoundation.org/meetings/agent2agent) has meeting details and recordings of past meetings. 
 Our [working doc for TSC Meeting Agendas](https://docs.google.com/document/d/1Dx6qYfCjSChHKRMwLJcvtDjq6igYTAKFW9Vg1IMPCUk/view) is in Google Docs.
 
+All project meetings are subject to the [LF Projects Antitrust Policy](ANTITRUST.md).
+
 ## Project Communications
 
 The A2A project utilizes Discord for chat conversations about the project. All are welcome and encouraged to join the [A2A Discord](https://discord.gg/a2aprotocol). Discussion is encouraged however we do remind the community that chat is ephemeral, and not all members of the project are active in chat at the same time.
