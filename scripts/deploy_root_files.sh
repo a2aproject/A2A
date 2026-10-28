@@ -15,7 +15,9 @@ set -e
 # List of files to copy from the source directory to the root of the gh-pages branch.
 FILES_TO_DEPLOY=("404.html" "robots.txt" "llms.txt" "llms-reference.txt" "llms-full.txt")
 # Directories to copy under the gh-pages root (e.g. root-redirects/extensions -> extensions/).
-DIRS_TO_DEPLOY=("root-redirects/extensions" "root-redirects/bindings" "root-redirects/.well-known")
+# root-redirects/oauth holds OAuth Client ID Metadata Documents: each document's URL is a
+# client's identity at authorization servers, so its path must never change.
+DIRS_TO_DEPLOY=("root-redirects/extensions" "root-redirects/bindings" "root-redirects/.well-known" "root-redirects/oauth")
 # The source directory in the main branch where these files are located.
 SOURCE_DIR="docs"
 
