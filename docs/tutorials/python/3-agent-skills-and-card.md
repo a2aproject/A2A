@@ -28,7 +28,7 @@ This skill is very simple: it's named "Returns hello world" and primarily deals 
 
 ## Agent Card
 
-The **Agent Card** is a JSON document that an A2A Server makes available, typically at a `.well-known/agent-card.json` endpoint. It's like a digital business card for the agent.
+The **Agent Card** is a JSON document that an A2A Server makes available. Clients discover it via an [AI Catalog](https://ai-catalog.io/) (`/.well-known/ai-catalog.json`), a registry, or direct configuration. It's like a digital business card for the agent.
 
 Key attributes of an `AgentCard` (defined in `a2a.types`):
 

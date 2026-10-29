@@ -207,7 +207,7 @@ The operation MUST establish a streaming connection for real-time updates. The s
 
 1. **Message-only stream:** If the agent returns a [`Message`](#414-message), the stream MUST contain exactly one `Message` object and then close immediately. No task tracking or updates are provided.
 
-2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`).
+2. **Task lifecycle stream:** If the agent returns a [`Task`](#411-task), the stream MUST begin with the Task object, followed by zero or more [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects. The stream MUST close when the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`). A non-terminal state, including an interrupted state (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`), SHOULD NOT by itself close the stream.
 
 The agent MAY return a `Task` for complex processing with status/artifact updates or MAY return a `Message` for direct streaming responses without task overhead. The implementation MUST provide immediate feedback on progress and intermediate results.
 
@@ -220,6 +220,8 @@ Retrieves the current state (including status, artifacts, and optionally history
 {{ proto_to_table("GetTaskRequest") }}
 
 See [History Length Semantics](#324-history-length-semantics) for details about `historyLength`.
+
+See [Task Generation Semantics](#327-task-generation-semantics) for details about `currentGeneration` and long-polling.
 
 **Outputs:**
 
@@ -427,6 +429,59 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
+#### 3.1.12. Send Live Message
+
+<span id="3112-send-live-message"></span>
+
+Exchanges messages and artifacts with an agent over a live, bidirectional channel. The same operation serves a long-lived session, a brief connect-send-disconnect exchange, and attaching to a task to observe it.
+
+**Inputs:**
+
+{{ proto_to_table("StreamRequest") }}
+
+**Outputs:**
+
+- [`Stream Response`](#323-stream-response) objects, as for [Send Streaming Message](#312-send-streaming-message), plus [`StreamError`](#424-streamerror) for non-fatal rejections.
+
+**Errors:**
+
+- [`UnsupportedOperationError`](#332-error-handling): Streaming is not supported by the agent (`AgentCard.capabilities.streaming` is `false` or unset; see [Capability Validation](#334-capability-validation)).
+- [`TaskNotFoundError`](#332-error-handling): The referenced `taskId` does not exist or is not accessible.
+
+**Behavior:**
+
+A live exchange has two logical directions: an **uplink** carrying [`StreamRequest`](#3112-send-live-message) objects from the client, and a **downlink** carrying [`StreamResponse`](#323-stream-response) objects from the agent. How those directions map onto a connection depends on the transport:
+
+- **Transports with native duplex** (for example gRPC or WebSocket): both directions share one connection for the life of the exchange.
+- **HTTP transports**: the operation is invoked as a server stream. The invoking call's response is the **downlink** and remains open. To send further input, the client makes **additional, short-lived calls to the same operation**. This is required because an HTTP request body is complete before the response begins, so a single call cannot carry later input.
+
+Each payload names the task it applies to, so `StreamRequest` carries no task identifier of its own.
+
+**Opening a stream:**
+
+The first request of a stream determines what the stream is attached to, and it binds the stream to exactly one task for its lifetime.
+
+- **Opening with `sendMessage` ([`SendMessageRequest`](#321-sendmessagerequest))** sends input immediately. The server appends the message to the task [`timeline`](#328-task-timeline-semantics), then opens with a `Task` snapshot that **already reflects** the appended message, and streams onward from that point. If `message.taskId` is unset, the agent creates the task; if set, it continues that task.
+- **Opening with `subscribe` ([`SubscribeToTaskRequest`](#316-subscribe-to-task))** attaches to the task named by `id` without sending input — for a client that wants to observe, or to resume observing after a disconnect.
+    - When `lastSeenGeneration` is **set**, the server **MUST NOT** open with a [`Task`](#411-task) snapshot; it replays only the events that follow that `generation` and continues from there.
+    - When `lastSeenGeneration` is **unset**, the server **MUST** open with a `Task` snapshot and stream onward from it.
+    - If the server cannot replay from the requested `generation` (for example it no longer retains it), it **MUST** open with a `Task` snapshot instead of failing, so the client resynchronises.
+
+`subscribe` is only meaningful as the **first** request of a stream. A server that receives it later **MUST** reject it with a [`StreamError`](#424-streamerror) and keep the stream open.
+
+**Subsequent requests:**
+
+- Later requests apply to the task the stream is bound to. A request naming a different task **MUST** be rejected with a `StreamError`.
+- An uplink call that is not the downlink call MUST return only an acknowledgement — the current [`Task`](#411-task) state — and MUST NOT replay task events. All task events MUST be delivered on the downlink, so a client with both open never receives an event twice.
+- Ordering is by arrival. Each accepted client message is appended to the task [`timeline`](#328-task-timeline-semantics) and advances `generation` (see [Task Generation Semantics](#327-task-generation-semantics)).
+- `SendMessageRequest.configuration` applies only to the request it accompanies. `returnImmediately` is ignored, since the exchange is already streaming. A `taskPushNotificationConfig` supplied here is equivalent to calling [Create Push Notification Config](#317-create-push-notification-config) and is observable through [List Push Notification Configs](#319-list-push-notification-configs) rather than on the event stream.
+
+**Rejecting a single request:**
+
+An agent MAY decline an individual client request — because it is malformed, or because the agent is not accepting input at that moment — without ending the exchange. It does so by emitting a [`StreamError`](#424-streamerror) on the downlink, identifying the rejected request via `referenceId`. The stream remains open and the client MAY correct and retry. Only conditions that make the channel itself unusable terminate the stream as a transport-level error.
+
+Because rejection is per request, an agent that accepts input while `TASK_STATE_WORKING` is not committing to accept every message; it MAY decline individual ones while continuing to work.
+
 ### 3.2. Operation Parameter Objects
 
 This section defines common parameter objects used across multiple operations.
@@ -434,6 +489,14 @@ This section defines common parameter objects used across multiple operations.
 #### 3.2.1. SendMessageRequest
 
 {{ proto_to_table("SendMessageRequest") }}
+
+**Client-written artifacts:**
+
+When `AgentCard.capabilities.userArtifacts` is `true`, a client MAY send one or more [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects in `SendMessageRequest.artifactUpdates` — over unary [Send Message](#311-send-message), [Send Streaming Message](#312-send-streaming-message), or [Send Live Message](#3112-send-live-message) (`StreamRequest.sendMessage`). This makes the interaction symmetrical: [`Message`](#414-message) objects carry control and coordination turns in the task [`timeline`](#328-task-timeline-semantics), while [`Artifact`](#417-artifact) objects carry work items from either party (`role` is `ROLE_USER` for client-written artifacts and `ROLE_AGENT` by default for agent outputs).
+
+- **Creating vs. continuing a task:** `message` **MUST** be present when creating a new task (when no `taskId` is provided), as the agent requires a control message to know what to do with any accompanying `artifactUpdates`. When `artifactUpdates` are sent alongside a task-creating `message`, their `taskId` and `contextId` MAY be omitted and are assigned by the server. `message` MAY be omitted only when sending `artifactUpdates` to an existing task (`taskId` set on each update).
+- **Ordering and non-task responses:** When `message` and `artifactUpdates` are sent together and a `Task` is created or updated, the server appends `message` to `timeline` first and then applies `artifactUpdates` in list order, advancing `generation` for each. If the agent responds with a direct `Message` without creating a `Task`, neither `message` nor `artifactUpdates` is persisted in a task (matching the behaviour for `message` alone).
+- **Chunking and `generation` ownership:** Chunking works as it does for agent-written artifacts (`append` adds to the artifact with the same ID, `lastChunk` marks the final chunk). The client does not own `generation`: clients **MUST** leave `generation` unset on each sent `TaskArtifactUpdateEvent`, servers **MUST** ignore any value received, and the server assigns the authoritative value when broadcasting the resulting event downstream — placing the artifact in history via `startGeneration` and `endGeneration` (see [Task Timeline Semantics](#328-task-timeline-semantics)).
 
 #### 3.2.2. SendMessageConfiguration
 
@@ -453,6 +516,12 @@ The `return_immediately` field has no effect:
 - for streaming operations, which always return updates in real-time.
 - on configured push notification configurations, which operates independently of execution mode.
 
+**Optimistic Concurrency with `ifGenerationMatch`:**
+
+The `ifGenerationMatch` field enables optimistic concurrency control when sending a follow-up message to an existing task. If set, the server **MUST** compare the provided value against the task's current `generation` at the time the message is processed. If the values do not match, the server **MUST** reject the request with [`TaskGenerationMismatchError`](#332-error-handling) (HTTP `409 Conflict` / gRPC `ABORTED`). If the task referenced by the message does not yet exist (i.e., a new task will be created), this field **MUST** be ignored.
+
+See [Task Generation Semantics](#327-task-generation-semantics) for the full description of the `generation` field.
+
 #### 3.2.3. Stream Response
 
 <span id="323-stream-response"></span>
@@ -462,13 +531,26 @@ The `return_immediately` field has no effect:
 
 This wrapper allows streaming endpoints to return different types of updates through a single response stream while maintaining type safety.
 
+**Forward compatibility:**
+
+The `payload` of [`StreamResponse`](#323-stream-response) and of [`StreamRequest`](#3112-send-live-message) is an extension point: new payload kinds MAY be added in future minor versions, and adding one is not a breaking change. To keep that true, implementations **MUST** tolerate payload kinds they do not recognise:
+
+- A client that receives a `StreamResponse` whose payload kind it does not recognise **MUST** skip it and continue reading the stream. It **MUST NOT** treat the unknown payload as an error, as the end of the stream, or as a signal to stop processing.
+- A server that receives a `StreamRequest` whose payload kind it does not recognise **MUST** reject that request — on a live stream by emitting a [`StreamError`](#424-streamerror) — and **MUST NOT** terminate the stream because of it.
+
+An unrecognised payload that carries a `generation` still advances the task's generation, so a client that skips it will observe a gap and reconcile via [Get Task](#313-get-task) as usual (see [Task Generation Semantics](#327-task-generation-semantics)).
+
+Servers **MAY** still withhold a new payload kind from clients that negotiated an older protocol version — as this specification does for [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — to protect implementations written before this rule existed. The rule above is what allows future additions to be made without such gating.
+
 #### 3.2.4. History Length Semantics
 
-The `historyLength` parameter appears in multiple operations and controls how much task history is returned in responses. This parameter follows consistent semantics across all operations:
+> **Deprecated:** `historyLength` (and the `history` field it controls) is deprecated as of version **1.1** in favour of `timelineLength` and the task [`timeline`](#328-task-timeline-semantics). Servers continue to honour `historyLength` and populate `history` throughout the 1.x line; both are removed in 2.0.
 
-- **Unset/undefined**: No limit imposed; server returns its default amount of history (implementation-defined, may be all history)
-- **0**: No history should be returned; the `history` field SHOULD be omitted
-- **> 0**: Return at most this many recent messages from the task's history
+The `historyLength` parameter controls how much task history is returned in responses; its replacement, `timelineLength`, controls how many [`timeline`](#418-timelineentry) entries are returned. Both parameters appear in multiple operations and follow the same, consistent semantics:
+
+- **Unset/undefined**: No limit imposed; the server returns its default amount (implementation-defined, may be all entries)
+- **0**: None should be returned; the corresponding field (`history` or `timeline`) SHOULD be omitted
+- **> 0**: Return at most this many most-recent entries
 
 #### 3.2.5. Metadata
 
@@ -486,6 +568,70 @@ A key-value map for passing horizontally applicable context or parameters with c
 | `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
+
+#### 3.2.7. Task Generation Semantics
+
+<span id="327-task-generation-semantics"></span>
+
+The `generation` field on [`Task`](#411-task) is a sequentially increasing integer maintained by the server. It is initialised to `1` when a task is created and **MUST** be incremented by exactly `1` by the server on every state-changing mutation:
+
+- Appending a [`TimelineEntry`](#418-timelineentry): an agent status update (any [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), including a progress message that does not change `Task.status.state`), or a client message added to the task's `timeline`.
+- An Artifact addition or update (any change to `Task.artifacts`).
+
+Mutations delivered to subscribers as streaming events — agent status updates ([`TaskStatusUpdateEvent`](#421-taskstatusupdateevent)) and artifact updates ([`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent)) — **MUST** map 1:1 to exactly one emitted event whose `generation` value reflects the task's generation **after** the mutation. Client-message timeline entries also advance `generation`; they are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) to clients that request `A2A-Version: 1.1` or later, while older clients reconcile them via [Get Task](#313-get-task) (see Event Ordering below).
+
+**Event Ordering and Missed-Event Detection:**
+
+Because the server increments `generation` by exactly `1` per mutation, a client that tracks the last seen `generation` can detect that its view is behind by observing gaps in the sequence. If a client receives an event with `generation = N+2` after previously seeing `generation = N`, at least one intervening mutation has not been delivered to it — a missed event, or a mutation not delivered to that subscriber as a discrete event (such as a client-message timeline entry) — and it **SHOULD** re-fetch the full task state via [Get Task](#313-get-task) to reconcile.
+
+A correctly-implemented server **MUST NOT** emit two events for the same task with the same `generation` value. If a client observes any event carrying `generation = 0`, or observes two consecutive events for the same task carrying identical `generation` values, it **MUST** conclude that the server does not implement the `generation` field and **MUST NOT** use `generation` for ordering, long-polling, or precondition checks for the remainder of that interaction. The client **SHOULD** fall back to stream ordering or timestamps for sequencing.
+
+**Long-Polling:**
+
+The optional `currentGeneration` field on [`GetTaskRequest`](#313-get-task) enables efficient long-polling:
+
+- If `currentGeneration` is **not set**, the server **MUST** return the task's current state immediately (standard behaviour).
+- If `currentGeneration` is **set** and the task's current `generation` is **already greater** than the supplied value, the server **MUST** return the current state immediately.
+- If `currentGeneration` is **set** and the task's current `generation` is **equal to or less than** the supplied value, the server **SHOULD** hold the request open and return only once the task's `generation` advances beyond the supplied value. The server **MAY** return earlier (for example, on an implementation-defined timeout) with the current task state.
+
+This allows clients to avoid repeated unconditional polling while still working correctly when a connection times out or when the server does not support the hold-open behaviour.
+
+**HTTP/REST long-poll example:**
+
+```http
+GET /tasks/task-abc?currentGeneration=3 HTTP/1.1
+Host: agent.example.com
+A2A-Version: 1.0
+```
+
+The server returns when the task's `generation` exceeds `3`, or on timeout.
+
+**Optimistic Concurrency:**
+
+The `ifGenerationMatch` field in [`SendMessageConfiguration`](#322-sendmessageconfiguration) provides an optimistic concurrency guard for multi-turn interactions. See that section for details.
+
+**Backwards Compatibility:**
+
+The `generation` field was introduced in version **1.1** of this specification. The field defaults to `0` in the Protocol Buffer encoding (proto3 default for `int64`). Clients that do not read or send `generation` continue to interoperate correctly with servers that support it. Servers that have not yet implemented `generation` will return `0` on all events and responses; since a correctly-implemented server always returns `generation ≥ 1`, clients will detect a `0` value as a signal that the server does not support the field and gracefully fall back.
+
+#### 3.2.8. Task Timeline Semantics
+
+<span id="328-task-timeline-semantics"></span>
+
+The [`timeline`](#418-timelineentry) field on [`Task`](#411-task) is the coherent, generation-ordered record of the interaction on the wire. Each [`TimelineEntry`](#418-timelineentry) is a `oneof` carrying either:
+
+- a client [`Message`](#414-message) — client input recorded in the task; or
+- an agent [`TaskStatus`](#412-taskstatus) — the agent's state and `message` at a point in the interaction, delivered to subscribers by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent).
+
+Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append. These `generation` values are monotonic but **not contiguous**: other mutations (notably `Artifact` updates) also advance `generation`, so consumers **MUST NOT** assume timeline entries have consecutive `generation` values — gaps are expected, and artifacts are placed relative to entries via `startGeneration`/`endGeneration` (see *Interleaving artifacts with the timeline* below).
+
+The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
+
+Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent). Client-message entries are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — which is emitted **only** to clients that request `A2A-Version: 1.1` or later, so 1.0 clients that do not understand the `timeline` field are unaffected on the wire. The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
+
+**Interleaving artifacts with the timeline:**
+
+[`Artifact`](#417-artifact) objects are recorded separately from the timeline so that per-chunk streaming updates do not flood it. To place an artifact relative to timeline entries, an artifact carries `startGeneration` (the `generation` at which it first appeared) and `endGeneration` (the `generation` at which it completed; unset while it is still streaming). Consumers interleave artifacts with timeline entries by comparing these values against entry `generation`s.
 
 ### 3.3. Operation Semantics
 
@@ -561,6 +707,7 @@ Protocol bindings **MUST** map these elements to their native error representati
 | `ExtendedAgentCardNotConfiguredError` | The agent does not have an extended agent card configured when one is required for the requested operation.                                                                                                            |
 | `ExtensionSupportRequiredError`       | Server requested use of an extension marked as `required: true` in the Agent Card but the client did not declare support for it in the request.                                                                        |
 | `VersionNotSupportedError`            | The A2A protocol version specified in the request (via `A2A-Version` service parameter) is not supported by the agent.                                                                                                 |
+| `TaskGenerationMismatchError`         | The `ifGenerationMatch` value supplied in `SendMessageConfiguration` does not match the task's current `generation`. The client should re-fetch the task and retry if appropriate.                                     |
 
 #### 3.3.3. Asynchronous Processing
 
@@ -571,8 +718,9 @@ A2A operations are designed for asynchronous task execution. Operations return i
 Agents declare optional capabilities in their [`AgentCard`](#441-agentcard). When clients attempt to use operations or features that require capabilities not declared as supported in the Agent Card, the agent **MUST** return an appropriate error response:
 
 - **Push Notifications**: If `AgentCard.capabilities.pushNotifications` is `false` or not present, operations related to push notification configuration (Create, Get, List, Delete) **MUST** return [`PushNotificationNotSupportedError`](#332-error-handling).
-- **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage` or `SubscribeToTask` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
+- **Streaming**: If `AgentCard.capabilities.streaming` is `false` or not present, attempts to use `SendStreamingMessage`, `SubscribeToTask`, or `SendLiveMessage` operations **MUST** return [`UnsupportedOperationError`](#332-error-handling).
 - **Extended Agent Card**: If `AgentCard.capabilities.extendedAgentCard` is `false` or not present, attempts to call the Get Extended Agent Card operation **MUST** return [`UnsupportedOperationError`](#332-error-handling). If the agent declares support but has not configured an extended card, it **MUST** return [`ExtendedAgentCardNotConfiguredError`](#332-error-handling).
+- **User Artifacts**: If `AgentCard.capabilities.userArtifacts` is `false` or not present, attempts to send `SendMessageRequest.artifactUpdates` **MUST** return [`UnsupportedOperationError`](#332-error-handling) (or [`StreamError`](#424-streamerror) on a live stream).
 - **Extensions**: When a server requests use of an extension marked as `required: true` in the Agent Card but the client does not declare support for it, the agent **MUST** return [`ExtensionSupportRequiredError`](#332-error-handling).
 
 Clients **SHOULD** validate capability support by examining the Agent Card before attempting operations that require optional capabilities.
@@ -656,10 +804,18 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 - Higher latency, potential for unnecessary requests
 - Best for: Simple integrations, infrequent updates, clients behind restrictive firewalls
 
+**Long-Polling (Get Task with `currentGeneration`):**
+
+- Client calls Get Task with a `currentGeneration` value; the server holds the request until the task's generation advances
+- Eliminates unnecessary round-trips while retaining the simplicity of polling
+- Requires server support; falls back to normal polling if the server returns immediately regardless
+- Best for: Clients that cannot use streaming or push notifications but want lower latency than plain polling
+- See [Task Generation Semantics](#327-task-generation-semantics) for details
+
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)) and Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task))
+- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task)), and Send Live Message ([Section 3.1.12](#3112-send-live-message))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -681,6 +837,8 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Event Ordering:**
 
 All implementations MUST deliver events in the order they were generated. Events MUST NOT be reordered during transmission, regardless of protocol binding.
+
+Each [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) carries the task's `generation` value after the mutation that produced it. Clients **SHOULD** use this value to detect when their view is behind (a gap in generation values) and to establish a total ordering of events that is independent of wall-clock time; on a gap a client **SHOULD** reconcile via [Get Task](#313-get-task). Agent status entries in the task [`timeline`](#418-timelineentry) are delivered by these existing events — no additional streaming event type is introduced for the timeline. See [Task Generation Semantics](#327-task-generation-semantics) and [Task Timeline Semantics](#328-task-timeline-semantics) for details.
 
 **Multiple Streams Per Task:**
 
@@ -757,6 +915,8 @@ Messages play several key roles:
 
 Messages SHOULD NOT be used to deliver task outputs. Results SHOULD BE returned using Artifacts associated with a Task. This separation allows for a clear distinction between communication (Messages) and data output (Artifacts).
 
+> **Deprecated:** the Task `history` field is deprecated as of version **1.1** in favour of the task [`timeline`](#328-task-timeline-semantics), which records the interaction (agent status entries and client messages) in generation order. Servers continue to populate `history` throughout the 1.x line; the behaviour below describes `history` during that period.
+
 The Task History field contains Messages exchanged during task execution. However, not all Messages are guaranteed to be persisted in the Task history; for example, transient informational messages may not be stored. Messages exchanged prior to task creation may not be stored in Task history. The agent is responsible to determine which Messages are persisted in the Task History.
 
 Clients using streaming to retrieve task updates MAY not receive all status update messages if the client is disconnected and then reconnects. Messages MUST NOT be considered a reliable delivery mechanism for critical information.
@@ -787,6 +947,13 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 {{ proto_enum_to_table("TaskState") }}
 
+Task states are either **terminal** or **non-terminal**:
+
+- **Terminal states** — `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`. The task is finished; the server **MUST NOT** accept further messages or emit further updates for it.
+- **Non-terminal states** — every other state, including the *interrupted* states `TASK_STATE_INPUT_REQUIRED` and `TASK_STATE_AUTH_REQUIRED`. The task is ongoing and the server retains control of its lifecycle: it **MAY** continue processing the task and transition it to any other state — including out of an interrupted state — without a message from the client, and **MAY** continue to accept messages directed to the task.
+
+An interrupted state signals that the agent is awaiting client input (`TASK_STATE_INPUT_REQUIRED`) or authorization (`TASK_STATE_AUTH_REQUIRED`) to make further progress. It is a non-terminal state and does not end the task or transfer lifecycle control to the client.
+
 <a id="Message"></a>
 
 #### 4.1.4. Message
@@ -811,6 +978,14 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 {{ proto_to_table("Artifact") }}
 
+<a id="TimelineEntry"></a>
+
+#### 4.1.8. TimelineEntry
+
+{{ proto_to_table("TimelineEntry") }}
+
+See [Task Timeline Semantics](#328-task-timeline-semantics).
+
 ### 4.2. Streaming Events
 
 <a id="TaskStatusUpdateEvent"></a>
@@ -824,6 +999,20 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 #### 4.2.2. TaskArtifactUpdateEvent
 
 {{ proto_to_table("TaskArtifactUpdateEvent") }}
+
+<a id="TaskMessageUpdateEvent"></a>
+
+#### 4.2.3. TaskMessageUpdateEvent
+
+{{ proto_to_table("TaskMessageUpdateEvent") }}
+
+<a id="StreamError"></a>
+
+#### 4.2.4. StreamError
+
+{{ proto_to_table("StreamError") }}
+
+See [Send Live Message](#3112-send-live-message).
 
 ### 4.3. Push Notification Objects
 
@@ -1163,10 +1352,11 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | :------------------------------ | :--------------------------------- | :--------------------------------- | :------------------------------------------------------ |
 | Send message                    | `SendMessage`                      | `SendMessage`                      | `POST /message:send`                                    |
 | Send streaming message          | `SendStreamingMessage`             | `SendStreamingMessage`             | `POST /message:stream`                                  |
+| Send live message               | `SendLiveMessage`                  | `SendLiveMessage`                  | `POST /message:live`                                    |
 | Get task                        | `GetTask`                          | `GetTask`                          | `GET /tasks/{id}`                                       |
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
-| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
+| Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `GET /tasks/{id}:subscribe`                             |
 | Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
 | Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
 | List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |
@@ -1188,6 +1378,7 @@ All A2A-specific errors defined in [Section 3.3.2](#332-error-handling) **MUST**
 | `ExtendedAgentCardNotConfiguredError` | `-32007`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 | `ExtensionSupportRequiredError`       | `-32008`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
 | `VersionNotSupportedError`            | `-32009`      | `FAILED_PRECONDITION` | `400 Bad Request`           |
+| `TaskGenerationMismatchError`         | `-32010`      | `ABORTED`             | `409 Conflict`              |
 
 **Custom Binding Requirements:**
 
@@ -1979,28 +2170,22 @@ A credential or authorization decision obtained while a Task is in `TASK_STATE_A
 
 A2A Servers **MUST** make an Agent Card available. The Agent Card describes the server's identity, capabilities, skills, and interaction requirements. Clients use this information for discovering suitable agents and configuring interactions.
 
+The media type `application/a2a-agent-card+json` identifies a JSON representation of an [AgentCard](#441-agentcard), independently of the agent's supported protocol bindings. Its IANA registration template is provided in [Section 14.1.2](#1412-applicationa2a-agent-cardjson).
+
 For more on discovery strategies, see the [Agent Discovery guide](./topics/agent-discovery.md).
 
-### 8.2. Discovery Mechanisms
-
-Clients can find Agent Cards through:
-
-- **Well-Known URI:** Accessing `https://{server_domain}/.well-known/agent-card.json` (see [Section 8.6](#86-caching) for caching guidance)
-- **Registries/Catalogs:** Querying curated catalogs of agents
-- **Direct Configuration:** Pre-configured Agent Card URLs or content
-
-### 8.3. Protocol Declaration Requirements
+### 8.2. Protocol Declaration Requirements
 
 The AgentCard **MUST** properly declare supported protocols:
 
-#### 8.3.1. Supported Interfaces Declaration
+#### 8.2.1. Supported Interfaces Declaration
 
 - The `supportedInterfaces` field **SHOULD** declare all supported protocol combinations in preference order
 - The first entry in `supportedInterfaces` represents the preferred interface
 - Each interface **MUST** accurately declare its transport protocol and URL
 - URLs **MAY** be reused if multiple transports are available at the same endpoint
 
-#### 8.3.2. Client Protocol Selection
+#### 8.2.2. Client Protocol Selection
 
 Clients **MUST** follow these rules:
 
@@ -2009,11 +2194,11 @@ Clients **MUST** follow these rules:
 3. Use the correct URL for the selected transport
 4. Set the `tenant` field in every request message to exactly the value declared in the selected `AgentInterface` entry (omit the field if `tenant` is not set in that entry)
 
-### 8.4. Agent Card Signing
+### 8.3. Agent Card Signing
 
 Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
 
-#### 8.4.1. Canonicalization Requirements
+#### 8.3.1. Canonicalization Requirements
 
 Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://datatracker.ietf.org/doc/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
 
@@ -2086,7 +2271,7 @@ After applying RFC 8785:
 {"capabilities":{"pushNotifications":false,"streaming":false},"defaultInputModes":["text/plain"],"defaultOutputModes":["text/plain"],"description":"An example agent that echoes messages.","name":"Example Agent","skills":[{"description":"Echoes the input.","id":"echo","name":"Echo","tags":["echo"]}],"supportedInterfaces":[{"protocolBinding":"JSONRPC","protocolVersion":"1.0","url":"https://example.com/a2a/v1"}],"version":"1.0.0"}
 ```
 
-#### 8.4.2. Signature Format
+#### 8.3.2. Signature Format
 
 Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
 
@@ -2145,7 +2330,7 @@ Where the `protected` value decodes to:
 {"alg":"ES256","typ":"JOSE","kid":"key-1","jku":"https://example.com/agent/jwks.json"}
 ```
 
-#### 8.4.3. Signature Verification
+#### 8.3.3. Signature Verification
 
 Clients verifying Agent Card signatures **MUST**:
 
@@ -2164,7 +2349,7 @@ Clients verifying Agent Card signatures **MUST**:
 - Expired or revoked keys **MUST NOT** be used for verification
 - Multiple signatures **MAY** be present to support key rotation
 
-### 8.5. Sample Agent Card
+### 8.4. Sample Agent Card
 
 ```json
 {
@@ -2241,17 +2426,17 @@ Clients verifying Agent Card signatures **MUST**:
 }
 ```
 
-### 8.6. Caching
+### 8.5. Caching
 
 Agent Card content changes infrequently relative to the frequency at which clients may fetch it. Servers and clients **SHOULD** use standard HTTP caching mechanisms to reduce unnecessary network overhead.
 
-#### 8.6.1. Server Requirements
+#### 8.5.1. Server Requirements
 
 - Agent Card HTTP endpoints **SHOULD** include a `Cache-Control` response header with a `max-age` directive appropriate for the agent's expected update frequency
 - Agent Card HTTP endpoints **SHOULD** include an `ETag` response header derived from the Agent Card's `version` field or a hash of the card content
 - Agent Card HTTP endpoints **MAY** include a `Last-Modified` response header
 
-#### 8.6.2. Client Requirements
+#### 8.5.2. Client Requirements
 
 - Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://datatracker.ietf.org/doc/html/rfc9111) when fetching Agent Cards
 - When a cached Agent Card has expired, clients **SHOULD** use conditional requests (`If-None-Match` with the stored `ETag`, or `If-Modified-Since`) to avoid re-downloading unchanged cards
@@ -2821,7 +3006,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 - `GET /tasks/{id}` - Get task status
 - `GET /tasks` - List tasks (with query parameters)
 - `POST /tasks/{id}:cancel` - Cancel task
-- `POST /tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
+- `GET /tasks/{id}:subscribe` - Subscribe to task updates (SSE response, returns error for terminal tasks)
 
 #### 11.3.3. Push Notification Configuration
 
@@ -2887,12 +3072,13 @@ Query parameter names **MUST** use `camelCase` to match the JSON serialization o
 
 **Example Mappings:**
 
-| Protocol Buffer Field | Query Parameter Name | Example Usage       |
-| --------------------- | -------------------- | ------------------- |
-| `context_id`          | `contextId`          | `?contextId=uuid`   |
-| `page_size`           | `pageSize`           | `?pageSize=50`      |
-| `page_token`          | `pageToken`          | `?pageToken=cursor` |
-| `task_id`             | `taskId`             | `?taskId=uuid`      |
+| Protocol Buffer Field | Query Parameter Name | Example Usage                    |
+| --------------------- | -------------------- | -------------------------------- |
+| `context_id`          | `contextId`          | `?contextId=uuid`                |
+| `page_size`           | `pageSize`           | `?pageSize=50`                   |
+| `page_token`          | `pageToken`          | `?pageToken=cursor`              |
+| `task_id`             | `taskId`             | `?taskId=uuid`                   |
+| `current_generation`  | `currentGeneration`  | `?currentGeneration=5`           |
 
 **Usage Examples:**
 
@@ -2906,6 +3092,12 @@ Get task with history:
 
 ```http
 GET /tasks/{id}?historyLength=10
+```
+
+Get task with long-polling (wait until generation advances beyond 5):
+
+```http
+GET /tasks/{id}?currentGeneration=5
 ```
 
 **Field Type Handling:**
@@ -2972,6 +3164,37 @@ Content-Type: application/a2a+json
 
 Extension fields like `taskId` and `timestamp` provide additional context to help diagnose the error.
 
+**Generation Mismatch Error Example (`ifGenerationMatch`):**
+
+When a `SendMessage` request includes `configuration.ifGenerationMatch` and the task's current generation does not match, the server **MUST** return HTTP `409 Conflict`:
+
+```http
+HTTP/1.1 409 Conflict
+Content-Type: application/a2a+json
+
+{
+  "error": {
+    "code": 409,
+    "status": "ABORTED",
+    "message": "Task generation mismatch: expected 3 but current generation is 5",
+    "details": [
+      {
+        "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+        "reason": "TASK_GENERATION_MISMATCH",
+        "domain": "a2a-protocol.org",
+        "metadata": {
+          "taskId": "task-abc",
+          "expectedGeneration": "3",
+          "currentGeneration": "5"
+        }
+      }
+    ]
+  }
+}
+```
+
+The client **SHOULD** re-fetch the task via [Get Task](#313-get-task) to inspect the current state before deciding whether to retry the send.
+
 ### 11.7. Streaming
 
 <span id="stream-response"></span>
@@ -2999,7 +3222,7 @@ data: { /* StreamResponse object */ }
 ```
 
 **Referenced Objects:** [`StreamResponse`](#323-stream-response)
-Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal or interrupted state, at which point the stream closes. Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
+Streaming responses are simple, linearly ordered sequences: first a `Task` (or single `Message`), then zero or more status or artifact update events until the task reaches a terminal state, at which point the stream closes. A non-terminal state, including an interrupted state (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`), does not necessitate closing the stream (see [Send Streaming Message](#312-send-streaming-message)). Implementations SHOULD avoid re-ordering events and MAY optionally resend a final `Task` snapshot before closing.
 
 ## 12. Custom Binding Guidelines
 
@@ -3248,9 +3471,11 @@ See also: [Section 12.6 Authentication and Authorization (Custom Bindings)](#126
 
 ## 14. IANA Considerations
 
-This section provides registration templates for the A2A protocol's media type, HTTP headers, and well-known URI, intended for submission to the Internet Assigned Numbers Authority (IANA).
+This section provides registration templates for the A2A protocol's media types, HTTP headers, and well-known URI, intended for submission to the Internet Assigned Numbers Authority (IANA).
 
 ### 14.1. Media Type Registration
+
+The following templates follow [RFC 6838, Section 5.6](https://www.rfc-editor.org/rfc/rfc6838.html#section-5.6). `application/a2a+json` identifies HTTP+JSON protocol messages, while `application/a2a-agent-card+json` identifies Agent Card documents used for discovery. These templates do not imply that IANA registration has been completed.
 
 #### 14.1.1. application/a2a+json
 
@@ -3294,7 +3519,7 @@ AI agent platforms, agentic workflow systems, multi-agent collaboration tools, a
 - **Macintosh file type code(s):** TEXT
 
 **Person & email address to contact for further information:**
-A2A Protocol Working Group, <a2a-protocol@example.org>
+A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
 
 **Intended usage:** COMMON
 
@@ -3302,7 +3527,61 @@ A2A Protocol Working Group, <a2a-protocol@example.org>
 
 **Author:** A2A Protocol Working Group
 
-**Change controller:** A2A Protocol Working Group
+**Change controller:** A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
+
+**Provisional registration:** No
+
+#### 14.1.2. application/a2a-agent-card+json
+
+**Type name:** `application`
+
+**Subtype name:** `a2a-agent-card+json`
+
+**Required parameters:** None
+
+**Optional parameters:**
+
+- None
+
+**Encoding considerations:** Binary (UTF-8 encoding MUST be used for JSON text)
+
+**Security considerations:**
+This media type shares security considerations common to all JSON-based formats as described in RFC 8259, Section 12. Additionally:
+
+- Agent Cards contain untrusted data. Clients SHOULD validate their structure before use and MUST NOT treat descriptions or other metadata as trusted instructions.
+- URLs in Agent Cards, including service endpoints and signature key references, can lead to untrusted resources. Clients SHOULD validate URLs before accessing them to mitigate server-side request forgery (SSRF).
+- Agent Cards SHOULD NOT contain sensitive credentials or internal implementation details. Authenticated extended Agent Cards MUST be protected by appropriate access controls as described in [Section 13.3](#133-extended-agent-card-access-control).
+- HTTPS SHOULD be used to protect the authenticity and integrity of Agent Cards in transit.
+- Agent Cards MAY contain JSON Web Signatures (JWS). Signature verification and trust requirements are described in [Section 8.4](#84-agent-card-signing); the presence of a signature alone does not establish trust.
+
+**Interoperability considerations:**
+The representation is a single JSON AgentCard object as defined in [Section 4.4.1](#441-agentcard), using the JSON field naming convention in [Section 5.5](#55-json-field-naming-convention) and field presence rules in [Section 5.7](#57-field-presence-and-optionality). It describes an agent independently of its supported protocol bindings. It is distinct from `application/a2a+json`, which identifies HTTP+JSON protocol messages, and can be referenced by registries and catalogs such as AI Catalog.
+
+**Published specification:**
+Agent2Agent (A2A) Protocol Specification, [Section 4.4.1](#441-agentcard) and [Section 8](#8-agent-discovery-the-agent-card), available at: <https://a2a-protocol.org/latest/specification>
+
+**Applications that use this media type:**
+AI agent platforms, agent registries and catalogs, and A2A clients that discover agents and configure interactions using Agent Cards.
+
+**Fragment identifier considerations:** None
+
+**Additional information:**
+
+- **Deprecated alias names for this type:** None
+- **Magic number(s):** None
+- **File extension(s):** .json
+- **Macintosh file type code(s):** TEXT
+
+**Person & email address to contact for further information:**
+A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
+
+**Intended usage:** COMMON
+
+**Restrictions on usage:** None
+
+**Author:** A2A Protocol Working Group
+
+**Change controller:** A2A Technical Steering Committee, <A2A-TSC@lists.a2aproject.org>
 
 **Provisional registration:** No
 
@@ -3358,10 +3637,10 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 **Change controller:** A2A Protocol Working Group
 
-**Specification document:** Section 8.2 of the A2A Protocol Specification
+**Specification document:** Section 8 of the A2A Protocol Specification
 
 **Related information:**
-The `.well-known/agent-card.json` URI provides a standardized location for discovering an A2A agent's capabilities, supported protocols, authentication requirements, and available skills. The resource at this URI MUST return an AgentCard object as defined in Section 4.4.1 of the A2A specification.
+The `.well-known/agent-card.json` URI provides a standardized location for discovering an A2A agent's capabilities, supported protocols, authentication requirements, and available skills. It is limited to advertising a single Agent Card per domain. The resource at this URI MUST return an AgentCard object as defined in Section 4.4.1 of the A2A specification.
 
 **Status:** Permanent
 
