@@ -73,7 +73,7 @@ An implementation can therefore pass `jcs-depth-104` on a property of its toolch
 
 The Go row in the section above is one run. This makes it repeatable: the probe below is a test inside `package a2acrypto`, because `canonicalizeJSON` is unexported there — an external program can only reach the signer and verifier wrappers, which do not show the canonical bytes the bound decides. Point `JCS_DEPTH_V1` at `jcs_depth_v1.json`; the test skips unless it is set, so it does not affect a normal `go test ./...`.
 
-```
+```sh
 JCS_DEPTH_V1=/path/to/jcs_depth_v1.json go test ./a2acrypto -run TestDepthCorpusProbe -v
 ```
 
