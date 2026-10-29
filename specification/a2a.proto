@@ -325,7 +325,8 @@ message Message {
 
 // Artifacts represent task outputs.
 message Artifact {
-  // Unique identifier (e.g. UUID) for the artifact. It must be unique within a task.
+  // Unique identifier (e.g. UUID) for the artifact. Within a task, an artifact
+  // is uniquely identified by the pair (`artifact_id`, `role`).
   string artifact_id = 1 [(google.api.field_behavior) = REQUIRED];
   // A human readable name for the artifact.
   string name = 2;
@@ -342,8 +343,11 @@ message Artifact {
   // Optional. The task `generation` at which this artifact was completed; unset
   // while it is still streaming.
   int64 end_generation = 8;
-  // Optional. The originator of this artifact. Artifacts are agent outputs by
-  // default (`ROLE_AGENT`); an artifact written by the client is `ROLE_USER`.
+  // Optional. The originator of this artifact. Servers enforce and populate
+  // this from the sender on stored and emitted `Artifact`s: client writes
+  // default unset `role` to `ROLE_USER` (and reject `ROLE_AGENT`); agent
+  // outputs default unset `role` to `ROLE_AGENT`, and consumers treat
+  // `ROLE_UNSPECIFIED` as `ROLE_AGENT` for legacy compatibility.
   Role role = 9;
 }
 
@@ -416,7 +420,7 @@ message TaskArtifactUpdateEvent {
   // The artifact that was generated or updated.
   Artifact artifact = 3 [(google.api.field_behavior) = REQUIRED];
   // If true, the content of this artifact should be appended to a previously
-  // sent artifact with the same ID.
+  // sent artifact with the same `artifact_id` and `role`.
   bool append = 4;
   // If true, this is the final chunk of the artifact.
   bool last_chunk = 5;
@@ -791,8 +795,9 @@ message StreamRequest {
   string tenant = 1;
   // The payload of the stream request.
   oneof payload {
-    // Send a message on the stream, optionally with per-request configuration.
-    SendMessageRequest send_message = 2;
+    // Send a message and/or client-written artifact updates on the stream,
+    // optionally with per-request configuration.
+    SendMessageRequest request = 2;
     // Attach to an existing task. Only valid as the first request of a stream;
     // a server that receives it later MUST reject it with a `StreamError`.
     SubscribeToTaskRequest subscribe = 3;
@@ -909,9 +914,12 @@ message SubscribeToTaskRequest {
   string tenant = 1;
   // The resource ID of the task to subscribe to.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
-  // Optional. Resume after this `generation`: the server replays only what
-  // followed it and does NOT open with a `Task` snapshot. When unset, the
-  // server opens with a `Task` snapshot and streams onward from it.
+  // Optional. A hint to resume after this `generation`: when set, the server
+  // MUST either replay all events that followed it without an opening `Task`
+  // snapshot, or ignore the hint, open with the current `Task` snapshot
+  // (including when the server does not retain an event log or no longer
+  // retains that `generation`, rather than failing), and stream onward from it.
+  // When unset, the server MUST open with a `Task` snapshot and stream onward.
   optional int64 last_seen_generation = 3;
 }
 
@@ -970,10 +978,14 @@ message StreamResponse {
   }
 }
 
-// A non-fatal error reported on a live stream. It rejects a single client
-// request without terminating the stream, so the client can correct and retry.
-// Conditions that make the stream itself unusable remain transport-level errors
-// and close the stream as before.
+// A non-fatal, stream-local in-band rejection reported on a live stream. It
+// rejects a single client request without terminating the stream, so the client
+// can correct and retry. A `StreamError` does not mutate task state: it is
+// never recorded in `Task.timeline`, never increments `Task.generation`, and is
+// returned only to the caller that sent the rejected request (never broadcast
+// to other subscribers or push notification webhooks). Conditions that make the
+// stream itself unusable remain transport-level errors and close the stream as
+// before.
 message StreamError {
   // The ID of the task the rejected request applied to, when known.
   string task_id = 1;
