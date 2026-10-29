@@ -96,104 +96,104 @@ Each preimage is materialized from its `preimage_rule` and checked against the c
 package a2acrypto
 
 import (
-	"crypto/sha256"
-	"encoding/base64"
-	"encoding/hex"
-	"encoding/json"
-	"os"
-	"testing"
+    "crypto/sha256"
+    "encoding/base64"
+    "encoding/hex"
+    "encoding/json"
+    "os"
+    "testing"
 )
 
 type depthRule struct {
-	Form       string   `json:"form"`
-	Containers []string `json:"containers"`
-	Count      int      `json:"count"`
-	Leaf       string   `json:"leaf"`
+    Form       string   `json:"form"`
+    Containers []string `json:"containers"`
+    Count      int      `json:"count"`
+    Leaf       string   `json:"leaf"`
 }
 
 type depthVector struct {
-	VectorID       string    `json:"vector_id"`
-	Outcome        string    `json:"outcome"`
-	Expectation    string    `json:"expectation"`
-	Depth          int       `json:"depth"`
-	PreimageRule   depthRule `json:"preimage_rule"`
-	PreimageBytes  int       `json:"preimage_bytes"`
-	PreimageSHA256 string    `json:"preimage_sha256"`
-	ExpectedJCS    string    `json:"expected_jcs_bytes_b64"`
+    VectorID       string    `json:"vector_id"`
+    Outcome        string    `json:"outcome"`
+    Expectation    string    `json:"expectation"`
+    Depth          int       `json:"depth"`
+    PreimageRule   depthRule `json:"preimage_rule"`
+    PreimageBytes  int       `json:"preimage_bytes"`
+    PreimageSHA256 string    `json:"preimage_sha256"`
+    ExpectedJCS    string    `json:"expected_jcs_bytes_b64"`
 }
 
 type depthCorpus struct {
-	MaxDepth int           `json:"max_depth"`
-	Vectors  []depthVector `json:"vectors"`
+    MaxDepth int           `json:"max_depth"`
+    Vectors  []depthVector `json:"vectors"`
 }
 
 func materialise(r depthRule) []byte {
-	open := make([]string, 0, len(r.Containers))
-	shut := make([]string, 0, len(r.Containers))
-	for _, c := range r.Containers {
-		switch c {
-		case "object":
-			open = append(open, `{"a":`)
-			shut = append(shut, "}")
-		case "array":
-			open = append(open, "[")
-			shut = append(shut, "]")
-		}
-	}
-	size := len(r.Leaf)
-	for i := 0; i < r.Count; i++ {
-		size += len(open[i%len(open)]) + len(shut[i%len(shut)])
-	}
-	buf := make([]byte, 0, size)
-	for i := 0; i < r.Count; i++ {
-		buf = append(buf, open[i%len(open)]...)
-	}
-	buf = append(buf, r.Leaf...)
-	for i := r.Count - 1; i >= 0; i-- {
-		buf = append(buf, shut[i%len(shut)]...)
-	}
-	return buf
+    open := make([]string, 0, len(r.Containers))
+    shut := make([]string, 0, len(r.Containers))
+    for _, c := range r.Containers {
+        switch c {
+        case "object":
+            open = append(open, `{"a":`)
+            shut = append(shut, "}")
+        case "array":
+            open = append(open, "[")
+            shut = append(shut, "]")
+        }
+    }
+    size := len(r.Leaf)
+    for i := 0; i < r.Count; i++ {
+        size += len(open[i%len(open)]) + len(shut[i%len(shut)])
+    }
+    buf := make([]byte, 0, size)
+    for i := 0; i < r.Count; i++ {
+        buf = append(buf, open[i%len(open)]...)
+    }
+    buf = append(buf, r.Leaf...)
+    for i := r.Count - 1; i >= 0; i-- {
+        buf = append(buf, shut[i%len(shut)]...)
+    }
+    return buf
 }
 
 func TestDepthCorpusProbe(t *testing.T) {
-	path := os.Getenv("JCS_DEPTH_V1")
-	if path == "" {
-		t.Skip("JCS_DEPTH_V1 not set; point it at jcs_depth_v1.json")
-	}
-	raw, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatalf("read corpus: %v", err)
-	}
-	var corpus depthCorpus
-	if err := json.Unmarshal(raw, &corpus); err != nil {
-		t.Fatalf("parse corpus: %v", err)
-	}
+    path := os.Getenv("JCS_DEPTH_V1")
+    if path == "" {
+        t.Skip("JCS_DEPTH_V1 not set; point it at jcs_depth_v1.json")
+    }
+    raw, err := os.ReadFile(path)
+    if err != nil {
+        t.Fatalf("read corpus: %v", err)
+    }
+    var corpus depthCorpus
+    if err := json.Unmarshal(raw, &corpus); err != nil {
+        t.Fatalf("parse corpus: %v", err)
+    }
 
-	for _, v := range corpus.Vectors {
-		pre := materialise(v.PreimageRule)
-		sum := sha256.Sum256(pre)
-		if len(pre) != v.PreimageBytes || hex.EncodeToString(sum[:]) != v.PreimageSHA256 {
-			t.Errorf("%s: preimage mismatch (%d B, sha256=%s)", v.VectorID, len(pre), hex.EncodeToString(sum[:]))
-			continue
-		}
+    for _, v := range corpus.Vectors {
+        pre := materialise(v.PreimageRule)
+        sum := sha256.Sum256(pre)
+        if len(pre) != v.PreimageBytes || hex.EncodeToString(sum[:]) != v.PreimageSHA256 {
+            t.Errorf("%s: preimage mismatch (%d B, sha256=%s)", v.VectorID, len(pre), hex.EncodeToString(sum[:]))
+            continue
+        }
 
-		got, err := canonicalizeJSON(pre)
-		switch {
-		case err != nil:
-			t.Logf("%-46s depth=%-8d corpus=%-6s refused: %v", v.VectorID, v.Depth, v.Outcome, err)
-		case v.ExpectedJCS != "":
-			want, _ := base64.StdEncoding.DecodeString(v.ExpectedJCS)
-			verdict := "BYTES DIFFER"
-			if string(got) == string(want) {
-				verdict = "byte-identical"
-			}
-			gs := sha256.Sum256(got)
-			t.Logf("%-46s depth=%-8d corpus=%-6s %s (%d B, sha256=%s)", v.VectorID, v.Depth, v.Outcome, verdict, len(got), hex.EncodeToString(gs[:]))
-		default:
-			gs := sha256.Sum256(got)
-			t.Logf("%-46s depth=%-8d corpus=%-6s ACCEPTED (%d B, sha256=%s)", v.VectorID, v.Depth, v.Outcome, len(got), hex.EncodeToString(gs[:]))
-		}
-	}
+        got, err := canonicalizeJSON(pre)
+        switch {
+        case err != nil:
+            t.Logf("%-46s depth=%-8d corpus=%-6s refused: %v", v.VectorID, v.Depth, v.Outcome, err)
+        case v.ExpectedJCS != "":
+            want, _ := base64.StdEncoding.DecodeString(v.ExpectedJCS)
+            verdict := "BYTES DIFFER"
+            if string(got) == string(want) {
+                verdict = "byte-identical"
+            }
+            gs := sha256.Sum256(got)
+            t.Logf("%-46s depth=%-8d corpus=%-6s %s (%d B, sha256=%s)", v.VectorID, v.Depth, v.Outcome, verdict, len(got), hex.EncodeToString(gs[:]))
+        default:
+            gs := sha256.Sum256(got)
+            t.Logf("%-46s depth=%-8d corpus=%-6s ACCEPTED (%d B, sha256=%s)", v.VectorID, v.Depth, v.Outcome, len(got), hex.EncodeToString(gs[:]))
+        }
+    }
 }
 ```
 
