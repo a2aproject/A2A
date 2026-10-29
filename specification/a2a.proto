@@ -181,6 +181,11 @@ message SendMessageConfiguration {
   // processed. Use this to implement optimistic concurrency control and
   // prevent lost-update races when multiple clients interact with the same task.
   optional int64 if_generation_match = 5;
+  // Optional. The caller's parent task to attach the created task to when
+  // initiating a new task (`message.task_id` is empty). Provides the initial
+  // snapshot of the parent task (including its timeline and artifacts) and
+  // populates `Task.parent_task` on the created child task.
+  Task parent_task = 7;
 }
 
 // `Task` is the core unit of action for A2A. It has a current status
@@ -220,6 +225,17 @@ message Task {
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
+  // Optional. Reference to the parent task that delegated or spawned this task.
+  ParentTask parent_task = 9;
+}
+
+// Identifies the parent task that delegated or spawned a child task.
+message ParentTask {
+  // The ID of the parent task on the caller.
+  string task_id = 1 [(google.api.field_behavior) = REQUIRED];
+  // Optional. The identity of the entity that owns the parent task, using the
+  // same attribution model as `Message.sender` and `Artifact.sender`.
+  optional string sender = 2;
 }
 
 // Defines the possible lifecycle states of a `Task`.
@@ -321,6 +337,14 @@ message Message {
   repeated string extensions = 7;
   // A list of task IDs that this message references for additional context.
   repeated string reference_task_ids = 8;
+  // Optional. The identity of the entity that sent this message (e.g. a user ID,
+  // service account name, or connection identifier). Populated by the transport or
+  // binding layer from the authenticated connection identity where available.
+  // Clients MAY supply this field directly; agents that rely on it for
+  // authorization decisions SHOULD document whether they trust client-supplied values.
+  // Servers SHOULD preserve this value on TimelineEntry(Message) items so the
+  // sender is visible in task history.
+  optional string sender = 9;
 }
 
 // Artifacts represent task outputs.
@@ -345,6 +369,10 @@ message Artifact {
   // Optional. The originator of this artifact. Artifacts are agent outputs by
   // default (`ROLE_AGENT`); an artifact written by the client is `ROLE_USER`.
   Role role = 9;
+  // Optional. The identity of the entity (client, user, or sub-agent) that
+  // created or last updated this artifact, using the same attribution model as
+  // `Message.sender`. Useful when multiple agents collaborate on a shared task.
+  optional string sender = 10;
 }
 
 // `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
@@ -796,6 +824,10 @@ message StreamRequest {
     // Attach to an existing task. Only valid as the first request of a stream;
     // a server that receives it later MUST reject it with a `StreamError`.
     SubscribeToTaskRequest subscribe = 3;
+    // An event from the parent task (`status_update`, `artifact_update`,
+    // `message_update`, `task` snapshot, or `error` rejecting an invalid
+    // parent-task write from the child).
+    StreamResponse parent_event = 4;
   }
 }
 
