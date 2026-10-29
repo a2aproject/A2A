@@ -69,6 +69,136 @@ That refusal came from a nesting cap of 10,000 in the `encoding/json` decoder, a
 
 An implementation can therefore pass `jcs-depth-104` on a property of its toolchain and still have no bound of its own. The reject vectors one level past the bound catch that case, and the same run accepted every one of them.
 
+## Running the probe from a2a-go
+
+The Go row in the section above is one run. This makes it repeatable: the probe below is a test inside `package a2acrypto`, because `canonicalizeJSON` is unexported there — an external program can only reach the signer and verifier wrappers, which do not show the canonical bytes the bound decides. Point `JCS_DEPTH_V1` at `jcs_depth_v1.json`; the test skips unless it is set, so it does not affect a normal `go test ./...`.
+
+```
+JCS_DEPTH_V1=/path/to/jcs_depth_v1.json go test ./a2acrypto -run TestDepthCorpusProbe -v
+```
+
+Observed at `e85760e`, with `a2acrypto/canonical.go` byte-identical on `main` at `42b374d`:
+
+| vector | depth | corpus | a2a-go `e85760e` |
+| --- | --- | --- | --- |
+| `jcs-depth-001-object-at-bound` | 128 | accept | byte-identical, 769 B |
+| `jcs-depth-002-array-at-bound` | 128 | accept | byte-identical, 257 B |
+| `jcs-depth-003-alternating-at-bound` | 128 | accept | byte-identical, 513 B |
+| `jcs-depth-004-empty-object-leaf-at-bound` | 128 | accept | byte-identical, 764 B |
+| `jcs-depth-101-object-one-past-bound` | 129 | reject | accepted, 775 B |
+| `jcs-depth-102-array-one-past-bound` | 129 | reject | accepted, 259 B |
+| `jcs-depth-103-empty-object-leaf-one-past-bound` | 129 | reject | accepted, 770 B |
+| `jcs-depth-104-unbounded-recursion` | 10,000,000 | reject | refused: `exceeded max depth` |
+
+Each preimage is materialized from its `preimage_rule` and checked against the corpus's own `preimage_bytes` and `preimage_sha256` before anything is canonicalized, so a vector built wrong fails as a preimage mismatch instead of producing a plausible row. The 10^7-deep preimage is built in a single allocation for the same reason.
+
+```go
+package a2acrypto
+
+import (
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"testing"
+)
+
+type depthRule struct {
+	Form       string   `json:"form"`
+	Containers []string `json:"containers"`
+	Count      int      `json:"count"`
+	Leaf       string   `json:"leaf"`
+}
+
+type depthVector struct {
+	VectorID       string    `json:"vector_id"`
+	Outcome        string    `json:"outcome"`
+	Expectation    string    `json:"expectation"`
+	Depth          int       `json:"depth"`
+	PreimageRule   depthRule `json:"preimage_rule"`
+	PreimageBytes  int       `json:"preimage_bytes"`
+	PreimageSHA256 string    `json:"preimage_sha256"`
+	ExpectedJCS    string    `json:"expected_jcs_bytes_b64"`
+}
+
+type depthCorpus struct {
+	MaxDepth int           `json:"max_depth"`
+	Vectors  []depthVector `json:"vectors"`
+}
+
+func materialise(r depthRule) []byte {
+	open := make([]string, 0, len(r.Containers))
+	shut := make([]string, 0, len(r.Containers))
+	for _, c := range r.Containers {
+		switch c {
+		case "object":
+			open = append(open, `{"a":`)
+			shut = append(shut, "}")
+		case "array":
+			open = append(open, "[")
+			shut = append(shut, "]")
+		}
+	}
+	size := len(r.Leaf)
+	for i := 0; i < r.Count; i++ {
+		size += len(open[i%len(open)]) + len(shut[i%len(shut)])
+	}
+	buf := make([]byte, 0, size)
+	for i := 0; i < r.Count; i++ {
+		buf = append(buf, open[i%len(open)]...)
+	}
+	buf = append(buf, r.Leaf...)
+	for i := r.Count - 1; i >= 0; i-- {
+		buf = append(buf, shut[i%len(shut)]...)
+	}
+	return buf
+}
+
+func TestDepthCorpusProbe(t *testing.T) {
+	path := os.Getenv("JCS_DEPTH_V1")
+	if path == "" {
+		t.Skip("JCS_DEPTH_V1 not set; point it at jcs_depth_v1.json")
+	}
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("read corpus: %v", err)
+	}
+	var corpus depthCorpus
+	if err := json.Unmarshal(raw, &corpus); err != nil {
+		t.Fatalf("parse corpus: %v", err)
+	}
+
+	for _, v := range corpus.Vectors {
+		pre := materialise(v.PreimageRule)
+		sum := sha256.Sum256(pre)
+		if len(pre) != v.PreimageBytes || hex.EncodeToString(sum[:]) != v.PreimageSHA256 {
+			t.Errorf("%s: preimage mismatch (%d B, sha256=%s)", v.VectorID, len(pre), hex.EncodeToString(sum[:]))
+			continue
+		}
+
+		got, err := canonicalizeJSON(pre)
+		switch {
+		case err != nil:
+			t.Logf("%-46s depth=%-8d corpus=%-6s refused: %v", v.VectorID, v.Depth, v.Outcome, err)
+		case v.ExpectedJCS != "":
+			want, _ := base64.StdEncoding.DecodeString(v.ExpectedJCS)
+			verdict := "BYTES DIFFER"
+			if string(got) == string(want) {
+				verdict = "byte-identical"
+			}
+			gs := sha256.Sum256(got)
+			t.Logf("%-46s depth=%-8d corpus=%-6s %s (%d B, sha256=%s)", v.VectorID, v.Depth, v.Outcome, verdict, len(got), hex.EncodeToString(gs[:]))
+		default:
+			gs := sha256.Sum256(got)
+			t.Logf("%-46s depth=%-8d corpus=%-6s ACCEPTED (%d B, sha256=%s)", v.VectorID, v.Depth, v.Outcome, len(got), hex.EncodeToString(gs[:]))
+		}
+	}
+}
+```
+
+The test asserts nothing about which bound is correct — that is the TSC's call, and it says so where it decides a row. It reports what the canonicalizer did with each vector and leaves the verdict to the corpus.
+
 ## Source and attribution
 
 The two boundary cases are drawn from [`agent-evidence-vectors`](https://github.com/probityai/agent-evidence-vectors), which carries them as statement-level vectors in a suite you can run with `uvx agent-evidence-vectors`.
