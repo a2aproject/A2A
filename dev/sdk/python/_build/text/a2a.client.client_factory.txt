@@ -23,6 +23,9 @@ class a2a.client.client_factory.ClientFactory(config: ClientConfig | None = None
    This aligns the client configuration with the server's
    capabilities.
 
+   Each created client gets its own *httpx.AsyncClient* and closes it
+   on *close()*, unless *ClientConfig.httpx_client* is set.
+
    create(card: AgentCard, interceptors: list[ClientCallInterceptor] | None = None) -> Client
 
       Create a new *Client* for the provided *AgentCard*.
@@ -49,8 +52,10 @@ class a2a.client.client_factory.ClientFactory(config: ClientConfig | None = None
 
       Create a *Client* by resolving an *AgentCard* from a URL.
 
-      Resolves the agent card from the given URL using the factory's
-      configured httpx client, then creates a client via *create*.
+      Resolves the agent card from the given URL, then creates a
+      client via *create*. The card is fetched with
+      *ClientConfig.httpx_client* when one is set, otherwise with a
+      temporary client.
 
       If the agent card is already available, use *create* directly
       instead.
@@ -110,6 +115,10 @@ async a2a.client.client_factory.create_client(agent: str | AgentCard, client_con
 
    Returns:
       A *Client* object.
+
+a2a.client.client_factory.major_minor(version: str) -> tuple[int, int]
+
+   Returns the *Major.Minor* release of a protocol version.
 
 a2a.client.client_factory.minimal_agent_card(url: str, transports: list[str] | None = None) -> AgentCard
 

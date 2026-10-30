@@ -10,3 +10,7 @@ class a2a.server.tasks.push_notification_sender.PushNotificationSender
    abstractmethod async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification containing the latest task state.
+
+      Implementations are treated as best-effort: the framework
+      catches and logs any exception raised here, so a failure never
+      affects the task lifecycle or the event stream.

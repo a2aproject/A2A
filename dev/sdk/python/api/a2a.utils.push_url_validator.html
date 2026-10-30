@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.utils.signing module" href="a2a.utils.signing.html"><link rel="prev" title="a2a.utils.proto_utils module" href="a2a.utils.proto_utils.html">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>a2a.utils.push_url_validator module - a2a-sdk documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -402,13 +402,13 @@
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">a2a.utils.push_url_validator.</span></span><span class="sig-name descname"><span class="pre">validate_push_notification_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#a2a.utils.push_url_validator.validate_push_notification_url" title="Link to this definition">¶</a></dt>
 <dd><p>Return True if a push-notification URL is safe to fetch.</p>
 <p>Blocks non-HTTP(S) schemes and hosts that resolve to loopback,
-link-local, private, reserved, multicast, or unspecified addresses
-(e.g. 169.254.169.254 cloud metadata, internal services). A host
-that cannot be resolved is rejected: the POST would fail anyway,
-and failing closed avoids treating resolution errors as a bypass.</p>
-<p>IPv4-mapped IPv6 forms are covered: <code class="docutils literal notranslate"><span class="pre">ipaddress</span></code> maps them to the
-underlying IPv4 address, so the <code class="docutils literal notranslate"><span class="pre">is_private</span></code>/<code class="docutils literal notranslate"><span class="pre">is_loopback</span></code>
-checks apply to the mapped value.</p>
+link-local, private, shared (100.64.0.0/10), reserved, multicast,
+or unspecified addresses (e.g. 169.254.169.254 cloud metadata,
+internal services). A host that cannot be resolved is rejected:
+the POST would fail anyway, and failing closed avoids treating
+resolution errors as a bypass.</p>
+<p>IPv4-mapped IPv6 forms are judged as the IPv4 address they carry,
+so the private, shared, and loopback checks apply to that address.</p>
 <p>Uses the running event-loop resolver so request handlers and the
 sender stay non-blocking. Deployments can pass this function as
 <code class="docutils literal notranslate"><span class="pre">push_url_validator</span></code> on <code class="docutils literal notranslate"><span class="pre">DefaultRequestHandler</span></code> /

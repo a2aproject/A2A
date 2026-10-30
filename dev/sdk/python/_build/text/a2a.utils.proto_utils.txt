@@ -50,6 +50,20 @@ a2a.utils.proto_utils.normalize_large_integers_to_strings(value: Any, max_safe_d
    Returns:
       A normalized value.
 
+a2a.utils.proto_utils.parse_lenient(data: dict[str, Any] | str | bytes, message: _MessageT) -> _MessageT
+
+   Parses ProtoJSON into message, ignoring unrecognized fields.
+
+   Parameters:
+      * **data** -- A decoded JSON object, or raw ProtoJSON
+        text/bytes.
+
+      * **message** -- The message to parse into. Mutated in place and
+        returned.
+
+   Returns:
+      The parsed message.
+
 a2a.utils.proto_utils.parse_params(params: QueryParams, message: Message) -> None
 
    Converts REST query parameters back into a Protobuf message.
@@ -107,3 +121,22 @@ a2a.utils.proto_utils.validate_proto_required_fields(msg: Message) -> None
 a2a.utils.proto_utils.validation_errors_to_bad_request(errors: list[ValidationDetail]) -> BadRequest
 
    Convert validation error details to a gRPC BadRequest proto.
+
+a2a.utils.proto_utils.warn_on_missing_required_fields(msg: Message, source: str) -> bool
+
+   Log a warning if fields marked as REQUIRED are missing or empty.
+
+   Unlike *validate_proto_required_fields*, this never raises, so it
+   can surface spec violations without breaking callers that currently
+   rely on non-compliant messages.
+
+   Parameters:
+      * **msg** -- The Protobuf message to check.
+
+      * **source** -- Where the message was passed in, used in the log
+        message.
+
+   Returns:
+      True if every REQUIRED field is set, False otherwise. Objects
+      that are not Protobuf messages (for example test doubles) are
+      not checked.

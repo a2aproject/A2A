@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.utils.push_url_validator module" href="a2a.utils.push_url_validator.html"><link rel="prev" title="a2a.utils.json_utils module" href="a2a.utils.json_utils.html">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>a2a.utils.proto_utils module - a2a-sdk documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -456,6 +456,23 @@ JavaScript’s MAX_SAFE_INTEGER (2^53 - 1) limitation.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.proto_utils.parse_lenient">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.proto_utils.</span></span><span class="sig-name descname"><span class="pre">parse_lenient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.FileWithBytes.bytes" title="a2a.compat.v0_3.types.FileWithBytes.bytes"><span class="pre">bytes</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">_MessageT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_MessageT</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.parse_lenient" title="Link to this definition">¶</a></dt>
+<dd><p>Parses ProtoJSON into message, ignoring unrecognized fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – A decoded JSON object, or raw ProtoJSON text/bytes.</p></li>
+<li><p><strong>message</strong> – The message to parse into. Mutated in place and returned.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed message.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.parse_params">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.proto_utils.</span></span><span class="sig-name descname"><span class="pre">parse_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QueryParams</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.parse_params" title="Link to this definition">¶</a></dt>
 <dd><p>Converts REST query parameters back into a Protobuf message.</p>
@@ -520,6 +537,27 @@ after Struct-&gt;dict conversion.</p>
 <dt class="sig sig-object py" id="a2a.utils.proto_utils.validation_errors_to_bad_request">
 <span class="sig-prename descclassname"><span class="pre">a2a.utils.proto_utils.</span></span><span class="sig-name descname"><span class="pre">validation_errors_to_bad_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#a2a.utils.proto_utils.ValidationDetail" title="a2a.utils.proto_utils.ValidationDetail"><span class="pre">ValidationDetail</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BadRequest</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.validation_errors_to_bad_request" title="Link to this definition">¶</a></dt>
 <dd><p>Convert validation error details to a gRPC BadRequest proto.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.utils.proto_utils.warn_on_missing_required_fields">
+<span class="sig-prename descclassname"><span class="pre">a2a.utils.proto_utils.</span></span><span class="sig-name descname"><span class="pre">warn_on_missing_required_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#a2a.utils.proto_utils.warn_on_missing_required_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Log a warning if fields marked as REQUIRED are missing or empty.</p>
+<p>Unlike <cite>validate_proto_required_fields</cite>, this never raises, so it can
+surface spec violations without breaking callers that currently rely on
+non-compliant messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> – The Protobuf message to check.</p></li>
+<li><p><strong>source</strong> – Where the message was passed in, used in the log message.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if every REQUIRED field is set, False otherwise. Objects that
+are not Protobuf messages (for example test doubles) are not checked.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -588,11 +626,13 @@ after Struct-&gt;dict conversion.</p>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.bad_request_to_validation_errors"><code class="docutils literal notranslate"><span class="pre">bad_request_to_validation_errors()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.make_dict_serializable"><code class="docutils literal notranslate"><span class="pre">make_dict_serializable()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.normalize_large_integers_to_strings"><code class="docutils literal notranslate"><span class="pre">normalize_large_integers_to_strings()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.proto_utils.parse_lenient"><code class="docutils literal notranslate"><span class="pre">parse_lenient()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.parse_params"><code class="docutils literal notranslate"><span class="pre">parse_params()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.parse_string_integers_in_dict"><code class="docutils literal notranslate"><span class="pre">parse_string_integers_in_dict()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.to_stream_response"><code class="docutils literal notranslate"><span class="pre">to_stream_response()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.validate_proto_required_fields"><code class="docutils literal notranslate"><span class="pre">validate_proto_required_fields()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.utils.proto_utils.validation_errors_to_bad_request"><code class="docutils literal notranslate"><span class="pre">validation_errors_to_bad_request()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.utils.proto_utils.warn_on_missing_required_fields"><code class="docutils literal notranslate"><span class="pre">warn_on_missing_required_fields()</span></code></a></li>
 </ul>
 </li>
 </ul>

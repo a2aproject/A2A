@@ -211,6 +211,9 @@ class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, con
 
       Sends a push notification for an event if configuration exists.
 
+      Best-effort by design: failures to read the configuration store
+      or to deliver a notification are logged and do not raise.
+
 class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: ~sqlalchemy.ext.asyncio.engine.AsyncEngine, create_table: bool = True, table_name: str = 'push_notification_configs', encryption_key: str | bytes | None = None, owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, core_to_model_conversion: ~collections.abc.Callable[[str, ~a2a_pb2.TaskPushNotificationConfig, str, Fernet | None], ~a2a.server.models.PushNotificationConfigModel] | None = None, model_to_core_conversion: ~collections.abc.Callable[[~a2a.server.models.PushNotificationConfigModel], ~a2a_pb2.TaskPushNotificationConfig] | None = None)
 
    Bases: "PushNotificationConfigStore"
@@ -430,6 +433,10 @@ class a2a.server.tasks.PushNotificationSender
    abstractmethod async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification containing the latest task state.
+
+      Implementations are treated as best-effort: the framework
+      catches and logs any exception raised here, so a failure never
+      affects the task lifecycle or the event stream.
 
 class a2a.server.tasks.ResultAggregator(task_manager: TaskManager)
 
@@ -754,7 +761,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09c3b850>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.

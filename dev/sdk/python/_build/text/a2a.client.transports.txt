@@ -285,7 +285,7 @@ class a2a.client.transports.GrpcTransport(channel: Channel, agent_card: AgentCar
 
       Reconnects to get task updates.
 
-class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str)
+class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -297,7 +297,7 @@ class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_ca
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
@@ -342,7 +342,7 @@ class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_ca
 
       Reconnects to get task updates.
 
-class a2a.client.transports.RestTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str)
+class a2a.client.transports.RestTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -354,7 +354,7 @@ class a2a.client.transports.RestTransport(httpx_client: AsyncClient, agent_card:
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 

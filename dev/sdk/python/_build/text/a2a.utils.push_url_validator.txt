@@ -8,14 +8,14 @@ async a2a.utils.push_url_validator.validate_push_notification_url(url: str) -> b
    Return True if a push-notification URL is safe to fetch.
 
    Blocks non-HTTP(S) schemes and hosts that resolve to loopback,
-   link-local, private, reserved, multicast, or unspecified addresses
-   (e.g. 169.254.169.254 cloud metadata, internal services). A host
-   that cannot be resolved is rejected: the POST would fail anyway,
-   and failing closed avoids treating resolution errors as a bypass.
+   link-local, private, shared (100.64.0.0/10), reserved, multicast,
+   or unspecified addresses (e.g. 169.254.169.254 cloud metadata,
+   internal services). A host that cannot be resolved is rejected: the
+   POST would fail anyway, and failing closed avoids treating
+   resolution errors as a bypass.
 
-   IPv4-mapped IPv6 forms are covered: "ipaddress" maps them to the
-   underlying IPv4 address, so the "is_private"/"is_loopback" checks
-   apply to the mapped value.
+   IPv4-mapped IPv6 forms are judged as the IPv4 address they carry,
+   so the private, shared, and loopback checks apply to that address.
 
    Uses the running event-loop resolver so request handlers and the
    sender stay non-blocking. Deployments can pass this function as

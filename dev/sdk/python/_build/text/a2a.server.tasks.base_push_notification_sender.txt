@@ -10,3 +10,6 @@ class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(
    async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification for an event if configuration exists.
+
+      Best-effort by design: failures to read the configuration store
+      or to deliver a notification are logged and do not raise.

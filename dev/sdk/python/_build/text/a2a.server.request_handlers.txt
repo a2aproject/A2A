@@ -164,7 +164,7 @@ a2a.server.request_handlers.DefaultRequestHandler
 
    alias of "DefaultRequestHandlerV2"
 
-class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None)
+class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
 
    Bases: "RequestHandler"
 
@@ -175,6 +175,11 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
    delegates event streaming to an in-memory *ActiveTaskRegistry*.
    Passing a non-"None" value emits a *DeprecationWarning* and logs a
    warning.
+
+   "interrupted_task_timeout" releases the *ActiveTask* of a task idle
+   in "input-required" or "auth-required" after that many seconds; a
+   follow-up recreates it from the store. "None" (default) never
+   releases; any other value must be greater than 0.
 
    async aclose() -> None
 

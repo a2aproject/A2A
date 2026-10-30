@@ -57,7 +57,7 @@ Data Flow and Event Handling: 1. Producer
      requests, creating a temporary subscription that yields events
      and automatically finishes once the request is completed.
 
-class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None, event_stream: TaskEventStream | None = None)
+class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
 
    Bases: "object"
 
@@ -111,13 +111,29 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
       started. It fires the cancellation signal and blocks until the
       consumer processes the cancellation events.
 
+   cancel_idle_release() -> None
+
+      Stops the timer that releases a parked interrupted task, if any.
+
    async enqueue_request(request_context: RequestContext) -> UUID
 
       Enqueues a request for the active task to process.
 
+      The caller's contextvars are captured so the producer runs
+      *AgentExecutor.execute* in the context of the request that sent
+      the message, not the request that started the producer.
+
    async get_task() -> Task
 
       Get task from db.
+
+   property is_finished: bool
+
+      Whether the task's active lifecycle has ended.
+
+   schedule_idle_release() -> None
+
+      (Re)starts the timer that releases a parked interrupted task.
 
    async start(call_context: ServerCallContext, create_task_if_missing: bool = False) -> None
 

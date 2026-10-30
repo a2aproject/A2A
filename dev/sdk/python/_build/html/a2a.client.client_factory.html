@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="a2a.client.errors module" href="a2a.client.errors.html"><link rel="prev" title="a2a.client.client module" href="a2a.client.client.html">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+    <!-- Generated with Sphinx 9.2.0 and Furo 2025.12.19 -->
         <title>a2a.client.client_factory module - a2a-sdk documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
@@ -414,6 +414,8 @@ client = await factory.create_from_url(’<a class="reference external" href="ht
 </div></blockquote>
 <p>The client can be used consistently regardless of the transport. This
 aligns the client configuration with the server’s capabilities.</p>
+<p>Each created client gets its own <cite>httpx.AsyncClient</cite> and closes it on
+<cite>close()</cite>, unless <cite>ClientConfig.httpx_client</cite> is set.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="a2a.client.client_factory.ClientFactory.create">
 <span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">card</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.AgentCard" title="a2a.compat.v0_3.types.AgentCard"><span class="pre">AgentCard</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">interceptors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.client.html#a2a.client.ClientCallInterceptor" title="a2a.client.ClientCallInterceptor"><span class="pre">ClientCallInterceptor</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.client.html#a2a.client.Client" title="a2a.client.Client"><span class="pre">Client</span></a></span></span><a class="headerlink" href="#a2a.client.client_factory.ClientFactory.create" title="Link to this definition">¶</a></dt>
@@ -443,8 +445,9 @@ to all outbound requests.</p></li>
 <dt class="sig sig-object py" id="a2a.client.client_factory.ClientFactory.create_from_url">
 <span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create_from_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interceptors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.client.html#a2a.client.ClientCallInterceptor" title="a2a.client.ClientCallInterceptor"><span class="pre">ClientCallInterceptor</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_card_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolver_http_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature_verifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="a2a.compat.v0_3.types.html#a2a.compat.v0_3.types.AgentCard" title="a2a.compat.v0_3.types.AgentCard"><span class="pre">AgentCard</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="a2a.client.html#a2a.client.Client" title="a2a.client.Client"><span class="pre">Client</span></a></span></span><a class="headerlink" href="#a2a.client.client_factory.ClientFactory.create_from_url" title="Link to this definition">¶</a></dt>
 <dd><p>Create a <cite>Client</cite> by resolving an <cite>AgentCard</cite> from a URL.</p>
-<p>Resolves the agent card from the given URL using the factory’s
-configured httpx client, then creates a client via <cite>create</cite>.</p>
+<p>Resolves the agent card from the given URL, then creates a client
+via <cite>create</cite>. The card is fetched with <cite>ClientConfig.httpx_client</cite>
+when one is set, otherwise with a temporary client.</p>
 <p>If the agent card is already available, use <cite>create</cite> directly
 instead.</p>
 <dl class="field-list simple">
@@ -504,6 +507,12 @@ signatures.</p></li>
 <dd class="field-even"><p>A <cite>Client</cite> object.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="a2a.client.client_factory.major_minor">
+<span class="sig-prename descclassname"><span class="pre">a2a.client.client_factory.</span></span><span class="sig-name descname"><span class="pre">major_minor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#a2a.client.client_factory.major_minor" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the <cite>Major.Minor</cite> release of a protocol version.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -582,6 +591,7 @@ as typically these servers won’t expose a well known path card.</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#a2a.client.client_factory.create_client"><code class="docutils literal notranslate"><span class="pre">create_client()</span></code></a></li>
+<li><a class="reference internal" href="#a2a.client.client_factory.major_minor"><code class="docutils literal notranslate"><span class="pre">major_minor()</span></code></a></li>
 <li><a class="reference internal" href="#a2a.client.client_factory.minimal_agent_card"><code class="docutils literal notranslate"><span class="pre">minimal_agent_card()</span></code></a></li>
 </ul>
 </li>
