@@ -1294,7 +1294,6 @@ collaborate effectively with each other and with users.
 - [Optimizely Inc](https://www.optimizely.com/)
 - [Oracle / NetSuite](https://www.oracle.com/netsuite)
 - [Palo Alto Networks](https://www.paloaltonetworks.com/)
-- [PancakeAI](https://www.pancakeai.tech/)
 - [ParkourSC](https://www.parkoursc.com/)
 - [Pendo](https://www.pendo.io)
 - [PerfAI.ai](https://perfai.ai)
@@ -9199,6 +9198,9 @@ class a2a.client.client_factory.ClientFactory(config: ClientConfig | None = None
    This aligns the client configuration with the server's
    capabilities.
 
+   Each created client gets its own *httpx.AsyncClient* and closes it
+   on *close()*, unless *ClientConfig.httpx_client* is set.
+
    create(card: AgentCard, interceptors: list[ClientCallInterceptor] | None = None) -> Client
 
       Create a new *Client* for the provided *AgentCard*.
@@ -9225,8 +9227,10 @@ class a2a.client.client_factory.ClientFactory(config: ClientConfig | None = None
 
       Create a *Client* by resolving an *AgentCard* from a URL.
 
-      Resolves the agent card from the given URL using the factory's
-      configured httpx client, then creates a client via *create*.
+      Resolves the agent card from the given URL, then creates a
+      client via *create*. The card is fetched with
+      *ClientConfig.httpx_client* when one is set, otherwise with a
+      temporary client.
 
       If the agent card is already available, use *create* directly
       instead.
@@ -9286,6 +9290,10 @@ async a2a.client.client_factory.create_client(agent: str | AgentCard, client_con
 
    Returns:
       A *Client* object.
+
+a2a.client.client_factory.major_minor(version: str) -> tuple[int, int]
+
+   Returns the *Major.Minor* release of a protocol version.
 
 a2a.client.client_factory.minimal_agent_card(url: str, transports: list[str] | None = None) -> AgentCard
 
@@ -9612,7 +9620,7 @@ async a2a.client.transports.http_helpers.send_http_stream_request(httpx_client: 
 a2a.client.transports.jsonrpc module
 ************************************
 
-class a2a.client.transports.jsonrpc.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str)
+class a2a.client.transports.jsonrpc.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -9624,7 +9632,7 @@ class a2a.client.transports.jsonrpc.JsonRpcTransport(httpx_client: AsyncClient, 
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
@@ -9674,7 +9682,7 @@ class a2a.client.transports.jsonrpc.JsonRpcTransport(httpx_client: AsyncClient, 
 a2a.client.transports.rest module
 *********************************
 
-class a2a.client.transports.rest.RestTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str)
+class a2a.client.transports.rest.RestTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -9686,7 +9694,7 @@ class a2a.client.transports.rest.RestTransport(httpx_client: AsyncClient, agent_
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
@@ -10083,7 +10091,7 @@ class a2a.client.transports.GrpcTransport(channel: Channel, agent_card: AgentCar
 
       Reconnects to get task updates.
 
-class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str)
+class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -10095,7 +10103,7 @@ class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_ca
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
@@ -10140,7 +10148,7 @@ class a2a.client.transports.JsonRpcTransport(httpx_client: AsyncClient, agent_ca
 
       Reconnects to get task updates.
 
-class a2a.client.transports.RestTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str)
+class a2a.client.transports.RestTransport(httpx_client: AsyncClient, agent_card: AgentCard, url: str, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -10152,7 +10160,7 @@ class a2a.client.transports.RestTransport(httpx_client: AsyncClient, agent_card:
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
@@ -10487,6 +10495,8 @@ Submodules
     * "ClientFactory.register()"
 
   * "create_client()"
+
+  * "major_minor()"
 
   * "minimal_agent_card()"
 
@@ -10943,6 +10953,9 @@ class a2a.client.ClientFactory(config: ClientConfig | None = None)
    This aligns the client configuration with the server's
    capabilities.
 
+   Each created client gets its own *httpx.AsyncClient* and closes it
+   on *close()*, unless *ClientConfig.httpx_client* is set.
+
    create(card: AgentCard, interceptors: list[ClientCallInterceptor] | None = None) -> Client
 
       Create a new *Client* for the provided *AgentCard*.
@@ -10969,8 +10982,10 @@ class a2a.client.ClientFactory(config: ClientConfig | None = None)
 
       Create a *Client* by resolving an *AgentCard* from a URL.
 
-      Resolves the agent card from the given URL using the factory's
-      configured httpx client, then creates a client via *create*.
+      Resolves the agent card from the given URL, then creates a
+      client via *create*. The card is fetched with
+      *ClientConfig.httpx_client* when one is set, otherwise with a
+      temporary client.
 
       If the agent card is already available, use *create* directly
       instead.
@@ -12124,7 +12139,7 @@ class a2a.compat.v0_3.jsonrpc_adapter.JSONRPC03Adapter(http_handler: RequestHand
 a2a.compat.v0_3.jsonrpc_transport module
 ****************************************
 
-class a2a.compat.v0_3.jsonrpc_transport.CompatJsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard | None, url: str)
+class a2a.compat.v0_3.jsonrpc_transport.CompatJsonRpcTransport(httpx_client: AsyncClient, agent_card: AgentCard | None, url: str, *, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -12136,7 +12151,7 @@ class a2a.compat.v0_3.jsonrpc_transport.CompatJsonRpcTransport(httpx_client: Asy
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
@@ -12258,7 +12273,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb949e96a80>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec07bc2990>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -12284,7 +12299,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb949e96990>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec07bc28a0>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -12328,7 +12343,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb949e96a80>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec07bc2990>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -12348,7 +12363,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb949e96990>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec07bc28a0>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -12607,7 +12622,7 @@ class a2a.compat.v0_3.rest_handler.REST03Handler(request_handler: RequestHandler
 a2a.compat.v0_3.rest_transport module
 *************************************
 
-class a2a.compat.v0_3.rest_transport.CompatRestTransport(httpx_client: AsyncClient, agent_card: AgentCard | None, url: str, subscribe_method_override: str | None = None)
+class a2a.compat.v0_3.rest_transport.CompatRestTransport(httpx_client: AsyncClient, agent_card: AgentCard | None, url: str, subscribe_method_override: str | None = None, *, is_shared_httpx: bool = False)
 
    Bases: "ClientTransport"
 
@@ -12619,7 +12634,7 @@ class a2a.compat.v0_3.rest_transport.CompatRestTransport(httpx_client: AsyncClie
 
    async close() -> None
 
-      Closes the httpx client.
+      Closes the httpx client unless it is shared.
 
    async create_task_push_notification_config(request: TaskPushNotificationConfig, *, context: ClientCallContext | None = None) -> TaskPushNotificationConfig
 
@@ -16737,6 +16752,12 @@ a2a.helpers.proto_helpers.get_data_parts(parts: Sequence[Part]) -> list[Any]
    Each returned element is the Python object obtained by converting
    the "google.protobuf.Value" back via "MessageToDict".
 
+   Note:
+
+     Whole numbers come back as floats ("4326" becomes "4326.0")
+     because "google.protobuf.Value" stores numbers as doubles. For
+     fields you model as integers, narrow floats with "is_integer()".
+
    Parameters:
       **parts** -- A sequence of "Part" objects.
 
@@ -16826,7 +16847,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16851,6 +16872,12 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
 
    Creates a Part with structured data (google.protobuf.Value).
 
+   Note:
+
+     "google.protobuf.Value" stores every number as a double, so whole
+     numbers lose their integer type here and are read back as floats
+     ("4326" becomes "4326.0"). See "get_data_parts".
+
    Parameters:
       * **data** -- JSON-serializable data to embed (dict, list, str,
         etc.).
@@ -16861,7 +16888,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16914,7 +16941,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -16949,7 +16976,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09c3b850>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -16965,7 +16992,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -16982,7 +17009,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0350>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09c3b850>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17034,7 +17061,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -17164,6 +17191,12 @@ a2a.helpers.get_data_parts(parts: Sequence[Part]) -> list[Any]
    Each returned element is the Python object obtained by converting
    the "google.protobuf.Value" back via "MessageToDict".
 
+   Note:
+
+     Whole numbers come back as floats ("4326" becomes "4326.0")
+     because "google.protobuf.Value" stores numbers as doubles. For
+     fields you model as integers, narrow floats with "is_integer()".
+
    Parameters:
       **parts** -- A sequence of "Part" objects.
 
@@ -17253,7 +17286,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -17278,6 +17311,12 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
 
    Creates a Part with structured data (google.protobuf.Value).
 
+   Note:
+
+     "google.protobuf.Value" stores every number as a double, so whole
+     numbers lose their integer type here and are read back as floats
+     ("4326" becomes "4326.0"). See "get_data_parts".
+
    Parameters:
       * **data** -- JSON-serializable data to embed (dict, list, str,
         etc.).
@@ -17288,7 +17327,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -17341,7 +17380,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -17376,7 +17415,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0350>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09c3b850>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -17392,7 +17431,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17409,7 +17448,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0350>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09c3b850>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17461,7 +17500,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0550> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09729f50> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -17751,7 +17790,7 @@ Data Flow and Event Handling: 1. Producer
      requests, creating a temporary subscription that yields events
      and automatically finishes once the request is completed.
 
-class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None, event_stream: TaskEventStream | None = None)
+class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExecutor, task_id: str, task_manager: TaskManager, push_sender: PushNotificationSender | None = None, on_cleanup: Callable[[ActiveTask], None] | None = None, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
 
    Bases: "object"
 
@@ -17805,13 +17844,29 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
       started. It fires the cancellation signal and blocks until the
       consumer processes the cancellation events.
 
+   cancel_idle_release() -> None
+
+      Stops the timer that releases a parked interrupted task, if any.
+
    async enqueue_request(request_context: RequestContext) -> UUID
 
       Enqueues a request for the active task to process.
 
+      The caller's contextvars are captured so the producer runs
+      *AgentExecutor.execute* in the context of the request that sent
+      the message, not the request that started the producer.
+
    async get_task() -> Task
 
       Get task from db.
+
+   property is_finished: bool
+
+      Whether the task's active lifecycle has ended.
+
+   schedule_idle_release() -> None
+
+      (Re)starts the timer that releases a parked interrupted task.
 
    async start(call_context: ServerCallContext, create_task_if_missing: bool = False) -> None
 
@@ -17850,7 +17905,7 @@ class a2a.server.agent_execution.active_task.EventConsumer(active_task: ActiveTa
 a2a.server.agent_execution.active_task_registry module
 ******************************************************
 
-class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, push_sender: PushNotificationSender | None = None, event_stream: TaskEventStream | None = None)
+class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, push_sender: PushNotificationSender | None = None, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
 
    Bases: "object"
 
@@ -18132,9 +18187,15 @@ Submodules
 
     * "ActiveTask.cancel()"
 
+    * "ActiveTask.cancel_idle_release()"
+
     * "ActiveTask.enqueue_request()"
 
     * "ActiveTask.get_task()"
+
+    * "ActiveTask.is_finished"
+
+    * "ActiveTask.schedule_idle_release()"
 
     * "ActiveTask.start()"
 
@@ -20190,7 +20251,7 @@ class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(a
 a2a.server.request_handlers.default_request_handler_v2 module
 *************************************************************
 
-class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None)
+class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
 
    Bases: "RequestHandler"
 
@@ -20201,6 +20262,11 @@ class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandl
    delegates event streaming to an in-memory *ActiveTaskRegistry*.
    Passing a non-"None" value emits a *DeprecationWarning* and logs a
    warning.
+
+   "interrupted_task_timeout" releases the *ActiveTask* of a task idle
+   in "input-required" or "auth-required" after that many seconds; a
+   follow-up recreates it from the store. "None" (default) never
+   releases; any other value must be greater than 0.
 
    async aclose() -> None
 
@@ -20914,7 +20980,7 @@ a2a.server.request_handlers.DefaultRequestHandler
 
    alias of "DefaultRequestHandlerV2"
 
-class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None)
+class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
 
    Bases: "RequestHandler"
 
@@ -20925,6 +20991,11 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
    delegates event streaming to an in-memory *ActiveTaskRegistry*.
    Passing a non-"None" value emits a *DeprecationWarning* and logs a
    warning.
+
+   "interrupted_task_timeout" releases the *ActiveTask* of a task idle
+   in "input-required" or "auth-required" after that many seconds; a
+   follow-up recreates it from the store. "None" (default) never
+   releases; any other value must be greater than 0.
 
    async aclose() -> None
 
@@ -21990,6 +22061,9 @@ class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(
    async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification for an event if configuration exists.
+
+      Best-effort by design: failures to read the configuration store
+      or to deliver a notification are logged and do not raise.
 </file>
 
 <file path="sdk/python/a2a.server.tasks.copying_task_store.txt">
@@ -22278,6 +22352,10 @@ class a2a.server.tasks.push_notification_sender.PushNotificationSender
    abstractmethod async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification containing the latest task state.
+
+      Implementations are treated as best-effort: the framework
+      catches and logs any exception raised here, so a failure never
+      affects the task lifecycle or the event stream.
 </file>
 
 <file path="sdk/python/a2a.server.tasks.result_aggregator.txt">
@@ -22637,7 +22715,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09c3b850>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22868,6 +22946,9 @@ class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, con
 
       Sends a push notification for an event if configuration exists.
 
+      Best-effort by design: failures to read the configuration store
+      or to deliver a notification are logged and do not raise.
+
 class a2a.server.tasks.DatabasePushNotificationConfigStore(engine: ~sqlalchemy.ext.asyncio.engine.AsyncEngine, create_table: bool = True, table_name: str = 'push_notification_configs', encryption_key: str | bytes | None = None, owner_resolver: ~collections.abc.Callable[[~a2a.server.context.ServerCallContext], str] = <function resolve_user_scope>, core_to_model_conversion: ~collections.abc.Callable[[str, ~a2a_pb2.TaskPushNotificationConfig, str, Fernet | None], ~a2a.server.models.PushNotificationConfigModel] | None = None, model_to_core_conversion: ~collections.abc.Callable[[~a2a.server.models.PushNotificationConfigModel], ~a2a_pb2.TaskPushNotificationConfig] | None = None)
 
    Bases: "PushNotificationConfigStore"
@@ -23087,6 +23168,10 @@ class a2a.server.tasks.PushNotificationSender
    abstractmethod async send_notification(task_id: str, event: Task | TaskStatusUpdateEvent | TaskArtifactUpdateEvent) -> None
 
       Sends a push notification containing the latest task state.
+
+      Implementations are treated as best-effort: the framework
+      catches and logs any exception raised here, so a failure never
+      affects the task lifecycle or the event stream.
 
 class a2a.server.tasks.ResultAggregator(task_manager: TaskManager)
 
@@ -23411,7 +23496,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fb94b4f0350>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7fec09c3b850>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -24438,6 +24523,8 @@ Subpackages
 
       * "create_client()"
 
+      * "major_minor()"
+
       * "minimal_agent_card()"
 
     * a2a.client.errors module
@@ -25214,6 +25301,8 @@ Subpackages
 
       * "normalize_large_integers_to_strings()"
 
+      * "parse_lenient()"
+
       * "parse_params()"
 
       * "parse_string_integers_in_dict()"
@@ -25223,6 +25312,8 @@ Subpackages
       * "validate_proto_required_fields()"
 
       * "validation_errors_to_bad_request()"
+
+      * "warn_on_missing_required_fields()"
 
     * a2a.utils.push_url_validator module
 
@@ -26212,6 +26303,20 @@ a2a.utils.proto_utils.normalize_large_integers_to_strings(value: Any, max_safe_d
    Returns:
       A normalized value.
 
+a2a.utils.proto_utils.parse_lenient(data: dict[str, Any] | str | bytes, message: _MessageT) -> _MessageT
+
+   Parses ProtoJSON into message, ignoring unrecognized fields.
+
+   Parameters:
+      * **data** -- A decoded JSON object, or raw ProtoJSON
+        text/bytes.
+
+      * **message** -- The message to parse into. Mutated in place and
+        returned.
+
+   Returns:
+      The parsed message.
+
 a2a.utils.proto_utils.parse_params(params: QueryParams, message: Message) -> None
 
    Converts REST query parameters back into a Protobuf message.
@@ -26269,6 +26374,25 @@ a2a.utils.proto_utils.validate_proto_required_fields(msg: Message) -> None
 a2a.utils.proto_utils.validation_errors_to_bad_request(errors: list[ValidationDetail]) -> BadRequest
 
    Convert validation error details to a gRPC BadRequest proto.
+
+a2a.utils.proto_utils.warn_on_missing_required_fields(msg: Message, source: str) -> bool
+
+   Log a warning if fields marked as REQUIRED are missing or empty.
+
+   Unlike *validate_proto_required_fields*, this never raises, so it
+   can surface spec violations without breaking callers that currently
+   rely on non-compliant messages.
+
+   Parameters:
+      * **msg** -- The Protobuf message to check.
+
+      * **source** -- Where the message was passed in, used in the log
+        message.
+
+   Returns:
+      True if every REQUIRED field is set, False otherwise. Objects
+      that are not Protobuf messages (for example test doubles) are
+      not checked.
 </file>
 
 <file path="sdk/python/a2a.utils.push_url_validator.txt">
@@ -26282,14 +26406,14 @@ async a2a.utils.push_url_validator.validate_push_notification_url(url: str) -> b
    Return True if a push-notification URL is safe to fetch.
 
    Blocks non-HTTP(S) schemes and hosts that resolve to loopback,
-   link-local, private, reserved, multicast, or unspecified addresses
-   (e.g. 169.254.169.254 cloud metadata, internal services). A host
-   that cannot be resolved is rejected: the POST would fail anyway,
-   and failing closed avoids treating resolution errors as a bypass.
+   link-local, private, shared (100.64.0.0/10), reserved, multicast,
+   or unspecified addresses (e.g. 169.254.169.254 cloud metadata,
+   internal services). A host that cannot be resolved is rejected: the
+   POST would fail anyway, and failing closed avoids treating
+   resolution errors as a bypass.
 
-   IPv4-mapped IPv6 forms are covered: "ipaddress" maps them to the
-   underlying IPv4 address, so the "is_private"/"is_loopback" checks
-   apply to the mapped value.
+   IPv4-mapped IPv6 forms are judged as the IPv4 address they carry,
+   so the private, shared, and loopback checks apply to that address.
 
    Uses the running event-loop resolver so request handlers and the
    sender stay non-blocking. Deployments can pass this function as
@@ -26721,6 +26845,8 @@ Submodules
 
   * "normalize_large_integers_to_strings()"
 
+  * "parse_lenient()"
+
   * "parse_params()"
 
   * "parse_string_integers_in_dict()"
@@ -26730,6 +26856,8 @@ Submodules
   * "validate_proto_required_fields()"
 
   * "validation_errors_to_bad_request()"
+
+  * "warn_on_missing_required_fields()"
 
 * a2a.utils.push_url_validator module
 
