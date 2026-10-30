@@ -823,6 +823,10 @@ message GetTaskRequest {
   // If the task's current generation already exceeds this value the server
   // MUST return immediately.
   optional int64 current_generation = 4;
+  // Optional. If true, the server omits artifacts from the returned task,
+  // allowing a lightweight status fetch. Defaults to false (artifacts
+  // included) to preserve existing behavior.
+  bool exclude_artifacts = 6;
 }
 
 // Parameters for listing tasks with optional filtering criteria.
