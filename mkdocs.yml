@@ -168,6 +168,12 @@ plugins:
   - search
   - macros:
       module_name: .mkdocs/macros
+      # Without this, mkdocs-macros catches a failing macro and renders the
+      # exception into the page while the build still exits 0, which is how
+      # `Error: Message PushNotificationConfig not found.` reached the
+      # published specification (#1676). A macro that cannot resolve a proto
+      # type is a build failure, not page content.
+      on_error_fail: true
   - redirects:
       redirect_maps:
         "announcing-1.0.md": "blog/posts/announcing-1.0.md"
