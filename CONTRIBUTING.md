@@ -57,6 +57,16 @@ The A2A documentation is built using [MkDocs](https://www.mkdocs.org/) with the 
 3. **View the documentation:**
     Open [http://localhost:8000](http://localhost:8000) in your browser.
 
+### Verify the Java Quickstart
+
+With a JDK 17+ and Maven 3.9+ installed, run:
+
+```bash
+python scripts/test_java_quickstart.py
+```
+
+The script extracts the tutorial's source files into a temporary directory, builds the server and client, and checks Agent Card discovery and the greeting response. It requires port `9999` to be free and downloads Maven dependencies, but makes no model calls. It stops its server and removes the temporary project when finished.
+
 ## Code Standards
 
 ### Linting
