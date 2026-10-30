@@ -483,7 +483,7 @@ A key-value map for passing horizontally applicable context or parameters with c
 | Name             | Description                                                                                                                                             | Example Value                                                                                 |
 | :--------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------- |
 | `A2A-Extensions` | Comma-separated list of extension URIs that the client wants to use for the request                                                                     | `https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1` |
-| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `0.3`                                                                                         |
+| `A2A-Version`    | The A2A protocol version that the client is using. If the version is not supported, the agent returns [`VersionNotSupportedError`](#332-error-handling) | `1.0`                                                                                         |
 
 As service parameter names MAY need to co-exist with other parameters defined by the underlying transport protocol or infrastructure, all service parameters defined by this specification will be prefixed with `a2a-`.
 
@@ -2285,7 +2285,7 @@ POST /rpc HTTP/1.1
 Host: agent.example.com
 Content-Type: application/json
 Authorization: Bearer token
-A2A-Version: 0.3
+A2A-Version: 1.0
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
 
 {
@@ -2560,7 +2560,7 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 // Go example using gRPC metadata
 md := metadata.Pairs(
     "authorization", "Bearer token",
-    "a2a-version", "0.3",
+    "a2a-version", "1.0",
     "a2a-extensions", "https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1",
 )
 ctx := metadata.NewOutgoingContext(context.Background(), md)
@@ -2798,7 +2798,7 @@ POST /message:send HTTP/1.1
 Host: agent.example.com
 Content-Type: application/a2a+json
 Authorization: Bearer token
-A2A-Version: 0.3
+A2A-Version: 1.0
 A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.org/extensions/citations/v1
 
 {
@@ -3323,12 +3323,12 @@ A2A Protocol Working Group, <a2a-protocol@example.org>
 **Specification document:** Section 3.2.5 of the A2A Protocol Specification
 
 **Related information:**
-The A2A-Version header field indicates the A2A protocol version that the client is using. The value MUST be in the format `Major.Minor` (e.g., "0.3"). If the version is not supported by the agent, the agent returns a `VersionNotSupportedError`.
+The A2A-Version header field indicates the A2A protocol version that the client is using. The value MUST be in the format `Major.Minor` (e.g., "1.0"). If the version is not supported by the agent, the agent returns a `VersionNotSupportedError`.
 
 **Example:**
 
 ```text
-A2A-Version: 0.3
+A2A-Version: 1.0
 ```
 
 #### 14.2.2. A2A-Extensions Header
