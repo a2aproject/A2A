@@ -2130,20 +2130,36 @@ The protected header **MAY** include:
 
 **Example:**
 
-Given a canonical Agent Card payload and signing key, the signature generation produces:
+This example signs the sample Agent Card in [Section 8.5](#85-sample-agent-card) with a published test key, so that it can be verified from this specification alone. The test key exists only for this example and **MUST NOT** be trusted for any other purpose.
+
+Test key (P-256, JWK). Its private scalar `d` is the SHA-256 digest of the UTF-8 string `A2A specification section 8.4.2 example key. Test only. Never trust it.`, read as a big-endian integer and reduced modulo the P-256 group order, so both halves can be regenerated from this text:
+
+```json
+{"kty":"EC","crv":"P-256","kid":"spec-example-es256","alg":"ES256","use":"sig","x":"-0LtbefxkOhN1XC5yQplsJZ_n-PZ_caaSDonZcrvHsQ","y":"Sp9W2p5yFcFI-WjiQAZJXXnnVaSKcLHrx46GBoioF5Q","d":"1kKNrvvXEnW-inqaAV69Hd4tvDeaPDfufjmmmqJid28"}
+```
+
+Covered payload: the RFC 8785 form of the Section 8.5 card with the `signatures` field excluded, printed in full (2645 bytes, SHA-256 `cda4b9ad17abe129c698c9a3de627ef8a7aed8044a017132fc0eecf4272132b0`):
+
+```json
+{"capabilities":{"extendedAgentCard":true,"pushNotifications":true,"streaming":true},"defaultInputModes":["application/json","text/plain"],"defaultOutputModes":["application/json","image/png"],"description":"Provides advanced route planning, traffic analysis, and custom map generation services. This agent can calculate optimal routes, estimate travel times considering real-time traffic, and create personalized maps with points of interest.","documentationUrl":"https://docs.examplegeoservices.com/georoute-agent/api","iconUrl":"https://georoute-agent.example.com/icon.png","name":"GeoSpatial Route Planner Agent","provider":{"organization":"Example Geo Services Inc.","url":"https://www.examplegeoservices.com"},"securityRequirements":[{"schemes":{"google":{"list":["openid","profile","email"]}}}],"securitySchemes":{"google":{"openIdConnectSecurityScheme":{"openIdConnectUrl":"https://accounts.google.com/.well-known/openid-configuration"}}},"skills":[{"description":"Calculates the optimal driving route between two or more locations, taking into account real-time traffic conditions, road closures, and user preferences (e.g., avoid tolls, prefer highways).","examples":["Plan a route from '1600 Amphitheatre Parkway, Mountain View, CA' to 'San Francisco International Airport' avoiding tolls.","{\"origin\": {\"lat\": 37.422, \"lng\": -122.084}, \"destination\": {\"lat\": 37.7749, \"lng\": -122.4194}, \"preferences\": [\"avoid_ferries\"]}"],"id":"route-optimizer-traffic","inputModes":["application/json","text/plain"],"name":"Traffic-Aware Route Optimizer","outputModes":["application/json","application/vnd.geo+json","text/html"],"tags":["maps","routing","navigation","directions","traffic"]},{"description":"Creates custom map images or interactive map views based on user-defined points of interest, routes, and style preferences. Can overlay data layers.","examples":["Generate a map of my upcoming road trip with all planned stops highlighted.","Show me a map visualizing all coffee shops within a 1-mile radius of my current location."],"id":"custom-map-generator","inputModes":["application/json"],"name":"Personalized Map Generator","outputModes":["image/png","image/jpeg","application/json","text/html"],"tags":["maps","customization","visualization","cartography"]}],"supportedInterfaces":[{"protocolBinding":"JSONRPC","protocolVersion":"1.0","url":"https://georoute-agent.example.com/a2a/v1"},{"protocolBinding":"GRPC","protocolVersion":"1.0","url":"https://georoute-agent.example.com/a2a/grpc"},{"protocolBinding":"HTTP+JSON","protocolVersion":"1.0","url":"https://georoute-agent.example.com/a2a/json"}],"version":"1.2.0"}
+```
+
+Protected header, as serialized before base64url encoding:
+
+```json
+{"alg":"ES256","typ":"JOSE","kid":"spec-example-es256"}
+```
+
+The JWS Signing Input is the `protected` value, a period, and the base64url-encoded payload (its SHA-256 is `5c4cb771fc9373cfd17198a512c0bcbb0e6e2cddcfd101f9a3dffce6b9b6aa8a`). Signing it with the test key using deterministic ECDSA as defined in [RFC 6979](https://datatracker.ietf.org/doc/html/rfc6979) produces:
 
 ```json
 {
-  "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
-  "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
+  "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJzcGVjLWV4YW1wbGUtZXMyNTYifQ",
+  "signature": "8Il8ZOjO5TQjmG-GjJkCEo0_G-usIZOYfUJqZl98N8tbC7rNEJAif4dGilRhY0bTVM9ESPhPzvwArxiQoFfixw"
 }
 ```
 
-Where the `protected` value decodes to:
-
-```json
-{"alg":"ES256","typ":"JOSE","kid":"key-1","jku":"https://example.com/agent/jwks.json"}
-```
+An implementation can check itself against this example in three ways: its canonical form of the Section 8.5 card equals the covered payload above, byte for byte; the signature above verifies with the public part of the test key; and a signature it generates with the private part verifies. Generated signatures are checked by verification, not by byte comparison.
 
 #### 8.4.3. Signature Verification
 
@@ -2234,8 +2250,8 @@ Clients verifying Agent Card signatures **MUST**:
   ],
   "signatures": [
     {
-      "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJrZXktMSIsImprdSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vYWdlbnQvandrcy5qc29uIn0",
-      "signature": "QFdkNLNszlGj3z3u0YQGt_T9LixY3qtdQpZmsTdDHDe3fXV9y9-B3m2-XgCpzuhiLt8E0tV6HXoZKHv4GtHgKQ"
+      "protected": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpPU0UiLCJraWQiOiJzcGVjLWV4YW1wbGUtZXMyNTYifQ",
+      "signature": "8Il8ZOjO5TQjmG-GjJkCEo0_G-usIZOYfUJqZl98N8tbC7rNEJAif4dGilRhY0bTVM9ESPhPzvwArxiQoFfixw"
     }
   ]
 }
