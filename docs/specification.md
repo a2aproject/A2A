@@ -297,8 +297,8 @@ Establishes a streaming connection to receive updates for an existing task.
 **Outputs:**
 
 - [`Stream Response`](#323-stream-response) object containing:
-    - Initial response: [`Task`](#411-task) object with current state
-    - Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects
+    - Initial response: [`Task`](#411-task) object with current state (always sent when `lastSeenGeneration` is unset, and MAY also be sent when `lastSeenGeneration` is set)
+    - Stream of [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent), and (for `A2A-Version: 1.1` or later) [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) objects
 
 **Errors:**
 
@@ -310,7 +310,9 @@ Establishes a streaming connection to receive updates for an existing task.
 
 The operation enables real-time monitoring of task progress and can be used with any task that is not in a terminal state. The stream MUST terminate when the task reaches a terminal state (`TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED`, `TASK_STATE_REJECTED`).
 
-The operation MUST return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
+When `lastSeenGeneration` is **unset**, the operation **MUST** return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
+
+When `lastSeenGeneration` is **set**, it acts as a **hint**: the server **MUST** either continue the stream from that `generation` or open with a `Task` snapshot. Servers that do not track per-generation history simply open with a snapshot; failing the subscription is not an option. Clients determine which path the server took by inspecting whether the first event on the stream is a `Task`.
 
 #### 3.1.7. Create Push Notification Config
 
@@ -461,24 +463,25 @@ Each payload names the task it applies to, so `StreamRequest` carries no task id
 
 The first request of a stream determines what the stream is attached to, and it binds the stream to exactly one task for its lifetime.
 
-- **Opening with `sendMessage` ([`SendMessageRequest`](#321-sendmessagerequest))** sends input immediately. The server appends the message to the task [`timeline`](#328-task-timeline-semantics), then opens with a `Task` snapshot that **already reflects** the appended message, and streams onward from that point. If `message.taskId` is unset, the agent creates the task; if set, it continues that task.
+- **Opening with `request` ([`SendMessageRequest`](#321-sendmessagerequest))** sends input immediately. The server applies the request (appending any `message` to the task [`timeline`](#328-task-timeline-semantics) and applying any `artifactUpdates`), then opens with a `Task` snapshot that **already reflects** the applied request, and streams onward from that point. If no `taskId` is provided, the agent creates the task (or, as for [Send Streaming Message](#312-send-streaming-message), responds with a [`Message`](#414-message) and closes the stream without creating one); if set, it continues that task.
 - **Opening with `subscribe` ([`SubscribeToTaskRequest`](#316-subscribe-to-task))** attaches to the task named by `id` without sending input — for a client that wants to observe, or to resume observing after a disconnect.
-    - When `lastSeenGeneration` is **set**, the server **MUST NOT** open with a [`Task`](#411-task) snapshot; it replays only the events that follow that `generation` and continues from there.
     - When `lastSeenGeneration` is **unset**, the server **MUST** open with a `Task` snapshot and stream onward from it.
-    - If the server cannot replay from the requested `generation` (for example it no longer retains it), it **MUST** open with a `Task` snapshot instead of failing, so the client resynchronises.
+    - When `lastSeenGeneration` is **set**, it acts as a **hint**: the server **MUST** either continue the stream from that `generation` or open with a [`Task`](#411-task) snapshot. Servers that do not track per-generation history simply open with a snapshot; failing the subscription is not an option. Clients determine which path the server took by inspecting whether the first event on the stream is a `Task`.
 
 `subscribe` is only meaningful as the **first** request of a stream. A server that receives it later **MUST** reject it with a [`StreamError`](#424-streamerror) and keep the stream open.
 
 **Subsequent requests:**
 
 - Later requests apply to the task the stream is bound to. A request naming a different task **MUST** be rejected with a `StreamError`.
-- An uplink call that is not the downlink call MUST return only an acknowledgement — the current [`Task`](#411-task) state — and MUST NOT replay task events. All task events MUST be delivered on the downlink, so a client with both open never receives an event twice.
+- Task events are delivered on the downlink. Where a binding carries input on a separate call from the downlink, that call returns only an acknowledgement — the current [`Task`](#411-task) state — and does not repeat task events, so a client never receives the same event twice.
 - Ordering is by arrival. Each accepted client message is appended to the task [`timeline`](#328-task-timeline-semantics) and advances `generation` (see [Task Generation Semantics](#327-task-generation-semantics)).
 - `SendMessageRequest.configuration` applies only to the request it accompanies. `returnImmediately` is ignored, since the exchange is already streaming. A `taskPushNotificationConfig` supplied here is equivalent to calling [Create Push Notification Config](#317-create-push-notification-config) and is observable through [List Push Notification Configs](#319-list-push-notification-configs) rather than on the event stream.
 
 **Rejecting a single request:**
 
-An agent MAY decline an individual client request — because it is malformed, or because the agent is not accepting input at that moment — without ending the exchange. It does so by emitting a [`StreamError`](#424-streamerror) on the downlink, identifying the rejected request via `referenceId`. The stream remains open and the client MAY correct and retry. Only conditions that make the channel itself unusable terminate the stream as a transport-level error.
+An agent MAY decline an individual client request — because it is malformed, or because the agent is not accepting input at that moment — without terminating the stream. It does so by emitting a [`StreamError`](#424-streamerror) identifying the rejected request via `referenceId`. The stream remains open and the client MAY correct and retry. Only conditions that make the channel itself unusable terminate the stream as a transport-level error.
+
+A `StreamError` is a stream-local, in-band rejection: it **MUST NOT** mutate task state, **MUST NOT** be appended to `Task.timeline`, and **MUST NOT** advance `Task.generation`. It is returned only to the caller that submitted the rejected request, and **MUST NOT** be delivered to other subscribers or to push notification webhooks. How it reaches that caller is defined by the protocol binding.
 
 Because rejection is per request, an agent that accepts input while `TASK_STATE_WORKING` is not committing to accept every message; it MAY decline individual ones while continuing to work.
 
@@ -492,11 +495,12 @@ This section defines common parameter objects used across multiple operations.
 
 **Client-written artifacts:**
 
-When `AgentCard.capabilities.userArtifacts` is `true`, a client MAY send one or more [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects in `SendMessageRequest.artifactUpdates` — over unary [Send Message](#311-send-message), [Send Streaming Message](#312-send-streaming-message), or [Send Live Message](#3112-send-live-message) (`StreamRequest.sendMessage`). This makes the interaction symmetrical: [`Message`](#414-message) objects carry control and coordination turns in the task [`timeline`](#328-task-timeline-semantics), while [`Artifact`](#417-artifact) objects carry work items from either party (`role` is `ROLE_USER` for client-written artifacts and `ROLE_AGENT` by default for agent outputs).
+When `AgentCard.capabilities.userArtifacts` is `true`, a client MAY send one or more [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects in `SendMessageRequest.artifactUpdates` — over unary [Send Message](#311-send-message), [Send Streaming Message](#312-send-streaming-message), or [Send Live Message](#3112-send-live-message) (`StreamRequest.request`). This makes the interaction symmetrical: [`Message`](#414-message) objects carry control and coordination turns in the task [`timeline`](#328-task-timeline-semantics), while [`Artifact`](#417-artifact) objects carry work items from either party (`role` is `ROLE_USER` for client-written artifacts and `ROLE_AGENT` by default for agent outputs).
 
+- **Artifact identity and `role`:** `artifactId` remains unique within a task, and it alone identifies an artifact for storage in `Task.artifacts`, `append: true` chunk matching, and `append: false` replacement. `role` records **who originally created** the artifact: servers **MUST** populate it on the stored `Artifact` and on any emitted `TaskArtifactUpdateEvent.artifact`, setting `ROLE_USER` for client-written artifacts and `ROLE_AGENT` for agent outputs, and consumers **MUST** treat `ROLE_UNSPECIFIED` as `ROLE_AGENT` for compatibility with artifacts written before 1.1. When an update targets an existing `artifactId` whose recorded `role` differs from the sender's, the agent decides whether the artifact may be worked on collaboratively; if not, it **MUST** reject the update (`InvalidParamsError` on unary or server-streaming calls, or [`StreamError`](#424-streamerror) on a live stream). To avoid accidental collisions between independently generated identifiers, clients **MAY** use collision-resistant `artifactId`s (for example a UUID, or an identifier distinctly prefixed to mark client origin).
 - **Creating vs. continuing a task:** `message` **MUST** be present when creating a new task (when no `taskId` is provided), as the agent requires a control message to know what to do with any accompanying `artifactUpdates`. When `artifactUpdates` are sent alongside a task-creating `message`, their `taskId` and `contextId` MAY be omitted and are assigned by the server. `message` MAY be omitted only when sending `artifactUpdates` to an existing task (`taskId` set on each update).
 - **Ordering and non-task responses:** When `message` and `artifactUpdates` are sent together and a `Task` is created or updated, the server appends `message` to `timeline` first and then applies `artifactUpdates` in list order, advancing `generation` for each. If the agent responds with a direct `Message` without creating a `Task`, neither `message` nor `artifactUpdates` is persisted in a task (matching the behaviour for `message` alone).
-- **Chunking and `generation` ownership:** Chunking works as it does for agent-written artifacts (`append` adds to the artifact with the same ID, `lastChunk` marks the final chunk). The client does not own `generation`: clients **MUST** leave `generation` unset on each sent `TaskArtifactUpdateEvent`, servers **MUST** ignore any value received, and the server assigns the authoritative value when broadcasting the resulting event downstream — placing the artifact in history via `startGeneration` and `endGeneration` (see [Task Timeline Semantics](#328-task-timeline-semantics)).
+- **Chunking and `generation` ownership:** Chunking works as it does for agent-written artifacts (`append` adds to the artifact with the same `artifactId`, `lastChunk` marks the final chunk). The client does not own `generation`: clients **MUST** leave `generation` unset on each sent `TaskArtifactUpdateEvent`, servers **MUST** ignore any value received, and the server assigns the authoritative value when broadcasting the resulting event downstream — placing the artifact in history via `startGeneration` and `endGeneration` (see [Task Timeline Semantics](#328-task-timeline-semantics)).
 
 #### 3.2.2. SendMessageConfiguration
 
