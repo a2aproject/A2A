@@ -915,11 +915,9 @@ message SubscribeToTaskRequest {
   // The resource ID of the task to subscribe to.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
   // Optional. A hint to resume after this `generation`: when set, the server
-  // MUST either replay all events that followed it without an opening `Task`
-  // snapshot, or ignore the hint, open with the current `Task` snapshot
-  // (including when the server does not retain an event log or no longer
-  // retains that `generation`, rather than failing), and stream onward from it.
-  // When unset, the server MUST open with a `Task` snapshot and stream onward.
+  // MUST either continue the stream from that `generation` or open with a
+  // `Task` snapshot. When unset, the server MUST open with a `Task` snapshot
+  // and stream onward from it.
   optional int64 last_seen_generation = 3;
 }
 
@@ -982,7 +980,7 @@ message StreamResponse {
 // rejects a single client request without terminating the stream, so the client
 // can correct and retry. A `StreamError` does not mutate task state: it is
 // never recorded in `Task.timeline`, never increments `Task.generation`, and is
-// returned only to the caller that sent the rejected request (never broadcast
+// returned only to the caller that sent the rejected request (never delivered
 // to other subscribers or push notification webhooks). Conditions that make the
 // stream itself unusable remain transport-level errors and close the stream as
 // before.

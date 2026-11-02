@@ -312,7 +312,7 @@ The operation enables real-time monitoring of task progress and can be used with
 
 When `lastSeenGeneration` is **unset**, the operation **MUST** return a `Task` object as the first event in the stream, representing the current state of the task at the time of subscription. This prevents a potential loss of information between a call to `GetTask` and calling `SubscribeToTask`.
 
-When `lastSeenGeneration` is **set**, it acts as a **hint**: the server **MUST** either replay all events that followed that `generation` without an opening `Task` snapshot and continue streaming from there, or ignore the hint, open with a `Task` snapshot of the current state (including when the server does not retain an event log or no longer retains that `generation`, rather than failing), and stream onward from that point. Clients determine which path the server took by inspecting whether the first event on the stream is a `Task`.
+When `lastSeenGeneration` is **set**, it acts as a **hint**: the server **MUST** either continue the stream from that `generation` or open with a `Task` snapshot. Servers that do not track per-generation history simply open with a snapshot; failing the subscription is not an option. Clients determine which path the server took by inspecting whether the first event on the stream is a `Task`.
 
 #### 3.1.7. Create Push Notification Config
 
@@ -463,10 +463,10 @@ Each payload names the task it applies to, so `StreamRequest` carries no task id
 
 The first request of a stream determines what the stream is attached to, and it binds the stream to exactly one task for its lifetime.
 
-- **Opening with `request` ([`SendMessageRequest`](#321-sendmessagerequest))** sends input immediately. The server applies the request (appending any `message` to the task [`timeline`](#328-task-timeline-semantics) and applying any `artifactUpdates`), then opens with a `Task` snapshot that **already reflects** the applied request, and streams onward from that point. If no `taskId` is provided, the agent creates the task; if set, it continues that task.
+- **Opening with `request` ([`SendMessageRequest`](#321-sendmessagerequest))** sends input immediately. The server applies the request (appending any `message` to the task [`timeline`](#328-task-timeline-semantics) and applying any `artifactUpdates`), then opens with a `Task` snapshot that **already reflects** the applied request, and streams onward from that point. If no `taskId` is provided, the agent creates the task (or, as for [Send Streaming Message](#312-send-streaming-message), responds with a [`Message`](#414-message) and closes the stream without creating one); if set, it continues that task.
 - **Opening with `subscribe` ([`SubscribeToTaskRequest`](#316-subscribe-to-task))** attaches to the task named by `id` without sending input — for a client that wants to observe, or to resume observing after a disconnect.
     - When `lastSeenGeneration` is **unset**, the server **MUST** open with a `Task` snapshot and stream onward from it.
-    - When `lastSeenGeneration` is **set**, it acts as a **hint**: the server **MUST** either replay all events that followed that `generation` without an opening [`Task`](#411-task) snapshot and continue from there, or ignore the hint, open with a `Task` snapshot of the current state (including when the server does not retain an event log or no longer retains that `generation`, rather than failing), and stream onward from that point. Clients determine which path the server took by inspecting whether the first event on the stream is a `Task`.
+    - When `lastSeenGeneration` is **set**, it acts as a **hint**: the server **MUST** either continue the stream from that `generation` or open with a [`Task`](#411-task) snapshot. Servers that do not track per-generation history simply open with a snapshot; failing the subscription is not an option. Clients determine which path the server took by inspecting whether the first event on the stream is a `Task`.
 
 `subscribe` is only meaningful as the **first** request of a stream. A server that receives it later **MUST** reject it with a [`StreamError`](#424-streamerror) and keep the stream open.
 
@@ -479,9 +479,9 @@ The first request of a stream determines what the stream is attached to, and it 
 
 **Rejecting a single request:**
 
-An agent MAY decline an individual client request — because it is malformed, or because the agent is not accepting input at that moment — without ending the exchange. It does so by emitting a [`StreamError`](#424-streamerror) identifying the rejected request via `referenceId`. The stream remains open and the client MAY correct and retry. Only conditions that make the channel itself unusable terminate the stream as a transport-level error.
+An agent MAY decline an individual client request — because it is malformed, or because the agent is not accepting input at that moment — without terminating the stream. It does so by emitting a [`StreamError`](#424-streamerror) identifying the rejected request via `referenceId`. The stream remains open and the client MAY correct and retry. Only conditions that make the channel itself unusable terminate the stream as a transport-level error.
 
-A `StreamError` is a stream-local, in-band rejection: it **MUST NOT** mutate task state, **MUST NOT** be appended to `Task.timeline`, and **MUST NOT** advance `Task.generation`. On a native-duplex stream it **MUST** be sent only on the stream that submitted the rejected request; on a rejected short-lived HTTP uplink call it **MUST** be returned on that uplink call itself (and is never broadcast to SSE downlinks, other subscribers, or push notification webhooks).
+A `StreamError` is a stream-local, in-band rejection: it **MUST NOT** mutate task state, **MUST NOT** be appended to `Task.timeline`, and **MUST NOT** advance `Task.generation`. It is returned only to the caller that submitted the rejected request, and **MUST NOT** be delivered to other subscribers or to push notification webhooks. How it reaches that caller is defined by the protocol binding.
 
 Because rejection is per request, an agent that accepts input while `TASK_STATE_WORKING` is not committing to accept every message; it MAY decline individual ones while continuing to work.
 
