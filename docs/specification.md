@@ -2174,7 +2174,7 @@ The media type `application/a2a-agent-card+json` identifies a JSON representatio
 
 For more on discovery strategies, see the [Agent Discovery guide](./topics/agent-discovery.md).
 
-A2A Servers are **recommended** to serve the public Agent Card at the root of their declared `AgentInterface.url` — that is, an HTTP GET to that URL returns the Agent Card. This allows clients that already know the full interface URL to retrieve the card without relying on the well-known URI, and is particularly useful for agents hosted at a sub-path (e.g. `proxy.example.com/my-agent/`). See the [Agent Discovery guide: Agent Root Endpoint](./topics/agent-discovery.md#1a-agent-root-endpoint-get-agenturl) for details.
+A2A Servers are **recommended** to serve the public Agent Card at the root of their declared `AgentInterface.url` — that is, an HTTP GET to that URL returns the Agent Card. This allows clients that already know the full interface URL to retrieve the card without relying on the well-known URI, and is particularly useful for agents hosted at a sub-path (e.g. `proxy.example.com/my-agent/`). See the [Agent Discovery guide: Agent Root Endpoint](./topics/agent-discovery.md#2-agent-root-endpoint-get-agenturl) for details.
 
 ### 8.2. Protocol Declaration Requirements
 
