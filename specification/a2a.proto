@@ -325,8 +325,8 @@ message Message {
 
 // Artifacts represent task outputs.
 message Artifact {
-  // Unique identifier (e.g. UUID) for the artifact. Within a task, an artifact
-  // is uniquely identified by the pair (`artifact_id`, `role`).
+  // Unique identifier (e.g. UUID) for the artifact. It must be unique within a
+  // task, and identifies the artifact for updates regardless of who wrote it.
   string artifact_id = 1 [(google.api.field_behavior) = REQUIRED];
   // A human readable name for the artifact.
   string name = 2;
@@ -343,11 +343,11 @@ message Artifact {
   // Optional. The task `generation` at which this artifact was completed; unset
   // while it is still streaming.
   int64 end_generation = 8;
-  // Optional. The originator of this artifact. Servers enforce and populate
-  // this from the sender on stored and emitted `Artifact`s: client writes
-  // default unset `role` to `ROLE_USER` (and reject `ROLE_AGENT`); agent
-  // outputs default unset `role` to `ROLE_AGENT`, and consumers treat
-  // `ROLE_UNSPECIFIED` as `ROLE_AGENT` for legacy compatibility.
+  // Optional. Records who originally created this artifact, rather than acting
+  // as part of its identity. Servers populate it on stored and emitted
+  // `Artifact`s: `ROLE_USER` for client-written artifacts and `ROLE_AGENT` for
+  // agent outputs. Consumers treat `ROLE_UNSPECIFIED` as `ROLE_AGENT` for
+  // compatibility with artifacts written before 1.1.
   Role role = 9;
 }
 
@@ -420,7 +420,7 @@ message TaskArtifactUpdateEvent {
   // The artifact that was generated or updated.
   Artifact artifact = 3 [(google.api.field_behavior) = REQUIRED];
   // If true, the content of this artifact should be appended to a previously
-  // sent artifact with the same `artifact_id` and `role`.
+  // sent artifact with the same `artifact_id`.
   bool append = 4;
   // If true, this is the final chunk of the artifact.
   bool last_chunk = 5;
