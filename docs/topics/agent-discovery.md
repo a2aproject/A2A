@@ -39,6 +39,28 @@ A simple option for single-agent deployments. The Agent Card is served at a fixe
 
     For deployments with more than one agent, or where per-client visibility is needed, use [AI Catalog discovery](#2-ai-catalog-discovery-well-knownaicatalogjson-preferred) instead.
 
+### 1a. Agent Root Endpoint (`GET {agentUrl}`)
+
+When a client already knows the full agent interface URL — from a catalog entry, direct configuration, or any other out-of-band source — it MAY retrieve the public Agent Card by issuing an HTTP GET to that URL directly. A2A Servers are **recommended** to serve their public Agent Card at the root of the declared `AgentInterface.url`.
+
+- **Mechanism:** The server serves the Agent Card at `GET {AgentInterface.url}`. A client that already has the interface URL issues a single HTTP GET and receives the Agent Card.
+
+- **Process:**
+    1. A client has the full interface URL of the A2A Server (e.g., `https://proxy.example.com/my-agent/`).
+    2. The client performs an HTTP GET to that URL.
+    3. The server returns the Agent Card as a JSON response.
+
+- **Advantages:**
+    - Enables discovery for agents hosted at a sub-path (e.g. `proxy.example.com/my-agent/`) where `/.well-known/agent-card.json` is not applicable.
+    - No additional path convention to remember — the agent's declared interface URL is sufficient.
+    - Works naturally in multi-tenant and proxy scenarios.
+
+- **When to use:** Use this when the full interface URL is already known. This is not a cold-discovery mechanism — it complements, rather than replaces, the well-known URI and AI Catalog strategies.
+
+- **Authentication:** Servers MAY require authentication for this endpoint. Sensitive information should still be placed in the authenticated extended card (see [Get Extended Agent Card](../specification.md#3111-get-extended-agent-card)).
+
+- **Caching:** The same caching guidance as the well-known URI endpoint applies (see [Section 8.6 of the specification](../specification.md#86-caching)).
+
 ### 2. AI Catalog Discovery (`/.well-known/ai-catalog.json`) — Preferred
 
 This is the recommended approach for public agents. It supports single-agent deployments, multi-agent hosts, multi-tenant scenarios, and authenticated per-client catalogs — use cases where a single fixed URI is insufficient.

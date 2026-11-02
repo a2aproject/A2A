@@ -53,7 +53,7 @@ graph TB
 
     subgraph L2 ["A2A Operations"]
         direction LR
-        G[Send Message] ~~~ H[Send Streaming Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task] ~~~ L[Get Agent Card]
+        G[Send Message] ~~~ H[Send Streaming Message] ~~~ I[Get Task] ~~~ J[List Tasks] ~~~ K[Cancel Task]
     end
 
     subgraph L3 ["Protocol Bindings"]
@@ -429,33 +429,9 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 For detailed security guidance on extended agent cards, see [Section 13.3 Extended Agent Card Access Control](#133-extended-agent-card-access-control).
 
-#### 3.1.12. Get Agent Card
+#### 3.1.12. Send Live Message
 
-<span id="3112-get-agent-card"></span>
-
-Retrieves the public Agent Card for this agent at the agent's root endpoint. This operation formalizes the de-facto behavior of many A2A implementations that serve the Agent Card at the root of the declared interface URL, enabling discovery from agents hosted at any path (e.g. `agent.example.com/`, `proxy.example.com/my-agent/`, `host.example.com/tenant/agent/`).
-
-**Inputs:**
-
-{{ proto_to_table("GetAgentCardRequest") }}
-
-**Outputs:**
-
-- [`AgentCard`](#441-agentcard): The public Agent Card describing the agent's identity, capabilities, skills, and interaction requirements.
-
-**Errors:**
-
-None.
-
-**Behavior:**
-
-- **Authentication**: Servers MAY serve this endpoint without requiring authentication. Sensitive information should be placed in the authenticated extended card (see [Section 3.1.11](#3111-get-extended-agent-card)).
-- **Agent Endpoint**: Servers MUST serve this operation at the declared `AgentInterface.url`. Clients MAY use this endpoint to discover the Agent Card when the full interface URL is known but the well-known URI is not applicable (e.g. agents hosted at a sub-path).
-- **Caching**: The same caching guidance as the well-known URI endpoint applies (see [Section 8.6](#86-caching)).
-
-#### 3.1.13. Send Live Message
-
-<span id="3113-send-live-message"></span>
+<span id="3112-send-live-message"></span>
 
 Exchanges messages and artifacts with an agent over a live, bidirectional channel. The same operation serves a long-lived session, a brief connect-send-disconnect exchange, and attaching to a task to observe it.
 
@@ -474,7 +450,7 @@ Exchanges messages and artifacts with an agent over a live, bidirectional channe
 
 **Behavior:**
 
-A live exchange has two logical directions: an **uplink** carrying [`StreamRequest`](#3113-send-live-message) objects from the client, and a **downlink** carrying [`StreamResponse`](#323-stream-response) objects from the agent. How those directions map onto a connection depends on the transport:
+A live exchange has two logical directions: an **uplink** carrying [`StreamRequest`](#3112-send-live-message) objects from the client, and a **downlink** carrying [`StreamResponse`](#323-stream-response) objects from the agent. How those directions map onto a connection depends on the transport:
 
 - **Transports with native duplex** (for example gRPC or WebSocket): both directions share one connection for the life of the exchange.
 - **HTTP transports**: the operation is invoked as a server stream. The invoking call's response is the **downlink** and remains open. To send further input, the client makes **additional, short-lived calls to the same operation**. This is required because an HTTP request body is complete before the response begins, so a single call cannot carry later input.
@@ -516,7 +492,7 @@ This section defines common parameter objects used across multiple operations.
 
 **Client-written artifacts:**
 
-When `AgentCard.capabilities.userArtifacts` is `true`, a client MAY send one or more [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects in `SendMessageRequest.artifactUpdates` — over unary [Send Message](#311-send-message), [Send Streaming Message](#312-send-streaming-message), or [Send Live Message](#3113-send-live-message) (`StreamRequest.sendMessage`). This makes the interaction symmetrical: [`Message`](#414-message) objects carry control and coordination turns in the task [`timeline`](#328-task-timeline-semantics), while [`Artifact`](#417-artifact) objects carry work items from either party (`role` is `ROLE_USER` for client-written artifacts and `ROLE_AGENT` by default for agent outputs).
+When `AgentCard.capabilities.userArtifacts` is `true`, a client MAY send one or more [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) objects in `SendMessageRequest.artifactUpdates` — over unary [Send Message](#311-send-message), [Send Streaming Message](#312-send-streaming-message), or [Send Live Message](#3112-send-live-message) (`StreamRequest.sendMessage`). This makes the interaction symmetrical: [`Message`](#414-message) objects carry control and coordination turns in the task [`timeline`](#328-task-timeline-semantics), while [`Artifact`](#417-artifact) objects carry work items from either party (`role` is `ROLE_USER` for client-written artifacts and `ROLE_AGENT` by default for agent outputs).
 
 - **Creating vs. continuing a task:** `message` **MUST** be present when creating a new task (when no `taskId` is provided), as the agent requires a control message to know what to do with any accompanying `artifactUpdates`. When `artifactUpdates` are sent alongside a task-creating `message`, their `taskId` and `contextId` MAY be omitted and are assigned by the server. `message` MAY be omitted only when sending `artifactUpdates` to an existing task (`taskId` set on each update).
 - **Ordering and non-task responses:** When `message` and `artifactUpdates` are sent together and a `Task` is created or updated, the server appends `message` to `timeline` first and then applies `artifactUpdates` in list order, advancing `generation` for each. If the agent responds with a direct `Message` without creating a `Task`, neither `message` nor `artifactUpdates` is persisted in a task (matching the behaviour for `message` alone).
@@ -557,7 +533,7 @@ This wrapper allows streaming endpoints to return different types of updates thr
 
 **Forward compatibility:**
 
-The `payload` of [`StreamResponse`](#323-stream-response) and of [`StreamRequest`](#3113-send-live-message) is an extension point: new payload kinds MAY be added in future minor versions, and adding one is not a breaking change. To keep that true, implementations **MUST** tolerate payload kinds they do not recognise:
+The `payload` of [`StreamResponse`](#323-stream-response) and of [`StreamRequest`](#3112-send-live-message) is an extension point: new payload kinds MAY be added in future minor versions, and adding one is not a breaking change. To keep that true, implementations **MUST** tolerate payload kinds they do not recognise:
 
 - A client that receives a `StreamResponse` whose payload kind it does not recognise **MUST** skip it and continue reading the stream. It **MUST NOT** treat the unknown payload as an error, as the end of the stream, or as a signal to stop processing.
 - A server that receives a `StreamRequest` whose payload kind it does not recognise **MUST** reject that request — on a live stream by emitting a [`StreamError`](#424-streamerror) — and **MUST NOT** terminate the stream because of it.
@@ -839,7 +815,7 @@ The A2A protocol provides three complementary mechanisms for clients to receive 
 **Streaming:**
 
 - Real-time delivery of events as they occur
-- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task)), and Send Live Message ([Section 3.1.13](#3113-send-live-message))
+- Operations: Send Streaming Message ([Section 3.1.2](#312-send-streaming-message)), Subscribe to Task ([Section 3.1.6](#316-subscribe-to-task)), and Send Live Message ([Section 3.1.12](#3112-send-live-message))
 - Low latency, efficient for frequent updates
 - Requires persistent connection support
 - Best for: Interactive applications, real-time dashboards, live progress monitoring
@@ -1036,7 +1012,7 @@ See [Task Timeline Semantics](#328-task-timeline-semantics).
 
 {{ proto_to_table("StreamError") }}
 
-See [Send Live Message](#3113-send-live-message).
+See [Send Live Message](#3112-send-live-message).
 
 ### 4.3. Push Notification Objects
 
@@ -1386,7 +1362,6 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |
 | Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
 | Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /extendedAgentCard`                                |
-| Get Agent Card                  | `GetAgentCard`                     | `GetAgentCard`                     | `GET /`                                                 |
 
 ### 5.4. Error Code Mappings
 
@@ -2199,6 +2174,8 @@ The media type `application/a2a-agent-card+json` identifies a JSON representatio
 
 For more on discovery strategies, see the [Agent Discovery guide](./topics/agent-discovery.md).
 
+A2A Servers are **recommended** to serve the public Agent Card at the root of their declared `AgentInterface.url` — that is, an HTTP GET to that URL returns the Agent Card. This allows clients that already know the full interface URL to retrieve the card without relying on the well-known URI, and is particularly useful for agents hosted at a sub-path (e.g. `proxy.example.com/my-agent/`). See the [Agent Discovery guide: Agent Root Endpoint](./topics/agent-discovery.md#1a-agent-root-endpoint-get-agenturl) for details.
+
 ### 8.2. Protocol Declaration Requirements
 
 The AgentCard **MUST** properly declare supported protocols:
@@ -2669,20 +2646,6 @@ Retrieves an extended Agent Card.
 }
 ```
 
-#### 9.4.9. `GetAgentCard`
-
-Retrieves the public Agent Card at the agent's root endpoint.
-
-**Request:**
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": 7,
-  "method": "GetAgentCard"
-}
-```
-
 ### 9.5. Error Handling
 
 JSON-RPC error responses use the standard [JSON-RPC 2.0 error object](https://www.jsonrpc.org/specification#error_object) structure, which maps to the generic A2A error model defined in [Section 3.3.2](#332-error-handling) as follows:
@@ -2919,16 +2882,6 @@ Retrieves the agent's extended capability card after authentication.
 
 **Response:** See [`AgentCard`](#441-agentcard) object definition.
 
-#### 10.4.12. GetAgentCard
-
-Retrieves the public Agent Card at the agent's root endpoint.
-
-**Request:**
-
-{{ proto_to_table("GetAgentCardRequest") }}
-
-**Response:** See [`AgentCard`](#441-agentcard) object definition.
-
 ### 10.5. gRPC-Specific Data Types
 
 #### 10.5.1. TaskPushNotificationConfig
@@ -3066,7 +3019,6 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 #### 11.3.4. Agent Card
 
-- `GET /` - Get public Agent Card
 - `GET /extendedAgentCard` - Get authenticated extended Agent Card
 
 ### 11.4. Request/Response Format
