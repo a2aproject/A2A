@@ -55,7 +55,7 @@ When a client already knows the full agent interface URL — from a catalog entr
     - No additional path convention to remember — the agent's declared interface URL is sufficient.
     - Works naturally in multi-tenant and proxy scenarios.
 
-- **When to use:** Use this when the full interface URL is already known. This is not a cold-discovery mechanism — it complements, rather than replaces, the well-known URI and AI Catalog strategies.
+- **When to use:** Use this when the full interface URL is already known. This is not a cold-discovery mechanism — it complements, rather than replaces, the well-known URI and AI Catalog strategies. A common pattern is to use [AI Catalog discovery](#2-ai-catalog-discovery-well-knownaicatalogjson-preferred) to find the agent's interface URL, then issue a `GET` to that URL to retrieve the live Agent Card (rather than relying on a potentially stale embedded or referenced card in the catalog).
 
 - **Authentication:** Servers MAY require authentication for this endpoint. Sensitive information should still be placed in the authenticated extended card (see [Get Extended Agent Card](../specification.md#3111-get-extended-agent-card)).
 
@@ -156,7 +156,7 @@ This is the recommended approach for public agents. It supports single-agent dep
     - Facilitates automated discovery.
 
 - **Considerations:**
-    - Agent Card URLs in the catalog can be any path; hosts choose the layout.
+    - Agent Card URLs in the catalog can be any path; hosts choose the layout. When a catalog entry's `url` points directly to the agent's `AgentInterface.url`, clients can use the [Agent Root Endpoint](#1a-agent-root-endpoint-get-agenturl) pattern — a `GET` to that URL returns the live Agent Card. This avoids a second, separate Agent Card fetch and keeps the retrieved card in sync with the agent's current state.
     - Authentication should be applied to individual Agent Card endpoints for cards containing sensitive information.
 
 ### 3. Curated Registries (Catalog-Based Discovery)
