@@ -824,7 +824,7 @@ message GetTaskRequest {
   // If the task's current generation already exceeds this value the server
   // MUST return immediately.
   optional int64 current_generation = 4;
-  // Optional. The task fields to return. Defaults to `TASK_VIEW_FULL`.
+  // Optional. Controls which task fields to return. Defaults to `TASK_VIEW_FULL`.
   TaskView view = 5;
 }
 
@@ -855,9 +855,10 @@ message ListTasksRequest {
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size. Ignored when `view` is set.
   optional bool include_artifacts = 8;
-  // Optional. The fields to return for each task. If unset, tasks include
-  // `history` but not `timeline`, and include artifacts only if
-  // `include_artifacts` is true.
+  // Optional. Controls which task fields to return. If unset, the server
+  // defaults to compatibility behavior where artifact and history inclusion
+  // are controlled by `include_artifacts` and `history_length` respectively,
+  // and `timeline` is not returned.
   TaskView view = 9;
 }
 
