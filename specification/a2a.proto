@@ -158,17 +158,13 @@ message SendMessageConfiguration {
   // Configuration for the agent to send push notifications for task updates.
   // Task id should be empty when sending this configuration in a `SendMessage` request.
   TaskPushNotificationConfig task_push_notification_config = 2;
-  // Deprecated: use `timeline_length` instead. The maximum number of most recent
-  // messages from the task's history to retrieve in the response. An unset value
-  // means the client does not impose any limit. A value of zero is a request to
-  // not include any messages. The server MUST NOT return more messages than the
-  // provided value, but MAY apply a lower limit. Removed in 2.0. See ADR-002.
+  // Deprecated: applies to the deprecated task `history`; read the task
+  // `timeline` instead. The maximum number of most recent messages from the
+  // task's history to retrieve in the response. An unset value means the client
+  // does not impose any limit. A value of zero is a request to not include any
+  // messages. The server MUST NOT return more messages than the provided value,
+  // but MAY apply a lower limit. Removed in 2.0. See ADR-002.
   optional int32 history_length = 3 [deprecated = true];
-  // Optional. The maximum number of most recent `timeline` entries to retrieve
-  // in the response. An unset value means the client does not impose any limit;
-  // a value of zero requests no entries. The server MUST NOT return more entries
-  // than this value, but MAY apply a lower limit. See ADR-002.
-  optional int32 timeline_length = 6;
   // If `true`, the operation returns immediately after creating the task,
   // even if processing is still in progress.
   // If `false` (default), the operation MUST wait until the task reaches a
@@ -181,6 +177,8 @@ message SendMessageConfiguration {
   // processed. Use this to implement optimistic concurrency control and
   // prevent lost-update races when multiple clients interact with the same task.
   optional int64 if_generation_match = 5;
+  // Field 6 was `timeline_length` in pre-release 1.1 drafts.
+  reserved 6;
 }
 
 // `Task` is the core unit of action for A2A. It has a current status
@@ -799,6 +797,21 @@ message StreamRequest {
   }
 }
 
+// Selects which `Task` fields the server returns from `GetTask` and
+// `ListTasks`.
+enum TaskView {
+  // No view selected. Each method applies its backward-compatible default:
+  // `GetTask` returns all fields, as for `TASK_VIEW_FULL`; `ListTasks` omits
+  // `timeline` and returns artifacts only when `include_artifacts` is true.
+  TASK_VIEW_UNSPECIFIED = 0;
+  // All task fields, including `artifacts`, `history`, and `timeline`.
+  TASK_VIEW_FULL = 1;
+  // All task fields except `artifacts`, `history`, and `timeline`, for
+  // lightweight status checks. Later versions of this specification MAY
+  // exclude further fields from this view.
+  TASK_VIEW_METADATA = 2;
+}
+
 // Represents a request for the `GetTask` method.
 message GetTaskRequest {
   // Optional. Opaque routing identifier. Must match the `tenant` value from
@@ -806,27 +819,24 @@ message GetTaskRequest {
   string tenant = 1;
   // The resource ID of the task to retrieve.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
-  // Deprecated: use `timeline_length` instead. The maximum number of most recent
-  // messages from the task's history to retrieve. An unset value means the
-  // client does not impose any limit. A value of zero is a request to not
-  // include any messages. The server MUST NOT return more messages than the
-  // provided value, but MAY apply a lower limit. Removed in 2.0. See ADR-002.
+  // Deprecated: applies to the deprecated task `history`; read the task
+  // `timeline` instead. The maximum number of most recent messages from the
+  // task's history to retrieve. An unset value means the client does not
+  // impose any limit. A value of zero is a request to not include any messages.
+  // The server MUST NOT return more messages than the provided value, but MAY
+  // apply a lower limit. Removed in 2.0. See ADR-002.
   optional int32 history_length = 3 [deprecated = true];
-  // Optional. The maximum number of most recent `timeline` entries to retrieve.
-  // An unset value means the client does not impose any limit; a value of zero
-  // requests no entries. The server MUST NOT return more entries than this
-  // value, but MAY apply a lower limit. See ADR-002.
-  optional int32 timeline_length = 5;
   // Optional. If set, the server SHOULD NOT return until the task's generation
   // is strictly greater than this value, enabling efficient long-polling.
   // The server MAY return earlier (e.g. on timeout) with the current task state.
   // If the task's current generation already exceeds this value the server
   // MUST return immediately.
   optional int64 current_generation = 4;
-  // Optional. If true, the server omits artifacts from the returned task,
-  // allowing a lightweight status fetch. Defaults to false (artifacts
-  // included) to preserve existing behavior.
-  bool exclude_artifacts = 6;
+  // Optional. The task fields to return. When unset, the server returns all
+  // fields, as for `TASK_VIEW_FULL`.
+  TaskView view = 6;
+  // Field 5 was `timeline_length` in pre-release 1.1 drafts.
+  reserved 5;
 }
 
 // Parameters for listing tasks with optional filtering criteria.
@@ -847,18 +857,22 @@ message ListTasksRequest {
   // `ListTasksResponse.next_page_token`.
   // Provide this to retrieve the subsequent page.
   string page_token = 5;
-  // Deprecated: use `timeline_length` instead. The maximum number of messages to
-  // include in each task's history. Removed in 2.0. See ADR-002.
+  // Deprecated: applies to the deprecated task `history`; read the task
+  // `timeline` instead. The maximum number of messages to include in each
+  // task's history. Removed in 2.0. See ADR-002.
   optional int32 history_length = 6 [deprecated = true];
-  // Optional. The maximum number of `timeline` entries to include in each task.
-  // See ADR-002.
-  optional int32 timeline_length = 9;
   // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
   // Only tasks with a status timestamp time greater than or equal to this value will be returned.
   google.protobuf.Timestamp status_timestamp_after = 7;
   // Whether to include artifacts in the returned tasks.
-  // Defaults to false to reduce payload size.
+  // Defaults to false to reduce payload size. Ignored when `view` is set.
   optional bool include_artifacts = 8;
+  // Optional. The fields to return for each task. When unset, the server omits
+  // `timeline`, returns `history` (limited by `history_length`), and returns
+  // artifacts only when `include_artifacts` is true.
+  TaskView view = 10;
+  // Field 9 was `timeline_length` in pre-release 1.1 drafts.
+  reserved 9;
 }
 
 // Result object for `ListTasks` method containing an array of tasks and pagination information.
