@@ -794,9 +794,9 @@ message StreamRequest {
   }
 }
 
-// Selects which `Task` fields `GetTask` and `ListTasks` return. Follows the
-// view enumeration pattern from [AIP-157](https://google.aip.dev/157): each
-// view is a predefined set of fields, so clients can skip large fields such as
+// Defines which `Task` fields are returned to a client. Follows view
+// enumeration pattern from [AIP-157](https://google.aip.dev/157). Each view is
+// a predefined set of fields, so clients can skip large fields such as
 // `artifacts` and `timeline` when they only need the task status. Future
 // versions may add fields to a view but never remove fields from it.
 enum TaskView {
