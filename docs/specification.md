@@ -223,11 +223,9 @@ See [History Length Semantics](#324-history-length-semantics) for details about 
 
 See [Task Generation Semantics](#327-task-generation-semantics) for details about `currentGeneration` and long-polling.
 
-See [Task View Semantics](#329-task-view-semantics) for details about `view`. When `view` is unset, the server returns all task fields, as for `TASK_VIEW_FULL`. Clients polling for task status can set `view` to `TASK_VIEW_METADATA` to retrieve the task without its artifacts, history, and timeline.
-
 **Outputs:**
 
-- [`Task`](#411-task): Current state and, unless `view` is `TASK_VIEW_METADATA`, artifacts of the requested task
+- [`Task`](#411-task): The requested task, with the fields selected by `view`
 
 **Errors:**
 
@@ -241,10 +239,7 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 {{ proto_to_table("ListTasksRequest") }}
 
-See [Task View Semantics](#329-task-view-semantics) for details about `view`. When `view` is set, it determines which fields each returned task carries, and `includeArtifacts` is ignored. When `view` is unset, the server MUST omit the `timeline` field from each Task object in the response, and `includeArtifacts` controls the artifacts field:
-
-- When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value.
-- When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
+When `view` is unset, `includeArtifacts` controls the artifacts field. When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**
 
@@ -557,8 +552,6 @@ The `historyLength` parameter appears in multiple operations and controls how mu
 - **0**: No history should be returned; the `history` field SHOULD be omitted
 - **> 0**: Return at most this many recent messages from the task's history
 
-For [Get Task](#313-get-task) and [List Tasks](#314-list-tasks), `historyLength` applies only when the requested `view` returns `history` (see [Task View Semantics](#329-task-view-semantics)).
-
 #### 3.2.5. Metadata
 
 A flexible key-value map for passing additional context or parameters with operations. Metadata keys must be strings, and values can be any valid JSON value. [Extensions](#46-extensions) can be used to strongly type metadata values for specific use cases.
@@ -632,7 +625,7 @@ The [`timeline`](#418-timelineentry) field on [`Task`](#411-task) is the coheren
 
 Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append. These `generation` values are monotonic but **not contiguous**: other mutations (notably `Artifact` updates) also advance `generation`, so consumers **MUST NOT** assume timeline entries have consecutive `generation` values — gaps are expected, and artifacts are placed relative to entries via `startGeneration`/`endGeneration` (see *Interleaving artifacts with the timeline* below).
 
-The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). Whether [Get Task](#313-get-task) and [List Tasks](#314-list-tasks) return the timeline depends on the requested `view` (see [Task View Semantics](#329-task-view-semantics)).
+The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)).
 
 Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent). Client-message entries are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — which is emitted **only** to clients that request `A2A-Version: 1.1` or later, so 1.0 clients that do not understand the `timeline` field are unaffected on the wire. The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
 
@@ -642,21 +635,9 @@ Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#42
 
 <a id="TaskView"></a>
 
-#### 3.2.9. Task View Semantics
-
-<span id="329-task-view-semantics"></span>
-
-The `view` parameter of [Get Task](#313-get-task) and [List Tasks](#314-list-tasks) selects which [`Task`](#411-task) fields the server returns.
+#### 3.2.9. Task View
 
 {{ proto_enum_to_table("TaskView") }}
-
-- **Unset (`TASK_VIEW_UNSPECIFIED`)**: The server applies the operation's default, which preserves the behavior expected by clients that do not set `view`. Get Task returns all fields, as for `TASK_VIEW_FULL`. List Tasks omits `timeline`, returns `history`, and returns artifacts only when `includeArtifacts` is true; no view matches this default, which is kept for compatibility.
-- **`TASK_VIEW_FULL`**: The server returns all task fields, including `artifacts`, `history`, and `timeline`.
-- **`TASK_VIEW_METADATA`**: The server **MUST** omit `artifacts`, `history`, and `timeline`, and returns all other task fields. Later versions of this specification **MAY** add fields to the set this view omits.
-
-When `view` is set, List Tasks ignores `includeArtifacts`. `historyLength` still limits the number of `history` messages whenever the view returns `history` (see [History Length Semantics](#324-history-length-semantics)).
-
-Because an omitted field and an empty list are indistinguishable once decoded, a client that requests `TASK_VIEW_METADATA` **SHOULD NOT** treat the absence of `artifacts`, `history`, or `timeline` in the response as an indication that the task has none.
 
 ### 3.3. Operation Semantics
 
@@ -3125,7 +3106,7 @@ Get task with long-polling (wait until generation advances beyond 5):
 GET /tasks/{id}?currentGeneration=5
 ```
 
-Get task status only, without artifacts, history, or timeline:
+Get task without artifacts, history, or timeline:
 
 ```http
 GET /tasks/{id}?view=TASK_VIEW_METADATA
