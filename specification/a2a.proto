@@ -794,14 +794,18 @@ message StreamRequest {
   }
 }
 
-// Selects the `Task` fields returned by `GetTask` and `ListTasks`.
+// Selects which `Task` fields `GetTask` and `ListTasks` return. Follows the
+// view enumeration pattern from [AIP-157](https://google.aip.dev/157): each
+// view is a predefined set of fields, so clients can skip large fields such as
+// `artifacts` and `timeline` when they only need the task status. Future
+// versions may add fields to a view but never remove fields from it.
 enum TaskView {
   // Not set. The request's default applies.
   TASK_VIEW_UNSPECIFIED = 0;
   // All fields.
   TASK_VIEW_FULL = 1;
-  // All fields except `artifacts`, `history`, and `timeline`. Future versions
-  // may exclude more fields.
+  // All fields except `artifacts`, `history`, and `timeline`. Fields added to
+  // `Task` in future versions may also be left out.
   TASK_VIEW_METADATA = 2;
 }
 
