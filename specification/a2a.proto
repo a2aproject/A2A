@@ -384,13 +384,14 @@ message TimelineEntry {
   // entries are expected, and artifacts are placed relative to entries via their
   // `start_generation`/`end_generation` (see `Task.generation`).
   int64 generation = 3;
-  // Optional. ISO 8601 Timestamp when this entry was recorded. Informational only:
-  // entries are ordered by `generation`, never by this value. For a client
-  // `message` entry it is the time the server recorded the message; for a `status`
-  // entry it is the status time, and if the entry's `status.timestamp` (deprecated)
-  // is also set the two MUST be equal. Replaces the deprecated `TaskStatus.timestamp`.
+  // Required. ISO 8601 Timestamp when this entry was recorded; the server MUST set
+  // it on every timeline entry it returns. Informational only: entries are ordered
+  // by `generation`, never by this value. For a client `message` entry it is the
+  // time the server recorded the message; for a `status` entry it is the status
+  // time, and if the entry's `status.timestamp` (deprecated) is also set the two
+  // MUST be equal. Replaces the deprecated `TaskStatus.timestamp`.
   // Example: "2023-10-27T10:00:00Z"
-  google.protobuf.Timestamp timestamp = 4;
+  google.protobuf.Timestamp timestamp = 4 [(google.api.field_behavior) = REQUIRED];
 }
 
 // An event sent by the server to notify clients of a new message added to the task (e.g. client input).
