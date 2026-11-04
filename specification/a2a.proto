@@ -321,6 +321,14 @@ message Message {
   repeated string extensions = 7;
   // A list of task IDs that this message references for additional context.
   repeated string reference_task_ids = 8;
+  // Optional. The identity of the entity that sent this message (e.g. a user ID,
+  // service account name, or connection identifier). Populated by the transport or
+  // binding layer from the authenticated connection identity where available.
+  // Clients MAY supply this field directly; agents that rely on it for
+  // authorization decisions SHOULD document whether they trust client-supplied values.
+  // Servers SHOULD preserve this value on TimelineEntry(Message) items so the
+  // sender is visible in task history.
+  optional string sender = 9;
 }
 
 // Artifacts represent task outputs.
@@ -345,6 +353,19 @@ message Artifact {
   // Optional. The originator of this artifact. Artifacts are agent outputs by
   // default (`ROLE_AGENT`); an artifact written by the client is `ROLE_USER`.
   Role role = 9;
+  // Optional. The identity of the entity that originally created this artifact
+  // (e.g. a user ID, service account name, or connection identifier). Populated
+  // by the transport or binding layer from the authenticated connection identity
+  // where available. Clients MAY supply this field directly; agents that rely on
+  // it for authorization decisions SHOULD document whether they trust
+  // client-supplied values. Servers SHOULD preserve this value on
+  // TimelineEntry(Artifact) items so the creator is visible in task history.
+  optional string creator = 10;
+  // Optional. The identities of all entities that have appended to this artifact
+  // after initial creation. Each appending party's identity is added to this list
+  // in the order contributions were received. May be empty if the artifact has a
+  // single creator and was not subsequently modified.
+  repeated string contributors = 11;
 }
 
 // `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
