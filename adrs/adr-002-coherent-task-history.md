@@ -125,6 +125,10 @@ so the timeline inherits it explicitly.
   add representational surface area that a fully unified v2 model would remove.
 * `TaskStatus.message` lingers (populated but not to be read) until 2.0, so two
   representations of the latest agent message coexist across the v1.x line.
+* `TaskStatus.timestamp` is likewise deprecated in favour of
+  `TimelineEntry.timestamp` but lingers (populated) until 2.0, since it remains the
+  current status time on `Task.status` and the only carrier of status time on the
+  wire in `TaskStatusUpdateEvent`.
 * Some duplication between v1.1 additive types and an eventual v2 unified type is
   likely; v1.1 accepts short-term redundancy to protect release timing.
 

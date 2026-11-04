@@ -260,9 +260,13 @@ message TaskStatus {
   TaskState state = 1 [(google.api.field_behavior) = REQUIRED];
   // A message associated with the status.
   Message message = 2;
-  // ISO 8601 Timestamp when the status was recorded.
-  // Example: "2023-10-27T10:00:00Z"
-  google.protobuf.Timestamp timestamp = 3;
+  // Deprecated: use `TimelineEntry.timestamp` for a timeline entry's time. This
+  // field stays populated throughout the 1.x line (removed in 2.0): it is the
+  // authoritative current status time on `Task.status` — used by `ListTasks`
+  // ordering and `status_timestamp_after` — and the only carrier of status time on
+  // the wire in `TaskStatusUpdateEvent`, so servers MUST keep setting it.
+  // ISO 8601 Timestamp when the status was recorded. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 3 [deprecated = true];
 }
 
 // `Part` represents a container for a section of communication content.
@@ -345,6 +349,13 @@ message Artifact {
   // Optional. The originator of this artifact. Artifacts are agent outputs by
   // default (`ROLE_AGENT`); an artifact written by the client is `ROLE_USER`.
   Role role = 9;
+  // Optional. ISO 8601 Timestamp when this artifact was last created or updated,
+  // set by the server to the time of the latest chunk or revision (including for
+  // client-written artifacts). Informational: it is carried inline on the
+  // `Artifact`, so an artifact update is self-timestamped on the wire (see
+  // `TaskArtifactUpdateEvent`), but it is not an ordering key — `generation` orders
+  // artifacts. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp updated_at = 10;
 }
 
 // `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
@@ -373,6 +384,13 @@ message TimelineEntry {
   // entries are expected, and artifacts are placed relative to entries via their
   // `start_generation`/`end_generation` (see `Task.generation`).
   int64 generation = 3;
+  // Optional. ISO 8601 Timestamp when this entry was recorded. Informational only:
+  // entries are ordered by `generation`, never by this value. For a client
+  // `message` entry it is the time the server recorded the message; for a `status`
+  // entry it is the status time, and if the entry's `status.timestamp` (deprecated)
+  // is also set the two MUST be equal. Replaces the deprecated `TaskStatus.timestamp`.
+  // Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 4;
 }
 
 // An event sent by the server to notify clients of a new message added to the task (e.g. client input).
