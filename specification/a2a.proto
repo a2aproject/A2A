@@ -263,8 +263,7 @@ message TaskStatus {
   // Deprecated: use `TimelineEntry.timestamp` for a timeline entry's time. This
   // field stays populated throughout the 1.x line (removed in 2.0): it is the
   // authoritative current status time on `Task.status` — used by `ListTasks`
-  // ordering and `status_timestamp_after` — and the only carrier of status time on
-  // the wire in `TaskStatusUpdateEvent`, so servers MUST keep setting it.
+  // ordering and `status_timestamp_after` — so servers MUST keep setting it.
   // ISO 8601 Timestamp when the status was recorded. Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 3 [deprecated = true];
 }

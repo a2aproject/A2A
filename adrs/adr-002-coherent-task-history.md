@@ -127,8 +127,7 @@ so the timeline inherits it explicitly.
   representations of the latest agent message coexist across the v1.x line.
 * `TaskStatus.timestamp` is likewise deprecated in favour of
   `TimelineEntry.timestamp` but lingers (populated) until 2.0, since it remains the
-  current status time on `Task.status` and the only carrier of status time on the
-  wire in `TaskStatusUpdateEvent`.
+  current status time on `Task.status`.
 * Some duplication between v1.1 additive types and an eventual v2 unified type is
   likely; v1.1 accepts short-term redundancy to protect release timing.
 
