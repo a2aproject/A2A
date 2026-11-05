@@ -82,7 +82,7 @@ As AI agents become more prevalent, their ability to interoperate is crucial for
 ### Key Features
 
 - **Standardized Communication:** JSON-RPC 2.0 over HTTP(S).
-- **Agent Discovery:** Via "Agent Cards" detailing capabilities and connection info.
+- **Agent Discovery:** Via "Agent Cards" detailing capabilities, connection info, and advertised authentication requirements.
 - **Flexible Interaction:** Supports synchronous request/response, streaming (SSE), and asynchronous push notifications.
 - **Rich Data Exchange:** Handles text, files, and structured JSON data.
 - **Enterprise-Ready:** Designed with security, authentication, and observability in mind.
@@ -114,8 +114,6 @@ We welcome community contributions to enhance and evolve the A2A protocol!
 
 ### Protocol Enhancements
 
-- **Agent Discovery:**
-    - Formalize inclusion of authorization schemes and optional credentials directly within the `AgentCard`.
 - **Agent Collaboration:**
     - Investigate a `QuerySkill()` method for dynamically checking unsupported or unanticipated skills.
 - **Task Lifecycle & UX:**
