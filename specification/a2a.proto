@@ -220,6 +220,12 @@ message Task {
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
+  // ISO 8601 Timestamp when this task was last updated: the time of the most
+  // recent mutation counted by `generation`, whether that was a timeline entry or
+  // an artifact update. This is the task's "last activity" time and the key
+  // `ListTasks` orders by. Informational only — `generation`, not this value,
+  // orders events and guards concurrency. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp updated_at = 9;
 }
 
 // Defines the possible lifecycle states of a `Task`.
@@ -260,10 +266,11 @@ message TaskStatus {
   TaskState state = 1 [(google.api.field_behavior) = REQUIRED];
   // A message associated with the status.
   Message message = 2;
-  // Deprecated: use `TimelineEntry.timestamp` for a timeline entry's time. This
-  // field stays populated throughout the 1.x line (removed in 2.0): it is the
-  // authoritative current status time on `Task.status` — used by `ListTasks`
-  // ordering and `status_timestamp_after` — so servers MUST keep setting it.
+  // Deprecated: read `TimelineEntry.timestamp` for a timeline entry's time,
+  // `TaskStatusUpdateEvent.timestamp` for a status event's time, or
+  // `Task.updated_at` for the task's last activity. Servers continue to populate
+  // this field throughout the v1.x line for backward compatibility; it is removed
+  // in 2.0. See ADR-002.
   // ISO 8601 Timestamp when the status was recorded. Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 3 [deprecated = true];
 }
@@ -383,12 +390,11 @@ message TimelineEntry {
   // entries are expected, and artifacts are placed relative to entries via their
   // `start_generation`/`end_generation` (see `Task.generation`).
   int64 generation = 3;
-  // ISO 8601 Timestamp when this entry was recorded; the server MUST set
-  // it on every timeline entry it returns. Informational only: entries are ordered
-  // by `generation`, never by this value. For a client `message` entry it is the
-  // time the server recorded the message; for a `status` entry it is the status
-  // time, and if the entry's `status.timestamp` (deprecated) is also set the two
-  // MUST be equal. Replaces the deprecated `TaskStatus.timestamp`.
+  // ISO 8601 Timestamp when this entry was recorded; the server MUST set it on
+  // every timeline entry it returns. It equals the `timestamp` on the event that
+  // delivered this entry, so a timeline assembled from the stream matches one read
+  // from a snapshot. Informational only: entries are ordered by `generation`,
+  // never by this value. Replaces the deprecated `TaskStatus.timestamp`.
   // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 4;
 }
@@ -407,6 +413,11 @@ message TaskMessageUpdateEvent {
   // The task's `generation` after this message was appended, allowing clients
   // to order it correctly in the timeline and detect missed events.
   int64 generation = 5;
+  // ISO 8601 Timestamp when this mutation occurred. Informational only: events
+  // are ordered by `generation`, never by this value. A client folding this event
+  // into a local timeline uses it as the resulting `TimelineEntry.timestamp`.
+  // Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 6;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
@@ -423,6 +434,12 @@ message TaskStatusUpdateEvent {
   // to detect missed events (a gap in generation values) and to correlate
   // events with a specific task snapshot.
   int64 generation = 5;
+  // ISO 8601 Timestamp when this mutation occurred. Informational only: events
+  // are ordered by `generation`, never by this value. A client folding this event
+  // into a local timeline uses it as the resulting `TimelineEntry.timestamp`.
+  // Supersedes the deprecated `status.timestamp` as this event's time.
+  // Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 6;
 }
 
 // A task delta where an artifact has been generated.
@@ -444,6 +461,11 @@ message TaskArtifactUpdateEvent {
   // use this to detect missed events (a gap in generation values) and to
   // correlate events with a specific task snapshot.
   int64 generation = 7;
+  // ISO 8601 Timestamp when this mutation occurred. Informational only: events
+  // are ordered by `generation`, never by this value. A client folding this event
+  // into local state uses it as the resulting `Artifact.updated_at`, so it matches
+  // the `updated_at` carried on `artifact`. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 8;
 }
 
 // Defines authentication details, used for push notifications.
@@ -867,9 +889,16 @@ message ListTasksRequest {
   // Optional. The maximum number of `timeline` entries to include in each task.
   // See ADR-002.
   optional int32 timeline_length = 9;
+  // Deprecated: use `updated_after` instead, which filters on `Task.updated_at`
+  // and so also accounts for artifact activity. Servers continue to honour this
+  // field throughout the v1.x line; it is removed in 2.0. See ADR-002.
   // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
   // Only tasks with a status timestamp time greater than or equal to this value will be returned.
-  google.protobuf.Timestamp status_timestamp_after = 7;
+  google.protobuf.Timestamp status_timestamp_after = 7 [deprecated = true];
+  // Optional. Filter tasks by last activity: only tasks whose `Task.updated_at` is
+  // greater than or equal to this value are returned. ISO 8601 format
+  // (e.g., "2023-10-27T10:00:00Z").
+  google.protobuf.Timestamp updated_after = 10;
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.
   optional bool include_artifacts = 8;

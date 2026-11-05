@@ -261,7 +261,7 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 ***Ordering:***
 
-Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
+Implementations MUST return tasks sorted by [`Task.updatedAt`](#411-task) in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity. `updatedAt` is the time of the task's most recent mutation — a timeline entry or an artifact update — so a task that is actively streaming artifacts sorts as recently active. Ordering by the deprecated `status.timestamp` is **NOT** equivalent: it misses artifact activity.
 
 #### 3.1.5. Cancel Task
 
@@ -625,9 +625,18 @@ The [`timeline`](#418-timelineentry) field on [`Task`](#411-task) is the coheren
 
 Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append. These `generation` values are monotonic but **not contiguous**: other mutations (notably `Artifact` updates) also advance `generation`, so consumers **MUST NOT** assume timeline entries have consecutive `generation` values — gaps are expected, and artifacts are placed relative to entries via `startGeneration`/`endGeneration` (see *Interleaving artifacts with the timeline* below).
 
-Each [`TimelineEntry`](#418-timelineentry) also carries a `timestamp` recording when it was recorded. A server **MUST** set it on every entry it returns in a `timeline`. This value is **informational only** — entries are ordered by `generation`, never by `timestamp` — and it is the home for an entry's time, superseding the deprecated [`TaskStatus.timestamp`](#412-taskstatus). For a `status` entry, if the entry's `status.timestamp` is also set, the two **MUST** be equal. The deprecated `TaskStatus.timestamp` nonetheless remains populated throughout the 1.x line (removed in 2.0), because it is still the authoritative time for the current status on [`Task.status`](#411-task) — which [`ListTasks`](#314-list-tasks) ordering and the `statusTimestampAfter` filter key on.
+**Timestamps:**
 
-That requirement binds the [`TimelineEntry`](#418-timelineentry) objects a server returns inside a [`Task`](#411-task); the streaming events are deltas, not `TimelineEntry` messages. On the wire, a streamed status entry carries its time inside the (deprecated) `TaskStatus.timestamp` on [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), and a streamed [`Artifact`](#417-artifact) carries `updatedAt` inline, so both are self-timestamped. A streamed client-message entry on [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) carries no server timestamp; a client assembling the timeline live **MAY** substitute its own send time as a local placeholder, and learns the server's authoritative value when a later task snapshot includes the entry (a truncating `timelineLength` may omit it).
+Every mutation counted by `generation` also carries a wall-clock time, recorded in two complementary places:
+
+- **In a snapshot**, state records when it was last updated: [`TimelineEntry`](#418-timelineentry) `timestamp`, [`Artifact`](#417-artifact) `updatedAt`, and [`Task`](#411-task) `updatedAt` (the task's last activity, i.e. the time of its most recent mutation, whether a timeline entry or an artifact update).
+- **On the wire**, each delta records when the mutation occurred: [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) and [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) each carry a `timestamp` alongside their `generation`.
+
+The two agree by construction: a client folding an event into local state uses the event's `timestamp` as the resulting entry's `timestamp` (or the artifact's `updatedAt`), so a timeline assembled from the stream matches one read from a snapshot. A server **MUST** set `timestamp` on every [`TimelineEntry`](#418-timelineentry) it returns.
+
+All of these values are **informational only** — `generation` orders events, detects gaps and guards concurrency; wall-clock time never does (see [Task Generation Semantics](#327-task-generation-semantics)). The one place a timestamp is load-bearing is [`ListTasks`](#314-list-tasks), which sorts across tasks, where `generation` is per-task and therefore not comparable; it orders by `Task.updatedAt`.
+
+This supersedes the deprecated [`TaskStatus.timestamp`](#412-taskstatus), which carried an entry's time on the status object. Servers continue to populate it throughout the 1.x line for backward compatibility; it is removed in 2.0. Likewise `statusTimestampAfter` on [`ListTasks`](#314-list-tasks) is deprecated in favour of `updatedAfter`, which filters on `Task.updatedAt` and so also accounts for artifact activity.
 
 The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
 
@@ -635,7 +644,7 @@ Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#42
 
 **Interleaving artifacts with the timeline:**
 
-[`Artifact`](#417-artifact) objects are recorded separately from the timeline so that per-chunk streaming updates do not flood it. To place an artifact relative to timeline entries, an artifact carries `startGeneration` (the `generation` at which it first appeared) and `endGeneration` (the `generation` at which it completed; unset while it is still streaming). Consumers interleave artifacts with timeline entries by comparing these values against entry `generation`s. Each [`Artifact`](#417-artifact) also carries an optional `updatedAt` timestamp, set by the server to the time it was last created or updated (including for client-written artifacts). Because it is carried inline on the `Artifact`, every [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) is self-timestamped; like entry timestamps it is informational, not an ordering key — `generation` orders artifacts.
+[`Artifact`](#417-artifact) objects are recorded separately from the timeline so that per-chunk streaming updates do not flood it. To place an artifact relative to timeline entries, an artifact carries `startGeneration` (the `generation` at which it first appeared) and `endGeneration` (the `generation` at which it completed; unset while it is still streaming). Consumers interleave artifacts with timeline entries by comparing these values against entry `generation`s. Each [`Artifact`](#417-artifact) also carries an `updatedAt` timestamp, set by the server to the time it was last created or updated (including for client-written artifacts); see *Timestamps* above.
 
 ### 3.3. Operation Semantics
 
