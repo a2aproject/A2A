@@ -223,10 +223,15 @@ message Task {
   // ISO 8601 Timestamp when this task was last updated: the task's "last activity"
   // time. The server MUST set it when the task is created and on every mutation
   // that advances `generation`, whether that is a timeline entry or an artifact
-  // update, and MUST keep it non-decreasing. This is the key `ListTasks` orders
-  // by. Elsewhere it is informational — `generation`, not this value, orders
-  // events and guards concurrency. Example: "2023-10-27T10:00:00Z"
+  // update, and MUST keep it non-decreasing. Informational — `generation`, not
+  // this value, orders events and guards concurrency.
+  // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp updated_at = 9;
+  // ISO 8601 Timestamp when this task was created. The server MUST set it when
+  // the task is created, and it never changes afterwards. Being immutable, it is
+  // the key `ListTasks` orders by: a task cannot move between pages while a client
+  // is paging through results. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp created_at = 10;
 }
 
 // Defines the possible lifecycle states of a `Task`.
