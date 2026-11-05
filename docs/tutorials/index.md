@@ -16,6 +16,7 @@ Tutorial | Description | Difficulty
 
 Tutorial | Description | Difficulty
 :-------- | :------------ | :-----------
+[A2A and Java Quickstart](./java/quickstart.md) | Build a local Quarkus A2A server and call it from a Java client, without an LLM or API key. | Easy
 [Weather Agent](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/weather_mcp) | Build a weather information agent using an MCP server.<br><br>**To make use of this agent in a multi-language, multi-agent system, check out the [weather_and_airbnb_planner sample](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/hosts/weather_and_airbnb_planner).** | Easy
 [Content Writer Agent](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/content_writer) | Build a content writer agent that generates engaging pieces of content from outlines.<br><br>**To make use of this agent in a content creation multi-language, multi-agent system, check out the [content_creation sample](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/hosts/content_creation).** | Easy
 [Content Editor Agent](https://github.com/a2aproject/a2a-samples/tree/main/samples/java/agents/content_editor) | Build a content editor agent that proof-reads and polishes content.<br><br>**To make use of this agent in a content creation multi-language, multi-agent system, check out the [content_creation sample](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/hosts/content_creation).** | Easy
