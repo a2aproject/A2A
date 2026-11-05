@@ -136,8 +136,9 @@ is per-task and therefore not comparable, so ordering falls to
 * `TaskStatus.timestamp` is likewise deprecated — every mutation now carries its
   time on the object it mutates (`TimelineEntry.timestamp`, `Artifact.updated_at`,
   `Task.updated_at`) and on the event that delivers it — but lingers (populated)
-  until 2.0. `ListTasks` moves onto `Task.updated_at`, so its
-  `status_timestamp_after` filter is deprecated in favour of `updated_after`.
+  until 2.0. `ListTasks` ordering moves onto `Task.updated_at`; its
+  `status_timestamp_after` filter is unchanged, since filtering by status time
+  stays a distinct question from ordering by recency.
 * Some duplication between v1.1 additive types and an eventual v2 unified type is
   likely; v1.1 accepts short-term redundancy to protect release timing.
 
@@ -228,8 +229,7 @@ v1.1, additive only:
 6. Record a timestamp on every mutation: `TimelineEntry.timestamp`,
    `Artifact.updated_at`, `Task.updated_at`, and a `timestamp` on each of the
    three task update events. Move `ListTasks` ordering onto `Task.updated_at` and
-   soft-deprecate `TaskStatus.timestamp` and the `status_timestamp_after` filter
-   (replaced by `updated_after`); both are removed in 2.0.
+   soft-deprecate `TaskStatus.timestamp`, which is removed in 2.0.
 
 Bidirectional streaming mechanics are specified separately and depend on this
 model.
