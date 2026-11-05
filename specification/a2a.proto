@@ -356,12 +356,12 @@ message Artifact {
   // Optional. The originator of this artifact. Artifacts are agent outputs by
   // default (`ROLE_AGENT`); an artifact written by the client is `ROLE_USER`.
   Role role = 9;
-  // Optional. ISO 8601 Timestamp when this artifact was last created or updated,
-  // set by the server to the time of the latest chunk or revision (including for
-  // client-written artifacts). Informational: it is carried inline on the
-  // `Artifact`, so an artifact update is self-timestamped on the wire (see
-  // `TaskArtifactUpdateEvent`), but it is not an ordering key — `generation` orders
-  // artifacts. Example: "2023-10-27T10:00:00Z"
+  // ISO 8601 Timestamp when this artifact was last created or updated; the server
+  // MUST set it, to the time of the latest chunk or revision (including for
+  // client-written artifacts). Because the whole `Artifact` travels in a
+  // `TaskArtifactUpdateEvent`, this is also that event's time, which is why the
+  // event carries no `timestamp` of its own. Informational: it is not an ordering
+  // key — `generation` orders artifacts. Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp updated_at = 10;
 }
 
@@ -463,12 +463,6 @@ message TaskArtifactUpdateEvent {
   // use this to detect missed events (a gap in generation values) and to
   // correlate events with a specific task snapshot.
   int64 generation = 7;
-  // ISO 8601 Timestamp when this mutation occurred; the server MUST set it.
-  // Informational only: events are ordered by `generation`, never by this value.
-  // It MUST equal the `updated_at` carried on `artifact`, which is this event's
-  // mutation record; a client folding the event into local state uses either.
-  // Example: "2023-10-27T10:00:00Z"
-  google.protobuf.Timestamp timestamp = 8;
 }
 
 // Defines authentication details, used for push notifications.
