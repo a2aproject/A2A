@@ -126,7 +126,6 @@ collaborate effectively with each other and with users.
 - [Optimizely Inc](https://www.optimizely.com/)
 - [Oracle / NetSuite](https://www.oracle.com/netsuite)
 - [Palo Alto Networks](https://www.paloaltonetworks.com/)
-- [PancakeAI](https://www.pancakeai.tech/)
 - [ParkourSC](https://www.parkoursc.com/)
 - [Pendo](https://www.pendo.io)
 - [PerfAI.ai](https://perfai.ai)
