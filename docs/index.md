@@ -29,17 +29,31 @@ hide:
 
 <div class="install-command-container" markdown="1">
 
-**Ship your first A2A agent in ~15 minutes** — install the SDK, then follow the [Python quickstart](./tutorials/python/1-introduction.md).
+**Connect your harness to A2A agents straight away** — install the A2A CLI and its Agent Skill, and your coding assistant can discover, message, and delegate to any A2A agent.
 
-```bash
-pip install a2a-sdk
-```
+=== "Homebrew (macOS / Linux)"
+
+    ```bash
+    brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli
+    brew install a2a
+    npx skills add https://github.com/a2aproject/a2a-cli --skill a2a-cli
+    ```
+
+=== "WinGet (Windows)"
+
+    ```powershell
+    winget install a2aproject.a2acli
+    npx skills add https://github.com/a2aproject/a2a-cli --skill a2a-cli
+    ```
+
+[:octicons-arrow-right-24: Meet the A2A CLI](./blog/posts/introducing-a2a-cli.md)
+{ .install-cta }
 
 </div>
 
 <div class="hero" markdown="1">
 
-[Start building](./tutorials/python/1-introduction.md){ .md-button .md-button--primary }
+[Start building](./tutorials/index.md){ .md-button .md-button--primary }
 [Read the spec](./specification.md){ .md-button }
 
 </div>
@@ -55,7 +69,7 @@ pip install a2a-sdk
         <strong>Interoperability</strong>
       </div>
       <div class="feature-flip-card-back">
-        <p>Connect agents built on different platforms (LangGraph, CrewAI, Semantic Kernel, custom solutions) to create powerful, composite AI systems.</p>
+        <p>Connect agents built on different platforms (LangGraph, CrewAI, Semantic Kernel, custom solutions) instead of rebuilding an integration for every agent you add. <a href="./topics/what-is-a2a/">What is A2A?</a></p>
       </div>
     </div>
   </div>
@@ -87,11 +101,11 @@ pip install a2a-sdk
     <span class="feature-flip-tooltip" data-tooltip="Hover, click, or focus to see details" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 9h2V7h-2m1 13c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2m-1 15h2v-6h-2z"/></svg></span>
     <div class="feature-flip-card-inner">
       <div class="feature-flip-card-front">
-        <span class="feature-flip-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20,19V7H4V19H20M20,3A2,2 0 0,1 22,5V19A2,2 0 0,1 20,21H4A2,2 0 0,1 2,19V5C2,3.89 2.9,3 4,3H20M13,17V15H18V17H13M9.58,13L5.57,9H8.4L11.7,12.3C12.09,12.69 12.09,13.33 11.7,13.72L8.42,17H5.59L9.58,13Z"/></svg></span>
-        <strong>A2A CLI</strong>
+        <span class="feature-flip-card-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 11h-3.18C14.4 9.84 13.3 9 12 9s-2.4.84-2.82 2H6c-.33 0-2-.1-2-2V8c0-1.83 1.54-2 2-2h10.18C16.6 7.16 17.7 8 19 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3c-1.3 0-2.4.84-2.82 2H6C4.39 4 2 5.06 2 8v1c0 2.94 2.39 4 4 4h3.18c.42 1.16 1.52 2 2.82 2s2.4-.84 2.82-2H18c.33 0 2 .1 2 2v1c0 1.83-1.54 2-2 2H7.82C7.4 16.84 6.3 16 5 16a3 3 0 0 0-3 3 3 3 0 0 0 3 3c1.3 0 2.4-.84 2.82-2H18c1.61 0 4-1.07 4-4v-1c0-2.93-2.39-4-4-4m1-7a1 1 0 0 1 1 1 1 1 0 0 1-1 1 1 1 0 0 1-1-1 1 1 0 0 1 1-1M5 20a1 1 0 0 1-1-1 1 1 0 0 1 1-1 1 1 0 0 1 1 1 1 1 0 0 1-1 1"/></svg></span>
+        <strong>Works with MCP</strong>
       </div>
       <div class="feature-flip-card-back">
-        <p>Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power. <a href="./blog/2026/10/01/introducing-a2a-cli/">Meet the A2A CLI</a>.</p>
+        <p>MCP connects an agent to tools, APIs, and data. A2A connects it to other agents. Use both. <a href="./topics/a2a-and-mcp/">A2A and MCP</a></p>
       </div>
     </div>
   </div>
@@ -109,24 +123,78 @@ pip install a2a-sdk
   </div>
 </div>
 
-## Any agent, one protocol
+## Build an agent
 
-The **Agent2Agent (A2A) Protocol** is an open standard for seamless communication and collaboration between AI
-agents.
+Pick your language and add the official SDK. Every SDK implements the same
+[A2A v1.0 specification](./specification.md), so agents interoperate across all of them.
 
-You should not have to rebuild an integration every time you add another agent. A2A lets independently built agents find each other, hand off work, and send results back across frameworks and organizations.
+<div class="sdk-switcher" markdown="1">
 
-That is the practical gain: connect the agents you already have, keep their internals private, and grow a multi-agent system by adding partners instead of custom connectors. A travel assistant can book flights, hotels, and tours by talking to the agents that already do those jobs, even when each one was built by someone else.
+=== "Python"
 
-[:octicons-arrow-right-24: What is A2A?](./topics/what-is-a2a.md)
+    ```bash
+    pip install a2a-sdk
+    ```
+
+    [:octicons-arrow-right-24: Quickstart](./tutorials/python/1-introduction.md) ·
+    [:fontawesome-brands-github: a2a-python](https://github.com/a2aproject/a2a-python)
+
+=== "Go"
+
+    ```bash
+    go get github.com/a2aproject/a2a-go/v2
+    ```
+
+    [:fontawesome-brands-github: a2a-go](https://github.com/a2aproject/a2a-go)
+
+=== "Java"
+
+    ```xml
+    <dependency>
+      <groupId>org.a2aproject.sdk</groupId>
+      <artifactId>a2a-java-sdk-reference-jsonrpc</artifactId>
+      <version>${org.a2aproject.sdk.version}</version>
+    </dependency>
+    ```
+
+    [:octicons-arrow-right-24: Tutorials](./tutorials/index.md#java) ·
+    [:fontawesome-brands-github: a2a-java](https://github.com/a2aproject/a2a-java)
+
+=== "JavaScript"
+
+    ```bash
+    npm install @a2a-js/sdk
+    ```
+
+    [:octicons-arrow-right-24: Tutorials](./tutorials/index.md#javascript) ·
+    [:fontawesome-brands-github: a2a-js](https://github.com/a2aproject/a2a-js)
+
+=== "C#/.NET"
+
+    ```bash
+    dotnet add package A2A
+    ```
+
+    [:octicons-arrow-right-24: Tutorials](./tutorials/index.md#cnet) ·
+    [:fontawesome-brands-github: a2a-dotnet](https://github.com/a2aproject/a2a-dotnet)
+
+=== "Rust"
+
+    ```bash
+    cargo add a2a-lf a2a-server-lf
+    ```
+
+    [:fontawesome-brands-github: a2a-rs](https://github.com/a2aproject/a2a-rs)
+
+</div>
 
 ## Explore further
 
 <div class="grid cards" markdown>
 
-- :material-console-line:{ .lg .middle } **Use the A2A CLI**
+- :material-console-line:{ .lg .middle } **Go further with the A2A CLI**
 
-    Discover, message, and manage any A2A agent from your terminal — and give your coding assistant the same power.
+    Serve any stdin/stdout script as an agent, stream task updates, and drop protocol-native JSON into your pipelines.
 
     [:octicons-arrow-right-24: Introducing the A2A CLI](./blog/posts/introducing-a2a-cli.md)
 
@@ -148,9 +216,9 @@ That is the practical gain: connect the agents you already have, keep their inte
 
 - :material-application-cog-outline:{ .lg .middle } **Follow the Tutorials**
 
-    Build your first A2A-compliant agent with our step-by-step Python quickstart.
+    Build your first A2A-compliant agent with step-by-step guides in Python, Java, JavaScript, and C#/.NET.
 
-    [:octicons-arrow-right-24: Hands-on Tutorial](./tutorials/python/1-introduction.md)
+    [:octicons-arrow-right-24: Hands-on Tutorials](./tutorials/index.md)
 
 - :material-code-braces:{ .lg .middle } **Explore Code Samples**
 
