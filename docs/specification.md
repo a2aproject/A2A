@@ -253,7 +253,7 @@ None specific to this operation beyond standard protocol errors.
 
 **Behavior:**
 
-The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Tasks MUST be sorted by last update time in descending order. Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See [Section 13.1 Data Access and Authorization Scoping](#131-data-access-and-authorization-scoping) for detailed security requirements.
+The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See [Section 13.1 Data Access and Authorization Scoping](#131-data-access-and-authorization-scoping) for detailed security requirements.
 
 ***Pagination Strategy:***
 
@@ -261,7 +261,9 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 ***Ordering:***
 
-Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
+Implementations **SHOULD** return tasks sorted by [`Task.createdAt`](#411-task) in descending order (most recently created tasks first). `createdAt` never changes once set, so a task cannot move position while a client is paging, and servers are not required to index a frequently changing field.
+
+Implementations **MAY** use a different order, such as [`Task.updatedAt`](#411-task), to let clients monitor recent activity rather than recent creation. Ordering by a mutable field costs the guarantee above: `updatedAt` advances on every artifact chunk, so an actively streamed task changes position often, and a client paging through such results can see a task twice or miss it entirely. Clients **MUST NOT** assume a stable order across pages unless the order is by `createdAt`.
 
 #### 3.1.5. Cancel Task
 
@@ -625,13 +627,26 @@ The [`timeline`](#418-timelineentry) field on [`Task`](#411-task) is the coheren
 
 Entries are ordered by their `generation` value, which establishes a total order independent of wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Servers **MUST** assign each appended entry the task's `generation` after the append. These `generation` values are monotonic but **not contiguous**: other mutations (notably `Artifact` updates) also advance `generation`, so consumers **MUST NOT** assume timeline entries have consecutive `generation` values — gaps are expected, and artifacts are placed relative to entries via `startGeneration`/`endGeneration` (see *Interleaving artifacts with the timeline* below).
 
+**Timestamps:**
+
+Every mutation counted by `generation` also carries a wall-clock time, recorded in two complementary places:
+
+- **In a snapshot**, state records when it was last updated: [`TimelineEntry`](#418-timelineentry) `timestamp`, [`Artifact`](#417-artifact) `updatedAt`, and [`Task`](#411-task) `updatedAt` (the task's last activity, i.e. the time of its most recent mutation, whether a timeline entry or an artifact update). A [`Task`](#411-task) also carries `createdAt`, which is fixed when the task is created and never changes.
+- **On the wire**, each delta records when the mutation occurred: [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) and [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) carry a `timestamp` alongside their `generation`, because the timeline entry they produce is never itself sent. [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) needs no such field: an artifact is not a timeline entry, and the full [`Artifact`](#417-artifact) travels in the event carrying its own `updatedAt`.
+
+A server **MUST** set `timestamp` on every [`TimelineEntry`](#418-timelineentry) it returns and on every event that carries one, **MUST** set `updatedAt` on every [`Artifact`](#417-artifact) and [`Task`](#411-task) it returns, **MUST** set `createdAt` on every [`Task`](#411-task) it returns and never change it thereafter, and **MUST** keep `Task.updatedAt` non-decreasing. Because both sides are required, the two agree by construction: a client folding an event into local state uses the event's `timestamp` as the resulting entry's `timestamp`, or an artifact's `updatedAt` as its own, and either as the task's `updatedAt` — so state assembled from the stream matches a snapshot. While the deprecated `status.timestamp` is still populated it **MUST** equal the `timestamp` on the [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) carrying it.
+
+Within a task these values are **informational only**: `generation` orders events, detects gaps and guards concurrency, and a client **MUST NOT** order a timeline by wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Two cases sit outside that rule. [`ListTasks`](#314-list-tasks) sorts *across* tasks, where per-task `generation` values are not comparable, so it sorts by `Task.createdAt` (or `Task.updatedAt`, see [List Tasks](#314-list-tasks)). And a client talking to a server that does not implement `generation` at all falls back to stream order or timestamps, as described in [Task Generation Semantics](#327-task-generation-semantics).
+
+This supersedes the deprecated [`TaskStatus.timestamp`](#412-taskstatus), which carried an entry's time on the status object. Servers continue to populate it throughout the 1.x line for backward compatibility; it is removed in 2.0. The `statusTimestampAfter` filter on [`ListTasks`](#314-list-tasks) selects tasks by that same status time and is deprecated with it; servers continue to honour it throughout the 1.x line, and both are removed in 2.0.
+
 The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
 
 Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent). Client-message entries are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — which is emitted **only** to clients that request `A2A-Version: 1.1` or later, so 1.0 clients that do not understand the `timeline` field are unaffected on the wire. The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
 
 **Interleaving artifacts with the timeline:**
 
-[`Artifact`](#417-artifact) objects are recorded separately from the timeline so that per-chunk streaming updates do not flood it. To place an artifact relative to timeline entries, an artifact carries `startGeneration` (the `generation` at which it first appeared) and `endGeneration` (the `generation` at which it completed; unset while it is still streaming). Consumers interleave artifacts with timeline entries by comparing these values against entry `generation`s.
+[`Artifact`](#417-artifact) objects are recorded separately from the timeline so that per-chunk streaming updates do not flood it. To place an artifact relative to timeline entries, an artifact carries `startGeneration` (the `generation` at which it first appeared) and `endGeneration` (the `generation` at which it completed; unset while it is still streaming). Consumers interleave artifacts with timeline entries by comparing these values against entry `generation`s. Each [`Artifact`](#417-artifact) also carries an `updatedAt` timestamp, set by the server to the time it was last created or updated (including for client-written artifacts); see *Timestamps* above.
 
 ### 3.3. Operation Semantics
 
@@ -1695,7 +1710,9 @@ Content-Type: application/a2a+json
       "status": {
         "state": "TASK_STATE_COMPLETED",
         "timestamp": "2024-03-15T10:15:00Z"
-      }
+      },
+      "createdAt": "2024-03-15T10:12:00Z",
+      "updatedAt": "2024-03-15T10:15:00Z"
     }
   ],
   "totalSize": 5,
@@ -1737,7 +1754,9 @@ Content-Type: application/a2a+json
           "messageId": "msg-status-update"
         },
         "timestamp": "2024-03-15T10:20:00Z"
-      }
+      },
+      "createdAt": "2024-03-15T10:18:00Z",
+      "updatedAt": "2024-03-15T10:22:30Z"
     }
   ],
   "totalSize": 1,
