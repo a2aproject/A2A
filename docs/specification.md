@@ -420,7 +420,7 @@ Retrieves a potentially more detailed version of the Agent Card after the client
 
 **Behavior:**
 
-- **Authentication**: The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields.
+- **Authentication**: The client MUST authenticate the request using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.securityRequirements` fields.
 - **Extended Information**: The operation MAY return different details based on client authentication level, including additional skills, capabilities, or configuration not available in the public Agent Card.
 - **Card Replacement**: Clients retrieving this extended card SHOULD replace their cached public Agent Card with the content received from this endpoint for the duration of their authenticated session or until the card's version changes.
 - **Availability**: This operation is only available if the public Agent Card declares `capabilities.extendedAgentCard: true`.
@@ -3169,7 +3169,7 @@ The extended Agent Card feature allows agents to provide additional capabilities
 **Access Control Requirements:**
 
 - The [`Get Extended Agent Card`](#3111-get-extended-agent-card) operation **MUST** require authentication
-- Agents **MUST** authenticate requests using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.security` fields
+- Agents **MUST** authenticate requests using one of the schemes declared in the public `AgentCard.securitySchemes` and `AgentCard.securityRequirements` fields
 - Agents **MAY** return different extended card content based on the authenticated client's identity or authorization level
 - Agents **SHOULD** implement appropriate caching headers to control client-side caching of extended cards
 
