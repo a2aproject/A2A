@@ -220,11 +220,12 @@ message Task {
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
-  // ISO 8601 Timestamp when this task was last updated: the time of the most
-  // recent mutation counted by `generation`, whether that was a timeline entry or
-  // an artifact update. This is the task's "last activity" time and the key
-  // `ListTasks` orders by. Informational only — `generation`, not this value,
-  // orders events and guards concurrency. Example: "2023-10-27T10:00:00Z"
+  // ISO 8601 Timestamp when this task was last updated: the task's "last activity"
+  // time. The server MUST set it when the task is created and on every mutation
+  // that advances `generation`, whether that is a timeline entry or an artifact
+  // update, and MUST keep it non-decreasing. This is the key `ListTasks` orders
+  // by. Elsewhere it is informational — `generation`, not this value, orders
+  // events and guards concurrency. Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp updated_at = 9;
 }
 
@@ -413,10 +414,10 @@ message TaskMessageUpdateEvent {
   // The task's `generation` after this message was appended, allowing clients
   // to order it correctly in the timeline and detect missed events.
   int64 generation = 5;
-  // ISO 8601 Timestamp when this mutation occurred. Informational only: events
-  // are ordered by `generation`, never by this value. A client folding this event
-  // into a local timeline uses it as the resulting `TimelineEntry.timestamp`.
-  // Example: "2023-10-27T10:00:00Z"
+  // ISO 8601 Timestamp when this mutation occurred; the server MUST set it.
+  // Informational only: events are ordered by `generation`, never by this value.
+  // A client folding this event into a local timeline uses it as the resulting
+  // `TimelineEntry.timestamp`. Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 6;
 }
 
@@ -434,10 +435,11 @@ message TaskStatusUpdateEvent {
   // to detect missed events (a gap in generation values) and to correlate
   // events with a specific task snapshot.
   int64 generation = 5;
-  // ISO 8601 Timestamp when this mutation occurred. Informational only: events
-  // are ordered by `generation`, never by this value. A client folding this event
-  // into a local timeline uses it as the resulting `TimelineEntry.timestamp`.
-  // Supersedes the deprecated `status.timestamp` as this event's time.
+  // ISO 8601 Timestamp when this mutation occurred; the server MUST set it.
+  // Informational only: events are ordered by `generation`, never by this value.
+  // A client folding this event into a local timeline uses it as the resulting
+  // `TimelineEntry.timestamp`. Replaces the deprecated `status.timestamp` as this
+  // event's time; while both are populated the two MUST be equal.
   // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 6;
 }
@@ -461,10 +463,11 @@ message TaskArtifactUpdateEvent {
   // use this to detect missed events (a gap in generation values) and to
   // correlate events with a specific task snapshot.
   int64 generation = 7;
-  // ISO 8601 Timestamp when this mutation occurred. Informational only: events
-  // are ordered by `generation`, never by this value. A client folding this event
-  // into local state uses it as the resulting `Artifact.updated_at`, so it matches
-  // the `updated_at` carried on `artifact`. Example: "2023-10-27T10:00:00Z"
+  // ISO 8601 Timestamp when this mutation occurred; the server MUST set it.
+  // Informational only: events are ordered by `generation`, never by this value.
+  // It MUST equal the `updated_at` carried on `artifact`, which is this event's
+  // mutation record; a client folding the event into local state uses either.
+  // Example: "2023-10-27T10:00:00Z"
   google.protobuf.Timestamp timestamp = 8;
 }
 
@@ -897,7 +900,9 @@ message ListTasksRequest {
   google.protobuf.Timestamp status_timestamp_after = 7 [deprecated = true];
   // Optional. Filter tasks by last activity: only tasks whose `Task.updated_at` is
   // greater than or equal to this value are returned. ISO 8601 format
-  // (e.g., "2023-10-27T10:00:00Z").
+  // (e.g., "2023-10-27T10:00:00Z"). If both this and the deprecated
+  // `status_timestamp_after` are set, the server MUST apply both (a task must
+  // satisfy each to be returned).
   google.protobuf.Timestamp updated_after = 10;
   // Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size.

@@ -253,7 +253,7 @@ None specific to this operation beyond standard protocol errors.
 
 **Behavior:**
 
-The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Tasks MUST be sorted by last update time in descending order. Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See [Section 13.1 Data Access and Authorization Scoping](#131-data-access-and-authorization-scoping) for detailed security requirements.
+The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Tasks MUST be sorted by [`Task.updatedAt`](#411-task) in descending order (see *Ordering* below). Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See [Section 13.1 Data Access and Authorization Scoping](#131-data-access-and-authorization-scoping) for detailed security requirements.
 
 ***Pagination Strategy:***
 
@@ -261,7 +261,11 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 ***Ordering:***
 
-Implementations MUST return tasks sorted by [`Task.updatedAt`](#411-task) in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity. `updatedAt` is the time of the task's most recent mutation — a timeline entry or an artifact update — so a task that is actively streaming artifacts sorts as recently active. Ordering by the deprecated `status.timestamp` is **NOT** equivalent: it misses artifact activity.
+Implementations MUST return tasks sorted by [`Task.updatedAt`](#411-task) in descending order (most recently updated tasks first), so clients can efficiently monitor recent task activity. `updatedAt` is the time of the task's most recent mutation — a timeline entry or an artifact update — so a task that is actively streaming artifacts sorts as recently active.
+
+Prior to 1.1 this requirement was stated two ways: "sorted by last update time" and "sorted by their status timestamp time". Those are not equivalent, because status time ignores artifact activity, which made a task busily producing artifacts sort as stale. Ordering on `updatedAt` resolves the contradiction in favour of the former. Servers apply this ordering to all clients, including those requesting `A2A-Version: 1.0`: the two orderings differ only for tasks with artifact activity more recent than their last status change, and the pre-1.1 text did not define which of its two readings was authoritative. Clients that page until they see a task older than some cutoff **SHOULD** compare against `updatedAt` rather than `status.timestamp`, since the list is ordered by the former.
+
+Because `updatedAt` advances on every artifact chunk, an actively streaming task can move position while a client pages through results, and may be returned twice or skipped. This is inherent to ordering by recency and is not specific to 1.1, but artifact streaming makes it more frequent. Servers **SHOULD** make `pageToken` a stable cursor — for example a snapshot or keyset cursor including `(updatedAt, id)` as a tie-breaker — so that pagination is not disturbed by concurrent updates.
 
 #### 3.1.5. Cancel Task
 
@@ -632,9 +636,9 @@ Every mutation counted by `generation` also carries a wall-clock time, recorded 
 - **In a snapshot**, state records when it was last updated: [`TimelineEntry`](#418-timelineentry) `timestamp`, [`Artifact`](#417-artifact) `updatedAt`, and [`Task`](#411-task) `updatedAt` (the task's last activity, i.e. the time of its most recent mutation, whether a timeline entry or an artifact update).
 - **On the wire**, each delta records when the mutation occurred: [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent), [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent) and [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) each carry a `timestamp` alongside their `generation`.
 
-The two agree by construction: a client folding an event into local state uses the event's `timestamp` as the resulting entry's `timestamp` (or the artifact's `updatedAt`), so a timeline assembled from the stream matches one read from a snapshot. A server **MUST** set `timestamp` on every [`TimelineEntry`](#418-timelineentry) it returns.
+A server **MUST** set `timestamp` on every [`TimelineEntry`](#418-timelineentry) it returns and on every event it emits, **MUST** set `updatedAt` on every [`Artifact`](#417-artifact) and [`Task`](#411-task) it returns, and **MUST** keep `Task.updatedAt` non-decreasing. Because both sides are required, the two agree by construction: a client folding an event into local state uses the event's `timestamp` as the resulting entry's `timestamp`, and as the task's `updatedAt`, so a timeline assembled from the stream matches one read from a snapshot. Where a value is carried twice while the deprecated field lives on — `TaskStatusUpdateEvent.timestamp` alongside `status.timestamp`, and `TaskArtifactUpdateEvent.timestamp` alongside its artifact's `updatedAt` — the two **MUST** be equal.
 
-All of these values are **informational only** — `generation` orders events, detects gaps and guards concurrency; wall-clock time never does (see [Task Generation Semantics](#327-task-generation-semantics)). The one place a timestamp is load-bearing is [`ListTasks`](#314-list-tasks), which sorts across tasks, where `generation` is per-task and therefore not comparable; it orders by `Task.updatedAt`.
+Within a task these values are **informational only**: `generation` orders events, detects gaps and guards concurrency, and a client **MUST NOT** order a timeline by wall-clock time (see [Task Generation Semantics](#327-task-generation-semantics)). Two cases sit outside that rule. [`ListTasks`](#314-list-tasks) sorts *across* tasks, where per-task `generation` values are not comparable, so it orders by `Task.updatedAt`. And a client talking to a server that does not implement `generation` at all falls back to stream order or timestamps, as described in [Task Generation Semantics](#327-task-generation-semantics).
 
 This supersedes the deprecated [`TaskStatus.timestamp`](#412-taskstatus), which carried an entry's time on the status object. Servers continue to populate it throughout the 1.x line for backward compatibility; it is removed in 2.0. Likewise `statusTimestampAfter` on [`ListTasks`](#314-list-tasks) is deprecated in favour of `updatedAfter`, which filters on `Task.updatedAt` and so also accounts for artifact activity.
 
@@ -1708,7 +1712,8 @@ Content-Type: application/a2a+json
       "status": {
         "state": "TASK_STATE_COMPLETED",
         "timestamp": "2024-03-15T10:15:00Z"
-      }
+      },
+      "updatedAt": "2024-03-15T10:15:00Z"
     }
   ],
   "totalSize": 5,
@@ -1750,7 +1755,8 @@ Content-Type: application/a2a+json
           "messageId": "msg-status-update"
         },
         "timestamp": "2024-03-15T10:20:00Z"
-      }
+      },
+      "updatedAt": "2024-03-15T10:22:30Z"
     }
   ],
   "totalSize": 1,

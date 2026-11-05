@@ -101,10 +101,18 @@ field is removed in 2.0.
 
 The timeline (and artifact interleaving) is ordered by `generation`, not by
 wall-clock timestamps. This follows from the `generation` work in #1794/#1810:
-timestamps are unreliable across distributed producers and are kept only as
-optional correlation/display metadata. This is a property of that ordering
+timestamps are unreliable across distributed producers and are kept for
+correlation and display rather than ordering. This is a property of that ordering
 decision rather than a driver of the history model itself, and is called out here
 so the timeline inherits it explicitly.
+
+Timestamps are nonetheless recorded on every mutation — on the object mutated
+(`TimelineEntry.timestamp`, `Artifact.updated_at`, `Task.updated_at`) and on the
+event that delivers it — and servers are required to set them, so a timeline
+assembled from the stream matches one read from a snapshot. The one place a
+timestamp is load-bearing is `ListTasks`, which sorts *across* tasks: `generation`
+is per-task and therefore not comparable, so ordering falls to
+`Task.updated_at`.
 
 ### Consequences
 
@@ -135,8 +143,9 @@ so the timeline inherits it explicitly.
 
 #### Neutral
 
-* Timestamps become optional correlation/display metadata rather than an ordering
-  key (see *Ordering: generation vs. timestamp*).
+* Timestamps become correlation/display metadata rather than an ordering key
+  within a task, the exception being `ListTasks`, which orders across tasks by
+  `Task.updated_at` (see *Ordering: generation vs. timestamp*).
 * Bidirectional streaming mechanics (how a client streams into an artifact,
   sending messages to a `WORKING` task, input queueing) are specified in the
   bidirectional-streaming thread, not here; this ADR only fixes the history/order
@@ -204,7 +213,7 @@ v1.1, additive only:
 
 1. Add a `timeline` collection of role-tagged entries (client + agent messages,
    progress updates), ordered by `generation`. Ordering key is `generation` (per
-   #1794/#1810), not timestamps; timestamps remain optional metadata.
+   #1794/#1810), not timestamps; timestamps are correlation/display metadata.
 2. Add/retain a separate `artifacts` collection; annotate artifacts with
    `start_generation` / `end_generation` for interleaving.
 3. Allow client-written (bidirectional) artifacts; add an origin/`role` signal to
@@ -216,6 +225,11 @@ v1.1, additive only:
    `role: agent` timeline entries. SDKs keep populating `TaskStatus.message` with
    the current logic through v1.x for existing consumers; new consumers read the
    timeline. The field is removed in 2.0.
+6. Record a timestamp on every mutation: `TimelineEntry.timestamp`,
+   `Artifact.updated_at`, `Task.updated_at`, and a `timestamp` on each of the
+   three task update events. Move `ListTasks` ordering onto `Task.updated_at` and
+   soft-deprecate `TaskStatus.timestamp` and the `status_timestamp_after` filter
+   (replaced by `updated_after`); both are removed in 2.0.
 
 Bidirectional streaming mechanics are specified separately and depend on this
 model.
