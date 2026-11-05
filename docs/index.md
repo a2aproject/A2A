@@ -47,7 +47,7 @@ hide:
     ```
 
 [:octicons-arrow-right-24: Meet the A2A CLI](./blog/posts/introducing-a2a-cli.md)
-{ .install-cta }
+{ .install-command-link }
 
 </div>
 
