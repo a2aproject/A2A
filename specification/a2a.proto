@@ -75,9 +75,11 @@ service A2AService {
   // Returns `UnsupportedOperationError` if the task is already in a terminal state (completed, failed, canceled, rejected).
   rpc SubscribeToTask(SubscribeToTaskRequest) returns (stream StreamResponse) {
     option (google.api.http) = {
-      get: "/tasks/{id=*}:subscribe"
+      post: "/tasks/{id=*}:subscribe"
+      body: "*"
       additional_bindings: {
-        get: "/{tenant}/tasks/{id=*}:subscribe"
+        post: "/{tenant}/tasks/{id=*}:subscribe"
+        body: "*"
       }
     };
   }
