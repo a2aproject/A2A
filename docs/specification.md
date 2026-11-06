@@ -1844,14 +1844,32 @@ Host: example.com
 }
 ```
 
-### Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow)
+**Step 2: Client obtains credentials (out-of-band OAuth 2.0 flow):**
 
-### Step 3: Client fetches authenticated extended Agent Card
+```http
+POST /token HTTP/1.1
+Host: authorization-server.example.com
+Authorization: Basic ...
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+```
+
+**Response:**
+
+```json
+{
+  "access_token":"eyJ...",
+  "token_type":"Bearer"
+}
+```
+
+**Step 3: Client fetches authenticated extended Agent Card:**
 
 ```http
 GET /extendedAgentCard HTTP/1.1
 Host: agent.example.com
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer eyJ...
 ```
 
 **Response:**
