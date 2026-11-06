@@ -995,6 +995,18 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 
 {{ proto_to_table("DeviceCodeOAuthFlow") }}
 
+<a id="SecurityRequirement"></a>
+
+#### 4.5.11. SecurityRequirement
+
+{{ proto_to_table("SecurityRequirement") }}
+
+<a id="StringList"></a>
+
+#### 4.5.12. StringList
+
+{{ proto_to_table("StringList") }}
+
 ### 4.6. Extensions
 
 The A2A protocol supports extensions to provide additional functionality or data beyond the core specification while maintaining backward compatibility and interoperability. Extensions allow agents to declare additional capabilities such as protocol enhancements or vendor-specific features, maintain compatibility with clients that don't support specific extensions, enable innovation through experimental or domain-specific features without modifying the core protocol, and facilitate standardization by providing a pathway for community-developed features to become part of the core specification.
