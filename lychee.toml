@@ -36,6 +36,14 @@ exclude = [
     # partners.md itself checked so future dead links are caught.
     'https://www\.crubyt\.com',
 
+    # Partner sites with no usable HTTPS; keep partners.md itself checked so
+    # future dead links are caught.
+    # crubyt.com: expired SSL cert, no working variant (#2100)
+    # pancakeai.tech: port 443 never completes a handshake on either the apex
+    # or www host, so there is no HTTPS variant to point at (#2366)
+    'https://www\.pancakeai\.tech',
+    'https://pancakeai\.tech',
+
     # Sites that timeout or block GitHub Actions IPs
     'w3\.org',
     'gnu\.org',
