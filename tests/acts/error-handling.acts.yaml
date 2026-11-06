@@ -1,0 +1,347 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "A2A Error Handling Conformance Tests"
+  description: "Error handling coverage derived from TCK CORE-ERR, agentbin error cases, and CSIT."
+
+suites:
+  - id: error-handling
+    name: "Error Handling"
+    tests:
+      - id: CORE-ERR-001
+        name: "GetTask with non-existent ID returns TaskNotFoundError"
+        level: must
+        tags: [error, get-task, task-not-found]
+        steps:
+          - id: get-missing
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+              message:
+                type: string
+
+      - id: CORE-ERR-002
+        name: "CancelTask on non-existent task returns error"
+        level: must
+        tags: [error, cancel-task]
+        steps:
+          - id: cancel-missing
+            operation: cancel_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code:
+                one_of: [TaskNotFoundError, TaskNotCancelableError]
+
+      - id: CORE-ERR-003
+        name: "CancelTask on completed task returns TaskNotCancelableError"
+        level: must
+        tags: [error, cancel-task, completed-task]
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: setup-completed-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task setup"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId: "task.id"
+
+          - id: cancel-completed-task
+            operation: cancel_task
+            params:
+              id: "{{setup-completed-task.taskId}}"
+            expect_error:
+              code: TaskNotCancelableError
+
+      - id: CORE-ERR-004
+        name: "SendMessage to terminal task returns UnsupportedOperationError"
+        level: must
+        tags: [error, send-message, terminal-task]
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: create-terminal-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task first"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId: "task.id"
+
+          - id: resend-terminal-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{create-terminal-task.taskId}}"
+                parts:
+                  - text: "tck-complete-task second"
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: JSONRPC-ERR-001
+        name: "Unknown method returns MethodNotFoundError"
+        level: must
+        tags: [error, jsonrpc, raw]
+        transport: [jsonrpc]
+        steps:
+          - id: bad-method
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: 1
+                method: "DoSomethingUnsupported"
+                params: {}
+            expect:
+              status: 200
+              body:
+                error:
+                  code: -32601
+                  message:
+                    type: string
+
+      - id: JSONRPC-ERR-002
+        name: "Invalid JSON returns ParseError"
+        level: must
+        tags: [error, jsonrpc, raw, parse]
+        transport: [jsonrpc]
+        steps:
+          - id: bad-json
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body_raw: "{this is not valid json"
+            expect:
+              status: 200
+              body:
+                error:
+                  code: -32700
+
+      - id: CORE-ERR-005
+        name: "Error responses include actionable message"
+        level: should
+        tags: [error, message-quality]
+        steps:
+          - id: get-missing-actionable
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+              message:
+                all_of:
+                  - type: string
+                  - matches: ".{12,}"
+                  - any_of:
+                      - contains: "task"
+                      - contains: "Task"
+                      - contains: "not found"
+                      - contains: "does not exist"
+
+      - id: CORE-ERR-006
+        name: "Malformed request returns InvalidRequestError"
+        level: must
+        transport: [jsonrpc]
+        steps:
+          - id: malformed-jsonrpc
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: 1
+                params: {}
+            expect:
+              status: 200
+              body:
+                error:
+                  code:
+                    one_of: [-32600, -32602]
+
+      - id: CORE-CAP-001
+        name: "Push not supported returns UnsupportedOperationError"
+        description: "Overlaps with PUSH-CFG-004 but verifies the capability error at the error-handling suite level."
+        level: must
+        preconditions:
+          capabilities:
+            pushNotifications: false
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: create-task
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create-task.taskId}}"
+              pushNotificationConfig:
+                url: "https://example.com/webhooks/a2a-tests"
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: CORE-CAP-002
+        name: "Streaming not supported returns error"
+        level: should
+        preconditions:
+          capabilities:
+            streaming: false
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task streaming unsupported"
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: CORE-ERR-007
+        name: "Error data contains structured error info"
+        level: should
+        steps:
+          - id: get-missing-structured
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+              data:
+                type: object
+
+      - id: CORE-ERR-008
+        name: "Error details include @type field"
+        description: "Verifies that JSON-RPC error details include a google.rpc Any type discriminator."
+        spec_ref: "REQ-ERR-009"
+        level: must
+        transport: [jsonrpc]
+        steps:
+          - id: send-missing-task
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "core-err-008"
+                method: SendMessage
+                params:
+                  taskId: "00000000-0000-0000-0000-000000000000"
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "missing task should return error details"
+            expect:
+              status: 200
+              body:
+                error:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    count_gte: 1
+                    items:
+                      - "@type":
+                          type: string
+
+      - id: CORE-ERR-009
+        name: "Error response should not distinguish missing vs unauthorized"
+        description: "Runner SHOULD verify that the error response for a missing resource is indistinguishable from one for an unauthorized resource. This requires auth infrastructure."
+        spec_ref: "REQ-ERR-007"
+        level: should
+        tags: [security, error-handling, runner-special]
+        steps:
+          - id: get-missing
+            operation: get_task
+            params:
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              message:
+                type: string
+
+      - id: JSONRPC-ERR-003
+        name: "JSON-RPC error details include google.rpc.ErrorInfo"
+        description: "Verifies that A2A-specific JSON-RPC errors include google.rpc.ErrorInfo in error.data."
+        spec_ref: "REQ-RPC-006"
+        level: must
+        tags: [error, jsonrpc, raw]
+        transport: [jsonrpc]
+        steps:
+          - id: get-missing-error-info
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "1.0"
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-err-003"
+                method: GetTask
+                params:
+                  id: "00000000-0000-0000-0000-000000000000"
+            expect:
+              status: 200
+              body:
+                error:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    count_gte: 1
+            assertions:
+              - source: "{{get-missing-error-info.response}}"
+                any:
+                  path: "error.data[*]"
+                  match:
+                    "@type":
+                      contains: "ErrorInfo"
