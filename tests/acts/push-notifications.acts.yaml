@@ -64,15 +64,19 @@ suites:
         preconditions:
           capabilities:
             pushNotifications: true
-        requires_behaviors: ["tck-complete-task"]
+        requires_behaviors: ["tck-input-required"]
         steps:
           - id: create
+            description: >
+              Leaves the task in TASK_STATE_INPUT_REQUIRED. Section 3.1.7
+              keeps a config only until the task completes, so on a completed
+              task the SUT may already have removed it before the next step.
             operation: send_message
             params:
               message:
                 role: ROLE_USER
                 parts:
-                  - text: "tck-complete-task for push"
+                  - text: "tck-input-required for push"
             capture:
               taskId: "task.id"
             expect:
@@ -118,15 +122,19 @@ suites:
         preconditions:
           capabilities:
             pushNotifications: true
-        requires_behaviors: ["tck-complete-task"]
+        requires_behaviors: ["tck-input-required"]
         steps:
           - id: create
+            description: >
+              Leaves the task in TASK_STATE_INPUT_REQUIRED. Section 3.1.7
+              keeps a config only until the task completes, so on a completed
+              task the SUT may already have removed it before the next step.
             operation: send_message
             params:
               message:
                 role: ROLE_USER
                 parts:
-                  - text: "tck-complete-task for push"
+                  - text: "tck-input-required for push"
             capture:
               taskId: "task.id"
             expect:
@@ -203,15 +211,19 @@ suites:
         preconditions:
           capabilities:
             pushNotifications: true
-        requires_behaviors: ["tck-complete-task"]
+        requires_behaviors: ["tck-input-required"]
         steps:
           - id: create
+            description: >
+              Leaves the task in TASK_STATE_INPUT_REQUIRED. Section 3.1.7
+              keeps a config only until the task completes, so on a completed
+              task the SUT may already have removed it before the next step.
             operation: send_message
             params:
               message:
                 role: ROLE_USER
                 parts:
-                  - text: "tck-complete-task for push"
+                  - text: "tck-input-required for push"
             expect:
               status: 200
               body:
@@ -285,15 +297,19 @@ suites:
         preconditions:
           capabilities:
             pushNotifications: true
-        requires_behaviors: ["tck-complete-task"]
+        requires_behaviors: ["tck-input-required"]
         steps:
           - id: create
+            description: >
+              Leaves the task in TASK_STATE_INPUT_REQUIRED. Section 3.1.7
+              keeps a config only until the task completes, so on a completed
+              task the SUT may already have removed it before the next step.
             operation: send_message
             params:
               message:
                 role: ROLE_USER
                 parts:
-                  - text: "tck-complete-task for push"
+                  - text: "tck-input-required for push"
             expect:
               status: 200
               body:
