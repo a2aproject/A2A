@@ -5,6 +5,8 @@ if available) who are part of the A2A community and are helping build, codify,
 and adopt A2A as the standard protocol for AI agents to communicate and
 collaborate effectively with each other and with users.
 
+To join this list, open a pull request that adds your company in alphabetical order. See the [Partner PR Guide](https://github.com/a2aproject/A2A/blob/main/PARTNER_GUIDE.md).
+
 - [A2A Net](https://a2anet.com)
 - [Accelirate Inc](https://www.accelirate.com)
 - [Accenture](https://www.accenture.com)
