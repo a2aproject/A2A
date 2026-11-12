@@ -28,13 +28,16 @@ cat <<EOF >"${OUTPUT_FILE}"
 This file is a consolidated version of all documentation, specifications, and API references
 for the ${PROJECT_NAME} project, optimized for LLM consumption.
 
+Layout-only markup (styling wrappers and HTML comments) is stripped from the Markdown sources,
+so what follows is the documentation content rather than the page presentation.
+
 EOF
 
-# Include llms.txt as the core summary if it exists
+# Include llms.txt as the curated index if it exists
 if [ -f "${DOCS_DIR}/llms.txt" ]; then
-  echo "Including summary from ${DOCS_DIR}/llms.txt"
+  echo "Including index from ${DOCS_DIR}/llms.txt"
   {
-    echo "## Project Summary"
+    echo "## Documentation Index"
     echo
     cat "${DOCS_DIR}/llms.txt"
     echo
@@ -42,6 +45,31 @@ if [ -f "${DOCS_DIR}/llms.txt" ]; then
     echo
   } >>"${OUTPUT_FILE}"
 fi
+
+# Include the condensed protocol reference if it exists
+if [ -f "${DOCS_DIR}/llms-reference.txt" ]; then
+  echo "Including quick reference from ${DOCS_DIR}/llms-reference.txt"
+  {
+    cat "${DOCS_DIR}/llms-reference.txt"
+    echo
+    echo "---"
+    echo
+  } >>"${OUTPUT_FILE}"
+fi
+
+# --- Helper function to drop layout-only markup from Markdown ---
+# Removes lines that are nothing but a styling wrapper or an HTML comment, so the
+# output reads as prose. Content-bearing HTML (images, iframes, tables) is kept,
+# and fenced code blocks are left untouched so HTML examples survive intact.
+strip_layout_markup() {
+  awk '
+    /^[[:space:]]*(```|~~~)/ { in_fence = !in_fence; print; next }
+    in_fence { print; next }
+    /^[[:space:]]*<\/?(div|span|section)[^>]*>[[:space:]]*$/ { next }
+    /^[[:space:]]*<!--([^-]|-[^-])*-->[[:space:]]*$/ { next }
+    { print }
+  ' "$1"
+}
 
 # --- Helper function to append file content with XML-style tags ---
 append_file() {
@@ -51,7 +79,11 @@ append_file() {
     echo "Appending: $file_path"
     {
       echo "<file path=\"${display_path}\">"
-      cat "$file_path"
+      if [[ "$file_path" == *.md ]]; then
+        strip_layout_markup "$file_path"
+      else
+        cat "$file_path"
+      fi
       echo "</file>"
       echo
     } >>"${OUTPUT_FILE}"
