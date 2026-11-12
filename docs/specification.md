@@ -2281,7 +2281,7 @@ All JSON-RPC requests **MUST** follow the standard JSON-RPC 2.0 format:
 {
   "jsonrpc": "2.0",
   "id": "unique-request-id",
-  "method": "category/action",
+  "method": "SendMessage",
   "params": { /* method-specific parameters */ }
 }
 ```
