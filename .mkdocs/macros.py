@@ -4,9 +4,13 @@ This module provides macros for rendering Protocol Buffer definitions
 as markdown tables.
 """
 
+import re
+
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+from markdown.extensions.toc import slugify as _default_slugify
 from proto_schema_parser.ast import (
     Comment,
     Enum,
@@ -40,6 +44,9 @@ TYPE_MAP = {
     'google.protobuf.Empty': 'empty',
 }
 
+_HEADING_RE = re.compile(r'^#{1,6}\s+(.+?)\s*$')
+_NUM_PREFIX_RE = re.compile(r'^[\d.]+\s+')
+
 # -----------------------------------------------------------------------------
 # Main Macros
 # -----------------------------------------------------------------------------
@@ -56,6 +63,13 @@ def define_env(env):
         ast = Parser().parse(full_path.read_text(encoding='utf-8'))
         _attach_comments(ast.file_elements)
         return ast.file_elements
+
+    toc_config = env.conf['mdx_configs'].get('toc', {})
+    slugify_fn = toc_config.get('slugify', _default_slugify)
+    separator = toc_config.get('separator', '-')
+
+    spec_path = Path(env.conf['docs_dir']) / 'specification.md'
+    slug_map = _build_heading_slug_map(spec_path, slugify_fn, separator)
 
     @env.macro
     def proto_to_table(
@@ -81,12 +95,12 @@ def define_env(env):
         for el in target_message.elements:
             # Handle Standard/Map Fields
             if isinstance(el, Field | MapField):
-                rows.append(_process_field(el))
+                rows.append(_process_field(el, slug_map))
             elif isinstance(el, OneOf):
                 for oneof_el in el.elements:
                     if isinstance(oneof_el, Field):
                         # Process field normally
-                        row = _process_field(oneof_el, is_oneof=True)
+                        row = _process_field(oneof_el, slug_map, is_oneof=True)
                         rows.append(row)
                         # Add display name to group tracker
                         oneof_groups.setdefault(el.name, []).append(
@@ -159,12 +173,16 @@ def define_env(env):
                 if isinstance(el, Method):
                     # Request Type
                     # input_type is a MessageType(type='...', stream=True/False)
-                    req_str = _format_type_for_docs(el.input_type.type)
+                    req_str = _format_type_for_docs(
+                        el.input_type.type, slug_map
+                    )
                     if el.input_type.stream:
                         req_str = f'stream {req_str}'
 
                     # Response Type
-                    res_str = _format_type_for_docs(el.output_type.type)
+                    res_str = _format_type_for_docs(
+                        el.output_type.type, slug_map
+                    )
                     if el.output_type.stream:
                         res_str = f'stream {res_str}'
 
@@ -240,7 +258,10 @@ def _attach_comments(elements: list[Any]) -> None:
 
 
 def _format_type_for_docs(
-    proto_type: str, is_repeated: bool = False, map_key: str | None = None
+    proto_type: str,
+    slug_map: dict[str, str],
+    is_repeated: bool = False,
+    map_key: str | None = None,
 ) -> str:
     """Formats the type name with Markdown links for non-primitive types."""
     # Handle fully qualified names by taking only the last part for the link label,
@@ -250,10 +271,12 @@ def _format_type_for_docs(
         'google.protobuf'
     )
 
-    # Create a slug for the link. Messages are usually CamelCase, so lowercase it.
+    # Resolve the slug for the link. When no TOC slug is found, fallback to
+    # just lowercasing it.
     label = f'`{display_name}`'
     if not is_primitive:
-        label = f'[{label}](#{display_name.lower()})'
+        slug = slug_map.get(display_name, display_name.lower())
+        label = f'[{label}](#{slug})'
 
     if map_key:
         key_label = TYPE_MAP.get(map_key, map_key)
@@ -263,6 +286,24 @@ def _format_type_for_docs(
         return f'array of {label}'
 
     return label
+
+
+def _build_heading_slug_map(
+    spec_path: Path,
+    slugify_fn: Callable[[str, str], str],
+    separator: str
+) -> dict[str, str]:
+    """Build a map of each heading name to the TOC anchor slug."""
+    slug_map: dict[str, str] = {}
+
+    for line in spec_path.read_text(encoding='utf-8').splitlines():
+        match = _HEADING_RE.match(line)
+        if match:
+            heading_text = match.group(1)
+            name = _NUM_PREFIX_RE.sub('', heading_text).strip('` ')
+            slug_map.setdefault(name, slugify_fn(heading_text, separator))
+
+    return slug_map
 
 
 def _find_type(elements: list[Any], name: str, target_cls: type) -> Any | None:
@@ -277,7 +318,11 @@ def _find_type(elements: list[Any], name: str, target_cls: type) -> Any | None:
     return None
 
 
-def _process_field(field: Field, is_oneof: bool = False) -> list[str]:
+def _process_field(
+    field: Field,
+    slug_map: dict[str, str],
+    is_oneof: bool = False,
+) -> list[str]:
     """Converts a Field or MapField object into a table row."""
     options = getattr(field, 'options', [])
     cardinality_obj = getattr(field, 'cardinality', None)
@@ -298,7 +343,9 @@ def _process_field(field: Field, is_oneof: bool = False) -> list[str]:
     type_to_format = field.value_type if is_map else field.type
     map_key = getattr(field, 'key_type', None)
 
-    type_str = _format_type_for_docs(type_to_format, is_repeated, map_key)
+    type_str = _format_type_for_docs(
+        type_to_format, slug_map, is_repeated, map_key
+    )
 
     # Determine Required/Optional
     has_required_behavior = any(
