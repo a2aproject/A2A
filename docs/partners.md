@@ -151,6 +151,7 @@ collaborate effectively with each other and with users.
 - [Siemens AG](https://siemens.com/)
 - [SoftBank Corp](https://www.softbank.jp/en//)
 - [Solace](https://solace.com/products/agent-mesh/)
+- [Solara Associates](https://github.com/solara-associates/vaid)
 - [Solo.io](https://www.solo.io/)
 - [Space Auto](https://space.auto/)
 - [Stacklok, Inc](https://stacklok.com)
