@@ -68,6 +68,7 @@ collaborate effectively with each other and with users.
 - [Deutsche Telekom](https://www.telekom.com/en)
 - [Dexter Tech Labs](https://www.dextertechlabs.com)
 - [Distyl.ai](https://distyl.ai)
+- [DSR Corporation](https://en.dsr-corporation.com)
 - [Elastic](https://www.elastic.co)
 - [Ema.co](https://ema.co)
 - [EPAM](https://www.epam.com)
