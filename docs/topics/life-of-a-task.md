@@ -13,10 +13,11 @@ receives a message from a client, it can respond in one of two ways:
 
 ## Overview
 
-This page walks through how that choice plays out over the lifetime of an
-interaction:
+This page introduces the response types and describes how related interactions
+and tasks can be tracked:
 
-1. **How agents decide** between a stateless `Message` and a stateful `Task`.
+1. **How agents can respond** with a `Message`, a `Task`, or both across
+    different interactions.
 2. **How `contextId` groups** related messages and tasks into a coherent
     session.
 3. **What clients can do with running tasks**: refinements, parallel
@@ -24,32 +25,36 @@ interaction:
 4. **How completed tasks behave**: immutability, artifact naming, and a worked
     example.
 
-The flowchart below shows the decision at the heart of this page:
+The diagram shows the possible response types to a message. An agent can
+support message-only, task-only, or mixed interactions; the protocol does not
+require a particular decision process for choosing a response type. The task
+state boxes show categories, not required transitions.
 
 ```mermaid
 flowchart TD
-    A["Client sends a message"] --> B{"Immediate, self-contained<br>answer possible?"}
-    B -- "Yes" --> C["Respond with a stateless Message<br>No state to manage"]
-    B -- "No" --> D["Initiate a stateful Task<br>with a unique taskId"]
-    C --> H["Interaction complete"]
-    D --> E["Task runs through its lifecycle:<br>working, input-required,<br>auth-required"]
-    E --> F{"Terminal state reached?<br>completed, canceled,<br>rejected, or failed"}
-    F -- "No" --> E
-    F -- "Yes" --> G["Task ends and is immutable<br>Follow-ups start a new task<br>in the same contextId"]
+    A["Client sends a Message"] --> B["Agent response"]
+    B --> C["Message"]
+    B --> D["Task"]
+    C --> E["A contextId can group related<br>Messages and Tasks"]
+    D --> E
+    D --> F["Task has an ID and status;<br>it may contain Artifacts"]
+    F --> I["Active states:<br>submitted, working"]
+    F --> G["Interrupted states:<br>input-required, auth-required"]
+    F --> H["Terminal states:<br>completed, canceled, rejected, failed"]
 ```
 
-The two response modes differ in what the client can do afterwards:
+The two response types differ in what the client can track afterwards:
 
-- A stateless `Message` finishes the interaction in a single turn: the client
-    sends a request, the agent answers, and no state remains to manage.
-- A stateful `Task` persists across turns: the client can retrieve it
-    (`GetTask`), stream updates from it, or receive push notifications about
-    it, until it reaches an interrupted or terminal state.
+- A `Message` can answer without requiring a task. Later messages and tasks
+    can be associated with the same `contextId`.
+- A `Task` provides an identifiable stateful unit of work. The client can
+    retrieve it (`GetTask`) and, if the agent supports those capabilities,
+    stream updates or receive push notifications.
 
 This page uses the following terminology for task states:
 
-- **Interrupted states**: `input-required` and `auth-required`. The task is
-    paused and waiting for the client, but it can still resume.
+- **Interrupted states**: `input-required` and `auth-required`. The task needs
+    input or authorization before it can continue.
 - **Terminal states**: `completed`, `canceled`, `rejected`, and `failed`. The
     task is finished and immutable.
 
