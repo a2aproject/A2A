@@ -5,6 +5,7 @@ if available) who are part of the A2A community and are helping build, codify,
 and adopt A2A as the standard protocol for AI agents to communicate and
 collaborate effectively with each other and with users.
 
+- [A2A Market](https://a2a-market.com)
 - [A2A Net](https://a2anet.com)
 - [Accelirate Inc](https://www.accelirate.com)
 - [Accenture](https://www.accenture.com)
@@ -13,6 +14,7 @@ collaborate effectively with each other and with users.
 - [Adobe](https://www.adobe.com)
 - [AG2AI](https://ag2.ai)
 - [Agent Commerce Gateway](https://acg.devlab.group/)
+- [Agent Commons](https://agents.dooza.ai)
 - [AgentTrust](https://agenttrust.ai/)
 - [AI21 Labs](https://www.ai21.com/)
 - [AI71](https://ai71.ai/)
@@ -61,6 +63,7 @@ collaborate effectively with each other and with users.
 - [Dealer Handshake](https://dealerhandshake.com/)
 - [Decagon.ai](https://decagon.ai)
 - [Deloitte](https://www.prnewswire.com/news-releases/deloitte-expands-alliances-with-google-cloud-and-servicenow-to-accelerate-agentic-ai-adoption-in-the-enterprise-302423941.html)
+- [DEUSPROOF](https://deusproof.com)
 - [Devnagri](https://devnagri.com)
 - [Deutsche Telekom](https://www.telekom.com/en)
 - [Dexter Tech Labs](https://www.dextertechlabs.com)
@@ -115,6 +118,7 @@ collaborate effectively with each other and with users.
 - [Monite](https://monite.com/)
 - [MusedIn](https://musedin.com)
 - [Neo4j](https://neo4j.com)
+- [Neuronto](https://neuronto.com)
 - [New Relic](https://newrelic.com)
 - [Nisum](https://www.nisum.com)
 - [Noorle Inc](https://www.noorle.com)
@@ -123,7 +127,6 @@ collaborate effectively with each other and with users.
 - [Optimizely Inc](https://www.optimizely.com/)
 - [Oracle / NetSuite](https://www.oracle.com/netsuite)
 - [Palo Alto Networks](https://www.paloaltonetworks.com/)
-- [PancakeAI](https://www.pancakeai.tech/)
 - [ParkourSC](https://www.parkoursc.com/)
 - [Pendo](https://www.pendo.io)
 - [PerfAI.ai](https://perfai.ai)
@@ -135,6 +138,7 @@ collaborate effectively with each other and with users.
 - [Quantiphi](https://www.quantiphi.com)
 - [Radix](https://radix.website/)
 - [RagaAI Inc](https://raga.ai/)
+- [Raven](https://raven.evermind.ai)
 - [Red Hat](https://www.redhat.com)
 - [Reltio Inc](https://www.reltio.com)
 - [S&P](https://www.spglobal.com)
