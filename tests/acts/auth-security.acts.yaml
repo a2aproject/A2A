@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 
 metadata:
   title: "Authentication and Security"
@@ -42,7 +42,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: "sec-auth-001"
@@ -92,7 +92,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
                 Authorization: "Bearer {{insufficientAuthToken}}"
               body:
                 jsonrpc: "2.0"
@@ -175,7 +175,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: "sec-auth-004"
@@ -370,7 +370,7 @@ suites:
               path: "/extendedAgentCard"
               headers:
                 Accept: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
             expect:
               status:
                 one_of: [401, 403]
@@ -405,7 +405,7 @@ suites:
               path: "/extendedAgentCard"
               headers:
                 Accept: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
                 Authorization: "Bearer {{insufficientAuthToken}}"
             expect:
               status:
@@ -454,7 +454,7 @@ suites:
               path: "/extendedAgentCard"
               headers:
                 Accept: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
             expect:
               status:
                 one_of: [401, 403]
@@ -489,7 +489,7 @@ suites:
               path: "/tasks/00000000-0000-0000-0000-000000000000"
               headers:
                 Accept: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
             expect:
               status:
                 one_of: [401, 403]

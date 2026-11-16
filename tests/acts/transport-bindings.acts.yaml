@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 
 metadata:
   title: "A2A Transport Binding Conformance Tests"
@@ -22,7 +22,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: "jsonrpc-env-001"
@@ -56,7 +56,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: "jsonrpc-ct-001"
@@ -95,7 +95,7 @@ suites:
               headers:
                 Content-Type: application/json
                 Accept: text/event-stream
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: "jsonrpc-sse-001"
@@ -112,6 +112,82 @@ suites:
               min_count: 2
               each_event:
                 jsonrpc: "2.0"
+
+      - id: JSONRPC-GEN-001
+        name: "JSON-RPC reports a generation mismatch with code -32010"
+        description: >
+          Starts a multi-turn task, advances its generation with a second
+          message, then sends a raw SendMessage whose ifGenerationMatch is the
+          stale value. The error object carries the code the JSON-RPC mapping
+          assigns to TaskGenerationMismatchError. The A2A text only says that
+          error details SHOULD use google.rpc.ErrorInfo on this binding, so
+          the details are not asserted here.
+        spec_ref: "docs/specification.md#54-error-code-mappings"
+        level: must
+        min_spec_version: "1.1"
+        tags: [transport, jsonrpc, raw, error, generation]
+        transport: [jsonrpc]
+        requires_behaviors: ["tck-multi-turn"]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn jsonrpc generation mismatch"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: "task.id"
+              generation: "task.generation"
+
+          - id: turn2
+            description: "Advances the generation, so the value captured in turn1 is stale."
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  generation: {gt: "{{turn1.generation}}"}
+
+          - id: stale-raw
+            raw:
+              method: POST
+              path: "/"
+              headers:
+                Content-Type: application/json
+                A2A-Version: "{{specVersion}}"
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-gen-001"
+                method: SendMessage
+                params:
+                  message:
+                    messageId: "jsonrpc-gen-001-msg"
+                    role: ROLE_USER
+                    taskId: "{{turn1.taskId}}"
+                    parts:
+                      - text: "input guarded by a stale generation"
+                  configuration:
+                    ifGenerationMatch: "{{turn1.generation}}"
+            expect:
+              body:
+                jsonrpc: "2.0"
+                id: "jsonrpc-gen-001"
+                error:
+                  code: -32010
 
   - id: rest-transport
     name: "REST transport bindings"
@@ -153,7 +229,7 @@ suites:
               path: "/tasks/nonexistent-id"
               headers:
                 Accept: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
             expect:
               status: 404
 
@@ -170,7 +246,7 @@ suites:
               path: "/tasks/nonexistent-id"
               headers:
                 Accept: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
             expect:
               status: 404
               body:
@@ -272,7 +348,7 @@ suites:
               path: "/tasks/{{start.taskId}}:subscribe"
               headers:
                 Accept: text/event-stream
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
             expect:
               status: 200
             expect_stream:
@@ -294,6 +370,7 @@ suites:
           methods, so a client following either source can subscribe.
         spec_ref: "docs/specification.md#1132-task-operations"
         level: should
+        max_spec_version: "1.0"
         tags: [transport, rest, raw, sse, streaming, subscribe]
         transport: [rest]
         requires_behaviors: ["tck-long-running"]
@@ -334,7 +411,7 @@ suites:
               headers:
                 Content-Type: application/json
                 Accept: text/event-stream
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body: {}
             expect:
               status: 200
@@ -348,6 +425,87 @@ suites:
                       - TASK_STATE_FAILED
                       - TASK_STATE_CANCELED
                       - TASK_STATE_REJECTED
+
+      - id: REST-GEN-001
+        name: "REST reports a generation mismatch as 409 Conflict with ErrorInfo"
+        description: >
+          Starts a multi-turn task, advances its generation with a second
+          message, then posts a raw SendMessage whose ifGenerationMatch is the
+          stale value. The response is HTTP 409, and the details of its error
+          body carry an ErrorInfo with the reason TASK_GENERATION_MISMATCH.
+        spec_ref: "docs/specification.md#116-error-handling"
+        level: must
+        min_spec_version: "1.1"
+        tags: [transport, rest, raw, error, generation]
+        transport: [rest]
+        requires_behaviors: ["tck-multi-turn"]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn rest generation mismatch"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: "task.id"
+              generation: "task.generation"
+
+          - id: turn2
+            description: "Advances the generation, so the value captured in turn1 is stale."
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  generation: {gt: "{{turn1.generation}}"}
+
+          - id: stale-raw
+            raw:
+              method: POST
+              path: "/message:send"
+              headers:
+                Content-Type: application/a2a+json
+                A2A-Version: "{{specVersion}}"
+              body:
+                message:
+                  messageId: "rest-gen-001-msg"
+                  role: ROLE_USER
+                  taskId: "{{turn1.taskId}}"
+                  parts:
+                    - text: "input guarded by a stale generation"
+                configuration:
+                  ifGenerationMatch: "{{turn1.generation}}"
+            expect:
+              status: 409
+              body:
+                error:
+                  code: 409
+                  details:
+                    type: array
+                    count_gte: 1
+            assertions:
+              - source: "{{stale-raw.response}}"
+                any:
+                  path: "error.details[*]"
+                  match:
+                    "@type":
+                      contains: "ErrorInfo"
+                    reason: "TASK_GENERATION_MISMATCH"
+                    domain: "a2a-protocol.org"
 
   - id: grpc-transport
     name: "gRPC transport bindings"
@@ -426,3 +584,63 @@ suites:
                 id: "{{start.taskId}}"
                 status:
                   state: TASK_STATE_CANCELED
+
+      - id: GRPC-GEN-001
+        name: "gRPC reports a generation mismatch as TaskGenerationMismatchError"
+        description: >
+          Starts a multi-turn task, advances its generation with a second
+          message, then sends a message whose ifGenerationMatch is the stale
+          value. The error must surface through the gRPC binding in a form
+          the runner identifies as the A2A error TaskGenerationMismatchError.
+        spec_ref: "docs/specification.md#54-error-code-mappings"
+        level: must
+        min_spec_version: "1.1"
+        tags: [transport, grpc, grpc-status-verification, error, generation]
+        transport: [grpc]
+        requires_behaviors: ["tck-multi-turn"]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn grpc generation mismatch"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: "task.id"
+              generation: "task.generation"
+
+          - id: turn2
+            description: "Advances the generation, so the value captured in turn1 is stale."
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  generation: {gt: "{{turn1.generation}}"}
+
+          - id: stale
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "input guarded by a stale generation"
+              configuration:
+                ifGenerationMatch: "{{turn1.generation}}"
+            expect_error:
+              error_type: TaskGenerationMismatchError

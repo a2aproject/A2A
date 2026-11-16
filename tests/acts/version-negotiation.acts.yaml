@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 spec_ref: "docs/specification.md"
 
 metadata:
@@ -77,3 +77,81 @@ suites:
                 error:
                   code:
                     one_of: [-32009, -32601]
+
+      - id: VER-NEG-003
+        name: "Unsupported major version is rejected with VersionNotSupportedError on every binding"
+        description: >
+          Sends an ordinary message as a client of A2A 99.0, a version no agent serves. The agent
+          must refuse it with VersionNotSupportedError rather than process it under another version.
+          VER-NEG-001 checks the same rule with a raw JSON-RPC request; this test uses the abstract
+          operation so it runs on every binding. A2A 1.0 has the same rule; the test starts at 1.1
+          so that the set of tests for 1.0 stays as it was.
+        spec_ref: "docs/specification.md#362-server-responsibilities"
+        level: must
+        min_spec_version: "1.1"
+        tags: [versioning]
+        steps:
+          - id: send-as-99-0
+            operation: send_message
+            a2a_version: "99.0"
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "version negotiation unsupported major"
+            expect_error:
+              error_type: VersionNotSupportedError
+
+      - id: VER-NEG-004
+        name: "Unsupported minor version of a supported major is rejected"
+        description: >
+          Sends an ordinary message as a client of A2A 1.99. Versions are matched on Major.Minor, so
+          sharing the major version with a version the agent serves is not enough: the agent does
+          not serve 1.99 and must refuse the request with VersionNotSupportedError. A2A 1.0 has the
+          same rule; the test starts at 1.1 so that the set of tests for 1.0 stays as it was.
+        spec_ref: "docs/specification.md#362-server-responsibilities"
+        level: must
+        min_spec_version: "1.1"
+        tags: [versioning]
+        steps:
+          - id: send-as-1-99
+            operation: send_message
+            a2a_version: "1.99"
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "version negotiation unsupported minor"
+            expect_error:
+              error_type: VersionNotSupportedError
+
+      - id: VER-NEG-005
+        name: "An agent that lists a 1.0 interface serves a request sent as 1.0"
+        description: >
+          An agent that also lists an A2A 1.0 interface for the binding under test is sent a
+          message as a client of 1.0. It must process the request under that version and complete
+          the task, not refuse it because it also serves a newer version.
+        spec_ref: "docs/specification.md#362-server-responsibilities"
+        level: must
+        min_spec_version: "1.1"
+        tags: [versioning]
+        preconditions:
+          protocol_versions: ["1.0"]
+          description: "The agent card lists an A2A 1.0 interface for the binding under test"
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: send-as-1-0
+            operation: send_message
+            a2a_version: "1.0"
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task served as 1.0"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_COMPLETED

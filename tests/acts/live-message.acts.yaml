@@ -1,0 +1,660 @@
+acts_version: "1.0"
+spec_version: "1.1"
+
+metadata:
+  title: "Live message ACTS suite"
+  description: "Conformance scenarios for SendLiveMessage, the two-way exchange added in A2A 1.1."
+
+suites:
+  - id: live-message
+    name: "Live message"
+    description: >
+      Covers opening a live exchange with a message or a subscription, later requests on the
+      uplink, the acknowledgment of an uplink call on the HTTP bindings, and per-request
+      rejection with a StreamError.
+    tags:
+      - streaming
+      - live
+    tests:
+      - id: STREAM-LIVE-001
+        name: "A live exchange opened with a message starts with a Task snapshot and ends when the task completes"
+        description: >
+          Opens a live exchange with a message that creates a task, then sends "done" on the
+          uplink. The downlink must start with a Task snapshot and close with the task in
+          COMPLETED. Tentative: the A2A binding sections do not yet list SendLiveMessage, and
+          the text does not say how a server matches an HTTP uplink call to its downlink.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-live-echo]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-live-echo open with a message"
+              uplink:
+                - id: finish
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "done"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              ordering: monotonic_state
+              events:
+                - description: "The downlink opens with a Task snapshot"
+                  index: 0
+                  task:
+                    id: {type: string}
+                    status:
+                      state: {type: string}
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-LIVE-002
+        name: "Later uplink requests apply to the task of the exchange and their effects arrive on the downlink"
+        description: >
+          Sends two messages on the uplink of an open exchange, then "done". The agent answers
+          each message with a status update, so the downlink must carry live-echo:1 and
+          live-echo:2, with generation only increasing. Tentative: the A2A binding sections do
+          not yet list SendLiveMessage, and the text does not say how a server matches an HTTP
+          uplink call to its downlink.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, generation, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-live-echo]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-live-echo two later requests"
+              uplink:
+                - id: first
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "first"
+                - id: second
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "second"
+                - id: finish
+                  after_event:
+                    status_update:
+                      status:
+                        message:
+                          parts:
+                            - text: "live-echo:2"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "done"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              ordering: [monotonic_state, monotonic_generation]
+              events:
+                - description: "The first later message reached the task of the exchange"
+                  match: any_position
+                  status_update:
+                    status:
+                      state: TASK_STATE_WORKING
+                      message:
+                        parts:
+                          - text: "live-echo:1"
+                - description: "The second later message reached the task of the exchange"
+                  match: any_position
+                  status_update:
+                    status:
+                      state: TASK_STATE_WORKING
+                      message:
+                        parts:
+                          - text: "live-echo:2"
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-LIVE-003
+        name: "On an HTTP binding an uplink call is answered with the current Task only"
+        description: >
+          On JSON-RPC and REST each later request of a live exchange is a separate call. That
+          call must be answered with the current Task and no events, while the effect of the
+          request arrives on the downlink. The runner fails an uplink call answered with an
+          event stream. Tentative: the A2A binding sections do not yet list SendLiveMessage,
+          the text does not say how a server matches an HTTP uplink call to its downlink, and a
+          pending change rewords the acknowledgment rule.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        transport: [jsonrpc, rest]
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-live-echo]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-live-echo acknowledgment"
+              uplink:
+                - id: acknowledged
+                  description: "Answered with the Task of the exchange, not with events"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "acknowledge me"
+                  expect_ack:
+                    id: "{{exchange.taskId}}"
+                    status:
+                      state: {type: string}
+                - id: finish
+                  after_event:
+                    status_update:
+                      status:
+                        message:
+                          parts:
+                            - text: "live-echo:1"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "done"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              events:
+                - description: "The effect of the acknowledged request is delivered on the downlink"
+                  match: any_position
+                  status_update:
+                    status:
+                      message:
+                        parts:
+                          - text: "live-echo:1"
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-LIVE-004
+        name: "A live exchange opened with subscribe and no lastSeenGeneration starts with a Task snapshot"
+        description: >
+          Starts a task that holds for five seconds with send_message and returnImmediately, then opens a live
+          exchange with subscribe for that task and no lastSeenGeneration. The first downlink
+          event must be a Task snapshot of that task. Tentative: the A2A binding sections do
+          not yet list SendLiveMessage; the pending change keeps this rule and only changes the
+          case where lastSeenGeneration is set.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, subscribe, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-hold-working]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 5000 observed through a live exchange"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+            capture:
+              taskId: task.id
+          - id: observe
+            live:
+              open:
+                subscribe:
+                  id: "{{start.taskId}}"
+            expect_stream:
+              timeout_ms: 30000
+              min_count: 1
+              events:
+                - description: "The downlink opens with a Task snapshot of the subscribed task"
+                  index: 0
+                  task:
+                    id: "{{start.taskId}}"
+                    status:
+                      state: {type: string}
+
+      - id: STREAM-LIVE-005
+        name: "A subscribe sent after the opening request is rejected with a StreamError and the exchange stays open"
+        description: >
+          Sends subscribe as a later request on an open gRPC live exchange. The agent must
+          reject it with a StreamError on the downlink and keep the exchange open: a message
+          sent after the rejection is still echoed, and "done" completes the task. gRPC only,
+          because the text does not say how an HTTP uplink call that is not a message is
+          related to an exchange. Tentative for the same reason.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, stream-error, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        transport: [grpc]
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-live-echo]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-live-echo late subscribe"
+              uplink:
+                - id: late-subscribe
+                  subscribe:
+                    id: "{{exchange.taskId}}"
+                - id: after-rejection
+                  after_event:
+                    error:
+                      code: {type: string}
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "still open"
+                - id: finish
+                  after_event:
+                    status_update:
+                      status:
+                        message:
+                          parts:
+                            - text: "live-echo:1"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "done"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              events:
+                - description: "The late subscribe is rejected with a StreamError"
+                  match: any_position
+                  error:
+                    code: {type: string}
+                - description: "A message sent after the rejection still reaches the task"
+                  match: any_position
+                  status_update:
+                    status:
+                      message:
+                        parts:
+                          - text: "live-echo:1"
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-LIVE-006
+        name: "A later message naming a different task is rejected with a StreamError and the exchange stays open"
+        description: >
+          Creates a second task that waits for input, then sends a message naming that task on
+          the uplink of a gRPC live exchange bound to another task. The agent must reject it
+          with a StreamError and keep the exchange open; the second task must not receive the
+          message. gRPC only, because an HTTP uplink call is related to its exchange by the
+          task it names. Tentative for the same reason.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, stream-error, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        transport: [grpc]
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-multi-turn, tck-live-echo]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: other
+            description: "A task outside the exchange, waiting for input until it is sent done"
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn task outside the exchange"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: task.id
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-live-echo foreign task"
+              uplink:
+                - id: foreign
+                  description: "Would complete the other task if the agent applied it"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{other.taskId}}"
+                      parts:
+                        - text: "done"
+                - id: after-rejection
+                  after_event:
+                    error:
+                      code: {type: string}
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "still open"
+                - id: finish
+                  after_event:
+                    status_update:
+                      status:
+                        message:
+                          parts:
+                            - text: "live-echo:1"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "done"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              events:
+                - description: "The message naming another task is rejected with a StreamError"
+                  match: any_position
+                  error:
+                    code: {type: string}
+                - description: "A message sent after the rejection still reaches the task of the exchange"
+                  match: any_position
+                  status_update:
+                    status:
+                      message:
+                        parts:
+                          - text: "live-echo:1"
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+          - id: other-unchanged
+            description: "The rejected message was not applied to the task it named"
+            operation: get_task
+            params:
+              id: "{{other.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{other.taskId}}"
+                status:
+                  state: TASK_STATE_INPUT_REQUIRED
+
+      - id: STREAM-LIVE-007
+        name: "A later request of an unknown kind is rejected with a StreamError and the exchange stays open"
+        description: >
+          Sends a StreamRequest whose payload is a kind the A2A proto does not define, as a
+          later minor version might, on an open gRPC live exchange. The agent must reject it
+          with a StreamError and must not end the exchange: a message sent afterwards is still
+          echoed, and "done" completes the task. gRPC only, because the text does not say how
+          an HTTP uplink call that is not a message is related to an exchange.
+        spec_ref: "docs/specification.md#323-stream-response"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, stream-error, forward-compatibility, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        transport: [grpc]
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-live-echo]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-live-echo unknown request kind"
+              uplink:
+                - id: unknown-kind
+                  unrecognized: true
+                - id: after-rejection
+                  after_event:
+                    error:
+                      code: {type: string}
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "still open"
+                - id: finish
+                  after_event:
+                    status_update:
+                      status:
+                        message:
+                          parts:
+                            - text: "live-echo:1"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "done"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              events:
+                - description: "The request of an unknown kind is rejected with a StreamError"
+                  match: any_position
+                  error:
+                    code: {type: string}
+                - description: "A message sent after the rejection still reaches the task"
+                  match: any_position
+                  status_update:
+                    status:
+                      message:
+                        parts:
+                          - text: "live-echo:1"
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-LIVE-008
+        name: "A declined request produces a StreamError naming its messageId and the exchange stays open"
+        description: >
+          On a gRPC live exchange the agent declines one message. It must report the rejection
+          as a StreamError whose referenceId is the messageId of that message, and keep the
+          exchange open: a message sent after the rejection is echoed and "done" completes the
+          task. gRPC only, because the pending change leaves it to each binding how a
+          StreamError reaches the caller whose request was rejected, so on an HTTP binding it
+          may not arrive on the downlink. The A2A text describes this rejection without a
+          requirement keyword, so the level is should.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: should
+        min_spec_version: "1.1"
+        tags: [live, stream-error, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        transport: [grpc]
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-live-reject]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-live-reject decline one message"
+              uplink:
+                - id: declined
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      messageId: "stream-live-008-declined"
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "reject this one"
+                - id: after-rejection
+                  after_event:
+                    error:
+                      referenceId: "stream-live-008-declined"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "accepted after the rejection"
+                - id: finish
+                  after_event:
+                    status_update:
+                      status:
+                        message:
+                          parts:
+                            - text: "live-echo:1"
+                  send_message:
+                    message:
+                      role: ROLE_USER
+                      taskId: "{{exchange.taskId}}"
+                      parts:
+                        - text: "done"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              events:
+                - description: "The rejection names the message it refers to"
+                  match: any_position
+                  error:
+                    referenceId: "stream-live-008-declined"
+                    code: {type: string}
+                - description: "A message sent after the rejection still reaches the task"
+                  match: any_position
+                  status_update:
+                    status:
+                      message:
+                        parts:
+                          - text: "live-echo:1"
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-LIVE-009
+        name: "An agent without the streaming capability refuses a live exchange with UnsupportedOperationError"
+        description: >
+          An agent whose card does not declare streaming must refuse to open a live exchange
+          with UnsupportedOperationError. Tentative: the A2A binding sections do not yet list
+          SendLiveMessage.
+        spec_ref: "docs/specification.md#334-capability-validation"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, capability, error, tentative]
+        runner_requirements: [live_stream]
+        requires_behaviors: [tck-complete-task]
+        preconditions:
+          capabilities:
+            streaming: false
+        steps:
+          - id: exchange
+            live:
+              open:
+                send_message:
+                  message:
+                    role: ROLE_USER
+                    parts:
+                      - text: "tck-complete-task live exchange without streaming"
+            expect_error:
+              error_type: UnsupportedOperationError
+
+      - id: STREAM-LIVE-010
+        name: "Opening a live exchange with subscribe for a task that does not exist fails with TaskNotFoundError"
+        description: >
+          Opens a live exchange with subscribe naming a task id that no task has. The agent
+          must refuse to open the exchange with TaskNotFoundError. Tentative: the A2A binding
+          sections do not yet list SendLiveMessage.
+        spec_ref: "docs/specification.md#3112-send-live-message"
+        level: must
+        min_spec_version: "1.1"
+        tags: [live, subscribe, error, tentative]
+        runner_requirements: [live_stream]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: exchange
+            live:
+              open:
+                subscribe:
+                  id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              error_type: TaskNotFoundError

@@ -1,0 +1,385 @@
+acts_version: "1.0"
+spec_version: "1.1"
+
+metadata:
+  title: "Task Timeline"
+  description: >
+    Tests for the task timeline that A2A 1.1 adds to Task: the generation-ordered
+    record of client messages and agent status entries, and the timelineLength
+    parameter that limits how many entries a response carries.
+
+suites:
+  - id: timeline
+    name: "Task Timeline"
+    description: "Coverage for the timeline field of Task and for timelineLength on GetTask."
+    tests:
+      - id: CORE-TIME-001
+        name: "Timeline entries each carry a generation"
+        description: >
+          Drives a task through two turns and reads it back with GetTask. The task
+          must report a timeline, and every entry in it must carry a generation of
+          at least 1, because a server assigns each appended entry the task's
+          generation after the append. The test is at should level because the
+          requirement that a server populate the timeline at all is a SHOULD.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [timeline, generation]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn timeline generation first"
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
+                parts:
+                  - text: "tck-multi-turn timeline generation second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  type: array
+                  count_gte: 1
+                  items:
+                    generation: {gte: 1}
+
+      - id: CORE-TIME-002
+        name: "Timeline entries are in increasing generation order"
+        description: >
+          Reads the timeline of a two-turn task twice. The first read records the
+          generation of the first entry. The second read must show the same value
+          on the first entry and a strictly greater one on the second, because
+          entries are ordered by generation. The task waits for input between the
+          reads, so nothing changes it in between. The test is at should level
+          because the requirement that a server populate the timeline at all is a
+          SHOULD.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [timeline, generation, ordering]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn timeline order first"
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
+                parts:
+                  - text: "tck-multi-turn timeline order second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: first-read
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            capture:
+              firstGeneration: "timeline[0].generation"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  type: array
+                  count_gte: 2
+          - id: second-read
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  - generation: {gte: "{{first-read.firstGeneration}}", lte: "{{first-read.firstGeneration}}"}
+                  - generation: {gt: "{{first-read.firstGeneration}}"}
+
+      - id: CORE-TIME-003
+        name: "Client messages appear as message entries and agent states as status entries"
+        description: >
+          Sends a second message to a task that is waiting for input and reads the
+          timeline back. The client's message must appear as a message entry with
+          the role ROLE_USER, the agent's state must appear as a status entry, and
+          no message entry may carry the agent's role, because agent messages
+          travel inside status entries. The test is at should level because the
+          requirement that a server populate the timeline at all is a SHOULD.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [timeline]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn timeline kinds first"
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
+                parts:
+                  - text: "tck-multi-turn timeline kinds second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: get
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  type: array
+                  count_gte: 2
+            assertions:
+              - id: client-message-entry
+                description: "The second client message is recorded as a message entry with the role ROLE_USER"
+                source: "{{get.response}}"
+                any:
+                  path: "timeline[*]"
+                  match:
+                    message:
+                      role: ROLE_USER
+                      parts:
+                        - text: "tck-multi-turn timeline kinds second"
+              - id: agent-status-entry
+                description: "The agent's state is recorded as a status entry"
+                source: "{{get.response}}"
+                any:
+                  path: "timeline[*]"
+                  match:
+                    status:
+                      state: TASK_STATE_INPUT_REQUIRED
+              - id: no-agent-message-entry
+                description: "No message entry carries the agent's role"
+                source: "{{get.response}}"
+                none:
+                  path: "timeline[*]"
+                  match:
+                    message:
+                      role: ROLE_AGENT
+
+      - id: CORE-TIME-004
+        name: "timelineLength 0 returns no timeline entries"
+        description: >
+          Reads a two-turn task twice. The first read has no timelineLength and
+          shows that the task has a timeline, so that the second read has something
+          to withhold. The second read asks for timelineLength 0 and must return
+          no entries; the timeline is omitted or empty. A server must not return
+          more entries than timelineLength allows. The level is should because
+          the test needs a server that populates the timeline, which is itself a
+          SHOULD. Tentative because a pending change to the A2A specification
+          removes timelineLength.
+        spec_ref: "docs/specification.md#324-history-length-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [timeline, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2399"
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn timeline length zero first"
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
+                parts:
+                  - text: "tck-multi-turn timeline length zero second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: control
+            description: "Without timelineLength the task reports entries"
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  type: array
+                  count_gte: 1
+          - id: zero
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+              timelineLength: 0
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  any_of:
+                    - absent: true
+                    - type: array
+                      count: 0
+
+      - id: CORE-TIME-005
+        name: "timelineLength N returns at most N timeline entries"
+        description: >
+          Reads a two-turn task twice. The first read has no timelineLength and
+          shows that the task has at least two entries, so that a limit of one has
+          something to cut. The second read asks for timelineLength 1 and must
+          return at most one entry. The level is should because the test needs a
+          server that populates the timeline, which is itself a SHOULD. Tentative
+          because a pending change to the A2A specification removes timelineLength.
+        spec_ref: "docs/specification.md#324-history-length-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [timeline, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2399"
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn timeline length limit first"
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: turn2
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                contextId: "{{turn1.contextId}}"
+                parts:
+                  - text: "tck-multi-turn timeline length limit second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+          - id: control
+            description: "Without timelineLength the task reports at least two entries"
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  type: array
+                  count_gte: 2
+          - id: limited
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+              timelineLength: 1
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                timeline:
+                  any_of:
+                    - absent: true
+                    - type: array
+                      count_lte: 1
