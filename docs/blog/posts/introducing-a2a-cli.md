@@ -187,7 +187,7 @@ The echo-and-exec tour is just the on-ramp. The `a2a` CLI also gives you:
 - **Rich messages and tasks** — build multi-part messages, send synchronously or asynchronously, and follow a task through its full lifecycle.
 - **Streaming** — consume updates as they're produced.
 - **Automation-friendly output** — JSON output and predictable exit codes for pipelines and scripts.
-- **Cross-transport consistency** — JSON-RPC, REST, and gRPC out of the box, plus [custom transport plugins](https://github.com/a2aproject/a2a-cli) you can add without recompiling.
+- **Cross-transport consistency** — JSON-RPC, REST, and gRPC out of the box, plus [custom transport plugins](https://a2aproject.github.io/a2a-cli/advanced/transport-plugins/) you can add without recompiling.
 
 ## Give your coding agent the CLI
 
@@ -202,7 +202,8 @@ The skill drives the `a2a` binary, so [install the CLI](#install) first.
 ## Start here
 
 - **Repository:** [github.com/a2aproject/a2a-cli](https://github.com/a2aproject/a2a-cli)
-- **Cookbook:** a short, hands-on course that builds from your first server up to streaming, configuration, and the full task lifecycle — in the repo's [`examples/`](https://github.com/a2aproject/a2a-cli/tree/main/examples).
+- **Documentation:** [a2aproject.github.io/a2a-cli](https://a2aproject.github.io/a2a-cli/)
+- **Lessons:** a short, hands-on course that builds from your first message up to configuration, the full task lifecycle, conversations, and credentials — in the [lessons](https://a2aproject.github.io/a2a-cli/lessons/).
 - **New to A2A?** Start with [What is A2A?](../../topics/what-is-a2a.md) and the [Python quickstart](../../tutorials/python/1-introduction.md).
 
 The A2A CLI is open source under the Apache License 2.0. Try it, script with it, and tell the team how you use it — issues and pull requests are welcome on the repo.
