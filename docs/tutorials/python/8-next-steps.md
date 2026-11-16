@@ -22,6 +22,7 @@ Here are some ideas and resources to continue your A2A journey:
 - **Review Key A2A Topics:**
     - [A2A and MCP](../../topics/a2a-and-mcp.md): Understand how A2A complements the Model Context Protocol for tool usage.
     - [Enterprise-Ready Features](../../topics/enterprise-ready.md): Learn about security, observability, and other enterprise considerations.
+    - [Distributed Tracing](../../topics/tracing.md): Separate trace context propagation from span emission across A2A bindings and agent frameworks.
     - [Streaming & Asynchronous Operations](../../topics/streaming-and-async.md): Get more details on SSE and push notifications.
     - [Agent Discovery](../../topics/agent-discovery.md): Explore different ways agents can find each other.
 - **Build Your Own Agent:**
