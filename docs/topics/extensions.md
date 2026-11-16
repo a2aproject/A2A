@@ -99,7 +99,13 @@ The following is an example of an Agent Card with an extension:
   "name": "Magic 8-ball",
   "description": "An agent that can tell your future... maybe.",
   "version": "0.1.0",
-  "url": "https://example.com/agents/eightball",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/agents/eightball",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
   "capabilities": {
     "streaming": true,
     "extensions": [
@@ -178,7 +184,10 @@ negotiation to determine which extensions are active for a specific request.
     response SHOULD include the `A2A-Extensions` header, listing all
     extensions that were successfully activated for that request.
 
-![A2A Extension Flow Diagram](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
+![Extension negotiation in four numbered steps: (1) the client reads the extensions declared in the agent's Agent Card, (2) the client sends its chosen extension URIs in the request header, (3) the A2A server checks which of the requested extensions it has registered and activates those plugins, and (4) the server returns the activated extension data in its response. The server in turn reaches other A2A agent servers over A2A, each supporting its own extensions](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
+
+_The numbered steps follow the negotiation sequence described above, with the
+Agent Card read as step 1._
 
 **Example request showing extension activation:**
 

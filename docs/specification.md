@@ -64,29 +64,6 @@ graph TB
     %% Dependencies between layers
     L1 --> L2
     L2 --> L3
-
-
-    style A fill:#e1f5fe
-    style B fill:#e1f5fe
-    style C fill:#e1f5fe
-    style D fill:#e1f5fe
-    style E fill:#e1f5fe
-    style F fill:#e1f5fe
-
-    style G fill:#f3e5f5
-    style H fill:#f3e5f5
-    style I fill:#f3e5f5
-    style J fill:#f3e5f5
-    style K fill:#f3e5f5
-    style L fill:#f3e5f5
-
-    style M fill:#e8f5e8
-    style N fill:#e8f5e8
-    style O fill:#e8f5e8
-
-    style L1 fill:#f0f8ff,stroke:#333,stroke-width:2px
-    style L2 fill:#faf0ff,stroke:#333,stroke-width:2px
-    style L3 fill:#f0fff0,stroke:#333,stroke-width:2px
 ```
 
 **Layer 1: Canonical Data Model** defines the core data structures and message formats that all A2A implementations must understand. These are protocol agnostic definitions expressed as Protocol Buffer messages.
@@ -126,7 +103,7 @@ Centering the proto file as the normative source ensures protocol neutrality, re
 
 ### 2.1. Requirements Language
 
-The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
+The keywords "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 ### 2.2. Core Concepts
 
@@ -541,7 +518,7 @@ All error responses in the A2A protocol, regardless of binding, **MUST** convey 
 
 1. **Error Code**: A machine-readable identifier for the error type (e.g., string code, numeric code, or protocol-specific status)
 2. **Error Message**: A human-readable description of the error
-3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
+3. **Error Details** (optional): An array of objects providing additional structured information about the error. Each object in the array **MUST** include a `@type` key that identifies the object's type (using [ProtoJSON `Any` representation](https://protobuf.dev/programming-guides/json/)). Well-known types from the [`google.rpc` error model](https://cloud.google.com/apis/design/errors#error_model) (e.g., `ErrorInfo`, `BadRequest`) **SHOULD** be used where applicable. Error details may be used for:
     - Affected fields or parameters
     - Contextual information (e.g., task ID, timestamp)
     - Suggestions for resolution
@@ -2013,11 +1990,11 @@ Clients **MUST** follow these rules:
 
 ### 8.4. Agent Card Signing
 
-Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
+Agent Cards **MAY** be digitally signed using JSON Web Signature (JWS) as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515) to ensure authenticity and integrity. Signatures allow clients to verify that an Agent Card has not been tampered with and originates from the claimed provider.
 
 #### 8.4.1. Canonicalization Requirements
 
-Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://tools.ietf.org/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
+Before signing, the Agent Card content **MUST** be canonicalized using the JSON Canonicalization Scheme (JCS) as defined in [RFC 8785](https://datatracker.ietf.org/doc/html/rfc8785). This ensures consistent signature generation and verification across different JSON implementations.
 
 **Canonicalization Rules:**
 
@@ -2036,40 +2013,61 @@ Before signing, the Agent Card content **MUST** be canonicalized using the JSON 
 
 **Example of Default Value Removal:**
 
-Original Agent Card fragment:
+Original Agent Card:
 
 ```json
 {
   "name": "Example Agent",
-  "description": "",
+  "description": "An example agent that echoes messages.",
+  "supportedInterfaces": [
+    {
+      "url": "https://example.com/a2a/v1",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "1.0.0",
   "capabilities": {
     "streaming": false,
     "pushNotifications": false,
     "extensions": []
   },
-  "skills": []
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "echo",
+      "name": "Echo",
+      "description": "Echoes the input.",
+      "tags": ["echo"]
+    }
+  ]
 }
 ```
 
 Applying the canonicalization rules:
 
 - `name`: "Example Agent" - REQUIRED field → **include**
-- `description`: "" - REQUIRED field → **include**
+- `description`: "An example agent that echoes messages." - REQUIRED field → **include**
+- `supportedInterfaces`: array - REQUIRED field → **include**
+- `version`: "1.0.0" - REQUIRED field → **include**
 - `capabilities`: object - REQUIRED field → **include** (after processing children)
     - `streaming`: false - optional field, present in JSON (explicitly set) → **include**
     - `pushNotifications`: false - optional field, present in JSON (explicitly set) → **include**
     - `extensions`: [] - repeated field (not REQUIRED) with empty array → **omit**
-- `skills`: [] - REQUIRED field → **include**
+- `defaultInputModes`: ["text/plain"] - REQUIRED field → **include**
+- `defaultOutputModes`: ["text/plain"] - REQUIRED field → **include**
+- `skills`: array - REQUIRED field → **include**
 
 After applying RFC 8785:
 
 ```json
-{"capabilities":{"pushNotifications":false,"streaming":false},"description":"","name":"Example Agent","skills":[]}
+{"capabilities":{"pushNotifications":false,"streaming":false},"defaultInputModes":["text/plain"],"defaultOutputModes":["text/plain"],"description":"An example agent that echoes messages.","name":"Example Agent","skills":[{"description":"Echoes the input.","id":"echo","name":"Echo","tags":["echo"]}],"supportedInterfaces":[{"protocolBinding":"JSONRPC","protocolVersion":"1.0","url":"https://example.com/a2a/v1"}],"version":"1.0.0"}
 ```
 
 #### 8.4.2. Signature Format
 
-Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://tools.ietf.org/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
+Signatures use the JSON Web Signature (JWS) format as defined in [RFC 7515](https://datatracker.ietf.org/doc/html/rfc7515). The [`AgentCardSignature`](#447-agentcardsignature) object represents JWS components using three fields:
 
 - **`protected`** (required, string): Base64url-encoded JSON object containing the JWS Protected Header
 - **`signature`** (required, string): Base64url-encoded signature value
@@ -2235,7 +2233,7 @@ Agent Card content changes infrequently relative to the frequency at which clien
 
 #### 8.6.2. Client Requirements
 
-- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://www.rfc-editor.org/rfc/rfc9111) when fetching Agent Cards
+- Clients **SHOULD** honor HTTP caching semantics as defined in [RFC 9111](https://datatracker.ietf.org/doc/html/rfc9111) when fetching Agent Cards
 - When a cached Agent Card has expired, clients **SHOULD** use conditional requests (`If-None-Match` with the stored `ETag`, or `If-Modified-Since`) to avoid re-downloading unchanged cards
 - When the server does not include caching headers, clients **MAY** apply an implementation-specific default cache duration
 

@@ -1,51 +1,46 @@
 # Life of a Task
 
-In the Agent2Agent (A2A) Protocol, interactions can range from simple, stateless
-exchanges to complex, long-running processes. When an agent receives a message
-from a client, it can respond in one of two fundamental ways:
+In the Agent2Agent (A2A) Protocol, interactions vary widely. They range from
+simple, stateless exchanges to complex, long-running processes. When an agent
+receives a message from a client, it can respond in one of two ways:
 
-- **Respond with a Stateless `Message`**: This type of response is
-    typically used for immediate, self-contained interactions that conclude
-    without requiring further state management.
-- **Initiate a Stateful `Task`**: If the response is a `Task`, the agent will
-    process it through a defined lifecycle, communicating progress and requiring
-    input as needed, until it reaches an interrupted state (e.g.,
-    `input-required`, `auth-required`) or a terminal state (e.g., `completed`,
-    `canceled`, `rejected`, `failed`).
+- **Respond with a Stateless `Message`**: Use this for immediate, self-contained
+    interactions. They finish without any further state to manage.
+- **Initiate a Stateful `Task`**: The agent runs a `Task` through a defined
+    lifecycle. It reports progress and asks for input as needed, until it
+    reaches an interrupted state (such as `input-required` or `auth-required`) or
+    a terminal state (such as `completed`, `canceled`, `rejected`, or `failed`).
 
 ## Group Related Interactions
 
-A `contextId` is a crucial identifier that logically groups multiple `Task`
-objects and independent `Message` objects, providing continuity across a series of
+A `contextId` is a key identifier. It groups multiple `Task` objects and
+independent `Message` objects. This gives continuity across a series of
 interactions.
 
 - When a client sends a message for the first time, the agent responds
     with a new `contextId`. If a task is initiated, it will also have a `taskId`.
-- Clients can send subsequent messages and include the same `contextId` to
-    indicate that they are continuing their previous interaction within the same
-    context.
+- To continue a previous interaction, clients send later messages with the same
+    `contextId`.
 - Clients optionally attach the `taskId` to a subsequent message to
     indicate that it continues that specific task.
 
-The `contextId` enables collaboration towards a common goal or a shared
-contextual session across multiple, potentially concurrent tasks. Internally, an
-A2A agent (especially one using an LLM) uses the `contextId` to manage its internal
-conversational state or its LLM context.
+The `contextId` enables collaboration toward a common goal, or a shared session
+across several tasks that may run at once. Internally, an A2A agent (especially
+one using an LLM) uses the `contextId` to manage its conversational state or its
+LLM context.
 
 ## Agent Response: Message or Task
 
 The choice between responding with a `Message` or a `Task` depends on the
 nature of the interaction and the agent's capabilities:
 
-- **Messages for Trivial Interactions**: `Message` objects are suitable for
-    transactional interactions that don't require long-running
-    processing or complex state management. An agent might use messages to
-    negotiate the acceptance or scope of a task before committing to a `Task`
-    object.
-- **Tasks for Stateful Interactions**: Once an agent maps the intent of an
-    incoming message to a supported capability that requires substantial,
-    trackable work over an extended period, the agent responds with a `Task`
-    object.
+- **Messages for Trivial Interactions**: Use `Message` objects for transactional
+    interactions. These need no long-running processing or complex state. An agent
+    might use messages to agree on the scope of a task before it commits to a
+    `Task` object.
+- **Tasks for Stateful Interactions**: An agent maps an incoming message to a
+    supported capability. When that capability needs substantial, trackable work
+    over a longer period, the agent responds with a `Task` object.
 
 Conceptually, agents operate at different levels of complexity:
 
@@ -53,12 +48,11 @@ Conceptually, agents operate at different levels of complexity:
     typically don't manage complex state or long-running executions, and use
     `contextId` to tie messages together. These agents might directly wrap LLM
     invocations and simple tools.
-- **Task-generating Agents**: Always respond with `Task` objects, even for
-    responses, which are then modeled as completed tasks. Once a task is
-    created, the agent will only return `Task` objects in response to messages
-    sent, and once a task is complete, no more messages can be sent. This
-    approach avoids deciding between `Task` versus `Message`, but creates completed task objects
-    for even simple interactions.
+- **Task-generating Agents**: Always respond with `Task` objects. Even plain
+    responses are modeled as completed tasks. Once a task is created, the agent
+    returns only `Task` objects; once a task is complete, no more messages can be
+    sent. This avoids the `Task`-versus-`Message` decision, but it creates
+    completed task objects even for simple interactions.
 - **Hybrid Agents**: Generate both `Message` and `Task` objects. These agents
     use messages to negotiate agent capability and the scope of work, then send a
     `Task` object to track execution and manage states like `input-required` or
@@ -87,9 +81,9 @@ it cannot restart. Any subsequent interaction related to that task, such as a
 refinement, must initiate a new task within the same `contextId`. This principle
 offers several benefits:
 
-- **Task Immutability.** Clients reliably reference tasks and their
-    associated state, artifacts, and messages, providing a clean mapping of
-    inputs to outputs. This is valuable for orchestration and traceability.
+- **Task Immutability.** Clients reliably reference a task and its state,
+    artifacts, and messages. This gives a clean mapping of inputs to outputs,
+    which helps orchestration and traceability.
 - **Clear Unit of Work.** Every new request, refinement, or follow-up becomes
     a distinct task. This simplifies bookkeeping, allows for granular tracking
     of an agent's work, and enables tracing each artifact to a specific unit of
@@ -114,21 +108,21 @@ For example:
 ## Referencing Previous Artifacts
 
 The serving agent infers the relevant artifact from a referenced task or from the
-`contextId`. As the domain expert, the serving agent is best suited to resolve
-ambiguity or identify missing information. If there is ambiguity, the agent asks
-the client for clarification by returning an `input-required` state. The client
-then specifies the artifact in its response, optionally populating artifact
-references (`artifactId`, `taskId`) in `Part` metadata.
+`contextId`. As the domain expert, it is best placed to resolve ambiguity or spot
+missing information. When something is ambiguous, the agent returns an
+`input-required` state to ask the client for clarification. The client then names
+the artifact in its response, and can add artifact references (`artifactId`,
+`taskId`) in `Part` metadata.
 
 ## Tracking Artifact Mutation
 
-Follow-up or refinement tasks often lead to the creation of new artifacts based on older ones. Tracking these mutations is important to ensure that only the most recent version of an artifact is used in subsequent interactions. This could be conceptualized as a version history, where each new artifact is linked to its predecessor.
+Follow-up or refinement tasks often create new artifacts based on older ones. Track these mutations so that later interactions use only the most recent version. Think of it as a version history, where each new artifact links to the one before it.
 
-However, the client is in the best position to manage this artifact linkage. The client determines what constitutes an acceptable result and has the ability to accept or reject new versions. Therefore, the serving agent shouldn't be responsible for tracking artifact mutations, and this linkage is not part of the A2A protocol specification. Clients should maintain this version history on their end and present the latest acceptable version to the user.
+The client is best placed to manage this artifact linkage. The client decides what counts as an acceptable result and can accept or reject new versions. So the serving agent shouldn't track artifact mutations, and this linkage is not part of the A2A protocol specification. Clients should keep the version history on their end and show the user the latest acceptable version.
 
-To facilitate client-side tracking, serving agents should use a consistent `artifact-name` when generating a refined version of an existing artifact.
+To help client-side tracking, serving agents should reuse a consistent `artifact-name` when they generate a refined version of an existing artifact.
 
-When initiating follow-up or refinement tasks, the client should explicitly reference the specific artifact they intend to refine, ideally the "latest" version from their perspective. If the artifact reference is not provided, the serving agent can:
+For follow-up or refinement tasks, the client should name the exact artifact it wants to refine — ideally the "latest" version from its perspective. If the client provides no artifact reference, the serving agent can:
 
 - Attempt to infer the intended artifact based on the current `contextId`.
 - If there is ambiguity or insufficient context, the agent should respond with an `input-required` task state to request clarification from the client.
@@ -218,7 +212,7 @@ The following example illustrates a typical task flow with a follow-up:
 
 4. Agent responds with a new image artifact (new task, same context, same
     artifact name): The agent creates a new task within the same `contextId`. The
-    new boat image artifact retains the same name but has a new `artifactId`.
+    new boat image artifact keeps the same name but has a new `artifactId`.
 
     ```json
     {

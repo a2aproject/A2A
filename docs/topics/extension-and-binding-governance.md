@@ -42,7 +42,7 @@ maintainers identified in `MAINTAINERS.md`.
 **Requirements:**
 
 - Specifications MUST use the same language as the core specification
-    ([RFC 2119](https://tools.ietf.org/html/rfc2119))
+    ([RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119))
 - MUST be licensed under Apache 2.0
 - MUST have at least one reference implementation
 - SHOULD have associated documentation on the A2A website
