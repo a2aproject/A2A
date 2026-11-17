@@ -77,3 +77,13 @@ def on_post_build(config, **kwargs) -> None:
     source = Path(config["docs_dir"]) / "404.html"
     if source.is_file():
         shutil.copyfile(source, Path(config["site_dir"]) / "404.html")
+
+    # ADRs live outside docs/ but are linked from the specification page
+    # (`../adrs/...`). Publish them inside every built version, since
+    # `mike deploy` builds the site itself.
+    adrs = Path(config["docs_dir"]).parent / "adrs"
+    if adrs.is_dir():
+        target = Path(config["site_dir"]) / "adrs"
+        target.mkdir(parents=True, exist_ok=True)
+        for adr in adrs.glob("*.md"):
+            shutil.copyfile(adr, target / adr.name)
