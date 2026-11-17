@@ -553,13 +553,13 @@ suites:
                 jsonrpc: "2.0"
                 id: "req-010"
                 result:
-                  id: "task-tfc-001"
-                  contextId: "ctx-tfc-001"
+                  id: "task-future-entry-001"
+                  contextId: "ctx-future-entry-001"
                   status:
                     state: TASK_STATE_WORKING
                   timeline:
                     - message:
-                        messageId: "msg-tfc-1"
+                        messageId: "msg-future-entry-1"
                         role: ROLE_USER
                         parts:
                           - text: "please start"
@@ -567,7 +567,7 @@ suites:
                     - status:
                         state: TASK_STATE_WORKING
                         message:
-                          messageId: "msg-tfc-2"
+                          messageId: "msg-future-entry-2"
                           role: ROLE_AGENT
                           parts:
                             - text: "working on it"
@@ -577,8 +577,8 @@ suites:
                       generation: "4"
                   generation: "4"
             expect_parsed:
-              id: "task-tfc-001"
-              contextId: "ctx-tfc-001"
+              id: "task-future-entry-001"
+              contextId: "ctx-future-entry-001"
               status:
                 state: TASK_STATE_WORKING
               generation: {gte: 4, lte: 4}
@@ -587,7 +587,7 @@ suites:
                 count_gte: 2
                 items:
                   - message:
-                      messageId: "msg-tfc-1"
+                      messageId: "msg-future-entry-1"
                       role: ROLE_USER
                     generation: {gte: 2, lte: 2}
                   - status:
