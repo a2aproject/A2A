@@ -1,0 +1,72 @@
+name: Prepare docs build
+description: >-
+  Installs the documentation toolchain, mounts docs from other repositories
+  (.mkdocs/mounts.yml) and generates the protocol specification, SDK API docs
+  and llms-full.txt. Leaves the repository ready for `mkdocs build` / `mike deploy`.
+
+inputs:
+  mount-token:
+    description: Token used to clone mounted repositories (private repos need a PAT).
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: 3.13
+
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        enable-cache: true
+
+    - name: Install documentation dependencies
+      shell: bash
+      run: uv pip install --system --upgrade -r requirements-docs.txt
+
+    - name: Setup Buf
+      uses: bufbuild/buf-action@v1
+      with:
+        setup_only: true
+        version: "1.71.0"
+
+    - name: Setup Go
+      uses: actions/setup-go@v7
+      with:
+        go-version: "1.25"
+
+    - name: Install build tools
+      shell: bash
+      run: |
+        # Install protoc
+        PROTOC_VERSION="28.3"
+        PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
+        curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
+        sudo unzip -q /tmp/protoc.zip -d /usr/local
+        rm /tmp/protoc.zip
+
+        # Install protoc-gen-jsonschema
+        go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
+        sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
+
+        # Clone googleapis
+        mkdir -p third_party
+        cd third_party
+        git clone --depth 1 https://github.com/googleapis/googleapis.git
+
+    - name: Mount docs from other repositories
+      shell: bash
+      env:
+        DOCS_MOUNT_TOKEN: ${{ inputs.mount-token }}
+      run: python scripts/mount_docs.py
+
+    - name: Generate protocol specification files
+      shell: bash
+      run: ./scripts/build_docs.sh
+
+    - name: Generate consolidated llms-full.txt file
+      shell: bash
+      run: bash scripts/build_llms_full.sh

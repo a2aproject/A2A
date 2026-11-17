@@ -1,0 +1,175 @@
+name: Docs Publish
+
+# Builds the A2A docs (plus docs mounted from other repos, see
+# .mkdocs/mounts.yml) and deploys them to GitHub Pages using Actions.
+#
+# Versions are kept by mike on the `docs-archive` branch. That branch is only a
+# store of built versions; it is not served. The Pages artifact is assembled
+# from it on every run.
+#
+#   push to main / repository_dispatch / schedule -> rebuild `dev`
+#   release published                            -> add the release version;
+#                                                   stable releases become `latest`
+#   workflow_dispatch                            -> rebuild `dev` or add a version
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/docs-publish.yml"
+      - ".github/actions/build-docs/**"
+      - "scripts/assemble_site.sh"
+      - "scripts/build_docs.sh"
+      - "scripts/build_llms_full.sh"
+      - "scripts/mount_docs.py"
+      - "requirements-docs.txt"
+      - "mkdocs.yml"
+      - "docs/**"
+      - ".mkdocs/**"
+      - "specification/a2a.proto"
+      - "adrs/**"
+  release:
+    types:
+      - published
+  repository_dispatch:
+    # Sent by mounted repositories (see docs-notify.yml) when their docs change.
+    types:
+      - docs-update
+  schedule:
+    # Weekly safety net for mounted repos that do not send dispatches.
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy (e.g. v1.0.0), or 'dev' to rebuild the development docs"
+        required: true
+        default: "dev"
+      set_latest:
+        description: "Point the 'latest' alias at this version (ignored for 'dev')"
+        type: boolean
+        default: true
+
+concurrency:
+  group: docs-publish
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.repository == 'a2aproject/A2A'
+    permissions:
+      contents: write # push built versions to the docs-archive branch
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git Credentials
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Determine version to publish
+        id: target
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_PRERELEASE: ${{ github.event.release.prerelease }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+          INPUT_SET_LATEST: ${{ github.event.inputs.set_latest }}
+        run: |
+          kind=dev
+          version=dev
+          set_latest=false
+
+          case "$EVENT_NAME" in
+            release)
+              kind=release
+              version="$RELEASE_TAG"
+              [ "$RELEASE_PRERELEASE" = "true" ] || set_latest=true
+              ;;
+            workflow_dispatch)
+              if [ "$INPUT_VERSION" != "dev" ]; then
+                kind=release
+                version="$INPUT_VERSION"
+                [ "$INPUT_SET_LATEST" = "true" ] && set_latest=true
+              fi
+              ;;
+          esac
+
+          if ! [[ "$version" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+            echo "Invalid version: $version" >&2
+            exit 1
+          fi
+
+          echo "kind=$kind" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "set_latest=$set_latest" >> "$GITHUB_OUTPUT"
+          echo "Publishing $kind '$version' (set latest: $set_latest)"
+
+      - name: Prepare docs build
+        uses: ./.github/actions/build-docs
+        with:
+          mount-token: ${{ secrets.A2A_BOT_PAT }}
+
+      - name: Fetch version store
+        run: |
+          if ! git fetch origin docs-archive:docs-archive; then
+            echo "::error::Branch 'docs-archive' not found. Rename gh-pages to docs-archive first (see docs/README.md)."
+            exit 1
+          fi
+
+      - name: Build and store version with mike
+        env:
+          VERSION: ${{ steps.target.outputs.version }}
+          KIND: ${{ steps.target.outputs.kind }}
+          SET_LATEST: ${{ steps.target.outputs.set_latest }}
+        run: |
+          if [ "$KIND" = "release" ]; then
+            # extra.a2a_version in mkdocs.yml reads this
+            export MIKE_VERSION="$VERSION"
+          fi
+
+          if [ "$SET_LATEST" = "true" ]; then
+            mike deploy --branch docs-archive --push --update-aliases "$VERSION" latest
+
+            echo "Setting 'latest' as the default version for the site..."
+            mike set-default --branch docs-archive --push \
+              --template .mkdocs/root-redirect-template.html latest
+          else
+            mike deploy --branch docs-archive --push --update-aliases "$VERSION"
+          fi
+
+      - name: Assemble site
+        run: |
+          rm -rf _site
+          mkdir _site
+          git archive docs-archive | tar -x -C _site
+          bash scripts/assemble_site.sh _site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+          # .well-known/ and .nojekyll are dot-paths and must be served.
+          include-hidden-files: true
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
