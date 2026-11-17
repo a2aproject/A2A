@@ -3018,7 +3018,7 @@ As specified in [Section 3.2.6 (Service Parameters)](#326-service-parameters), c
 
 Custom bindings **MUST**:
 
-1. **Map Standard Errors**: Provide mappings for all A2A-specific error types defined in [Section 3.2.2 (Error Handling)](#332-error-handling)
+1. **Map Standard Errors**: Provide mappings for all A2A-specific error types defined in [Section 3.3.2 (Error Handling)](#332-error-handling)
 2. **Preserve Error Information**: Ensure error details are accessible to clients
 3. **Use Appropriate Codes**: Map to protocol-native error codes where applicable
 4. **Document Error Format**: Specify the structure of error responses
