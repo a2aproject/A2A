@@ -242,11 +242,11 @@ def main() -> int:
         log(f'Unknown --local names: {", ".join(sorted(unknown))}')
         return 2
 
-    navs: list[dict] = []
+    nav_entries: list[dict] = []
     failed = False
     for entry in entries:
         try:
-            navs.append(mount_entry(entry, locals_.get(entry['name'])))
+            nav_entries.append(mount_entry(entry, locals_.get(entry['name'])))
         except (subprocess.CalledProcessError, OSError, ValueError) as err:
             shutil.rmtree(DEST / entry['mount_path'], ignore_errors=True)
             if entry.get('required', False):
@@ -256,8 +256,10 @@ def main() -> int:
                 log(f"WARNING {entry['name']}: skipped ({err})")
                 print(f"::warning::docs mount '{entry['name']}' skipped: {err}")
 
-    NAV_FILE.write_text(json.dumps(navs, indent=2) + '\n', encoding='utf-8')
-    log(f'Mounted {len(navs)} of {len(entries)} repositories.')
+    NAV_FILE.write_text(
+        json.dumps(nav_entries, indent=2) + '\n', encoding='utf-8'
+    )
+    log(f'Mounted {len(nav_entries)} of {len(entries)} repositories.')
     return 1 if failed else 0
 
 

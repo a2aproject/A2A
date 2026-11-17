@@ -105,9 +105,11 @@ jobs:
             exit 1
           fi
 
-          echo "kind=$kind" >> "$GITHUB_OUTPUT"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "set_latest=$set_latest" >> "$GITHUB_OUTPUT"
+          {
+            echo "kind=$kind"
+            echo "version=$version"
+            echo "set_latest=$set_latest"
+          } >> "$GITHUB_OUTPUT"
           echo "Publishing $kind '$version' (set latest: $set_latest)"
 
       - name: Prepare docs build
