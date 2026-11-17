@@ -10,10 +10,14 @@ Local preview:
 Custom 404 page:
     Restore the hand-written `404.html` into the build output after the theme
     overwrites it.
+
+Mounted docs:
+    Merge the nav entries written by `scripts/mount_docs.py` into the nav.
 """
 
 from __future__ import annotations
 
+import json
 import shutil
 
 from pathlib import Path
@@ -27,7 +31,27 @@ def on_startup(command, dirty):
     _serving = command == "serve"
 
 
+def _merge_mounted_nav(config) -> None:
+    """Append docs mounted from other repos (scripts/mount_docs.py) to the nav."""
+    nav_file = Path(config["config_file_path"]).parent / ".mkdocs" / ".mounted-nav.json"
+    if not nav_file.is_file():
+        return
+    nav = config["nav"] or []
+    for mount in json.loads(nav_file.read_text(encoding="utf-8")):
+        section = mount["section"]
+        entry = {mount["title"]: mount["nav"]}
+        for item in nav:
+            if isinstance(item, dict) and section in item:
+                item[section].append(entry)
+                break
+        else:
+            nav.append({section: [entry]})
+    config["nav"] = nav
+
+
 def on_config(config):
+    _merge_mounted_nav(config)
+
     if not _serving:
         return config
 
