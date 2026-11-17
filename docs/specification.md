@@ -253,7 +253,7 @@ None specific to this operation beyond standard protocol errors.
 
 **Behavior:**
 
-The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Tasks MUST be sorted by last update time in descending order. Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See [Section 13.1 Data Access and Authorization Scoping](#131-data-access-and-authorization-scoping) for detailed security requirements.
+The operation MUST return only tasks visible to the authenticated client and MUST use cursor-based pagination for performance and consistency. Implementations MUST implement appropriate authorization scoping to ensure clients can only access authorized tasks. See [Section 13.1 Data Access and Authorization Scoping](#131-data-access-and-authorization-scoping) for detailed security requirements.
 
 ***Pagination Strategy:***
 
@@ -261,7 +261,7 @@ This method uses cursor-based pagination (via `pageToken`/`nextPageToken`) rathe
 
 ***Ordering:***
 
-Implementations MUST return tasks sorted by their status timestamp time in descending order (most recently updated tasks first). This ensures consistent pagination and allows clients to efficiently monitor recent task activity.
+Implementations SHOULD return tasks sorted by their status timestamp in descending order (most recently updated tasks first). Implementations MAY use a different order, such as creation time, to avoid indexing a frequently changing field.
 
 #### 3.1.5. Cancel Task
 
