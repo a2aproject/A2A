@@ -186,4 +186,3 @@ collaborate effectively with each other and with users.
 - [Zeotap](https://www.zeotap.com)
 - [Zocket Technologies , Inc.](https://zocket.ai)
 - [Zoom](https://www.zoom.us)
-- [zyprova](https://www.zyprova.com)
