@@ -50,6 +50,7 @@ However, some foreseeable applications include:
 | [Hello World or Timestamp Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/timestamp) | A simple extension demonstrating how to augment base A2A types by adding timestamps to the `metadata` field of `Message` and `Artifact` objects (v1). |
 | [Traceability Extension](https://github.com/a2aproject/a2a-samples/tree/main/samples/python/extensions/traceability) | Explore the Python implementation and basic usage of the Traceability Extension (v1). |
 | [Agent Gateway Protocol (AGP) Extension](https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp) | A Core Protocol Layer or Routing Extension that introduces Autonomous Squads (ASq) and routes Intent payloads based on declared Capabilities, enhancing scalability (v1). |
+| [PharmA2A](https://github.com/pharma2a/pharma2a) | A sector profile extension: five JSON Schema messages for direct orders between a pharmacy and its suppliers, carried as data parts and artifacts (v1). |
 
 ## Extension Governance
 
