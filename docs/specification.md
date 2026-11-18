@@ -2286,6 +2286,8 @@ All JSON-RPC requests **MUST** follow the standard JSON-RPC 2.0 format:
 }
 ```
 
+The `params` member **MAY** be omitted, as the [JSON-RPC 2.0 Request object](https://www.jsonrpc.org/specification#request_object) allows and as in the [`GetExtendedAgentCard`](#948-getextendedagentcard) example. Servers **MUST** treat an absent `params` as an empty object (`{}`), so a request that omits required parameters fails with `InvalidParamsError` (`-32602`), not `JSONParseError` (`-32700`).
+
 ### 9.4. Core Methods
 
 #### 9.4.1. `SendMessage`
