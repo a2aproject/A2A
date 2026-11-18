@@ -1,0 +1,50 @@
+name: Notify A2A docs
+
+# Reusable workflow for repositories whose docs are mounted into the A2A site
+# (see .mkdocs/mounts.yml). It asks a2aproject/A2A to rebuild and republish.
+#
+# Usage, in the mounted repository (e.g. .github/workflows/docs.yml):
+#
+#   name: Notify A2A docs
+#   on:
+#     push:
+#       branches: [main]
+#       paths: ["docs/**"]
+#   jobs:
+#     notify:
+#       uses: a2aproject/A2A/.github/workflows/docs-notify.yml@main
+#       secrets:
+#         token: ${{ secrets.A2A_BOT_PAT }}
+#
+# The token needs permission to create repository dispatch events on
+# a2aproject/A2A (a fine-grained PAT with "Contents: read and write").
+
+on:
+  workflow_call:
+    inputs:
+      target_repository:
+        description: Repository hosting the docs site.
+        type: string
+        default: a2aproject/A2A
+    secrets:
+      token:
+        description: Token allowed to send repository_dispatch events to the target repository.
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Dispatch docs-update to A2A
+        uses: peter-evans/repository-dispatch@v4
+        with:
+          token: ${{ secrets.token }}
+          repository: ${{ inputs.target_repository }}
+          event-type: docs-update
+          client-payload: |
+            {
+              "source": "${{ github.repository }}",
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}"
+            }
