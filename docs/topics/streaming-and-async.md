@@ -74,6 +74,8 @@ Refer to the Protocol Specification for detailed structures:
 
 The `url` specified in `TaskPushNotificationConfig.url` points to a client-side Push Notification Service. This service is responsible for receiving the HTTP POST notification from the A2A Server. Its responsibilities include authenticating the incoming notification, validating its relevance, and relaying the notification or its content to the appropriate client application logic or system.
 
+For guidance on keeping SSE streams, `GetTask` polling, and outbound push notification webhooks correlated in distributed traces, see [Distributed Tracing](./tracing.md#1-trace-context-propagation).
+
 ### Security Considerations for Push Notifications
 
 Security is paramount for push notifications due to their asynchronous and server-initiated outbound nature. Both the A2A Server (sending the notification) and the client's webhook receiver have critical responsibilities.
