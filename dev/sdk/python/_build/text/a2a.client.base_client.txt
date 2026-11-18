@@ -1,12 +1,15 @@
 a2a.client.base_client module
 *****************************
 
-class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor])
+class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor], *, plugins: PluginManager | None = None)
 
    Bases: "Client"
 
    Base implementation of the A2A client, containing transport-
    independent logic.
+
+   Client plugin hooks run around every call: "before_client_request"
+   before the interceptors, "after_client_request" after them.
 
    async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
 

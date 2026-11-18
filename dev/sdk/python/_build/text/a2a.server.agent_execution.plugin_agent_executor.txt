@@ -1,0 +1,36 @@
+a2a.server.agent_execution.plugin_agent_executor module
+*******************************************************
+
+Runs *ExecutionPlugin* hooks around an *AgentExecutor*.
+
+class a2a.server.agent_execution.plugin_agent_executor.PluginAgentExecutor(inner: AgentExecutor, plugins: PluginManager)
+
+   Bases: "AgentExecutor"
+
+   Runs *before_execution* / *after_execution* around "execute".
+
+   async cancel(context: RequestContext, event_queue: EventQueue) -> None
+
+      Delegates to the wrapped executor without hooks.
+
+   async execute(context: RequestContext, event_queue: EventQueue) -> None
+
+      Runs the wrapped executor with execution hooks.
+
+   property inner: AgentExecutor
+
+      The wrapped executor.
+
+class a2a.server.agent_execution.plugin_agent_executor.PluginEventQueue(*args: Any, **kwargs: Any)
+
+   Bases: "EventQueue"
+
+   Calls *on_execution_event* for each event the agent enqueues.
+
+   Wraps the queue passed to *AgentExecutor.execute*. Events the SDK
+   enqueues on the underlying queue itself bypass the wrapper and are
+   not reported.
+
+   async enqueue_event(event: Event) -> None
+
+      Reports the event to plugins, then enqueues it.

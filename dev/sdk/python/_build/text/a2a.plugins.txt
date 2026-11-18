@@ -1,0 +1,924 @@
+a2a.plugins package
+*******************
+
+
+Submodules
+==========
+
+* a2a.plugins.base module
+
+  * "ClientPlugin"
+
+    * "ClientPlugin.after_client_request()"
+
+    * "ClientPlugin.before_client_request()"
+
+  * "CompletePlugin"
+
+  * "ExecutionPlugin"
+
+    * "ExecutionPlugin.after_execution()"
+
+    * "ExecutionPlugin.before_execution()"
+
+    * "ExecutionPlugin.on_execution_event()"
+
+  * "Plugin"
+
+    * "Plugin.name"
+
+  * "PushPlugin"
+
+    * "PushPlugin.before_push_send()"
+
+    * "PushPlugin.on_push_sent()"
+
+  * "ServerPlugin"
+
+    * "ServerPlugin.after_handler_run()"
+
+    * "ServerPlugin.before_handler_run()"
+
+  * "TaskObserverPlugin"
+
+    * "TaskObserverPlugin.on_task_event()"
+
+* a2a.plugins.manager module
+
+  * "PluginManager"
+
+    * "PluginManager.has_client_hooks"
+
+    * "PluginManager.has_execution_hooks"
+
+    * "PluginManager.has_push_hooks"
+
+    * "PluginManager.has_server_hooks"
+
+    * "PluginManager.has_task_hooks"
+
+    * "PluginManager.name"
+
+  * "SequentialPluginManager"
+
+    * "SequentialPluginManager.after_client_request()"
+
+    * "SequentialPluginManager.after_execution()"
+
+    * "SequentialPluginManager.after_handler_run()"
+
+    * "SequentialPluginManager.before_client_request()"
+
+    * "SequentialPluginManager.before_execution()"
+
+    * "SequentialPluginManager.before_handler_run()"
+
+    * "SequentialPluginManager.before_push_send()"
+
+    * "SequentialPluginManager.has_client_hooks"
+
+    * "SequentialPluginManager.has_execution_hooks"
+
+    * "SequentialPluginManager.has_push_hooks"
+
+    * "SequentialPluginManager.has_server_hooks"
+
+    * "SequentialPluginManager.has_task_hooks"
+
+    * "SequentialPluginManager.name"
+
+    * "SequentialPluginManager.on_execution_event()"
+
+    * "SequentialPluginManager.on_push_sent()"
+
+    * "SequentialPluginManager.on_task_event()"
+
+    * "SequentialPluginManager.plugins"
+
+  * "get_global()"
+
+  * "sequential()"
+
+  * "set_global()"
+
+* a2a.plugins.types module
+
+  * "ClientRequest"
+
+    * "ClientRequest.method"
+
+    * "ClientRequest.payload"
+
+    * "ClientRequest.agent_card"
+
+    * "ClientRequest.context"
+
+    * "ClientRequest.agent_card"
+
+    * "ClientRequest.context"
+
+    * "ClientRequest.method"
+
+    * "ClientRequest.payload"
+
+  * "ClientResponse"
+
+    * "ClientResponse.method"
+
+    * "ClientResponse.payload"
+
+    * "ClientResponse.context"
+
+    * "ClientResponse.error"
+
+    * "ClientResponse.is_stream_event"
+
+    * "ClientResponse.is_final"
+
+    * "ClientResponse.context"
+
+    * "ClientResponse.error"
+
+    * "ClientResponse.is_final"
+
+    * "ClientResponse.is_stream_event"
+
+    * "ClientResponse.method"
+
+    * "ClientResponse.payload"
+
+  * "PushRequest"
+
+    * "PushRequest.task_id"
+
+    * "PushRequest.url"
+
+    * "PushRequest.headers"
+
+    * "PushRequest.event"
+
+    * "PushRequest.skip"
+
+    * "PushRequest.state"
+
+    * "PushRequest.event"
+
+    * "PushRequest.headers"
+
+    * "PushRequest.skip"
+
+    * "PushRequest.state"
+
+    * "PushRequest.task_id"
+
+    * "PushRequest.url"
+
+  * "PushResult"
+
+    * "PushResult.request"
+
+    * "PushResult.duration_s"
+
+    * "PushResult.status_code"
+
+    * "PushResult.error"
+
+    * "PushResult.skipped"
+
+    * "PushResult.duration_s"
+
+    * "PushResult.error"
+
+    * "PushResult.request"
+
+    * "PushResult.skipped"
+
+    * "PushResult.status_code"
+
+  * "ServerRequest"
+
+    * "ServerRequest.method"
+
+    * "ServerRequest.payload"
+
+    * "ServerRequest.context"
+
+    * "ServerRequest.agent_card"
+
+    * "ServerRequest.agent_card"
+
+    * "ServerRequest.context"
+
+    * "ServerRequest.method"
+
+    * "ServerRequest.payload"
+
+  * "ServerResponse"
+
+    * "ServerResponse.method"
+
+    * "ServerResponse.payload"
+
+    * "ServerResponse.context"
+
+    * "ServerResponse.error"
+
+    * "ServerResponse.is_stream_event"
+
+    * "ServerResponse.is_final"
+
+    * "ServerResponse.context"
+
+    * "ServerResponse.error"
+
+    * "ServerResponse.is_final"
+
+    * "ServerResponse.is_stream_event"
+
+    * "ServerResponse.method"
+
+    * "ServerResponse.payload"
+
+  * "TaskEventInfo"
+
+    * "TaskEventInfo.task_id"
+
+    * "TaskEventInfo.from_state"
+
+    * "TaskEventInfo.to_state"
+
+    * "TaskEventInfo.event"
+
+    * "TaskEventInfo.task"
+
+    * "TaskEventInfo.context"
+
+    * "TaskEventInfo.context"
+
+    * "TaskEventInfo.event"
+
+    * "TaskEventInfo.from_state"
+
+    * "TaskEventInfo.task"
+
+    * "TaskEventInfo.task_id"
+
+    * "TaskEventInfo.to_state"
+
+
+Module contents
+===============
+
+Plugins: hooks into the A2A client and *DefaultRequestHandlerV2*.
+
+-[ Example ]-
+
+from a2a import plugins
+
+class TaskAudit(plugins.TaskObserverPlugin):
+   name = 'task-audit'
+
+   async def on_task_event(self, info: plugins.TaskEventInfo) -> None:
+      print(info.task_id, info.from_state, '->', info.to_state)
+
+plugins.set_global(plugins.sequential(TaskAudit())) # Create
+DefaultRequestHandlerV2 and clients after this point.
+
+class a2a.plugins.ClientPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each request made by an A2A *Client*.
+
+   async after_client_request(response: ClientResponse) -> None
+
+      Called with the result, per stream event, and at the end.
+
+   async before_client_request(request: ClientRequest) -> None
+
+      Called before the request is sent. Raise to cancel it.
+
+class a2a.plugins.ClientRequest(method: str, payload: Any, agent_card: AgentCard, context: ClientCallContext)
+
+   Bases: "object"
+
+   An outgoing call, passed to *ClientPlugin.before_client_request*.
+
+   method
+
+      Method name, the same as on the server side and as passed to
+      interceptors.
+
+      Type:
+         str
+
+   payload
+
+      The request proto. Plugins may replace it.
+
+      Type:
+         Any
+
+   agent_card
+
+      The card of the remote agent.
+
+      Type:
+         AgentCard
+
+   context
+
+      The call context. "service_parameters" holds the outgoing
+      headers.
+
+      Type:
+         ClientCallContext
+
+   agent_card: AgentCard
+
+   context: ClientCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.ClientResponse(method: str, payload: Any, context: ClientCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A call result, passed to *ClientPlugin.after_client_request*.
+
+   Follows the same "is_stream_event" / "is_final" rules as
+   *ServerResponse*.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The response or stream event, "None" on error or stream end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_client_request*.
+
+      Type:
+         ClientCallContext
+
+   error
+
+      The exception raised by the call, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ClientCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.CompletePlugin
+
+   Bases: "ClientPlugin", "ServerPlugin"
+
+   A plugin with both client and server hooks.
+
+class a2a.plugins.ExecutionPlugin
+
+   Bases: "Plugin"
+
+   Hooks around *AgentExecutor.execute*, which runs outside the
+   request.
+
+   async after_execution(request_context: RequestContext, error: BaseException | None) -> None
+
+      Called in the execution task after the agent returns or raises.
+
+   async before_execution(request_context: RequestContext) -> None
+
+      Called in the execution task before the agent runs.
+
+      Raise to fail the execution without running the agent.
+
+   async on_execution_event(request_context: RequestContext, event: Event) -> None
+
+      Called when the agent enqueues an event, before it is processed.
+
+      Observer: runs on the agent's path, so keep it cheap.
+
+class a2a.plugins.Plugin
+
+   Bases: "object"
+
+   Common base of all plugins.
+
+   name: str = 'unnamed'
+
+      Name used in logs.
+
+class a2a.plugins.PluginManager
+
+   Bases: "ServerPlugin", "ClientPlugin", "ExecutionPlugin",
+   "TaskObserverPlugin", "PushPlugin"
+
+   Runs registered plugins. SDK call sites depend on this type.
+
+   Since a manager implements every plugin interface, managers can be
+   nested. The "has_*" properties let call sites skip all plugin work
+   when no plugin implements the hooks they would call.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'plugin-manager'
+
+      Name used in logs.
+
+class a2a.plugins.PushPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each push notification delivery.
+
+   async before_push_send(request: PushRequest) -> None
+
+      Called before the webhook request.
+
+      May add headers or set "request.skip". Raising fails the
+      delivery.
+
+   async on_push_sent(result: PushResult) -> None
+
+      Called after the delivery attempt, or when it was skipped.
+
+class a2a.plugins.PushRequest(task_id: str, url: str, headers: dict[str, str], event: PushNotificationEvent, skip: bool = False, state: dict[str, Any] = <factory>)
+
+   Bases: "object"
+
+   One push delivery, passed to *PushPlugin.before_push_send*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   url
+
+      Webhook URL.
+
+      Type:
+         str
+
+   headers
+
+      Outgoing HTTP headers. Plugins may add or change entries.
+
+      Type:
+         dict[str, str]
+
+   event
+
+      The event being pushed.
+
+      Type:
+         PushNotificationEvent
+
+   skip
+
+      Set to "True" to drop this delivery.
+
+      Type:
+         bool
+
+   state
+
+      Per-delivery plugin state, available again in *PushResult*.
+
+      Type:
+         dict[str, Any]
+
+   event: PushNotificationEvent
+
+   headers: dict[str, str]
+
+   skip: bool = False
+
+   state: dict[str, Any]
+
+   task_id: str
+
+   url: str
+
+class a2a.plugins.PushResult(request: PushRequest, duration_s: float, status_code: int | None, error: BaseException | None, skipped: bool = False)
+
+   Bases: "object"
+
+   The outcome of one push delivery, passed to
+   *PushPlugin.on_push_sent*.
+
+   request
+
+      The *PushRequest* for this delivery.
+
+      Type:
+         a2a.plugins.types.PushRequest
+
+   duration_s
+
+      Duration of the HTTP request in seconds.
+
+      Type:
+         float
+
+   status_code
+
+      HTTP status code, "None" if no response was received.
+
+      Type:
+         int | None
+
+   error
+
+      The exception if delivery failed, "None" on success.
+
+      Type:
+         BaseException | None
+
+   skipped
+
+      Whether a plugin dropped the delivery.
+
+      Type:
+         bool
+
+   duration_s: float
+
+   error: BaseException | None
+
+   request: PushRequest
+
+   skipped: bool = False
+
+   status_code: int | None
+
+class a2a.plugins.SequentialPluginManager(*plugins: Plugin)
+
+   Bases: "PluginManager"
+
+   Runs plugins one after another in registration order.
+
+   * "before_*" hooks run in registration order. If one raises,
+     plugins that already ran get their "after_*" hook with the error,
+     and the exception propagates.
+
+   * "after_*" hooks run in reverse order. Their exceptions are logged
+     and swallowed.
+
+   * Observer hooks ("on_*") run in registration order. Their
+     exceptions are logged and swallowed.
+
+   async after_client_request(response: ClientResponse) -> None
+
+      Called with the result, per stream event, and at the end.
+
+   async after_execution(request_context: RequestContext, error: BaseException | None) -> None
+
+      Called in the execution task after the agent returns or raises.
+
+   async after_handler_run(response: ServerResponse) -> None
+
+      Called with the handler result, per stream event, and at the
+      end.
+
+   async before_client_request(request: ClientRequest) -> None
+
+      Called before the request is sent. Raise to cancel it.
+
+   async before_execution(request_context: RequestContext) -> None
+
+      Called in the execution task before the agent runs.
+
+      Raise to fail the execution without running the agent.
+
+   async before_handler_run(request: ServerRequest) -> None
+
+      Called before the handler processes a request.
+
+      Raise to reject the request; the exception is returned to the
+      caller.
+
+   async before_push_send(request: PushRequest) -> None
+
+      Called before the webhook request.
+
+      May add headers or set "request.skip". Raising fails the
+      delivery.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'sequential'
+
+      Name used in logs.
+
+   async on_execution_event(request_context: RequestContext, event: Event) -> None
+
+      Called when the agent enqueues an event, before it is processed.
+
+      Observer: runs on the agent's path, so keep it cheap.
+
+   async on_push_sent(result: PushResult) -> None
+
+      Called after the delivery attempt, or when it was skipped.
+
+   async on_task_event(info: TaskEventInfo) -> None
+
+      Called after every successful task write.
+
+   property plugins: tuple[Plugin, ...]
+
+      The registered plugins, in registration order.
+
+class a2a.plugins.ServerPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each request handled by *DefaultRequestHandlerV2*.
+
+   async after_handler_run(response: ServerResponse) -> None
+
+      Called with the handler result, per stream event, and at the
+      end.
+
+   async before_handler_run(request: ServerRequest) -> None
+
+      Called before the handler processes a request.
+
+      Raise to reject the request; the exception is returned to the
+      caller.
+
+class a2a.plugins.ServerRequest(method: str, payload: Any, context: ServerCallContext, agent_card: AgentCard | None = None)
+
+   Bases: "object"
+
+   An incoming request, passed to *ServerPlugin.before_handler_run*.
+
+   method
+
+      Method name, e.g. "'send_message'" or "'get_task'".
+
+      Type:
+         str
+
+   payload
+
+      The request proto, e.g. "SendMessageRequest".
+
+      Type:
+         Any
+
+   context
+
+      The call context. For HTTP transports "state['headers']" holds
+      the request headers.
+
+      Type:
+         ServerCallContext
+
+   agent_card
+
+      The agent card served by this handler.
+
+      Type:
+         AgentCard | None
+
+   agent_card: AgentCard | None = None
+
+   context: ServerCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.ServerResponse(method: str, payload: Any, context: ServerCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A handler result, passed to *ServerPlugin.after_handler_run*.
+
+   For a unary call the hook runs once with "is_final=True". For a
+   stream it runs once per event with "is_stream_event=True,
+   is_final=False" and once more with "is_final=True" and
+   "payload=None" when the stream ends, including on error or client
+   disconnect.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The handler result or stream event, "None" on error or stream
+      end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_handler_run*.
+
+      Type:
+         ServerCallContext
+
+   error
+
+      The exception raised by the handler, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ServerCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.TaskEventInfo(task_id: str, from_state: TaskState | None, to_state: TaskState, event: Event | None, task: Task, context: ServerCallContext)
+
+   Bases: "object"
+
+   A successful task write, passed to
+   *TaskObserverPlugin.on_task_event*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   from_state
+
+      Persisted state before the write, "None" when the write created
+      the task.
+
+      Type:
+         TaskState | None
+
+   to_state
+
+      State after the write. Equal to "from_state" for writes that do
+      not change the state, such as artifact updates.
+
+      Type:
+         TaskState
+
+   event
+
+      The event that caused the write, "None" when the SDK wrote the
+      task without one.
+
+      Type:
+         Event | None
+
+   task
+
+      The task after the write. This is the SDK's live object; copy it
+      if you keep it beyond the hook call.
+
+      Type:
+         Task
+
+   context
+
+      Call context of the request that produced the write.
+
+      Type:
+         ServerCallContext
+
+   context: ServerCallContext
+
+   event: Event | None
+
+   from_state: TaskState | None
+
+   task: Task
+
+   task_id: str
+
+   to_state: TaskState
+
+class a2a.plugins.TaskObserverPlugin
+
+   Bases: "Plugin"
+
+   Observer of task writes.
+
+   async on_task_event(info: TaskEventInfo) -> None
+
+      Called after every successful task write.
+
+a2a.plugins.get_global() -> PluginManager
+
+   Returns the global manager. Empty unless *set_global* was called.
+
+a2a.plugins.sequential(*plugins: Plugin) -> SequentialPluginManager
+
+   Returns a manager that runs "plugins" in the given order.
+
+a2a.plugins.set_global(manager: PluginManager) -> None
+
+   Sets the manager used by handlers, clients and push senders created
+   afterwards.
+
+   *DefaultRequestHandlerV2*, clients and *BasePushNotificationSender*
+   capture the manager when they are constructed, so call this once at
+   startup, before creating them.

@@ -37,6 +37,8 @@ Submodules
 
     * "DefaultRequestHandlerV2.aclose()"
 
+    * "DefaultRequestHandlerV2.agent_card"
+
     * "DefaultRequestHandlerV2.on_cancel_task()"
 
     * "DefaultRequestHandlerV2.on_create_task_push_notification_config
@@ -61,6 +63,8 @@ Submodules
     * "DefaultRequestHandlerV2.on_message_send_stream()"
 
     * "DefaultRequestHandlerV2.on_subscribe_to_task()"
+
+    * "DefaultRequestHandlerV2.plugins"
 
 * a2a.server.request_handlers.grpc_handler module
 
@@ -164,7 +168,7 @@ a2a.server.request_handlers.DefaultRequestHandler
 
    alias of "DefaultRequestHandlerV2"
 
-class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
+class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None, plugins: PluginManager | None = None)
 
    Bases: "RequestHandler"
 
@@ -181,6 +185,10 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
    follow-up recreates it from the store. "None" (default) never
    releases; any other value must be greater than 0.
 
+   "plugins" selects the plugin manager whose hooks run for this
+   handler. It defaults to the global manager
+   (*a2a.plugins.get_global()*) at construction time.
+
    async aclose() -> None
 
       Shuts down the handler, draining all active tasks.
@@ -188,6 +196,10 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
       Drains the "ActiveTaskRegistry" so a server shutdown leaves no
       pending "asyncio.Task". Intended to be wired into an ASGI
       "lifespan" / "on_shutdown" hook. Safe to call multiple times.
+
+   property agent_card: AgentCard
+
+      The agent card served by this handler.
 
    async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
@@ -348,6 +360,10 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
       Yields:
          *Event* objects from the agent's ongoing execution for the
          specified task.
+
+   property plugins: PluginManager
+
+      The plugin manager whose hooks run for this handler.
 
 class a2a.server.request_handlers.GrpcHandler(request_handler: RequestHandler, context_builder: GrpcServerCallContextBuilder | None = None)
 

@@ -1,0 +1,402 @@
+a2a.plugins.types module
+************************
+
+Argument types passed to plugin hooks.
+
+Hooks return "None". Per-call state lives in "context.state" (server
+and client) or "PushRequest.state" (push), which the SDK passes
+unchanged from a before-hook to the matching after-hook.
+
+class a2a.plugins.types.ClientRequest(method: str, payload: Any, agent_card: AgentCard, context: ClientCallContext)
+
+   Bases: "object"
+
+   An outgoing call, passed to *ClientPlugin.before_client_request*.
+
+   method
+
+      Method name, the same as on the server side and as passed to
+      interceptors.
+
+      Type:
+         str
+
+   payload
+
+      The request proto. Plugins may replace it.
+
+      Type:
+         Any
+
+   agent_card
+
+      The card of the remote agent.
+
+      Type:
+         AgentCard
+
+   context
+
+      The call context. "service_parameters" holds the outgoing
+      headers.
+
+      Type:
+         ClientCallContext
+
+   agent_card: AgentCard
+
+   context: ClientCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.ClientResponse(method: str, payload: Any, context: ClientCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A call result, passed to *ClientPlugin.after_client_request*.
+
+   Follows the same "is_stream_event" / "is_final" rules as
+   *ServerResponse*.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The response or stream event, "None" on error or stream end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_client_request*.
+
+      Type:
+         ClientCallContext
+
+   error
+
+      The exception raised by the call, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ClientCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.PushRequest(task_id: str, url: str, headers: dict[str, str], event: PushNotificationEvent, skip: bool = False, state: dict[str, Any] = <factory>)
+
+   Bases: "object"
+
+   One push delivery, passed to *PushPlugin.before_push_send*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   url
+
+      Webhook URL.
+
+      Type:
+         str
+
+   headers
+
+      Outgoing HTTP headers. Plugins may add or change entries.
+
+      Type:
+         dict[str, str]
+
+   event
+
+      The event being pushed.
+
+      Type:
+         PushNotificationEvent
+
+   skip
+
+      Set to "True" to drop this delivery.
+
+      Type:
+         bool
+
+   state
+
+      Per-delivery plugin state, available again in *PushResult*.
+
+      Type:
+         dict[str, Any]
+
+   event: PushNotificationEvent
+
+   headers: dict[str, str]
+
+   skip: bool = False
+
+   state: dict[str, Any]
+
+   task_id: str
+
+   url: str
+
+class a2a.plugins.types.PushResult(request: PushRequest, duration_s: float, status_code: int | None, error: BaseException | None, skipped: bool = False)
+
+   Bases: "object"
+
+   The outcome of one push delivery, passed to
+   *PushPlugin.on_push_sent*.
+
+   request
+
+      The *PushRequest* for this delivery.
+
+      Type:
+         a2a.plugins.types.PushRequest
+
+   duration_s
+
+      Duration of the HTTP request in seconds.
+
+      Type:
+         float
+
+   status_code
+
+      HTTP status code, "None" if no response was received.
+
+      Type:
+         int | None
+
+   error
+
+      The exception if delivery failed, "None" on success.
+
+      Type:
+         BaseException | None
+
+   skipped
+
+      Whether a plugin dropped the delivery.
+
+      Type:
+         bool
+
+   duration_s: float
+
+   error: BaseException | None
+
+   request: PushRequest
+
+   skipped: bool = False
+
+   status_code: int | None
+
+class a2a.plugins.types.ServerRequest(method: str, payload: Any, context: ServerCallContext, agent_card: AgentCard | None = None)
+
+   Bases: "object"
+
+   An incoming request, passed to *ServerPlugin.before_handler_run*.
+
+   method
+
+      Method name, e.g. "'send_message'" or "'get_task'".
+
+      Type:
+         str
+
+   payload
+
+      The request proto, e.g. "SendMessageRequest".
+
+      Type:
+         Any
+
+   context
+
+      The call context. For HTTP transports "state['headers']" holds
+      the request headers.
+
+      Type:
+         ServerCallContext
+
+   agent_card
+
+      The agent card served by this handler.
+
+      Type:
+         AgentCard | None
+
+   agent_card: AgentCard | None = None
+
+   context: ServerCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.ServerResponse(method: str, payload: Any, context: ServerCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A handler result, passed to *ServerPlugin.after_handler_run*.
+
+   For a unary call the hook runs once with "is_final=True". For a
+   stream it runs once per event with "is_stream_event=True,
+   is_final=False" and once more with "is_final=True" and
+   "payload=None" when the stream ends, including on error or client
+   disconnect.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The handler result or stream event, "None" on error or stream
+      end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_handler_run*.
+
+      Type:
+         ServerCallContext
+
+   error
+
+      The exception raised by the handler, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ServerCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.TaskEventInfo(task_id: str, from_state: TaskState | None, to_state: TaskState, event: Event | None, task: Task, context: ServerCallContext)
+
+   Bases: "object"
+
+   A successful task write, passed to
+   *TaskObserverPlugin.on_task_event*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   from_state
+
+      Persisted state before the write, "None" when the write created
+      the task.
+
+      Type:
+         TaskState | None
+
+   to_state
+
+      State after the write. Equal to "from_state" for writes that do
+      not change the state, such as artifact updates.
+
+      Type:
+         TaskState
+
+   event
+
+      The event that caused the write, "None" when the SDK wrote the
+      task without one.
+
+      Type:
+         Event | None
+
+   task
+
+      The task after the write. This is the SDK's live object; copy it
+      if you keep it beyond the hook call.
+
+      Type:
+         Task
+
+   context
+
+      Call context of the request that produced the write.
+
+      Type:
+         ServerCallContext
+
+   context: ServerCallContext
+
+   event: Event | None
+
+   from_state: TaskState | None
+
+   task: Task
+
+   task_id: str
+
+   to_state: TaskState

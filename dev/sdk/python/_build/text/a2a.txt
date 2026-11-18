@@ -393,6 +393,310 @@ Subpackages
 
   * Module contents
 
+* a2a.plugins package
+
+  * Submodules
+
+    * a2a.plugins.base module
+
+      * "ClientPlugin"
+
+      * "CompletePlugin"
+
+      * "ExecutionPlugin"
+
+      * "Plugin"
+
+      * "PushPlugin"
+
+      * "ServerPlugin"
+
+      * "TaskObserverPlugin"
+
+    * a2a.plugins.manager module
+
+      * "PluginManager"
+
+      * "SequentialPluginManager"
+
+      * "get_global()"
+
+      * "sequential()"
+
+      * "set_global()"
+
+    * a2a.plugins.types module
+
+      * "ClientRequest"
+
+      * "ClientResponse"
+
+      * "PushRequest"
+
+      * "PushResult"
+
+      * "ServerRequest"
+
+      * "ServerResponse"
+
+      * "TaskEventInfo"
+
+  * Module contents
+
+    * "ClientPlugin"
+
+      * "ClientPlugin.after_client_request()"
+
+      * "ClientPlugin.before_client_request()"
+
+    * "ClientRequest"
+
+      * "ClientRequest.method"
+
+      * "ClientRequest.payload"
+
+      * "ClientRequest.agent_card"
+
+      * "ClientRequest.context"
+
+      * "ClientRequest.agent_card"
+
+      * "ClientRequest.context"
+
+      * "ClientRequest.method"
+
+      * "ClientRequest.payload"
+
+    * "ClientResponse"
+
+      * "ClientResponse.method"
+
+      * "ClientResponse.payload"
+
+      * "ClientResponse.context"
+
+      * "ClientResponse.error"
+
+      * "ClientResponse.is_stream_event"
+
+      * "ClientResponse.is_final"
+
+      * "ClientResponse.context"
+
+      * "ClientResponse.error"
+
+      * "ClientResponse.is_final"
+
+      * "ClientResponse.is_stream_event"
+
+      * "ClientResponse.method"
+
+      * "ClientResponse.payload"
+
+    * "CompletePlugin"
+
+    * "ExecutionPlugin"
+
+      * "ExecutionPlugin.after_execution()"
+
+      * "ExecutionPlugin.before_execution()"
+
+      * "ExecutionPlugin.on_execution_event()"
+
+    * "Plugin"
+
+      * "Plugin.name"
+
+    * "PluginManager"
+
+      * "PluginManager.has_client_hooks"
+
+      * "PluginManager.has_execution_hooks"
+
+      * "PluginManager.has_push_hooks"
+
+      * "PluginManager.has_server_hooks"
+
+      * "PluginManager.has_task_hooks"
+
+      * "PluginManager.name"
+
+    * "PushPlugin"
+
+      * "PushPlugin.before_push_send()"
+
+      * "PushPlugin.on_push_sent()"
+
+    * "PushRequest"
+
+      * "PushRequest.task_id"
+
+      * "PushRequest.url"
+
+      * "PushRequest.headers"
+
+      * "PushRequest.event"
+
+      * "PushRequest.skip"
+
+      * "PushRequest.state"
+
+      * "PushRequest.event"
+
+      * "PushRequest.headers"
+
+      * "PushRequest.skip"
+
+      * "PushRequest.state"
+
+      * "PushRequest.task_id"
+
+      * "PushRequest.url"
+
+    * "PushResult"
+
+      * "PushResult.request"
+
+      * "PushResult.duration_s"
+
+      * "PushResult.status_code"
+
+      * "PushResult.error"
+
+      * "PushResult.skipped"
+
+      * "PushResult.duration_s"
+
+      * "PushResult.error"
+
+      * "PushResult.request"
+
+      * "PushResult.skipped"
+
+      * "PushResult.status_code"
+
+    * "SequentialPluginManager"
+
+      * "SequentialPluginManager.after_client_request()"
+
+      * "SequentialPluginManager.after_execution()"
+
+      * "SequentialPluginManager.after_handler_run()"
+
+      * "SequentialPluginManager.before_client_request()"
+
+      * "SequentialPluginManager.before_execution()"
+
+      * "SequentialPluginManager.before_handler_run()"
+
+      * "SequentialPluginManager.before_push_send()"
+
+      * "SequentialPluginManager.has_client_hooks"
+
+      * "SequentialPluginManager.has_execution_hooks"
+
+      * "SequentialPluginManager.has_push_hooks"
+
+      * "SequentialPluginManager.has_server_hooks"
+
+      * "SequentialPluginManager.has_task_hooks"
+
+      * "SequentialPluginManager.name"
+
+      * "SequentialPluginManager.on_execution_event()"
+
+      * "SequentialPluginManager.on_push_sent()"
+
+      * "SequentialPluginManager.on_task_event()"
+
+      * "SequentialPluginManager.plugins"
+
+    * "ServerPlugin"
+
+      * "ServerPlugin.after_handler_run()"
+
+      * "ServerPlugin.before_handler_run()"
+
+    * "ServerRequest"
+
+      * "ServerRequest.method"
+
+      * "ServerRequest.payload"
+
+      * "ServerRequest.context"
+
+      * "ServerRequest.agent_card"
+
+      * "ServerRequest.agent_card"
+
+      * "ServerRequest.context"
+
+      * "ServerRequest.method"
+
+      * "ServerRequest.payload"
+
+    * "ServerResponse"
+
+      * "ServerResponse.method"
+
+      * "ServerResponse.payload"
+
+      * "ServerResponse.context"
+
+      * "ServerResponse.error"
+
+      * "ServerResponse.is_stream_event"
+
+      * "ServerResponse.is_final"
+
+      * "ServerResponse.context"
+
+      * "ServerResponse.error"
+
+      * "ServerResponse.is_final"
+
+      * "ServerResponse.is_stream_event"
+
+      * "ServerResponse.method"
+
+      * "ServerResponse.payload"
+
+    * "TaskEventInfo"
+
+      * "TaskEventInfo.task_id"
+
+      * "TaskEventInfo.from_state"
+
+      * "TaskEventInfo.to_state"
+
+      * "TaskEventInfo.event"
+
+      * "TaskEventInfo.task"
+
+      * "TaskEventInfo.context"
+
+      * "TaskEventInfo.context"
+
+      * "TaskEventInfo.event"
+
+      * "TaskEventInfo.from_state"
+
+      * "TaskEventInfo.task"
+
+      * "TaskEventInfo.task_id"
+
+      * "TaskEventInfo.to_state"
+
+    * "TaskObserverPlugin"
+
+      * "TaskObserverPlugin.on_task_event()"
+
+    * "get_global()"
+
+    * "sequential()"
+
+    * "set_global()"
+
 * a2a.server package
 
   * Subpackages

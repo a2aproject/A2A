@@ -420,12 +420,15 @@ class a2a.client.AuthInterceptor(credential_service: CredentialService)
       Applies authentication headers to the request if credentials are
       available.
 
-class a2a.client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor])
+class a2a.client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor], *, plugins: PluginManager | None = None)
 
    Bases: "Client"
 
    Base implementation of the A2A client, containing transport-
    independent logic.
+
+   Client plugin hooks run around every call: "before_client_request"
+   before the interceptors, "after_client_request" after them.
 
    async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
 

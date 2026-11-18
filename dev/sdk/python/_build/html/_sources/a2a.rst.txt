@@ -13,6 +13,7 @@ Subpackages
    a2a.extensions
    a2a.helpers
    a2a.migrations
+   a2a.plugins
    a2a.server
    a2a.types
    a2a.utils

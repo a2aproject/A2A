@@ -27,6 +27,8 @@ Submodules
 
     * "ActiveTask.subscribe()"
 
+    * "ActiveTask.task_created"
+
     * "ActiveTask.task_id"
 
   * "EventConsumer"
@@ -78,6 +80,20 @@ Submodules
     * "RequestContext.task_id"
 
     * "RequestContext.tenant"
+
+* a2a.server.agent_execution.plugin_agent_executor module
+
+  * "PluginAgentExecutor"
+
+    * "PluginAgentExecutor.cancel()"
+
+    * "PluginAgentExecutor.execute()"
+
+    * "PluginAgentExecutor.inner"
+
+  * "PluginEventQueue"
+
+    * "PluginEventQueue.enqueue_event()"
 
 * a2a.server.agent_execution.request_context_builder module
 
@@ -197,7 +213,7 @@ class a2a.server.agent_execution.AgentExecutor
 
          * **event_queue** -- The queue to publish events to.
 
-class a2a.server.agent_execution.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
+class a2a.server.agent_execution.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | CancelTaskRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
 
    Bases: "object"
 

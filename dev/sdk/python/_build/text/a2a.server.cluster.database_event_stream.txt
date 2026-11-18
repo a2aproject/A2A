@@ -1,13 +1,13 @@
 a2a.server.cluster.database_event_stream module
 ***********************************************
 
-class a2a.server.cluster.database_event_stream.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5)
+class a2a.server.cluster.database_event_stream.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5, owner_resolver: Callable[[ServerCallContext], str] | None = None)
 
    Bases: "TaskEventStream"
 
    *TaskEventStream* backed by polling the shared "task_events" table.
 
-   async destroy(task_id: str) -> None
+   async destroy(task_id: str, context: ServerCallContext | None = None) -> None
 
       No-op: the append-only log is retained; subscribers stop on
       their own.
@@ -16,11 +16,13 @@ class a2a.server.cluster.database_event_stream.DatabaseTaskEventStream(engine: A
 
       Creates the "task_events" table if requested.
 
-   async publish(task_id: str, event: VersionedEvent) -> None
+   owner_resolver: Callable[[ServerCallContext], str] | None
+
+   async publish(task_id: str, event: VersionedEvent, context: ServerCallContext | None = None) -> None
 
       No-op: events are persisted transactionally by the task store.
 
-   async subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+   async subscribe(task_id: str, *, after: TaskVersion, context: ServerCallContext | None = None) -> AsyncGenerator[VersionedEvent, None]
 
       Polls the log for events of *task_id* newer than *after*.
 

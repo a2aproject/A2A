@@ -96,7 +96,7 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
       when a subscriber sink was never drained. It is safe to call
       multiple times.
 
-   async cancel(call_context: ServerCallContext) -> Task
+   async cancel(call_context: ServerCallContext, request: CancelTaskRequest | None = None) -> Task
 
       Cancels the running active task.
 
@@ -152,6 +152,10 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
       the client disconnects or the task finishes, triggering
       *_maybe_cleanup()* to potentially garbage collect the
       ActiveTask.
+
+   property task_created: bool
+
+      Whether a task exists, so "get_task()" will not block.
 
    property task_id: str
 

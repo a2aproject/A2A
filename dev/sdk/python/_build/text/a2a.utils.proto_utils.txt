@@ -64,6 +64,11 @@ a2a.utils.proto_utils.parse_lenient(data: dict[str, Any] | str | bytes, message:
    Returns:
       The parsed message.
 
+   Raises:
+      **ParseError** -- If the data is not valid ProtoJSON, including
+      bytes that     are not valid UTF-8 and decoded values that are
+      not objects.
+
 a2a.utils.proto_utils.parse_params(params: QueryParams, message: Message) -> None
 
    Converts REST query parameters back into a Protobuf message.

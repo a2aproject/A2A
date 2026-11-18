@@ -1,0 +1,151 @@
+a2a.plugins.manager module
+**************************
+
+Plugin managers and the global registry.
+
+class a2a.plugins.manager.PluginManager
+
+   Bases: "ServerPlugin", "ClientPlugin", "ExecutionPlugin",
+   "TaskObserverPlugin", "PushPlugin"
+
+   Runs registered plugins. SDK call sites depend on this type.
+
+   Since a manager implements every plugin interface, managers can be
+   nested. The "has_*" properties let call sites skip all plugin work
+   when no plugin implements the hooks they would call.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'plugin-manager'
+
+      Name used in logs.
+
+class a2a.plugins.manager.SequentialPluginManager(*plugins: Plugin)
+
+   Bases: "PluginManager"
+
+   Runs plugins one after another in registration order.
+
+   * "before_*" hooks run in registration order. If one raises,
+     plugins that already ran get their "after_*" hook with the error,
+     and the exception propagates.
+
+   * "after_*" hooks run in reverse order. Their exceptions are logged
+     and swallowed.
+
+   * Observer hooks ("on_*") run in registration order. Their
+     exceptions are logged and swallowed.
+
+   async after_client_request(response: ClientResponse) -> None
+
+      Called with the result, per stream event, and at the end.
+
+   async after_execution(request_context: RequestContext, error: BaseException | None) -> None
+
+      Called in the execution task after the agent returns or raises.
+
+   async after_handler_run(response: ServerResponse) -> None
+
+      Called with the handler result, per stream event, and at the
+      end.
+
+   async before_client_request(request: ClientRequest) -> None
+
+      Called before the request is sent. Raise to cancel it.
+
+   async before_execution(request_context: RequestContext) -> None
+
+      Called in the execution task before the agent runs.
+
+      Raise to fail the execution without running the agent.
+
+   async before_handler_run(request: ServerRequest) -> None
+
+      Called before the handler processes a request.
+
+      Raise to reject the request; the exception is returned to the
+      caller.
+
+   async before_push_send(request: PushRequest) -> None
+
+      Called before the webhook request.
+
+      May add headers or set "request.skip". Raising fails the
+      delivery.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'sequential'
+
+      Name used in logs.
+
+   async on_execution_event(request_context: RequestContext, event: Event) -> None
+
+      Called when the agent enqueues an event, before it is processed.
+
+      Observer: runs on the agent's path, so keep it cheap.
+
+   async on_push_sent(result: PushResult) -> None
+
+      Called after the delivery attempt, or when it was skipped.
+
+   async on_task_event(info: TaskEventInfo) -> None
+
+      Called after every successful task write.
+
+   property plugins: tuple[Plugin, ...]
+
+      The registered plugins, in registration order.
+
+a2a.plugins.manager.get_global() -> PluginManager
+
+   Returns the global manager. Empty unless *set_global* was called.
+
+a2a.plugins.manager.sequential(*plugins: Plugin) -> SequentialPluginManager
+
+   Returns a manager that runs "plugins" in the given order.
+
+a2a.plugins.manager.set_global(manager: PluginManager) -> None
+
+   Sets the manager used by handlers, clients and push senders created
+   afterwards.
+
+   *DefaultRequestHandlerV2*, clients and *BasePushNotificationSender*
+   capture the manager when they are constructed, so call this once at
+   startup, before creating them.

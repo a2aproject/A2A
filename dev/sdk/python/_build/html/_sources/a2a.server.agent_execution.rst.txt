@@ -11,6 +11,7 @@ Submodules
    a2a.server.agent_execution.active_task_registry
    a2a.server.agent_execution.agent_executor
    a2a.server.agent_execution.context
+   a2a.server.agent_execution.plugin_agent_executor
    a2a.server.agent_execution.request_context_builder
    a2a.server.agent_execution.simple_request_context_builder
 

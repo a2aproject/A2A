@@ -9,6 +9,18 @@ class a2a.compat.v0_3.rest_handler.REST03Handler(request_handler: RequestHandler
    request handler method and formats responses for v0.3
    compatibility.
 
+   async delete_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/delete' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         An empty *dict*, the JSON form of *google.protobuf.Empty*.
+
    async get_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
 
       Handles the 'tasks/pushNotificationConfig/get' REST method.

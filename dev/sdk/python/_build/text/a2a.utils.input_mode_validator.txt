@@ -21,3 +21,7 @@ a2a.utils.input_mode_validator.validate_input_modes(message: Message, agent_card
    *media_type* is a proto3 string, so a part that omits it arrives as
    *''* and is likewise not checked -- only a media type the client
    actually stated can contradict the card.
+
+   Media types are compared on type and subtype alone, ignoring case
+   (RFC 2045 section 5.1) and parameters, so *Text/Plain;
+   charset=utf-8* matches a card that declares *text/plain*.

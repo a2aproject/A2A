@@ -10,14 +10,14 @@ a2a.client.transports.http_helpers.handle_http_exceptions(status_error_handler: 
    Handles common HTTP exceptions for REST and JSON-RPC transports.
 
    Parameters:
-      **status_error_handler** -- Optional handler for
-      *httpx.HTTPStatusError*. If provided, this handler should raise
-      an appropriate domain-specific exception. If not provided, a
-      default *A2AClientError* will be raised.
+      **status_error_handler** -- Optional handler for an HTTP status
+      error. If provided, this handler should raise an appropriate
+      domain-specific exception. If not provided, a default
+      *A2AClientError* will be raised.
 
 async a2a.client.transports.http_helpers.parse_sse_stream(response: Response) -> AsyncGenerator[tuple[str, str], None]
 
-   Yields (event_name, data) from a streaming httpx.Response.
+   Yields (event_name, data) from a streaming response.
 
    Conforms to the W3C Server-Sent Events specification.
 
