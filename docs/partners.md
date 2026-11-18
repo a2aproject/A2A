@@ -162,7 +162,7 @@ collaborate effectively with each other and with users.
 - [Telefonica](https://www.telefonica.com/)
 - [Test Innovation Technology](https://www.test-it.com)
 - [The artinet project](https://artinet.io/)
-- [Think41](https://www.think41.com)
+- [Think41](https://think41.com)
 - [Thoughtworks](https://www.thoughtworks.com/)
 - [Tieqi Tech](https://www.itieqi.com)
 - [Tredence](http://www.tredence.com)
