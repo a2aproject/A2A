@@ -1,0 +1,240 @@
+{
+  "name": "jcs_depth_v1",
+  "license": "Apache-2.0",
+  "copyright": "Copyright 2026 Sankalp Gilda",
+  "spec": "RFC 8785 (JCS) nesting depth: the resource bound the scheme leaves open",
+  "spec_authorship": "Conformance set for the nesting bound a canonicalisation profile has to state for itself. RFC 8785 specifies byte production and no input limit, so two implementations that agree on every byte of jcs_edge_v1 can still disagree on whether a deep artifact canonicalises at all: one returns bytes, one refuses, one exhausts its stack. Pins the boundary at 128 open containers, the empty-container case a scalar leaf cannot discriminate, and the unbounded-recursion input that separates a refusal from a crash.",
+  "canon_version": "jcs-rfc8785-v1",
+  "reference_impl": "Python rfc8785 0.1.4 (Trail of Bits)",
+  "max_depth": 128,
+  "depth_counting_rule": "Depth counts OPEN CONTAINERS: the outermost brace or bracket is depth 1, and every object or array opened inside it adds one, an empty container included. A counter that charges a level per parsed child instead never charges an empty container and lands one level off.",
+  "preimage_rule_form": {
+    "_note": "Preimages are given as nesting rules rather than literal JSON so that this file stays four levels deep and can be parsed by a reader that enforces the very bound it describes. Materialise a rule as text: for i from 0 to count-1 emit the opener for containers[i % len(containers)] -- '{\"a\":' for object, '[' for array -- then emit leaf, then emit the matching closers innermost-first. Confirm preimage_sha256 over the resulting UTF-8 bytes before canonicalising: a vector built wrong cross-checks cleanly against itself and proves nothing.",
+    "openers": {
+      "object": "{\"a\":",
+      "array": "["
+    },
+    "closers": {
+      "object": "}",
+      "array": "]"
+    }
+  },
+  "source_corpus": {
+    "name": "agent-evidence-vectors",
+    "suite": "adversarial-execution-evidence-conformance",
+    "suite_revision": 28,
+    "corpus_digest": "8b035678def9e5ac00ba761b8c640e4412c57163134afb9d2c1a90f49d573a52",
+    "repository": "https://github.com/astrogilda/agent-evidence-vectors",
+    "run": "uvx agent-evidence-vectors"
+  },
+  "vectors": [
+    {
+      "vector_id": "jcs-depth-001-object-at-bound",
+      "description": "128 nested objects, the deepest input the bound admits. A canonicaliser that applies the bound one level early refuses this and is off by one.",
+      "rfc8785_section": "none",
+      "outcome": "accept",
+      "expectation": "canonicalise-at-bound",
+      "depth": 128,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "object"
+        ],
+        "count": 128,
+        "leaf": "1"
+      },
+      "preimage_bytes": 769,
+      "preimage_sha256": "a4908c65856c2fb1e94d6b2b55620177bd082f54d43252b9e0648f9ccd53e3fe",
+      "expected_jcs_bytes_b64": "eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOjF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fQ==",
+      "expected_sha256": "a4908c65856c2fb1e94d6b2b55620177bd082f54d43252b9e0648f9ccd53e3fe",
+      "trace": {
+        "corpus": "agent-evidence-vectors"
+      }
+    },
+    {
+      "vector_id": "jcs-depth-002-array-at-bound",
+      "description": "128 nested arrays at the bound. Separated from the object case because a depth counter placed only in the object branch never charges an array.",
+      "rfc8785_section": "none",
+      "outcome": "accept",
+      "expectation": "canonicalise-at-bound",
+      "depth": 128,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "array"
+        ],
+        "count": 128,
+        "leaf": "1"
+      },
+      "preimage_bytes": 257,
+      "preimage_sha256": "68da6c21da4d39e99f241a56379e98c2053372e77cd74f72400af6d3a37261c3",
+      "expected_jcs_bytes_b64": "W1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1sxXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV0=",
+      "expected_sha256": "68da6c21da4d39e99f241a56379e98c2053372e77cd74f72400af6d3a37261c3",
+      "trace": {
+        "corpus": "agent-evidence-vectors"
+      }
+    },
+    {
+      "vector_id": "jcs-depth-003-alternating-at-bound",
+      "description": "128 containers alternating object, array, object, array at the bound. Catches a counter that tracks one container kind and resets on the other.",
+      "rfc8785_section": "none",
+      "outcome": "accept",
+      "expectation": "canonicalise-at-bound",
+      "depth": 128,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "object",
+          "array"
+        ],
+        "count": 128,
+        "leaf": "1"
+      },
+      "preimage_bytes": 513,
+      "preimage_sha256": "aa4e4f042129f600f2352f2ecd58559409175fd83cf4918c382afc3d33942268",
+      "expected_jcs_bytes_b64": "eyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbeyJhIjpbMV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19XX1dfV19",
+      "expected_sha256": "aa4e4f042129f600f2352f2ecd58559409175fd83cf4918c382afc3d33942268",
+      "trace": {
+        "corpus": "agent-evidence-vectors"
+      }
+    },
+    {
+      "vector_id": "jcs-depth-004-empty-object-leaf-at-bound",
+      "description": "127 wrapping objects around an empty object. The empty container is itself the 128th open container, so this sits exactly at the bound and is accepted.",
+      "rfc8785_section": "none",
+      "outcome": "accept",
+      "expectation": "canonicalise-at-bound-empty-leaf",
+      "depth": 128,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "object"
+        ],
+        "count": 127,
+        "leaf": "{}"
+      },
+      "preimage_bytes": 764,
+      "preimage_sha256": "95abadd19f4a27dd41c2e3b46baca7320d039f4e4686fcdaebb0a7d7146bb16e",
+      "expected_jcs_bytes_b64": "eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7ImEiOnsiYSI6eyJhIjp7fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX0=",
+      "expected_sha256": "95abadd19f4a27dd41c2e3b46baca7320d039f4e4686fcdaebb0a7d7146bb16e",
+      "trace": {
+        "corpus": "agent-evidence-vectors"
+      }
+    },
+    {
+      "vector_id": "jcs-depth-101-object-one-past-bound",
+      "description": "129 nested objects, one level past the bound. Differs from jcs-depth-001-object-at-bound by exactly one wrapping object.",
+      "rfc8785_section": "none",
+      "outcome": "reject",
+      "expectation": "refuse-exceeds-max-depth",
+      "depth": 129,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "object"
+        ],
+        "count": 129,
+        "leaf": "1"
+      },
+      "preimage_bytes": 775,
+      "preimage_sha256": "eeb23e8c9c090d0303063348ae7ca4a5914992972fc20e295e8e386802e2a95a",
+      "trace": {
+        "corpus": "agent-evidence-vectors",
+        "sibling_vector_id": "v08251931ec038e91"
+      }
+    },
+    {
+      "vector_id": "jcs-depth-102-array-one-past-bound",
+      "description": "129 nested arrays, one level past the bound.",
+      "rfc8785_section": "none",
+      "outcome": "reject",
+      "expectation": "refuse-exceeds-max-depth",
+      "depth": 129,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "array"
+        ],
+        "count": 129,
+        "leaf": "1"
+      },
+      "preimage_bytes": 259,
+      "preimage_sha256": "84aaf90be3265f8e148bdcc72153a59156d358f74e3dedd2d6a5dd566f5944f5",
+      "trace": {
+        "corpus": "agent-evidence-vectors"
+      }
+    },
+    {
+      "vector_id": "jcs-depth-103-empty-object-leaf-one-past-bound",
+      "description": "128 wrapping objects around an empty object: open-container depth 129, one past the bound. This is the case a scalar leaf cannot discriminate. A canonicaliser that charges a level per parsed child rather than per opened container never charges the empty object, reads this as depth 128 and accepts it while refusing jcs-depth-101-object-one-past-bound.",
+      "rfc8785_section": "none",
+      "outcome": "reject",
+      "expectation": "refuse-exceeds-max-depth-empty-leaf",
+      "depth": 129,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "object"
+        ],
+        "count": 128,
+        "leaf": "{}"
+      },
+      "preimage_bytes": 770,
+      "preimage_sha256": "47ec83edd0d185f58e09a843867e31af9088c4da554f55c730c52f547161a8b1",
+      "trace": {
+        "corpus": "agent-evidence-vectors",
+        "sibling_vector_id": "v83f4b7fe6068ef86"
+      }
+    },
+    {
+      "vector_id": "jcs-depth-104-unbounded-recursion",
+      "description": "Ten million nested arrays, about 20 MB of brackets. A canonicaliser that recurses once per level exhausts the call stack here rather than returning a rejection, and in a compiled runtime that unwind is not catchable. A byte cap alone does not close it: pure nesting stays small per level, so the input reaches any plausible size limit only long after it has passed any plausible stack. Refusal must be reached from the depth bound, before the recursive walk is entered.",
+      "rfc8785_section": "none",
+      "outcome": "reject",
+      "expectation": "refuse-without-exhausting-the-stack",
+      "depth": 10000000,
+      "preimage_rule": {
+        "form": "nest",
+        "containers": [
+          "array"
+        ],
+        "count": 10000000,
+        "leaf": "1"
+      },
+      "preimage_bytes": 20000001,
+      "preimage_sha256": "0cc26ae2e8031215e24f98189a86d1af2a3f47c4335b3b631b8cc4ff41dd811c",
+      "trace": {
+        "corpus": "agent-evidence-vectors"
+      }
+    }
+  ],
+  "pair_invariants": [
+    {
+      "name": "object_bound_is_exact",
+      "a": "jcs-depth-001-object-at-bound",
+      "b": "jcs-depth-101-object-one-past-bound",
+      "relation": "accept_then_reject",
+      "why": "The two inputs differ by one wrapping object. An implementation that accepts both has no bound; one that refuses both has the bound off by one. Only the pair locates it."
+    },
+    {
+      "name": "array_bound_is_exact",
+      "a": "jcs-depth-002-array-at-bound",
+      "b": "jcs-depth-102-array-one-past-bound",
+      "relation": "accept_then_reject",
+      "why": "The same boundary in the array branch, which a counter placed only in the object branch never reaches."
+    },
+    {
+      "name": "empty_container_charges_a_level",
+      "a": "jcs-depth-004-empty-object-leaf-at-bound",
+      "b": "jcs-depth-103-empty-object-leaf-one-past-bound",
+      "relation": "accept_then_reject",
+      "why": "A per-child counter never charges an empty container, so it reads the second input as depth 128 and accepts it. Both scalar-leaf vectors pass under that counter, which is why this pair exists."
+    },
+    {
+      "name": "refusal_is_not_a_crash",
+      "vector": "jcs-depth-104-unbounded-recursion",
+      "relation": "reject_without_stack_exhaustion",
+      "why": "The vector is passed only if the implementation returns a rejection to its caller. A process that dies on this input has not rejected it, and a crash on an unauthenticated artifact is the outcome the bound exists to prevent."
+    }
+  ]
+}
