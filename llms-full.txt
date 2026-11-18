@@ -312,10 +312,15 @@ The documentation source lives in <https://github.com/a2aproject/A2A>.
 - sdk/python/a2a.migrations.versions.6419d2d130f6_add_columns_owner_last_updated.txt
 - sdk/python/a2a.migrations.versions.b5e3d1c8a2f7_add_task_version_and_task_events.txt
 - sdk/python/a2a.migrations.versions.txt
+- sdk/python/a2a.plugins.base.txt
+- sdk/python/a2a.plugins.manager.txt
+- sdk/python/a2a.plugins.txt
+- sdk/python/a2a.plugins.types.txt
 - sdk/python/a2a.server.agent_execution.active_task.txt
 - sdk/python/a2a.server.agent_execution.active_task_registry.txt
 - sdk/python/a2a.server.agent_execution.agent_executor.txt
 - sdk/python/a2a.server.agent_execution.context.txt
+- sdk/python/a2a.server.agent_execution.plugin_agent_executor.txt
 - sdk/python/a2a.server.agent_execution.request_context_builder.txt
 - sdk/python/a2a.server.agent_execution.simple_request_context_builder.txt
 - sdk/python/a2a.server.agent_execution.txt
@@ -1375,7 +1380,7 @@ collaborate effectively with each other and with users.
 - [Telefonica](https://www.telefonica.com/)
 - [Test Innovation Technology](https://www.test-it.com)
 - [The artinet project](https://artinet.io/)
-- [Think41](https://www.think41.com)
+- [Think41](https://think41.com)
 - [Thoughtworks](https://www.thoughtworks.com/)
 - [Tieqi Tech](https://www.itieqi.com)
 - [Tredence](http://www.tredence.com)
@@ -1399,7 +1404,6 @@ collaborate effectively with each other and with users.
 - [Zeotap](https://www.zeotap.com)
 - [Zocket Technologies , Inc.](https://zocket.ai)
 - [Zoom](https://www.zoom.us)
-- [zyprova](https://www.zyprova.com)
 </file>
 
 <file path="docs/roadmap.md">
@@ -8862,12 +8866,15 @@ class a2a.client.auth.InMemoryContextCredentialStore
 a2a.client.base_client module
 *****************************
 
-class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor])
+class a2a.client.base_client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor], *, plugins: PluginManager | None = None)
 
    Bases: "Client"
 
    Base implementation of the A2A client, containing transport-
    independent logic.
+
+   Client plugin hooks run around every call: "before_client_request"
+   before the interceptors, "after_client_request" after them.
 
    async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
@@ -9600,14 +9607,14 @@ a2a.client.transports.http_helpers.handle_http_exceptions(status_error_handler: 
    Handles common HTTP exceptions for REST and JSON-RPC transports.
 
    Parameters:
-      **status_error_handler** -- Optional handler for
-      *httpx.HTTPStatusError*. If provided, this handler should raise
-      an appropriate domain-specific exception. If not provided, a
-      default *A2AClientError* will be raised.
+      **status_error_handler** -- Optional handler for an HTTP status
+      error. If provided, this handler should raise an appropriate
+      domain-specific exception. If not provided, a default
+      *A2AClientError* will be raised.
 
 async a2a.client.transports.http_helpers.parse_sse_stream(response: Response) -> AsyncGenerator[tuple[str, str], None]
 
-   Yields (event_name, data) from a streaming httpx.Response.
+   Yields (event_name, data) from a streaming response.
 
    Conforms to the W3C Server-Sent Events specification.
 
@@ -10653,12 +10660,15 @@ class a2a.client.AuthInterceptor(credential_service: CredentialService)
       Applies authentication headers to the request if credentials are
       available.
 
-class a2a.client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor])
+class a2a.client.BaseClient(card: AgentCard, config: ClientConfig, transport: ClientTransport, interceptors: list[ClientCallInterceptor], *, plugins: PluginManager | None = None)
 
    Bases: "Client"
 
    Base implementation of the A2A client, containing transport-
    independent logic.
+
+   Client plugin hooks run around every call: "before_client_request"
+   before the interceptors, "after_client_request" after them.
 
    async cancel_task(request: CancelTaskRequest, *, context: ClientCallContext | None = None) -> Task
 
@@ -12297,7 +12307,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886ed9a9f40>) -> Role
+   classmethod role(role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aab9f4d26c0>) -> Role
 
    classmethod security(security: list[Security] | None) -> list[dict[str, list[str]]] | None
 
@@ -12323,7 +12333,7 @@ class a2a.compat.v0_3.proto_utils.FromProto
 
    classmethod task_query_params(request: GetTaskRequest) -> TaskQueryParams
 
-   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886ed9a9e50>) -> TaskState
+   classmethod task_state(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aab9f4d25d0>) -> TaskState
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -12355,7 +12365,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod message(message: Message | None) -> Message | None
 
-   classmethod message_send_configuration(config: MessageSendConfiguration | None) -> SendMessageConfiguration
+   classmethod message_send_configuration(config: MessageSendConfiguration | None) -> SendMessageConfiguration | None
 
    classmethod metadata(metadata: dict[str, Any] | None) -> Struct | None
 
@@ -12367,7 +12377,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod push_notification_config(config: PushNotificationConfig) -> PushNotificationConfig
 
-   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886ed9a9f40>
+   classmethod role(role: Role) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aab9f4d26c0>
 
    classmethod security(security: list[dict[str, list[str]]] | None) -> list[Security] | None
 
@@ -12387,7 +12397,7 @@ class a2a.compat.v0_3.proto_utils.ToProto
 
    classmethod task_push_notification_config(config: TaskPushNotificationConfig) -> TaskPushNotificationConfig
 
-   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886ed9a9e50>
+   classmethod task_state(state: TaskState) -> <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aab9f4d25d0>
 
    classmethod task_status(status: TaskStatus) -> TaskStatus
 
@@ -12544,6 +12554,18 @@ class a2a.compat.v0_3.rest_handler.REST03Handler(request_handler: RequestHandler
    Maps incoming REST-like (JSON+HTTP) requests to the appropriate
    request handler method and formats responses for v0.3
    compatibility.
+
+   async delete_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
+
+      Handles the 'tasks/pushNotificationConfig/delete' REST method.
+
+      Parameters:
+         * **request** -- The incoming *Request* object.
+
+         * **context** -- Context provided by the server.
+
+      Returns:
+         An empty *dict*, the JSON form of *google.protobuf.Empty*.
 
    async get_push_notification(request: Request, context: ServerCallContext) -> dict[str, Any]
 
@@ -13199,6 +13221,8 @@ Submodules
 * a2a.compat.v0_3.rest_handler module
 
   * "REST03Handler"
+
+    * "REST03Handler.delete_push_notification()"
 
     * "REST03Handler.get_push_notification()"
 
@@ -16871,7 +16895,7 @@ a2a.helpers.proto_helpers.new_data_artifact_update_event(task_id: str, context_i
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.proto_helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -16912,7 +16936,7 @@ a2a.helpers.proto_helpers.new_data_part(data: Any, media_type: str | None = None
    Returns:
       A Part with the data field set.
 
-a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.proto_helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -16965,7 +16989,7 @@ a2a.helpers.proto_helpers.new_raw_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.proto_helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -17000,7 +17024,7 @@ a2a.helpers.proto_helpers.new_raw_part(raw: bytes, media_type: str | None = None
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83550>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.proto_helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6250>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -17016,7 +17040,7 @@ a2a.helpers.proto_helpers.new_text_artifact_update_event(task_id: str, context_i
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.proto_helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17033,7 +17057,7 @@ a2a.helpers.proto_helpers.new_text_part(text: str, media_type: str | None = None
    Returns:
       A Part with the text field set.
 
-a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83550>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.proto_helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6250>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17085,7 +17109,7 @@ a2a.helpers.proto_helpers.new_url_artifact_update_event(task_id: str, context_id
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.proto_helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -17310,7 +17334,7 @@ a2a.helpers.new_data_artifact_update_event(task_id: str, context_id: str, name: 
    Returns:
       A TaskArtifactUpdateEvent with a single data artifact.
 
-a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.new_data_message(data: Any, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single data Part.
 
@@ -17351,7 +17375,7 @@ a2a.helpers.new_data_part(data: Any, media_type: str | None = None) -> Part
    Returns:
       A Part with the data field set.
 
-a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.new_message(parts: list[~a2a_pb2.Part], context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a list of Parts.
 
@@ -17404,7 +17428,7 @@ a2a.helpers.new_raw_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single raw artifact.
 
-a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.new_raw_message(raw: bytes, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single raw bytes Part.
 
@@ -17439,7 +17463,7 @@ a2a.helpers.new_raw_part(raw: bytes, media_type: str | None = None, filename: st
    Returns:
       A Part with the raw field set.
 
-a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83550>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
+a2a.helpers.new_task(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6250>, artifacts: list[Artifact] | None = None, history: list[Message] | None = None) -> Task
 
    Creates a Task object with a specified status.
 
@@ -17455,7 +17479,7 @@ a2a.helpers.new_text_artifact_update_event(task_id: str, context_id: str, name: 
 
    Creates a TaskArtifactUpdateEvent with a single text artifact.
 
-a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.new_text_message(text: str, media_type: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single text Part.
 
@@ -17472,7 +17496,7 @@ a2a.helpers.new_text_part(text: str, media_type: str | None = None) -> Part
    Returns:
       A Part with the text field set.
 
-a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83550>, text: str) -> TaskStatusUpdateEvent
+a2a.helpers.new_text_status_update_event(task_id: str, context_id: str, state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6250>, text: str) -> TaskStatusUpdateEvent
 
    Creates a TaskStatusUpdateEvent with a single text message.
 
@@ -17524,7 +17548,7 @@ a2a.helpers.new_url_artifact_update_event(task_id: str, context_id: str, name: s
    Returns:
       A TaskArtifactUpdateEvent with a single URL artifact.
 
-a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83650> = 2) -> Message
+a2a.helpers.new_url_message(url: str, media_type: str | None = None, filename: str | None = None, context_id: str | None = None, task_id: str | None = None, role: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6450> = 2) -> Message
 
    Creates a new message containing a single URL Part.
 
@@ -17754,6 +17778,1604 @@ Module contents
 Alembic migrations scripts for the A2A project.
 </file>
 
+<file path="sdk/python/a2a.plugins.base.txt">
+a2a.plugins.base module
+***********************
+
+Plugin interfaces.
+
+A plugin inherits from the interfaces it needs and overrides only the
+hooks it uses; every base method is a no-op.
+
+Interceptor hooks ("before_*") may modify their argument or reject the
+call by raising. Exceptions from "after_*" and observer hooks ("on_*")
+are logged and swallowed by the plugin manager.
+
+class a2a.plugins.base.ClientPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each request made by an A2A *Client*.
+
+   async after_client_request(response: ClientResponse) -> None
+
+      Called with the result, per stream event, and at the end.
+
+   async before_client_request(request: ClientRequest) -> None
+
+      Called before the request is sent. Raise to cancel it.
+
+class a2a.plugins.base.CompletePlugin
+
+   Bases: "ClientPlugin", "ServerPlugin"
+
+   A plugin with both client and server hooks.
+
+class a2a.plugins.base.ExecutionPlugin
+
+   Bases: "Plugin"
+
+   Hooks around *AgentExecutor.execute*, which runs outside the
+   request.
+
+   async after_execution(request_context: RequestContext, error: BaseException | None) -> None
+
+      Called in the execution task after the agent returns or raises.
+
+   async before_execution(request_context: RequestContext) -> None
+
+      Called in the execution task before the agent runs.
+
+      Raise to fail the execution without running the agent.
+
+   async on_execution_event(request_context: RequestContext, event: Event) -> None
+
+      Called when the agent enqueues an event, before it is processed.
+
+      Observer: runs on the agent's path, so keep it cheap.
+
+class a2a.plugins.base.Plugin
+
+   Bases: "object"
+
+   Common base of all plugins.
+
+   name: str = 'unnamed'
+
+      Name used in logs.
+
+class a2a.plugins.base.PushPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each push notification delivery.
+
+   async before_push_send(request: PushRequest) -> None
+
+      Called before the webhook request.
+
+      May add headers or set "request.skip". Raising fails the
+      delivery.
+
+   async on_push_sent(result: PushResult) -> None
+
+      Called after the delivery attempt, or when it was skipped.
+
+class a2a.plugins.base.ServerPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each request handled by *DefaultRequestHandlerV2*.
+
+   async after_handler_run(response: ServerResponse) -> None
+
+      Called with the handler result, per stream event, and at the
+      end.
+
+   async before_handler_run(request: ServerRequest) -> None
+
+      Called before the handler processes a request.
+
+      Raise to reject the request; the exception is returned to the
+      caller.
+
+class a2a.plugins.base.TaskObserverPlugin
+
+   Bases: "Plugin"
+
+   Observer of task writes.
+
+   async on_task_event(info: TaskEventInfo) -> None
+
+      Called after every successful task write.
+</file>
+
+<file path="sdk/python/a2a.plugins.manager.txt">
+a2a.plugins.manager module
+**************************
+
+Plugin managers and the global registry.
+
+class a2a.plugins.manager.PluginManager
+
+   Bases: "ServerPlugin", "ClientPlugin", "ExecutionPlugin",
+   "TaskObserverPlugin", "PushPlugin"
+
+   Runs registered plugins. SDK call sites depend on this type.
+
+   Since a manager implements every plugin interface, managers can be
+   nested. The "has_*" properties let call sites skip all plugin work
+   when no plugin implements the hooks they would call.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'plugin-manager'
+
+      Name used in logs.
+
+class a2a.plugins.manager.SequentialPluginManager(*plugins: Plugin)
+
+   Bases: "PluginManager"
+
+   Runs plugins one after another in registration order.
+
+   * "before_*" hooks run in registration order. If one raises,
+     plugins that already ran get their "after_*" hook with the error,
+     and the exception propagates.
+
+   * "after_*" hooks run in reverse order. Their exceptions are logged
+     and swallowed.
+
+   * Observer hooks ("on_*") run in registration order. Their
+     exceptions are logged and swallowed.
+
+   async after_client_request(response: ClientResponse) -> None
+
+      Called with the result, per stream event, and at the end.
+
+   async after_execution(request_context: RequestContext, error: BaseException | None) -> None
+
+      Called in the execution task after the agent returns or raises.
+
+   async after_handler_run(response: ServerResponse) -> None
+
+      Called with the handler result, per stream event, and at the
+      end.
+
+   async before_client_request(request: ClientRequest) -> None
+
+      Called before the request is sent. Raise to cancel it.
+
+   async before_execution(request_context: RequestContext) -> None
+
+      Called in the execution task before the agent runs.
+
+      Raise to fail the execution without running the agent.
+
+   async before_handler_run(request: ServerRequest) -> None
+
+      Called before the handler processes a request.
+
+      Raise to reject the request; the exception is returned to the
+      caller.
+
+   async before_push_send(request: PushRequest) -> None
+
+      Called before the webhook request.
+
+      May add headers or set "request.skip". Raising fails the
+      delivery.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'sequential'
+
+      Name used in logs.
+
+   async on_execution_event(request_context: RequestContext, event: Event) -> None
+
+      Called when the agent enqueues an event, before it is processed.
+
+      Observer: runs on the agent's path, so keep it cheap.
+
+   async on_push_sent(result: PushResult) -> None
+
+      Called after the delivery attempt, or when it was skipped.
+
+   async on_task_event(info: TaskEventInfo) -> None
+
+      Called after every successful task write.
+
+   property plugins: tuple[Plugin, ...]
+
+      The registered plugins, in registration order.
+
+a2a.plugins.manager.get_global() -> PluginManager
+
+   Returns the global manager. Empty unless *set_global* was called.
+
+a2a.plugins.manager.sequential(*plugins: Plugin) -> SequentialPluginManager
+
+   Returns a manager that runs "plugins" in the given order.
+
+a2a.plugins.manager.set_global(manager: PluginManager) -> None
+
+   Sets the manager used by handlers, clients and push senders created
+   afterwards.
+
+   *DefaultRequestHandlerV2*, clients and *BasePushNotificationSender*
+   capture the manager when they are constructed, so call this once at
+   startup, before creating them.
+</file>
+
+<file path="sdk/python/a2a.plugins.txt">
+a2a.plugins package
+*******************
+
+
+Submodules
+==========
+
+* a2a.plugins.base module
+
+  * "ClientPlugin"
+
+    * "ClientPlugin.after_client_request()"
+
+    * "ClientPlugin.before_client_request()"
+
+  * "CompletePlugin"
+
+  * "ExecutionPlugin"
+
+    * "ExecutionPlugin.after_execution()"
+
+    * "ExecutionPlugin.before_execution()"
+
+    * "ExecutionPlugin.on_execution_event()"
+
+  * "Plugin"
+
+    * "Plugin.name"
+
+  * "PushPlugin"
+
+    * "PushPlugin.before_push_send()"
+
+    * "PushPlugin.on_push_sent()"
+
+  * "ServerPlugin"
+
+    * "ServerPlugin.after_handler_run()"
+
+    * "ServerPlugin.before_handler_run()"
+
+  * "TaskObserverPlugin"
+
+    * "TaskObserverPlugin.on_task_event()"
+
+* a2a.plugins.manager module
+
+  * "PluginManager"
+
+    * "PluginManager.has_client_hooks"
+
+    * "PluginManager.has_execution_hooks"
+
+    * "PluginManager.has_push_hooks"
+
+    * "PluginManager.has_server_hooks"
+
+    * "PluginManager.has_task_hooks"
+
+    * "PluginManager.name"
+
+  * "SequentialPluginManager"
+
+    * "SequentialPluginManager.after_client_request()"
+
+    * "SequentialPluginManager.after_execution()"
+
+    * "SequentialPluginManager.after_handler_run()"
+
+    * "SequentialPluginManager.before_client_request()"
+
+    * "SequentialPluginManager.before_execution()"
+
+    * "SequentialPluginManager.before_handler_run()"
+
+    * "SequentialPluginManager.before_push_send()"
+
+    * "SequentialPluginManager.has_client_hooks"
+
+    * "SequentialPluginManager.has_execution_hooks"
+
+    * "SequentialPluginManager.has_push_hooks"
+
+    * "SequentialPluginManager.has_server_hooks"
+
+    * "SequentialPluginManager.has_task_hooks"
+
+    * "SequentialPluginManager.name"
+
+    * "SequentialPluginManager.on_execution_event()"
+
+    * "SequentialPluginManager.on_push_sent()"
+
+    * "SequentialPluginManager.on_task_event()"
+
+    * "SequentialPluginManager.plugins"
+
+  * "get_global()"
+
+  * "sequential()"
+
+  * "set_global()"
+
+* a2a.plugins.types module
+
+  * "ClientRequest"
+
+    * "ClientRequest.method"
+
+    * "ClientRequest.payload"
+
+    * "ClientRequest.agent_card"
+
+    * "ClientRequest.context"
+
+    * "ClientRequest.agent_card"
+
+    * "ClientRequest.context"
+
+    * "ClientRequest.method"
+
+    * "ClientRequest.payload"
+
+  * "ClientResponse"
+
+    * "ClientResponse.method"
+
+    * "ClientResponse.payload"
+
+    * "ClientResponse.context"
+
+    * "ClientResponse.error"
+
+    * "ClientResponse.is_stream_event"
+
+    * "ClientResponse.is_final"
+
+    * "ClientResponse.context"
+
+    * "ClientResponse.error"
+
+    * "ClientResponse.is_final"
+
+    * "ClientResponse.is_stream_event"
+
+    * "ClientResponse.method"
+
+    * "ClientResponse.payload"
+
+  * "PushRequest"
+
+    * "PushRequest.task_id"
+
+    * "PushRequest.url"
+
+    * "PushRequest.headers"
+
+    * "PushRequest.event"
+
+    * "PushRequest.skip"
+
+    * "PushRequest.state"
+
+    * "PushRequest.event"
+
+    * "PushRequest.headers"
+
+    * "PushRequest.skip"
+
+    * "PushRequest.state"
+
+    * "PushRequest.task_id"
+
+    * "PushRequest.url"
+
+  * "PushResult"
+
+    * "PushResult.request"
+
+    * "PushResult.duration_s"
+
+    * "PushResult.status_code"
+
+    * "PushResult.error"
+
+    * "PushResult.skipped"
+
+    * "PushResult.duration_s"
+
+    * "PushResult.error"
+
+    * "PushResult.request"
+
+    * "PushResult.skipped"
+
+    * "PushResult.status_code"
+
+  * "ServerRequest"
+
+    * "ServerRequest.method"
+
+    * "ServerRequest.payload"
+
+    * "ServerRequest.context"
+
+    * "ServerRequest.agent_card"
+
+    * "ServerRequest.agent_card"
+
+    * "ServerRequest.context"
+
+    * "ServerRequest.method"
+
+    * "ServerRequest.payload"
+
+  * "ServerResponse"
+
+    * "ServerResponse.method"
+
+    * "ServerResponse.payload"
+
+    * "ServerResponse.context"
+
+    * "ServerResponse.error"
+
+    * "ServerResponse.is_stream_event"
+
+    * "ServerResponse.is_final"
+
+    * "ServerResponse.context"
+
+    * "ServerResponse.error"
+
+    * "ServerResponse.is_final"
+
+    * "ServerResponse.is_stream_event"
+
+    * "ServerResponse.method"
+
+    * "ServerResponse.payload"
+
+  * "TaskEventInfo"
+
+    * "TaskEventInfo.task_id"
+
+    * "TaskEventInfo.from_state"
+
+    * "TaskEventInfo.to_state"
+
+    * "TaskEventInfo.event"
+
+    * "TaskEventInfo.task"
+
+    * "TaskEventInfo.context"
+
+    * "TaskEventInfo.context"
+
+    * "TaskEventInfo.event"
+
+    * "TaskEventInfo.from_state"
+
+    * "TaskEventInfo.task"
+
+    * "TaskEventInfo.task_id"
+
+    * "TaskEventInfo.to_state"
+
+
+Module contents
+===============
+
+Plugins: hooks into the A2A client and *DefaultRequestHandlerV2*.
+
+-[ Example ]-
+
+from a2a import plugins
+
+class TaskAudit(plugins.TaskObserverPlugin):
+   name = 'task-audit'
+
+   async def on_task_event(self, info: plugins.TaskEventInfo) -> None:
+      print(info.task_id, info.from_state, '->', info.to_state)
+
+plugins.set_global(plugins.sequential(TaskAudit())) # Create
+DefaultRequestHandlerV2 and clients after this point.
+
+class a2a.plugins.ClientPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each request made by an A2A *Client*.
+
+   async after_client_request(response: ClientResponse) -> None
+
+      Called with the result, per stream event, and at the end.
+
+   async before_client_request(request: ClientRequest) -> None
+
+      Called before the request is sent. Raise to cancel it.
+
+class a2a.plugins.ClientRequest(method: str, payload: Any, agent_card: AgentCard, context: ClientCallContext)
+
+   Bases: "object"
+
+   An outgoing call, passed to *ClientPlugin.before_client_request*.
+
+   method
+
+      Method name, the same as on the server side and as passed to
+      interceptors.
+
+      Type:
+         str
+
+   payload
+
+      The request proto. Plugins may replace it.
+
+      Type:
+         Any
+
+   agent_card
+
+      The card of the remote agent.
+
+      Type:
+         AgentCard
+
+   context
+
+      The call context. "service_parameters" holds the outgoing
+      headers.
+
+      Type:
+         ClientCallContext
+
+   agent_card: AgentCard
+
+   context: ClientCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.ClientResponse(method: str, payload: Any, context: ClientCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A call result, passed to *ClientPlugin.after_client_request*.
+
+   Follows the same "is_stream_event" / "is_final" rules as
+   *ServerResponse*.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The response or stream event, "None" on error or stream end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_client_request*.
+
+      Type:
+         ClientCallContext
+
+   error
+
+      The exception raised by the call, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ClientCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.CompletePlugin
+
+   Bases: "ClientPlugin", "ServerPlugin"
+
+   A plugin with both client and server hooks.
+
+class a2a.plugins.ExecutionPlugin
+
+   Bases: "Plugin"
+
+   Hooks around *AgentExecutor.execute*, which runs outside the
+   request.
+
+   async after_execution(request_context: RequestContext, error: BaseException | None) -> None
+
+      Called in the execution task after the agent returns or raises.
+
+   async before_execution(request_context: RequestContext) -> None
+
+      Called in the execution task before the agent runs.
+
+      Raise to fail the execution without running the agent.
+
+   async on_execution_event(request_context: RequestContext, event: Event) -> None
+
+      Called when the agent enqueues an event, before it is processed.
+
+      Observer: runs on the agent's path, so keep it cheap.
+
+class a2a.plugins.Plugin
+
+   Bases: "object"
+
+   Common base of all plugins.
+
+   name: str = 'unnamed'
+
+      Name used in logs.
+
+class a2a.plugins.PluginManager
+
+   Bases: "ServerPlugin", "ClientPlugin", "ExecutionPlugin",
+   "TaskObserverPlugin", "PushPlugin"
+
+   Runs registered plugins. SDK call sites depend on this type.
+
+   Since a manager implements every plugin interface, managers can be
+   nested. The "has_*" properties let call sites skip all plugin work
+   when no plugin implements the hooks they would call.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'plugin-manager'
+
+      Name used in logs.
+
+class a2a.plugins.PushPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each push notification delivery.
+
+   async before_push_send(request: PushRequest) -> None
+
+      Called before the webhook request.
+
+      May add headers or set "request.skip". Raising fails the
+      delivery.
+
+   async on_push_sent(result: PushResult) -> None
+
+      Called after the delivery attempt, or when it was skipped.
+
+class a2a.plugins.PushRequest(task_id: str, url: str, headers: dict[str, str], event: PushNotificationEvent, skip: bool = False, state: dict[str, Any] = <factory>)
+
+   Bases: "object"
+
+   One push delivery, passed to *PushPlugin.before_push_send*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   url
+
+      Webhook URL.
+
+      Type:
+         str
+
+   headers
+
+      Outgoing HTTP headers. Plugins may add or change entries.
+
+      Type:
+         dict[str, str]
+
+   event
+
+      The event being pushed.
+
+      Type:
+         PushNotificationEvent
+
+   skip
+
+      Set to "True" to drop this delivery.
+
+      Type:
+         bool
+
+   state
+
+      Per-delivery plugin state, available again in *PushResult*.
+
+      Type:
+         dict[str, Any]
+
+   event: PushNotificationEvent
+
+   headers: dict[str, str]
+
+   skip: bool = False
+
+   state: dict[str, Any]
+
+   task_id: str
+
+   url: str
+
+class a2a.plugins.PushResult(request: PushRequest, duration_s: float, status_code: int | None, error: BaseException | None, skipped: bool = False)
+
+   Bases: "object"
+
+   The outcome of one push delivery, passed to
+   *PushPlugin.on_push_sent*.
+
+   request
+
+      The *PushRequest* for this delivery.
+
+      Type:
+         a2a.plugins.types.PushRequest
+
+   duration_s
+
+      Duration of the HTTP request in seconds.
+
+      Type:
+         float
+
+   status_code
+
+      HTTP status code, "None" if no response was received.
+
+      Type:
+         int | None
+
+   error
+
+      The exception if delivery failed, "None" on success.
+
+      Type:
+         BaseException | None
+
+   skipped
+
+      Whether a plugin dropped the delivery.
+
+      Type:
+         bool
+
+   duration_s: float
+
+   error: BaseException | None
+
+   request: PushRequest
+
+   skipped: bool = False
+
+   status_code: int | None
+
+class a2a.plugins.SequentialPluginManager(*plugins: Plugin)
+
+   Bases: "PluginManager"
+
+   Runs plugins one after another in registration order.
+
+   * "before_*" hooks run in registration order. If one raises,
+     plugins that already ran get their "after_*" hook with the error,
+     and the exception propagates.
+
+   * "after_*" hooks run in reverse order. Their exceptions are logged
+     and swallowed.
+
+   * Observer hooks ("on_*") run in registration order. Their
+     exceptions are logged and swallowed.
+
+   async after_client_request(response: ClientResponse) -> None
+
+      Called with the result, per stream event, and at the end.
+
+   async after_execution(request_context: RequestContext, error: BaseException | None) -> None
+
+      Called in the execution task after the agent returns or raises.
+
+   async after_handler_run(response: ServerResponse) -> None
+
+      Called with the handler result, per stream event, and at the
+      end.
+
+   async before_client_request(request: ClientRequest) -> None
+
+      Called before the request is sent. Raise to cancel it.
+
+   async before_execution(request_context: RequestContext) -> None
+
+      Called in the execution task before the agent runs.
+
+      Raise to fail the execution without running the agent.
+
+   async before_handler_run(request: ServerRequest) -> None
+
+      Called before the handler processes a request.
+
+      Raise to reject the request; the exception is returned to the
+      caller.
+
+   async before_push_send(request: PushRequest) -> None
+
+      Called before the webhook request.
+
+      May add headers or set "request.skip". Raising fails the
+      delivery.
+
+   property has_client_hooks: bool
+
+      Whether any plugin implements *ClientPlugin*.
+
+   property has_execution_hooks: bool
+
+      Whether any plugin implements *ExecutionPlugin*.
+
+   property has_push_hooks: bool
+
+      Whether any plugin implements *PushPlugin*.
+
+   property has_server_hooks: bool
+
+      Whether any plugin implements *ServerPlugin*.
+
+   property has_task_hooks: bool
+
+      Whether any plugin implements *TaskObserverPlugin*.
+
+   name: str = 'sequential'
+
+      Name used in logs.
+
+   async on_execution_event(request_context: RequestContext, event: Event) -> None
+
+      Called when the agent enqueues an event, before it is processed.
+
+      Observer: runs on the agent's path, so keep it cheap.
+
+   async on_push_sent(result: PushResult) -> None
+
+      Called after the delivery attempt, or when it was skipped.
+
+   async on_task_event(info: TaskEventInfo) -> None
+
+      Called after every successful task write.
+
+   property plugins: tuple[Plugin, ...]
+
+      The registered plugins, in registration order.
+
+class a2a.plugins.ServerPlugin
+
+   Bases: "Plugin"
+
+   Hooks around each request handled by *DefaultRequestHandlerV2*.
+
+   async after_handler_run(response: ServerResponse) -> None
+
+      Called with the handler result, per stream event, and at the
+      end.
+
+   async before_handler_run(request: ServerRequest) -> None
+
+      Called before the handler processes a request.
+
+      Raise to reject the request; the exception is returned to the
+      caller.
+
+class a2a.plugins.ServerRequest(method: str, payload: Any, context: ServerCallContext, agent_card: AgentCard | None = None)
+
+   Bases: "object"
+
+   An incoming request, passed to *ServerPlugin.before_handler_run*.
+
+   method
+
+      Method name, e.g. "'send_message'" or "'get_task'".
+
+      Type:
+         str
+
+   payload
+
+      The request proto, e.g. "SendMessageRequest".
+
+      Type:
+         Any
+
+   context
+
+      The call context. For HTTP transports "state['headers']" holds
+      the request headers.
+
+      Type:
+         ServerCallContext
+
+   agent_card
+
+      The agent card served by this handler.
+
+      Type:
+         AgentCard | None
+
+   agent_card: AgentCard | None = None
+
+   context: ServerCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.ServerResponse(method: str, payload: Any, context: ServerCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A handler result, passed to *ServerPlugin.after_handler_run*.
+
+   For a unary call the hook runs once with "is_final=True". For a
+   stream it runs once per event with "is_stream_event=True,
+   is_final=False" and once more with "is_final=True" and
+   "payload=None" when the stream ends, including on error or client
+   disconnect.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The handler result or stream event, "None" on error or stream
+      end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_handler_run*.
+
+      Type:
+         ServerCallContext
+
+   error
+
+      The exception raised by the handler, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ServerCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.TaskEventInfo(task_id: str, from_state: TaskState | None, to_state: TaskState, event: Event | None, task: Task, context: ServerCallContext)
+
+   Bases: "object"
+
+   A successful task write, passed to
+   *TaskObserverPlugin.on_task_event*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   from_state
+
+      Persisted state before the write, "None" when the write created
+      the task.
+
+      Type:
+         TaskState | None
+
+   to_state
+
+      State after the write. Equal to "from_state" for writes that do
+      not change the state, such as artifact updates.
+
+      Type:
+         TaskState
+
+   event
+
+      The event that caused the write, "None" when the SDK wrote the
+      task without one.
+
+      Type:
+         Event | None
+
+   task
+
+      The task after the write. This is the SDK's live object; copy it
+      if you keep it beyond the hook call.
+
+      Type:
+         Task
+
+   context
+
+      Call context of the request that produced the write.
+
+      Type:
+         ServerCallContext
+
+   context: ServerCallContext
+
+   event: Event | None
+
+   from_state: TaskState | None
+
+   task: Task
+
+   task_id: str
+
+   to_state: TaskState
+
+class a2a.plugins.TaskObserverPlugin
+
+   Bases: "Plugin"
+
+   Observer of task writes.
+
+   async on_task_event(info: TaskEventInfo) -> None
+
+      Called after every successful task write.
+
+a2a.plugins.get_global() -> PluginManager
+
+   Returns the global manager. Empty unless *set_global* was called.
+
+a2a.plugins.sequential(*plugins: Plugin) -> SequentialPluginManager
+
+   Returns a manager that runs "plugins" in the given order.
+
+a2a.plugins.set_global(manager: PluginManager) -> None
+
+   Sets the manager used by handlers, clients and push senders created
+   afterwards.
+
+   *DefaultRequestHandlerV2*, clients and *BasePushNotificationSender*
+   capture the manager when they are constructed, so call this once at
+   startup, before creating them.
+</file>
+
+<file path="sdk/python/a2a.plugins.types.txt">
+a2a.plugins.types module
+************************
+
+Argument types passed to plugin hooks.
+
+Hooks return "None". Per-call state lives in "context.state" (server
+and client) or "PushRequest.state" (push), which the SDK passes
+unchanged from a before-hook to the matching after-hook.
+
+class a2a.plugins.types.ClientRequest(method: str, payload: Any, agent_card: AgentCard, context: ClientCallContext)
+
+   Bases: "object"
+
+   An outgoing call, passed to *ClientPlugin.before_client_request*.
+
+   method
+
+      Method name, the same as on the server side and as passed to
+      interceptors.
+
+      Type:
+         str
+
+   payload
+
+      The request proto. Plugins may replace it.
+
+      Type:
+         Any
+
+   agent_card
+
+      The card of the remote agent.
+
+      Type:
+         AgentCard
+
+   context
+
+      The call context. "service_parameters" holds the outgoing
+      headers.
+
+      Type:
+         ClientCallContext
+
+   agent_card: AgentCard
+
+   context: ClientCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.ClientResponse(method: str, payload: Any, context: ClientCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A call result, passed to *ClientPlugin.after_client_request*.
+
+   Follows the same "is_stream_event" / "is_final" rules as
+   *ServerResponse*.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The response or stream event, "None" on error or stream end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_client_request*.
+
+      Type:
+         ClientCallContext
+
+   error
+
+      The exception raised by the call, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ClientCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.PushRequest(task_id: str, url: str, headers: dict[str, str], event: PushNotificationEvent, skip: bool = False, state: dict[str, Any] = <factory>)
+
+   Bases: "object"
+
+   One push delivery, passed to *PushPlugin.before_push_send*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   url
+
+      Webhook URL.
+
+      Type:
+         str
+
+   headers
+
+      Outgoing HTTP headers. Plugins may add or change entries.
+
+      Type:
+         dict[str, str]
+
+   event
+
+      The event being pushed.
+
+      Type:
+         PushNotificationEvent
+
+   skip
+
+      Set to "True" to drop this delivery.
+
+      Type:
+         bool
+
+   state
+
+      Per-delivery plugin state, available again in *PushResult*.
+
+      Type:
+         dict[str, Any]
+
+   event: PushNotificationEvent
+
+   headers: dict[str, str]
+
+   skip: bool = False
+
+   state: dict[str, Any]
+
+   task_id: str
+
+   url: str
+
+class a2a.plugins.types.PushResult(request: PushRequest, duration_s: float, status_code: int | None, error: BaseException | None, skipped: bool = False)
+
+   Bases: "object"
+
+   The outcome of one push delivery, passed to
+   *PushPlugin.on_push_sent*.
+
+   request
+
+      The *PushRequest* for this delivery.
+
+      Type:
+         a2a.plugins.types.PushRequest
+
+   duration_s
+
+      Duration of the HTTP request in seconds.
+
+      Type:
+         float
+
+   status_code
+
+      HTTP status code, "None" if no response was received.
+
+      Type:
+         int | None
+
+   error
+
+      The exception if delivery failed, "None" on success.
+
+      Type:
+         BaseException | None
+
+   skipped
+
+      Whether a plugin dropped the delivery.
+
+      Type:
+         bool
+
+   duration_s: float
+
+   error: BaseException | None
+
+   request: PushRequest
+
+   skipped: bool = False
+
+   status_code: int | None
+
+class a2a.plugins.types.ServerRequest(method: str, payload: Any, context: ServerCallContext, agent_card: AgentCard | None = None)
+
+   Bases: "object"
+
+   An incoming request, passed to *ServerPlugin.before_handler_run*.
+
+   method
+
+      Method name, e.g. "'send_message'" or "'get_task'".
+
+      Type:
+         str
+
+   payload
+
+      The request proto, e.g. "SendMessageRequest".
+
+      Type:
+         Any
+
+   context
+
+      The call context. For HTTP transports "state['headers']" holds
+      the request headers.
+
+      Type:
+         ServerCallContext
+
+   agent_card
+
+      The agent card served by this handler.
+
+      Type:
+         AgentCard | None
+
+   agent_card: AgentCard | None = None
+
+   context: ServerCallContext
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.ServerResponse(method: str, payload: Any, context: ServerCallContext, error: BaseException | None = None, is_stream_event: bool = False, is_final: bool = True)
+
+   Bases: "object"
+
+   A handler result, passed to *ServerPlugin.after_handler_run*.
+
+   For a unary call the hook runs once with "is_final=True". For a
+   stream it runs once per event with "is_stream_event=True,
+   is_final=False" and once more with "is_final=True" and
+   "payload=None" when the stream ends, including on error or client
+   disconnect.
+
+   method
+
+      Method name.
+
+      Type:
+         str
+
+   payload
+
+      The handler result or stream event, "None" on error or stream
+      end.
+
+      Type:
+         Any
+
+   context
+
+      The same call context passed to *before_handler_run*.
+
+      Type:
+         ServerCallContext
+
+   error
+
+      The exception raised by the handler, if any.
+
+      Type:
+         BaseException | None
+
+   is_stream_event
+
+      Whether "payload" is one event of a stream.
+
+      Type:
+         bool
+
+   is_final
+
+      Whether this is the last call for the request.
+
+      Type:
+         bool
+
+   context: ServerCallContext
+
+   error: BaseException | None = None
+
+   is_final: bool = True
+
+   is_stream_event: bool = False
+
+   method: str
+
+   payload: Any
+
+class a2a.plugins.types.TaskEventInfo(task_id: str, from_state: TaskState | None, to_state: TaskState, event: Event | None, task: Task, context: ServerCallContext)
+
+   Bases: "object"
+
+   A successful task write, passed to
+   *TaskObserverPlugin.on_task_event*.
+
+   task_id
+
+      ID of the task.
+
+      Type:
+         str
+
+   from_state
+
+      Persisted state before the write, "None" when the write created
+      the task.
+
+      Type:
+         TaskState | None
+
+   to_state
+
+      State after the write. Equal to "from_state" for writes that do
+      not change the state, such as artifact updates.
+
+      Type:
+         TaskState
+
+   event
+
+      The event that caused the write, "None" when the SDK wrote the
+      task without one.
+
+      Type:
+         Event | None
+
+   task
+
+      The task after the write. This is the SDK's live object; copy it
+      if you keep it beyond the hook call.
+
+      Type:
+         Task
+
+   context
+
+      Call context of the request that produced the write.
+
+      Type:
+         ServerCallContext
+
+   context: ServerCallContext
+
+   event: Event | None
+
+   from_state: TaskState | None
+
+   task: Task
+
+   task_id: str
+
+   to_state: TaskState
+</file>
+
 <file path="sdk/python/a2a.server.agent_execution.active_task.txt">
 a2a.server.agent_execution.active_task module
 *********************************************
@@ -17853,7 +19475,7 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
       when a subscriber sink was never drained. It is safe to call
       multiple times.
 
-   async cancel(call_context: ServerCallContext) -> Task
+   async cancel(call_context: ServerCallContext, request: CancelTaskRequest | None = None) -> Task
 
       Cancels the running active task.
 
@@ -17910,6 +19532,10 @@ class a2a.server.agent_execution.active_task.ActiveTask(agent_executor: AgentExe
       *_maybe_cleanup()* to potentially garbage collect the
       ActiveTask.
 
+   property task_created: bool
+
+      Whether a task exists, so "get_task()" will not block.
+
    property task_id: str
 
       The ID of the task.
@@ -17929,7 +19555,7 @@ class a2a.server.agent_execution.active_task.EventConsumer(active_task: ActiveTa
 a2a.server.agent_execution.active_task_registry module
 ******************************************************
 
-class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, push_sender: PushNotificationSender | None = None, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
+class a2a.server.agent_execution.active_task_registry.ActiveTaskRegistry(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, push_sender: PushNotificationSender | None = None, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None, plugins: PluginManager | None = None)
 
    Bases: "object"
 
@@ -18069,7 +19695,7 @@ class a2a.server.agent_execution.agent_executor.AgentExecutor
 a2a.server.agent_execution.context module
 *****************************************
 
-class a2a.server.agent_execution.context.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
+class a2a.server.agent_execution.context.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | CancelTaskRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
 
    Bases: "object"
 
@@ -18142,6 +19768,45 @@ class a2a.server.agent_execution.context.RequestContext(call_context: ServerCall
    property tenant: str
 
       The tenant associated with this request.
+</file>
+
+<file path="sdk/python/a2a.server.agent_execution.plugin_agent_executor.txt">
+a2a.server.agent_execution.plugin_agent_executor module
+*******************************************************
+
+Runs *ExecutionPlugin* hooks around an *AgentExecutor*.
+
+class a2a.server.agent_execution.plugin_agent_executor.PluginAgentExecutor(inner: AgentExecutor, plugins: PluginManager)
+
+   Bases: "AgentExecutor"
+
+   Runs *before_execution* / *after_execution* around "execute".
+
+   async cancel(context: RequestContext, event_queue: EventQueue) -> None
+
+      Delegates to the wrapped executor without hooks.
+
+   async execute(context: RequestContext, event_queue: EventQueue) -> None
+
+      Runs the wrapped executor with execution hooks.
+
+   property inner: AgentExecutor
+
+      The wrapped executor.
+
+class a2a.server.agent_execution.plugin_agent_executor.PluginEventQueue(*args: Any, **kwargs: Any)
+
+   Bases: "EventQueue"
+
+   Calls *on_execution_event* for each event the agent enqueues.
+
+   Wraps the queue passed to *AgentExecutor.execute*. Events the SDK
+   enqueues on the underlying queue itself bypass the wrapper and are
+   not reported.
+
+   async enqueue_event(event: Event) -> None
+
+      Reports the event to plugins, then enqueues it.
 </file>
 
 <file path="sdk/python/a2a.server.agent_execution.request_context_builder.txt">
@@ -18225,6 +19890,8 @@ Submodules
 
     * "ActiveTask.subscribe()"
 
+    * "ActiveTask.task_created"
+
     * "ActiveTask.task_id"
 
   * "EventConsumer"
@@ -18276,6 +19943,20 @@ Submodules
     * "RequestContext.task_id"
 
     * "RequestContext.tenant"
+
+* a2a.server.agent_execution.plugin_agent_executor module
+
+  * "PluginAgentExecutor"
+
+    * "PluginAgentExecutor.cancel()"
+
+    * "PluginAgentExecutor.execute()"
+
+    * "PluginAgentExecutor.inner"
+
+  * "PluginEventQueue"
+
+    * "PluginEventQueue.enqueue_event()"
 
 * a2a.server.agent_execution.request_context_builder module
 
@@ -18395,7 +20076,7 @@ class a2a.server.agent_execution.AgentExecutor
 
          * **event_queue** -- The queue to publish events to.
 
-class a2a.server.agent_execution.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
+class a2a.server.agent_execution.RequestContext(call_context: ServerCallContext, request: SendMessageRequest | CancelTaskRequest | None = None, task_id: str | None = None, context_id: str | None = None, task: Task | None = None, related_tasks: list[Task] | None = None, task_id_generator: IDGenerator | None = None, context_id_generator: IDGenerator | None = None)
 
    Bases: "object"
 
@@ -18515,13 +20196,13 @@ class a2a.server.agent_execution.SimpleRequestContextBuilder(should_populate_ref
 a2a.server.cluster.database_event_stream module
 ***********************************************
 
-class a2a.server.cluster.database_event_stream.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5)
+class a2a.server.cluster.database_event_stream.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5, owner_resolver: Callable[[ServerCallContext], str] | None = None)
 
    Bases: "TaskEventStream"
 
    *TaskEventStream* backed by polling the shared "task_events" table.
 
-   async destroy(task_id: str) -> None
+   async destroy(task_id: str, context: ServerCallContext | None = None) -> None
 
       No-op: the append-only log is retained; subscribers stop on
       their own.
@@ -18530,11 +20211,13 @@ class a2a.server.cluster.database_event_stream.DatabaseTaskEventStream(engine: A
 
       Creates the "task_events" table if requested.
 
-   async publish(task_id: str, event: VersionedEvent) -> None
+   owner_resolver: Callable[[ServerCallContext], str] | None
+
+   async publish(task_id: str, event: VersionedEvent, context: ServerCallContext | None = None) -> None
 
       No-op: events are persisted transactionally by the task store.
 
-   async subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+   async subscribe(task_id: str, *, after: TaskVersion, context: ServerCallContext | None = None) -> AsyncGenerator[VersionedEvent, None]
 
       Polls the log for events of *task_id* newer than *after*.
 
@@ -18739,6 +20422,8 @@ Submodules
 
     * "DatabaseTaskEventStream.initialize()"
 
+    * "DatabaseTaskEventStream.owner_resolver"
+
     * "DatabaseTaskEventStream.publish()"
 
     * "DatabaseTaskEventStream.subscribe()"
@@ -18829,13 +20514,13 @@ exception a2a.server.cluster.ConcurrentTaskModificationError(task_id: str)
 
    Raised by *VersionedTaskStore.save* when *prev_version* is stale.
 
-class a2a.server.cluster.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5)
+class a2a.server.cluster.DatabaseTaskEventStream(engine: AsyncEngine, create_table: bool = True, table_name: str = 'task_events', poll_interval_s: float = 0.5, owner_resolver: Callable[[ServerCallContext], str] | None = None)
 
    Bases: "TaskEventStream"
 
    *TaskEventStream* backed by polling the shared "task_events" table.
 
-   async destroy(task_id: str) -> None
+   async destroy(task_id: str, context: ServerCallContext | None = None) -> None
 
       No-op: the append-only log is retained; subscribers stop on
       their own.
@@ -18844,11 +20529,13 @@ class a2a.server.cluster.DatabaseTaskEventStream(engine: AsyncEngine, create_tab
 
       Creates the "task_events" table if requested.
 
-   async publish(task_id: str, event: VersionedEvent) -> None
+   owner_resolver: Callable[[ServerCallContext], str] | None
+
+   async publish(task_id: str, event: VersionedEvent, context: ServerCallContext | None = None) -> None
 
       No-op: events are persisted transactionally by the task store.
 
-   async subscribe(task_id: str, *, after: TaskVersion) -> AsyncGenerator[VersionedEvent, None]
+   async subscribe(task_id: str, *, after: TaskVersion, context: ServerCallContext | None = None) -> AsyncGenerator[VersionedEvent, None]
 
       Polls the log for events of *task_id* newer than *after*.
 
@@ -20275,7 +21962,7 @@ class a2a.server.request_handlers.default_request_handler.LegacyRequestHandler(a
 a2a.server.request_handlers.default_request_handler_v2 module
 *************************************************************
 
-class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
+class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None, plugins: PluginManager | None = None)
 
    Bases: "RequestHandler"
 
@@ -20292,6 +21979,10 @@ class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandl
    follow-up recreates it from the store. "None" (default) never
    releases; any other value must be greater than 0.
 
+   "plugins" selects the plugin manager whose hooks run for this
+   handler. It defaults to the global manager
+   (*a2a.plugins.get_global()*) at construction time.
+
    async aclose() -> None
 
       Shuts down the handler, draining all active tasks.
@@ -20299,6 +21990,10 @@ class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandl
       Drains the "ActiveTaskRegistry" so a server shutdown leaves no
       pending "asyncio.Task". Intended to be wired into an ASGI
       "lifespan" / "on_shutdown" hook. Safe to call multiple times.
+
+   property agent_card: AgentCard
+
+      The agent card served by this handler.
 
    async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
@@ -20459,6 +22154,10 @@ class a2a.server.request_handlers.default_request_handler_v2.DefaultRequestHandl
       Yields:
          *Event* objects from the agent's ongoing execution for the
          specified task.
+
+   property plugins: PluginManager
+
+      The plugin manager whose hooks run for this handler.
 </file>
 
 <file path="sdk/python/a2a.server.request_handlers.grpc_handler.txt">
@@ -20877,6 +22576,8 @@ Submodules
 
     * "DefaultRequestHandlerV2.aclose()"
 
+    * "DefaultRequestHandlerV2.agent_card"
+
     * "DefaultRequestHandlerV2.on_cancel_task()"
 
     * "DefaultRequestHandlerV2.on_create_task_push_notification_config
@@ -20901,6 +22602,8 @@ Submodules
     * "DefaultRequestHandlerV2.on_message_send_stream()"
 
     * "DefaultRequestHandlerV2.on_subscribe_to_task()"
+
+    * "DefaultRequestHandlerV2.plugins"
 
 * a2a.server.request_handlers.grpc_handler module
 
@@ -21004,7 +22707,7 @@ a2a.server.request_handlers.DefaultRequestHandler
 
    alias of "DefaultRequestHandlerV2"
 
-class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None)
+class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentExecutor, task_store: TaskStore | VersionedTaskStore, agent_card: AgentCard, queue_manager: Any | None = None, push_config_store: PushNotificationConfigStore | None = None, push_sender: PushNotificationSender | None = None, request_context_builder: RequestContextBuilder | None = None, extended_agent_card: AgentCard | None = None, extended_card_modifier: Callable[[AgentCard, ServerCallContext], Awaitable[AgentCard]] | None = None, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, validate_input_modes: bool = False, event_stream: TaskEventStream | None = None, interrupted_task_timeout: float | None = None, plugins: PluginManager | None = None)
 
    Bases: "RequestHandler"
 
@@ -21021,6 +22724,10 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
    follow-up recreates it from the store. "None" (default) never
    releases; any other value must be greater than 0.
 
+   "plugins" selects the plugin manager whose hooks run for this
+   handler. It defaults to the global manager
+   (*a2a.plugins.get_global()*) at construction time.
+
    async aclose() -> None
 
       Shuts down the handler, draining all active tasks.
@@ -21028,6 +22735,10 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
       Drains the "ActiveTaskRegistry" so a server shutdown leaves no
       pending "asyncio.Task". Intended to be wired into an ASGI
       "lifespan" / "on_shutdown" hook. Safe to call multiple times.
+
+   property agent_card: AgentCard
+
+      The agent card served by this handler.
 
    async on_cancel_task(params: CancelTaskRequest, context: ServerCallContext) -> Task | None
 
@@ -21188,6 +22899,10 @@ class a2a.server.request_handlers.DefaultRequestHandlerV2(agent_executor: AgentE
       Yields:
          *Event* objects from the agent's ongoing execution for the
          specified task.
+
+   property plugins: PluginManager
+
+      The plugin manager whose hooks run for this handler.
 
 class a2a.server.request_handlers.GrpcHandler(request_handler: RequestHandler, context_builder: GrpcServerCallContextBuilder | None = None)
 
@@ -22076,7 +23791,7 @@ a2a.server.routes.create_rest_routes(request_handler: RequestHandler, context_bu
 a2a.server.tasks.base_push_notification_sender module
 *****************************************************
 
-class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None, *, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
+class a2a.server.tasks.base_push_notification_sender.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None, *, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, plugins: PluginManager | None = None)
 
    Bases: "PushNotificationSender"
 
@@ -22501,7 +24216,7 @@ class a2a.server.tasks.result_aggregator.ResultAggregator(task_manager: TaskMana
 a2a.server.tasks.task_manager module
 ************************************
 
-class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
+class a2a.server.tasks.task_manager.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None, plugins: PluginManager | None = None)
 
    Bases: "object"
 
@@ -22739,7 +24454,7 @@ class a2a.server.tasks.task_updater.TaskUpdater(event_queue: EventQueue, task_id
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83550>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6250>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -22960,7 +24675,7 @@ Module contents
 
 Components for managing tasks within the A2A server.
 
-class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None, *, push_url_validator: Callable[[str], Awaitable[bool]] | None = None)
+class a2a.server.tasks.BasePushNotificationSender(httpx_client: AsyncClient, config_store: PushNotificationConfigStore, context: ServerCallContext | None = None, *, push_url_validator: Callable[[str], Awaitable[bool]] | None = None, plugins: PluginManager | None = None)
 
    Bases: "PushNotificationSender"
 
@@ -23307,7 +25022,7 @@ class a2a.server.tasks.ResultAggregator(task_manager: TaskManager)
          the final *Message* if one was received, or *None* if no
          result has been produced yet.
 
-class a2a.server.tasks.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None)
+class a2a.server.tasks.TaskManager(task_store: TaskStore | VersionedTaskStore, context: ServerCallContext, task_id: str | None, context_id: str | None, initial_message: Message | None, plugins: PluginManager | None = None)
 
    Bases: "object"
 
@@ -23520,7 +25235,7 @@ class a2a.server.tasks.TaskUpdater(event_queue: EventQueue, task_id: str, contex
 
       Marks the task as submitted and publishes a status update.
 
-   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7886f0b83550>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
+   async update_status(state: <google.protobuf.internal.enum_type_wrapper.EnumTypeWrapper object at 0x7aaba21b6250>, message: Message | None = None, timestamp: str | None = None, metadata: dict[str, ~typing.Any] | None=None) -> None
 
       Updates the status of the task and publishes a
       *TaskStatusUpdateEvent*.
@@ -23566,6 +25281,12 @@ Subpackages
     * a2a.server.agent_execution.context module
 
       * "RequestContext"
+
+    * a2a.server.agent_execution.plugin_agent_executor module
+
+      * "PluginAgentExecutor"
+
+      * "PluginEventQueue"
 
     * a2a.server.agent_execution.request_context_builder module
 
@@ -23660,6 +25381,8 @@ Subpackages
       * "DatabaseTaskEventStream.destroy()"
 
       * "DatabaseTaskEventStream.initialize()"
+
+      * "DatabaseTaskEventStream.owner_resolver"
 
       * "DatabaseTaskEventStream.publish()"
 
@@ -23871,6 +25594,8 @@ Subpackages
 
       * "DefaultRequestHandlerV2.aclose()"
 
+      * "DefaultRequestHandlerV2.agent_card"
+
       * "DefaultRequestHandlerV2.on_cancel_task()"
 
       * "DefaultRequestHandlerV2.on_create_task_push_notification_conf
@@ -23896,6 +25621,8 @@ Subpackages
       * "DefaultRequestHandlerV2.on_message_send_stream()"
 
       * "DefaultRequestHandlerV2.on_subscribe_to_task()"
+
+      * "DefaultRequestHandlerV2.plugins"
 
     * "GrpcHandler"
 
@@ -24880,6 +26607,310 @@ Subpackages
       * "table_exists()"
 
   * Module contents
+
+* a2a.plugins package
+
+  * Submodules
+
+    * a2a.plugins.base module
+
+      * "ClientPlugin"
+
+      * "CompletePlugin"
+
+      * "ExecutionPlugin"
+
+      * "Plugin"
+
+      * "PushPlugin"
+
+      * "ServerPlugin"
+
+      * "TaskObserverPlugin"
+
+    * a2a.plugins.manager module
+
+      * "PluginManager"
+
+      * "SequentialPluginManager"
+
+      * "get_global()"
+
+      * "sequential()"
+
+      * "set_global()"
+
+    * a2a.plugins.types module
+
+      * "ClientRequest"
+
+      * "ClientResponse"
+
+      * "PushRequest"
+
+      * "PushResult"
+
+      * "ServerRequest"
+
+      * "ServerResponse"
+
+      * "TaskEventInfo"
+
+  * Module contents
+
+    * "ClientPlugin"
+
+      * "ClientPlugin.after_client_request()"
+
+      * "ClientPlugin.before_client_request()"
+
+    * "ClientRequest"
+
+      * "ClientRequest.method"
+
+      * "ClientRequest.payload"
+
+      * "ClientRequest.agent_card"
+
+      * "ClientRequest.context"
+
+      * "ClientRequest.agent_card"
+
+      * "ClientRequest.context"
+
+      * "ClientRequest.method"
+
+      * "ClientRequest.payload"
+
+    * "ClientResponse"
+
+      * "ClientResponse.method"
+
+      * "ClientResponse.payload"
+
+      * "ClientResponse.context"
+
+      * "ClientResponse.error"
+
+      * "ClientResponse.is_stream_event"
+
+      * "ClientResponse.is_final"
+
+      * "ClientResponse.context"
+
+      * "ClientResponse.error"
+
+      * "ClientResponse.is_final"
+
+      * "ClientResponse.is_stream_event"
+
+      * "ClientResponse.method"
+
+      * "ClientResponse.payload"
+
+    * "CompletePlugin"
+
+    * "ExecutionPlugin"
+
+      * "ExecutionPlugin.after_execution()"
+
+      * "ExecutionPlugin.before_execution()"
+
+      * "ExecutionPlugin.on_execution_event()"
+
+    * "Plugin"
+
+      * "Plugin.name"
+
+    * "PluginManager"
+
+      * "PluginManager.has_client_hooks"
+
+      * "PluginManager.has_execution_hooks"
+
+      * "PluginManager.has_push_hooks"
+
+      * "PluginManager.has_server_hooks"
+
+      * "PluginManager.has_task_hooks"
+
+      * "PluginManager.name"
+
+    * "PushPlugin"
+
+      * "PushPlugin.before_push_send()"
+
+      * "PushPlugin.on_push_sent()"
+
+    * "PushRequest"
+
+      * "PushRequest.task_id"
+
+      * "PushRequest.url"
+
+      * "PushRequest.headers"
+
+      * "PushRequest.event"
+
+      * "PushRequest.skip"
+
+      * "PushRequest.state"
+
+      * "PushRequest.event"
+
+      * "PushRequest.headers"
+
+      * "PushRequest.skip"
+
+      * "PushRequest.state"
+
+      * "PushRequest.task_id"
+
+      * "PushRequest.url"
+
+    * "PushResult"
+
+      * "PushResult.request"
+
+      * "PushResult.duration_s"
+
+      * "PushResult.status_code"
+
+      * "PushResult.error"
+
+      * "PushResult.skipped"
+
+      * "PushResult.duration_s"
+
+      * "PushResult.error"
+
+      * "PushResult.request"
+
+      * "PushResult.skipped"
+
+      * "PushResult.status_code"
+
+    * "SequentialPluginManager"
+
+      * "SequentialPluginManager.after_client_request()"
+
+      * "SequentialPluginManager.after_execution()"
+
+      * "SequentialPluginManager.after_handler_run()"
+
+      * "SequentialPluginManager.before_client_request()"
+
+      * "SequentialPluginManager.before_execution()"
+
+      * "SequentialPluginManager.before_handler_run()"
+
+      * "SequentialPluginManager.before_push_send()"
+
+      * "SequentialPluginManager.has_client_hooks"
+
+      * "SequentialPluginManager.has_execution_hooks"
+
+      * "SequentialPluginManager.has_push_hooks"
+
+      * "SequentialPluginManager.has_server_hooks"
+
+      * "SequentialPluginManager.has_task_hooks"
+
+      * "SequentialPluginManager.name"
+
+      * "SequentialPluginManager.on_execution_event()"
+
+      * "SequentialPluginManager.on_push_sent()"
+
+      * "SequentialPluginManager.on_task_event()"
+
+      * "SequentialPluginManager.plugins"
+
+    * "ServerPlugin"
+
+      * "ServerPlugin.after_handler_run()"
+
+      * "ServerPlugin.before_handler_run()"
+
+    * "ServerRequest"
+
+      * "ServerRequest.method"
+
+      * "ServerRequest.payload"
+
+      * "ServerRequest.context"
+
+      * "ServerRequest.agent_card"
+
+      * "ServerRequest.agent_card"
+
+      * "ServerRequest.context"
+
+      * "ServerRequest.method"
+
+      * "ServerRequest.payload"
+
+    * "ServerResponse"
+
+      * "ServerResponse.method"
+
+      * "ServerResponse.payload"
+
+      * "ServerResponse.context"
+
+      * "ServerResponse.error"
+
+      * "ServerResponse.is_stream_event"
+
+      * "ServerResponse.is_final"
+
+      * "ServerResponse.context"
+
+      * "ServerResponse.error"
+
+      * "ServerResponse.is_final"
+
+      * "ServerResponse.is_stream_event"
+
+      * "ServerResponse.method"
+
+      * "ServerResponse.payload"
+
+    * "TaskEventInfo"
+
+      * "TaskEventInfo.task_id"
+
+      * "TaskEventInfo.from_state"
+
+      * "TaskEventInfo.to_state"
+
+      * "TaskEventInfo.event"
+
+      * "TaskEventInfo.task"
+
+      * "TaskEventInfo.context"
+
+      * "TaskEventInfo.context"
+
+      * "TaskEventInfo.event"
+
+      * "TaskEventInfo.from_state"
+
+      * "TaskEventInfo.task"
+
+      * "TaskEventInfo.task_id"
+
+      * "TaskEventInfo.to_state"
+
+    * "TaskObserverPlugin"
+
+      * "TaskObserverPlugin.on_task_event()"
+
+    * "get_global()"
+
+    * "sequential()"
+
+    * "set_global()"
 
 * a2a.server package
 
@@ -26253,6 +28284,10 @@ a2a.utils.input_mode_validator.validate_input_modes(message: Message, agent_card
    *media_type* is a proto3 string, so a part that omits it arrives as
    *''* and is likewise not checked -- only a media type the client
    actually stated can contradict the card.
+
+   Media types are compared on type and subtype alone, ignoring case
+   (RFC 2045 section 5.1) and parameters, so *Text/Plain;
+   charset=utf-8* matches a card that declares *text/plain*.
 </file>
 
 <file path="sdk/python/a2a.utils.json_utils.txt">
@@ -26340,6 +28375,11 @@ a2a.utils.proto_utils.parse_lenient(data: dict[str, Any] | str | bytes, message:
 
    Returns:
       The parsed message.
+
+   Raises:
+      **ParseError** -- If the data is not valid ProtoJSON, including
+      bytes that     are not valid UTF-8 and decoded values that are
+      not objects.
 
 a2a.utils.proto_utils.parse_params(params: QueryParams, message: Message) -> None
 
@@ -27048,6 +29088,8 @@ package.
 
       * a2a.migrations package
 
+      * a2a.plugins package
+
       * a2a.server package
 
       * a2a.types package
@@ -27104,6 +29146,12 @@ a2a
     * a2a.migrations package
 
       * Subpackages
+
+      * Submodules
+
+      * Module contents
+
+    * a2a.plugins package
 
       * Submodules
 
