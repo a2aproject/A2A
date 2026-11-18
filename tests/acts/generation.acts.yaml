@@ -282,7 +282,10 @@ suites:
           0. The task's generation is at least 1, so it is already greater
           than the value supplied and the server has to answer without waiting
           for the task to change. The task changes nothing while it holds, so
-          a server that waits for the next change answers too late.
+          a server that waits for the next change answers too late. A server
+          that takes 0 for a field that is not set also answers at once, so
+          this test does not show that the value was compared. CORE-POLL-004
+          does, with a value other than 0 that the task has moved past.
         spec_ref: "docs/specification.md#327-task-generation-semantics"
         level: must
         min_spec_version: "1.1"
@@ -464,6 +467,71 @@ suites:
                   id: "{{start.taskId}}"
                   status:
                     state: TASK_STATE_COMPLETED
+
+      - id: CORE-POLL-004
+        name: "GetTask returns at once when the task has moved past a non-zero currentGeneration"
+        description: >
+          Starts a multi-turn task and records its generation while it waits
+          for input. A second message advances the generation, and the task
+          then waits for input again and changes nothing. A GetTask that names
+          the recorded generation is behind the task, so the server has to
+          answer without waiting for the task to change. The value is not 0,
+          so the server cannot take it for a field that is not set: it has to
+          compare it with the task's generation. A server that holds every
+          request that names a generation answers too late.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, long-poll]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn long-poll behind the task"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              generation: task.generation
+
+          - id: turn2
+            description: "Advances the generation, so the value captured in turn1 is behind the task. From here on the task holds still."
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gt: "{{turn1.generation}}"}
+
+          - id: poll-behind
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+              currentGeneration: "{{turn1.generation}}"
+            max_duration_ms: 3000
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                generation: {gt: "{{turn1.generation}}"}
 
       - id: CORE-MATCH-001
         name: "A message with a matching ifGenerationMatch is accepted"

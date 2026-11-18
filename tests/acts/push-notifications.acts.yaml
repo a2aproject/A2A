@@ -497,8 +497,10 @@ suites:
               The payload format is the subject, and it appears in no
               response. A2A pushes the task event itself, so the delivery must
               be one of the discriminated event shapes and must name the task
-              it is about — a whole Task or a status update, as §7 allows for
-              any event.
+              it is about — a whole Task, a status update or an artifact
+              update, as §7 allows for any event. The task of this test
+              produces an artifact, so an artifact update is among the
+              payloads an agent delivers for it.
             expect_webhook:
               task_id: "{{create.taskId}}"
               min_count: 1
@@ -513,6 +515,11 @@ suites:
                       taskId: "{{create.taskId}}"
                       status:
                         state:
+                          type: string
+                  - artifactUpdate:
+                      taskId: "{{create.taskId}}"
+                      artifact:
+                        artifactId:
                           type: string
 
       - id: PUSH-VER-001

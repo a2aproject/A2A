@@ -573,6 +573,7 @@ Steps run one after another, so a test cannot normally act while a request is st
 - The runner MUST NOT start the next step until the background request has been sent and, for a streaming operation, until its first event has arrived. The first event shows that the SUT has the stream in place. A request that is not streaming gives no such sign, so a test that needs the SUT to be processing it puts `delay_ms` on the next step.
 - A background step ends when its response arrives or the read of its stream ends (§7, §7.4). After the last step of the test the runner MUST wait for every background step that is still open, and only then evaluate its `expect`, `expect_error`, `expect_stream` and duration bounds (§4.6). A failure is reported against the background step.
 - `capture` on a background step that opens a stream is resolved against the stream's first event (§7), which has arrived before the next step starts, so the steps that follow can use it. On any other background step `capture` is resolved when the step ends, and its variables are not available to the steps that follow. `repeat` MUST NOT appear on a background step.
+- Where a runner ends a test at a step that does not pass, it MUST close every background step that is still open. It SHOULD NOT report a failure for such a step: the request was waiting for steps that never ran, and its failure would only repeat the one that ended the test. A background step that went wrong before the step after it began is the exception, and the runner SHOULD report it, because it is the likely cause of the later failure: its request could not be sent, its stream was refused or ended without an event, or its first event did not give its `capture`.
 - A test with a background step MUST declare `runner_requirements: [concurrent_requests]`. A runner that cannot keep one request open while it issues another MUST skip the test.
 
 ```yaml
@@ -988,6 +989,11 @@ two forms, and a runner MUST support both:
   kind of event from another, so `{message: {...}}` MUST NOT match a status update.
 - **Direct** — the assertion addresses the fields of the payload itself, without naming the arm,
   as in `final_event: {status: {state: TASK_STATE_COMPLETED}}` against a `TaskStatusUpdateEvent`.
+
+Two payloads have a field with the name of a kind: a message update and a stream error each have a
+field `message`. At the top of an assertion on an event, the name of a kind always means the kind,
+so `{message: {...}}` matches only an event that is a `Message`. The field is addressed through its
+own kind: `{message_update: {message: {...}}}`.
 
 Because the JSON bindings serialize the oneof with the ProtoJSON field naming of A2A §5.5, the
 discriminator arrives on the wire as `statusUpdate`, `artifactUpdate` and `messageUpdate`. Runners

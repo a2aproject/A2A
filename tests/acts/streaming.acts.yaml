@@ -403,7 +403,13 @@ suites:
           see that message as a message_update naming the task and its context and carrying the
           message with role ROLE_USER. The task is working, not waiting for input, so the test
           does not depend on whether a stream stays open in an interrupted state. The A2A text
-          states this delivery without an RFC 2119 keyword, so the level is should.
+          states this delivery without an RFC 2119 keyword, so the level is should. The stream
+          is also checked for a generation that rises by exactly one from each event to the
+          next. Nothing but the client message changes the task while it holds, so the
+          message_update has to be exactly one above the event before it. This is the one place
+          where the increment for a client message can be told apart from the agent's reply to
+          it. The increment is a MUST, but it can be observed only where the update is delivered,
+          so it is checked at the level of this test.
         spec_ref: "docs/specification.md#328-task-timeline-semantics"
         level: should
         min_spec_version: "1.1"
@@ -441,6 +447,7 @@ suites:
               id: "{{start.taskId}}"
             expect_stream:
               timeout_ms: 30000
+              ordering: contiguous_generation
               events:
                 - description: "The client message added by the next step is reported to this subscriber"
                   match: any_position
