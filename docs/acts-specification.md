@@ -2,7 +2,7 @@
 
 **Version:** 0.1.0 (Draft)
 **Status:** Proposal
-**Target A2A Version:** 1.0
+**Target A2A Versions:** 1.0, 1.1
 
 ## 1. Introduction
 
@@ -63,7 +63,7 @@ An ACTS document is a YAML file whose root is a map conforming to the `acts-docu
 ```cddl
 acts-document = {
   acts_version: text,              ; Version of the ACTS format (e.g., "1.0")
-  spec_version: text,              ; A2A spec version these tests target (e.g., "1.0")
+  spec_version: text,              ; Newest A2A version these tests were written against (see §3.4)
   ? spec_ref: text,                ; URL to the A2A specification
   ? metadata: metadata,
   ? variables: { * text => text }, ; Default variables available to all tests
@@ -80,6 +80,8 @@ metadata = {
 ```
 
 An ACTS document MUST contain at least one of `suites` or `include`. A master file MAY use only `include` to reference other ACTS files without defining its own suites.
+
+`spec_version` names the newest A2A version the document's tests were written against. It does not select what a run tests: one document can hold tests for several A2A versions, and the version a run targets is an input to the runner (§12.1). §3.4 defines which tests apply to a run.
 
 ### Example
 
@@ -135,6 +137,8 @@ test = {
   ? preconditions: preconditions,
   ? requires_behaviors: [+ text],  ; SUT behavior prefixes this test depends on (see §11)
   ? origin: text,                  ; URL to issue/PR where this test originated
+  ? min_spec_version: text,        ; Oldest A2A version this test applies to (see §3.4)
+  ? max_spec_version: text,        ; Newest A2A version this test applies to (see §3.4)
   ? runner_requirements: [+ runner-requirement],
   steps: [+ step],
   ? assertions: [+ named-assertion]
@@ -149,7 +153,9 @@ runner-requirement =
   "concurrent_streams" /       ; Runner must open multiple simultaneous streams
   "stream_disconnect" /        ; Runner must disconnect and reconnect mid-stream
   "auth_credentials" /         ; Runner must provide valid/invalid auth credentials
-  "header_inspection"          ; Runner must inspect HTTP response headers
+  "header_inspection" /        ; Runner must inspect HTTP response headers
+  "concurrent_requests" /      ; Runner must keep one request open while it issues another (§4.7)
+  "live_stream"                ; Runner must drive a live exchange (§7.5)
 ```
 
 **Conformance levels** map to RFC 2119 keywords:
@@ -160,9 +166,11 @@ runner-requirement =
 | `should` | Recommended behavior. Failure means the implementation is conformant but may have reduced interoperability. |
 | `may` | Optional behavior. Passing provides additional interoperability. |
 
-Tests MAY declare `runner_requirements` when execution depends on runner-managed capabilities that are not visible from the SUT alone, such as webhook provisioning, concurrent streams, reconnection behavior, injected credentials, or HTTP header inspection. Runners that cannot satisfy a declared requirement SHOULD skip the test with a clear reason.
+Tests MAY declare `runner_requirements` when execution depends on runner-managed capabilities that are not visible from the SUT alone, such as webhook provisioning, concurrent streams, reconnection behavior, injected credentials, HTTP header inspection, overlapping requests, or a live exchange. Runners that cannot satisfy a declared requirement SHOULD skip the test with a clear reason.
 
 Tests MAY also define a top-level `assertions` array for validations that run after all `steps` complete. This is useful for cross-step checks without adding a separate trailing `assertion-step`.
+
+A test whose expectation depends on a part of A2A that is still open carries the tag `tentative`. Its `description` says what is open, and `origin` links the pending change where one exists. The tag tells whoever maintains the corpus that the test has to be revisited when the question is settled. It does not alter the test's level or how a runner reports it.
 
 ### 3.3. Preconditions
 
@@ -175,15 +183,20 @@ preconditions = {
   ? skills: [+ { id: text }],          ; Required skill IDs in the AgentCard
   ? transport: [+ transport-binding],   ; Required transport binding
   ? extensions: [+ text],              ; Required extension URIs
+  ? protocol_versions: [+ text],       ; A2A versions the agent must serve on the binding under test
   ? description: text                  ; Human-readable precondition summary
 }
 ```
 
 `capabilities` is matched against the `AgentCard.capabilities` object, whose members the A2A
-specification fixes as `streaming`, `pushNotifications`, `extendedAgentCard` and `extensions`. A
+specification fixes as `streaming`, `pushNotifications`, `extendedAgentCard` and `extensions`, and
+from A2A 1.1 `userArtifacts`. A
 precondition naming anything else can never be met by any agent card. Runners MUST skip such a
 test, and SHOULD report it distinctly from an ordinary skip: "not applicable to this agent" and
 "no agent could satisfy this" are different findings, and only the second is a defect in the test.
+
+A precondition value of `false` is met when the card gives the member as `false` or omits it. A2A
+treats the two alike: a capability that is not declared is not supported.
 
 `authentication` is **not** among those members, and is a separate precondition for that reason:
 A2A declares authentication at the top level of the card, in `securitySchemes` and
@@ -193,7 +206,13 @@ neither. A runner MUST test presence only and MUST NOT inspect the shape of a de
 `SecurityScheme` is a union whose JSON encoding differs between SDK toolchains, and presence is all
 the precondition needs.
 
-The precondition exists because the server's obligation is itself conditional. A2A requires a server
+`protocol_versions` is met when the agent card lists, for the binding under test, an interface
+whose `protocolVersion` equals each of the listed versions. It gates a test that needs the agent to
+serve a version other than the one the run targets, most often because the test sends a step as a
+client of that version (§4.5): an agent that does not serve that version owes such a request
+nothing but a refusal, so the test does not apply to it.
+
+The `authentication` precondition exists because the server's obligation is itself conditional. A2A requires a server
 to authenticate every request "based on the provided credentials **and its declared authentication
 requirements**", so an agent that declares no requirement is not violating anything by serving an
 unauthenticated request, and a test asserting rejection is genuinely not applicable to it. The one
@@ -206,6 +225,29 @@ earlier step of the same test, that the same operation on the same endpoint **su
 credential is supplied. Without that control the test cannot distinguish a rejection on
 authentication grounds from a rejection for any other reason, and it will report a pass against a
 server that refuses the request for reasons of its own.
+
+### 3.4. Version Applicability
+
+One corpus serves every A2A 1.x version. A run targets exactly one A2A version, the **run version**, which the runner is given as input (§12.1). A test declares the versions it applies to with two optional fields:
+
+- `min_spec_version`: the test applies to this version and to newer ones.
+- `max_spec_version`: the test applies to this version and to older ones.
+
+Both bounds are inclusive, and a test that declares neither applies to every version. Versions are `Major.Minor` strings and are compared numerically, component by component, so `1.10` is newer than `1.9`.
+
+A runner MUST select the tests whose range contains the run version before it executes anything. A test outside the range is not part of the run: the runner MUST NOT execute it and MUST NOT list it in the report, not even as skipped. A suite left without tests is not listed either. A run at an older version therefore reports the same tests, with the same totals, as it did before tests for a newer version were added.
+
+```yaml
+- id: REST-SUB-POST-001          # POST is the subscribe verb only in A2A 1.0
+  max_spec_version: "1.0"
+
+- id: CORE-GEN-001               # `generation` exists from A2A 1.1
+  min_spec_version: "1.1"
+```
+
+A test without `max_spec_version` claims to hold for every later version up to the document's `spec_version`, which is the newest version its author checked it against. A runner MUST NOT run a document at a version newer than its `spec_version`.
+
+Declare a range where the requirement itself differs between versions. Where a newer version keeps a requirement and adds to it, leave the existing test as it is and add a second test with `min_spec_version` for the addition. A test written later for a requirement that an older version already had MAY start at the newer version, which keeps the set of tests for the older version unchanged; its `description` says so.
 
 ### Example
 
@@ -234,7 +276,7 @@ Steps are the building blocks of a test. They execute sequentially within a test
 **Test isolation:** Tests within a suite (or across suites) MUST NOT share state. Each test starts with a clean context — no tasks, captures, or side effects carry over from previous tests. Runners MAY execute tests in any order or in parallel.
 
 ```cddl
-step = server-step / client-step / webhook-step / assertion-step / raw-step
+step = server-step / client-step / webhook-step / assertion-step / raw-step / live-step
 
 server-step = {
   id: text,                         ; Unique within the test
@@ -247,7 +289,11 @@ server-step = {
   ? capture: { + text => text },    ; Variable capture: varName => response.path
   ? assertions: [+ named-assertion], ; Post-step assertions on the step result
   ? repeat: repeat-config,          ; Polling/retry configuration
-  ? delay_ms: int                   ; Delay before executing this step
+  ? delay_ms: int,                  ; Delay before executing this step
+  ? a2a_version: text,              ; A2A-Version to send instead of the run version (§4.5)
+  ? min_duration_ms: int,           ; The response must take at least this long (§4.6)
+  ? max_duration_ms: int,           ; The response must take at most this long (§4.6)
+  ? background: bool                ; Keep the request open while later steps run (§4.7)
 }
 
 client-step = {
@@ -272,9 +318,12 @@ assertion-step = {
 
 client-response = {
   operation: abstract-operation,    ; Abstract operation represented by the payload
-  wire_payload: any                 ; Canonical transport payload for the client to parse
+  ? wire_payload: any,              ; Canonical transport payload for the client to parse
+  ? wire_stream: [+ any]            ; Canonical events of a streaming response, in order (§10)
 }
 ```
+
+A `live-step` drives a two-way live exchange and is defined in §7.5.
 
 ### 4.1. Abstract Operations
 
@@ -284,6 +333,7 @@ Tests reference abstract A2A operations rather than wire-level method names. The
 abstract-operation =
   "send_message" /
   "send_streaming_message" /
+  "send_live_message" /
   "get_task" /
   "list_tasks" /
   "cancel_task" /
@@ -302,16 +352,22 @@ The runner MUST translate each abstract operation to the correct wire representa
 |---|---|---|---|
 | `send_message` | `SendMessage` | `SendMessage` | `POST /message:send` |
 | `send_streaming_message` | `SendStreamingMessage` | `SendStreamingMessage` | `POST /message:stream` |
+| `send_live_message` | `SendLiveMessage` | `SendLiveMessage` | `POST /message:live` |
 | `get_task` | `GetTask` | `GetTask` | `GET /tasks/{id}` |
 | `list_tasks` | `ListTasks` | `ListTasks` | `GET /tasks` |
 | `cancel_task` | `CancelTask` | `CancelTask` | `POST /tasks/{id}:cancel` |
-| `subscribe_to_task` | `SubscribeToTask` | `SubscribeToTask` | `POST /tasks/{id}:subscribe` |
+| `subscribe_to_task` | `SubscribeToTask` | `SubscribeToTask` | `POST /tasks/{id}:subscribe` at A2A 1.0, `GET /tasks/{id}:subscribe` from A2A 1.1 |
 | `get_agent_card` | *(HTTP GET)* | *(HTTP GET)* | `GET /.well-known/agent-card.json` |
 | `get_extended_agent_card` | `GetExtendedAgentCard` | `GetExtendedAgentCard` | `GET /extendedAgentCard` |
 | `create_push_config` | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs` |
 | `get_push_config` | `GetTaskPushNotificationConfig` | `GetTaskPushNotificationConfig` | `GET /tasks/{id}/pushNotificationConfigs/{configId}` |
 | `list_push_configs` | `ListTaskPushNotificationConfigs` | `ListTaskPushNotificationConfigs` | `GET /tasks/{id}/pushNotificationConfigs` |
 | `delete_push_config` | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
+
+Two rows depend on the run version (§3.4):
+
+- `subscribe_to_task` over REST is `POST` in a run at A2A 1.0 and `GET` in a run at A2A 1.1 or newer. The A2A 1.0 method tables list `POST` and the A2A 1.1 tables list `GET`. With `GET`, every request field other than the task id travels as a query parameter.
+- `send_live_message` exists from A2A 1.1. It is driven by a live step (§7.5), and a `server-step` MUST NOT name it.
 
 ### 4.2. Assertion Root
 
@@ -321,6 +377,7 @@ Different A2A operations return different response shapes. The **assertion root*
 |---|---|---|
 | `send_message` | `SendMessageResponse` | The `SendMessageResponse` object (contains `task` or `message`) |
 | `send_streaming_message` | Stream of `StreamResponse` | Per-event (see §7) |
+| `send_live_message` | Stream of `StreamResponse` | Per-event (see §7 and §7.5) |
 | `get_task` | `Task` | The `Task` object directly |
 | `list_tasks` | `ListTasksResponse` | The `ListTasksResponse` object (contains `tasks` array) |
 | `cancel_task` | `Task` | The `Task` object directly |
@@ -385,12 +442,17 @@ request-params = {
   ? configuration: {
       ? returnImmediately: bool,
       ? historyLength: int,
+      ? ifGenerationMatch: int / text, ; A2A 1.1
       * text => any
     },
+  ? artifactUpdates: [+ any],       ; A2A 1.1: client-written TaskArtifactUpdateEvent objects
 
   ; For get_task / cancel_task / subscribe_to_task:
   ? id: text,                       ; Task ID
   ? historyLength: int,
+  ? currentGeneration: int / text,  ; A2A 1.1, get_task only
+  ? timelineLength: int,            ; A2A 1.1
+  ? lastSeenGeneration: int / text, ; A2A 1.1, subscribe_to_task only
 
   ; For list_tasks:
   ? contextId: text,
@@ -403,6 +465,7 @@ request-params = {
   ? url: text,
   ? token: text,
   ? authentication: { scheme: text, ? credentials: text },
+  ? protocolVersion: text,          ; A2A 1.1
 
   ; Catch-all for future fields:
   * text => any
@@ -421,6 +484,10 @@ part = {
   * text => any
 }
 ```
+
+The fields marked A2A 1.1 exist only from that version, so a test that sends one declares `min_spec_version: "1.1"` (§3.4). `ifGenerationMatch`, `currentGeneration` and `lastSeenGeneration` are 64-bit integers. They accept an integer or a string of decimal digits, which is the form a captured `generation` has (§5.6).
+
+A runner MUST send every field a test writes in `params`, including one whose value is `0`, `false` or empty. Several A2A fields distinguish a value that is set from one that is absent (`currentGeneration: 0` asks for a long-poll, an absent `currentGeneration` does not), so a runner that drops default values changes what the test asks.
 
 ### 4.4. Raw Wire Steps
 
@@ -447,9 +514,91 @@ raw-step = {
 
 Raw steps are used when the test must verify wire-level details that the abstract operation layer intentionally hides (e.g., HTTP status codes, header values, malformed input handling).
 
+`path` is relative to the URL of the interface under test, the one the agent card lists for the binding. On JSON-RPC that URL is the endpoint itself, so the path of a call is `/`.
+
 A raw request is sent exactly as written. The runner MUST NOT add or complete any part of it — in particular it MUST NOT supply the `A2A-Version` header or generate a `messageId`, both of which §12.4 requires for abstract operations. A raw body that carries a `message` therefore has to spell out its own `messageId`, which the A2A specification marks REQUIRED on every message.
 
+A raw request that should carry the version the run targets writes the header with the runner-provided variable: `A2A-Version: "{{specVersion}}"` (§12.2). A raw request that deliberately sends another version, or none, keeps its literal.
+
 > **Note:** Raw steps are inherently transport-specific. A test containing only raw steps MUST specify a `transport` filter.
+
+### 4.5. Protocol Version Override
+
+Every abstract operation is sent with the run version in the `A2A-Version` header (§12.4). `a2a_version` on a step replaces that value for the step's request. It lets a test check how the SUT treats a version other than the one the run targets: a version it does not support, or an older version that a newer server still has to serve.
+
+```yaml
+- id: send-as-unsupported-version
+  operation: send_message
+  a2a_version: "1.99"
+  params:
+    message:
+      role: ROLE_USER
+      parts:
+        - text: "tck-complete-task"
+  expect_error:
+    error_type: VersionNotSupportedError
+```
+
+The step is sent as a client of that version would send it. Where the agent card lists an interface with that `protocolVersion` for the binding under test, the runner sends the step to that interface; otherwise, as for a version the agent does not support, it sends the step to the interface the run uses. Where §4.1 gives a different wire mapping for that version, the runner uses it. A test that needs the agent to serve the other version declares that as a precondition (§3.3).
+
+The field is available on server steps and on live steps (§7.5). Raw steps do not take it, because they write their own headers (§4.4).
+
+### 4.6. Step Duration
+
+`min_duration_ms` asserts that the response to the step's request did not arrive sooner than the given number of milliseconds after the request was sent. It is how a test observes that a server held a request open, which no assertion on the response body can show. The A2A 1.1 long-poll, `GetTask` with `currentGeneration`, is the case it exists for.
+
+`max_duration_ms` is the opposite bound: the response must arrive within the given number of milliseconds. It shows that a server answered at once where A2A requires it to, instead of holding the request.
+
+The runner MUST measure from the moment the request has been written to the moment the response is complete, and MUST fail the step when the measured time is outside the bounds. Neither field may be combined with `repeat` or with `expect_stream`.
+
+A test SHOULD leave a wide margin between a bound and the time it expects: `min_duration_ms` well below the delay it asks the SUT to produce (§11.3), `max_duration_ms` well above an ordinary response time. Scheduling on either side shifts every measurement, and a test that fails on a busy machine reports a defect the SUT does not have.
+
+```yaml
+- id: long-poll
+  operation: get_task
+  params:
+    id: "{{start.taskId}}"
+    currentGeneration: "{{start.generation}}"
+  min_duration_ms: 1000
+  expect:
+    status: 200
+    body:
+      generation: {gt: "{{start.generation}}"}
+```
+
+### 4.7. Background Steps
+
+Steps run one after another, so a test cannot normally act while a request is still open. `background: true` lifts that for one step: the runner sends the request, leaves it open, and goes on to the following steps. It is what lets a test send a message to a task while a subscription to that task is being read.
+
+- The runner MUST NOT start the next step until the background request has been sent and, for a streaming operation, until its first event has arrived. The first event shows that the SUT has the stream in place. A request that is not streaming gives no such sign, so a test that needs the SUT to be processing it puts `delay_ms` on the next step.
+- A background step ends when its response arrives or the read of its stream ends (§7, §7.4). After the last step of the test the runner MUST wait for every background step that is still open, and only then evaluate its `expect`, `expect_error`, `expect_stream` and duration bounds (§4.6). A failure is reported against the background step.
+- `capture` on a background step that opens a stream is resolved against the stream's first event (§7), which has arrived before the next step starts, so the steps that follow can use it. On any other background step `capture` is resolved when the step ends, and its variables are not available to the steps that follow. `repeat` MUST NOT appear on a background step.
+- Where a runner ends a test at a step that does not pass, it MUST close every background step that is still open. It SHOULD NOT report a failure for such a step: the request was waiting for steps that never ran, and its failure would only repeat the one that ended the test. A background step that went wrong before the step after it began is the exception, and the runner SHOULD report it, because it is the likely cause of the later failure: its request could not be sent, its stream was refused or ended without an event, or its first event did not give its `capture`.
+- A test with a background step MUST declare `runner_requirements: [concurrent_requests]`. A runner that cannot keep one request open while it issues another MUST skip the test.
+
+```yaml
+- id: watch
+  operation: subscribe_to_task
+  background: true
+  params:
+    id: "{{start.taskId}}"
+  expect_stream:
+    events:
+      - description: "The client message sent in the next step is reported to this subscriber"
+        match: any_position
+        message_update:
+          message:
+            role: ROLE_USER
+
+- id: answer
+  operation: send_message
+  params:
+    message:
+      role: ROLE_USER
+      taskId: "{{start.taskId}}"
+      parts:
+        - text: "done"
+```
 
 ---
 
@@ -481,10 +630,10 @@ assertion-object = {
   ? ends_with: text,
 
   ; Numeric comparison
-  ? gte: number,                    ; Greater than or equal
-  ? lte: number,                    ; Less than or equal
-  ? gt: number,                     ; Greater than
-  ? lt: number,                     ; Less than
+  ? gte: number / text,             ; Greater than or equal
+  ? lte: number / text,             ; Less than or equal
+  ? gt: number / text,              ; Greater than
+  ? lt: number / text,              ; Less than; a text operand is a string of digits (§5.6)
 
   ; Array length
   ? count: int,                     ; Exact array length
@@ -642,6 +791,14 @@ A step MAY include an `assertions` array of `named-assertion` values that runs i
         text: {type: string}
 ```
 
+### 5.6. 64-bit Integers
+
+ProtoJSON writes a 64-bit integer as a JSON string. A field such as `generation` (A2A 1.1) therefore arrives as `"5"` on the JSON bindings, while a runner that reads the same field from a protobuf message may hold it as a number. To keep a test independent of that difference:
+
+- `gt`, `gte`, `lt` and `lte` accept a string of decimal digits, with an optional leading minus sign, wherever they accept a number. This holds for the value under test and for the operand, and the comparison is numeric.
+- Exact match does not convert. `generation: 5` does not match `"5"`; write `{gte: 5, lte: 5}` instead.
+- A captured 64-bit value substituted into `params` is sent as a string of digits, which every ProtoJSON parser accepts for a 64-bit field.
+
 ---
 
 ## 6. Expect Blocks
@@ -696,7 +853,8 @@ a2a-specific-error =
   "InvalidAgentResponseError" /
   "ExtendedAgentCardNotConfiguredError" /
   "ExtensionSupportRequiredError" /
-  "VersionNotSupportedError"
+  "VersionNotSupportedError" /
+  "TaskGenerationMismatchError"
 
 jsonrpc-standard-error =
   "JSONParseError" /
@@ -724,6 +882,9 @@ following values reproduce the canonical mappings in A2A §5.4 (Error Code Mappi
 | `ExtendedAgentCardNotConfiguredError` | -32007 | `FAILED_PRECONDITION` | 400 |
 | `ExtensionSupportRequiredError` | -32008 | `FAILED_PRECONDITION` | 400 |
 | `VersionNotSupportedError` | -32009 | `FAILED_PRECONDITION` | 400 |
+| `TaskGenerationMismatchError` | -32010 | `ABORTED` | 409 |
+
+`TaskGenerationMismatchError` exists from A2A 1.1. Its `ErrorInfo` reason is `TASK_GENERATION_MISMATCH`.
 
 The standard JSON-RPC error codes in A2A §9.5 are defined for the JSON-RPC binding only; A2A
 defines no gRPC or HTTP representation for them. A test naming one of these error types MUST
@@ -764,7 +925,7 @@ details, and MUST NOT infer the error type from the status alone.
 
 ## 7. Streaming Assertions
 
-Streaming operations (`send_streaming_message`, `subscribe_to_task`) return an ordered sequence of events rather than a single response. The `expect_stream` block provides assertions for this.
+Streaming operations (`send_streaming_message`, `subscribe_to_task`) return an ordered sequence of events rather than a single response. The `expect_stream` block provides assertions for this. The downlink of a live exchange (§7.5) is such a sequence too, and takes the same block.
 
 ```cddl
 expect-stream = {
@@ -777,7 +938,7 @@ expect-stream = {
 stream-assertions = (
   ? min_count: int,                 ; Minimum number of events
   ? max_count: int,                 ; Maximum number of events
-  ? ordering: ordering-rule,        ; Ordering constraint on task states
+  ? ordering: ordering-rule / [+ ordering-rule], ; Ordering constraints (§7.1)
 
   ; Event-level assertions
   ? events: [+ event-assertion],
@@ -786,7 +947,9 @@ stream-assertions = (
   ? final_event: { * text => assertion },
 
   ; All-events assertion (applied to every event)
-  ? each_event: { * text => assertion }
+  ? each_event: { * text => assertion },
+
+  ? stays_open_ms: int              ; The stream must still be open this long after its last event (§7.4)
 )
 
 stream-plan = {
@@ -795,7 +958,10 @@ stream-plan = {
   ? disconnect_after: int           ; Read this many events, then hang up (§7.3)
 }
 
-ordering-rule = "monotonic_state"   ; Task states never regress
+ordering-rule =
+  "monotonic_state" /               ; Task states never regress
+  "monotonic_generation" /          ; `generation` only increases
+  "contiguous_generation"           ; `generation` increases by exactly one per event
 
 event-assertion = {
   ? description: text,
@@ -807,6 +973,8 @@ event-assertion = {
   ? artifact_update: { * text => assertion },
   ? task: { * text => assertion },
   ? message: { * text => assertion },
+  ? message_update: { * text => assertion },   ; A2A 1.1
+  ? error: { * text => assertion },            ; A2A 1.1: a StreamError
 
   ; Or a generic assertion on the event:
   * text => assertion
@@ -814,7 +982,7 @@ event-assertion = {
 ```
 
 A stream event is a `StreamResponse`, a oneof over `task`, `message`, `status_update` and
-`artifact_update`. `event-assertion`, `final_event` and `each_event` may address it in either of
+`artifact_update`, and from A2A 1.1 also `message_update` and `error`. `event-assertion`, `final_event` and `each_event` may address it in either of
 two forms, and a runner MUST support both:
 
 - **Discriminated** — the payload arm is named, as above. This is the form that distinguishes one
@@ -822,9 +990,24 @@ two forms, and a runner MUST support both:
 - **Direct** — the assertion addresses the fields of the payload itself, without naming the arm,
   as in `final_event: {status: {state: TASK_STATE_COMPLETED}}` against a `TaskStatusUpdateEvent`.
 
+Two payloads have a field with the name of a kind: a message update and a stream error each have a
+field `message`. At the top of an assertion on an event, the name of a kind always means the kind,
+so `{message: {...}}` matches only an event that is a `Message`. The field is addressed through its
+own kind: `{message_update: {message: {...}}}`.
+
 Because the JSON bindings serialize the oneof with the ProtoJSON field naming of A2A §5.5, the
-discriminator arrives on the wire as `statusUpdate` and `artifactUpdate`. Runners MUST accept both
-that spelling and the `status_update` / `artifact_update` spelling used in this specification.
+discriminator arrives on the wire as `statusUpdate`, `artifactUpdate` and `messageUpdate`. Runners
+MUST accept both that spelling and the `status_update` / `artifact_update` / `message_update`
+spelling used in this specification. The two spellings name one payload kind in every assertion:
+`{message_update: {absent: true}}` fails on an event that arrived as `messageUpdate`.
+
+A2A 1.1 allows later minor versions to add kinds of event. A runner MUST keep an event of a kind it
+does not know as it was received, and MUST count it as an event of the stream. This is a rule for
+the runner, which reports what the SUT sent. What an A2A client does with such an event is a
+different matter, and is tested with a client step (§10).
+
+`capture` on a step that opens a stream is resolved against the **first** event of the stream, in
+the discriminated form, so a path names the payload kind first: `task.id`, `task.generation`.
 
 ### 7.1. Ordering Rules
 
@@ -851,6 +1034,18 @@ creation, so `TASK_STATE_SUBMITTED → TASK_STATE_COMPLETED` and
 `TASK_STATE_SUBMITTED → TASK_STATE_REJECTED` are both legal. Recovery from an interrupted state
 (`TASK_STATE_INPUT_REQUIRED → TASK_STATE_WORKING`, `TASK_STATE_AUTH_REQUIRED → TASK_STATE_WORKING`)
 is likewise legal: the interrupting condition was resolved.
+
+`monotonic_generation` and `contiguous_generation` check the `generation` counter that A2A 1.1 puts on a `Task` and on status, artifact and message update events. `ordering` takes one rule or a list of rules.
+
+With `monotonic_generation` the runner MUST fail the stream when:
+
+- an update event (`status_update`, `artifact_update` or `message_update`) carries no `generation`, or one lower than 1;
+- the `generation` of an update event is not greater than every `generation` seen earlier on the stream;
+- the `generation` of a `task` snapshot is lower than 1, or lower than one seen earlier on the stream. A snapshot MAY repeat the latest value, because it reports state and is not a mutation.
+
+`message` and `error` events carry no `generation` and are ignored.
+
+`contiguous_generation` applies the same checks, and additionally requires the `generation` of each update event to be exactly one more than the latest value seen before it. A2A advances the counter by one for each mutation and delivers one event for each mutation, so a stream that receives every event has no gaps. Use the rule only on such a stream: a subscriber that negotiated A2A 1.0 is not sent `message_update` events, and sees a gap wherever a client message was added to the task.
 
 ### Example
 
@@ -907,6 +1102,7 @@ expect-webhook = {
   task_id: text,                    ; Whose notifications to read; usually a captured id
   ? min_count: int,                 ; Deliveries required before the step passes. Default 1
   ? timeout_ms: int,                ; How long to wait for them. Default 10000
+  ? events: [+ event-assertion],    ; Applied to individual payloads, as in §7
   ? each_event: { * text => assertion },  ; Applied to every delivered payload
   ? final_event: { * text => assertion }, ; Applied to the most recent delivery
   ? token: assertion                ; The notification token the SUT must echo back
@@ -919,6 +1115,11 @@ address a reply to a request the runner made, and this step makes none.
 A runner MUST poll until `min_count` deliveries have arrived or `timeout_ms` elapses, and MUST
 fail the step when too few arrived, reporting how many did. Delivery is asynchronous, so a fixed
 wait would make a slow SUT indistinguishable from a silent one.
+
+Where the step has `events`, the runner keeps polling until every one of them has also been
+matched, and fails the step if `timeout_ms` elapses first. `each_event` and `final_event` apply to
+the deliveries received up to that point. A test that asserts a kind of payload is never delivered
+therefore names, in `events`, a delivery that comes after the one it rules out.
 
 A test using `expect_webhook` MUST declare `runner_requirements: [webhook_endpoint]`. A runner
 with no receiver of its own cannot host the URL the SUT calls back on, and MUST skip rather than
@@ -948,6 +1149,17 @@ client, not of the agent under test.
             id: "{{create.taskId}}"
         - statusUpdate:
             taskId: "{{create.taskId}}"
+```
+
+A delivered payload is a `StreamResponse`, so `events`, `each_event` and `final_event` take the forms §7 defines for a stream event, including the names of the payload kinds. `events` with `match: any_position` asserts that a payload of one kind was delivered. `each_event` with `absent` asserts that a kind was never delivered, which is how a test checks that a configuration created for A2A 1.0 receives none of the kinds A2A 1.1 added:
+
+```yaml
+- id: only-kinds-known-to-a2a-1-0
+  expect_webhook:
+    task_id: "{{create.taskId}}"
+    min_count: 1
+    each_event:
+      message_update: {absent: true}
 ```
 
 ---
@@ -1013,6 +1225,141 @@ is given.
 
 ---
 
+## 7.4. Streams That Stay Open
+
+A stream normally ends when the SUT closes it, and the assertions above are evaluated then. Some requirements are that the SUT does **not** close it: from A2A 1.1 a stream is expected to stay open when the task enters an interrupted state. A stream read to its end cannot show that, because the read would never end.
+
+`stays_open_ms` makes the runner end the read instead. After each event the runner waits up to that many milliseconds for the next one:
+
+- If the SUT closes the stream at any point, the step fails.
+- If the wait passes with the stream still open, the runner closes the connection and evaluates the remaining assertions on the events it received.
+
+The stream is thereby shown to be open `stays_open_ms` after its last event, and `final_event` says which event that was.
+
+```yaml
+expect_stream:
+  stays_open_ms: 3000
+  final_event:
+    status:
+      state: TASK_STATE_INPUT_REQUIRED
+```
+
+`stays_open_ms` MUST NOT be combined with `disconnect_after` on the same stream. `timeout_ms` still bounds the whole step: a read that neither the SUT nor `stays_open_ms` has ended when it elapses fails the step.
+
+---
+
+## 7.5. Live Exchanges
+
+`SendLiveMessage` (A2A 1.1) is a two-way exchange. The client keeps sending requests, the **uplink**, while the agent streams events, the **downlink**. A server step sends one request and reads one response, so a live exchange has a step kind of its own.
+
+```cddl
+live-step = {
+  id: text,
+  ? description: text,
+  live: live-exchange,
+  ? a2a_version: text,              ; A2A-Version for the whole exchange (§4.5)
+  ? expect_stream: expect-stream,   ; Assertions on the downlink
+  ? expect_error: expect-error,     ; The SUT refuses to open the exchange
+  ? capture: { + text => text }     ; Resolved against the first downlink event
+}
+
+live-exchange = {
+  open: { live-request },           ; The request that opens the exchange
+  ? uplink: [+ uplink-request]      ; Requests sent afterwards, in order
+}
+
+uplink-request = {
+  live-request,
+  ? id: text,
+  ? description: text,
+  ? after_event: { * text => assertion },  ; Hold this request until such a downlink event arrives
+  ? expect_ack: { * text => assertion }    ; Assertions on the acknowledgment (HTTP bindings)
+}
+
+live-request = (
+  send_message: request-params //   ; A SendMessageRequest
+  subscribe: subscribe-params //    ; A SubscribeToTaskRequest
+  unrecognized: true                ; A request of a kind the SUT cannot know
+)
+
+subscribe-params = {
+  id: text,
+  ? lastSeenGeneration: int / text,
+  * text => any
+}
+```
+
+The runner executes a live step as follows:
+
+1. It opens the exchange with `open`. The events that follow are the downlink, and `expect_stream` (§7) applies to all of them.
+2. If the SUT refuses to open the exchange, the step is evaluated against `expect_error` and ends. `expect_error` MUST NOT appear together with `uplink` or `expect_stream`.
+3. `capture` is resolved against the **first** downlink event. Its variables are available to the `uplink` requests and the `expect_stream` of the same step, as `{{stepId.name}}`, and to later steps. This is how an uplink request names a task that the opening request created.
+4. It sends the `uplink` requests in order, one at a time, and none before the first downlink event has arrived. A request with `after_event` is held until a downlink event matching that assertion has arrived; an event that released an earlier request is not considered again. If no such event arrives before the step ends, the step fails, and the runner reports which request was never sent. A request without `after_event` is sent as soon as the previous one has been sent and, where the binding acknowledges requests, acknowledged.
+5. After the last uplink request the runner sends nothing more and keeps reading the downlink until the SUT closes it or `stays_open_ms` (§7.4) ends the read. On gRPC it keeps its sending side open until then, because A2A does not say what closing it means for the exchange. `timeout_ms` bounds the step as it does for any stream.
+
+The three kinds of live request are named by ACTS, not by the wire. The runner maps `send_message` and `subscribe` to the members of `StreamRequest`, so a test does not change if A2A renames a member. For `unrecognized` the runner sends a `StreamRequest` whose payload is a member the A2A proto does not define, which is what a request from a later minor version looks like to the SUT. The runner chooses a member name and field number that no published A2A version uses.
+
+The exchange maps onto the bindings as follows:
+
+| Binding | Opening request | Later uplink requests | Acknowledgment of an uplink request |
+|---|---|---|---|
+| gRPC | First message on the `SendLiveMessage` bidirectional stream | Further messages on the same stream | None |
+| JSON-RPC | A `SendLiveMessage` call, answered with an event stream | One separate `SendLiveMessage` call each | The result of that call, a `Task` |
+| REST | `POST /message:live`, answered with an event stream | One separate `POST /message:live` each | The body of that response, a `Task` |
+
+On the HTTP bindings the response to the opening call is the downlink and stays open. Each later request is a short call of its own, answered with the current `Task` and no events. `expect_ack` asserts on that `Task`. It is evaluated only where an uplink request has a response of its own: on gRPC it does not apply, and the runner MUST NOT report it as passed or as failed. On an HTTP binding the runner MUST fail an uplink request that is answered with an event stream instead of a single `Task`.
+
+Once the exchange is open, a request the SUT rejects produces no error response. The SUT reports it as an `error` event, a `StreamError`, on the downlink and keeps the exchange open. A rejection is therefore asserted in `expect_stream`:
+
+```yaml
+- id: exchange
+  live:
+    open:
+      send_message:
+        message:
+          role: ROLE_USER
+          parts:
+            - text: "tck-live-reject start"
+    uplink:
+      - id: rejected
+        send_message:
+          message:
+            role: ROLE_USER
+            messageId: "live-rejected-1"
+            taskId: "{{exchange.taskId}}"
+            parts:
+              - text: "reject this one"
+      - id: finish
+        after_event:
+          error:
+            referenceId: "live-rejected-1"
+        send_message:
+          message:
+            role: ROLE_USER
+            taskId: "{{exchange.taskId}}"
+            parts:
+              - text: "done"
+  capture:
+    taskId: task.id
+  expect_stream:
+    timeout_ms: 20000
+    events:
+      - description: "The rejection names the message it refers to"
+        match: any_position
+        error:
+          referenceId: "live-rejected-1"
+          code: {type: string}
+    final_event:
+      status:
+        state: TASK_STATE_COMPLETED
+```
+
+A test with a live step MUST declare `runner_requirements: [live_stream]`. A runner that cannot drive a live exchange on the binding under test MUST skip the test.
+
+> **Tentative.** A2A 1.1 does not yet say how a server tells an HTTP uplink call from a call that opens a new exchange, and its binding sections do not list `SendLiveMessage`. Until it does, a runner sends every HTTP uplink request with the `taskId` of the exchange's task in its message, and the SUT is expected to match the call to the open downlink by that id. This has two consequences. First, on an HTTP binding an uplink request cannot name a different task, and cannot be `subscribe` or `unrecognized`, because the SUT would have nothing to relate it to the exchange; a test of how those requests are rejected MUST restrict `transport` to `grpc`. Second, the HTTP rows of the table above, and where the `StreamError` for a rejected HTTP request is delivered, may change with the pending A2A change [#2411](https://github.com/a2aproject/A2A/pull/2411). The rule also cannot tell an uplink call from a call that opens a second exchange on the same task, which A2A allows; a SUT that reads the call that way answers with an event stream, and the uplink request fails.
+
+---
+
 ## 8. Variables and Capture
 
 ### 8.1. Variables
@@ -1023,6 +1370,7 @@ ACTS supports variable interpolation using double-brace syntax: `{{expression}}`
 ; Variable reference syntax (within text values):
 ;   {{variableName}}       — top-level variable
 ;   {{stepId.varName}}     — captured variable from a prior step
+;   {{stepId.response}}    — the whole response of a prior step, or of the step itself in its `assertions`
 ;   {{env.ENV_VAR_NAME}}   — environment variable
 ;   {{$uuid}}              — generate a fresh UUID (each occurrence produces a new value)
 ```
@@ -1039,6 +1387,8 @@ capture = { + text => text }
 ; Key:   variable name to assign
 ; Value: dot-path into the response
 ```
+
+On a step with `repeat` (§9), `capture` is resolved against the response of the last attempt, the one that satisfied `until`.
 
 ### Example
 
@@ -1134,13 +1484,42 @@ client-step = {
 
 client-response = {
   operation: abstract-operation,
-  wire_payload: any
+  ? wire_payload: any,
+  ? wire_stream: [+ any]
 }
 ```
 
 Client tests are valuable for catching interop bugs: they ensure that every SDK can parse responses produced by any other conformant SDK. The `client_response` payloads in the official test suite represent the canonical wire format for each abstract operation.
 
 A `wire_payload` is a canned response, but a JSON-RPC client correlates a response to its request by `id`, and it generates that `id` itself at call time. A fixed `id` in the payload can therefore never be the one the client is waiting for, and a client that validates the correlation — as JSON-RPC 2.0 requires — will reject the payload before parsing any of it. Where a `wire_payload` carries a JSON-RPC envelope, the runner MUST replace its `id` with the `id` of the request the client actually issued. The value written in the test file is a placeholder and carries no meaning.
+
+A streaming operation answers with a sequence of events rather than with one payload. `wire_stream` lists those events in order, each written as it appears on the wire; on JSON-RPC each one is a JSON-RPC response of its own, and the rule above about `id` applies to every one of them. `expect_parsed`, and `{{stepId.response}}` in the step's `assertions`, then address an object with a single member, `events`: the events the client surfaced, in order, each in the form §7 uses for a stream event. Exactly one of `wire_payload` and `wire_stream` MUST be present. For `send_live_message` the client opens an exchange with a single message and sends nothing further, and `wire_stream` is the downlink of that exchange.
+
+```yaml
+- id: parse-stream
+  client_response:
+    operation: send_streaming_message
+    wire_stream:
+      - jsonrpc: "2.0"
+        id: "1"
+        result:
+          task:
+            id: "abc-123"
+            contextId: "ctx-456"
+            status:
+              state: TASK_STATE_WORKING
+      - jsonrpc: "2.0"
+        id: "1"
+        result:
+          statusUpdate:
+            taskId: "abc-123"
+            contextId: "ctx-456"
+            status:
+              state: TASK_STATE_COMPLETED
+  expect_parsed:
+    events:
+      count: 2
+```
 
 ### Example
 
@@ -1228,11 +1607,35 @@ The following prefixes form the standard SUT behavior contract. Any SUT that imp
 | `tck-artifact-file-url` | Complete with a file URL artifact. |
 | `tck-artifact-data` | Complete with a structured data artifact. |
 | `tck-long-running` | Simulate long-running work (delayed completion). |
-| `tck-multi-turn` | Require multiple turns (INPUT_REQUIRED → done). |
+| `tck-multi-turn` | Require multiple turns: answer every client message with `TASK_STATE_INPUT_REQUIRED` until one has the text `done`, then complete. |
 | `tck-cancel` | Accept and remain in WORKING state until canceled. |
 | `tck-stream-basic` | Stream: status(working) → artifact → status(completed). |
 | `tck-stream-chunked` | Stream: chunked artifact across multiple events. |
 | `tck-task-failure` | Complete with `TASK_STATE_FAILED` and error message. |
+
+The following prefixes are used only by tests for A2A 1.1 (`min_spec_version: "1.1"`). A SUT that does not implement A2A 1.1 does not declare them, and loses nothing by that: those tests are not part of a run at A2A 1.0 (§3.4).
+
+| Prefix | Behavior |
+|--------|----------|
+| `tck-progress-update` | Report progress at least twice with a status update that keeps the task in `TASK_STATE_WORKING` and carries a new status message, then complete. |
+| `tck-hold-working` | Stay in `TASK_STATE_WORKING` for the number of milliseconds given as the argument (default 2000) and emit no update in that time, then complete. A client message sent to the task meanwhile is accepted and added to the task, and is not answered. |
+| `tck-stream-input-required` | Stream: status(working) → status(input-required), then wait. When the client sends a message to the task: status(working) → status(completed). |
+| `tck-live-echo` | On a live exchange, keep the task in `TASK_STATE_WORKING` and answer every client message after the opening one with a status update in `TASK_STATE_WORKING` whose message text is `live-echo:<n>`, where `<n>` counts those messages from 1. A request the agent rejects is neither answered nor counted. Complete when a client message has the text `done`, and not before; that message is not answered with an echo. |
+| `tck-live-reject` | As `tck-live-echo`, but reject every client message whose text starts with `reject` with a `StreamError` that carries the message's `messageId` in `referenceId`. A rejected message is neither echoed nor counted, and the exchange stays open. |
+| `tck-user-artifact-echo` | Accept client-written artifacts for as long as the task is open. After each request stay in `TASK_STATE_INPUT_REQUIRED` with a status message `artifact-received:<text>`, where `<text>` is the text of the first part of the last artifact in that request. A request without an artifact leaves the status message as it was. Complete when a client message has the text `done`. |
+
+### 11.3. Behavior Arguments
+
+Everything after the prefix in the message text is free text, which tests use to say what they are doing. A behavior that takes an argument reads it from the first word after the prefix:
+
+```yaml
+parts:
+  - text: "tck-hold-working 4000 long-poll"
+```
+
+A SUT MUST use the default the table gives when that word is missing or is not a value the behavior understands.
+
+The first message of a task selects its behavior, and the behavior stays in force for the life of the task. Later requests to the task are input to that behavior and are not read for a prefix.
 
 ### Example SUT Behaviors File
 
@@ -1280,6 +1683,8 @@ This section defines requirements for ACTS-compliant test runners.
 
 A runner MUST accept one or more ACTS YAML files (or equivalent JSON). A runner MUST validate input against the ACTS structure defined in this specification before executing tests.
 
+A runner MUST also take the A2A version the run targets, the run version (§3.4), as an input of its own. It MUST NOT take it from a document: a document's `spec_version` says which version the tests were written against, not which version a run tests.
+
 ### 12.2. Variable Resolution
 
 A runner MUST resolve variables in the following order of precedence (highest first):
@@ -1306,6 +1711,10 @@ test rather than failing it — the gap is in the runner, not the SUT:
 `baseUrl` is also runner-provided; it is defined in §12.4 alongside the other protocol-level
 inputs.
 
+`specVersion` is runner-provided as well, and needs no requirement because every runner knows it:
+it is the run version (§3.4). Raw steps, which a runner sends as written (§4.4), use it to carry
+the version the run targets.
+
 The *valid* credential is deliberately not a variable. A runner presents it on abstract
 operations as a matter of protocol compliance (§12.4), and raw steps are sent exactly as written
 (§4.4), so a test needing a request to go out **without** a credential gets that by writing no
@@ -1321,7 +1730,7 @@ A runner MUST support at least one transport binding. When a test specifies `tra
 
 When executing abstract operations, the runner MUST produce protocol-compliant requests:
 
-- **A2A-Version header:** The runner MUST include the `A2A-Version` header (or gRPC metadata equivalent) on all requests, set to the `spec_version` from the ACTS document, unless the test is specifically testing version negotiation behavior (e.g., VER-* tests that deliberately omit or alter the header).
+- **A2A-Version header:** The runner MUST include the `A2A-Version` header (or gRPC metadata equivalent) on all requests, set to the run version (§3.4), or to the step's `a2a_version` where it declares one (§4.5).
 - **messageId generation:** If a request includes a `message` and no `messageId` is specified in the test, the runner MUST auto-generate a unique `messageId` (e.g., a UUID). The A2A specification requires every message to have a `messageId`.
 - **JSON-RPC envelope:** For JSON-RPC transport, the runner MUST wrap the request parameters in a valid JSON-RPC 2.0 request object (with `jsonrpc`, `method`, and `id` fields) and unwrap the JSON-RPC envelope from responses before applying assertions.
 - **Base URL:** The runner MUST be configurable with the SUT's base URL. The document-level `baseUrl` variable is available for raw wire steps that construct URLs manually, but abstract operations derive the URL from the runner's configuration and the operation's standard path.
@@ -1365,7 +1774,7 @@ Runners MUST be capable of producing a **JSON report** conforming to the schema 
 ```cddl
 acts-report = {
   acts_version: text,                ; ACTS format version used
-  spec_version: text,                ; A2A protocol version tested
+  spec_version: text,                ; A2A version the run targeted (§3.4)
   generated_at: text,                ; ISO 8601 timestamp
   sdk: sdk-info,
   transport: transport-binding,
@@ -1673,7 +2082,7 @@ suites:
 
       # ── Error: TaskNotFound ─────────────────────────────────────
       - id: CORE-ERR-001
-        name: "GetTask with non-existent ID returns TaskNotFoundError"
+        name: "GetTask with nonexistent ID returns TaskNotFoundError"
         spec_ref: "specification.md#4.2"
         level: must
         tags: [error, task-not-found]
@@ -1877,7 +2286,11 @@ tests/acts/
 ├── history.acts.yaml              # CORE-HIST-* tests
 ├── multi-turn.acts.yaml           # CORE-MULTI-*, CORE-CTX-* tests
 ├── streaming.acts.yaml            # STREAM-* tests
+├── live-message.acts.yaml         # STREAM-LIVE-* tests (A2A 1.1)
 ├── polling.acts.yaml              # CORE-EXEC-* tests
+├── generation.acts.yaml           # CORE-GEN-*, STREAM-GEN-*, CORE-POLL-*, CORE-MATCH-* tests (A2A 1.1)
+├── timeline.acts.yaml             # CORE-TIME-* tests (A2A 1.1)
+├── user-artifacts.acts.yaml       # CORE-USERART-* tests (A2A 1.1)
 ├── error-handling.acts.yaml       # CORE-ERR-*, CORE-CAP-*, JSONRPC-ERR-* tests
 ├── auth-security.acts.yaml        # SEC-* tests
 ├── version-negotiation.acts.yaml  # VER-* tests
@@ -1897,14 +2310,18 @@ The `suite.acts.yaml` master file references all test files in the directory:
 
 ```yaml
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 include:
   - discovery.acts.yaml
   - core-operations.acts.yaml
   - history.acts.yaml
   - multi-turn.acts.yaml
   - streaming.acts.yaml
+  - live-message.acts.yaml
   - polling.acts.yaml
+  - generation.acts.yaml
+  - timeline.acts.yaml
+  - user-artifacts.acts.yaml
   - error-handling.acts.yaml
   - auth-security.acts.yaml
   - version-negotiation.acts.yaml
@@ -1919,7 +2336,7 @@ include:
 
 ## 17. Versioning
 
-The ACTS format itself is versioned independently of the A2A protocol. The `acts_version` field in each document identifies the format version. The `spec_version` field identifies which A2A protocol version the tests target.
+The ACTS format itself is versioned independently of the A2A protocol. The `acts_version` field in each document identifies the format version. The `spec_version` field names the newest A2A protocol version the document's tests were written against (§3.4).
 
 When the ACTS format evolves:
 
@@ -1975,6 +2392,8 @@ test = {
   ? preconditions: preconditions,
   ? requires_behaviors: [+ text],  ; SUT behavior prefixes this test depends on
   ? origin: text,
+  ? min_spec_version: text,
+  ? max_spec_version: text,
   ? runner_requirements: [+ runner-requirement],
   steps: [+ step],
   ? assertions: [+ named-assertion]
@@ -1988,7 +2407,9 @@ runner-requirement =
   "concurrent_streams" /
   "stream_disconnect" /
   "auth_credentials" /
-  "header_inspection"
+  "header_inspection" /
+  "concurrent_requests" /
+  "live_stream"
 
 preconditions = {
   ? capabilities: { * text => any },
@@ -1996,11 +2417,12 @@ preconditions = {
   ? skills: [+ { id: text }],
   ? transport: [+ transport-binding],
   ? extensions: [+ text],
+  ? protocol_versions: [+ text],
   ? description: text
 }
 
 ; ── Steps ─────────────────────────────────────────────────────────
-step = server-step / client-step / webhook-step / assertion-step / raw-step
+step = server-step / client-step / webhook-step / assertion-step / raw-step / live-step
 
 server-step = {
   id: text,
@@ -2013,7 +2435,11 @@ server-step = {
   ? capture: { + text => text },
   ? assertions: [+ named-assertion],
   ? repeat: repeat-config,
-  ? delay_ms: int
+  ? delay_ms: int,
+  ? a2a_version: text,
+  ? min_duration_ms: int,
+  ? max_duration_ms: int,
+  ? background: bool
 }
 
 client-step = {
@@ -2026,7 +2452,8 @@ client-step = {
 
 client-response = {
   operation: abstract-operation,
-  wire_payload: any
+  ? wire_payload: any,
+  ? wire_stream: [+ any]
 }
 
 assertion-step = {
@@ -2052,10 +2479,52 @@ raw-step = {
   ? assertions: [+ named-assertion]
 }
 
+webhook-step = {
+  id: text,
+  ? description: text,
+  expect_webhook: expect-webhook
+}
+
+live-step = {
+  id: text,
+  ? description: text,
+  live: live-exchange,
+  ? a2a_version: text,
+  ? expect_stream: expect-stream,
+  ? expect_error: expect-error,
+  ? capture: { + text => text }
+}
+
+live-exchange = {
+  open: { live-request },
+  ? uplink: [+ uplink-request]
+}
+
+uplink-request = {
+  live-request,
+  ? id: text,
+  ? description: text,
+  ? after_event: { * text => assertion },
+  ? expect_ack: { * text => assertion }
+}
+
+live-request = (
+  send_message: request-params //
+  subscribe: subscribe-params //
+  unrecognized: true
+)
+
+subscribe-params = {
+  id: text,
+  ? lastSeenGeneration: int / text,
+  * text => any
+}
+
 ; ── Operations ────────────────────────────────────────────────────
 abstract-operation =
   "send_message" /
   "send_streaming_message" /
+  "send_live_message" /
   "get_task" /
   "list_tasks" /
   "cancel_task" /
@@ -2080,10 +2549,15 @@ request-params = {
   ? configuration: {
       ? returnImmediately: bool,
       ? historyLength: int,
+      ? ifGenerationMatch: int / text,
       * text => any
     },
+  ? artifactUpdates: [+ any],
   ? id: text,
   ? historyLength: int,
+  ? currentGeneration: int / text,
+  ? timelineLength: int,
+  ? lastSeenGeneration: int / text,
   ? contextId: text,
   ? cursor: text,
   ? pageSize: int,
@@ -2091,6 +2565,7 @@ request-params = {
   ? url: text,
   ? token: text,
   ? authentication: { scheme: text, ? credentials: text },
+  ? protocolVersion: text,
   * text => any
 }
 
@@ -2129,7 +2604,8 @@ a2a-specific-error =
   "InvalidAgentResponseError" /
   "ExtendedAgentCardNotConfiguredError" /
   "ExtensionSupportRequiredError" /
-  "VersionNotSupportedError"
+  "VersionNotSupportedError" /
+  "TaskGenerationMismatchError"
 
 jsonrpc-standard-error =
   "JSONParseError" /
@@ -2148,10 +2624,11 @@ expect-stream = {
 stream-assertions = (
   ? min_count: int,
   ? max_count: int,
-  ? ordering: ordering-rule,
+  ? ordering: ordering-rule / [+ ordering-rule],
   ? events: [+ event-assertion],
   ? final_event: { * text => assertion },
-  ? each_event: { * text => assertion }
+  ? each_event: { * text => assertion },
+  ? stays_open_ms: int
 )
 
 stream-plan = {
@@ -2160,7 +2637,7 @@ stream-plan = {
   ? disconnect_after: int
 }
 
-ordering-rule = "monotonic_state"
+ordering-rule = "monotonic_state" / "monotonic_generation" / "contiguous_generation"
 
 event-assertion = {
   ? description: text,
@@ -2170,7 +2647,20 @@ event-assertion = {
   ? artifact_update: { * text => assertion },
   ? task: { * text => assertion },
   ? message: { * text => assertion },
+  ? message_update: { * text => assertion },
+  ? error: { * text => assertion },
   * text => assertion
+}
+
+; ── Push Delivery ─────────────────────────────────────────────────
+expect-webhook = {
+  task_id: text,
+  ? min_count: int,
+  ? timeout_ms: int,
+  ? events: [+ event-assertion],
+  ? each_event: { * text => assertion },
+  ? final_event: { * text => assertion },
+  ? token: assertion
 }
 
 ; ── Assertions ────────────────────────────────────────────────────
@@ -2186,10 +2676,10 @@ assertion-object = {
   ? matches: text,
   ? starts_with: text,
   ? ends_with: text,
-  ? gte: number,
-  ? lte: number,
-  ? gt: number,
-  ? lt: number,
+  ? gte: number / text,
+  ? lte: number / text,
+  ? gt: number / text,
+  ? lt: number / text,
   ? count: int,
   ? count_gte: int,
   ? count_lte: int,
@@ -2375,7 +2865,7 @@ The following requirement IDs are carried forward from existing conformance test
 | STREAM-SUB-001 | First SubscribeToTask event contains a Task |
 | STREAM-SUB-002 | SubscribeToTask stream closes at terminal state |
 | STREAM-SUB-003 | SubscribeToTask on terminal task returns error |
-| STREAM-SUB-004 | SubscribeToTask on non-existent task returns TaskNotFoundError |
+| STREAM-SUB-004 | SubscribeToTask on nonexistent task returns TaskNotFoundError |
 
 ### CARD (Agent Card Discovery)
 | ID | Description |

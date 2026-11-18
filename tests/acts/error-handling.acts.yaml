@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 
 metadata:
   title: "A2A Error Handling Conformance Tests"
@@ -10,7 +10,7 @@ suites:
     name: "Error Handling"
     tests:
       - id: CORE-ERR-001
-        name: "GetTask with non-existent ID returns TaskNotFoundError"
+        name: "GetTask with nonexistent ID returns TaskNotFoundError"
         level: must
         tags: [error, get-task, task-not-found]
         steps:
@@ -24,7 +24,7 @@ suites:
                 type: string
 
       - id: CORE-ERR-002
-        name: "CancelTask on non-existent task returns TaskNotFoundError"
+        name: "CancelTask on nonexistent task returns TaskNotFoundError"
         level: must
         tags: [error, cancel-task]
         steps:
@@ -113,7 +113,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: 1
@@ -139,7 +139,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body_raw: "{this is not valid json"
             expect:
               status: 200
@@ -179,7 +179,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: 1
@@ -268,7 +268,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: "core-err-008"
@@ -342,7 +342,7 @@ suites:
               path: "/"
               headers:
                 Content-Type: application/json
-                A2A-Version: "1.0"
+                A2A-Version: "{{specVersion}}"
               body:
                 jsonrpc: "2.0"
                 id: "jsonrpc-err-003"

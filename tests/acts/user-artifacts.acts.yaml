@@ -1,0 +1,457 @@
+acts_version: "1.0"
+spec_version: "1.1"
+
+metadata:
+  title: "Client-written artifacts ACTS suite"
+  description: "Conformance scenarios for artifacts written by the client in SendMessageRequest.artifactUpdates, added in A2A 1.1."
+
+suites:
+  - id: user-artifacts
+    name: "Client-written artifacts"
+    description: >
+      Covers the userArtifacts capability, sending artifacts with and without a message, the
+      role of a stored client artifact, and server ownership of generation on artifact updates.
+    tags:
+      - artifacts
+      - user-artifacts
+    tests:
+      - id: CORE-USERART-001
+        name: "An agent without the userArtifacts capability rejects artifactUpdates with UnsupportedOperationError"
+        description: >
+          An agent whose card does not declare userArtifacts must reject a request that carries
+          artifactUpdates with UnsupportedOperationError. A control step first sends the same
+          message without artifactUpdates and expects it to be accepted, so the rejection can
+          only be caused by the artifacts.
+        spec_ref: "docs/specification.md#334-capability-validation"
+        level: must
+        min_spec_version: "1.1"
+        tags: [capability, error]
+        requires_behaviors: [tck-complete-task]
+        preconditions:
+          capabilities:
+            userArtifacts: false
+        steps:
+          - id: control
+            description: "The same message without artifactUpdates is accepted"
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task control without artifacts"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: with-artifacts
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task with a client artifact"
+              artifactUpdates:
+                - artifact:
+                    artifactId: "core-userart-001-input"
+                    parts:
+                      - text: "client artifact"
+            expect_error:
+              error_type: UnsupportedOperationError
+
+      - id: CORE-USERART-002
+        name: "A message that creates a task with one client-written artifact is accepted and the task holds the artifact"
+        description: >
+          Sends a message that creates a task together with one client-written artifact whose
+          taskId and contextId are omitted, which the server assigns. The agent must accept it,
+          report the text of the artifact in its status message, and the task must hold the
+          artifact.
+        spec_ref: "docs/specification.md#321-sendmessagerequest"
+        level: must
+        min_spec_version: "1.1"
+        tags: [artifacts]
+        requires_behaviors: [tck-user-artifact-echo]
+        preconditions:
+          capabilities:
+            userArtifacts: true
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-user-artifact-echo create with one artifact"
+              artifactUpdates:
+                - artifact:
+                    artifactId: "core-userart-002-input"
+                    parts:
+                      - text: "first client artifact"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                    message:
+                      parts:
+                        - text: "artifact-received:first client artifact"
+            capture:
+              taskId: task.id
+          - id: get
+            operation: get_task
+            params:
+              id: "{{create.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{create.taskId}}"
+            assertions:
+              - id: holds-client-artifact
+                description: "The task holds the client-written artifact with its content"
+                source: "{{get.response}}"
+                any:
+                  path: "artifacts[*]"
+                  match:
+                    artifactId: "core-userart-002-input"
+                    parts:
+                      - text: "first client artifact"
+
+      - id: CORE-USERART-003
+        name: "A stored client-written artifact has role ROLE_USER"
+        description: >
+          Sends a client-written artifact without setting its role, then reads the task. The
+          stored artifact should have role ROLE_USER. In A2A 1.1.0-rc this is a description
+          without a requirement keyword, which sets the level to should; a pending change makes
+          it a MUST for the server and says an unset role means ROLE_AGENT.
+        spec_ref: "docs/specification.md#321-sendmessagerequest"
+        level: should
+        min_spec_version: "1.1"
+        tags: [artifacts, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        requires_behaviors: [tck-user-artifact-echo]
+        preconditions:
+          capabilities:
+            userArtifacts: true
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-user-artifact-echo role of a client artifact"
+              artifactUpdates:
+                - artifact:
+                    artifactId: "core-userart-003-input"
+                    parts:
+                      - text: "artifact without a role"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+            capture:
+              taskId: task.id
+          - id: get
+            operation: get_task
+            params:
+              id: "{{create.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{create.taskId}}"
+            assertions:
+              - id: role-user
+                description: "The stored client-written artifact is marked ROLE_USER"
+                source: "{{get.response}}"
+                any:
+                  path: "artifacts[*]"
+                  match:
+                    artifactId: "core-userart-003-input"
+                    role: ROLE_USER
+
+      - id: CORE-USERART-004
+        name: "artifactUpdates without a message are accepted for an existing task"
+        description: >
+          Creates a task with one client-written artifact, then sends a second artifact to the
+          same task with no message, naming the task on the update. The request must be
+          accepted, the agent must report the second artifact, and the task must hold it.
+        spec_ref: "docs/specification.md#321-sendmessagerequest"
+        level: must
+        min_spec_version: "1.1"
+        tags: [artifacts]
+        requires_behaviors: [tck-user-artifact-echo]
+        preconditions:
+          capabilities:
+            userArtifacts: true
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-user-artifact-echo artifacts without a message"
+              artifactUpdates:
+                - artifact:
+                    artifactId: "core-userart-004-first"
+                    parts:
+                      - text: "first"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+          - id: artifact-only
+            description: "No message, one artifact update naming the existing task"
+            operation: send_message
+            params:
+              artifactUpdates:
+                - taskId: "{{create.taskId}}"
+                  contextId: "{{create.contextId}}"
+                  artifact:
+                    artifactId: "core-userart-004-second"
+                    parts:
+                      - text: "second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{create.taskId}}"
+          - id: get
+            operation: get_task
+            params:
+              id: "{{create.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{create.taskId}}"
+                status:
+                  state: TASK_STATE_INPUT_REQUIRED
+                  message:
+                    parts:
+                      - text: "artifact-received:second"
+            repeat:
+              until: "status.message.parts[0].text == artifact-received:second"
+              max_attempts: 10
+              delay_ms: 300
+            assertions:
+              - id: holds-second-artifact
+                description: "The artifact sent without a message was applied to the task"
+                source: "{{get.response}}"
+                any:
+                  path: "artifacts[*]"
+                  match:
+                    artifactId: "core-userart-004-second"
+
+      - id: CORE-USERART-005
+        name: "artifactUpdates without a message are rejected when they would create a task"
+        description: >
+          Sends artifactUpdates with no message and no taskId, so no existing task is named.
+          A message is required when a task is created, so the request must fail. The text
+          names no error for this case, so the test asserts only that the request fails. A
+          control step first sends the same artifact with a message and expects it to be
+          accepted.
+        spec_ref: "docs/specification.md#321-sendmessagerequest"
+        level: must
+        min_spec_version: "1.1"
+        tags: [artifacts, error]
+        requires_behaviors: [tck-user-artifact-echo]
+        preconditions:
+          capabilities:
+            userArtifacts: true
+        steps:
+          - id: control
+            description: "The same artifact with a task-creating message is accepted"
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-user-artifact-echo control with a message"
+              artifactUpdates:
+                - artifact:
+                    artifactId: "core-userart-005-input"
+                    parts:
+                      - text: "orphan artifact"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+          - id: no-message
+            operation: send_message
+            params:
+              artifactUpdates:
+                - artifact:
+                    artifactId: "core-userart-005-input"
+                    parts:
+                      - text: "orphan artifact"
+            expect_error:
+              message: {type: string}
+
+      - id: CORE-USERART-006
+        name: "A generation sent by the client on an artifact update is ignored"
+        description: >
+          Sends a client-written artifact whose update carries a very large generation. The
+          server must ignore the value and accept the request, so the task's generation stays
+          far below it, both in the response and when the task is read again, and the stored
+          artifact is not placed at that generation.
+        spec_ref: "docs/specification.md#321-sendmessagerequest"
+        level: must
+        min_spec_version: "1.1"
+        tags: [artifacts, generation]
+        requires_behaviors: [tck-user-artifact-echo]
+        preconditions:
+          capabilities:
+            userArtifacts: true
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-user-artifact-echo client generation is ignored"
+              artifactUpdates:
+                - generation: "9000000000000000000"
+                  artifact:
+                    artifactId: "core-userart-006-input"
+                    parts:
+                      - text: "artifact with a client generation"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  generation: {gte: 1, lt: 1000000}
+            capture:
+              taskId: task.id
+          - id: get
+            operation: get_task
+            params:
+              id: "{{create.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{create.taskId}}"
+                generation: {gte: 1, lt: 1000000}
+            assertions:
+              - id: artifact-not-placed-at-client-generation
+                description: "Where the stored artifact carries generation markers, they are the server's, not the client's value"
+                source: "{{get.response}}"
+                any:
+                  path: "artifacts[*]"
+                  match:
+                    artifactId: "core-userart-006-input"
+                    startGeneration:
+                      any_of:
+                        - absent: true
+                        - lt: 1000000
+                    endGeneration:
+                      any_of:
+                        - absent: true
+                        - lt: 1000000
+
+      - id: CORE-USERART-007
+        name: "The artifact update broadcast for a client-written artifact carries a server-assigned generation"
+        description: >
+          Creates a task that waits for input, subscribes to it, then sends a client-written
+          artifact to the task with no message. The subscriber should receive an artifact
+          update for that artifact whose generation was assigned by the server and is greater
+          than the task's generation before the artifact was sent. Sending "done" completes the
+          task and ends the subscription. That the server broadcasts the event is stated without
+          a requirement keyword, hence should; the generation an emitted artifact update carries
+          is a MUST. The task waits for input while the subscription is open, so the test also
+          needs an agent that keeps a subscription open in that state, which A2A allows and does
+          not require.
+        spec_ref: "docs/specification.md#321-sendmessagerequest"
+        level: should
+        min_spec_version: "1.1"
+        tags: [artifacts, generation, streaming]
+        runner_requirements: [concurrent_requests]
+        requires_behaviors: [tck-user-artifact-echo]
+        preconditions:
+          capabilities:
+            userArtifacts: true
+            streaming: true
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-user-artifact-echo broadcast of a client artifact"
+              artifactUpdates:
+                - artifact:
+                    artifactId: "core-userart-007-first"
+                    parts:
+                      - text: "first"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+              generation: task.generation
+          - id: watch
+            operation: subscribe_to_task
+            background: true
+            params:
+              id: "{{create.taskId}}"
+            expect_stream:
+              timeout_ms: 30000
+              events:
+                - description: "The client-written artifact is broadcast with a server-assigned generation"
+                  match: any_position
+                  artifact_update:
+                    taskId: "{{create.taskId}}"
+                    artifact:
+                      artifactId: "core-userart-007-second"
+                    generation: {gt: "{{create.generation}}"}
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+          - id: artifact-only
+            operation: send_message
+            params:
+              artifactUpdates:
+                - taskId: "{{create.taskId}}"
+                  contextId: "{{create.contextId}}"
+                  artifact:
+                    artifactId: "core-userart-007-second"
+                    parts:
+                      - text: "second"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{create.taskId}}"
+          - id: finish
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{create.taskId}}"
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED

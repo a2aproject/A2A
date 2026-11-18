@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 
 metadata:
   title: "Client Parsing (Golden Response) Tests"
@@ -325,3 +325,333 @@ suites:
               capabilities:
                 streaming: false
                 pushNotifications: false
+
+      - id: CLIENT-PARSE-007
+        name: "Parse a task with the A2A 1.1 generation, timeline and artifact fields"
+        description: >
+          Verifies the client can parse a GetTask response that carries the fields
+          A2A 1.1 adds: the task generation, a timeline with a client message entry
+          and two agent status entries, and artifacts with startGeneration,
+          endGeneration and role. The 64-bit values arrive as strings, as ProtoJSON
+          writes them, and are asserted with numeric comparisons so that a client
+          may hold them as numbers.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [client, parsing, get-task, generation, timeline]
+        steps:
+          - id: parse
+            client_response:
+              operation: get_task
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-007"
+                result:
+                  id: "task-gen-001"
+                  contextId: "ctx-gen-001"
+                  status:
+                    state: TASK_STATE_COMPLETED
+                    timestamp: "2026-01-01T00:00:05Z"
+                  artifacts:
+                    - artifactId: "art-agent"
+                      parts:
+                        - text: "agent output"
+                      startGeneration: "4"
+                      endGeneration: "4"
+                      role: ROLE_AGENT
+                    - artifactId: "art-user"
+                      parts:
+                        - text: "client input"
+                      startGeneration: "5"
+                      endGeneration: "5"
+                      role: ROLE_USER
+                  timeline:
+                    - message:
+                        messageId: "msg-tl-1"
+                        role: ROLE_USER
+                        parts:
+                          - text: "please start"
+                      generation: "2"
+                    - status:
+                        state: TASK_STATE_WORKING
+                        message:
+                          messageId: "msg-tl-2"
+                          role: ROLE_AGENT
+                          parts:
+                            - text: "working on it"
+                        timestamp: "2026-01-01T00:00:01Z"
+                      generation: "3"
+                    - status:
+                        state: TASK_STATE_COMPLETED
+                        timestamp: "2026-01-01T00:00:05Z"
+                      generation: "6"
+                  generation: "6"
+            expect_parsed:
+              id: "task-gen-001"
+              contextId: "ctx-gen-001"
+              generation: {gte: 6, lte: 6}
+              status:
+                state: TASK_STATE_COMPLETED
+              artifacts:
+                - artifactId: "art-agent"
+                  startGeneration: {gte: 4, lte: 4}
+                  endGeneration: {gte: 4, lte: 4}
+                  role: ROLE_AGENT
+                - artifactId: "art-user"
+                  startGeneration: {gte: 5, lte: 5}
+                  endGeneration: {gte: 5, lte: 5}
+                  role: ROLE_USER
+              timeline:
+                - message:
+                    messageId: "msg-tl-1"
+                    role: ROLE_USER
+                  generation: {gte: 2, lte: 2}
+                - status:
+                    state: TASK_STATE_WORKING
+                    message:
+                      messageId: "msg-tl-2"
+                      role: ROLE_AGENT
+                  generation: {gte: 3, lte: 3}
+                - status:
+                    state: TASK_STATE_COMPLETED
+                  generation: {gte: 6, lte: 6}
+
+      - id: CLIENT-PARSE-008
+        name: "Client skips a stream event of an unknown kind and keeps reading"
+        description: >
+          Verifies that a client which receives a stream event of a kind it does
+          not know skips that event and goes on reading. The stream carries a task
+          snapshot, an event of a kind no A2A version defines, and a status update
+          that completes the task. The client must surface the snapshot and the
+          status update, in that order, and nothing in between. A client that
+          fails on the unknown event, or stops at it, does not surface the status
+          update.
+        spec_ref: "docs/specification.md#323-stream-response"
+        level: must
+        min_spec_version: "1.1"
+        tags: [client, parsing, streaming, forward-compatibility]
+        steps:
+          - id: parse
+            client_response:
+              operation: send_streaming_message
+              wire_stream:
+                - jsonrpc: "2.0"
+                  id: "req-008"
+                  result:
+                    task:
+                      id: "task-fc-001"
+                      contextId: "ctx-fc-001"
+                      status:
+                        state: TASK_STATE_WORKING
+                      generation: "2"
+                - jsonrpc: "2.0"
+                  id: "req-008"
+                  result:
+                    futureEvent:
+                      taskId: "task-fc-001"
+                      contextId: "ctx-fc-001"
+                      detail: "a kind of event added by a later minor version"
+                - jsonrpc: "2.0"
+                  id: "req-008"
+                  result:
+                    statusUpdate:
+                      taskId: "task-fc-001"
+                      contextId: "ctx-fc-001"
+                      status:
+                        state: TASK_STATE_COMPLETED
+                      generation: "3"
+            expect_parsed:
+              events:
+                type: array
+                count: 2
+                items:
+                  - task:
+                      id: "task-fc-001"
+                      status:
+                        state: TASK_STATE_WORKING
+                  - status_update:
+                      taskId: "task-fc-001"
+                      status:
+                        state: TASK_STATE_COMPLETED
+                      generation: {gte: 3, lte: 3}
+
+      - id: CLIENT-PARSE-009
+        name: "Parse a messageUpdate stream event"
+        description: >
+          Verifies the client can parse a subscription stream that carries a
+          messageUpdate event, the A2A 1.1 event that reports a client message
+          added to the task. The stream is a task snapshot followed by the
+          messageUpdate, and the client must surface both, with the task id,
+          context id, message and generation of the update.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [client, parsing, streaming, message-update]
+        steps:
+          - id: parse
+            client_response:
+              operation: subscribe_to_task
+              wire_stream:
+                - jsonrpc: "2.0"
+                  id: "req-009"
+                  result:
+                    task:
+                      id: "task-mu-001"
+                      contextId: "ctx-mu-001"
+                      status:
+                        state: TASK_STATE_INPUT_REQUIRED
+                      generation: "2"
+                - jsonrpc: "2.0"
+                  id: "req-009"
+                  result:
+                    messageUpdate:
+                      taskId: "task-mu-001"
+                      contextId: "ctx-mu-001"
+                      message:
+                        messageId: "msg-mu-1"
+                        taskId: "task-mu-001"
+                        contextId: "ctx-mu-001"
+                        role: ROLE_USER
+                        parts:
+                          - text: "here is more input"
+                      generation: "3"
+            expect_parsed:
+              events:
+                type: array
+                count: 2
+                items:
+                  - task:
+                      id: "task-mu-001"
+                  - message_update:
+                      taskId: "task-mu-001"
+                      contextId: "ctx-mu-001"
+                      message:
+                        messageId: "msg-mu-1"
+                        role: ROLE_USER
+                        parts:
+                          - text: "here is more input"
+                      generation: {gte: 3, lte: 3}
+
+      - id: CLIENT-PARSE-010
+        name: "Client skips a timeline entry of an unknown kind and still parses the task"
+        description: >
+          Verifies that a client which meets a timeline entry of a kind it does not
+          know skips that entry instead of rejecting the timeline or the task. The
+          task carries a client message entry, an agent status entry, and a third
+          entry of a kind no A2A version defines, followed by the task generation.
+          The client must parse the task, including both known entries in order
+          and the fields that follow the timeline.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [client, parsing, timeline, forward-compatibility]
+        steps:
+          - id: parse
+            client_response:
+              operation: get_task
+              wire_payload:
+                jsonrpc: "2.0"
+                id: "req-010"
+                result:
+                  id: "task-future-entry-001"
+                  contextId: "ctx-future-entry-001"
+                  status:
+                    state: TASK_STATE_WORKING
+                  timeline:
+                    - message:
+                        messageId: "msg-future-entry-1"
+                        role: ROLE_USER
+                        parts:
+                          - text: "please start"
+                      generation: "2"
+                    - status:
+                        state: TASK_STATE_WORKING
+                        message:
+                          messageId: "msg-future-entry-2"
+                          role: ROLE_AGENT
+                          parts:
+                            - text: "working on it"
+                      generation: "3"
+                    - futureEntry:
+                        detail: "a kind of timeline entry added by a later minor version"
+                      generation: "4"
+                  generation: "4"
+            expect_parsed:
+              id: "task-future-entry-001"
+              contextId: "ctx-future-entry-001"
+              status:
+                state: TASK_STATE_WORKING
+              generation: {gte: 4, lte: 4}
+              timeline:
+                type: array
+                count_gte: 2
+                items:
+                  - message:
+                      messageId: "msg-future-entry-1"
+                      role: ROLE_USER
+                    generation: {gte: 2, lte: 2}
+                  - status:
+                      state: TASK_STATE_WORKING
+                    generation: {gte: 3, lte: 3}
+
+      - id: CLIENT-PARSE-011
+        name: "Parse a StreamError event"
+        description: >
+          Verifies the client can parse a live exchange stream that carries a
+          StreamError, the event that rejects one client request without ending
+          the stream. The stream is a task snapshot, a StreamError that names the
+          rejected message, and a status update that completes the task. The
+          client must surface all three in order and must not end the stream at
+          the error. Tentative because the binding sections of the A2A text do not
+          yet define SendLiveMessage, so the framing of these events is open.
+        spec_ref: "specification/a2a.proto: message StreamError"
+        level: must
+        min_spec_version: "1.1"
+        tags: [client, parsing, streaming, live, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        steps:
+          - id: parse
+            client_response:
+              operation: send_live_message
+              wire_stream:
+                - jsonrpc: "2.0"
+                  id: "req-011"
+                  result:
+                    task:
+                      id: "task-se-001"
+                      contextId: "ctx-se-001"
+                      status:
+                        state: TASK_STATE_WORKING
+                      generation: "2"
+                - jsonrpc: "2.0"
+                  id: "req-011"
+                  result:
+                    error:
+                      taskId: "task-se-001"
+                      code: "INVALID_ARGUMENT"
+                      message: "the message was rejected"
+                      referenceId: "msg-se-rejected"
+                - jsonrpc: "2.0"
+                  id: "req-011"
+                  result:
+                    statusUpdate:
+                      taskId: "task-se-001"
+                      contextId: "ctx-se-001"
+                      status:
+                        state: TASK_STATE_COMPLETED
+                      generation: "3"
+            expect_parsed:
+              events:
+                type: array
+                count: 3
+                items:
+                  - task:
+                      id: "task-se-001"
+                  - error:
+                      taskId: "task-se-001"
+                      code: "INVALID_ARGUMENT"
+                      referenceId: "msg-se-rejected"
+                  - status_update:
+                      taskId: "task-se-001"
+                      status:
+                        state: TASK_STATE_COMPLETED

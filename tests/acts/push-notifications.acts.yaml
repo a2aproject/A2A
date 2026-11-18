@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 
 metadata:
   title: "Push Notification Configuration"
@@ -497,8 +497,10 @@ suites:
               The payload format is the subject, and it appears in no
               response. A2A pushes the task event itself, so the delivery must
               be one of the discriminated event shapes and must name the task
-              it is about — a whole Task or a status update, as §7 allows for
-              any event.
+              it is about — a whole Task, a status update or an artifact
+              update, as §7 allows for any event. The task of this test
+              produces an artifact, so an artifact update is among the
+              payloads an agent delivers for it.
             expect_webhook:
               task_id: "{{create.taskId}}"
               min_count: 1
@@ -514,3 +516,216 @@ suites:
                       status:
                         state:
                           type: string
+                  - artifactUpdate:
+                      taskId: "{{create.taskId}}"
+                      artifact:
+                        artifactId:
+                          type: string
+
+      - id: PUSH-VER-001
+        name: "A push configuration keeps the protocolVersion it was created with"
+        description: >
+          Creates a push configuration with protocolVersion "1.1", the A2A version its
+          notifications are to be delivered in. The created configuration must report that
+          version, and reading the configuration back must report it again.
+        spec_ref: "specification/a2a.proto: message TaskPushNotificationConfig"
+        level: may
+        min_spec_version: "1.1"
+        tags: [push, versioning]
+        runner_requirements: [webhook_endpoint]
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn push protocol version"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: task.id
+          - id: set-config
+            operation: create_push_config
+            params:
+              taskId: "{{create.taskId}}"
+              url: "{{webhookUrl}}"
+              protocolVersion: "1.1"
+            expect:
+              status:
+                gte: 200
+                lt: 300
+              body:
+                id: {type: string}
+                protocolVersion: "1.1"
+            capture:
+              configId: id
+          - id: get-config
+            operation: get_push_config
+            params:
+              taskId: "{{create.taskId}}"
+              id: "{{set-config.configId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{set-config.configId}}"
+                protocolVersion: "1.1"
+
+      - id: PUSH-VER-002
+        name: "A push configuration created for A2A 1.0 is not delivered a messageUpdate"
+        description: >
+          Registers a push configuration with protocolVersion "1.0" on a multi-turn task waiting
+          for input, then adds the client message "done" to the task. No delivery to that
+          configuration may be a messageUpdate: the configuration asks for 1.0 delivery, and
+          TaskMessageUpdateEvent is emitted only to clients of 1.1 or later. Open point: the A2A
+          text does not list messageUpdate among webhook payloads at all, and does not say in so
+          many words that a configuration's protocolVersion governs which event kinds it is sent.
+          No pending change addresses this, so there is no pull request to link.
+        spec_ref: "specification/a2a.proto: message TaskMessageUpdateEvent"
+        level: may
+        min_spec_version: "1.1"
+        tags: [push, versioning, delivery, tentative]
+        runner_requirements: [webhook_endpoint]
+        preconditions:
+          capabilities:
+            pushNotifications: true
+          protocol_versions: ["1.0"]
+          description: "The agent supports push notifications and lists an A2A 1.0 interface"
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn push at 1.0"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+          - id: set-config
+            operation: create_push_config
+            params:
+              taskId: "{{create.taskId}}"
+              url: "{{webhookUrl}}"
+              protocolVersion: "1.0"
+            expect:
+              status:
+                gte: 200
+                lt: 300
+              body:
+                id: {type: string}
+          - id: answer
+            description: "Adds a client message to the task after the configuration exists"
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{create.taskId}}"
+                contextId: "{{create.contextId}}"
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{create.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+          - id: no-message-update
+            expect_webhook:
+              task_id: "{{create.taskId}}"
+              min_count: 1
+              events:
+                - description: "Deliveries are read up to the one that reports the completed task"
+                  match: any_position
+                  status:
+                    state: TASK_STATE_COMPLETED
+              each_event:
+                message_update: {absent: true}
+
+      - id: PUSH-VER-003
+        name: "Deliveries to a configuration created at A2A 1.1 carry generation"
+        description: >
+          Registers a push configuration with protocolVersion "1.1" on a task that holds in
+          TASK_STATE_WORKING for five seconds and then completes. Every
+          delivered payload is a StreamResponse, and the Task, status update, artifact update and
+          message update it can carry each hold the task's generation in A2A 1.1. Each delivery of
+          one of those kinds must therefore carry a generation of at least 1. A Message payload has
+          no generation field and is accepted as it is.
+        spec_ref: "docs/specification.md#352-streaming-event-delivery"
+        level: may
+        min_spec_version: "1.1"
+        tags: [push, generation, delivery]
+        runner_requirements: [webhook_endpoint]
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: [tck-hold-working]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 5000 push generation"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+            capture:
+              taskId: task.id
+          - id: set-config
+            operation: create_push_config
+            params:
+              taskId: "{{create.taskId}}"
+              url: "{{webhookUrl}}"
+              protocolVersion: "1.1"
+            expect:
+              status:
+                gte: 200
+                lt: 300
+              body:
+                id: {type: string}
+          - id: delivered-with-generation
+            expect_webhook:
+              task_id: "{{create.taskId}}"
+              min_count: 1
+              timeout_ms: 20000
+              events:
+                - description: "Deliveries are read up to the one that reports the completed task"
+                  match: any_position
+                  status:
+                    state: TASK_STATE_COMPLETED
+              each_event:
+                any_of:
+                  - task:
+                      generation: {gte: 1}
+                  - status_update:
+                      generation: {gte: 1}
+                  - artifact_update:
+                      generation: {gte: 1}
+                  - message_update:
+                      generation: {gte: 1}
+                  - message:
+                      messageId: {type: string}

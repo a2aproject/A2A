@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 
 metadata:
   title: "Streaming operations ACTS suite"
@@ -391,6 +391,512 @@ suites:
             expect_stream:
               min_count: 1
               ordering: monotonic_state
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-MSGUPD-001
+        name: "A 1.1 subscriber is sent a message_update for a client message added by another request"
+        description: >
+          A task holds in TASK_STATE_WORKING while a client that negotiated A2A 1.1 is subscribed
+          to it. A second request then adds a client message to the task. The subscriber should
+          see that message as a message_update naming the task and its context and carrying the
+          message with role ROLE_USER. The task is working, not waiting for input, so the test
+          does not depend on whether a stream stays open in an interrupted state. The A2A text
+          states this delivery without an RFC 2119 keyword, so the level is should. The stream
+          is also checked for a generation that rises by exactly one from each event to the
+          next. Nothing but the client message changes the task while it holds, so the
+          message_update has to be exactly one above the event before it. This is the one place
+          where the increment for a client message can be told apart from the agent's reply to
+          it. The increment is a MUST, but it can be observed only where the update is delivered,
+          so it is checked at the level of this test.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [streaming, generation, timeline]
+        runner_requirements: [concurrent_requests]
+        requires_behaviors: [tck-hold-working]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 8000 message update"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+              generation: task.generation
+          - id: watch
+            description: "Subscribed before the client message is sent; the runner holds the next step until the first event arrives"
+            operation: subscribe_to_task
+            background: true
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              timeout_ms: 30000
+              ordering: contiguous_generation
+              events:
+                - description: "The client message added by the next step is reported to this subscriber"
+                  match: any_position
+                  message_update:
+                    taskId: "{{start.taskId}}"
+                    contextId: "{{start.contextId}}"
+                    generation: {gt: "{{start.generation}}"}
+                    message:
+                      role: ROLE_USER
+                      parts:
+                        - text: "a message while the task is working"
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+          - id: add-message
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{start.taskId}}"
+                contextId: "{{start.contextId}}"
+                parts:
+                  - text: "a message while the task is working"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{start.taskId}}"
+
+      - id: STREAM-MSGUPD-002
+        name: "A 1.0 subscriber is never sent a message_update"
+        description: >
+          The same flow as STREAM-MSGUPD-001, but the subscription is made as a client of A2A 1.0.
+          The client message added by the second request must not reach that subscriber as a
+          message_update: the event is emitted only to clients that request A2A 1.1 or later, and
+          an agent must answer a 1.0 request with 1.0 semantics. The task is working, which keeps
+          a stream open under 1.0 as well, so the stream must follow the task to completion. That
+          shows it was open while the message was added.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [streaming, versioning, timeline]
+        runner_requirements: [concurrent_requests]
+        requires_behaviors: [tck-hold-working]
+        preconditions:
+          capabilities:
+            streaming: true
+          protocol_versions: ["1.0"]
+          description: "The agent streams and lists an A2A 1.0 interface for the binding under test"
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 8000 no message update at 1.0"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+          - id: watch-as-1-0
+            description: "Subscribed as a 1.0 client before the client message is sent"
+            operation: subscribe_to_task
+            background: true
+            a2a_version: "1.0"
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              timeout_ms: 30000
+              each_event:
+                message_update: {absent: true}
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+          - id: add-message
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{start.taskId}}"
+                contextId: "{{start.contextId}}"
+                parts:
+                  - text: "a message while the task is working"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{start.taskId}}"
+
+      - id: STREAM-OPEN-001
+        name: "A streaming response stays open when the task enters INPUT_REQUIRED"
+        description: >
+          Streams a message whose task moves to TASK_STATE_INPUT_REQUIRED and then waits. An
+          interrupted state is not terminal and should not by itself close the stream, so the
+          stream must still be open three seconds after the INPUT_REQUIRED event.
+        spec_ref: "docs/specification.md#312-send-streaming-message"
+        level: should
+        min_spec_version: "1.1"
+        tags: [streaming, interrupted]
+        requires_behaviors: [tck-stream-input-required]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-input-required stays open"
+            expect_stream:
+              ordering: monotonic_state
+              stays_open_ms: 3000
+              final_event:
+                status:
+                  state: TASK_STATE_INPUT_REQUIRED
+
+      - id: STREAM-OPEN-002
+        name: "A stream left open at INPUT_REQUIRED delivers the rest of the task after the client answers"
+        description: >
+          Keeps a streaming response open while its task waits in TASK_STATE_INPUT_REQUIRED, then
+          answers the task with a separate request. The original stream must report the
+          INPUT_REQUIRED state and then carry the task on to TASK_STATE_COMPLETED, because a stream
+          is closed by a terminal state and not by an interrupted one.
+        spec_ref: "docs/specification.md#312-send-streaming-message"
+        level: should
+        min_spec_version: "1.1"
+        tags: [streaming, interrupted]
+        runner_requirements: [concurrent_requests]
+        requires_behaviors: [tck-stream-input-required]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            background: true
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-input-required resumes"
+            capture:
+              taskId: task.id
+            expect_stream:
+              timeout_ms: 30000
+              ordering: monotonic_state
+              events:
+                - description: "The stream reports the interrupted state before the client answers"
+                  match: any_position
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+          - id: wait-for-input-required
+            operation: get_task
+            params:
+              id: "{{stream.taskId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{stream.taskId}}"
+            repeat:
+              until: status.state == TASK_STATE_INPUT_REQUIRED
+              max_attempts: 15
+              delay_ms: 1000
+          - id: answer
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{stream.taskId}}"
+                parts:
+                  - text: "the requested input"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{stream.taskId}}"
+
+      - id: STREAM-OPEN-003
+        name: "A subscription to a task in INPUT_REQUIRED stays open"
+        description: >
+          Subscribes to a multi-turn task that is waiting in TASK_STATE_INPUT_REQUIRED and checks
+          that the subscription is still open three seconds after its last event. A subscription
+          may be made to any task that is not terminal and must end when the task reaches a
+          terminal state; an interrupted state is not terminal and does not necessitate closing
+          the stream. The A2A text asks no more than that of a subscription, so the level is may.
+        spec_ref: "docs/specification.md#316-subscribe-to-task"
+        level: may
+        min_spec_version: "1.1"
+        tags: [streaming, subscribe, interrupted]
+        requires_behaviors: [tck-multi-turn]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn subscription stays open"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+            capture:
+              taskId: task.id
+          - id: subscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect_stream:
+              min_count: 1
+              stays_open_ms: 3000
+              final_event:
+                status:
+                  state: TASK_STATE_INPUT_REQUIRED
+
+      - id: STREAM-SUB-004
+        name: "Without lastSeenGeneration a subscription opens with a Task snapshot carrying generation"
+        description: >
+          Subscribes to a working task without lastSeenGeneration. The first event must be a Task
+          snapshot of that task, with a generation of at least 1 and not lower than the generation
+          the task already had when it was created. This is the stricter A2A 1.1 counterpart of
+          STREAM-SSE-004, which also accepts a status update first.
+        spec_ref: "docs/specification.md#316-subscribe-to-task"
+        level: must
+        min_spec_version: "1.1"
+        tags: [streaming, subscribe, generation]
+        requires_behaviors: [tck-hold-working]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 5000 subscribe snapshot"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              generation: task.generation
+          - id: subscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            expect_stream:
+              timeout_ms: 20000
+              events:
+                - description: "The first event is a Task snapshot with a generation"
+                  index: 0
+                  task:
+                    id: "{{start.taskId}}"
+                    status:
+                      state: {type: string}
+                    generation: {gte: "{{start.generation}}"}
+
+      - id: STREAM-SUB-005
+        name: "With lastSeenGeneration a subscription delivers nothing older than that generation"
+        description: >
+          Records the generation of a task that holds in TASK_STATE_WORKING, advances the task by
+          adding a client message, and subscribes with lastSeenGeneration set to the recorded
+          value. The subscription must succeed, must not deliver an update at or below that
+          generation, and must follow the task to completion. Open point: the 1.1.0-rc text says
+          the server replays only what followed and never opens with a Task snapshot, while
+          pending A2A change 2411 lets it either continue from that generation or open with a
+          snapshot. The test accepts both, so a Task snapshot is allowed if its generation is not
+          below the one sent.
+        spec_ref: "specification/a2a.proto: message SubscribeToTaskRequest"
+        level: must
+        min_spec_version: "1.1"
+        tags: [streaming, subscribe, generation, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        requires_behaviors: [tck-hold-working]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 8000 resume from generation"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+            capture:
+              taskId: task.id
+              contextId: task.contextId
+          - id: wait-for-working
+            description: "The generation is recorded once the task is working and holding still"
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                generation: {gte: 1}
+            capture:
+              generation: generation
+            repeat:
+              until: "status.state == TASK_STATE_WORKING"
+              max_attempts: 10
+              delay_ms: 200
+          - id: add-message
+            description: "Advances the task past the recorded generation, so there is something to resume from"
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{start.taskId}}"
+                contextId: "{{start.contextId}}"
+                parts:
+                  - text: "a message while the task is working"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{start.taskId}}"
+          - id: resume
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+              lastSeenGeneration: "{{wait-for-working.generation}}"
+            expect_stream:
+              timeout_ms: 30000
+              min_count: 1
+              each_event:
+                any_of:
+                  - task:
+                      id: "{{start.taskId}}"
+                      generation: {gte: "{{wait-for-working.generation}}"}
+                  - status_update:
+                      generation: {gt: "{{wait-for-working.generation}}"}
+                  - artifact_update:
+                      generation: {gt: "{{wait-for-working.generation}}"}
+                  - message_update:
+                      generation: {gt: "{{wait-for-working.generation}}"}
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-RESUB-002
+        name: "Resubscribe after a disconnect with the generation of the last event seen"
+        description: >
+          A client reads the first event of a subscription, remembers its generation and hangs up,
+          then subscribes again with lastSeenGeneration set to that value. The new subscription
+          must deliver nothing older than that generation and follow the task to completion. This
+          is the A2A 1.1 counterpart of STREAM-RESUB-001. Open point: under the 1.1.0-rc text the
+          server replays only what followed that generation, under pending A2A change 2411 it may
+          instead open with a Task snapshot; the test accepts both.
+        spec_ref: "specification/a2a.proto: message SubscribeToTaskRequest"
+        level: must
+        min_spec_version: "1.1"
+        tags: [streaming, resubscribe, generation, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2411"
+        runner_requirements: [stream_disconnect]
+        requires_behaviors: [tck-hold-working]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 8000 resubscribe"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+            capture:
+              taskId: task.id
+          - id: interrupted
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+            capture:
+              generation: task.generation
+            expect_stream:
+              min_count: 1
+              events:
+                - description: "The opening snapshot carries the generation the client resumes from"
+                  index: 0
+                  task:
+                    generation: {gte: 1}
+              streams:
+                - description: "reads one event, then hangs up"
+                  disconnect_after: 1
+          - id: resubscribe
+            operation: subscribe_to_task
+            params:
+              id: "{{start.taskId}}"
+              lastSeenGeneration: "{{interrupted.generation}}"
+            expect_stream:
+              timeout_ms: 20000
+              each_event:
+                any_of:
+                  - task:
+                      id: "{{start.taskId}}"
+                      generation: {gte: "{{interrupted.generation}}"}
+                  - status_update:
+                      generation: {gt: "{{interrupted.generation}}"}
+                  - artifact_update:
+                      generation: {gt: "{{interrupted.generation}}"}
+                  - message_update:
+                      generation: {gt: "{{interrupted.generation}}"}
               final_event:
                 status:
                   state: TASK_STATE_COMPLETED

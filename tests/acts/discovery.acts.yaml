@@ -1,5 +1,5 @@
 acts_version: "1.0"
-spec_version: "1.0"
+spec_version: "1.1"
 metadata:
   title: "Agent Card Discovery"
   description: "Tests for A2A agent card discovery and structure"
@@ -135,7 +135,7 @@ suites:
         name: Agent card caching headers
         description: >
           Verifies the agent card response carries both caching headers §8.6.1
-          asks for. They are two independent SHOULDs, so satisfying one and
+          asks for. They are two independent SHOULD requirements, so satisfying one and
           omitting the other is not conformance. `Last-Modified` is a MAY and
           is deliberately not asserted.
         spec_ref: "specification.md#8.6.1"
@@ -213,6 +213,81 @@ suites:
             expect:
               status: 200
               body:
+                supportedInterfaces:
+                  type: array
+                  count_gte: 1
+
+      - id: CARD-DISC-008
+        name: Agent card lists an interface with protocolVersion 1.1
+        description: >
+          The A2A text asks an agent to declare the latest minor version it supports
+          for each major version in the protocolVersion of an interface. An agent
+          that serves A2A 1.1 therefore lists an interface with protocolVersion
+          "1.1". The test reads the public agent card and looks for one.
+        spec_ref: "specification/a2a.proto: message AgentInterface"
+        level: should
+        min_spec_version: "1.1"
+        tags: [discovery, versioning]
+        steps:
+          - id: card
+            operation: get_agent_card
+            params: {}
+            expect:
+              status: 200
+              body:
+                supportedInterfaces:
+                  type: array
+                  count_gte: 1
+            assertions:
+              - id: lists-1-1
+                description: "At least one interface declares protocolVersion 1.1"
+                source: "{{card.response}}"
+                any:
+                  path: "supportedInterfaces[*]"
+                  match:
+                    protocolVersion: "1.1"
+
+      - id: CARD-ROOT-001
+        name: Agent card is served at the interface URL
+        description: >
+          A pending change to the A2A text recommends that a server answer an HTTP
+          GET on its interface URL with the public agent card, so that a client
+          that knows the URL does not need the well-known path. The test fetches
+          the card from the well-known path, then sends GET to the interface URL
+          and expects the same card. It is at may level and tentative: the
+          recommendation is not in the 1.1.0 release candidate. The pending text
+          lets a server require authentication for this endpoint, so the test
+          applies only to an agent that declares none.
+        spec_ref: "docs/specification.md#81-purpose"
+        level: may
+        min_spec_version: "1.1"
+        tags: [discovery, tentative]
+        origin: "https://github.com/a2aproject/A2A/pull/2378"
+        transport: [jsonrpc, rest]
+        preconditions:
+          authentication: false
+        steps:
+          - id: well-known
+            operation: get_agent_card
+            params: {}
+            capture:
+              cardName: name
+            expect:
+              status: 200
+              body:
+                name:
+                  type: string
+          - id: root
+            raw:
+              method: GET
+              path: "/"
+              headers:
+                Accept: application/json
+                A2A-Version: "{{specVersion}}"
+            expect:
+              status: 200
+              body:
+                name: "{{well-known.cardName}}"
                 supportedInterfaces:
                   type: array
                   count_gte: 1

@@ -1,0 +1,706 @@
+acts_version: "1.0"
+spec_version: "1.1"
+
+metadata:
+  title: "Task generation, long-polling and optimistic concurrency"
+  description: "ACTS tests for the A2A 1.1 task generation counter: its value on tasks, artifacts and stream events, long-polling with currentGeneration, and the ifGenerationMatch guard."
+
+suites:
+  - id: generation
+    name: "Task generation"
+    description: "Covers the generation field on Task, Artifact and stream events, GetTask long-polling, and optimistic concurrency with ifGenerationMatch."
+    tags:
+      - generation
+    tests:
+      - id: CORE-GEN-001
+        name: "A task carries a generation of at least 1"
+        description: >
+          Sends a message that creates a task and checks that the returned
+          task has a generation of at least 1. A server that does not
+          implement the field reports 0, or omits it.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, task]
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task generation of a new task"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  generation: {gte: 1}
+
+      - id: CORE-GEN-002
+        name: "A terminal task keeps the same generation"
+        description: >
+          Creates a task that completes, then reads it twice. A terminal task
+          accepts no further updates, so its generation cannot change between
+          the two reads. The first read also has to report a generation of at
+          least 1, otherwise two reads of an unset field would agree trivially.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, task]
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task generation of a terminal task"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+            capture:
+              taskId: task.id
+
+          - id: first-read
+            operation: get_task
+            params:
+              id: "{{send.taskId}}"
+            expect:
+              status: 200
+              body:
+                status:
+                  state: TASK_STATE_COMPLETED
+                generation: {gte: 1}
+            capture:
+              generation: generation
+
+          - id: second-read
+            operation: get_task
+            params:
+              id: "{{send.taskId}}"
+            expect:
+              status: 200
+              body:
+                generation:
+                  gte: "{{first-read.generation}}"
+                  lte: "{{first-read.generation}}"
+
+      - id: CORE-GEN-003
+        name: "A further turn on a task advances the generation"
+        description: >
+          Starts a multi-turn task and records its generation while it waits
+          for input. A second message from the client is added to the task,
+          and the task in the response to that message must carry a greater
+          generation. Both the client message and the agent's reply to it
+          change the task, and the test does not tell the two apart.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, task, multi-turn]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn generation after a client message"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              generation: task.generation
+
+          - id: turn2
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  generation: {gt: "{{turn1.generation}}"}
+
+      - id: CORE-GEN-004
+        name: "An artifact reports the generations at which it appeared and completed"
+        description: >
+          Completes a task with a text artifact. The artifact carries a
+          startGeneration of at least 1, and an endGeneration that is not
+          lower than the startGeneration. The A2A proto marks both fields
+          optional, so the level is may.
+        spec_ref: "docs/specification.md#328-task-timeline-semantics"
+        level: may
+        min_spec_version: "1.1"
+        tags: [generation, artifact]
+        requires_behaviors: [tck-artifact-text]
+        steps:
+          - id: send
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-artifact-text generation of an artifact"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_COMPLETED
+                  artifacts:
+                    count_gte: 1
+            capture:
+              taskId: task.id
+              startGeneration: task.artifacts[0].startGeneration
+
+          - id: read
+            operation: get_task
+            params:
+              id: "{{send.taskId}}"
+            expect:
+              status: 200
+              body:
+                artifacts:
+                  - startGeneration: {gte: 1}
+                    endGeneration: {gte: "{{send.startGeneration}}"}
+
+      - id: STREAM-GEN-001
+        name: "Stream events carry strictly increasing generations"
+        description: >
+          Streams a task through a status update, an artifact and completion.
+          Every update event must carry a generation, and each must be greater
+          than all the ones before it.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, streaming]
+        requires_behaviors: [tck-stream-basic]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic generation ordering"
+            expect_stream:
+              min_count: 3
+              ordering: [monotonic_state, monotonic_generation]
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: STREAM-GEN-002
+        name: "Generation increases by exactly one per event on a complete stream"
+        description: >
+          Streams a task whose artifact arrives in chunks. The client reads
+          the stream from its start and so receives every event, and each
+          mutation of the task is delivered as one event. The generation
+          therefore rises by one from each event to the next.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, streaming]
+        requires_behaviors: [tck-stream-chunked]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-chunked generation contiguity"
+            expect_stream:
+              min_count: 3
+              ordering: contiguous_generation
+
+      - id: STREAM-GEN-003
+        name: "A status update that keeps the state still advances the generation"
+        description: >
+          Streams a task that reports progress twice while it stays in
+          TASK_STATE_WORKING. A status update changes the task even when
+          the state is the same, so each progress update carries its own
+          generation, one above the previous event.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, streaming]
+        requires_behaviors: [tck-progress-update]
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-progress-update generation of progress"
+            expect_stream:
+              min_count: 4
+              ordering: contiguous_generation
+              events:
+                - description: "A progress update: a status update that stays in WORKING and carries a message"
+                  match: any_position
+                  status_update:
+                    status:
+                      state: TASK_STATE_WORKING
+                      message: {exists: true}
+              final_event:
+                status:
+                  state: TASK_STATE_COMPLETED
+
+      - id: CORE-POLL-001
+        name: "GetTask returns at once when the task is ahead of currentGeneration"
+        description: >
+          Starts a task that holds in TASK_STATE_WORKING for eight seconds,
+          waits until it is working, then asks for it with currentGeneration
+          0. The task's generation is at least 1, so it is already greater
+          than the value supplied and the server has to answer without waiting
+          for the task to change. The task changes nothing while it holds, so
+          a server that waits for the next change answers too late. A server
+          that takes 0 for a field that is not set also answers at once, so
+          this test does not show that the value was compared. CORE-POLL-004
+          does, with a value other than 0 that the task has moved past.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, long-poll]
+        requires_behaviors: [tck-hold-working]
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 8000 long-poll"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state:
+                      one_of: [TASK_STATE_SUBMITTED, TASK_STATE_WORKING]
+            capture:
+              taskId: task.id
+
+          - id: wait-for-working
+            description: "From here on the task holds still until it completes."
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                status:
+                  state: {type: string}
+            repeat:
+              until: "status.state == TASK_STATE_WORKING"
+              max_attempts: 10
+              delay_ms: 200
+
+          - id: poll-behind
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+              currentGeneration: 0
+            max_duration_ms: 3000
+            expect:
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                generation: {gte: 1}
+
+      - id: CORE-POLL-002
+        name: "GetTask with the current generation is held until the task changes"
+        description: >
+          Starts a task that stays in TASK_STATE_WORKING for five seconds and
+          changes nothing in that time, waits until the task is working, and
+          asks for it with the generation it has. The server should hold the
+          request until the task changes, so the answer takes noticeably
+          longer than an ordinary read. The wording is SHOULD, and the server
+          MAY answer early, for example on a timeout of its own; the response
+          then still carries a generation no lower than the one sent.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [generation, long-poll]
+        requires_behaviors: [tck-hold-working]
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-hold-working 5000 long-poll"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+            capture:
+              taskId: task.id
+
+          - id: wait-for-working
+            description: >
+              The generation is captured here, once the task is working and
+              is holding still, so no later change is missed.
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+            expect:
+              status: 200
+              body:
+                status:
+                  state: {type: string}
+                generation: {gte: 1}
+            capture:
+              generation: generation
+            repeat:
+              until: "status.state == TASK_STATE_WORKING"
+              max_attempts: 10
+              delay_ms: 200
+
+          - id: long-poll
+            operation: get_task
+            params:
+              id: "{{start.taskId}}"
+              currentGeneration: "{{wait-for-working.generation}}"
+            min_duration_ms: 1000
+            expect:
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                generation: {gte: "{{wait-for-working.generation}}"}
+
+      - id: CORE-POLL-003
+        name: "A held GetTask returns when another request changes the task"
+        description: >
+          Starts a multi-turn task that waits for input and holds a GetTask
+          open with the task's current generation. A second request then adds
+          a message to the task, half a second later. The held request
+          returns no sooner than that, and the task it reports has a greater
+          generation. The wording is SHOULD for holding the request open.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: should
+        min_spec_version: "1.1"
+        tags: [generation, long-poll]
+        requires_behaviors: [tck-multi-turn]
+        runner_requirements: [concurrent_requests]
+        steps:
+          - id: start
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn long-poll woken by a message"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              generation: task.generation
+
+          - id: long-poll
+            operation: get_task
+            background: true
+            params:
+              id: "{{start.taskId}}"
+              currentGeneration: "{{start.generation}}"
+            min_duration_ms: 300
+            expect:
+              status: 200
+              body:
+                id: "{{start.taskId}}"
+                generation: {gt: "{{start.generation}}"}
+
+          - id: answer
+            description: "Sent half a second after the long-poll, so the long-poll is waiting when the task changes."
+            delay_ms: 500
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{start.taskId}}"
+                parts:
+                  - text: "done"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{start.taskId}}"
+                  status:
+                    state: TASK_STATE_COMPLETED
+
+      - id: CORE-POLL-004
+        name: "GetTask returns at once when the task has moved past a non-zero currentGeneration"
+        description: >
+          Starts a multi-turn task and records its generation while it waits
+          for input. A second message advances the generation, and the task
+          then waits for input again and changes nothing. A GetTask that names
+          the recorded generation is behind the task, so the server has to
+          answer without waiting for the task to change. The value is not 0,
+          so the server cannot take it for a field that is not set: it has to
+          compare it with the task's generation. A server that holds every
+          request that names a generation answers too late.
+        spec_ref: "docs/specification.md#327-task-generation-semantics"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, long-poll]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn long-poll behind the task"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              generation: task.generation
+
+          - id: turn2
+            description: "Advances the generation, so the value captured in turn1 is behind the task. From here on the task holds still."
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gt: "{{turn1.generation}}"}
+
+          - id: poll-behind
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+              currentGeneration: "{{turn1.generation}}"
+            max_duration_ms: 3000
+            expect:
+              status: 200
+              body:
+                id: "{{turn1.taskId}}"
+                generation: {gt: "{{turn1.generation}}"}
+
+      - id: CORE-MATCH-001
+        name: "A message with a matching ifGenerationMatch is accepted"
+        description: >
+          Starts a multi-turn task and reads its generation while it waits
+          for input. A follow-up message that names that generation in
+          ifGenerationMatch matches the task's current generation, so it is
+          accepted and added to the task. The server compares the value with
+          the current generation and rejects the request when they differ, so
+          a request whose value is equal must go through.
+        spec_ref: "docs/specification.md#322-sendmessageconfiguration"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, concurrency]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn matching ifGenerationMatch"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              generation: task.generation
+
+          - id: turn2
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+              configuration:
+                ifGenerationMatch: "{{turn1.generation}}"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  generation: {gt: "{{turn1.generation}}"}
+
+      - id: CORE-MATCH-002
+        name: "A message with a stale ifGenerationMatch is rejected"
+        description: >
+          Starts a multi-turn task and records its generation. A second
+          message advances the generation, which makes the recorded value
+          stale. A third message that names the stale value in
+          ifGenerationMatch is rejected with TaskGenerationMismatchError. As
+          a control, the same message with the task's current generation is
+          accepted, so the rejection can only be down to the generation.
+        spec_ref: "docs/specification.md#322-sendmessageconfiguration"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, concurrency, error]
+        requires_behaviors: [tck-multi-turn]
+        steps:
+          - id: turn1
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-multi-turn stale ifGenerationMatch"
+            expect:
+              status: 200
+              body:
+                task:
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gte: 1}
+            capture:
+              taskId: task.id
+              generation: task.generation
+
+          - id: turn2
+            description: "Advances the generation, so the value captured in turn1 is stale."
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "here is more input"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+                  status:
+                    state: TASK_STATE_INPUT_REQUIRED
+                  generation: {gt: "{{turn1.generation}}"}
+
+          - id: stale
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "input guarded by a stale generation"
+              configuration:
+                ifGenerationMatch: "{{turn1.generation}}"
+            expect_error:
+              error_type: TaskGenerationMismatchError
+
+          - id: current
+            operation: get_task
+            params:
+              id: "{{turn1.taskId}}"
+            expect:
+              status: 200
+              body:
+                generation: {gte: 1}
+            capture:
+              generation: generation
+
+          - id: control
+            description: "Positive control: the same request with the current generation is accepted."
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                taskId: "{{turn1.taskId}}"
+                parts:
+                  - text: "input guarded by the current generation"
+              configuration:
+                ifGenerationMatch: "{{current.generation}}"
+            expect:
+              status: 200
+              body:
+                task:
+                  id: "{{turn1.taskId}}"
+
+      - id: CORE-MATCH-003
+        name: "ifGenerationMatch is ignored when the message creates a task"
+        description: >
+          Sends a message that creates a task and names a generation in
+          ifGenerationMatch that no new task can have. There is no existing
+          task to compare with, so the field is ignored and the task is
+          created.
+        spec_ref: "docs/specification.md#322-sendmessageconfiguration"
+        level: must
+        min_spec_version: "1.1"
+        tags: [generation, concurrency]
+        requires_behaviors: [tck-complete-task]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task ifGenerationMatch on a new task"
+              configuration:
+                ifGenerationMatch: 424242
+            expect:
+              status: 200
+              body:
+                task:
+                  id: {type: string}
+                  status:
+                    state: TASK_STATE_COMPLETED
