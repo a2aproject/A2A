@@ -110,6 +110,16 @@ You may follow these steps to contribute:
 7. **Submit a pull request.** Submit a PR from your fork's feature branch to the official repository's `main` branch.
 8. **Resolve any feedback.** Work with reviewers to address any comments or requested changes.
 
+### Specification changes
+
+A pull request cannot change what the specification requires. If your change
+alters normative text, the protocol definition, or a conformance requirement,
+open an issue first so the Technical Steering Committee can decide it before the
+code is written: see [Specification Enhancement Proposals](docs/sep.md).
+
+Editorial fixes and documentation outside the specification do not need that
+process.
+
 Be patient! It may take some time for your pull request to be reviewed and merged.
 
 ## Community
