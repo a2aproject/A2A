@@ -140,7 +140,7 @@ The following example illustrates a typical task flow with a follow-up:
       "method": "SendMessage",
       "params": {
         "message": {
-          "role": "user",
+          "role": "ROLE_USER",
           "parts": [
             {
               "text": "Generate an image of a sailboat on the ocean."
@@ -194,7 +194,7 @@ The following example illustrates a typical task flow with a follow-up:
       "method": "SendMessage",
       "params": {
         "message": {
-          "role": "user",
+          "role": "ROLE_USER",
           "messageId": "msg-user-002",
           "contextId": "ctx-conversation-abc",
           "referenceTaskIds": [
