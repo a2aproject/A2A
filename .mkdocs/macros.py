@@ -4,6 +4,7 @@ This module provides macros for rendering Protocol Buffer definitions
 as markdown tables.
 """
 
+import re
 from pathlib import Path
 from typing import Any
 
@@ -40,6 +41,40 @@ TYPE_MAP = {
     'google.protobuf.Empty': 'empty',
 }
 
+# Header anchors in specification.md are numbered (e.g. "#### 4.1.4. Message"
+# renders to the slug "414-message"). The proto tables reference types by bare
+# name, so we build a {TypeName: "#numbered-anchor"} map by scanning the spec
+# headers and use it to emit links that actually resolve. Types with no
+# dedicated header render as plain text (no broken link).
+_ANCHOR_MAP: dict[str, str] = {}
+
+# Matches numbered section headers whose title is a single type name, e.g.
+# "#### 4.1.4. Message" or "### 8.4. AgentCardSignature".
+_TYPE_HEADER_RE = re.compile(r'^#{1,6}\s+(\d+(?:\.\d+)*)\.?\s+([A-Za-z][A-Za-z0-9]*)\s*$')
+
+
+def _slugify(text: str) -> str:
+    """Replicate the pymdownx `case: lower` slugify used by mkdocs."""
+    text = text.strip().lower()
+    text = re.sub(r'[^a-z0-9 _-]', '', text)
+    text = re.sub(r'[ _]+', '-', text)
+    return re.sub(r'-+', '-', text).strip('-')
+
+
+def _build_anchor_map(docs_dir: str) -> dict[str, str]:
+    """Build a {TypeName: '#anchor'} map from specification.md headers."""
+    spec = Path(docs_dir) / 'specification.md'
+    mapping: dict[str, str] = {}
+    if not spec.exists():
+        return mapping
+    for line in spec.read_text(encoding='utf-8').splitlines():
+        m = _TYPE_HEADER_RE.match(line)
+        if m:
+            # Slug from the full header text (number included), matching mkdocs.
+            mapping[m.group(2)] = '#' + _slugify(line.lstrip('#'))
+    return mapping
+
+
 # -----------------------------------------------------------------------------
 # Main Macros
 # -----------------------------------------------------------------------------
@@ -47,6 +82,8 @@ TYPE_MAP = {
 
 def define_env(env):
     """Define custom macros for MkDocs."""
+    global _ANCHOR_MAP
+    _ANCHOR_MAP = _build_anchor_map(env.conf['docs_dir'])
 
     def _parse_proto(file_path: str):
         """Parses a .proto file and returns the AST with comments attached."""
@@ -250,10 +287,13 @@ def _format_type_for_docs(
         'google.protobuf'
     )
 
-    # Create a slug for the link. Messages are usually CamelCase, so lowercase it.
+    # Link to the type's numbered section header (e.g. Message -> #414-message).
+    # Types without a dedicated header render as plain text to avoid dead links.
     label = f'`{display_name}`'
     if not is_primitive:
-        label = f'[{label}](#{display_name.lower()})'
+        anchor = _ANCHOR_MAP.get(display_name)
+        if anchor:
+            label = f'[{label}]({anchor})'
 
     if map_key:
         key_label = TYPE_MAP.get(map_key, map_key)
