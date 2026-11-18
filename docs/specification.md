@@ -2252,7 +2252,7 @@ A2A service parameters defined in [Section 3.2.6](#326-service-parameters) **MUS
 **Service Parameter Requirements:**
 
 - Service parameter names **MUST** be transmitted as HTTP header fields
-- Service parameter keys are case-insensitive per HTTP specification (RFC 7230)
+- Service parameter keys are case-insensitive per HTTP specification (RFC 9110)
 - Multiple values for the same service parameter (e.g., `A2A-Extensions`) **SHOULD** be comma-separated in a single header field
 
 **Example Request with A2A Service Parameters:**
@@ -3011,7 +3011,7 @@ As specified in [Section 3.2.6 (Service Parameters)](#326-service-parameters), c
 
 **Example Documentation Requirements:**
 
-- **For native header support**: "Service parameters are transmitted using HTTP request headers. Service parameter keys are case-insensitive and must conform to RFC 7230. Service parameter values must be UTF-8 strings."
+- **For native header support**: "Service parameters are transmitted using HTTP request headers. Service parameter keys are case-insensitive and must conform to RFC 9110. Service parameter values must be UTF-8 strings."
 - **For protocols without headers**: "Service parameters are serialized as a JSON object and transmitted in the request metadata field `a2a-service-parameters`."
 
 ### 12.4. Error Mapping
