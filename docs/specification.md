@@ -1040,6 +1040,7 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
   "message": {
     "role": "ROLE_USER",
     "parts": [{"text": "Find restaurants near me"}],
+    "messageId": "msg-uuid",
     "extensions": ["https://example.com/extensions/geolocation/v1"],
     "metadata": {
       "https://example.com/extensions/geolocation/v1": {
@@ -1063,6 +1064,7 @@ Messages can be extended to allow clients to provide additional strongly typed c
 
 ```json
 {
+  "messageId": "msg-uuid",
   "role": "ROLE_USER",
   "parts": [
     {"text": "Find restaurants near me"}
@@ -1391,7 +1393,8 @@ Content-Type: application/a2a+json
       "state": "TASK_STATE_INPUT_REQUIRED",
       "message": {
         "role": "ROLE_AGENT",
-        "parts": [{"text": "I need more details. Where would you like to fly from and to?"}]
+        "parts": [{"text": "I need more details. Where would you like to fly from and to?"}],
+        "messageId": "msg-agent-1"
       }
     }
   }
@@ -2781,7 +2784,8 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 {
   "message": {
     "role": "ROLE_USER",
-    "parts": [{"text": "Find restaurants near me"}]
+    "parts": [{"text": "Find restaurants near me"}],
+    "messageId": "msg-uuid"
   }
 }
 ```
