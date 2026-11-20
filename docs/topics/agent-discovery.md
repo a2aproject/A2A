@@ -39,9 +39,9 @@ A simple option for single-agent deployments. The Agent Card is served at a fixe
 
     For deployments with more than one agent, or where per-client visibility is needed, use [AI Catalog discovery](#3-ai-catalog-discovery-well-knownaicatalogjson-preferred) instead.
 
-### 2. Agent Root Endpoint (`GET {agentUrl}`)
+### 2. Agent Endpoint (`GET {agentUrl}`)
 
-When a client already knows the full agent interface URL — from a catalog entry, direct configuration, or any other out-of-band source — it MAY retrieve the public Agent Card by issuing an HTTP GET to that URL directly. A2A Servers are **recommended** to serve their public Agent Card at the root of the declared `AgentInterface.url`.
+When a client already knows the full agent interface URL — from a catalog entry, direct configuration, or any other out-of-band source — it MAY retrieve the public Agent Card by issuing an HTTP GET to that URL directly. A2A Servers are **recommended** to serve their public Agent Card at the root of the declared `AgentInterface.url`. This mechanism applies to the **HTTP transport only** and is not applicable to gRPC or other non-HTTP transports.
 
 - **Mechanism:** The server serves the Agent Card at `GET {AgentInterface.url}`. A client that already has the interface URL issues a single HTTP GET and receives the Agent Card.
 
@@ -57,7 +57,7 @@ When a client already knows the full agent interface URL — from a catalog entr
 
 - **When to use:** Use this when the full interface URL is already known. This is not a cold-discovery mechanism — it complements, rather than replaces, the well-known URI and AI Catalog strategies. A common pattern is to use [AI Catalog discovery](#3-ai-catalog-discovery-well-knownaicatalogjson-preferred) to find the agent's interface URL, then issue a `GET` to that URL to retrieve the live Agent Card (rather than relying on a potentially stale embedded or referenced card in the catalog).
 
-- **Authentication:** Servers MAY require authentication for this endpoint. Sensitive information should still be placed in the authenticated extended card (see [Get Extended Agent Card](../specification.md#3111-get-extended-agent-card)).
+- **Authentication:** Servers MAY require authentication for this endpoint. Sensitive information **MUST** be placed in the authenticated extended card and not in the public card served at this endpoint (see [Get Extended Agent Card](../specification.md#3111-get-extended-agent-card)).
 
 - **Caching:** The same caching guidance as the well-known URI endpoint applies (see [Section 8.6 of the specification](../specification.md#86-caching)).
 
@@ -156,7 +156,7 @@ This is the recommended approach for public agents. It supports single-agent dep
     - Facilitates automated discovery.
 
 - **Considerations:**
-    - Agent Card URLs in the catalog can be any path; hosts choose the layout. When a catalog entry's `url` points directly to the agent's `AgentInterface.url`, clients can use the [Agent Root Endpoint](#2-agent-root-endpoint-get-agenturl) pattern — a `GET` to that URL returns the live Agent Card. This avoids a second, separate Agent Card fetch and keeps the retrieved card in sync with the agent's current state.
+    - Agent Card URLs in the catalog can be any path; hosts choose the layout. When a catalog entry's `url` points directly to the agent's `AgentInterface.url`, clients can use the [Agent Endpoint](#2-agent-endpoint-get-agenturl) pattern — a `GET` to that URL returns the live Agent Card. This avoids a second, separate Agent Card fetch and keeps the retrieved card in sync with the agent's current state.
     - Authentication should be applied to individual Agent Card endpoints for cards containing sensitive information.
 
 ### 4. Curated Registries (Catalog-Based Discovery)
