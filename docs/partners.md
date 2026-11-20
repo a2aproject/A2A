@@ -5,6 +5,7 @@ if available) who are part of the A2A community and are helping build, codify,
 and adopt A2A as the standard protocol for AI agents to communicate and
 collaborate effectively with each other and with users.
 
+- [A2A Market](https://a2a-market.com)
 - [A2A Net](https://a2anet.com)
 - [Accelirate Inc](https://www.accelirate.com)
 - [Accenture](https://www.accenture.com)
@@ -138,6 +139,7 @@ collaborate effectively with each other and with users.
 - [Quantiphi](https://www.quantiphi.com)
 - [Radix](https://radix.website/)
 - [RagaAI Inc](https://raga.ai/)
+- [Raven](https://raven.evermind.ai)
 - [Red Hat](https://www.redhat.com)
 - [Reltio Inc](https://www.reltio.com)
 - [S&P](https://www.spglobal.com)
@@ -161,7 +163,7 @@ collaborate effectively with each other and with users.
 - [Telefonica](https://www.telefonica.com/)
 - [Test Innovation Technology](https://www.test-it.com)
 - [The artinet project](https://artinet.io/)
-- [Think41](https://www.think41.com)
+- [Think41](https://think41.com)
 - [Thoughtworks](https://www.thoughtworks.com/)
 - [Tieqi Tech](https://www.itieqi.com)
 - [Tredence](http://www.tredence.com)
@@ -185,4 +187,3 @@ collaborate effectively with each other and with users.
 - [Zeotap](https://www.zeotap.com)
 - [Zocket Technologies , Inc.](https://zocket.ai)
 - [Zoom](https://www.zoom.us)
-- [zyprova](https://www.zyprova.com)
