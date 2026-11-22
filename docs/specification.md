@@ -1144,10 +1144,10 @@ When an agent supports multiple protocols, all supported protocols **MUST**:
 | List tasks                      | `ListTasks`                        | `ListTasks`                        | `GET /tasks`                                            |
 | Cancel task                     | `CancelTask`                       | `CancelTask`                       | `POST /tasks/{id}:cancel`                               |
 | Subscribe to task               | `SubscribeToTask`                  | `SubscribeToTask`                  | `POST /tasks/{id}:subscribe`                            |
-| Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{id}/pushNotificationConfigs`              |
-| Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{id}/pushNotificationConfigs/{configId}`    |
-| List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{id}/pushNotificationConfigs`               |
-| Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` |
+| Create push notification config | `CreateTaskPushNotificationConfig` | `CreateTaskPushNotificationConfig` | `POST /tasks/{task_id}/pushNotificationConfigs`         |
+| Get push notification config    | `GetTaskPushNotificationConfig`    | `GetTaskPushNotificationConfig`    | `GET /tasks/{task_id}/pushNotificationConfigs/{id}`     |
+| List push notification configs  | `ListTaskPushNotificationConfigs`  | `ListTaskPushNotificationConfigs`  | `GET /tasks/{task_id}/pushNotificationConfigs`          |
+| Delete push notification config | `DeleteTaskPushNotificationConfig` | `DeleteTaskPushNotificationConfig` | `DELETE /tasks/{task_id}/pushNotificationConfigs/{id}`  |
 | Get extended Agent Card         | `GetExtendedAgentCard`             | `GetExtendedAgentCard`             | `GET /extendedAgentCard`                                |
 
 ### 5.4. Error Code Mappings
@@ -1185,7 +1185,7 @@ All JSON serializations of the A2A protocol data model **MUST** use **camelCase*
 - Protocol Buffer field: `protocol_version` → JSON field: `protocolVersion`
 - Protocol Buffer field: `context_id` → JSON field: `contextId`
 - Protocol Buffer field: `default_input_modes` → JSON field: `defaultInputModes`
-- Protocol Buffer field: `push_notification_config` → JSON field: `pushNotificationConfig`
+- Protocol Buffer field: `task_push_notification_config` → JSON field: `taskPushNotificationConfig`
 
 **Enum Values:**
 
@@ -2676,9 +2676,7 @@ Retrieves the agent's extended capability card after authentication.
 
 #### 10.5.1. TaskPushNotificationConfig
 
-Resource wrapper for push notification configurations. This is a gRPC-specific type used in resource-oriented operations to provide the full resource name along with the configuration data.
-
-{{ proto_to_table("TaskPushNotificationConfig") }}
+In A2A v1.0, `TaskPushNotificationConfig` is a canonical data model type shared across all protocol bindings rather than a gRPC-specific wrapper. See [`TaskPushNotificationConfig`](#431-taskpushnotificationconfig) in Section 4.3.1 for the field definition.
 
 ### 10.6. Error Handling
 
@@ -2802,10 +2800,10 @@ A2A-Extensions: https://example.com/extensions/geolocation/v1,https://standards.
 
 #### 11.3.3. Push Notification Configuration
 
-- `POST /tasks/{id}/pushNotificationConfigs` - Create configuration
-- `GET /tasks/{id}/pushNotificationConfigs/{configId}` - Get configuration
-- `GET /tasks/{id}/pushNotificationConfigs` - List configurations
-- `DELETE /tasks/{id}/pushNotificationConfigs/{configId}` - Delete configuration
+- `POST /tasks/{task_id}/pushNotificationConfigs` - Create configuration
+- `GET /tasks/{task_id}/pushNotificationConfigs/{id}` - Get configuration
+- `GET /tasks/{task_id}/pushNotificationConfigs` - List configurations
+- `DELETE /tasks/{task_id}/pushNotificationConfigs/{id}` - Delete configuration
 
 #### 11.3.4. Agent Card
 
