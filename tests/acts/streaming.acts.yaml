@@ -237,6 +237,42 @@ suites:
                         status:
                           exists: true
 
+      - id: STREAM-SSE-005
+        name: "First event of a task-creating streaming send is the Task"
+        description: "When the agent answers a streaming send with a task, the stream begins with the Task object, before any status or artifact update, even if the agent's first event is a status update."
+        level: must
+        requires_behaviors:
+          - tck-stream-basic
+        preconditions:
+          capabilities:
+            streaming: true
+        steps:
+          - id: stream
+            operation: send_streaming_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-stream-basic first event"
+            expect_stream:
+              min_count: 2
+              ordering: monotonic_state
+              events:
+                - description: "First event is the Task object"
+                  index: 0
+                  task:
+                    id:
+                      type: string
+                    status:
+                      state:
+                        exists: true
+              final_event:
+                status:
+                  state:
+                    one_of:
+                      - TASK_STATE_COMPLETED
+                      - TASK_STATE_FAILED
+
       - id: STREAM-MSG-001
         name: "Streaming message-only response"
         level: should
