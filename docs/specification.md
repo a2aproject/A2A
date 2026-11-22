@@ -259,6 +259,8 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 The operation attempts to cancel the specified task and returns its updated state.
 
+A cancellation takes effect when the server records the task as `TASK_STATE_CANCELED`. Until then, a completion or failure that the agent has already produced MAY take effect first; the operation then returns an error (e.g., [`TaskNotCancelableError`](#332-error-handling)), and the task keeps the terminal state it reached. Once the server has returned the task in `TASK_STATE_CANCELED`, no later update from the agent changes that state.
+
 #### 3.1.6. Subscribe to Task
 
 <span id="79-taskssubscribe"></span>
