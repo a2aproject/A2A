@@ -194,6 +194,8 @@ Retrieves the current state (including status, artifacts, and optionally history
 
 **Inputs:**
 
+<a id="GetTaskRequest"></a>
+
 {{ proto_to_table("GetTaskRequest") }}
 
 See [History Length Semantics](#324-history-length-semantics) for details about `historyLength`.
@@ -212,11 +214,15 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 **Inputs:**
 
+<a id="ListTasksRequest"></a>
+
 {{ proto_to_table("ListTasksRequest") }}
 
 When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**
+
+<a id="ListTasksResponse"></a>
 
 {{ proto_to_table("ListTasksResponse") }}
 
@@ -244,6 +250,8 @@ Requests the cancellation of an ongoing task. The server will attempt to cancel 
 
 **Inputs:**
 
+<a id="CancelTaskRequest"></a>
+
 {{ proto_to_table("CancelTaskRequest") }}
 
 **Outputs:**
@@ -266,6 +274,8 @@ The operation attempts to cancel the specified task and returns its updated stat
 Establishes a streaming connection to receive updates for an existing task.
 
 **Inputs:**
+
+<a id="SubscribeToTaskRequest"></a>
 
 {{ proto_to_table("SubscribeToTaskRequest") }}
 
@@ -321,6 +331,8 @@ Retrieves an existing push notification configuration for a task.
 
 **Inputs:**
 
+<a id="GetTaskPushNotificationConfigRequest"></a>
+
 {{ proto_to_table("GetTaskPushNotificationConfigRequest") }}
 
 **Outputs:**
@@ -342,9 +354,13 @@ Retrieves all push notification configurations for a task.
 
 **Inputs:**
 
+<a id="ListTaskPushNotificationConfigsRequest"></a>
+
 {{ proto_to_table("ListTaskPushNotificationConfigsRequest") }}
 
 **Outputs:**
+
+<a id="ListTaskPushNotificationConfigsResponse"></a>
 
 {{ proto_to_table("ListTaskPushNotificationConfigsResponse") }}
 
@@ -362,6 +378,8 @@ The operation MUST return all active push notification configurations for the sp
 Removes a push notification configuration for a task.
 
 **Inputs:**
+
+<a id="DeleteTaskPushNotificationConfigRequest"></a>
 
 {{ proto_to_table("DeleteTaskPushNotificationConfigRequest") }}
 
@@ -383,6 +401,8 @@ The operation MUST permanently remove the specified push notification configurat
 Retrieves a potentially more detailed version of the Agent Card after the client has authenticated. This endpoint is available only if `AgentCard.capabilities.extendedAgentCard` is `true`.
 
 **Inputs:**
+
+<a id="GetExtendedAgentCardRequest"></a>
 
 {{ proto_to_table("GetExtendedAgentCardRequest") }}
 
@@ -410,9 +430,13 @@ This section defines common parameter objects used across multiple operations.
 
 #### 3.2.1. SendMessageRequest
 
+<a id="SendMessageRequest"></a>
+
 {{ proto_to_table("SendMessageRequest") }}
 
 #### 3.2.2. SendMessageConfiguration
+
+<a id="SendMessageConfiguration"></a>
 
 {{ proto_to_table("SendMessageConfiguration") }}
 
@@ -434,6 +458,7 @@ The `return_immediately` field has no effect:
 
 <span id="323-stream-response"></span>
 <span id="72-messagestream"></span>
+<a id="StreamResponse"></a>
 
 {{ proto_to_table("StreamResponse") }}
 
@@ -814,6 +839,8 @@ The A2A protocol defines a canonical data model using Protocol Buffers. All prot
 
 #### 4.3.2. AuthenticationInfo
 
+<a id="AuthenticationInfo"></a>
+
 {{ proto_to_table("AuthenticationInfo") }}
 
 #### 4.3.3. Push Notification Payload
@@ -971,6 +998,30 @@ For detailed security guidance on push notifications, see [Section 13.2 Push Not
 #### 4.5.10. DeviceCodeOAuthFlow
 
 {{ proto_to_table("DeviceCodeOAuthFlow") }}
+
+<a id="ImplicitOAuthFlow"></a>
+
+#### 4.5.11. ImplicitOAuthFlow (Deprecated)
+
+{{ proto_to_table("ImplicitOAuthFlow") }}
+
+<a id="PasswordOAuthFlow"></a>
+
+#### 4.5.12. PasswordOAuthFlow (Deprecated)
+
+{{ proto_to_table("PasswordOAuthFlow") }}
+
+<a id="SecurityRequirement"></a>
+
+#### 4.5.13. SecurityRequirement
+
+{{ proto_to_table("SecurityRequirement") }}
+
+<a id="StringList"></a>
+
+#### 4.5.14. StringList
+
+{{ proto_to_table("StringList") }}
 
 ### 4.6. Extensions
 
@@ -2567,6 +2618,8 @@ Sends a message to an agent.
 {{ proto_to_table("SendMessageRequest") }}
 
 **Response:**
+
+<a id="SendMessageResponse"></a>
 
 {{ proto_to_table("SendMessageResponse") }}
 

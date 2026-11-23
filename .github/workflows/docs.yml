@@ -8,6 +8,7 @@ on:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
       - "scripts/build_docs.sh"
+      - "scripts/check_site_anchors.py"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -20,6 +21,7 @@ on:
       - ".github/workflows/docs.yml"
       - "scripts/deploy_root_files.sh"
       - "scripts/build_docs.sh"
+      - "scripts/check_site_anchors.py"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
@@ -108,6 +110,10 @@ jobs:
       - name: Build Documentation (PR Check)
         if: github.event_name == 'pull_request'
         run: mkdocs build
+
+      - name: Check same-page anchors (PR Check)
+        if: github.event_name == 'pull_request'
+        run: python3 scripts/check_site_anchors.py site
 
       - name: Deploy development version from main branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
