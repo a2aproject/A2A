@@ -91,6 +91,7 @@ collaborate effectively with each other and with users.
 - [Infinitus](https://www.infinitus.ai/)
 - [InfoSys](https://www.infosys.com)
 - [Intuit](https://www.intuit.com)
+- [ipvolt](https://ipvolt.com)
 - [Iron Mountain](https://www.ironmountain.com/)
 - [JamJet](https://github.com/jamjet-labs/jamjet)
 - [JetBrains](https://www.jetbrains.com)
