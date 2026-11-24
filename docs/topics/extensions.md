@@ -177,17 +177,27 @@ negotiation to determine which extensions are active for a specific request.
 1. **Client Request**: A client requests extension activation by including the
     `A2A-Extensions` header in the HTTP request to the agent. The value is a
     comma-separated list of extension URIs the client intends to activate.
+    The A2A 1.0 specification defines `A2A-Extensions` as a request service
+    parameter only (see the [specification](../specification.md) §3.2.6 and
+    §14.2.2).
 2. **Agent Processing**: Agents are responsible for identifying supported
     extensions in the request and performing the activation. Any requested
     extensions not supported by the agent can be ignored.
-3. **Response**: Once the agent has identified all activated extensions, the
-    response SHOULD include the `A2A-Extensions` header, listing all
-    extensions that were successfully activated for that request.
+3. **Response**: A2A 1.0 does **not** require the agent to echo
+    `A2A-Extensions` on the response, and clients **MUST NOT** rely on a
+    response echo to learn which extensions were activated. Some
+    implementations may still return the header; that behavior is
+    implementation-specific until a later specification version defines it.
+    When an extension needs to advertise activated capabilities in the
+    payload, it should use the extension's own message or artifact fields
+    rather than assuming a response header.
 
 ![Extension negotiation in four numbered steps: (1) the client reads the extensions declared in the agent's Agent Card, (2) the client sends its chosen extension URIs in the request header, (3) the A2A server checks which of the requested extensions it has registered and activates those plugins, and (4) the server returns the activated extension data in its response. The server in turn reaches other A2A agent servers over A2A, each supporting its own extensions](https://storage.googleapis.com/gweb-developer-goog-blog-assets/images/Screenshot_2025-09-04_at_13.03.31.original.png){ width="70%" style="margin:20px auto;display:block;" }
 
 _The numbered steps follow the negotiation sequence described above, with the
-Agent Card read as step 1._
+Agent Card read as step 1. Step 4 in the diagram refers to extension-specific
+response data in the message body, not to a required `A2A-Extensions`
+response header under A2A 1.0._
 
 **Example request showing extension activation:**
 
@@ -214,13 +224,12 @@ Content-Length: 519
 }
 ```
 
-**Corresponding response echoing activated extensions:**
+**Example response (no required `A2A-Extensions` echo in A2A 1.0):**
 
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
-A2A-Extensions: https://example.com/ext/konami-code/v1
-Content-Length: 338
+Content-Length: 297
 {
   "jsonrpc": "2.0",
   "id": "1",
