@@ -102,7 +102,8 @@ strict adherence to privacy regulations and best practices.
 
 A2A's reliance on HTTP allows for straightforward integration with standard
 enterprise tracing, logging, and monitoring tools, providing critical visibility
-into inter-agent workflows.
+into inter-agent workflows. See [Distributed Tracing](./tracing.md) for wire
+propagation headers, span emission, and framework setup.
 
 - **Distributed Tracing**: A2A Clients and Servers **should** participate in
     distributed tracing systems. For example, use OpenTelemetry to propagate
