@@ -156,6 +156,8 @@ The primary operation for initiating agent interactions. Clients send a message 
 
 The agent MAY create a new `Task` to process the provided message asynchronously or MAY return a direct `Message` response for simple interactions. The operation MUST return immediately with either task information or response message. Task processing MAY continue asynchronously after the response when a [`Task`](#411-task) is returned.
 
+A task ID is valid from the time the server first returns it to the client, in a [`Task`](#411-task), a [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent) or a [`TaskArtifactUpdateEvent`](#422-taskartifactupdateevent). For an ID it has not yet returned, a server MAY answer Get Task, Cancel Task and Subscribe to Task with [`TaskNotFoundError`](#332-error-handling). Once it has returned the ID, it MUST NOT answer `TaskNotFoundError` solely because task creation is incomplete; the existing rules for inaccessible or purged tasks continue to apply.
+
 #### 3.1.2. Send Streaming Message
 
 Similar to Send Message but with real-time streaming of updates during processing.
