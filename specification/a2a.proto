@@ -215,6 +215,18 @@ message Task {
   // Starts at 1 when the task is created.
   // May be used for event ordering, long-polling, and optimistic concurrency.
   int64 generation = 7;
+  // ISO 8601 Timestamp when this task was last updated: the task's "last activity"
+  // time. The server MUST set it when the task is created and on every mutation
+  // that advances `generation`, whether that is a timeline entry or an artifact
+  // update, and MUST keep it non-decreasing. Informational — `generation`, not
+  // this value, orders events and guards concurrency.
+  // Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp updated_at = 9;
+  // ISO 8601 Timestamp when this task was created. The server SHOULD set it when
+  // the task is created, and it never changes afterwards. Being immutable, it is
+  // the key `ListTasks` orders by: a task cannot move between pages while a client
+  // is paging through results. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp created_at = 10;
 }
 
 // Defines the possible lifecycle states of a `Task`.
@@ -255,9 +267,13 @@ message TaskStatus {
   TaskState state = 1 [(google.api.field_behavior) = REQUIRED];
   // A message associated with the status.
   Message message = 2;
-  // ISO 8601 Timestamp when the status was recorded.
-  // Example: "2023-10-27T10:00:00Z"
-  google.protobuf.Timestamp timestamp = 3;
+  // Deprecated: read `TimelineEntry.timestamp` for a timeline entry's time,
+  // `TaskStatusUpdateEvent.timestamp` for a status event's time, or
+  // `Task.updated_at` for the task's last activity. Servers continue to populate
+  // this field throughout the v1.x line for backward compatibility; it is removed
+  // in 2.0.
+  // ISO 8601 Timestamp when the status was recorded. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 3 [deprecated = true];
 }
 
 // `Part` represents a container for a section of communication content.
@@ -320,7 +336,8 @@ message Message {
 
 // Artifacts represent task outputs.
 message Artifact {
-  // Unique identifier (e.g. UUID) for the artifact. It must be unique within a task.
+  // Unique identifier (e.g. UUID) for the artifact. It must be unique within a
+  // task, and identifies the artifact for updates regardless of who wrote it.
   string artifact_id = 1 [(google.api.field_behavior) = REQUIRED];
   // A human readable name for the artifact.
   string name = 2;
@@ -337,9 +354,19 @@ message Artifact {
   // Optional. The task `generation` at which this artifact was completed; unset
   // while it is still streaming.
   int64 end_generation = 8;
-  // Optional. The originator of this artifact. Artifacts are agent outputs by
-  // default (`ROLE_AGENT`); an artifact written by the client is `ROLE_USER`.
+  // Optional. Records who originally created this artifact, rather than acting
+  // as part of its identity. Servers populate it on stored and emitted
+  // `Artifact`s: `ROLE_USER` for client-written artifacts and `ROLE_AGENT` for
+  // agent outputs. Consumers treat `ROLE_UNSPECIFIED` as `ROLE_AGENT` for
+  // compatibility with artifacts written before 1.1.
   Role role = 9;
+  // ISO 8601 Timestamp when this artifact was last created or updated; the server
+  // MUST set it, to the time of the latest chunk or revision (including for
+  // client-written artifacts). Because the whole `Artifact` travels in a
+  // `TaskArtifactUpdateEvent`, this is also that event's time, which is why the
+  // event carries no `timestamp` of its own. Informational: it is not an ordering
+  // key — `generation` orders artifacts. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp updated_at = 10;
 }
 
 // `TimelineEntry` is a single, generation-ordered entry in a task's timeline.
@@ -368,6 +395,13 @@ message TimelineEntry {
   // entries are expected, and artifacts are placed relative to entries via their
   // `start_generation`/`end_generation` (see `Task.generation`).
   int64 generation = 3;
+  // ISO 8601 Timestamp when this entry was recorded; the server MUST set it on
+  // every timeline entry it returns. It equals the `timestamp` on the event that
+  // delivered this entry, so a timeline assembled from the stream matches one read
+  // from a snapshot. Informational only: entries are ordered by `generation`,
+  // never by this value. Replaces the deprecated `TaskStatus.timestamp`.
+  // Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 4;
 }
 
 // An event sent by the server to notify clients of a new message added to the task (e.g. client input).
@@ -384,6 +418,11 @@ message TaskMessageUpdateEvent {
   // The task's `generation` after this message was appended, allowing clients
   // to order it correctly in the timeline and detect missed events.
   int64 generation = 5;
+  // ISO 8601 Timestamp when this mutation occurred; the server MUST set it.
+  // Informational only: events are ordered by `generation`, never by this value.
+  // A client folding this event into a local timeline uses it as the resulting
+  // `TimelineEntry.timestamp`. Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 6;
 }
 
 // An event sent by the agent to notify the client of a change in a task's status.
@@ -400,6 +439,13 @@ message TaskStatusUpdateEvent {
   // to detect missed events (a gap in generation values) and to correlate
   // events with a specific task snapshot.
   int64 generation = 5;
+  // ISO 8601 Timestamp when this mutation occurred; the server MUST set it.
+  // Informational only: events are ordered by `generation`, never by this value.
+  // A client folding this event into a local timeline uses it as the resulting
+  // `TimelineEntry.timestamp`. Replaces the deprecated `status.timestamp` as this
+  // event's time; while both are populated the two MUST be equal.
+  // Example: "2023-10-27T10:00:00Z"
+  google.protobuf.Timestamp timestamp = 6;
 }
 
 // A task delta where an artifact has been generated.
@@ -411,7 +457,7 @@ message TaskArtifactUpdateEvent {
   // The artifact that was generated or updated.
   Artifact artifact = 3 [(google.api.field_behavior) = REQUIRED];
   // If true, the content of this artifact should be appended to a previously
-  // sent artifact with the same ID.
+  // sent artifact with the same `artifact_id`.
   bool append = 4;
   // If true, this is the final chunk of the artifact.
   bool last_chunk = 5;
@@ -786,8 +832,9 @@ message StreamRequest {
   string tenant = 1;
   // The payload of the stream request.
   oneof payload {
-    // Send a message on the stream, optionally with per-request configuration.
-    SendMessageRequest send_message = 2;
+    // Send a message and/or client-written artifact updates on the stream,
+    // optionally with per-request configuration.
+    SendMessageRequest request = 2;
     // Attach to an existing task. Only valid as the first request of a stream;
     // a server that receives it later MUST reject it with a `StreamError`.
     SubscribeToTaskRequest subscribe = 3;
@@ -850,9 +897,12 @@ message ListTasksRequest {
   // Deprecated: read the task `timeline` instead. The maximum number of messages to
   // include in each task's history. Removed in 2.0. See ADR-002.
   optional int32 history_length = 6 [deprecated = true];
+  // Deprecated: this filters on `TaskStatus.timestamp`, which is itself
+  // deprecated. Servers continue to honour it throughout the v1.x line; both are
+  // removed in 2.0.
   // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
   // Only tasks with a status timestamp time greater than or equal to this value will be returned.
-  google.protobuf.Timestamp status_timestamp_after = 7;
+  google.protobuf.Timestamp status_timestamp_after = 7 [deprecated = true];
   // Deprecated: use `view` instead. Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size. Ignored when `view` is set.
   optional bool include_artifacts = 8 [deprecated = true];
@@ -915,9 +965,10 @@ message SubscribeToTaskRequest {
   string tenant = 1;
   // The resource ID of the task to subscribe to.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
-  // Optional. Resume after this `generation`: the server replays only what
-  // followed it and does NOT open with a `Task` snapshot. When unset, the
-  // server opens with a `Task` snapshot and streams onward from it.
+  // Optional. A hint to resume after this `generation`: when set, the server
+  // MUST either continue the stream from that `generation` or open with a
+  // `Task` snapshot. When unset, the server MUST open with a `Task` snapshot
+  // and stream onward from it.
   optional int64 last_seen_generation = 3;
 }
 
@@ -976,10 +1027,14 @@ message StreamResponse {
   }
 }
 
-// A non-fatal error reported on a live stream. It rejects a single client
-// request without terminating the stream, so the client can correct and retry.
-// Conditions that make the stream itself unusable remain transport-level errors
-// and close the stream as before.
+// A non-fatal, stream-local in-band rejection reported on a live stream. It
+// rejects a single client request without terminating the stream, so the client
+// can correct and retry. A `StreamError` does not mutate task state: it is
+// never recorded in `Task.timeline`, never increments `Task.generation`, and is
+// returned only to the caller that sent the rejected request (never delivered
+// to other subscribers or push notification webhooks). Conditions that make the
+// stream itself unusable remain transport-level errors and close the stream as
+// before.
 message StreamError {
   // The ID of the task the rejected request applied to, when known.
   string task_id = 1;
