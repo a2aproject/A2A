@@ -239,6 +239,8 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 {{ proto_to_table("ListTasksRequest") }}
 
+> **Deprecated:** `includeArtifacts` is deprecated as of version **1.1** in favour of `view` (see [Task View](#329-task-view)). Servers continue to honour `includeArtifacts` when `view` is unset throughout the 1.x line; it is removed in 2.0.
+
 When `view` is unset, `includeArtifacts` controls the artifacts field. When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**

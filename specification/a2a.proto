@@ -158,7 +158,7 @@ message SendMessageConfiguration {
   // Configuration for the agent to send push notifications for task updates.
   // Task id should be empty when sending this configuration in a `SendMessage` request.
   TaskPushNotificationConfig task_push_notification_config = 2;
-  // Deprecated: read the task `timeline` instead. The maximum number of most recent
+  // Deprecated: set `task_view` instead. The maximum number of most recent
   // messages from the task's history to retrieve in the response. An unset value
   // means the client does not impose any limit. A value of zero is a request to
   // not include any messages. The server MUST NOT return more messages than the
@@ -176,6 +176,9 @@ message SendMessageConfiguration {
   // processed. Use this to implement optimistic concurrency control and
   // prevent lost-update races when multiple clients interact with the same task.
   optional int64 if_generation_match = 5;
+  // Optional. Controls which fields to return when the response includes a
+  // `Task`. Defaults to `TASK_VIEW_FULL`.
+  TaskView task_view = 6;
 }
 
 // `Task` is the core unit of action for A2A. It has a current status
@@ -860,7 +863,7 @@ message GetTaskRequest {
   string tenant = 1;
   // The resource ID of the task to retrieve.
   string id = 2 [(google.api.field_behavior) = REQUIRED];
-  // Deprecated: read the task `timeline` instead. The maximum number of most recent
+  // Deprecated: set `view` instead. The maximum number of most recent
   // messages from the task's history to retrieve. An unset value means the
   // client does not impose any limit. A value of zero is a request to not
   // include any messages. The server MUST NOT return more messages than the
@@ -894,7 +897,7 @@ message ListTasksRequest {
   // `ListTasksResponse.next_page_token`.
   // Provide this to retrieve the subsequent page.
   string page_token = 5;
-  // Deprecated: read the task `timeline` instead. The maximum number of messages to
+  // Deprecated: set `view` instead. The maximum number of messages to
   // include in each task's history. Removed in 2.0. See ADR-002.
   optional int32 history_length = 6 [deprecated = true];
   // Deprecated: this filters on `TaskStatus.timestamp`, which is itself
