@@ -56,6 +56,7 @@ The launch of A2A has sparked lively discussions and positive reactions across v
 
 These agentic frameworks have built-in A2A integration, making it easy to get started:
 
+- [a2acode](https://github.com/kanywst/a2acode)
 - [Agent Development Kit (ADK)](https://adk.dev/a2a/)
 - [Agno](https://docs.agno.com/agent-os/interfaces/a2a/introduction)
 - [AG2](https://docs.ag2.ai/latest/docs/user-guide/a2a/)
