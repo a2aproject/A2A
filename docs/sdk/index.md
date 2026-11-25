@@ -11,4 +11,6 @@ The following table lists the supported languages for official A2A SDKs and thei
 | C#/.NET    | [`a2a-dotnet`](https://github.com/a2aproject/a2a-dotnet) |
 | Rust       | [`a2a-rs`](https://github.com/a2aproject/a2a-rs)         |
 
+The [Rust SDK page](rust.md) links to its documentation.
+
 The A2A project provides numerous samples across supported languages in the [a2a-samples repository](https://github.com/a2aproject/a2a-samples).
