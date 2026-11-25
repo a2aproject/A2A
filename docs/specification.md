@@ -3109,7 +3109,7 @@ GET /tasks/{id}?currentGeneration=5
 Get task without artifacts, history, or timeline:
 
 ```http
-GET /tasks/{id}?view=TASK_VIEW_METADATA
+GET /tasks/{id}?view=TASK_VIEW_SUMMARY
 ```
 
 **Field Type Handling:**

@@ -803,7 +803,7 @@ enum TaskView {
   TASK_VIEW_FULL = 1;
   // All fields except `artifacts`, `history`, and `timeline`. Fields added to
   // `Task` in future versions may also be left out.
-  TASK_VIEW_METADATA = 2;
+  TASK_VIEW_SUMMARY = 2;
 }
 
 // Represents a request for the `GetTask` method.
@@ -853,9 +853,9 @@ message ListTasksRequest {
   // Filter tasks which have a status updated after the provided timestamp in ISO 8601 format (e.g., "2023-10-27T10:00:00Z").
   // Only tasks with a status timestamp time greater than or equal to this value will be returned.
   google.protobuf.Timestamp status_timestamp_after = 7;
-  // Whether to include artifacts in the returned tasks.
+  // Deprecated: use `view` instead. Whether to include artifacts in the returned tasks.
   // Defaults to false to reduce payload size. Ignored when `view` is set.
-  optional bool include_artifacts = 8;
+  optional bool include_artifacts = 8 [deprecated = true];
   // Optional. Controls which task fields to return. If unset, the server
   // defaults to compatibility behavior where artifact and history inclusion
   // are controlled by `include_artifacts` and `history_length` respectively,
