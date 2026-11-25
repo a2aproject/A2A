@@ -35,6 +35,7 @@ hide:
 
     ```bash
     brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli
+    brew trust --formula a2aproject/a2a-cli/a2a
     brew install a2a
     npx skills add https://github.com/a2aproject/a2a-cli --skill a2a-cli
     ```
