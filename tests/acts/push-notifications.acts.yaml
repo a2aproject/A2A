@@ -1,0 +1,454 @@
+acts_version: "1.0"
+spec_version: "1.0"
+
+metadata:
+  title: "Push Notification Configuration"
+  description: "Tests for push notification config CRUD and unsupported-server behavior"
+
+variables:
+  webhookUrl: "https://example.com/webhooks/a2a-tests"
+
+suites:
+  - id: push-notifications
+    name: "Push Notification Configuration"
+    tests:
+      - id: PUSH-CFG-001
+        name: "Set push notification config"
+        description: >
+          Creates a task, configures push notifications for it, and verifies the
+          returned configuration uses the requested webhook URL.
+        spec_ref: "specification.md#3.1.7"
+        level: may
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+                url: "{{webhookUrl}}"
+            capture:
+              configId: "id"
+
+      - id: PUSH-CFG-002
+        name: "Get push notification config"
+        description: >
+          Creates a task, stores a push notification configuration, retrieves it,
+          and verifies the previously set configuration is returned.
+        spec_ref: "specification.md#3.1.8"
+        level: may
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            capture:
+              configId: "id"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+
+          - id: get-config
+            operation: get_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              id: "{{set-config.configId}}"
+            expect:
+              status: 200
+              body:
+                id: "{{set-config.configId}}"
+                url: "{{webhookUrl}}"
+
+      - id: PUSH-CFG-003
+        name: "Delete push notification config"
+        description: >
+          Creates a task, stores a push notification configuration, deletes it,
+          and expects a successful deletion response.
+        spec_ref: "specification.md#3.1.10"
+        level: may
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            capture:
+              configId: "id"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+
+          - id: delete-config
+            operation: delete_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              id: "{{set-config.configId}}"
+            expect:
+              status: 200
+
+      - id: PUSH-CFG-004
+        name: "Push config on unsupported server returns error"
+        description: >
+          Creates a task on a server that does not advertise push notification
+          support, then verifies setting a push notification configuration fails.
+        spec_ref: "specification.md#3.1.7"
+        level: may
+        preconditions:
+          capabilities:
+            pushNotifications: false
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            capture:
+              taskId: "task.id"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            expect_error:
+              code: UnsupportedOperationError
+
+      - id: PUSH-LIST-001
+        name: "List push configs"
+        level: may
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+            capture:
+              configId: "id"
+
+          - id: list-configs
+            operation: list_push_notification_configs
+            params:
+              taskId: "{{create.taskId}}"
+            expect:
+              status: 200
+              body:
+                configs:
+                  type: array
+                  count_gte: 1
+
+      - id: PUSH-ERR-001
+        name: "Get nonexistent push config returns error"
+        level: may
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: get-config
+            operation: get_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              id: "00000000-0000-0000-0000-000000000000"
+            expect_error:
+              code: TaskNotFoundError
+
+      - id: PUSH-IDEM-001
+        name: "Delete push config is idempotent"
+        level: may
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-complete-task"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-complete-task for push"
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+            capture:
+              configId: "id"
+
+          - id: delete-config
+            operation: delete_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              id: "{{set-config.configId}}"
+            expect:
+              status: 200
+
+          - id: delete-config-again
+            operation: delete_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              id: "{{set-config.configId}}"
+            expect:
+              status: 200
+
+      - id: PUSH-DELIV-001
+        name: "Push delivery includes auth"
+        description: "Runner MUST set up a webhook endpoint and verify auth credentials are included."
+        level: may
+        tags: [push, delivery, runner-special]
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-long-running"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+                authentication:
+                  scheme: "Bearer"
+                  credentials: "test-token"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+
+      - id: PUSH-DELIV-002
+        name: "Push delivery is at-least-once"
+        description: "Runner MUST set up a webhook endpoint and verify at-least-once delivery semantics."
+        level: may
+        tags: [push, delivery, runner-special]
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-long-running"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
+
+      - id: PUSH-DELIV-003
+        name: "Push payload format correct"
+        description: "Runner MUST set up a webhook endpoint and verify the delivered payload format matches the A2A specification."
+        level: may
+        tags: [push, delivery, runner-special]
+        preconditions:
+          capabilities:
+            pushNotifications: true
+        requires_behaviors: ["tck-long-running"]
+        steps:
+          - id: create
+            operation: send_message
+            params:
+              message:
+                role: ROLE_USER
+                parts:
+                  - text: "tck-long-running start"
+              configuration:
+                returnImmediately: true
+            expect:
+              status: 200
+              body:
+                task:
+                  id:
+                    type: string
+            capture:
+              taskId: "task.id"
+
+          - id: set-config
+            operation: set_push_notification_config
+            params:
+              taskId: "{{create.taskId}}"
+              pushNotificationConfig:
+                url: "{{webhookUrl}}"
+            expect:
+              status: 200
+              body:
+                id:
+                  type: string
