@@ -250,10 +250,13 @@ def _format_type_for_docs(
         'google.protobuf'
     )
 
-    # Create a slug for the link. Messages are usually CamelCase, so lowercase it.
+    # Link to the anchor the page defines for this type. The specification
+    # uses the proto identifier verbatim (`<a id="AgentCard"></a>`), so the
+    # fragment must keep its case: MkDocs fragments are case-sensitive, and
+    # lowercasing them made every generated type link dead.
     label = f'`{display_name}`'
     if not is_primitive:
-        label = f'[{label}](#{display_name.lower()})'
+        label = f'[{label}](#{display_name})'
 
     if map_key:
         key_label = TYPE_MAP.get(map_key, map_key)
