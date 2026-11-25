@@ -106,7 +106,6 @@ collaborate effectively with each other and with users.
 - [LlamaIndex](https://x.com/llama_index/status/1912949446322852185)
 - [LTIMindTtree](https://www.ltimindtree.com)
 - [Lumeris](https://www.lumeris.com/)
-- [Lumika](https://lumika.ai)
 - [Lyzr.ai](https://lyzr.ai)
 - [Magyar Telekom](https://www.telekom.hu/)
 - [MasOrange](https://masorange.es/)
