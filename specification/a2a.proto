@@ -82,10 +82,9 @@ service A2AService {
     };
   }
 
-  // (-- api-linter: client-libraries::4232::required-fields=disabled
-  //     api-linter: core::0133::method-signature=disabled
+  // (-- api-linter: core::0133::method-signature=disabled
   //     api-linter: core::0133::request-message-name=disabled
-  //     aip.dev/not-precedent: method_signature preserved for backwards compatibility --)
+  //     aip.dev/not-precedent: method_signature uses TaskPushNotificationConfig fields directly --)
   // Creates a push notification config for a task.
   rpc CreateTaskPushNotificationConfig(TaskPushNotificationConfig) returns (TaskPushNotificationConfig) {
     option (google.api.http) = {
@@ -96,7 +95,7 @@ service A2AService {
         body: "*"
       }
     };
-    option (google.api.method_signature) = "task_id,config";
+    option (google.api.method_signature) = "task_id,url";
   }
   // Gets a push notification config for a task.
   rpc GetTaskPushNotificationConfig(GetTaskPushNotificationConfigRequest) returns (TaskPushNotificationConfig) {
