@@ -1,46 +1,31 @@
-name: Docs Build and Deploy
+name: Docs Build Check
+
+# Validates that the documentation builds. Publishing is done by
+# docs-publish.yml, which deploys to GitHub Pages using Actions.
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/docs.yml"
-      - "scripts/deploy_root_files.sh"
-      - "scripts/build_docs.sh"
-      - "requirements-docs.txt"
-      - "mkdocs.yml"
-      - "docs/**"
-      - ".mkdocs/**"
-      - "specification/a2a.proto"
   pull_request:
     branches:
       - main
     paths:
       - ".github/workflows/docs.yml"
-      - "scripts/deploy_root_files.sh"
+      - ".github/workflows/docs-publish.yml"
+      - ".github/actions/build-docs/**"
+      - "scripts/assemble_site.sh"
       - "scripts/build_docs.sh"
+      - "scripts/mount_docs.py"
       - "requirements-docs.txt"
       - "mkdocs.yml"
       - "docs/**"
       - ".mkdocs/**"
       - "specification/a2a.proto"
-  release:
-    types:
-      - published
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to deploy to (e.g., v1.0.0)'
-        required: true
-        default: 'dev'
 
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      actions: read
+      contents: read
 
     if: github.repository == 'a2aproject/A2A'
 
@@ -48,101 +33,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Configure Git Credentials
-        run: |
-          git config --global user.name github-actions[bot]
-          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: Prepare docs build
+        uses: ./.github/actions/build-docs
+        # No mount token on purpose: PR code (scripts, mounts.yml) must not see
+        # the bot PAT. Mounts are cloned anonymously (public repos only) and
+        # private or failing entries marked `required: false` are skipped.
 
-      - name: Setup Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: 3.13
-
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          enable-cache: true
-
-      - name: Install documentation dependencies
-        run: uv pip install --system --upgrade -r requirements-docs.txt
-
-      - name: Setup Buf
-        uses: bufbuild/buf-action@v1
-        with:
-          setup_only: true
-          version: "1.71.0"
-
-      - name: Setup Go
-        uses: actions/setup-go@v7
-        with:
-          go-version: '1.25'
-
-      - name: Install build tools
-        run: |
-          # Install protoc
-          PROTOC_VERSION="28.3"
-          PROTOC_ZIP="protoc-${PROTOC_VERSION}-linux-x86_64.zip"
-          curl -fsSL -o /tmp/protoc.zip "https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP}"
-          sudo unzip -q /tmp/protoc.zip -d /usr/local
-          rm /tmp/protoc.zip
-
-          # Install protoc-gen-jsonschema
-          go install github.com/bufbuild/protoschema-plugins/cmd/protoc-gen-jsonschema@latest
-          sudo cp "$(go env GOPATH)/bin/protoc-gen-jsonschema" /usr/local/bin/
-
-          # Clone googleapis
-          mkdir -p third_party
-          cd third_party
-          git clone --depth 1 https://github.com/googleapis/googleapis.git
-          cd ..
-
-      - name: Generate protocol specification files
-        run: ./scripts/build_docs.sh
-
-      - name: Generate consolidated llms-full.txt file
-        run: bash scripts/build_llms_full.sh
-
-      - name: Build Documentation (PR Check)
-        if: github.event_name == 'pull_request'
+      - name: Build Documentation
         run: mkdocs build
-
-      - name: Deploy development version from main branch
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          mike deploy --push --update-aliases dev latest
-
-          echo "Setting 'latest' as the default version for the site..."
-          mike set-default --push --template .mkdocs/root-redirect-template.html latest
-
-          # Deploy 404 page
-          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy new release version and set as latest
-        if: github.event_name == 'release'
-        run: |
-          # The release tag (e.g., v0.2.2) is used as the version number
-          export MIKE_VERSION=${GITHUB_EVENT_RELEASE_TAG_NAME}
-          echo "Deploying docs for version $MIKE_VERSION and setting it as 'latest'..."
-          mike deploy --push --update-aliases $MIKE_VERSION latest
-
-          echo "Setting 'latest' as the default version for the site..."
-          mike set-default --push --template .mkdocs/root-redirect-template.html latest
-
-          # Call the reusable script to deploy the 404 page, passing the token
-          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
-        env:
-          GITHUB_EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
-
-      - name: Manually deploy specific version from main
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          mike deploy --push --update-aliases ${{ github.event.inputs.version }} latest
-
-          echo "Setting 'latest' as the default version for the site..."
-          mike set-default --push --template .mkdocs/root-redirect-template.html latest
-
-          # Re-deploy 404 page
-          bash scripts/deploy_root_files.sh ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}

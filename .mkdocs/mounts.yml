@@ -1,0 +1,31 @@
+# Docs mounted into the A2A site from other repositories.
+#
+# `scripts/mount_docs.py` reads this file at build time, copies each entry's
+# `source_dir` into `docs/mounted/<mount_path>/` and adds it to the site nav
+# (see `.mkdocs/hooks.py`). `docs/mounted/` is generated and ignored by git.
+#
+# Entry fields:
+#   name        Unique identifier; used by `--local <name>=<path>` and in logs.
+#   repo        GitHub `owner/repo`.
+#   ref         Branch, tag or SHA to mount. Default: main.
+#   source_dir  Directory inside the repo holding Markdown. Default: docs.
+#   mount_path  URL path under the site (docs/mounted/<mount_path>).
+#   nav_title   Title of the entry in the site navigation.
+#   nav_section Top-level nav section to append to. Default: Resources.
+#   required    If true, a failed mount fails the build; otherwise the entry
+#               is skipped with a warning. Default: false.
+#
+# A mounted repo may ship `<source_dir>/.mount.yml` with a `nav:` key (paths
+# relative to `source_dir`) to control its own navigation. Without it the nav
+# is generated from the directory layout.
+#
+# A mounted repo triggers a rebuild by calling `.github/workflows/docs-notify.yml`.
+mounts: []
+#  - name: a2a-go
+#    repo: a2aproject/a2a-go
+#    ref: main
+#    source_dir: docs
+#    mount_path: sdk/go
+#    nav_title: Go SDK
+#    nav_section: Resources
+#    required: false

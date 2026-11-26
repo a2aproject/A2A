@@ -34,6 +34,7 @@ The A2A CLI closes both gaps: a single, standardized way for anything that can r
 
     ```bash
     brew tap a2aproject/a2a-cli https://github.com/a2aproject/a2a-cli
+    brew trust --formula a2aproject/a2a-cli/a2a
     brew install a2a
     ```
 
