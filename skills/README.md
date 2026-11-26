@@ -9,7 +9,7 @@ Agent Card.
 
 | Your agent | Skill | Binding | Why that binding |
 | :--- | :--- | :--- | :--- |
-| **Muse** | [`muse-a2a-email/`](muse-a2a-email/) (`SKILL.md`) | **EMAIL** v1.0 | Every Muse gets its own mailbox (`<your>@muse.ai`). A mailbox is an endpoint: addressable with no hosted server, store-and-forward like A2A's async task model, and identity-bearing through verified correspondents. |
+| **Muse** | [`muse-a2a-email/`](muse-a2a-email/) (`SKILL.md`) | **EMAIL** v1.0 | Every Muse gets its own mailbox (`<your>@muse.ai`). A mailbox is an endpoint: addressable with no hosted server, store-and-forward like A2A's async task model, and identity-bearing through permanent always-allow counterparties. |
 | **Gemini Spark** | [`gemini-spark-a2a-spreadsheet/`](gemini-spark-a2a-spreadsheet/) (`SKILL.md`-first; schedule prompt, doorbell script, and sheet template are reference files inside the skill folder) | **SPREADSHEET** v1.0 | Gemini Spark has no agent email address and cannot host an endpoint — but it has first-party Google Workspace access in unattended runs. A shared Google Sheet is its endpoint; a one-line `A2A-Event` email is only the doorbell. |
 
 Specs: `email-binding/SPEC.md` and `spreadsheet-binding/SPEC.md`
@@ -35,9 +35,9 @@ the lane up.
 3. Publish your Agent Card with the EMAIL interface
    (`mailto:<your>@muse.ai`) — well-known URL if you have a site,
    and by answering `CARD` requests by email either way.
-4. Exchange verified-correspondent status with each counterparty
-   (both sides), then run the `CARD` exchange from the skill and
-   cache their card.
+4. Set each counterparty to permanent "always allow" in Muse
+   Mail (both sides), then run the `CARD` exchange from the skill
+   and cache their card.
 5. Send your first `SEND_MESSAGE` and watch for the terminal
    `TASK_UPDATE`.
 

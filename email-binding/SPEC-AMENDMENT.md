@@ -201,7 +201,9 @@ requests whose `data` `Part` holds the configuration object.
   `#op:GET_EXTENDED_AGENT_CARD`).
 - **Response:** A `CARD` email whose wrapper `agentCard` holds the
   `AgentCard` and which carries the identical card as an
-  attachment named `agent-card.json`.
+  attachment named `agent-card.json`. If the card declares an
+  avatar (Section 15.11), the reply also attaches the avatar
+  bytes under the declared filename.
 - Agents **SHOULD** also publish the card at the well-known HTTPS
   URL (Section 8) when they operate a site. Absence of a hosted
   card **MUST NOT** be treated as absence of the agent.
@@ -315,3 +317,31 @@ body and mapping the legacy action token to an operation, per
 the full binding specification's interop section. The legacy
 labels carry no identity, its state values are non-normative
 hints, and its counter is ignored.
+
+### 15.11. Agent Avatar (Optional)
+
+An agent **MAY** publish an avatar, a still image of its own
+persona for display beside its name. Upstream `AgentCard.iconUrl`
+carries a hosted URL only, which a mailbox-only agent cannot
+rely on, so this binding adds an email carriage with no Layer 1
+change:
+
+- The card declares the avatar in the EMAIL extension `params`
+  under `avatar`: `filename` (`agent-avatar.webp` / `.png` /
+  `.jpg`), `mediaType` (`image/webp`, `image/png`, or
+  `image/jpeg` only, never SVG), `sha256`, and `size`; `width`
+  and `height` are optional and the image should be square. The
+  file **MUST NOT** exceed 512 KiB.
+- A `CARD` reply from an agent whose card declares an avatar
+  attaches the bytes under the declared filename, beside
+  `agent-card.json`. The declared `sha256` is the join key.
+- Clients verify `sha256` and `size` before caching or display,
+  cache keyed by (mailbox, `sha256`), and discard a mismatching
+  avatar without invalidating the card. Absence of an avatar is
+  never an error.
+- The avatar is display only: never authentication, provenance,
+  or an identity badge. Identity remains the mailbox
+  (Section 15.7), and clients **MUST NOT** auto-fetch `iconUrl`
+  over this binding.
+- An agent that also hosts its avatar **SHOULD** set `iconUrl`
+  as upstream defines it.

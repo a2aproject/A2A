@@ -114,6 +114,70 @@ extension, whose `params.envelope` and `provenance` are subsumed
 by §§6 and 12 of this spec; its task-state hints survive only as
 decode-side interop (§16).
 
+### 2.5 Agent avatar (OPTIONAL)
+
+An agent **MAY** publish an avatar: a still image of the agent's
+own persona, for display next to its name in inboxes, contact
+lists, and coordination surfaces. Upstream Layer 1 already
+provides one carriage for this, the optional `AgentCard.iconUrl`
+field, but a URL alone does not serve a mailbox-only agent, which
+has no reliable place to host it, and §9.2 forbids receivers from
+auto-fetching URLs. This binding therefore adds an email-native
+carriage alongside `iconUrl`, without changing Layer 1:
+
+- An agent that hosts its avatar **SHOULD** set `iconUrl` to its
+  URL, exactly as upstream defines it.
+- An agent offering the avatar over email **MUST** declare it in
+  the §2.4 extension's `params`, under an `avatar` object:
+
+```json
+"avatar": {
+  "filename": "agent-avatar.webp",
+  "mediaType": "image/webp",
+  "sha256": "<lowercase hex SHA-256 of the avatar bytes>",
+  "size": 365044,
+  "width": 1600,
+  "height": 1600
+}
+```
+
+- `filename` **MUST** be `agent-avatar.` plus the extension for
+  the media type (`.webp`, `.png`, `.jpg`). `mediaType` **MUST**
+  be one of `image/webp`, `image/png`, or `image/jpeg`; SVG and
+  other scriptable or vector formats **MUST NOT** be used.
+  `sha256` and `size` (bytes) are **REQUIRED**; `width` and
+  `height` (pixels) are **OPTIONAL**, and the image **SHOULD**
+  be square.
+- The avatar file **MUST NOT** exceed 512 KiB (524,288 bytes).
+  An animated image **MAY** be sent; a client **MAY** render
+  only its first frame.
+- Carriage is by attachment in the `CARD` exchange (§3a): a
+  `CARD` reply from an agent whose card declares an avatar
+  **MUST** attach the avatar bytes under the declared
+  `filename`, in addition to the `agent-card.json` attachment.
+  The declared `sha256` is the join key between card and
+  attachment, exactly as §9.3 manifests join artifacts to MIME
+  parts; filename alone **MUST NOT** be trusted.
+- A client **MUST** verify `sha256` and `size` against the
+  attachment before caching or displaying it. On mismatch it
+  **MUST** discard the avatar; the card itself stays valid when
+  its own provenance (§12) passes, because the avatar carries
+  no normative data. Clients cache the avatar keyed by
+  (mailbox, `sha256`); a changed hash invalidates the cached
+  copy even inside the §3 card-cache window, and the client
+  re-obtains it on the next `CARD` exchange.
+- Absence of an avatar is never an error and never affects
+  conformance: a client falls back to a locally rendered
+  placeholder (for example the agent's initials).
+- The avatar is display only. It **MUST NOT** be used for
+  authentication, provenance, or any identity decision; identity
+  over this binding is the mailbox (§§4, 12), and a client
+  **MUST NOT** present an avatar as a verified identity badge.
+  Over this binding a client **MUST NOT** auto-fetch `iconUrl`
+  either (§9.2); the attachment is the email carriage, and any
+  URL fetch is a separate decision under the client's own
+  policy on another binding.
+
 ## 3. Discovery — how a client obtains the Agent Card
 
 Email-first means discovery **MUST** work with no HTTP server.
@@ -129,7 +193,10 @@ Two mechanisms are specified; an agent **MUST** support (a) and
    Agent Card JSON as (i) the authoritative JSON block in the body
    (§7.3, `kind: "agentCard"`) **and** (ii) an attachment named
    exactly `agent-card.json` (`application/json`). The two copies
-   **MUST** be byte-equivalent JSON values.
+   **MUST** be byte-equivalent JSON values. If the card declares
+   an avatar (§2.5), the reply **MUST** also attach the avatar
+   bytes under the declared `filename`; the client verifies and
+   caches it per §2.5.
 3. If the card carries upstream `signatures` (JWS, `AgentCard`),
    the client **SHOULD** verify them before trusting non-EMAIL
    interfaces discovered from it. An unsigned card is acceptable
@@ -470,8 +537,10 @@ in this binding — none in the subject, body, headers, or
 attachments, ever (see §12.4). Authentication is:
 
 1. **Transport provenance:** the receiving provider asserts the
-   `From:` mailbox (Muse Mail: *verified correspondent* / *owner
-   address* status; generic mail: SPF + DKIM alignment for the
+   `From:` mailbox (Muse Mail: permanent *always-allow* status
+   for that counterparty mailbox, set by the receiving human;
+   owner-address status is separate and reserved for the human's
+   own addresses; generic mail: SPF + DKIM alignment for the
    From domain, DMARC pass **SHOULD** be required where available).
 2. **Card binding:** the `From:` mailbox **MUST** equal the
    `mailto:` URL of an EMAIL interface in a known/cached Agent Card
@@ -655,6 +724,9 @@ An implementation conforms to EMAIL binding v1.0 iff it:
    credentials (§12.4).
 6. Sends a terminal `TASK_UPDATE` (or `TASK_ERROR`) for every
    task it creates — no silent tasks.
+7. If its card declares an avatar, carries it per §2.5 (declared
+   hash and size, attached in the `CARD` exchange); a card with
+   no avatar declaration conforms without one.
 
 ## Appendix A — Worked example (abridged)
 

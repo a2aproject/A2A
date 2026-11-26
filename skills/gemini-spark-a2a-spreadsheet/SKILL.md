@@ -435,6 +435,19 @@ standing-instruction entry in this skill before its first
 use** — a kind nobody has standing instructions for is an
 `UnsupportedOperationError`, not an improvisation.
 
+### 5.7 Application kind: `spark.daily_brief` (registered 2026-11-08)
+
+Params: `{"date": "YYYY-MM-DD"}` — the America/New_York date
+whose Gemini Daily Brief is requested. Standing instruction:
+return that date's Gemini Daily Brief sections verbatim as
+structured data — four item lists named `top_of_mind`, `fyi`,
+`news`, and `looking_ahead` — in the Results row's `task_json`
+artifact data Part. Each item carries the fields Gemini's brief
+itself shows (title, description, and time/link where present);
+do not summarise, re-rank, add, or drop items. If no Daily
+Brief exists for that date, return the four lists empty.
+Read/query only.
+
 ## 6. Parts and Artifacts inside the JSON
 
 - `parts_json` is the canonical **array of Part objects**,

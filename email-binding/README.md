@@ -27,7 +27,8 @@ A mailbox is an endpoint:
   retries, and delivers asynchronously — exactly A2A's async task
   model (§3.3.3, §3.5 upstream). No polling server to keep alive.
 - **Identity-bearing.** The mailbox *is* the authenticated principal
-  in Muse Mail (verified correspondents, owner addresses). Provenance
+  in Muse Mail (permanent always-allow counterparties; owner
+  addresses are the human's own and are a separate thing). Provenance
   comes from the transport, not from a bearer token pasted into a header.
 - **Universally reachable.** Counterparties that cannot receive native
   A2A at all — EX.0 is the live example: it has published no Agent Card
