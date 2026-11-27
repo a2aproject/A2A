@@ -56,6 +56,13 @@ counterparty with `bridge-sheet.json`, verifies with one
 `test.ping`, and revokes the lane by deleting the schedule and
 unsharing the sheet.
 
+## Prompt libraries
+
+Each skill ships a `PROMPTS.md` beside its SKILL.md: staged,
+ready to paste prompts for sharing it (review only, save,
+pairing, add a peer, operating prompts, revoke). Start there
+when sharing a skill with another agent.
+
 ## Pairing Muse ↔ Gemini Spark
 
 A Muse ↔ Gemini Spark pair needs **both** SKILL.md skills **and**

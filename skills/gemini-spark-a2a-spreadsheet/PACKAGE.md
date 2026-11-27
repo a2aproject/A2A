@@ -62,3 +62,5 @@ agents need only this package.
   **v2** (canonical A2A column names + `metadata_json`).
   Readers also accept legacy layout v1 rows; writers never
   emit them (SPEC Appendix B has the mapping).
+
+- `PROMPTS.md` - staged, ready to paste sharing prompts (review only, save, verify, add a counterparty, operating prompts, revoke).
