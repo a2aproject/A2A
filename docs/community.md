@@ -63,6 +63,7 @@ These agentic frameworks have built-in A2A integration, making it easy to get st
 - [CrewAI](https://docs.crewai.com/en/learn/a2a-agent-delegation)
 - [CUGA](https://github.com/cuga-project/cuga-agent/tree/main/docs/examples/a2a_two_cuga)
 - [Hector](https://github.com/verikod/hector)
+- [Heym](https://heym.run/docs/reference/a2a)
 - [LangGraph](https://docs.langchain.com/langsmith/server-a2a)
 - [LiteLLM](https://docs.litellm.ai/docs/a2a)
 - [Microsoft Agent Framework](https://learn.microsoft.com/en-us/agent-framework/user-guide/agents/agent-types/a2a-agent)
