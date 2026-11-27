@@ -225,7 +225,7 @@ See [Task Generation Semantics](#327-task-generation-semantics) for details abou
 
 **Outputs:**
 
-- [`Task`](#411-task): Current state and artifacts of the requested task
+- [`Task`](#411-task): The requested task, with the fields selected by `view`
 
 **Errors:**
 
@@ -239,7 +239,9 @@ Retrieves a list of tasks with optional filtering and pagination capabilities. T
 
 {{ proto_to_table("ListTasksRequest") }}
 
-When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
+> **Deprecated:** `includeArtifacts` is deprecated as of version **1.1** in favour of `view` (see [Task View](#329-task-view)). Servers continue to honour `includeArtifacts` when `view` is unset throughout the 1.x line; it is removed in 2.0.
+
+When `view` is unset, `includeArtifacts` controls the artifacts field. When `includeArtifacts` is false (the default), the artifacts field MUST be omitted entirely from each Task object in the response. The field should not be present as an empty array or null value. When `includeArtifacts` is true, the artifacts field should be included with its actual content (which may be an empty array if the task has no artifacts).
 
 **Outputs:**
 
@@ -550,13 +552,13 @@ Servers **MAY** still withhold a new payload kind from clients that negotiated a
 
 #### 3.2.4. History Length Semantics
 
-> **Deprecated:** `historyLength` (and the `history` field it controls) is deprecated as of version **1.1** in favour of `timelineLength` and the task [`timeline`](#328-task-timeline-semantics). Servers continue to honour `historyLength` and populate `history` throughout the 1.x line; both are removed in 2.0.
+> **Deprecated:** `historyLength` (and the `history` field it controls) is deprecated as of version **1.1** in favour of the task [`timeline`](#328-task-timeline-semantics). Servers continue to honour `historyLength` and populate `history` throughout the 1.x line; both are removed in 2.0.
 
-The `historyLength` parameter controls how much task history is returned in responses; its replacement, `timelineLength`, controls how many [`timeline`](#418-timelineentry) entries are returned. Both parameters appear in multiple operations and follow the same, consistent semantics:
+The `historyLength` parameter appears in multiple operations and controls how much task history is returned in responses. This parameter follows consistent semantics across all operations:
 
-- **Unset/undefined**: No limit imposed; the server returns its default amount (implementation-defined, may be all entries)
-- **0**: None should be returned; the corresponding field (`history` or `timeline`) SHOULD be omitted
-- **> 0**: Return at most this many most-recent entries
+- **Unset/undefined**: No limit imposed; server returns its default amount of history (implementation-defined, may be all history)
+- **0**: No history should be returned; the `history` field SHOULD be omitted
+- **> 0**: Return at most this many recent messages from the task's history
 
 #### 3.2.5. Metadata
 
@@ -644,13 +646,19 @@ Within a task these values are **informational only**: `generation` orders event
 
 This supersedes the deprecated [`TaskStatus.timestamp`](#412-taskstatus), which carried an entry's time on the status object. Servers continue to populate it throughout the 1.x line for backward compatibility; it is removed in 2.0. The `statusTimestampAfter` filter on [`ListTasks`](#314-list-tasks) selects tasks by that same status time and is deprecated with it; servers continue to honour it throughout the 1.x line, and both are removed in 2.0.
 
-The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)). The number of entries returned is controlled by `timelineLength`.
+The `timeline` supersedes the deprecated `history` field: it records the same messages (agent messages are carried inside `TaskStatus` entries; client messages appear as `Message` entries) plus ordering and state context. Servers **SHOULD** populate `timeline`; servers that also support 1.0 clients continue to populate `history` (see [History Length Semantics](#324-history-length-semantics)).
 
 Agent status entries are delivered by the existing [`TaskStatusUpdateEvent`](#421-taskstatusupdateevent). Client-message entries are delivered via the new [`TaskMessageUpdateEvent`](#423-taskmessageupdateevent) — which is emitted **only** to clients that request `A2A-Version: 1.1` or later, so 1.0 clients that do not understand the `timeline` field are unaffected on the wire. The `oneof` in [`TimelineEntry`](#418-timelineentry) is an extension point: additional entry kinds MAY be added in future minor versions. Clients **MUST** fail open — a client that encounters a `TimelineEntry` whose `entry` is a kind it does not recognise **MUST** skip that entry rather than rejecting the timeline or aborting the stream. The entry's `generation` is still accounted for (it does not count as a gap), so ordering and missed-event detection continue to work across unknown entries.
 
 **Interleaving artifacts with the timeline:**
 
 [`Artifact`](#417-artifact) objects are recorded separately from the timeline so that per-chunk streaming updates do not flood it. To place an artifact relative to timeline entries, an artifact carries `startGeneration` (the `generation` at which it first appeared) and `endGeneration` (the `generation` at which it completed; unset while it is still streaming). Consumers interleave artifacts with timeline entries by comparing these values against entry `generation`s. Each [`Artifact`](#417-artifact) also carries an `updatedAt` timestamp, set by the server to the time it was last created or updated (including for client-written artifacts); see *Timestamps* above.
+
+<a id="TaskView"></a>
+
+#### 3.2.9. Task View
+
+{{ proto_enum_to_table("TaskView") }}
 
 ### 3.3. Operation Semantics
 
@@ -3123,6 +3131,12 @@ Get task with long-polling (wait until generation advances beyond 5):
 
 ```http
 GET /tasks/{id}?currentGeneration=5
+```
+
+Get task without artifacts, history, or timeline:
+
+```http
+GET /tasks/{id}?view=TASK_VIEW_SUMMARY
 ```
 
 **Field Type Handling:**
