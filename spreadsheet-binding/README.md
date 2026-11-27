@@ -56,7 +56,7 @@ does.
 | `SPEC.md` | The binding specification (normative). Sheet/tab/column contract, canonical mapping, doorbell, Card tab, cancellation on an append-only medium, auth, cleanup, async, errors. |
 | `agent-card-spreadsheet.example.json` | A complete Agent Card (Gemini Spark) whose *preferred* — and only A2A — interface is SPREADSHEET. |
 | `reference/a2a_spreadsheet.py` | Stdlib-only Python reference codec: canonical `Message`/`Task` dict ⇄ sheet row dicts, plus in-memory `GetTask`/`ListTasks`/cancel logic. Self-test included. |
-| `../skills/gemini-spark-a2a-spreadsheet/` | The Gemini Spark adoption skill (SKILL.md-first) for running this binding. |
+| Gemini Spark adoption skill | Maintained in the contributor's fork (see the pull request description), not in this repository. |
 
 ## The binding in one paragraph
 

@@ -84,8 +84,10 @@ supports all three, in the order a client supports them:
 2. **Curated registry:** a registry returns cards by skill or tag
 3. **Direct configuration:** a user configures a peer's mailbox
    or card directly. This is how a specific peer is added, and
-   it is a separate step from adopting the protocol, using the
-   template in `../skills/muse-a2a-email/examples/add-a-peer.md`
+   it is a separate step from adopting the protocol. A worked
+   add-a-peer template ships with the Muse adoption skill,
+   maintained in the contributor's fork (see the pull request
+   description), not in this repository.
 
 Email adds one transport-native form of the third strategy: a
 `GET_AGENT_CARD` email to a configured mailbox, answered by a
