@@ -2,7 +2,7 @@
 
 **Version:** 1.0 (Draft, 2026-11-05; sheet layout v2, 2026-11-06)
 **Binding identifier:** `SPREADSHEET`
-**Binding URI (custom-binding form, upstream §5.8):** `https://jonathancruzate.com/a2a/bindings/spreadsheet/v1`
+**Binding URI (custom-binding form, upstream §5.8):** `https://a2a-protocol.org/bindings/spreadsheet/v1`
 **Upstream base:** A2A Protocol Specification v1.0, `a2aproject/A2A` @ `9fff3e0`.
 **Layers affected:** Layer 3 only. Layer 1 (canonical data model) and
 Layer 2 (abstract operations) are **normatively unchanged**. Where
@@ -57,7 +57,7 @@ namespace (skill semantics belong to the agents' cards).
 ```
 
 - `protocolBinding` **MUST** be `SPREADSHEET`. The URI form
-  `https://jonathancruzate.com/a2a/bindings/spreadsheet/v1` **MAY**
+  `https://a2a-protocol.org/bindings/spreadsheet/v1` **MAY**
   be published as an additional entry for the same endpoint;
   clients **MUST** treat the two as the same binding.
 - `url` **MUST** be the spreadsheet's canonical HTTPS URL. The
@@ -100,7 +100,7 @@ namespace (skill semantics belong to the agents' cards).
 
 ```json
 {
-  "uri": "https://jonathancruzate.com/a2a/bindings/spreadsheet/v1",
+  "uri": "https://a2a-protocol.org/bindings/spreadsheet/v1",
   "description": "A2A SPREADSHEET binding v1.0, sheet layout v2: SendMessage = Requests row, Task = Results row, Notes = non-task Messages. Structured data only; standing instructions live in the responder's A2A skill, never in rows.",
   "required": false,
   "params": {

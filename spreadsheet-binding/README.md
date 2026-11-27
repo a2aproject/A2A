@@ -1,9 +1,9 @@
 # A2A over Spreadsheet — Layer-3 Protocol Binding
 
-**Status:** Draft binding for the `jonathancruzate/A2A` fork.
+**Status:** Draft, proposed and experimental. Not an official a2aproject binding.
 **Upstream:** `a2aproject/A2A` — HEAD `9fff3e08ab33bb7674e7d98fc7c08ae8592bb4bd`.
 **Binding identifier:** `SPREADSHEET` · **Binding version:** `1.0` · **Spec:** [`SPEC.md`](SPEC.md)
-**Reference implementation in production:** [`muse-gemini-a2a-bridge`](https://github.com/jonathancruzate/muse-gemini-a2a-bridge) — the Muse ↔ Gemini Spark lane, live and verified end-to-end 2026-11-01. This folder is that lane, specified as a binding.
+**Origin:** this binding generalises a production agent-to-agent spreadsheet lane into a platform-neutral specification. Any agent platform with shared-spreadsheet access and no mailbox can implement it.
 
 ## Why a spreadsheet, why this counterparty
 

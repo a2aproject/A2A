@@ -2,7 +2,7 @@
 
 **Version:** 1.0 (Draft, 2026-11-05)  
 **Binding identifier:** `EMAIL`  
-**Binding URI (custom-binding form, upstream §5.8):** `https://jonathancruzate.com/a2a/bindings/email/v1`  
+**Binding URI (custom-binding form, upstream §5.8):** `https://a2a-protocol.org/bindings/email/v1` (proposed identifier, experimental: this binding is not yet an official a2aproject binding; the URI follows the upstream governance namespace in docs/topics/extension-and-binding-governance.md and is used as an identifier only, HTTP access is not expected)  
 **Upstream base:** A2A Protocol Specification v1.0, `a2aproject/A2A` @ `9fff3e0`.  
 **Layers affected:** Layer 3 only. Layer 1 (canonical data model) and
 Layer 2 (abstract operations) are **normatively unchanged** by this
@@ -18,7 +18,7 @@ The key words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and
 
 This binding maps every Layer-2 abstract operation onto Internet
 email (RFC 5322 messages, transported by SMTP / submission / IMAP /
-provider APIs such as Muse Mail) so that an agent whose only
+provider APIs) so that an agent whose only
 endpoint is a mailbox can be a full A2A peer.
 
 In scope: operation mapping, Agent Card declaration and discovery,
@@ -27,8 +27,8 @@ encoding, service-parameter carriage, authentication and provenance,
 async delivery semantics, idempotency, and error mapping.
 
 Out of scope: mailbox provisioning, mail-provider APIs (a binding
-implementation adapts its provider — Muse Mail `mail.handoff`,
-IMAP/SMTP, Gmail API — behind §§5–6), and human email UX.
+implementation adapts its provider (an agent mailbox service,
+IMAP/SMTP, or a mail API) behind §§5–6), and human email UX.
 
 ## 2. Binding identification and Agent Card declaration
 
@@ -43,14 +43,14 @@ lists EMAIL first:
 {
   "protocolBinding": "EMAIL",
   "protocolVersion": "1.0",
-  "url": "mailto:jonathan-cruzate-assistant@muse.ai"
+  "url": "mailto:agent@example.com"
 }
 ```
 
 - `protocolBinding` **MUST** be the string `EMAIL` for
   discoverability by existing Muse tooling. Implementations that
   follow upstream §5.8 strictly **MAY** additionally publish the URI
-  form `https://jonathancruzate.com/a2a/bindings/email/v1` as a
+  form `https://a2a-protocol.org/bindings/email/v1` (proposed identifier, experimental: this binding is not yet an official a2aproject binding; the URI follows the upstream governance namespace in docs/topics/extension-and-binding-governance.md and is used as an identifier only, HTTP access is not expected) as a
   second entry for the same `url`; clients **MUST** treat the two as
   the same binding.
 - `protocolVersion` is the *binding* version (`1.0`), independent of
@@ -99,7 +99,7 @@ HTTP bindings declares `bearerAuth` for *those* interfaces only.
 
 ```json
 {
-  "uri": "https://jonathancruzate.com/a2a/bindings/email/v1",
+  "uri": "https://a2a-protocol.org/bindings/email/v1",
   "description": "A2A EMAIL binding v1.0: canonical Task/Message JSON over email; subject carries the #a2a:v1 envelope.",
   "required": false,
   "params": {
@@ -135,7 +135,7 @@ carriage alongside `iconUrl`, without changing Layer 1:
   "filename": "agent-avatar.webp",
   "mediaType": "image/webp",
   "sha256": "<lowercase hex SHA-256 of the avatar bytes>",
-  "size": 365044,
+  "size": 48210,
   "width": 1600,
   "height": 1600
 }
@@ -206,8 +206,8 @@ Two mechanisms are specified; an agent **MUST** support (a) and
 **(b) Well-known HTTPS URL (secondary, when the agent has a site).**
 
 `https://<domain>/.well-known/agent-card.json`, exactly as upstream.
-For a `…@muse.ai` agent the domain is the principal's published
-domain if any; absence of a hosted card **MUST NOT** be treated as
+The domain is the agent operator's published
+domain, if any; absence of a hosted card **MUST NOT** be treated as
 absence of the agent — fall back to (a).
 
 Caching: a client **MAY** cache a card keyed by mailbox address.
@@ -281,7 +281,7 @@ carried by the `From:` / `To:` headers and the Agent Card (§4),
 task state by the `Task` object in Zone J (§7.3), and ordering
 by the reply chain and `status.timestamp` (§10.2). No other
 `#key:` token is defined by this binding; the historical tokens
-of Muse's pre-binding bridge envelope are decode-side interop
+of that pre-binding bridge envelope are decode-side interop
 only (§16) and **MUST NOT** be emitted.
 
 Example (new task):
@@ -523,8 +523,7 @@ overwrites a newer known state.
 ### 11.4 Polling = inbox watch
 
 The client-side “poll” is an inbox watch (IMAP IDLE, provider hook,
-or periodic scan — Muse: the `agent-bridge-watch` /
-Muse Mail watch hooks). Watchers dedupe on §13 keys and wake the
+or periodic scan). Watchers dedupe on §13 keys and wake the
 agent only on new `messageId`s. Polling cadence is a local policy,
 not a wire property.
 
@@ -537,11 +536,14 @@ in this binding — none in the subject, body, headers, or
 attachments, ever (see §12.4). Authentication is:
 
 1. **Transport provenance:** the receiving provider asserts the
-   `From:` mailbox (Muse Mail: permanent *always-allow* status
-   for that counterparty mailbox, set by the receiving human;
-   owner-address status is separate and reserved for the human's
-   own addresses; generic mail: SPF + DKIM alignment for the
-   From domain, DMARC pass **SHOULD** be required where available).
+   `From:` mailbox (the mail provider's recipient-permission
+   status for that counterparty mailbox, where the provider
+   supports it: a standing permission the human granted when
+   approving a first send to that recipient, via the approval
+   card's "always allow" choice, and revocable in the provider's
+   mail settings under recipient permissions; otherwise SPF +
+   DKIM alignment for the From domain, with DMARC pass
+   **SHOULD** be required where available).
 2. **Card binding:** the `From:` mailbox **MUST** equal the
    `mailto:` URL of an EMAIL interface in a known/cached Agent Card
    for that counterparty (or be the mailbox that delivered that card
@@ -556,8 +558,7 @@ attachments, ever (see §12.4). Authentication is:
 - Mail from a *known principal's address* that carries **no valid
   `#a2a:v1` envelope** is mail from the **human principal**, never
   from their agent: it **MUST NOT** be auto-answered as A2A, parsed
-  for operations, or treated as a task update. (This is Muse's
-  long-standing bridge rule, promoted to binding law.)
+  for operations, or treated as a task update.
 - Mail claiming an envelope whose `From:` fails (1)–(3) is a
   **spoof-hold**: no state change, no reply on the A2A lane, log and
   surface to the principal. Never “reply to ask for the token” —
@@ -568,7 +569,7 @@ attachments, ever (see §12.4). Authentication is:
 
 ### 12.3 DKIM / signing reliance
 
-Receivers **SHOULD** rely on DKIM (`muse.ai`, sender domain) as a
+Receivers **SHOULD** rely on DKIM (sender domain) as a
 positive signal and **MUST** treat DKIM failure on an enveloped
 message as provenance failure. Payload-level signing (S/MIME, JWS
 over Zone J) is **OPTIONAL** in v1.0; if present it supplements,
@@ -576,7 +577,7 @@ never replaces, transport provenance.
 
 ### 12.4 Never by email
 
-Bearer tokens (including Muse's per-party HTTP A2A tokens),
+Bearer tokens (including any per-party HTTP A2A tokens),
 passwords, OTPs, recovery codes, and private keys **MUST NOT**
 appear in any binding email, in either direction, for any reason —
 including “auth challenges”. An agent needing authentication
@@ -590,8 +591,8 @@ Zone J is data, not instructions from the principal. A receiving
 agent applies its normal instruction hierarchy: operations in a
 validly provenanced email are *counterparty requests*, executed
 only within the receiving principal's standing authorisations.
-Sanitisation rules of a lane (e.g. the work-calendar bridge's
-zero-PII / sanitised-title rules) are application policy layered
+Sanitisation rules of an application lane (for example a
+zero-PII / sanitised-title policy) are application policy layered
 on this binding and are unaffected by it.
 
 ## 13. Idempotency, duplicates, retries
@@ -673,9 +674,9 @@ must specify this):
 Header names are case-insensitive; Zone J is authoritative on any
 header/body disagreement.
 
-## 16. Interop with Muse's legacy bridge mail (decode-only)
+## 16. Interop with an earlier bridge envelope (decode-only)
 
-Before this binding, Muse's bridge envelope carried six further
+Before this binding, an earlier bridge envelope carried six further
 subject tokens: `#from:`, `#to:`, `#action:`, `#topic:`,
 `#status:`, `#seq:` (full historical form: `#a2a:v1 #from:<agent>
 #to:<agent> #action:<ACTION> #topic:<slug> #status:<state>
@@ -705,10 +706,10 @@ Receivers **SHOULD** still decode them, as interop only:
   a stray legacy token is decoded as binding mail; the legacy
   token is ignored, like any unknown token (§6.1).
 
-The `#sync_bridge:v1` one-line body envelope of the work-calendar
-bridge is an *application payload* (a `data`-equivalent line
-inside a `SEND_MESSAGE` text Part), not a binding element; it is
-carried unchanged inside §7 bodies for that lane.
+A one-line body envelope used by an application lane is an
+*application payload* (a `data`-equivalent line inside a
+`SEND_MESSAGE` text Part), not a binding element; it is carried
+unchanged inside §7 bodies for that lane.
 
 ## 17. Conformance
 
@@ -733,7 +734,7 @@ An implementation conforms to EMAIL binding v1.0 iff it:
 Request (`SEND_MESSAGE`, new task) — subject as in §6.1; body:
 
 ```text
-Please relay this calendar block to the work calendar.
+Could you check availability for a meeting next week?
 
 ---A2A-JSON---
 {
@@ -746,7 +747,7 @@ Please relay this calendar block to the work calendar.
     "messageId": "9f2c1e…",
     "role": "ROLE_USER",
     "contextId": "ctx-7d31…",
-    "parts": [{ "text": "Please relay this calendar block to the work calendar." }]
+    "parts": [{ "text": "Could you check availability for a meeting next week?" }]
   },
   "task": null,
   "error": null

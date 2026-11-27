@@ -1,6 +1,6 @@
 ---
 name: gemini-spark-a2a-spreadsheet
-description: Adopt and run A2A (Agent2Agent) over the SPREADSHEET binding as Gemini Spark — a shared Google Sheet as the A2A endpoint (Requests/Results/Notes/Card tabs), an Apps Script A2A-Event doorbell email as the wake signal, and an email-triggered schedule that invokes this skill to process requests. Use when setting up agent-to-agent communication for Gemini Spark, when an A2A-Event wake arrives and the Requests queue must be processed, when sending a request to a counterparty over the sheet, or when operating/troubleshooting that sheet lane. Gemini Spark has first-party Google Workspace access but no agent email address and no hostable endpoint, which is why this binding exists.
+description: Process and send A2A requests over the SPREADSHEET binding with a counterparty the user has already established, using a shared spreadsheet as the endpoint and an A2A-Event email as the wake signal. Use when the user asks to set up, send to, or troubleshoot that established lane, or when an A2A-Event wake arrives for a lane the user created. Setup, schedule creation, and sharing are human steps in SETUP-BY-HUMAN.md beside this file, not actions this skill takes on sight.
 ---
 
 # A2A over Spreadsheet — the Gemini Spark Skill
@@ -14,7 +14,7 @@ unit:
 
 | File | Role |
 | :--- | :--- |
-| `SKILL.md` (this file) | The skill: setup, the full processing rules, sending, standing rules |
+| `SKILL.md` (this file) | The skill: setup, the full processing rules and sending |
 | `PACKAGE.md` | The portable-package manifest: every file, its role, and the install order |
 | `gemini-spark-schedule-prompt.txt` | A **thin** schedule prompt: on an `A2A-Event` email it invokes this skill. All processing rules live here in the skill, not in the prompt |
 | `Code.gs` | Reference file: the sheet's bound Apps Script doorbell |
@@ -196,7 +196,7 @@ humans as owners). There is no credential on this wire beyond
 each message's `a2a.token` metadata key, which the sender
 generates and which authenticates the matching Results row.
 
-### 2.4 Create the processing schedule
+### 2.4 The processing schedule (a human step, see SETUP-BY-HUMAN.md)
 
 In Gemini Spark, **inside a pinned session** (schedules must
 live in pinned sessions), create a schedule from
@@ -435,7 +435,7 @@ standing-instruction entry in this skill before its first
 use** — a kind nobody has standing instructions for is an
 `UnsupportedOperationError`, not an improvisation.
 
-### 5.7 Application kind: `spark.daily_brief` (registered 2026-11-08)
+### 5.7 Application kind: `spark.daily_brief` (example application kind)
 
 Params: `{"date": "YYYY-MM-DD"}` — the America/New_York date
 whose Gemini Daily Brief is requested. Standing instruction:
@@ -508,7 +508,7 @@ agent's own store is canonical.
   performs, and cancellation (§5.4) never masquerades as
   cleanup.
 
-## 9. Standing rules (do not weaken when adapting)
+## 9. Default rules (the user may change any of these)
 
 - **Sheet-only on processing runs.** Custom MCP / Connected
   App tool calls raise per-call Allow/Deny prompts in
@@ -560,7 +560,7 @@ keep it accurate; readers key their decode off it.
     "extendedAgentCard": false,
     "extensions": [
       {
-        "uri": "https://jonathancruzate.com/a2a/bindings/spreadsheet/v1",
+        "uri": "https://a2a-protocol.org/bindings/spreadsheet/v1",
         "required": false,
         "params": {
           "sheetLayout": "2",
@@ -620,6 +620,26 @@ Tick off after setup (and re-check after any change):
   transport, your own store is the record.
 - [ ] No instructions inside rows; standing instructions
   live in this skill only.
+
+
+## Limits
+
+- This binding provides no mailbox, no hosted endpoint, and no
+  real time delivery. Processing happens only when the wake
+  signal the user set up fires.
+- This skill does not create schedules, install scripts, share
+  documents, or establish counterparties. Those are human steps
+  in SETUP-BY-HUMAN.md.
+- Read and query kinds are the default. An action kind runs only
+  when the user has enabled that exact kind in writing.
+- Revoking the lane: the user deletes the processing schedule
+  and its trigger, and unshares the spreadsheet. That ends all
+  processing under this skill.
+
+## Sources
+
+- A2A Protocol specification, https://a2a-protocol.org/latest/specification/
+- Spreadsheet binding reference in this repository, spreadsheet-binding/SPEC.md
 
 ## Troubleshooting
 

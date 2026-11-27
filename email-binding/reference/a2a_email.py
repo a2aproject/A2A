@@ -2,7 +2,7 @@
 """
 a2a_email — A2A EMAIL binding v1.0 reference codec (stdlib only).
 
-Implements SPEC.md §§6-7, 8, 10 for the Muse / jonathancruzate/A2A fork:
+Implements SPEC.md §§6-7, 8, 10 for this binding:
   encode_message(message, ...) -> (subject, body)
   encode_task(task, ...)       -> (subject, body)
   encode_error(...)            -> (subject, body)

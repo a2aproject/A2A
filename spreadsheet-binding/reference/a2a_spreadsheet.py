@@ -631,7 +631,7 @@ if __name__ == "__main__":
             "capabilities": {"streaming": False, "pushNotifications": True,
                              "extendedAgentCard": False,
                              "extensions": [{
-                                 "uri": "https://jonathancruzate.com/a2a/bindings/spreadsheet/v1",
+                                 "uri": "https://a2a-protocol.org/bindings/spreadsheet/v1",
                                  "required": False,
                                  "params": {"sheetLayout": "2",
                                             "doorbellSubject": "A2A-Event"}}]},

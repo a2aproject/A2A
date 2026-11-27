@@ -9,7 +9,7 @@ Agent Card.
 
 | Your agent | Skill | Binding | Why that binding |
 | :--- | :--- | :--- | :--- |
-| **Muse** | [`muse-a2a-email/`](muse-a2a-email/) (`SKILL.md`) | **EMAIL** v1.0 | Every Muse gets its own mailbox (`<your>@muse.ai`). A mailbox is an endpoint: addressable with no hosted server, store-and-forward like A2A's async task model, and identity-bearing through permanent always-allow counterparties. |
+| **Muse** | [`muse-a2a-email/`](muse-a2a-email/) (`SKILL.md`) | **EMAIL** v1.0 | Every Muse gets its own mailbox (`<your>@muse.ai`). A mailbox is an endpoint: addressable with no hosted server, store-and-forward like A2A's async task model, and identity-bearing through the mailbox address in its Agent Card. |
 | **Gemini Spark** | [`gemini-spark-a2a-spreadsheet/`](gemini-spark-a2a-spreadsheet/) (`SKILL.md`-first; schedule prompt, doorbell script, and sheet template are reference files inside the skill folder) | **SPREADSHEET** v1.0 | Gemini Spark has no agent email address and cannot host an endpoint — but it has first-party Google Workspace access in unattended runs. A shared Google Sheet is its endpoint; a one-line `A2A-Event` email is only the doorbell. |
 
 Specs: `email-binding/SPEC.md` and `spreadsheet-binding/SPEC.md`
@@ -29,50 +29,32 @@ the lane up.
 
 ### Muse (EMAIL)
 
-1. Confirm your Muse Mail mailbox (`<your>@muse.ai`) sends and
-   receives.
-2. Install `muse-a2a-email/SKILL.md` as a skill in your Muse.
-3. Publish your Agent Card with the EMAIL interface
-   (`mailto:<your>@muse.ai`) — well-known URL if you have a site,
-   and by answering `CARD` requests by email either way.
-4. Set each counterparty to permanent "always allow" in Muse
-   Mail (both sides), then run the `CARD` exchange from the skill
-   and cache their card.
-5. Send your first `SEND_MESSAGE` and watch for the terminal
-   `TASK_UPDATE`.
+Skills in this repository are Markdown-only, in the same form as
+the Muse Gadget / Home Link device skills: paste a `SKILL.md`
+into that Muse's chat, or share the repository link and let that
+Muse find the skill it needs. Saving a skill sends nothing and
+changes no settings.
+
+Pairing is a separate human procedure, not part of the skill.
+See `muse-a2a-email/SETUP-BY-HUMAN.md`: both humans agree on the
+job, each does their own Muse Mail allowed-correspondent step
+themselves, one supervised `GET_AGENT_CARD` exchange runs first,
+and any standing reply arrangement is decided separately after
+that.
 
 ### Gemini Spark (SPREADSHEET)
 
-Gemini Spark consumes `SKILL.md` files like Muse does:
-Gemini chats and Gemini Spark tasks share one skills library
-in the open SKILL.md format. The Gemini Spark package is
-therefore **SKILL.md-first** — the skill is the installable
-artifact, and the schedule prompt, `Code.gs`, and
-`bridge-sheet.json` are supporting reference files inside the
-skill folder:
+Upload `gemini-spark-a2a-spreadsheet/SKILL.md` via Gemini
+**Settings > Skills**, or the Gemini Spark sidebar
+**Skills -> Upload**; enable it. Saving the skill sends nothing
+and changes no settings.
 
-1. Upload `gemini-spark-a2a-spreadsheet/SKILL.md` via Gemini
-   **Settings > Skills**, or the Gemini Spark sidebar
-   **Skills → Upload**; enable it. (Skill names must be
-   lowercase with hyphens.)
-2. Follow the skill's one-time setup: create the shared sheet
-   (Requests / Results / Notes / Card tabs + headers), share
-   it with exactly the two agents' accounts, and install
-   `Code.gs` as the sheet's bound Apps Script with an
-   **On change** trigger (the doorbell).
-3. In a **pinned** Gemini Spark session, create the
-   email-triggered schedule from
-   `gemini-spark-schedule-prompt.txt`
-   (trigger: `subject:"A2A-Event"`). The prompt is thin: it
-   only invokes `/gemini-spark-a2a-spreadsheet`; all
-   processing rules live in the skill. Pause any hourly
-   queue-check schedule.
-4. Give the counterparty `bridge-sheet.json` (spreadsheet ID
-   + tabs).
-5. Verify with a `test.ping` row → a `TASK_STATE_COMPLETED`
-   Results row linked to the ping's `message_id` (via
-   `task_json.history`) with the `a2a.token` echoed in
-   `metadata_json`.
+Setup is a separate human procedure, not part of the skill.
+See `gemini-spark-a2a-spreadsheet/SETUP-BY-HUMAN.md`: the owner
+creates the shared sheet and the processing schedule, adds one
+counterparty with `bridge-sheet.json`, verifies with one
+`test.ping`, and revokes the lane by deleting the schedule and
+unsharing the sheet.
 
 ## Pairing Muse ↔ Gemini Spark
 
